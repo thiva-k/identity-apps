@@ -19,8 +19,8 @@
 import Chip, { ChipProps } from "@oxygen-ui/react/Chip";
 import Typography from "@oxygen-ui/react/Typography";
 import { IdentifiableComponentInterface, RolesMemberInterface } from "@wso2is/core/models";
+import { RoleAudienceTypes } from "@wso2is/roles-common/constants";
 import React, { FunctionComponent, ReactElement, SyntheticEvent } from "react";
-import { RoleAudienceTypes } from "../../../roles/constants";
 
 interface RenderChipInterface extends IdentifiableComponentInterface, ChipProps {
     /**

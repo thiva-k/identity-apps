@@ -18,6 +18,13 @@
 
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
+import {
+    CreateGroupInterface,
+    GroupListInterface,
+    GroupsInterface,
+    PatchGroupDataInterface,
+    SearchGroupInterface
+} from "@wso2is/groups-common/models/groups";
 import { AxiosError, AxiosResponse } from "axios";
 import { store } from "../../core";
 import useRequest, {
@@ -25,13 +32,7 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import {
-    CreateGroupInterface,
-    GroupListInterface,
-    GroupsInterface,
-    PatchGroupDataInterface,
-    SearchGroupInterface
-} from "../models";
+
 
 /**
  * Initialize an axios Http client.

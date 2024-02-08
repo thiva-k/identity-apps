@@ -41,6 +41,7 @@ import {
     TestableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { GroupsInterface, getGroupList, useGroupList } from "@wso2is/groups-common";
 import {
     CSVFileStrategy,
     CSVResult,
@@ -56,7 +57,9 @@ import {
     PrimaryButton,
     useWizardAlert
 } from "@wso2is/react-components";
+import { PatchRoleDataInterface } from "@wso2is/roles-common/models";
 import { FormValidation } from "@wso2is/validation";
+
 import Axios,  { AxiosResponse }from "axios";
 import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -67,8 +70,8 @@ import { v4 as uuidv4 } from "uuid";
 import { UsersConstants } from "../../../../extensions/components/users/constants";
 import { userConfig } from "../../../../extensions/configs";
 import { ClaimManagementConstants } from "../../../../features/claims/constants";
-import { getGroupList, useGroupList } from "../../../../features/groups/api";
-import { GroupsInterface } from "../../../../features/groups/models";
+
+
 import { getAllExternalClaims, getDialects, getSCIMResourceTypes } from "../../../claims/api";
 import {
     AppConstants,
@@ -79,7 +82,7 @@ import {
     history
 } from "../../../core";
 import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
-import { PatchRoleDataInterface } from "../../../roles/models";
+
 import { getAUserStore, getUserStores } from "../../../userstores/api";
 import { PRIMARY_USERSTORE } from "../../../userstores/constants";
 import { useValidationConfigData } from "../../../validation/api";

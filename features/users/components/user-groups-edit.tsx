@@ -34,6 +34,9 @@ import {
     TransferList,
     TransferListItem
 } from "@wso2is/react-components";
+import { getGroupList } from "@wso2is/groups-common/api/groups";
+import { GroupsInterface, GroupsMemberInterface } from "@wso2is/groups-common/models/groups";
+import { APPLICATION_DOMAIN, INTERNAL_DOMAIN, PRIMARY_DOMAIN } from "@wso2is/roles-common/constants";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import forEachRight from "lodash-es/forEachRight";
@@ -51,9 +54,7 @@ import {
     Table
 } from "semantic-ui-react";
 import { getEmptyPlaceholderIllustrations, updateResources } from "../../core";
-import { getGroupList } from "../../groups/api";
-import { GroupsInterface, GroupsMemberInterface } from "../../groups/models";
-import { APPLICATION_DOMAIN, INTERNAL_DOMAIN, PRIMARY_DOMAIN } from "../../roles/constants";
+
 
 interface UserGroupsPropsInterface {
     /**

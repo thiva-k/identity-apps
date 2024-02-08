@@ -18,18 +18,20 @@
 
 import { RolesMemberInterface } from "@wso2is/core/models";
 import { GenericIconProps } from "@wso2is/react-components";
-import { ReactElement } from "react";
-import { BasicRoleInterface } from "../../roles/models";
-import { UserBasicInterface } from "../../users/models";
 
+import { BasicRoleInterface } from "@wso2is/roles-common/models";
+import { UserBasicInterface } from "@wso2is/users-common/models/user";
+import { ReactElement } from "react";
 /**
  * Interface to store data for create group api.
  */
+
 export interface CreateGroupInterface {
     schemas?: string[];
     displayName?: string;
     members?: CreateGroupMemberInterface[];
 }
+
 
 /**
  * Interface to store User information related to create group api

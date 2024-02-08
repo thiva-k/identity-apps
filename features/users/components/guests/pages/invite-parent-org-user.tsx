@@ -21,12 +21,14 @@ import Chip from "@oxygen-ui/react/Chip";
 import Typography from "@oxygen-ui/react/Typography";
 import { IdentifiableComponentInterface, RolesInterface } from "@wso2is/core/models";
 import { AutocompleteFieldAdapter, FinalForm, FinalFormField } from "@wso2is/form";
+
 import { Hint, Message } from "@wso2is/react-components";
+import { useRolesList } from "@wso2is/roles-common/api/roles";
 import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, useMemo } from "react";
 import { FormRenderProps } from "react-final-form";
 import { useTranslation } from "react-i18next";
-import { useRolesList } from "../../../../roles/api";
+
 import { UserManagementConstants } from "../../../constants";
 import {
     InviteParentOrgUserFormValuesInterface,

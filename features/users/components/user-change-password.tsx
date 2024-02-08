@@ -20,6 +20,7 @@ import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertInterface, AlertLevels, ProfileInfoInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { Field, FormValue, Forms, RadioChild, Validation, useTrigger } from "@wso2is/forms";
 import { LinkButton, Message, PasswordValidation, PrimaryButton } from "@wso2is/react-components";
+import { PatchRoleDataInterface } from "@wso2is/roles-common/models/roles";
 import { IdentityAppsApiException } from "modules/core/dist/types/exceptions";
 import React,
 {
@@ -33,7 +34,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid, Icon, Modal, SemanticCOLORS } from "semantic-ui-react";
 import { AppConstants, AppState, FeatureConfigInterface, SharedUserStoreUtils, history } from "../../core";
-import { PatchRoleDataInterface } from "../../roles/models/roles";
 import {
     ConnectorPropertyInterface,
     ServerConfigurationsConstants

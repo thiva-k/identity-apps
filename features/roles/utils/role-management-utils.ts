@@ -18,11 +18,11 @@
 
 import { RoleGroupsInterface } from "@wso2is/core/models";
 import { I18n } from "@wso2is/i18n";
+import { UserBasicInterface } from "@wso2is/users-common/models/user";
 import { SCIMConfigs } from "apps/console/src/extensions/configs/scim";
 import { AxiosResponse } from "axios";
 import isEmpty from "lodash-es/isEmpty";
 import { AppConstants } from "../../../features/core";
-import { UserBasicInterface } from "../../users/models/user";
 import { getPermissionList, searchRoleList } from "../api";
 import { generatePermissionTree } from "../components/role-utils";
 import { PermissionObject, SearchRoleInterface, TreeNode } from "../models";

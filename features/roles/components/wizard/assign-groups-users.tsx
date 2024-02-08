@@ -1,5 +1,7 @@
+/* eslint-disable header/header */
 /**
- * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ // eslint-disable-next-line tsdoc/syntax
+ * Copyright (c) {{year}}, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,13 +18,16 @@
  * under the License.
  */
 
+
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { GroupsInterface } from "@wso2is/groups-common/models/groups";
 import { ResourceTab } from "@wso2is/react-components";
+import { UserBasicInterface } from "@wso2is/users-common/models/user";
 import React, { FunctionComponent, ReactElement } from "react";
 import { AddRoleUsers } from "./role-user-assign";
 import { AssignGroups } from "../../../core";
-import { GroupsInterface } from "../../../groups/models/groups";
-import { UserBasicInterface } from "../../../users/models/user";
+
+
 
 /**
  * Captures props needed for the assign roles and users component.

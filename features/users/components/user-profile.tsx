@@ -40,6 +40,13 @@ import {
     EmphasizedSegment,
     useConfirmationModalAlert
 } from "@wso2is/react-components";
+import { searchRoleList, updateRoleDetails } from "@wso2is/roles-common/api/roles";
+import {
+    OperationValueInterface,
+    PatchRoleDataInterface,
+    ScimOperationsInterface,
+    SearchRoleInterface
+} from "@wso2is/roles-common/models/roles";
 import { AxiosError, AxiosResponse } from "axios";
 import isEmpty from "lodash-es/isEmpty";
 import moment from "moment";
@@ -56,13 +63,7 @@ import { GUEST_ADMIN_ASSOCIATION_TYPE } from "../../../extensions/components/use
 import { administratorConfig } from "../../../extensions/configs/administrator";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
 import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
-import { searchRoleList, updateRoleDetails } from "../../roles/api/roles";
-import {
-    OperationValueInterface,
-    PatchRoleDataInterface,
-    ScimOperationsInterface,
-    SearchRoleInterface
-} from "../../roles/models/roles";
+
 import { ConnectorPropertyInterface, ServerConfigurationsConstants  } from "../../server-configurations";
 import { getUserDetails, updateUserInfo } from "../api";
 import { AdminAccountTypes, UserManagementConstants } from "../constants";

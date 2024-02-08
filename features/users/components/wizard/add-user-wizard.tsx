@@ -26,6 +26,7 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { useTrigger } from "@wso2is/forms";
+import {GroupsInterface, getGroupList, updateGroupDetails } from "@wso2is/groups-common";
 import { Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
 import cloneDeep from "lodash-es/cloneDeep";
@@ -46,8 +47,6 @@ import { administratorConfig } from "../../../../extensions/configs/administrato
 import { SCIMConfigs } from "../../../../extensions/configs/scim";
 import { UserStoreDetails, UserStoreProperty } from "../../../core/models";
 import { AppState } from "../../../core/store";
-import { GroupsInterface } from "../../../groups";
-import { getGroupList, updateGroupDetails } from "../../../groups/api";
 import { getAUserStore, getUserStores } from "../../../userstores/api";
 import { useValidationConfigData } from "../../../validation/api";
 import { ValidationFormInterface } from "../../../validation/models";

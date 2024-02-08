@@ -18,6 +18,10 @@
 
 import { AlertLevels, IdentifiableComponentInterface, RoleGroupsInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import {
+    PatchGroupAddOpInterface,
+    PatchGroupRemoveOpInterface
+} from "@wso2is/groups-common/models/groups";
 import { EmphasizedSegment, Heading } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import React, {
@@ -35,10 +39,7 @@ import { EditRoleLocalGroupsAccordion } from "./edit-role-local-groups-accordion
 import { useGetApplication } from "../../../applications/api/use-get-application";
 import { AuthenticationStepInterface, AuthenticatorInterface } from "../../../applications/models/application";
 import { AuthenticatorManagementConstants } from "../../../connections/constants/autheticator-constants";
-import {
-    PatchGroupAddOpInterface,
-    PatchGroupRemoveOpInterface
-} from "../../../groups";
+
 import { useIdentityProviderList } from "../../../identity-providers/api/identity-provider";
 import { IdentityProviderInterface, StrictIdentityProviderInterface } from "../../../identity-providers/models";
 import { updateRoleDetails } from "../../api";

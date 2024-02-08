@@ -21,6 +21,7 @@ import { RoleConstants } from "@wso2is/core/constants";
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { FeatureAccessConfigInterface, RolesInterface, SBACInterface } from "@wso2is/core/models";
 import { ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
+import { UserManagementConstants } from "@wso2is/users-common/constants/user-management-constants";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -31,7 +32,6 @@ import { UpdatedRolePermissionDetails } from "./edit-role-permission";
 import { RoleUsersList } from "./edit-role-users";
 import { AppState, FeatureConfigInterface } from "../../../core";
 import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
-import { UserManagementConstants } from "../../../users/constants";
 import { RoleConstants as LocalRoleConstants, RoleAudienceTypes } from "../../constants";
 
 /**

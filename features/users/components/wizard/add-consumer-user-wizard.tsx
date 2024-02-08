@@ -20,7 +20,14 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { FormValue, useTrigger } from "@wso2is/forms";
+import {
+    GroupsInterface,
+    PatchGroupDataInterface,
+    getGroupList,
+    updateGroupDetails
+} from "@wso2is/groups-common";
 import { GenericIconProps, Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
+
 import { AxiosError, AxiosResponse } from "axios";
 import cloneDeep from "lodash-es/cloneDeep";
 import intersection from "lodash-es/intersection";
@@ -36,12 +43,7 @@ import { AddConsumerUserGroups } from "./steps/consumer-user-groups";
 import { CONSUMER_USERSTORE } from "../../../../extensions/components/users/constants/users";
 import { SCIMConfigs } from "../../../../extensions/configs/scim";
 import { UserBasicInterface } from "../../../../features/core";
-import {
-    GroupsInterface,
-    PatchGroupDataInterface,
-    getGroupList,
-    updateGroupDetails
-} from "../../../../features/groups";
+
 import { addUser } from "../../../../features/users/api/users";
 import { getUserWizardStepIcons } from "../../../../features/users/configs/ui";
 import {

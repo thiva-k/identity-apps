@@ -33,6 +33,7 @@ import {
     UserAvatar,
     useWizardAlert
 } from "@wso2is/react-components";
+import { UserBasicInterface } from "@wso2is/users-common/models/user";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import isEmpty from "lodash-es/isEmpty";
 import React, {
@@ -49,7 +50,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch as ReduxDispatch } from "redux";
 import { Grid, Header, Icon, Input, Modal, Table } from "semantic-ui-react";
 import { getEmptyPlaceholderIllustrations } from "../../../core";
-import { UserBasicInterface } from "../../../users/models/user";
+
 import { updateGroupDetails } from "../../api";
 import { CreateGroupMemberInterface, GroupsInterface, PatchGroupDataInterface } from "../../models";
 

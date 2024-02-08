@@ -19,6 +19,8 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, ProfileInfoInterface } from "@wso2is/core/models";
+import { PatchGroupDataInterface } from "@wso2is/groups-common/models/groups";
+import { PatchRoleDataInterface } from "@wso2is/roles-common/models";
 import { AxiosError, AxiosResponse } from "axios";
 import useRequest, {
     RequestConfigInterface,
@@ -26,8 +28,7 @@ import useRequest, {
     RequestResultInterface
 } from "../../core/hooks/use-request";
 import { store } from "../../core/store";
-import { PatchGroupDataInterface } from "../../groups";
-import { PatchRoleDataInterface } from "../../roles/models";
+
 import { UserManagementConstants } from "../constants";
 import { SCIMBulkEndpointInterface, UserDetailsInterface, UserListInterface, UserSessionsInterface } from "../models";
 

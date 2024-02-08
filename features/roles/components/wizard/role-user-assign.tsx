@@ -1,5 +1,6 @@
+/* eslint-disable header/header */
 /**
- * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ * Copyright (c) {{year}}, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,6 +17,7 @@
  * under the License.
  */
 
+
 import { RolesMemberInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { Forms } from "@wso2is/forms";
 import {
@@ -31,6 +33,8 @@ import {
     TransferListItem,
     UserAvatar
 } from "@wso2is/react-components";
+import { getUsersList } from "@wso2is/users-common/api/users";
+import { UserBasicInterface, UserListInterface } from "@wso2is/users-common/models/user";
 import differenceBy from "lodash-es/differenceBy";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import isEmpty from "lodash-es/isEmpty";
@@ -40,8 +44,7 @@ import { useSelector } from "react-redux";
 import { Grid, Icon, Input, Modal, Table } from "semantic-ui-react";
 import { AppState, UIConstants, getEmptyPlaceholderIllustrations } from "../../../core";
 import { OrganizationManagementConstants } from "../../../organizations/constants";
-import { getUsersList } from "../../../users/api/users";
-import { UserBasicInterface, UserListInterface } from "../../../users/models/user";
+
 
 /**
  * Proptypes for the role user list component.

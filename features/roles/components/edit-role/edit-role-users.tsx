@@ -29,7 +29,16 @@ import Select from "@oxygen-ui/react/Select";
 import TextField from "@oxygen-ui/react/TextField";
 import { AlertLevels, IdentifiableComponentInterface, RolesMemberInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { GroupsInterface } from "@wso2is/groups-common/models/groups";
 import { EmphasizedSegment, EmptyPlaceholder, Heading, PrimaryButton } from "@wso2is/react-components";
+import { useUsersList } from "@wso2is/users-common/api/users";
+import {
+    PatchBulkUserDataInterface,
+    PatchUserAddOpInterface,
+    PatchUserOpInterface,
+    PatchUserRemoveOpInterface,
+    UserBasicInterface
+} from "@wso2is/users-common/models/user";
 import { AxiosError } from "axios";
 import debounce, { DebouncedFunc } from "lodash-es/debounce";
 import isEmpty from "lodash-es/isEmpty";
@@ -51,15 +60,6 @@ import { RenderChip } from "./edit-role-common/render-chip";
 import { RemoteUserStoreConstants } from "../../../../extensions/components/user-stores/constants";
 import { updateResources } from "../../../core/api/bulk-operations";
 import { getEmptyPlaceholderIllustrations } from "../../../core/configs/ui";
-import { GroupsInterface } from "../../../groups/models/groups";
-import { useUsersList } from "../../../users/api";
-import {
-    PatchBulkUserDataInterface,
-    PatchUserAddOpInterface,
-    PatchUserOpInterface,
-    PatchUserRemoveOpInterface,
-    UserBasicInterface
-} from "../../../users/models";
 import { useUserStores } from "../../../userstores/api";
 import { UserStoreListItem } from "../../../userstores/models/user-stores";
 import { RoleConstants, Schemas } from "../../constants";

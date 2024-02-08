@@ -20,6 +20,9 @@ import { AlertLevels, RolesInterface, TestableComponentInterface } from "@wso2is
 import { addAlert } from "@wso2is/core/store";
 import { useTrigger } from "@wso2is/forms";
 import { Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
+import { getRolesList, updateRolesBulk } from "@wso2is/roles-common/api/roles";
+import { PatchRoleDataInterface, RolesV2ResponseInterface } from "@wso2is/roles-common/models";
+import { WizardStepInterface } from "@wso2is/users-common/models/user";
 import { AxiosError, AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -38,9 +41,7 @@ import {
     OrganizationRoleListItemInterface,
     OrganizationRoleListResponseInterface
 } from "../../../organizations/models";
-import { getRolesList, updateRolesBulk } from "../../../roles/api";
-import { PatchRoleDataInterface, RolesV2ResponseInterface } from "../../../roles/models";
-import { WizardStepInterface } from "../../../users/models";
+
 import { createGroup } from "../../api";
 import { getGroupsWizardStepIcons } from "../../configs";
 import {

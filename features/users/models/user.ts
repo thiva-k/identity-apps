@@ -17,11 +17,12 @@
  */
 
 import { LinkInterface, MultiValueAttributeInterface, NameInterface, RolesInterface } from "@wso2is/core/models";
+import { GroupsInterface, GroupsMemberInterface } from "@wso2is/groups-common";
 // Keep statement as this to avoid cyclic dependency. Do not import from config index.
 import React, { ReactElement } from "react";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
 import { UserRoleInterface } from "../../core";
-import { GroupsInterface, GroupsMemberInterface } from "../../groups";
+
 import { BulkImportResponseOperationTypes, BulkUserImportStatus } from "../constants";
 
 /**

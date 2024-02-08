@@ -36,6 +36,9 @@ import {
     TransferList,
     TransferListItem
 } from "@wso2is/react-components";
+import { getRolesList } from "@wso2is/roles-common/api/roles";
+import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "@wso2is/roles-common/constants";
+import { UserRolePermissions } from "@wso2is/users-common/components/user-role-permissions";
 import { AxiosError, AxiosResponse } from "axios";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import forEachRight from "lodash-es/forEachRight";
@@ -44,7 +47,7 @@ import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } 
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Button, Divider, Grid, Icon, Input, InputOnChangeData, Label, Modal, Table } from "semantic-ui-react";
-import { UserRolePermissions } from "./user-role-permissions";
+
 import { RolePermissions } from "./wizard/user-role-permissions";
 import { AppState, getEmptyPlaceholderIllustrations, updateResources } from "../../core";
 import { getOrganizationRoles } from "../../organizations/api";
@@ -54,8 +57,7 @@ import {
     OrganizationRoleListResponseInterface
 } from "../../organizations/models/organizations";
 import { OrganizationUtils } from "../../organizations/utils";
-import { getRolesList } from "../../roles/api";
-import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "../../roles/constants";
+
 
 interface UserRolesV1PropsInterface {
     /**

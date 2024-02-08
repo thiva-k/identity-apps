@@ -15,9 +15,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { PatchRoleDataInterface } from "@wso2is/roles-common/models";
+
 
 import { UserDetailsInterface } from "./user";
-import { PatchRoleDataInterface } from "../../roles/models";
 
 /**
  * Interface for the Users feature resource endpoints.

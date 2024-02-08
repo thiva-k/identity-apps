@@ -18,6 +18,8 @@
 
 import { IdentifiableComponentInterface, RolesMemberInterface } from "@wso2is/core/models";
 import { EmphasizedSegment, EmptyPlaceholder, Heading } from "@wso2is/react-components";
+
+import { ReadOnlyRoleList } from "@wso2is/roles-common/components/readonly-role-list";
 import React, {
     FunctionComponent,
     ReactElement,
@@ -27,7 +29,6 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { Divider } from "semantic-ui-react";
 import { getEmptyPlaceholderIllustrations } from "../../../core";
-import { ReadOnlyRoleList } from "../../../roles/components/readonly-role-list";
 import { GroupsInterface } from "../../models";
 import "./edit-group-roles.scss";
 

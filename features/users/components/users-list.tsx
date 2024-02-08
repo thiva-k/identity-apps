@@ -56,7 +56,7 @@ import {
 import { RealmConfigInterface } from "../../server-configurations";
 import { deleteUser } from "../api";
 import { UserManagementConstants } from "../constants";
-import { UserBasicInterface, UserListInterface } from "../models";
+import { UserBasicInterface, UserListInterface } from "@wso2is/users-common/models/user";
 
 /**
  * Prop types for the liked accounts component.

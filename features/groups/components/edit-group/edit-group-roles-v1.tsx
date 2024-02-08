@@ -22,6 +22,8 @@ import {
     TestableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+
+
 import {
     EmphasizedSegment,
     EmptyPlaceholder,
@@ -34,6 +36,10 @@ import {
     TransferListItem,
     useWizardAlert
 } from "@wso2is/react-components";
+import { getRolesList } from "@wso2is/roles-common/api/roles";
+import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "@wso2is/roles-common/constants/role-constants";
+import { UserRolePermissions } from "@wso2is/users-common/components/user-role-permissions";
+import { RolePermissions } from "@wso2is/users-common/components/wizard/user-role-permissions";
 import { AxiosError, AxiosResponse } from "axios";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import forEach from "lodash-es/forEach";
@@ -61,10 +67,8 @@ import {
     OrganizationRoleListResponseInterface
 } from "../../../organizations/models/organizations";
 import { OrganizationUtils } from "../../../organizations/utils";
-import { getRolesList } from "../../../roles/api/roles";
-import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "../../../roles/constants/role-constants";
-import { UserRolePermissions } from "../../../users/components/user-role-permissions";
-import { RolePermissions } from "../../../users/components/wizard/user-role-permissions";
+
+
 import { GroupsInterface } from "../../models";
 
 interface GroupRolesV1PropsInterface extends TestableComponentInterface {
