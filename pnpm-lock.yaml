@@ -1131,7 +1131,7 @@ importers:
       '@wso2is/forms':
         specifier: ^2.0.18
         version: link:../../modules/forms
-      '@wso2is/groups-common':
+      '@wso2is/feature-groups.common':
         specifier: '*'
         version: link:../groups-common
       '@wso2is/i18n':
@@ -1140,13 +1140,13 @@ importers:
       '@wso2is/react-components':
         specifier: ^2.1.3
         version: link:../../modules/react-components
-      '@wso2is/roles-common':
+      '@wso2is/feature-roles.common':
         specifier: '*'
         version: link:../roles-common
       '@wso2is/theme':
         specifier: ^2.0.61
         version: link:../../modules/theme
-      '@wso2is/users-common':
+      '@wso2is/feature-users.common':
         specifier: '*'
         version: link:../users-common
       '@wso2is/validation':
@@ -1838,7 +1838,7 @@ importers:
       '@wso2is/forms':
         specifier: ^2.0.18
         version: link:../../modules/forms
-      '@wso2is/groups-common':
+      '@wso2is/feature-groups.common':
         specifier: '*'
         version: link:../groups-common
       '@wso2is/i18n':
@@ -1850,7 +1850,7 @@ importers:
       '@wso2is/theme':
         specifier: ^2.0.61
         version: link:../../modules/theme
-      '@wso2is/users-common':
+      '@wso2is/feature-users.common':
         specifier: '*'
         version: link:../users-common
       '@wso2is/validation':
@@ -2193,7 +2193,7 @@ importers:
       '@wso2is/forms':
         specifier: ^2.0.18
         version: link:../../modules/forms
-      '@wso2is/groups-common':
+      '@wso2is/feature-groups.common':
         specifier: '*'
         version: link:../groups-common
       '@wso2is/i18n':
@@ -2205,7 +2205,7 @@ importers:
       '@wso2is/theme':
         specifier: ^2.0.61
         version: link:../../modules/theme
-      '@wso2is/users-common':
+      '@wso2is/feature-users.common':
         specifier: '*'
         version: link:../users-common
       '@wso2is/validation':
@@ -2548,7 +2548,7 @@ importers:
       '@wso2is/forms':
         specifier: ^2.0.18
         version: link:../../modules/forms
-      '@wso2is/groups-common':
+      '@wso2is/feature-groups.common':
         specifier: '*'
         version: link:../groups-common
       '@wso2is/i18n':
@@ -2557,13 +2557,13 @@ importers:
       '@wso2is/react-components':
         specifier: ^2.1.3
         version: link:../../modules/react-components
-      '@wso2is/roles-common':
+      '@wso2is/feature-roles.common':
         specifier: '*'
         version: link:../roles-common
       '@wso2is/theme':
         specifier: ^2.0.61
         version: link:../../modules/theme
-      '@wso2is/users-common':
+      '@wso2is/feature-users.common':
         specifier: '*'
         version: link:../users-common
       '@wso2is/validation':
@@ -2906,7 +2906,7 @@ importers:
       '@wso2is/forms':
         specifier: ^2.0.18
         version: link:../../modules/forms
-      '@wso2is/groups-common':
+      '@wso2is/feature-groups.common':
         specifier: '*'
         version: link:../groups-common
       '@wso2is/i18n':
@@ -2915,7 +2915,7 @@ importers:
       '@wso2is/react-components':
         specifier: ^2.1.3
         version: link:../../modules/react-components
-      '@wso2is/roles-common':
+      '@wso2is/feature-roles.common':
         specifier: '*'
         version: link:../roles-common
       '@wso2is/theme':
