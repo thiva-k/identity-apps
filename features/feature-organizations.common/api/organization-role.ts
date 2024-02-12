@@ -64,7 +64,7 @@ export const getOrganizationRoles = (
             cursor,
             filter
         },
-        url: `${ store.getState().config.endpoints.organizations }/organizations/${organizationId}/roles`
+        url: `${store.getState().config.endpoints.organizations}/organizations/${organizationId}/roles`
     };
 
     return httpClient(config)
@@ -94,7 +94,7 @@ export const deleteOrganizationRole = (organizationId: string, roleId: string): 
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
-        url: `${ store.getState().config.endpoints.organizations }/organizations/${ organizationId }/roles/${ roleId }`
+        url: `${store.getState().config.endpoints.organizations}/organizations/${organizationId}/roles/${roleId}`
     };
 
     return httpClient(config)
@@ -123,13 +123,14 @@ export const createOrganizationRole = (organizationId: string, data: CreateRoleI
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: `${ store.getState().config.endpoints.organizations }/organizations/${ organizationId }/roles`
+        url: `${store.getState().config.endpoints.organizations}/organizations/${organizationId}/roles`
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -152,13 +153,14 @@ export const updateRole = (
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
-        url: `${ store.getState().config.endpoints.organizations }/organizations/${ organizationId }/roles/${roleId}`
+        url: `${store.getState().config.endpoints.organizations}/organizations/${organizationId}/roles/${roleId}`
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -181,13 +183,14 @@ export const patchOrganizationRoleDetails = (
             "Content-Type": "application/json"
         },
         method: HttpMethods.PATCH,
-        url: `${ store.getState().config.endpoints.organizations }/organizations/${ organizationId }/roles/${roleId}`
+        url: `${store.getState().config.endpoints.organizations}/organizations/${organizationId}/roles/${roleId}`
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -204,13 +207,14 @@ export const getOrganizationRoleById = (organizationId: string, roleId: string):
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.organizations }/organizations/${ organizationId }/roles/${roleId}`
+        url: `${store.getState().config.endpoints.organizations}/organizations/${organizationId}/roles/${roleId}`
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -221,236 +225,233 @@ export const getOrganizationRoleById = (organizationId: string, roleId: string):
  * Need to change this to a real API once the BE is ready
  */
 export const getOrganizationPermissions = (): Promise<any> => {
-    return new Promise((resolve: (
-        value: { 
-            data: { displayName: string, resourcePath: string }[],
-            status: number
+    return new Promise(
+        (resolve: (value: { data: { displayName: string; resourcePath: string }[]; status: number }) => void) => {
+            resolve({
+                data: [
+                    {
+                        displayName: "All Permissions",
+                        resourcePath: "/permission"
+                    },
+                    {
+                        displayName: "Admin",
+                        resourcePath: "/permission/admin"
+                    },
+                    {
+                        displayName: "Manage",
+                        resourcePath: "/permission/admin/manage"
+                    },
+                    {
+                        displayName: "Identity",
+                        resourcePath: "/permission/admin/manage/identity"
+                    },
+                    {
+                        displayName: "Authentication",
+                        resourcePath: "/permission/admin/manage/identity/authentication"
+                    },
+                    {
+                        displayName: "Claim Management",
+                        resourcePath: "/permission/admin/manage/identity/claimmgt"
+                    },
+                    {
+                        displayName: "CORS Management",
+                        resourcePath: "/permission/admin/manage/identity/cors"
+                    },
+                    {
+                        displayName: "Email Management",
+                        resourcePath: "/permission/admin/manage/identity/emailmgt"
+                    },
+                    {
+                        displayName: "Governance",
+                        resourcePath: "/permission/admin/manage/identity/governance"
+                    },
+                    {
+                        displayName: "Group Management",
+                        resourcePath: "/permission/admin/manage/identity/groupmgt"
+                    },
+                    {
+                        displayName: "Role Management",
+                        resourcePath: "/permission/admin/manage/identity/rolemgt"
+                    },
+                    {
+                        displayName: "Organization Management",
+                        resourcePath: "/permission/admin/manage/identity/organizationmgt"
+                    },
+                    {
+                        displayName: "User Management",
+                        resourcePath: "/permission/admin/manage/identity/usermgt"
+                    },
+                    {
+                        displayName: "Identity Providers",
+                        resourcePath: "/permission/admin/manage/identity/idpmgt"
+                    },
+                    {
+                        displayName: "Applications",
+                        resourcePath: "/permission/admin/manage/identity/applicationmgt"
+                    },
+                    {
+                        displayName: "Userstores",
+                        resourcePath: "/permission/admin/manage/identity/userstore"
+                    },
+                    {
+                        displayName: "Userstores Config",
+                        resourcePath: "/permission/admin/manage/identity/userstore/config"
+                    },
+                    {
+                        displayName: "Sessions",
+                        resourcePath: "/permission/admin/manage/identity/authentication/session"
+                    },
+                    {
+                        displayName: "CORS Origins",
+                        resourcePath: "/permission/admin/manage/identity/cors/origins"
+                    },
+                    {
+                        displayName: "View",
+                        resourcePath: "/permission/admin/manage/identity/emailmgt/view"
+                    },
+                    {
+                        displayName: "Update",
+                        resourcePath: "/permission/admin/manage/identity/emailmgt/update"
+                    },
+                    {
+                        displayName: "Roles view",
+                        resourcePath: "/permission/admin/manage/identity/rolemgt/view"
+                    },
+                    {
+                        displayName: "Roles create",
+                        resourcePath: "/permission/admin/manage/identity/rolemgt/create"
+                    },
+                    {
+                        displayName: "Roles update",
+                        resourcePath: "/permission/admin/manage/identity/rolemgt/update"
+                    },
+                    {
+                        displayName: "Roles delete",
+                        resourcePath: "/permission/admin/manage/identity/rolemgt/delete"
+                    },
+                    {
+                        displayName: "Organizations view",
+                        resourcePath: "/permission/admin/manage/identity/organizationmgt/view"
+                    },
+                    {
+                        displayName: "Organizations create",
+                        resourcePath: "/permission/admin/manage/identity/organizationmgt/create"
+                    },
+                    {
+                        displayName: "Organizations update",
+                        resourcePath: "/permission/admin/manage/identity/organizationmgt/update"
+                    },
+                    {
+                        displayName: "Organizations delete",
+                        resourcePath: "/permission/admin/manage/identity/organizationmgt/delete"
+                    },
+                    {
+                        displayName: "Users view",
+                        resourcePath: "/permission/admin/manage/identity/usermgt/view"
+                    },
+                    {
+                        displayName: "Users list",
+                        resourcePath: "/permission/admin/manage/identity/usermgt/list"
+                    },
+                    {
+                        displayName: "Users create",
+                        resourcePath: "/permission/admin/manage/identity/usermgt/create"
+                    },
+                    {
+                        displayName: "Users update",
+                        resourcePath: "/permission/admin/manage/identity/usermgt/update"
+                    },
+                    {
+                        displayName: "Users delete",
+                        resourcePath: "/permission/admin/manage/identity/usermgt/delete"
+                    },
+                    {
+                        displayName: "Identity Providers view",
+                        resourcePath: "/permission/admin/manage/identity/idpmgt/view"
+                    },
+                    {
+                        displayName: "Identity Providers list",
+                        resourcePath: "/permission/admin/manage/identity/idpmgt/list"
+                    },
+                    {
+                        displayName: "Identity Providers create",
+                        resourcePath: "/permission/admin/manage/identity/idpmgt/create"
+                    },
+                    {
+                        displayName: "Identity Providers update",
+                        resourcePath: "/permission/admin/manage/identity/idpmgt/update"
+                    },
+                    {
+                        displayName: "Identity Providers delete",
+                        resourcePath: "/permission/admin/manage/identity/idpmgt/delete"
+                    },
+                    {
+                        displayName: "Applications view",
+                        resourcePath: "/permission/admin/manage/identity/applicationmgt/view"
+                    },
+                    {
+                        displayName: "Applications list",
+                        resourcePath: "/permission/admin/manage/identity/applicationmgt/list"
+                    },
+                    {
+                        displayName: "Applications create",
+                        resourcePath: "/permission/admin/manage/identity/applicationmgt/create"
+                    },
+                    {
+                        displayName: "Applications update",
+                        resourcePath: "/permission/admin/manage/identity/applicationmgt/update"
+                    },
+                    {
+                        displayName: "Applications delete",
+                        resourcePath: "/permission/admin/manage/identity/applicationmgt/delete"
+                    },
+                    {
+                        displayName: "Userstore view",
+                        resourcePath: "/permission/admin/manage/identity/userstore/config/view"
+                    },
+                    {
+                        displayName: "Userstore list",
+                        resourcePath: "/permission/admin/manage/identity/userstore/config/list"
+                    },
+                    {
+                        displayName: "Userstore create",
+                        resourcePath: "/permission/admin/manage/identity/userstore/config/create"
+                    },
+                    {
+                        displayName: "Userstore update",
+                        resourcePath: "/permission/admin/manage/identity/userstore/config/update"
+                    },
+                    {
+                        displayName: "Userstore delete",
+                        resourcePath: "/permission/admin/manage/identity/userstore/config/delete"
+                    },
+                    {
+                        displayName: "Group view",
+                        resourcePath: "/permission/admin/manage/identity/groupmgt/view"
+                    },
+                    {
+                        displayName: "Governance view",
+                        resourcePath: "/permission/admin/manage/identity/governance/view"
+                    },
+                    {
+                        displayName: "CORS Origins view",
+                        resourcePath: "/permission/admin/manage/identity/cors/origins/view"
+                    },
+                    {
+                        displayName: "Claim Metadata",
+                        resourcePath: "/permission/admin/manage/identity/claimmgt/metadata"
+                    },
+                    {
+                        displayName: "Claim Metadata view",
+                        resourcePath: "/permission/admin/manage/identity/claimmgt/metadata/view"
+                    },
+                    {
+                        displayName: "Session view",
+                        resourcePath: "/permission/admin/manage/identity/authentication/session/view"
+                    }
+                ],
+                status: 200
+            });
         }
-    ) => void) => {
-        resolve({
-            data: [
-                {
-                    "displayName": "All Permissions",
-                    "resourcePath": "/permission"
-                },
-                {
-                    "displayName": "Admin",
-                    "resourcePath": "/permission/admin"
-                },
-                {
-                    "displayName": "Manage",
-                    "resourcePath": "/permission/admin/manage"
-                },
-                {
-                    "displayName": "Identity",
-                    "resourcePath": "/permission/admin/manage/identity"
-                },
-                {
-                    "displayName": "Authentication",
-                    "resourcePath": "/permission/admin/manage/identity/authentication"
-                },
-                {
-                    "displayName": "Claim Management",
-                    "resourcePath": "/permission/admin/manage/identity/claimmgt"
-                },
-                {
-                    "displayName": "CORS Management",
-                    "resourcePath": "/permission/admin/manage/identity/cors"
-                },
-                {
-                    "displayName": "Email Management",
-                    "resourcePath": "/permission/admin/manage/identity/emailmgt"
-                },
-                {
-                    "displayName": "Governance",
-                    "resourcePath": "/permission/admin/manage/identity/governance"
-                },
-                {
-                    "displayName": "Group Management",
-                    "resourcePath": "/permission/admin/manage/identity/groupmgt"
-                },
-                {
-                    "displayName": "Role Management",
-                    "resourcePath": "/permission/admin/manage/identity/rolemgt"
-                },
-                {
-                    "displayName": "Organization Management",
-                    "resourcePath": "/permission/admin/manage/identity/organizationmgt"
-                },
-                {
-                    "displayName": "User Management",
-                    "resourcePath": "/permission/admin/manage/identity/usermgt"
-                },
-                {
-                    "displayName": "Identity Providers",
-                    "resourcePath": "/permission/admin/manage/identity/idpmgt"
-                },
-                {
-                    "displayName": "Applications",
-                    "resourcePath": "/permission/admin/manage/identity/applicationmgt"
-                },
-                {
-                    "displayName": "Userstores",
-                    "resourcePath": "/permission/admin/manage/identity/userstore"
-                },
-                {
-                    "displayName": "Userstores Config",
-                    "resourcePath": "/permission/admin/manage/identity/userstore/config"
-                },
-                {
-                    "displayName": "Sessions",
-                    "resourcePath": "/permission/admin/manage/identity/authentication/session"
-                },
-                {
-                    "displayName": "CORS Origins",
-                    "resourcePath": "/permission/admin/manage/identity/cors/origins"
-                },
-                {
-                    "displayName": "View",
-                    "resourcePath": "/permission/admin/manage/identity/emailmgt/view"
-                },
-                {
-                    "displayName": "Update",
-                    "resourcePath": "/permission/admin/manage/identity/emailmgt/update"
-                },
-                {
-                    "displayName": "Roles view",
-                    "resourcePath": "/permission/admin/manage/identity/rolemgt/view"
-                },
-                {
-                    "displayName": "Roles create",
-                    "resourcePath": "/permission/admin/manage/identity/rolemgt/create"
-                },
-                {
-                    "displayName": "Roles update",
-                    "resourcePath": "/permission/admin/manage/identity/rolemgt/update"
-                },
-                {
-                    "displayName": "Roles delete",
-                    "resourcePath": "/permission/admin/manage/identity/rolemgt/delete"
-                },
-                {
-                    "displayName": "Organizations view",
-                    "resourcePath": "/permission/admin/manage/identity/organizationmgt/view"
-                },
-                {
-                    "displayName": "Organizations create",
-                    "resourcePath": "/permission/admin/manage/identity/organizationmgt/create"
-                },
-                {
-                    "displayName": "Organizations update",
-                    "resourcePath": "/permission/admin/manage/identity/organizationmgt/update"
-                },
-                {
-                    "displayName": "Organizations delete",
-                    "resourcePath": "/permission/admin/manage/identity/organizationmgt/delete"
-                },
-                {
-                    "displayName": "Users view",
-                    "resourcePath": "/permission/admin/manage/identity/usermgt/view"
-                },
-                {
-                    "displayName": "Users list",
-                    "resourcePath": "/permission/admin/manage/identity/usermgt/list"
-                },
-                {
-                    "displayName": "Users create",
-                    "resourcePath": "/permission/admin/manage/identity/usermgt/create"
-                },
-                {
-                    "displayName": "Users update",
-                    "resourcePath": "/permission/admin/manage/identity/usermgt/update"
-                },
-                {
-                    "displayName": "Users delete",
-                    "resourcePath": "/permission/admin/manage/identity/usermgt/delete"
-                },
-                {
-                    "displayName": "Identity Providers view",
-                    "resourcePath": "/permission/admin/manage/identity/idpmgt/view"
-                },
-                {
-                    "displayName": "Identity Providers list",
-                    "resourcePath": "/permission/admin/manage/identity/idpmgt/list"
-                },
-                {
-                    "displayName": "Identity Providers create",
-                    "resourcePath": "/permission/admin/manage/identity/idpmgt/create"
-                },
-                {
-                    "displayName": "Identity Providers update",
-                    "resourcePath": "/permission/admin/manage/identity/idpmgt/update"
-                },
-                {
-                    "displayName": "Identity Providers delete",
-                    "resourcePath": "/permission/admin/manage/identity/idpmgt/delete"
-                },
-                {
-                    "displayName": "Applications view",
-                    "resourcePath": "/permission/admin/manage/identity/applicationmgt/view"
-                },
-                {
-                    "displayName": "Applications list",
-                    "resourcePath": "/permission/admin/manage/identity/applicationmgt/list"
-                },
-                {
-                    "displayName": "Applications create",
-                    "resourcePath": "/permission/admin/manage/identity/applicationmgt/create"
-                },
-                {
-                    "displayName": "Applications update",
-                    "resourcePath": "/permission/admin/manage/identity/applicationmgt/update"
-                },
-                {
-                    "displayName": "Applications delete",
-                    "resourcePath": "/permission/admin/manage/identity/applicationmgt/delete"
-                },
-                {
-                    "displayName": "Userstore view",
-                    "resourcePath": "/permission/admin/manage/identity/userstore/config/view"
-                },
-                {
-                    "displayName": "Userstore list",
-                    "resourcePath": "/permission/admin/manage/identity/userstore/config/list"
-                },
-                {
-                    "displayName": "Userstore create",
-                    "resourcePath": "/permission/admin/manage/identity/userstore/config/create"
-                },
-                {
-                    "displayName": "Userstore update",
-                    "resourcePath": "/permission/admin/manage/identity/userstore/config/update"
-                },
-                {
-                    "displayName": "Userstore delete",
-                    "resourcePath": "/permission/admin/manage/identity/userstore/config/delete"
-                },
-                {
-                    "displayName": "Group view",
-                    "resourcePath": "/permission/admin/manage/identity/groupmgt/view"
-                },
-                {
-                    "displayName": "Governance view",
-                    "resourcePath": "/permission/admin/manage/identity/governance/view"
-                },
-                {
-                    "displayName": "CORS Origins view",
-                    "resourcePath": "/permission/admin/manage/identity/cors/origins/view"
-                },
-                {
-                    "displayName": "Claim Metadata",
-                    "resourcePath": "/permission/admin/manage/identity/claimmgt/metadata"
-                },
-                {
-                    "displayName": "Claim Metadata view",
-                    "resourcePath": "/permission/admin/manage/identity/claimmgt/metadata/view"
-                },
-                {
-                    "displayName": "Session view",
-                    "resourcePath": "/permission/admin/manage/identity/authentication/session/view"
-                }
-            ],
-            status: 200
-        });
-    });
+    );
 };
