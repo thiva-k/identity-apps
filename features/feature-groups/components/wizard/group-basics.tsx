@@ -18,6 +18,8 @@
 
 import { AlertLevels, TestableComponentInterface, UserstoreListResponseInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { searchGroupList } from "@wso2is/feature-groups.common/api";
+import { CreateGroupFormData, SearchGroupInterface } from "@wso2is/feature-groups.common/models/groups";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import { Heading } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useRef, useState } from "react";
@@ -34,8 +36,7 @@ import { RootOnlyComponent } from "../../../organizations/components";
 import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
 import { getUserStoreList } from "../../../userstores/api";
 import { UserStoreProperty } from "../../../userstores/models";
-import { searchGroupList } from "../../api";
-import { CreateGroupFormData, SearchGroupInterface } from "../../models";
+
 
 /**
  * Interface to capture group basics props.

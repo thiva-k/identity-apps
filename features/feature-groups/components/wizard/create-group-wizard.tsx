@@ -18,11 +18,18 @@
 
 import { AlertLevels, RolesInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { useTrigger } from "@wso2is/forms";
-import { Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
+import { createGroup } from "@wso2is/feature-groups.common/api";
+import {
+    CreateGroupInterface,
+    CreateGroupMemberInterface,
+    CreateGroupUserInterface,
+    GroupsInterface
+} from "@wso2is/feature-groups.common/models/groups";
 import { getRolesList, updateRolesBulk } from "@wso2is/feature-roles.common/api/roles";
 import { PatchRoleDataInterface, RolesV2ResponseInterface } from "@wso2is/feature-roles.common/models";
 import { WizardStepInterface } from "@wso2is/feature-users.common/models/user";
+import { useTrigger } from "@wso2is/forms";
+import { Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -41,15 +48,8 @@ import {
     OrganizationRoleListItemInterface,
     OrganizationRoleListResponseInterface
 } from "../../../organizations/models";
-
-import { createGroup } from "../../api";
 import { getGroupsWizardStepIcons } from "../../configs";
-import {
-    CreateGroupInterface,
-    CreateGroupMemberInterface,
-    CreateGroupUserInterface,
-    GroupsInterface
-} from "../../models";
+
 
 
 /**

@@ -21,6 +21,9 @@ import {
     TestableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { deleteGroupById, searchGroupList, updateGroupDetails } from "@wso2is/feature-groups.common/api";
+import { GroupsInterface, PatchGroupDataInterface,
+    SearchGroupInterface } from "@wso2is/feature-groups.common/models/groups";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import { ConfirmationModal, DangerZone, DangerZoneGroup, EmphasizedSegment } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
@@ -37,8 +40,7 @@ import {
     UserStoreProperty,
     history
 } from "../../../core";
-import { deleteGroupById, searchGroupList, updateGroupDetails } from "../../api";
-import { GroupsInterface, PatchGroupDataInterface, SearchGroupInterface } from "../../models";
+
 
 /**
  * Interface to contain props needed for component

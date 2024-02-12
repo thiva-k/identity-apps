@@ -19,6 +19,7 @@
 import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { LoadableComponentInterface, SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
 import {
     AnimatedAvatar,
     AppAvatar,
@@ -44,7 +45,6 @@ import {
     history
 } from "../../core";
 import { GroupConstants } from "../constants";
-import { GroupsInterface } from "../models";
 
 interface GroupListProps extends SBACInterface<FeatureConfigInterface>,
     LoadableComponentInterface, TestableComponentInterface {

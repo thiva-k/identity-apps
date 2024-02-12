@@ -19,6 +19,10 @@
 import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { AlertLevels, LoadableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { updateGroupDetails } from "@wso2is/feature-groups.common/api";
+import { CreateGroupMemberInterface, GroupsInterface,
+    PatchGroupDataInterface } from "@wso2is/feature-groups.common/models/groups";
+import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
 import {
     Button, Code, ContentLoader,
     EmphasizedSegment,
@@ -33,7 +37,6 @@ import {
     UserAvatar,
     useWizardAlert
 } from "@wso2is/react-components";
-import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import isEmpty from "lodash-es/isEmpty";
 import React, {
@@ -50,9 +53,6 @@ import { useDispatch } from "react-redux";
 import { Dispatch as ReduxDispatch } from "redux";
 import { Grid, Header, Icon, Input, Modal, Table } from "semantic-ui-react";
 import { getEmptyPlaceholderIllustrations } from "../../../core";
-
-import { updateGroupDetails } from "../../api";
-import { CreateGroupMemberInterface, GroupsInterface, PatchGroupDataInterface } from "../../models";
 
 /**
  * Proptypes for the group users list component.

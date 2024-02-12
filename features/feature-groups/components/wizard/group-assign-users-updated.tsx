@@ -47,7 +47,7 @@ import { GroupBasicsUpdated } from "./group-basics-updated";
 import { UserManagementUtils } from "../../../../extensions/components/users/utils";
 import { SCIMConfigs } from "../../../../extensions/configs/scim";
 import { UIConstants, UserBasicInterface, UserListInterface, getUsersList } from "../../../core";
-import { GroupsMemberInterface } from "../../models";
+import { GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
 
 /**
  * Proptypes for the application consents list component.

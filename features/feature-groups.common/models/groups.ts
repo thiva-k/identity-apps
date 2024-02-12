@@ -17,9 +17,10 @@
  */
 
 import { RolesMemberInterface } from "@wso2is/core/models";
+import { BasicRoleInterface } from "@wso2is/feature-roles.common/models";
+import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
 import { GenericIconProps } from "@wso2is/react-components";
 import { ReactElement } from "react";
-
 
 
 /**
@@ -189,7 +190,21 @@ export interface WizardStepInterface {
 /**
  * Interface for group creation.
  */
+export interface GroupCreateInterface {
+    BasicDetails: GroupCreateBasicDetailsInterface;
+    RoleList?: {
+        roles: BasicRoleInterface[]
+    }
+}
 
 /**
  * Interface to capture group creation basic data.
  */
+export interface GroupCreateBasicDetailsInterface {
+    basic?: {
+        basicDetails: CreateGroupFormData
+    },
+    domain?: string;
+    groupName?: string;
+    users?: UserBasicInterface[]
+}

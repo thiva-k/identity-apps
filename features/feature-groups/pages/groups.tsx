@@ -18,6 +18,8 @@
 import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { AlertInterface, AlertLevels, RolesInterface, UserstoreListResponseInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { deleteGroupById, useGroupList } from "@wso2is/feature-groups.common/api";
+import { GroupsInterface, WizardStepsFormTypes } from "@wso2is/feature-groups.common/models/groups";
 import {
     EmptyPlaceholder,
     ListLayout,
@@ -47,11 +49,9 @@ import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get
 import { getUserStoreList } from "../../userstores/api";
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../userstores/constants";
 import { UserStorePostData } from "../../userstores/models/user-stores";
-import { deleteGroupById, useGroupList } from "../api";
 import { GroupList } from "../components";
 import { CreateGroupWizardUpdated } from "../components/wizard/create-group-wizard-updated";
 import { GroupConstants } from "../constants";
-import { GroupsInterface, WizardStepsFormTypes } from "../models";
 
 const GROUPS_SORTING_OPTIONS: DropdownItemProps[] = [
     {

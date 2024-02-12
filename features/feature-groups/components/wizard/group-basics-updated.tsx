@@ -18,6 +18,8 @@
 
 import { AlertLevels, IdentifiableComponentInterface, UserstoreListResponseInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { searchGroupList } from "@wso2is/feature-groups.common/api";
+import { CreateGroupFormData, SearchGroupInterface } from "@wso2is/feature-groups.common/models/groups";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import { Code, Hint } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
@@ -26,7 +28,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownItemProps, Grid, GridColumn, GridRow } from "semantic-ui-react";
-import { CreateGroupFormData, SearchGroupInterface, searchGroupList } from "../..";
 import { UsersConstants } from "../../../../extensions/components/users/constants/users";
 import { SharedUserStoreConstants, SharedUserStoreUtils, UserStoreDetails } from "../../../core";
 import { RootOnlyComponent } from "../../../organizations/components/root-only-component";

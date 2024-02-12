@@ -20,10 +20,11 @@ import useUIConfig from "@wso2is/common/src/hooks/use-ui-configs";
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertLevels, FeatureAccessConfigInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
+import { GroupsInterface, GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
 import { getUsersList } from "@wso2is/feature-users.common/api/users";
 import { UserManagementConstants } from "@wso2is/feature-users.common/constants/user-management-constants";
 import { UserBasicInterface, UserListInterface } from "@wso2is/feature-users.common/models/user";
+import { ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -39,10 +40,8 @@ import { FeatureConfigInterface } from "../../../core/models";
 import { AppState } from "../../../core/store";
 import { GenericOrganization } from "../../../organizations/models/organizations";
 import { OrganizationUtils } from "../../../organizations/utils";
-
 import { GroupConstants } from "../../constants";
 import useGroupManagement from "../../hooks/use-group-management";
-import { GroupsInterface, GroupsMemberInterface } from "../../models";
 
 /**
  * Captures props needed for edit group component

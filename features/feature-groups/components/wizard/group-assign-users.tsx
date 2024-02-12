@@ -17,6 +17,7 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
 import { Forms } from "@wso2is/forms";
 import {
     Button,
@@ -42,7 +43,6 @@ import {
     getEmptyPlaceholderIllustrations,
     getUsersList
 } from "../../../core";
-import { GroupsMemberInterface } from "../../models";
 
 /**
  * Proptypes for the application consents list component.

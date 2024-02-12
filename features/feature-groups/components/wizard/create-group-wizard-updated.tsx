@@ -24,12 +24,24 @@ import {
     RolesInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { useTrigger } from "@wso2is/forms";
-import { Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
+import { createGroup } from "@wso2is/feature-groups.common/api";
+import {
+    CreateGroupInterface,
+    CreateGroupMemberInterface,
+    GroupCreateBasicDetailsInterface,
+    GroupCreateInterface,
+    WizardStateInterface,
+    WizardStepInterface,
+    WizardStepsFormTypes
+} from "@wso2is/feature-groups.common/models/groups";
 import { getRolesList, updateRole } from "@wso2is/feature-roles.common/api/roles";
 import { RoleConstants } from "@wso2is/feature-roles.common/constants";
-import { BasicRoleInterface, PatchRoleDataInterface, RolesV2ResponseInterface } from "@wso2is/feature-roles.common/models";
+import { BasicRoleInterface, PatchRoleDataInterface, 
+    RolesV2ResponseInterface } from "@wso2is/feature-roles.common/models";
 import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
+import { useTrigger } from "@wso2is/forms";
+import { Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
+
 import { AxiosError, AxiosResponse } from "axios";
 import intersection from "lodash-es/intersection";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
@@ -53,17 +65,7 @@ import {
 
 
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../../userstores/constants";
-import { createGroup } from "../../api";
 import { getGroupsWizardStepIcons } from "../../configs";
-import {
-    CreateGroupInterface,
-    CreateGroupMemberInterface,
-    GroupCreateBasicDetailsInterface,
-    GroupCreateInterface,
-    WizardStateInterface,
-    WizardStepInterface,
-    WizardStepsFormTypes
-} from "../../models";
 
 /**
  * Interface which captures create group props.

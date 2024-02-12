@@ -1483,6 +1483,15 @@ importers:
       '@wso2is/dynamic-forms':
         specifier: ^2.0.29
         version: link:../../modules/dynamic-forms
+      '@wso2is/feature-groups.common':
+        specifier: '*'
+        version: 'link:'
+      '@wso2is/feature-roles.common':
+        specifier: '*'
+        version: link:../feature-roles.common
+      '@wso2is/feature-users.common':
+        specifier: '*'
+        version: link:../feature-users.common
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form
@@ -7740,8 +7749,8 @@ packages:
       '@babel/core': ^7.0.0-0
     dependencies:
       '@babel/core': 7.23.9
-      '@babel/helper-plugin-utils': 7.22.5
-      '@babel/helper-validator-option': 7.23.5
+      '@babel/helper-plugin-utils': 7.18.9
+      '@babel/helper-validator-option': 7.18.6
       '@babel/plugin-transform-react-display-name': 7.18.6(@babel/core@7.23.9)
       '@babel/plugin-transform-react-jsx': 7.18.10(@babel/core@7.23.9)
       '@babel/plugin-transform-react-jsx-development': 7.18.6(@babel/core@7.23.9)
@@ -17564,7 +17573,7 @@ packages:
     dependencies:
       '@babel/core': 7.23.9
       find-cache-dir: 3.3.2
-      loader-utils: 2.0.4
+      loader-utils: 2.0.2
       make-dir: 3.1.0
       schema-utils: 2.7.1
       webpack: 5.84.1(@swc/core@1.3.11)(webpack-cli@4.10.0)
@@ -30092,7 +30101,7 @@ packages:
       react-native:
         optional: true
     dependencies:
-      '@babel/runtime': 7.22.15
+      '@babel/runtime': 7.18.9
       html-parse-stringify: 3.0.1
       i18next: 21.9.1
       react: 18.2.0
