@@ -22,6 +22,11 @@ import Grid from "@oxygen-ui/react/Grid";
 import TextField from "@oxygen-ui/react/TextField";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface, LinkInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { useAPIResourceDetails, useGetAuthorizedAPIList } from "@wso2is/feature-roles.common/api";
+import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants/role-constants";
+import { APIResourceInterface, AuthorizedAPIListItemInterface,
+    ScopeInterface } from "@wso2is/feature-roles.common/models/apiResources";
+import { SelectedPermissionsInterface } from "@wso2is/feature-roles.common/models/roles";
 import { EmphasizedSegment } from "@wso2is/react-components";
 import React, {
     FunctionComponent,
@@ -39,10 +44,7 @@ import { useAPIResources } from "../../../../api-resources/api";
 import { APIResourceCategories, APIResourcesConstants } from "../../../../api-resources/constants";
 import { APIResourceUtils } from "../../../../api-resources/utils/api-resource-utils";
 import { Policy } from "../../../../applications/constants/api-authorization";
-import { useAPIResourceDetails, useGetAuthorizedAPIList } from "../../../api";
-import { RoleAudienceTypes } from "../../../constants/role-constants";
-import { APIResourceInterface, AuthorizedAPIListItemInterface, ScopeInterface } from "../../../models/apiResources";
-import { SelectedPermissionsInterface } from "../../../models/roles";
+
 
 /**
  * Interface to capture permission list props

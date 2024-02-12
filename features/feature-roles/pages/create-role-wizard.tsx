@@ -20,6 +20,17 @@ import Grid from "@oxygen-ui/react/Grid";
 import { VerticalStepper, VerticalStepperStepInterface } from "@wso2is/common";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { createRole } from "@wso2is/feature-roles.common/api/roles";
+import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants";
+import {
+    CreateRoleFormData,
+    CreateRoleInterface,
+    CreateRolePermissionInterface,
+    CreateRoleStateInterface,
+    CreateRoleStepsFormTypes,
+    SelectedPermissionsInterface
+} from "@wso2is/feature-roles.common/models";
+import { ScopeInterface } from "@wso2is/feature-roles.common/models/apiResources";
 import { EmphasizedSegment, PageLayout } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useState } from "react";
@@ -30,19 +41,9 @@ import { AppConstants } from "../../core/constants";
 import { history } from "../../core/helpers";
 import { store } from "../../core/store";
 import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
-import { createRole } from "../api/roles";
 import { RoleBasics } from "../components/wizard-updated/role-basics";
 import { RolePermissionsList } from "../components/wizard-updated/role-permissions/role-permissions";
-import { RoleAudienceTypes } from "../constants";
-import {
-    CreateRoleFormData,
-    CreateRoleInterface,
-    CreateRolePermissionInterface,
-    CreateRoleStateInterface,
-    CreateRoleStepsFormTypes,
-    SelectedPermissionsInterface
-} from "../models";
-import { ScopeInterface } from "../models/apiResources";
+
 
 /**
  * Interface which captures create role props.

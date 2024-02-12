@@ -17,6 +17,10 @@
  */
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { deleteRoleById, updateRoleDetails, useRolesList } from "@wso2is/feature-roles.common/api";
+import { RoleAudienceTypes, RoleConstants, Schemas } from "@wso2is/feature-roles.common/constants";
+import { PatchRoleDataInterface, RoleBasicInterface, 
+    RoleEditSectionsInterface } from "@wso2is/feature-roles.common/models/roles";
 import { Field, Form } from "@wso2is/form";
 import { ConfirmationModal, DangerZone, DangerZoneGroup, EmphasizedSegment } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useState } from "react";
@@ -25,9 +29,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider } from "semantic-ui-react";
 import { AppConstants, history } from "../../../core";
-import { deleteRoleById, updateRoleDetails, useRolesList } from "../../api";
-import { RoleAudienceTypes, RoleConstants, Schemas } from "../../constants";
-import { PatchRoleDataInterface, RoleBasicInterface, RoleEditSectionsInterface } from "../../models/roles";
+
 import { RoleDeleteErrorConfirmation } from "../wizard/role-delete-error-confirmation";
 
 /**

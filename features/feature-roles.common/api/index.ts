@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2020-2023, WSO2 LLC. (https://www.wso2.com).
+ * Copyright (c) {{year}}, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,15 +16,6 @@
  * under the License.
  */
 
-/**
- * Interface for the Role Management feature resource endpoints.
- */
-export interface RolesResourceEndpointsInterface {
-    // TODO: This need to be removed once this endpoint is moved to the API resources feature.
-    apiResources?: string;
-    roles: string;
-    // TODO: This need to be removed once the Role V2 endpoint is enabled.
-    rolesV2: string;
-    permission: string;
-    rolesWithoutOrgPath: string;
-}
+
+// eslint-disable-next-line header/header
+export * from "./roles";

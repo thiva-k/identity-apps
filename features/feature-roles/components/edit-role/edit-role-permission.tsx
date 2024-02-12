@@ -32,6 +32,12 @@ import {
     RolesInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getAPIResourceDetailsBulk, updateRoleDetails, useAPIResourceDetails } from "@wso2is/feature-roles.common/api";
+import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants/role-constants";
+import { PatchRoleDataInterface, PermissionUpdateInterface, SelectedPermissionsInterface }
+    from "@wso2is/feature-roles.common/models";
+import { APIResourceInterface, AuthorizedAPIListItemInterface, ScopeInterface } 
+    from "@wso2is/feature-roles.common/models/apiResources";
 import { EmphasizedSegment, Heading } from "@wso2is/react-components";
 import React, {
     FunctionComponent,
@@ -52,10 +58,7 @@ import { useGetAuthorizedAPIList } from "../../../api-resources/api/useGetAuthor
 import { APIResourceCategories, APIResourcesConstants } from "../../../api-resources/constants";
 import { APIResourceUtils } from "../../../api-resources/utils/api-resource-utils";
 import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
-import { getAPIResourceDetailsBulk, updateRoleDetails, useAPIResourceDetails } from "../../api";
-import { RoleAudienceTypes } from "../../constants/role-constants";
-import { PatchRoleDataInterface, PermissionUpdateInterface, SelectedPermissionsInterface } from "../../models";
-import { APIResourceInterface, AuthorizedAPIListItemInterface, ScopeInterface } from "../../models/apiResources";
+
 
 /**
  * Interface to capture permission edit props.

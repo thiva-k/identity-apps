@@ -29,6 +29,13 @@ import { OrganizationType } from "@wso2is/common";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getApplicationRolesByAudience } from "@wso2is/feature-roles.common/api/roles";
+import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants/role-constants";
+import {
+    AssociatedRolesPatchObjectInterface,
+    BasicRoleInterface, RolesV2Interface,
+    RolesV2ResponseInterface
+} from "@wso2is/feature-roles.common/models/roles";
 import {
     ConfirmationModal,
     DocumentationLink,
@@ -60,13 +67,7 @@ import { history } from "../../core/helpers/history";
 import { FeatureConfigInterface } from "../../core/models";
 import { AppState } from "../../core/store";
 import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
-import { getApplicationRolesByAudience } from "../api/roles";
-import { RoleAudienceTypes } from "../constants/role-constants";
-import {
-    AssociatedRolesPatchObjectInterface,
-    BasicRoleInterface, RolesV2Interface,
-    RolesV2ResponseInterface
-} from "../models/roles";
+
 
 
 interface ApplicationRolesSettingsInterface extends IdentifiableComponentInterface {
