@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { RolesResourceEndpointsInterface } from "../models";
+import { RolesResourceEndpointsInterface } from "@wso2is/feature-roles.common/models";
 
 /**
  * Get the resource endpoints for the Role Management feature.

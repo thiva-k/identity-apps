@@ -30,7 +30,9 @@ import TextField from "@oxygen-ui/react/TextField";
 import { AlertLevels, IdentifiableComponentInterface, RolesMemberInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
-import { EmphasizedSegment, EmptyPlaceholder, Heading, PrimaryButton } from "@wso2is/react-components";
+import { RoleConstants, Schemas } from "@wso2is/feature-roles.common/constants";
+import { RoleEditSectionsInterface } from "@wso2is/feature-roles.common/models/roles";
+import { RoleManagementUtils } from "@wso2is/feature-roles.common/utils/role-management-utils";
 import { useUsersList } from "@wso2is/feature-users.common/api/users";
 import {
     PatchBulkUserDataInterface,
@@ -39,6 +41,7 @@ import {
     PatchUserRemoveOpInterface,
     UserBasicInterface
 } from "@wso2is/feature-users.common/models/user";
+import { EmphasizedSegment, EmptyPlaceholder, Heading, PrimaryButton } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import debounce, { DebouncedFunc } from "lodash-es/debounce";
 import isEmpty from "lodash-es/isEmpty";
@@ -62,9 +65,7 @@ import { updateResources } from "../../../core/api/bulk-operations";
 import { getEmptyPlaceholderIllustrations } from "../../../core/configs/ui";
 import { useUserStores } from "../../../userstores/api";
 import { UserStoreListItem } from "../../../userstores/models/user-stores";
-import { RoleConstants, Schemas } from "../../constants";
-import { RoleEditSectionsInterface } from "../../models/roles";
-import { RoleManagementUtils } from "../../utils/role-management-utils";
+
 import "./edit-role.scss";
 
 type UserstoreDisplayItem = Omit<UserStoreListItem,"description" | "self" | "enabled">

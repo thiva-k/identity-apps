@@ -22,9 +22,9 @@ import Autocomplete, {
 } from "@oxygen-ui/react/Autocomplete";
 import TextField from "@oxygen-ui/react/TextField";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { APIResourceInterface, ScopeInterface } from "@wso2is/feature-roles.common/models/apiResources";
 import React, { FunctionComponent, HTMLAttributes, ReactElement, SyntheticEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { APIResourceInterface, ScopeInterface } from "../../../../models/apiResources";
 import { AutoCompleteRenderOption } from "../../../edit-role/edit-role-common/auto-complete-render-option";
 import { RenderChip } from "../../../edit-role/edit-role-common/render-chip";
 

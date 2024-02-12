@@ -21,8 +21,8 @@
 
 import { TestableComponentInterface } from "@wso2is/core/models";
 import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
-import { ResourceTab } from "@wso2is/react-components";
 import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
+import { ResourceTab } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
 import { AddRoleUsers } from "./role-user-assign";
 import { AssignGroups } from "../../../core";

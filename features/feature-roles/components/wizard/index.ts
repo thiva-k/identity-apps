@@ -16,6 +16,5 @@
  * under the License.
  */
 
-export * from "./role-permission";
 export * from "./role-user-assign";
 export * from "./assign-groups-users";

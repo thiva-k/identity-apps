@@ -30,6 +30,7 @@ import Typography from "@oxygen-ui/react/Typography";
 import useUIConfig from "@wso2is/common/src/hooks/use-ui-configs";
 import { AlertLevels, RoleGroupsInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { RoleConstants } from "@wso2is/feature-roles.common/constants/role-constants";
 import { EmphasizedSegment, GenericIcon } from "@wso2is/react-components";
 import debounce, { DebouncedFunc } from "lodash-es/debounce";
 import isEmpty from "lodash-es/isEmpty";
@@ -44,7 +45,6 @@ import { getConnectionIcons } from "../../../connections/configs/ui";
 import { ConnectionsManagementUtils } from "../../../connections/utils/connection-utils";
 import { useGetIdentityProviderGroupList } from "../../../identity-providers/api/use-get-identity-provider-groups-list";
 import { IdentityProviderGroupInterface, StrictIdentityProviderInterface } from "../../../identity-providers/models";
-import { RoleConstants } from "../../constants/role-constants";
 
 interface EditRoleFederatedGroupsAccordionPropsInterface extends EditRoleLocalGroupsAccordionPropsInterface {
     identityProvider: StrictIdentityProviderInterface;

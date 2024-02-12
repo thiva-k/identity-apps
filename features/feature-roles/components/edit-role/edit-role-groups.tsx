@@ -22,6 +22,10 @@ import {
     PatchGroupAddOpInterface,
     PatchGroupRemoveOpInterface
 } from "@wso2is/feature-groups.common/models/groups";
+import { updateRoleDetails } from "@wso2is/feature-roles.common/api";
+import { RoleAudienceTypes, Schemas } from "@wso2is/feature-roles.common/constants";
+import { PatchRoleDataInterface, RoleEditSectionsInterface } from "@wso2is/feature-roles.common/models/roles";
+import { RoleManagementUtils } from "@wso2is/feature-roles.common/utils";
 import { EmphasizedSegment, Heading } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import React, {
@@ -39,13 +43,9 @@ import { EditRoleLocalGroupsAccordion } from "./edit-role-local-groups-accordion
 import { useGetApplication } from "../../../applications/api/use-get-application";
 import { AuthenticationStepInterface, AuthenticatorInterface } from "../../../applications/models/application";
 import { AuthenticatorManagementConstants } from "../../../connections/constants/autheticator-constants";
-
 import { useIdentityProviderList } from "../../../identity-providers/api/identity-provider";
 import { IdentityProviderInterface, StrictIdentityProviderInterface } from "../../../identity-providers/models";
-import { updateRoleDetails } from "../../api";
-import { RoleAudienceTypes, Schemas } from "../../constants";
-import { PatchRoleDataInterface, RoleEditSectionsInterface } from "../../models/roles";
-import { RoleManagementUtils } from "../../utils";
+
 
 type RoleGroupsPropsInterface = IdentifiableComponentInterface & RoleEditSectionsInterface;
 

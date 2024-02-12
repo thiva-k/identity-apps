@@ -20,6 +20,8 @@ import { Grid } from "@oxygen-ui/react";
 import Button from "@oxygen-ui/react/Button";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { useGetRoleById } from "@wso2is/feature-roles.common/api";
+import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants/role-constants";
 import { EmptyPlaceholder, TabPageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -32,9 +34,8 @@ import { AppConstants } from "../../core/constants/app-constants";
 import { history } from "../../core/helpers/history";
 import { FeatureConfigInterface } from "../../core/models/config";
 import { AppState } from "../../core/store/index";
-import { useGetRoleById } from "../api";
 import { EditRole } from "../components/edit-role/edit-role";
-import { RoleAudienceTypes } from "../constants/role-constants";
+
 
 type RoleEditPagePropsInterface = IdentifiableComponentInterface & RouteComponentProps;
 

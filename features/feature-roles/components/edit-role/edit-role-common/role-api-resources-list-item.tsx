@@ -26,13 +26,13 @@ import IconButton from "@oxygen-ui/react/IconButton";
 import ListItem from "@oxygen-ui/react/ListItem";
 import ListItemText from "@oxygen-ui/react/ListItemText";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { APIResourceInterface, ScopeInterface } from "@wso2is/feature-roles.common/models/apiResources";
 import { Popup, Tooltip } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { Label } from "semantic-ui-react";
 import { PermissionsList } from "./permissions-list";
 import { APIResourceUtils } from "../../../../api-resources/utils/api-resource-utils";
-import { APIResourceInterface, ScopeInterface } from "../../../models/apiResources";
 
 interface RoleAPIResourcesListItemProp extends IdentifiableComponentInterface {
     /**

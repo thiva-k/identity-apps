@@ -20,6 +20,15 @@ import Autocomplete, { AutocompleteRenderInputParams } from "@oxygen-ui/react/Au
 import TextField from "@oxygen-ui/react/TextField";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { createRole, useRolesList } from "@wso2is/feature-roles.common/api";
+import { RoleAudienceTypes, RoleConstants } from "@wso2is/feature-roles.common/constants";
+import { ScopeInterface } from "@wso2is/feature-roles.common/models/apiResources";
+import {
+    CreateRoleFormData,
+    CreateRoleInterface,
+    CreateRolePermissionInterface,
+    SelectedPermissionsInterface
+} from "@wso2is/feature-roles.common/models/roles";
 import { Field, Form, FormPropsInterface } from "@wso2is/form";
 import { ContentLoader, EmphasizedSegment, Heading, LinkButton, PrimaryButton } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
@@ -44,15 +53,6 @@ import { APIResourceUtils } from "../../../api-resources/utils/api-resource-util
 import useSubscribedAPIResources from "../../../applications/api/use-subscribed-api-resources";
 import { AuthorizedAPIListItemInterface } from "../../../applications/models/api-authorization";
 import { ApplicationInterface } from "../../../applications/models/application";
-import { createRole, useRolesList } from "../../api";
-import { RoleAudienceTypes, RoleConstants } from "../../constants";
-import { ScopeInterface } from "../../models/apiResources";
-import {
-    CreateRoleFormData,
-    CreateRoleInterface,
-    CreateRolePermissionInterface,
-    SelectedPermissionsInterface
-} from "../../models/roles";
 import { RoleAPIResourcesListItem } from "../edit-role/edit-role-common/role-api-resources-list-item";
 
 interface ApplicationRoleWizardPropsInterface extends IdentifiableComponentInterface {

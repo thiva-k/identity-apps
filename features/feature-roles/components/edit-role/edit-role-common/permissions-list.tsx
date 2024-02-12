@@ -23,10 +23,10 @@ import Autocomplete, {
 import Chip from "@oxygen-ui/react/Chip";
 import TextField from "@oxygen-ui/react/TextField";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { APIResourceInterface, ScopeInterface } from "@wso2is/feature-roles.common/models/apiResources";
 import React, { FunctionComponent, HTMLAttributes, ReactElement, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AutoCompleteRenderOption } from "./auto-complete-render-option";
-import { APIResourceInterface, ScopeInterface } from "../../../models/apiResources";
 import "./permissions-list.scss";
 
 interface PermissionsListPropsInterface extends  IdentifiableComponentInterface {

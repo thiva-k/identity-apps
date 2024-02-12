@@ -20,6 +20,8 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { OrganizationType } from "@wso2is/common";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface, RolesInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { deleteRoleById, useRolesList } from "@wso2is/feature-roles.common/api";
+import { RoleConstants } from "@wso2is/feature-roles.common/constants";
 import { ListLayout, PageLayout, PrimaryButton } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
@@ -31,9 +33,8 @@ import { Dropdown, DropdownItemProps, DropdownProps, Icon, PaginationProps } fro
 import { AdvancedSearchWithBasicFilters, AppConstants, UIConstants } from "../../core";
 import { history } from "../../core/helpers";
 import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
-import { deleteRoleById, useRolesList } from "../api";
 import { RoleList } from "../components/role-list";
-import { RoleConstants } from "../constants";
+
 
 type RolesPagePropsInterface = IdentifiableComponentInterface & RouteComponentProps;
 

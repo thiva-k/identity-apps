@@ -26,6 +26,8 @@ import { AlertLevels, IdentifiableComponentInterface, RoleGroupsInterface } from
 import { addAlert } from "@wso2is/core/store";
 import { useGroupList } from "@wso2is/feature-groups.common/api/groups";
 import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
+import { RoleConstants } from "@wso2is/feature-roles.common/constants/role-constants";
+import { RoleManagementUtils } from "@wso2is/feature-roles.common/utils/role-management-utils";
 import { EmphasizedSegment } from "@wso2is/react-components";
 import debounce, { DebouncedFunc } from "lodash-es/debounce";
 import isEmpty from "lodash-es/isEmpty";
@@ -36,8 +38,7 @@ import { Dispatch } from "redux";
 import { AutoCompleteRenderOption } from "./edit-role-common/auto-complete-render-option";
 import { RenderChip } from "./edit-role-common/render-chip";
 import { IdentityProviderGroupInterface } from "../../../identity-providers/models";
-import { RoleConstants } from "../../constants/role-constants";
-import { RoleManagementUtils } from "../../utils/role-management-utils";
+
 
 export interface EditRoleLocalGroupsAccordionPropsInterface extends IdentifiableComponentInterface {
     isReadOnly?: boolean;

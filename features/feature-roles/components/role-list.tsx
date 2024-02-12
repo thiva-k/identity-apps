@@ -26,6 +26,7 @@ import {
     RoleListInterface,
     RolesInterface
 } from "@wso2is/core/models";
+import { RoleAudienceTypes, RoleConstants } from "@wso2is/feature-roles.common/constants/role-constants";
 import {
     AnimatedAvatar,
     AppAvatar,
@@ -46,7 +47,7 @@ import { getEmptyPlaceholderIllustrations } from "../../core/configs/ui";
 import { AppConstants } from "../../core/constants/app-constants";
 import { history } from "../../core/helpers/history";
 import { AppState } from "../../core/store/index";
-import { RoleAudienceTypes, RoleConstants } from "../constants/role-constants";
+
 
 interface RoleListProps extends LoadableComponentInterface, IdentifiableComponentInterface {
     /**

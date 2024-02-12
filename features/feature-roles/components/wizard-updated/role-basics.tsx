@@ -19,6 +19,9 @@
 import Alert from "@oxygen-ui/react/Alert";
 import ListItemText from "@oxygen-ui/react/ListItemText";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { useRolesList } from "@wso2is/feature-roles.common/api/roles";
+import { RoleAudienceTypes, RoleConstants } from "@wso2is/feature-roles.common/constants";
+import { CreateRoleFormData } from "@wso2is/feature-roles.common/models";
 import { Field, Form } from "@wso2is/form";
 import { Link } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
@@ -39,9 +42,6 @@ import { useApplicationList } from "../../../applications/api/application";
 import { ApplicationListItemInterface } from "../../../applications/models";
 import { history, store } from "../../../core";
 import { AppConstants } from "../../../core/constants";
-import { useRolesList } from "../../api/roles";
-import { RoleAudienceTypes, RoleConstants } from "../../constants";
-import { CreateRoleFormData } from "../../models";
 
 const FORM_ID: string = "add-role-basics-form";
 

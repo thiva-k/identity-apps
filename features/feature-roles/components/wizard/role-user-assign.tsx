@@ -19,6 +19,8 @@
 
 
 import { RolesMemberInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { getUsersList } from "@wso2is/feature-users.common/api/users";
+import { UserBasicInterface, UserListInterface } from "@wso2is/feature-users.common/models/user";
 import { Forms } from "@wso2is/forms";
 import {
     Button,
@@ -33,8 +35,6 @@ import {
     TransferListItem,
     UserAvatar
 } from "@wso2is/react-components";
-import { getUsersList } from "@wso2is/feature-users.common/api/users";
-import { UserBasicInterface, UserListInterface } from "@wso2is/feature-users.common/models/user";
 import differenceBy from "lodash-es/differenceBy";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import isEmpty from "lodash-es/isEmpty";
