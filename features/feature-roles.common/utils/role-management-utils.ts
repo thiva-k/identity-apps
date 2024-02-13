@@ -17,7 +17,7 @@
  */
 
 import { RoleGroupsInterface } from "@wso2is/core/models";
-import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
+import { UserBasicInterface } from "@wso2is/feature-scim.common/models/user";
 import { I18n } from "@wso2is/i18n";
 import { SCIMConfigs } from "apps/console/src/extensions/configs/scim";
 import { AxiosResponse } from "axios";

@@ -19,8 +19,8 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, ProfileInfoInterface } from "@wso2is/core/models";
-import { PatchGroupDataInterface } from "@wso2is/feature-groups.common/models/groups";
 import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models";
+import { PatchGroupDataInterface } from "@wso2is/feature-scim.common/models/groups";
 import { AxiosError, AxiosResponse } from "axios";
 import useRequest, {
     RequestConfigInterface,
