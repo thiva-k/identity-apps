@@ -16,13 +16,13 @@
  * under the License.
  */
 import { RolesInterface } from "@wso2is/core/models";
-import { ScimOperationsInterface } from "../../roles/models/roles";
+import { ScimOperationsInterface } from "@wso2is/feature-roles.common/models/roles";
 
 export interface OrganizationInterface {
     id: string;
     name: string;
     ref: string;
-    status: "ACTIVE" | "DISABLED"
+    status: "ACTIVE" | "DISABLED";
 }
 
 export interface OrganizationLinkInterface {
@@ -90,7 +90,7 @@ export type OrganizationRoleListResponseInterface = {
 };
 
 export type PatchOrganizationRoleDataInterface = {
-    operations: ScimOperationsInterface[]
+    operations: ScimOperationsInterface[];
 };
 
 /**

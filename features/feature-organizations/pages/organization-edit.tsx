@@ -20,11 +20,7 @@ import { BasicUserInfo } from "@asgardeo/auth-react";
 import { isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertLevels, SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import {
-    getOrganization,
-    useAuthorizedOrganizationsList,
-    useGetOrganizationBreadCrumb
-} from "@wso2is/feature-organizations.common/api";
+import { getOrganization, useAuthorizedOrganizationsList, useGetOrganizationBreadCrumb } from "../api";
 import { OrganizationManagementConstants } from "@wso2is/feature-organizations.common/constants";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { OrganizationInterface, OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
