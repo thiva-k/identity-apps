@@ -23,13 +23,13 @@ import {
     OrganizationResponseInterface,
     OrganizationRoleListResponseInterface
 } from "@wso2is/feature-organizations.common/models";
+import { CreateRoleFormData } from "@wso2is/feature-roles.common/models/roles";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid, GridColumn, GridRow } from "semantic-ui-react";
 import { AppState, SharedUserStoreConstants, SharedUserStoreUtils } from "../../../core";
-import { CreateRoleFormData } from "../../../roles/models/roles";
 
 /**
  * Interface to capture role basics props.

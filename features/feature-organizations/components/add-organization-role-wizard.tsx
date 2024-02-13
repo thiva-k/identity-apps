@@ -17,6 +17,12 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { CreateGroupMemberInterface, GroupsInterface, getGroupList } from "@wso2is/feature-groups.common";
+import { AssignGroupsUsers } from "@wso2is/feature-roles.common/components/wizard/assign-groups-users";
+import { getRolesWizardStepIcons } from "@wso2is/feature-roles.common/configs/ui";
+import { TreeNode } from "@wso2is/feature-roles.common/models/permission";
+import { CreateRoleInterface, CreateRoleMemberInterface } from "@wso2is/feature-roles.common/models/roles";
+import { UserBasicInterface } from "@wso2is/feature.users.common/models/user";
 import { useTrigger } from "@wso2is/forms";
 import { Heading, LinkButton, PrimaryButton, Steps } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
@@ -26,12 +32,6 @@ import { Button, Grid, Icon, Modal } from "semantic-ui-react";
 import { OrganizationRoleBasics } from "./add-organization-role/organization-role-basics";
 import { CreateOrganizationRoleSummary } from "./add-organization-role/organization-role-sumary";
 import { OrganizationPermissionList } from "./edit-organization-role/organization-role-permission";
-import { CreateGroupMemberInterface, GroupsInterface, getGroupList } from "../../groups";
-import { AssignGroupsUsers } from "../../roles/components/wizard/assign-groups-users";
-import { getRolesWizardStepIcons } from "../../roles/configs/ui";
-import { TreeNode } from "../../roles/models/permission";
-import { CreateRoleInterface, CreateRoleMemberInterface } from "../../roles/models/roles";
-import { UserBasicInterface } from "../../users/models/user";
 
 /**
  * Interface which captures create role props.

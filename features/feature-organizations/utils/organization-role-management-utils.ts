@@ -17,8 +17,8 @@
  */
 
 import { getOrganizationPermissions } from "@wso2is/feature-organizations.common/api";
+import { generatePermissionTree } from "@wso2is/feature-roles.common/components/role-utils";
 import isEmpty from "lodash-es/isEmpty";
-import { generatePermissionTree } from "../../roles/components/role-utils";
 import { PermissionObject, TreeNode } from "../models";
 
 /**

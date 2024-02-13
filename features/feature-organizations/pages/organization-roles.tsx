@@ -19,6 +19,7 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { CreateGroupMemberInterface } from "@wso2is/feature-groups.common/models";
 import {
     createOrganizationRole,
     getOrganizationRoles
@@ -28,6 +29,7 @@ import {
     OrganizationRoleListItemInterface,
     OrganizationRoleListResponseInterface
 } from "@wso2is/feature-organizations.common/models";
+import { CreateRoleInterface, CreateRoleMemberInterface } from "@wso2is/feature-roles.common/models/roles";
 import { useTrigger } from "@wso2is/forms";
 import { I18n } from "@wso2is/i18n";
 import { GridLayout, ListLayout, PageLayout, PrimaryButton } from "@wso2is/react-components";
@@ -56,8 +58,6 @@ import {
     UIConstants,
     history
 } from "../../core";
-import { CreateGroupMemberInterface } from "../../groups/models";
-import { CreateRoleInterface, CreateRoleMemberInterface } from "../../roles/models/roles";
 import { OrganizationRoleList } from "../components";
 import { AddOrganizationRoleWizard } from "../components/add-organization-role-wizard";
 

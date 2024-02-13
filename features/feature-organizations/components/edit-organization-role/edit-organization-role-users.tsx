@@ -20,14 +20,14 @@ import { addAlert } from "@wso2is/core/store";
 import { patchOrganizationRoleDetails } from "@wso2is/feature-organizations.common/api";
 import { PRIMARY_DOMAIN } from "@wso2is/feature-organizations.common/constants";
 import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
+import { AddRoleUsers } from "@wso2is/feature-roles.common/components/wizard/role-user-assign";
+import { ScimOperationsInterface } from "@wso2is/feature-roles.common/models/roles";
+import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { AppState } from "../../../core";
-import { AddRoleUsers } from "../../../roles/components/wizard/role-user-assign";
-import { ScimOperationsInterface } from "../../../roles/models/roles";
-import { UserBasicInterface } from "../../../users/models/user";
 
 interface RoleUserDetailsProps {
     roleObject: RolesInterface;
