@@ -54,14 +54,14 @@ import { commonConfig } from "../../../../extensions/configs";
 import useAuthorization from "../../../authorization/hooks/use-authorization";
 import { AppConstants, AppState, AssignRoles, RolePermissions, history } from "../../../core";
 import { EventPublisher } from "../../../core/utils";
-import { getOrganizationRoles } from "../../../organizations/api";
-import { OrganizationRoleManagementConstants } from "../../../organizations/constants";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
+import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api";
+import { OrganizationRoleManagementConstants } from "@wso2is/feature-organizations.common/constants";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import {
     GenericOrganization,
     OrganizationRoleListItemInterface,
     OrganizationRoleListResponseInterface
-} from "../../../organizations/models";
+} from "@wso2is/feature-organizations.common/models";
 
 
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../../userstores/constants";

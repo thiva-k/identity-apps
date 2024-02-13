@@ -30,8 +30,8 @@ import { Dispatch } from "redux";
 import { DropdownItemProps, Grid, GridColumn, GridRow } from "semantic-ui-react";
 import { UsersConstants } from "../../../../extensions/components/users/constants/users";
 import { SharedUserStoreConstants, SharedUserStoreUtils, UserStoreDetails } from "../../../core";
-import { RootOnlyComponent } from "../../../organizations/components/root-only-component";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
+import { RootOnlyComponent } from "@wso2is/feature-organizations.common/components/root-only-component";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { getAUserStore, getUserStoreList } from "../../../userstores/api/user-stores";
 import { PRIMARY_USERSTORE } from "../../../userstores/constants";
 import { UserStoreProperty } from "../../../userstores/models";
@@ -52,22 +52,21 @@ interface GroupBasicProps extends IdentifiableComponentInterface {
  * Component to capture basic details of a new role.
  */
 export const GroupBasicsUpdated: FunctionComponent<GroupBasicProps> = (props: GroupBasicProps): ReactElement => {
-
     const {
         onSubmit,
         triggerSubmit,
         initialValues,
         setUserStore,
         userStore,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ userStoreOptions, setUserStoresList ] = useState([]);
-    const [ isRegExLoading, setRegExLoading ] = useState<boolean>(false);
-    const [ basicDetails, setBasicDetails ] = useState<any>(null);
+    const [userStoreOptions, setUserStoresList] = useState([]);
+    const [isRegExLoading, setRegExLoading] = useState<boolean>(false);
+    const [basicDetails, setBasicDetails] = useState<any>(null);
 
     const { isSuperOrganization, isFirstLevelOrganization } = useGetCurrentOrganizationType();
 
@@ -81,7 +80,7 @@ export const GroupBasicsUpdated: FunctionComponent<GroupBasicProps> = (props: Gr
         if (basicDetails) {
             onSubmit({ basicDetails });
         }
-    }, [ basicDetails ]);
+    }, [basicDetails]);
 
     /**
      * The following function change of the user stores.
@@ -98,23 +97,23 @@ export const GroupBasicsUpdated: FunctionComponent<GroupBasicProps> = (props: Gr
      * The following function validates role name against the user store regEx.
      */
     const validateGroupNamePattern = async (): Promise<string> => {
-
         let userStoreRegEx: string = "";
 
         if (userStore && userStore !== SharedUserStoreConstants.PRIMARY_USER_STORE.toLocaleLowerCase()) {
-            await SharedUserStoreUtils.getUserStoreRegEx(userStore,
-                SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.RolenameRegEx)
-                .then((response: string) => {
-                    setRegExLoading(true);
-                    userStoreRegEx = response;
-                });
+            await SharedUserStoreUtils.getUserStoreRegEx(
+                userStore,
+                SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.RolenameRegEx
+            ).then((response: string) => {
+                setRegExLoading(true);
+                userStoreRegEx = response;
+            });
         } else {
             await SharedUserStoreUtils.getPrimaryUserStore().then((response: void | UserStoreDetails) => {
                 setRegExLoading(true);
                 if (response && response.properties) {
                     userStoreRegEx = response?.properties?.filter((property: UserStoreProperty) => {
                         return property.name === "RolenameJavaScriptRegEx";
-                    })[ 0 ].value;
+                    })[0].value;
                 }
             });
         }
@@ -140,20 +139,26 @@ export const GroupBasicsUpdated: FunctionComponent<GroupBasicProps> = (props: Gr
         try {
             const response: UserStoreDetails = await getAUserStore(userStoreID);
 
-            return response?.properties?.some(({ name, value }: UserStoreProperty) =>
-                name === UsersConstants.USER_STORE_PROPERTY_READ_ONLY && value === "false"
-            ) || false;
+            return (
+                response?.properties?.some(
+                    ({ name, value }: UserStoreProperty) =>
+                        name === UsersConstants.USER_STORE_PROPERTY_READ_ONLY && value === "false"
+                ) || false
+            );
         } catch (error) {
-            dispatch(addAlert({
-                description: t("console:manage.features.users.notifications.fetchUserStores.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:manage.features.users.notifications.fetchUserStores.genericError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:manage.features.users.notifications.fetchUserStores.genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t("console:manage.features.users.notifications.fetchUserStores.genericError.message")
+                })
+            );
 
             return false;
         }
     };
-
 
     /**
      * The following function fetch the user store list and set it to the state.
@@ -171,12 +176,13 @@ export const GroupBasicsUpdated: FunctionComponent<GroupBasicProps> = (props: Gr
             try {
                 const response: AxiosResponse<UserstoreListResponseInterface[]> = await getUserStoreList();
 
-                const readWriteStores: UserstoreListResponseInterface[] = await Promise.all(response.data?.map(
-                    async (store: UserstoreListResponseInterface) => {
+                const readWriteStores: UserstoreListResponseInterface[] = await Promise.all(
+                    response.data?.map(async (store: UserstoreListResponseInterface) => {
                         const isReadWrite: boolean = await isUserStoreReadWrite(store.id);
 
                         return isReadWrite ? store : null;
-                    }));
+                    })
+                );
 
                 readWriteStores.filter(Boolean).forEach((store: UserstoreListResponseInterface, index: number) => {
                     if (store) {
@@ -190,12 +196,15 @@ export const GroupBasicsUpdated: FunctionComponent<GroupBasicProps> = (props: Gr
 
                 setUserStoresList(storeOptions);
             } catch (error) {
-                dispatch(addAlert({
-                    description: t(
-                        "console:manage.features.users.notifications.fetchUserStores.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.users.notifications.fetchUserStores.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.users.notifications.fetchUserStores.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.users.notifications.fetchUserStores.genericError.message")
+                    })
+                );
             }
         } else {
             setUserStoresList(storeOptions);
@@ -216,50 +225,65 @@ export const GroupBasicsUpdated: FunctionComponent<GroupBasicProps> = (props: Gr
 
     return (
         <Forms
-            data-componentid={ componentId }
-            onSubmit={ (values: any) => {
+            data-componentid={componentId}
+            onSubmit={(values: any) => {
                 setBasicDetails(getFormValues(values));
-            } }
-            submitState={ triggerSubmit }
+            }}
+            submitState={triggerSubmit}
         >
             <Grid>
                 <GridRow>
                     <RootOnlyComponent>
-                        <GridColumn mobile={ 16 } tablet={ 16 } computer={ 10 }>
+                        <GridColumn mobile={16} tablet={16} computer={10}>
                             <Field
-                                data-componentid={ `${ componentId }-domain-dropdown` }
+                                data-componentid={`${componentId}-domain-dropdown`}
                                 type="dropdown"
-                                label={ t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                                    "domain.label.group") }
+                                label={t(
+                                    "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                                        "domain.label.group"
+                                )}
                                 name="domain"
-                                children={ userStoreOptions }
-                                placeholder={ t("console:manage.features.roles.addRoleWizard." +
-                                    "forms.roleBasicDetails.domain.placeholder") }
-                                requiredErrorMessage={ t("console:manage.features.roles.addRoleWizard.forms." +
-                                    "roleBasicDetails.domain.validation.empty.group") }
-                                required={ true }
-                                element={ <div></div> }
-                                listen={ handleDomainChange }
-                                value={ initialValues?.basicDetails?.domain ?? userStoreOptions[ 0 ]?.value }
+                                children={userStoreOptions}
+                                placeholder={t(
+                                    "console:manage.features.roles.addRoleWizard." +
+                                        "forms.roleBasicDetails.domain.placeholder"
+                                )}
+                                requiredErrorMessage={t(
+                                    "console:manage.features.roles.addRoleWizard.forms." +
+                                        "roleBasicDetails.domain.validation.empty.group"
+                                )}
+                                required={true}
+                                element={<div></div>}
+                                listen={handleDomainChange}
+                                value={initialValues?.basicDetails?.domain ?? userStoreOptions[0]?.value}
                             />
                         </GridColumn>
                     </RootOnlyComponent>
                 </GridRow>
                 <GridRow>
-                    <GridColumn mobile={ 16 } tablet={ 16 } computer={ 10 }>
+                    <GridColumn mobile={16} tablet={16} computer={10}>
                         <Field
-                            ref={ groupName }
-                            data-componentid={ `${ componentId }-role-name-input` }
+                            ref={groupName}
+                            data-componentid={`${componentId}-role-name-input`}
                             type="text"
                             name="groupName"
-                            label={ t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                                "roleName.label", { type: "Group" }) }
-                            placeholder={ t("console:manage.features.roles.addRoleWizard.forms." +
-                                "roleBasicDetails.roleName.placeholder", { type: "group" }) }
-                            required={ true }
-                            requiredErrorMessage={ t("console:manage.features.roles.addRoleWizard.forms." +
-                                "roleBasicDetails.roleName.validations.empty", { type: "Group" }) }
-                            validation={ async (value: string, validation: Validation) => {
+                            label={t(
+                                "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                                    "roleName.label",
+                                { type: "Group" }
+                            )}
+                            placeholder={t(
+                                "console:manage.features.roles.addRoleWizard.forms." +
+                                    "roleBasicDetails.roleName.placeholder",
+                                { type: "group" }
+                            )}
+                            required={true}
+                            requiredErrorMessage={t(
+                                "console:manage.features.roles.addRoleWizard.forms." +
+                                    "roleBasicDetails.roleName.validations.empty",
+                                { type: "Group" }
+                            )}
+                            validation={async (value: string, validation: Validation) => {
                                 let isGroupNameValid: boolean = true;
 
                                 await validateGroupNamePattern().then((regex: string) => {
@@ -268,46 +292,56 @@ export const GroupBasicsUpdated: FunctionComponent<GroupBasicProps> = (props: Gr
 
                                 if (!isGroupNameValid) {
                                     validation.isValid = false;
-                                    validation.errorMessages.push(t("console:manage.features.businessGroups" +
-                                        ".fields.groupName.validations.invalid",
-                                    { type: "group" }));
+                                    validation.errorMessages.push(
+                                        t(
+                                            "console:manage.features.businessGroups" +
+                                                ".fields.groupName.validations.invalid",
+                                            { type: "group" }
+                                        )
+                                    );
                                 }
 
                                 const searchData: SearchGroupInterface = {
-                                    filter: `displayName eq  ${ userStore }/${ value }`,
-                                    schemas: [
-                                        "urn:ietf:params:scim:api:messages:2.0:SearchRequest"
-                                    ],
+                                    filter: `displayName eq  ${userStore}/${value}`,
+                                    schemas: ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
                                     startIndex: 1
                                 };
 
-                                await searchGroupList(searchData).then((response: any) => {
-                                    if (response?.data?.totalResults !== 0) {
-                                        validation.isValid = false;
-                                        validation.errorMessages.push(
-                                            t("console:manage.features.roles.addRoleWizard." +
-                                                "forms.roleBasicDetails.roleName.validations.duplicate",
-                                            { type: "Group" }));
-                                    }
-                                }).catch(() => {
-                                    dispatch(addAlert({
-                                        description: t("console:manage.features.groups.notifications." +
-                                            "fetchGroups.genericError.description"),
-                                        level: AlertLevels.ERROR,
-                                        message: t("console:manage.features.groups.notifications.fetchGroups." +
-                                            "genericError.message")
-                                    }));
-                                });
-
-                            } }
-                            value={  initialValues?.basicDetails?.groupName }
-                            loading={ isRegExLoading }
+                                await searchGroupList(searchData)
+                                    .then((response: any) => {
+                                        if (response?.data?.totalResults !== 0) {
+                                            validation.isValid = false;
+                                            validation.errorMessages.push(
+                                                t(
+                                                    "console:manage.features.roles.addRoleWizard." +
+                                                        "forms.roleBasicDetails.roleName.validations.duplicate",
+                                                    { type: "Group" }
+                                                )
+                                            );
+                                        }
+                                    })
+                                    .catch(() => {
+                                        dispatch(
+                                            addAlert({
+                                                description: t(
+                                                    "console:manage.features.groups.notifications." +
+                                                        "fetchGroups.genericError.description"
+                                                ),
+                                                level: AlertLevels.ERROR,
+                                                message: t(
+                                                    "console:manage.features.groups.notifications.fetchGroups." +
+                                                        "genericError.message"
+                                                )
+                                            })
+                                        );
+                                    });
+                            }}
+                            value={initialValues?.basicDetails?.groupName}
+                            loading={isRegExLoading}
                         />
                         <Hint>
-                            A name for the group.
-                            { " " }
-                            Can contain between 3 to 30 alphanumeric characters, dashes (<Code>-</Code>),{ " " }
-                            and underscores (<Code>_</Code>).
+                            A name for the group. Can contain between 3 to 30 alphanumeric characters, dashes (
+                            <Code>-</Code>), and underscores (<Code>_</Code>).
                         </Hint>
                     </GridColumn>
                 </GridRow>

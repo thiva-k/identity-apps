@@ -20,12 +20,9 @@ import { AlertInterface, AlertLevels, RolesInterface, UserstoreListResponseInter
 import { addAlert } from "@wso2is/core/store";
 import { deleteGroupById, useGroupList } from "@wso2is/feature-groups.common/api";
 import { GroupsInterface, WizardStepsFormTypes } from "@wso2is/feature-groups.common/models/groups";
-import {
-    EmptyPlaceholder,
-    ListLayout,
-    PageLayout,
-    PrimaryButton
-} from "@wso2is/react-components";
+import { RootOnlyComponent } from "@wso2is/feature-organizations.common/components";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { EmptyPlaceholder, ListLayout, PageLayout, PrimaryButton } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
 import find from "lodash-es/find";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
@@ -44,8 +41,6 @@ import {
     getAUserStore,
     getEmptyPlaceholderIllustrations
 } from "../../core";
-import { RootOnlyComponent } from "../../organizations/components";
-import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
 import { getUserStoreList } from "../../userstores/api";
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../userstores/constants";
 import { UserStorePostData } from "../../userstores/models/user-stores";
@@ -82,17 +77,18 @@ const GroupsPage: FunctionComponent<any> = (): ReactElement => {
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ userStoreOptions, setUserStoresList ] = useState<DropdownItemProps[]>([]);
-    const [ userStore, setUserStore ] = useState(
-        commonConfig?.primaryUserstoreOnly ? PRIMARY_USERSTORE : CONSUMER_USERSTORE);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ readOnlyUserStoresList, setReadOnlyUserStoresList ] = useState<string[]>(undefined);
-    const [ groupList, setGroupsList ] = useState<GroupsInterface[]>([]);
-    const [ paginatedGroups, setPaginatedGroups ] = useState<GroupsInterface[]>([]);
-    const [ listSortingStrategy, setListSortingStrategy ] = useState<DropdownItemProps>(GROUPS_SORTING_OPTIONS[ 0 ]);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [userStoreOptions, setUserStoresList] = useState<DropdownItemProps[]>([]);
+    const [userStore, setUserStore] = useState(
+        commonConfig?.primaryUserstoreOnly ? PRIMARY_USERSTORE : CONSUMER_USERSTORE
+    );
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [readOnlyUserStoresList, setReadOnlyUserStoresList] = useState<string[]>(undefined);
+    const [groupList, setGroupsList] = useState<GroupsInterface[]>([]);
+    const [paginatedGroups, setPaginatedGroups] = useState<GroupsInterface[]>([]);
+    const [listSortingStrategy, setListSortingStrategy] = useState<DropdownItemProps>(GROUPS_SORTING_OPTIONS[0]);
 
     const { isSuperOrganization, isFirstLevelOrganization } = useGetCurrentOrganizationType();
 
@@ -109,25 +105,29 @@ const GroupsPage: FunctionComponent<any> = (): ReactElement => {
 
     useEffect(() => {
         const updatedResources: GroupsInterface[] = data?.Resources?.filter((role: GroupsInterface) => {
-            return !role.displayName.includes("Application/")
-                    && !role.displayName.includes("Internal/");
+            return !role.displayName.includes("Application/") && !role.displayName.includes("Internal/");
         });
 
         setGroupsList(updatedResources);
         setGroupsPage(0, listItemLimit, updatedResources);
-    },[ data ] );
+    }, [data]);
 
     useEffect(() => {
         if (groupsError) {
-            dispatch(addAlert({
-                description: groupsError?.response?.data?.description ?? groupsError?.response?.data?.detail
-                    ?? t("console:manage.features.groups.notifications.fetchGroups.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: groupsError?.response?.data?.message
-                    ?? t("console:manage.features.groups.notifications.fetchGroups.genericError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description:
+                        groupsError?.response?.data?.description ??
+                        groupsError?.response?.data?.detail ??
+                        t("console:manage.features.groups.notifications.fetchGroups.genericError.description"),
+                    level: AlertLevels.ERROR,
+                    message:
+                        groupsError?.response?.data?.message ??
+                        t("console:manage.features.groups.notifications.fetchGroups.genericError.message")
+                })
+            );
         }
-    },[ groupsError ]);
+    }, [groupsError]);
 
     useEffect(() => {
         if (!isSuperOrganization()) {
@@ -137,7 +137,7 @@ const GroupsPage: FunctionComponent<any> = (): ReactElement => {
         SharedUserStoreUtils.getReadOnlyUserStores().then((response: string[]) => {
             setReadOnlyUserStoresList(response);
         });
-    }, [ userStore ]);
+    }, [userStore]);
 
     /**
      * The following function fetches the user store list and sets it to the state.
@@ -158,31 +158,30 @@ const GroupsPage: FunctionComponent<any> = (): ReactElement => {
         };
 
         if (isSuperOrganization() || isFirstLevelOrganization()) {
-            getUserStoreList()
-                .then((response: AxiosResponse<UserstoreListResponseInterface[]>) => {
-                    if (storeOptions?.length === 0) {
-                        storeOptions.push(storeOption);
-                    }
+            getUserStoreList().then((response: AxiosResponse<UserstoreListResponseInterface[]>) => {
+                if (storeOptions?.length === 0) {
+                    storeOptions.push(storeOption);
+                }
 
-                    response.data.map((store: UserstoreListResponseInterface, index: number) => {
-                        getAUserStore(store.id).then((response: UserStorePostData) => {
-                            const isDisabled: boolean = response.properties.find(
-                                (property: UserStoreProperty) => property.name === "Disabled")?.value === "true";
+                response.data.map((store: UserstoreListResponseInterface, index: number) => {
+                    getAUserStore(store.id).then((response: UserStorePostData) => {
+                        const isDisabled: boolean =
+                            response.properties.find((property: UserStoreProperty) => property.name === "Disabled")
+                                ?.value === "true";
 
-                            if (!isDisabled) {
-                                storeOption = {
-                                    key: index,
-                                    text: store.name,
-                                    value: store.name
-                                };
-                                storeOptions.push(storeOption);
-                            }
-                        });
-                    }
-                    );
-
-                    setUserStoresList(storeOptions);
+                        if (!isDisabled) {
+                            storeOption = {
+                                key: index,
+                                text: store.name,
+                                value: store.name
+                            };
+                            storeOptions.push(storeOption);
+                        }
+                    });
                 });
+
+                setUserStoresList(storeOptions);
+            });
         }
 
         setUserStoresList(storeOptions);
@@ -195,9 +194,11 @@ const GroupsPage: FunctionComponent<any> = (): ReactElement => {
      * @param data - Dropdown data.
      */
     const handleListSortingStrategyOnChange = (event: SyntheticEvent<HTMLElement>, data: DropdownProps): void => {
-        setListSortingStrategy(find(GROUPS_SORTING_OPTIONS, (option: DropdownItemProps) => {
-            return data.value === option.value;
-        }));
+        setListSortingStrategy(
+            find(GROUPS_SORTING_OPTIONS, (option: DropdownItemProps) => {
+                return data.value === option.value;
+            })
+        );
     };
 
     /**
@@ -220,7 +221,7 @@ const GroupsPage: FunctionComponent<any> = (): ReactElement => {
     };
 
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        const offsetValue: number = (data.activePage as number - 1) * listItemLimit;
+        const offsetValue: number = ((data.activePage as number) - 1) * listItemLimit;
 
         setListOffset(offsetValue);
         setGroupsPage(offsetValue, listItemLimit, groupList);
@@ -246,165 +247,155 @@ const GroupsPage: FunctionComponent<any> = (): ReactElement => {
      * @param role - Role which needs to be deleted
      */
     const handleOnDelete = (role: RolesInterface): void => {
-        deleteGroupById(role.id).then(() => {
-            handleAlerts({
-                description: t(
-                    "console:manage.features.groups.notifications.deleteGroup.success.description"
-                ),
-                level: AlertLevels.SUCCESS,
-                message: t(
-                    "console:manage.features.groups.notifications.deleteGroup.success.message"
-                )
-            });
+        deleteGroupById(role.id)
+            .then(() => {
+                handleAlerts({
+                    description: t("console:manage.features.groups.notifications.deleteGroup.success.description"),
+                    level: AlertLevels.SUCCESS,
+                    message: t("console:manage.features.groups.notifications.deleteGroup.success.message")
+                });
 
-            mutateGroupsFetchRequest();
-        }).catch(() => {
-            handleAlerts({
-                description: t(
-                    "console:manage.features.groups.notifications.deleteGroup.genericError.description"
-                ),
-                level: AlertLevels.ERROR,
-                message: t(
-                    "console:manage.features.groups.notifications.deleteGroup.error.message"
-                )
+                mutateGroupsFetchRequest();
+            })
+            .catch(() => {
+                handleAlerts({
+                    description: t("console:manage.features.groups.notifications.deleteGroup.genericError.description"),
+                    level: AlertLevels.ERROR,
+                    message: t("console:manage.features.groups.notifications.deleteGroup.error.message")
+                });
             });
-        });
     };
 
     return (
         <PageLayout
             action={
-                (!isGroupsListRequestLoading && paginatedGroups?.length > 0)
-                && (
-                    <Show when={ AccessControlConstants.GROUP_WRITE }>
+                !isGroupsListRequestLoading &&
+                paginatedGroups?.length > 0 && (
+                    <Show when={AccessControlConstants.GROUP_WRITE}>
                         <PrimaryButton
                             data-testid="group-mgt-groups-list-add-button"
-                            onClick={ () => setShowWizard(true) }
+                            onClick={() => setShowWizard(true)}
                         >
-                            <Icon name="add"/>
-                            { t("console:manage.features.roles.list.buttons.addButton", { type: "Group" }) }
+                            <Icon name="add" />
+                            {t("console:manage.features.roles.list.buttons.addButton", { type: "Group" })}
                         </PrimaryButton>
                     </Show>
                 )
             }
-            title={ t("console:manage.pages.groups.title") }
-            pageTitle={ t("console:manage.pages.groups.title") }
-            description={ t("console:manage.pages.groups.subTitle") }
+            title={t("console:manage.pages.groups.title")}
+            pageTitle={t("console:manage.pages.groups.title")}
+            description={t("console:manage.pages.groups.subTitle")}
         >
             <ListLayout
-                advancedSearch={ (
+                advancedSearch={
                     <AdvancedSearchWithBasicFilters
                         data-testid="group-mgt-groups-list-advanced-search"
-                        onFilter={ (query: string) => setSearchQuery(query)  }
-                        filterAttributeOptions={ [
+                        onFilter={(query: string) => setSearchQuery(query)}
+                        filterAttributeOptions={[
                             {
                                 key: 0,
                                 text: "Name",
                                 value: "displayName"
                             }
-                        ] }
-                        filterAttributePlaceholder={
-                            t("console:manage.features.groups.advancedSearch.form.inputs.filterAttribute.placeholder")
-                        }
-                        filterConditionsPlaceholder={
-                            t("console:manage.features.groups.advancedSearch.form.inputs.filterCondition" +
-                                ".placeholder")
-                        }
-                        filterValuePlaceholder={
-                            t("console:manage.features.groups.advancedSearch.form.inputs.filterValue" +
-                                ".placeholder")
-                        }
-                        placeholder={ t("console:manage.features.groups.advancedSearch.placeholder") }
+                        ]}
+                        filterAttributePlaceholder={t(
+                            "console:manage.features.groups.advancedSearch.form.inputs.filterAttribute.placeholder"
+                        )}
+                        filterConditionsPlaceholder={t(
+                            "console:manage.features.groups.advancedSearch.form.inputs.filterCondition" + ".placeholder"
+                        )}
+                        filterValuePlaceholder={t(
+                            "console:manage.features.groups.advancedSearch.form.inputs.filterValue" + ".placeholder"
+                        )}
+                        placeholder={t("console:manage.features.groups.advancedSearch.placeholder")}
                         defaultSearchAttribute="displayName"
                         defaultSearchOperator="sw"
                     />
-                ) }
-                currentListSize={ listItemLimit }
-                listItemLimit={ listItemLimit }
-                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                onPageChange={ handlePaginationChange }
-                onSortStrategyChange={ handleListSortingStrategyOnChange }
-                sortStrategy={ listSortingStrategy }
-                rightActionPanel={ (
+                }
+                currentListSize={listItemLimit}
+                listItemLimit={listItemLimit}
+                onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                onPageChange={handlePaginationChange}
+                onSortStrategyChange={handleListSortingStrategyOnChange}
+                sortStrategy={listSortingStrategy}
+                rightActionPanel={
                     <RootOnlyComponent>
                         <Dropdown
                             data-testid="group-mgt-groups-list-stores-dropdown"
                             selection
-                            options={ userStoreOptions && userStoreOptions }
-                            placeholder={ t("console:manage.features.groups.list.storeOptions") }
-                            onChange={ handleDomainChange }
-                            defaultValue={ PRIMARY_USERSTORE }
+                            options={userStoreOptions && userStoreOptions}
+                            placeholder={t("console:manage.features.groups.list.storeOptions")}
+                            onChange={handleDomainChange}
+                            defaultValue={PRIMARY_USERSTORE}
                         />
                     </RootOnlyComponent>
-                ) }
-                showPagination={ paginatedGroups?.length > 0  }
-                showTopActionPanel={ !isGroupsListRequestLoading }
-                totalPages={ Math.ceil(groupList?.length / listItemLimit) }
-                totalListSize={ groupList?.length }
-                isLoading={ isGroupsListRequestLoading }
+                }
+                showPagination={paginatedGroups?.length > 0}
+                showTopActionPanel={!isGroupsListRequestLoading}
+                totalPages={Math.ceil(groupList?.length / listItemLimit)}
+                totalListSize={groupList?.length}
+                isLoading={isGroupsListRequestLoading}
             >
-                { groupsError
-                    ? (<EmptyPlaceholder
-                        subtitle={ [ t("console:manage.features.groups.placeholders.groupsError.subtitles.0"),
-                            t("console:manage.features.groups.placeholders.groupsError.subtitles.1") ] }
-                        title={ t("console:manage.features.groups.placeholders.groupsError.title") }
-                        image={ getEmptyPlaceholderIllustrations().genericError }
+                {groupsError ? (
+                    <EmptyPlaceholder
+                        subtitle={[
+                            t("console:manage.features.groups.placeholders.groupsError.subtitles.0"),
+                            t("console:manage.features.groups.placeholders.groupsError.subtitles.1")
+                        ]}
+                        title={t("console:manage.features.groups.placeholders.groupsError.title")}
+                        image={getEmptyPlaceholderIllustrations().genericError}
                         imageSize="tiny"
-                    />) :
-                    (<GroupList
-                        advancedSearch={ (
+                    />
+                ) : (
+                    <GroupList
+                        advancedSearch={
                             <AdvancedSearchWithBasicFilters
                                 data-testid="group-mgt-groups-list-advanced-search"
-                                onFilter={ (query: string) => setSearchQuery(query) }
-                                filterAttributeOptions={ [
+                                onFilter={(query: string) => setSearchQuery(query)}
+                                filterAttributeOptions={[
                                     {
                                         key: 0,
                                         text: "Name",
                                         value: "displayName"
                                     }
-                                ] }
-                                filterAttributePlaceholder={
-                                    t("console:manage.features.groups.advancedSearch.form.inputs.filterAttribute" +
-                                        ".placeholder")
-                                }
-                                filterConditionsPlaceholder={
-                                    t("console:manage.features.groups.advancedSearch.form.inputs.filterCondition" +
-                                        ".placeholder")
-                                }
-                                filterValuePlaceholder={
-                                    t("console:manage.features.groups.advancedSearch.form.inputs.filterValue" +
-                                        ".placeholder")
-                                }
-                                placeholder={ t("console:manage.features.groups.advancedSearch.placeholder") }
+                                ]}
+                                filterAttributePlaceholder={t(
+                                    "console:manage.features.groups.advancedSearch.form.inputs.filterAttribute" +
+                                        ".placeholder"
+                                )}
+                                filterConditionsPlaceholder={t(
+                                    "console:manage.features.groups.advancedSearch.form.inputs.filterCondition" +
+                                        ".placeholder"
+                                )}
+                                filterValuePlaceholder={t(
+                                    "console:manage.features.groups.advancedSearch.form.inputs.filterValue" +
+                                        ".placeholder"
+                                )}
+                                placeholder={t("console:manage.features.groups.advancedSearch.placeholder")}
                                 defaultSearchAttribute="displayName"
                                 defaultSearchOperator="sw"
                             />
-                        ) }
+                        }
                         data-testid="group-mgt-groups-list"
-                        handleGroupDelete={ handleOnDelete }
-                        onEmptyListPlaceholderActionClick={ () => setShowWizard(true) }
-                        onSearchQueryClear={ () => setSearchQuery("") }
-                        groupList={ paginatedGroups }
-                        searchQuery={ searchQuery }
-                        readOnlyUserStores={ readOnlyUserStoresList }
-                        featureConfig={ featureConfig }
-                    />)
-                }
-            </ListLayout>
-            {
-                showWizard && (
-                    <CreateGroupWizardUpdated
-                        data-testid="group-mgt-create-group-wizard"
-                        closeWizard={ () => setShowWizard(false) }
-                        onCreate={ () => mutateGroupsFetchRequest() }
-                        requiredSteps={ [
-                            WizardStepsFormTypes.BASIC_DETAILS,
-                            WizardStepsFormTypes.ROLE_LIST
-                        ] }
-                        showStepper={ isSuperOrganization() }
+                        handleGroupDelete={handleOnDelete}
+                        onEmptyListPlaceholderActionClick={() => setShowWizard(true)}
+                        onSearchQueryClear={() => setSearchQuery("")}
+                        groupList={paginatedGroups}
+                        searchQuery={searchQuery}
+                        readOnlyUserStores={readOnlyUserStoresList}
+                        featureConfig={featureConfig}
                     />
-                )
-            }
+                )}
+            </ListLayout>
+            {showWizard && (
+                <CreateGroupWizardUpdated
+                    data-testid="group-mgt-create-group-wizard"
+                    closeWizard={() => setShowWizard(false)}
+                    onCreate={() => mutateGroupsFetchRequest()}
+                    requiredSteps={[WizardStepsFormTypes.BASIC_DETAILS, WizardStepsFormTypes.ROLE_LIST]}
+                    showStepper={isSuperOrganization()}
+                />
+            )}
         </PageLayout>
     );
 };

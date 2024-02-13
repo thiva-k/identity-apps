@@ -20,6 +20,7 @@ import Grid from "@oxygen-ui/react/Grid";
 import { VerticalStepper, VerticalStepperStepInterface } from "@wso2is/common";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { createRole } from "@wso2is/feature-roles.common/api/roles";
 import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants";
 import {
@@ -40,10 +41,8 @@ import { Dispatch } from "redux";
 import { AppConstants } from "../../core/constants";
 import { history } from "../../core/helpers";
 import { store } from "../../core/store";
-import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
 import { RoleBasics } from "../components/wizard-updated/role-basics";
 import { RolePermissionsList } from "../components/wizard-updated/role-permissions/role-permissions";
-
 
 /**
  * Interface which captures create role props.
@@ -56,18 +55,17 @@ type CreateRoleProps = IdentifiableComponentInterface;
  * @param props - props related to the create role stepper
  */
 const CreateRolePage: FunctionComponent<CreateRoleProps> = (props: CreateRoleProps): ReactElement => {
-
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
     const { isSuperOrganization, isFirstLevelOrganization } = useGetCurrentOrganizationType();
 
-    const [ stepperState, setStepperState ] = useState<CreateRoleStateInterface>(undefined);
-    const [ isBasicDetailsNextButtonDisabled, setIsBasicDetailsNextButtonDisabled ] = useState<boolean>(true);
-    const [ isPermissionStepNextButtonDisabled, setIsPermissionStepNextButtonDisabled ] = useState<boolean>(true);
-    const [ selectedPermissions, setSelectedPermissions ] = useState<SelectedPermissionsInterface[]>([]);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [stepperState, setStepperState] = useState<CreateRoleStateInterface>(undefined);
+    const [isBasicDetailsNextButtonDisabled, setIsBasicDetailsNextButtonDisabled] = useState<boolean>(true);
+    const [isPermissionStepNextButtonDisabled, setIsPermissionStepNextButtonDisabled] = useState<boolean>(true);
+    const [selectedPermissions, setSelectedPermissions] = useState<SelectedPermissionsInterface[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     // External trigger to submit the authorization step.
     let submitRoleBasic: () => void;
@@ -79,7 +77,7 @@ const CreateRolePage: FunctionComponent<CreateRoleProps> = (props: CreateRolePro
      * @param formType - Type of the form.
      */
     const handleWizardSubmit = (values: CreateRoleFormData, formType: CreateRoleStepsFormTypes) => {
-        setStepperState({ ...stepperState, [ formType ]: values });
+        setStepperState({ ...stepperState, [formType]: values });
     };
 
     /**
@@ -91,31 +89,36 @@ const CreateRolePage: FunctionComponent<CreateRoleProps> = (props: CreateRolePro
         if (!isPermissionStepNextButtonDisabled) {
             setIsSubmitting(true);
 
-            const roleAudience: string = stepperState[ CreateRoleStepsFormTypes.BASIC_DETAILS ].roleAudience;
+            const roleAudience: string = stepperState[CreateRoleStepsFormTypes.BASIC_DETAILS].roleAudience;
             const organizationId: string = store.getState().organization.organization.id;
-            const selectedPermissionsList: CreateRolePermissionInterface[] = selectedPermissions?.flatMap(
-                (permission: SelectedPermissionsInterface) => (
-                    permission?.scopes?.map((scope: ScopeInterface) => ({ value: scope?.name })) || []
-                )) || [];
+            const selectedPermissionsList: CreateRolePermissionInterface[] =
+                selectedPermissions?.flatMap(
+                    (permission: SelectedPermissionsInterface) =>
+                        permission?.scopes?.map((scope: ScopeInterface) => ({ value: scope?.name })) || []
+                ) || [];
 
             const roleData: CreateRoleInterface = {
-                audience: roleAudience === RoleAudienceTypes.ORGANIZATION
-                    ? {
-                        type: roleAudience,
-                        value: organizationId
-                    } : {
-                        type: roleAudience,
-                        value: stepperState[ CreateRoleStepsFormTypes.BASIC_DETAILS ].assignedApplicationId
-                    },
-                displayName: stepperState[ CreateRoleStepsFormTypes.BASIC_DETAILS ].roleName,
+                audience:
+                    roleAudience === RoleAudienceTypes.ORGANIZATION
+                        ? {
+                              type: roleAudience,
+                              value: organizationId
+                          }
+                        : {
+                              type: roleAudience,
+                              value: stepperState[CreateRoleStepsFormTypes.BASIC_DETAILS].assignedApplicationId
+                          },
+                displayName: stepperState[CreateRoleStepsFormTypes.BASIC_DETAILS].roleName,
                 permissions: selectedPermissionsList,
                 schemas: []
             };
 
             // If the organization is super or a first level organization,
             // no need to send the audience for Organization audience.
-            if ((isSuperOrganization() || isFirstLevelOrganization()) &&
-                roleAudience === RoleAudienceTypes.ORGANIZATION) {
+            if (
+                (isSuperOrganization() || isFirstLevelOrganization()) &&
+                roleAudience === RoleAudienceTypes.ORGANIZATION
+            ) {
                 delete roleData.audience;
             }
 
@@ -123,39 +126,58 @@ const CreateRolePage: FunctionComponent<CreateRoleProps> = (props: CreateRolePro
             createRole(roleData)
                 .then((response: AxiosResponse) => {
                     if (response.status === 201) {
-                        dispatch(addAlert({
-                            description: t("console:manage.features.roles.notifications.createRole.success" +
-                                ".description"),
-                            level: AlertLevels.SUCCESS,
-                            message: t("console:manage.features.roles.notifications.createRole.success.message")
-                        }));
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.roles.notifications.createRole.success" + ".description"
+                                ),
+                                level: AlertLevels.SUCCESS,
+                                message: t("console:manage.features.roles.notifications.createRole.success.message")
+                            })
+                        );
 
-                        history.push(AppConstants.getPaths().get("ROLE_EDIT").replace(":id", response.data.id));
+                        history.push(
+                            AppConstants.getPaths()
+                                .get("ROLE_EDIT")
+                                .replace(":id", response.data.id)
+                        );
                     }
                 })
                 .catch((error: AxiosError) => {
                     if (!error.response || error.response.status === 401) {
-                        dispatch(addAlert({
-                            description: t("console:manage.features.roles.notifications.createRole.error" +
-                                    ".description"),
-                            level: AlertLevels.ERROR,
-                            message: t("console:manage.features.roles.notifications.createRole.error.message")
-                        }));
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.roles.notifications.createRole.error" + ".description"
+                                ),
+                                level: AlertLevels.ERROR,
+                                message: t("console:manage.features.roles.notifications.createRole.error.message")
+                            })
+                        );
                     } else if (error.response && error.response.data.detail) {
-                        dispatch(addAlert({
-                            description: t("console:manage.features.roles.notifications.createRole.error" +
-                                ".description",
-                            { description: error.response.data.detail }),
-                            level: AlertLevels.ERROR,
-                            message: t("console:manage.features.roles.notifications.createRole.error.message")
-                        }));
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.roles.notifications.createRole.error" + ".description",
+                                    { description: error.response.data.detail }
+                                ),
+                                level: AlertLevels.ERROR,
+                                message: t("console:manage.features.roles.notifications.createRole.error.message")
+                            })
+                        );
                     } else {
-                        dispatch(addAlert({
-                            description: t("console:manage.features.roles.notifications.createRole.genericError" +
-                                ".description"),
-                            level: AlertLevels.ERROR,
-                            message: t("console:manage.features.roles.notifications.createRole.genericError.message")
-                        }));
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.roles.notifications.createRole.genericError" +
+                                        ".description"
+                                ),
+                                level: AlertLevels.ERROR,
+                                message: t(
+                                    "console:manage.features.roles.notifications.createRole.genericError.message"
+                                )
+                            })
+                        );
                     }
                 })
                 .finally(() => {
@@ -170,14 +192,14 @@ const CreateRolePage: FunctionComponent<CreateRoleProps> = (props: CreateRolePro
             stepAction: () => submitRoleBasic(),
             stepContent: (
                 <RoleBasics
-                    triggerSubmission={ (submitFunctionCb: () => void) => {
+                    triggerSubmission={(submitFunctionCb: () => void) => {
                         submitRoleBasic = submitFunctionCb;
-                    } }
-                    setIsNextDisabled={ setIsBasicDetailsNextButtonDisabled }
-                    initialValues={ stepperState && stepperState[ CreateRoleStepsFormTypes.BASIC_DETAILS ] }
-                    onSubmit={ (values: CreateRoleFormData) => {
+                    }}
+                    setIsNextDisabled={setIsBasicDetailsNextButtonDisabled}
+                    initialValues={stepperState && stepperState[CreateRoleStepsFormTypes.BASIC_DETAILS]}
+                    onSubmit={(values: CreateRoleFormData) => {
                         handleWizardSubmit(values, CreateRoleStepsFormTypes.BASIC_DETAILS);
-                    } }
+                    }}
                 />
             ),
             stepTitle: t("console:manage.features.roles.addRoleWizard.wizardSteps.0")
@@ -186,20 +208,18 @@ const CreateRolePage: FunctionComponent<CreateRoleProps> = (props: CreateRolePro
             preventGoToNextStep: isPermissionStepNextButtonDisabled,
             stepContent: (
                 <RolePermissionsList
-                    selectedPermissions={ selectedPermissions }
-                    setSelectedPermissions={ setSelectedPermissions }
-                    setIsPermissionStepNextButtonDisabled={ setIsPermissionStepNextButtonDisabled }
+                    selectedPermissions={selectedPermissions}
+                    setSelectedPermissions={setSelectedPermissions}
+                    setIsPermissionStepNextButtonDisabled={setIsPermissionStepNextButtonDisabled}
                     roleAudience={
                         stepperState &&
-                        stepperState[ CreateRoleStepsFormTypes.BASIC_DETAILS ]?.roleAudience as RoleAudienceTypes
+                        (stepperState[CreateRoleStepsFormTypes.BASIC_DETAILS]?.roleAudience as RoleAudienceTypes)
                     }
                     assignedApplicationId={
-                        stepperState &&
-                        stepperState[ CreateRoleStepsFormTypes.BASIC_DETAILS ]?.assignedApplicationId
+                        stepperState && stepperState[CreateRoleStepsFormTypes.BASIC_DETAILS]?.assignedApplicationId
                     }
                     assignedApplicationName={
-                        stepperState &&
-                        stepperState[ CreateRoleStepsFormTypes.BASIC_DETAILS ]?.assignedApplicationName
+                        stepperState && stepperState[CreateRoleStepsFormTypes.BASIC_DETAILS]?.assignedApplicationName
                     }
                 />
             ),
@@ -209,30 +229,30 @@ const CreateRolePage: FunctionComponent<CreateRoleProps> = (props: CreateRolePro
 
     return (
         <PageLayout
-            title={ t("console:manage.features.roles.addRoleWizard.heading", { type: "Role" }) }
-            contentTopMargin={ true }
-            description={ t("console:manage.features.roles.addRoleWizard.subHeading", { type: "role" }) }
-            backButton={ {
+            title={t("console:manage.features.roles.addRoleWizard.heading", { type: "Role" })}
+            contentTopMargin={true}
+            description={t("console:manage.features.roles.addRoleWizard.subHeading", { type: "role" })}
+            backButton={{
                 "data-componentid": `${componentId}-page-back-button`,
                 onClick: () => history.push(AppConstants.getPaths().get("ROLES")),
                 text: t("console:manage.features.roles.addRoleWizard.back")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
+            bottomMargin={false}
             showBottomDivider
-            data-componentid={ `${componentId}-page-layout` }
+            data-componentid={`${componentId}-page-layout`}
         >
             <div className="remote-user-store-create-section">
-                <EmphasizedSegment padded="very" loading={ isSubmitting }>
+                <EmphasizedSegment padded="very" loading={isSubmitting}>
                     <Grid container>
                         <Grid>
                             <VerticalStepper
-                                alwaysOpen={ false }
-                                isSidePanelOpen={ false }
-                                stepContent={ creationFlowSteps }
-                                isNextEnabled={ true }
-                                data-componentid={ `${componentId}-vertical-stepper` }
-                                handleFinishAction={ addRole }
+                                alwaysOpen={false}
+                                isSidePanelOpen={false}
+                                stepContent={creationFlowSteps}
+                                isNextEnabled={true}
+                                data-componentid={`${componentId}-vertical-stepper`}
+                                handleFinishAction={addRole}
                             />
                         </Grid>
                     </Grid>

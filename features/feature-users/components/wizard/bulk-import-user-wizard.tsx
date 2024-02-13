@@ -16,12 +16,7 @@
  * under the License.
  */
 
-import {
-    AlertTitle,
-    Autocomplete,
-    AutocompleteRenderGetTagProps,
-    AutocompleteRenderInputParams
-} from "@mui/material";
+import { AlertTitle, Autocomplete, AutocompleteRenderGetTagProps, AutocompleteRenderInputParams } from "@mui/material";
 import Alert from "@oxygen-ui/react/Alert";
 import Box from "@oxygen-ui/react/Box";
 import Chip from "@oxygen-ui/react/Chip";
@@ -42,6 +37,7 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { GroupsInterface, getGroupList, useGroupList } from "@wso2is/feature-groups.common";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import {
     CSVFileStrategy,
     CSVResult,
@@ -60,7 +56,7 @@ import {
 import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models";
 import { FormValidation } from "@wso2is/validation";
 
-import Axios,  { AxiosResponse }from "axios";
+import Axios, { AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -71,7 +67,6 @@ import { UsersConstants } from "../../../../extensions/components/users/constant
 import { userConfig } from "../../../../extensions/configs";
 import { ClaimManagementConstants } from "../../../../features/claims/constants";
 
-
 import { getAllExternalClaims, getDialects, getSCIMResourceTypes } from "../../../claims/api";
 import {
     AppConstants,
@@ -81,7 +76,6 @@ import {
     getCertificateIllustrations,
     history
 } from "../../../core";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
 
 import { getAUserStore, getUserStores } from "../../../userstores/api";
 import { PRIMARY_USERSTORE } from "../../../userstores/constants";
@@ -127,7 +121,7 @@ interface CSVAttributeMapping {
 }
 
 interface MultiValuedComplexAttribute {
-    [key: string] : string | boolean;
+    [key: string]: string | boolean;
 }
 
 type ValidationError = {
@@ -154,9 +148,9 @@ interface GroupMemberAssociation {
 
 const ASK_PASSWORD_ATTRIBUTE: string = "identity/askPassword";
 const CSV_FILE_PROCESSING_STRATEGY: CSVFileStrategy = new CSVFileStrategy(
-    undefined,  // Mimetype.
-    userConfig.bulkUserImportLimit.fileSize * CSVFileStrategy.KILOBYTE,  // File Size.
-    userConfig.bulkUserImportLimit.userCount  // Row Count.
+    undefined, // Mimetype.
+    userConfig.bulkUserImportLimit.fileSize * CSVFileStrategy.KILOBYTE, // File Size.
+    userConfig.bulkUserImportLimit.userCount // Row Count.
 );
 const DATA_VALIDATION_ERROR: string = "Data validation error";
 const TIMEOUT_ERROR: string = "TIMEOUT_ERROR";
@@ -182,30 +176,32 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ selectedCSVFile, setSelectedCSVFile ] = useState<File>(null);
-    const [ userData, setUserData ] = useState<CSVResult>();
-    const [ hasError, setHasError ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ isLoading, setIsLoading ] = useState<boolean>(false);
-    const [ response, setResponse ] = useState<BulkUserImportOperationResponse[]>([]);
-    const [ manualInviteResponse, setManualInviteResponse ] = useState<BulkUserImportOperationResponse[]>([]);
-    const [ showResponseView, setShowResponseView ] = useState<boolean>(false);
-    const [ showManualInviteTable, setshowManualInviteTable ] = useState<boolean>(false);
-    const [ bulkResponseSummary, setBulkResponseSummary ] = useState<BulkResponseSummary>(initialBulkResponseSummary);
-    const [ manualInviteResponseSummary, setManualInviteesponseSummary ]
-        = useState<BulkResponseSummary>(initialBulkResponseSummary);
-    const [ configureMode, setConfigureMode ] = useState<string>(MultipleInviteMode.MANUAL);
-    const [ emailData, setEmailData ] = useState<string[]>();
-    const [ isEmailDataError, setIsEmailDataError ] = useState<boolean>(false);
-    const [ emailDataError, setEmailDataError ] = useState<string>("");
-    const [ groupsData, setGroupsData ] = useState<GroupsInterface[]>();
-    const [ alert, setAlert, alertComponent ] = useWizardAlert({ "data-componentid": `${componentId}-alert` });
-    const [ manualInviteAlert, setManualInviteAlert, manualInviteAlertComponent ]
-        = useWizardAlert({ "data-componentid": `${componentId}-manual-invite-alert` });
-    const [ readWriteUserStoresList, setReadWriteUserStoresList ] = useState<DropdownItemProps[]>([]);
-    const [ selectedUserStore, setSelectedUserStore ] = useState<string>("");
-    const [ isUserStoreError, setUserStoreError ] = useState<boolean>(false);
-    const [ fileModeTimeOutError , setFileModeTimeOutError ] = useState<boolean>(false);
+    const [selectedCSVFile, setSelectedCSVFile] = useState<File>(null);
+    const [userData, setUserData] = useState<CSVResult>();
+    const [hasError, setHasError] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [response, setResponse] = useState<BulkUserImportOperationResponse[]>([]);
+    const [manualInviteResponse, setManualInviteResponse] = useState<BulkUserImportOperationResponse[]>([]);
+    const [showResponseView, setShowResponseView] = useState<boolean>(false);
+    const [showManualInviteTable, setshowManualInviteTable] = useState<boolean>(false);
+    const [bulkResponseSummary, setBulkResponseSummary] = useState<BulkResponseSummary>(initialBulkResponseSummary);
+    const [manualInviteResponseSummary, setManualInviteesponseSummary] = useState<BulkResponseSummary>(
+        initialBulkResponseSummary
+    );
+    const [configureMode, setConfigureMode] = useState<string>(MultipleInviteMode.MANUAL);
+    const [emailData, setEmailData] = useState<string[]>();
+    const [isEmailDataError, setIsEmailDataError] = useState<boolean>(false);
+    const [emailDataError, setEmailDataError] = useState<string>("");
+    const [groupsData, setGroupsData] = useState<GroupsInterface[]>();
+    const [alert, setAlert, alertComponent] = useWizardAlert({ "data-componentid": `${componentId}-alert` });
+    const [manualInviteAlert, setManualInviteAlert, manualInviteAlertComponent] = useWizardAlert({
+        "data-componentid": `${componentId}-manual-invite-alert`
+    });
+    const [readWriteUserStoresList, setReadWriteUserStoresList] = useState<DropdownItemProps[]>([]);
+    const [selectedUserStore, setSelectedUserStore] = useState<string>("");
+    const [isUserStoreError, setUserStoreError] = useState<boolean>(false);
+    const [fileModeTimeOutError, setFileModeTimeOutError] = useState<boolean>(false);
 
     const { data: validationData } = useValidationConfigData();
     const config: ValidationFormInterface = getUsernameConfiguration(validationData);
@@ -213,22 +209,24 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
 
     const optionsArray: string[] = [];
 
-    const {
-        data: groupList,
-        error: groupsError
-    } = useGroupList(selectedUserStore, "members", null, true);
+    const { data: groupList, error: groupsError } = useGroupList(selectedUserStore, "members", null, true);
 
     useEffect(() => {
         if (groupsError) {
-            dispatch(addAlert({
-                description: groupsError?.response?.data?.description ?? groupsError?.response?.data?.detail
-                    ?? t("console:manage.features.groups.notifications.fetchGroups.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: groupsError?.response?.data?.message
-                    ?? t("console:manage.features.groups.notifications.fetchGroups.genericError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description:
+                        groupsError?.response?.data?.description ??
+                        groupsError?.response?.data?.detail ??
+                        t("console:manage.features.groups.notifications.fetchGroups.genericError.description"),
+                    level: AlertLevels.ERROR,
+                    message:
+                        groupsError?.response?.data?.message ??
+                        t("console:manage.features.groups.notifications.fetchGroups.genericError.message")
+                })
+            );
         }
-    },[ groupsError ]);
+    }, [groupsError]);
 
     /**
      * Set the user store list.
@@ -236,7 +234,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
     useEffect(() => {
         setSelectedUserStore(userstore);
         getUserStoreList();
-    }, [ userstore ]);
+    }, [userstore]);
 
     /**
      * This will fetch userstore list.
@@ -261,29 +259,42 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
                             text: item.name.toUpperCase(),
                             value: item.name.toUpperCase()
                         });
-                    }});
+                    }
+                });
 
                 setUserStoreError(false);
                 setReadWriteUserStoresList(userStoreArray);
-            }).catch((error: IdentityAppsApiException) => {
+            })
+            .catch((error: IdentityAppsApiException) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? error?.response?.data?.detail
-                            ?? t("console:manage.features.userstores.notifications.fetchUserstores.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message
-                            ?? t("console:manage.features.userstores.notifications.fetchUserstores.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:manage.features.userstores.notifications.fetchUserstores.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:manage.features.userstores.notifications.fetchUserstores.error.message")
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:manage.features.userstores.notifications.fetchUserstores.genericError" +
-                        ".description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.userstores.notifications.fetchUserstores.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.userstores.notifications.fetchUserstores.genericError" +
+                                ".description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.userstores.notifications.fetchUserstores.genericError.message"
+                        )
+                    })
+                );
 
                 setUserStoreError(true);
 
@@ -303,26 +314,31 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
     const checkReadWriteUserStore = (userStore: UserStoreDetails): Promise<boolean> => {
         let isReadWriteUserStore: boolean = false;
 
-        return getAUserStore(userStore?.id).then((response: UserStoreDetails) => {
-            response?.properties?.some((property: UserStoreProperty) => {
-                if (property.name === UsersConstants.USER_STORE_PROPERTY_READ_ONLY) {
-                    isReadWriteUserStore = property.value === "false";
+        return getAUserStore(userStore?.id)
+            .then((response: UserStoreDetails) => {
+                response?.properties?.some((property: UserStoreProperty) => {
+                    if (property.name === UsersConstants.USER_STORE_PROPERTY_READ_ONLY) {
+                        isReadWriteUserStore = property.value === "false";
 
-                    return true;
-                }
+                        return true;
+                    }
+                });
+
+                return isReadWriteUserStore;
+            })
+            .catch(() => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.users.notifications.fetchUserStores.genericError." + "description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.users.notifications.fetchUserStores.genericError.message")
+                    })
+                );
+
+                return false;
             });
-
-            return isReadWriteUserStore;
-        }).catch(() => {
-            dispatch(addAlert({
-                description: t("console:manage.features.users.notifications.fetchUserStores.genericError." +
-                    "description"),
-                level: AlertLevels.ERROR,
-                message: t("console:manage.features.users.notifications.fetchUserStores.genericError.message")
-            }));
-
-            return false;
-        });
     };
 
     const hideUserStoreDropdown = (): boolean => {
@@ -330,9 +346,11 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
             return true;
         }
 
-        if(readWriteUserStoresList) {
-            return readWriteUserStoresList?.length === 0 || (readWriteUserStoresList?.length === 1 &&
-                readWriteUserStoresList[0]?.value === userstore);
+        if (readWriteUserStoresList) {
+            return (
+                readWriteUserStoresList?.length === 0 ||
+                (readWriteUserStoresList?.length === 1 && readWriteUserStoresList[0]?.value === userstore)
+            );
         }
     };
 
@@ -342,16 +360,18 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
     const getGroupMemberAssociation = async (): Promise<Record<string, GroupMemberAssociation>> => {
         try {
             const response: AxiosResponse = await getGroupList(selectedUserStore);
-            const newGroups: Record<string, GroupMemberAssociation> = response?.data?.Resources?.reduce((
-                groups: Record<string, GroupMemberAssociation>, group: GroupsInterface) => {
-                groups[group?.displayName.toLowerCase()] = {
-                    displayName: group?.displayName,
-                    id: group?.id,
-                    members: []
-                };
+            const newGroups: Record<string, GroupMemberAssociation> = response?.data?.Resources?.reduce(
+                (groups: Record<string, GroupMemberAssociation>, group: GroupsInterface) => {
+                    groups[group?.displayName.toLowerCase()] = {
+                        displayName: group?.displayName,
+                        id: group?.id,
+                        members: []
+                    };
 
-                return groups;
-            }, {});
+                    return groups;
+                },
+                {}
+            );
 
             return newGroups;
         } catch (error) {
@@ -359,7 +379,8 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
             dispatch(
                 addAlert({
                     description: t(
-                        "console:manage.features.users.notifications.bulkImportUser.submit.genericError.description"),
+                        "console:manage.features.users.notifications.bulkImportUser.submit.genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
                     message: t("console:manage.features.users.notifications.bulkImportUser.submit.genericError.message")
                 })
@@ -369,14 +390,12 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
 
     // Validate the input string is an email address.
     const validateEmail = (emailList: string[]) => {
-
-        const emailValidation: boolean = FormValidation.email(emailList[emailList.length-1]);
+        const emailValidation: boolean = FormValidation.email(emailList[emailList.length - 1]);
 
         if (!emailValidation) {
             setIsEmailDataError(true);
             setEmailDataError(
-                t("console:manage.features.users.guestUsers.fields." +
-                "username.validations.regExViolation")
+                t("console:manage.features.users.guestUsers.fields." + "username.validations.regExViolation")
             );
             emailList.pop();
         }
@@ -384,12 +403,11 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
 
     useEffect(() => {
         setConfigureMode(
-            isAlphanumericUsername
-            && userConfig?.enableUsernameValidation
+            isAlphanumericUsername && userConfig?.enableUsernameValidation
                 ? MultipleInviteMode.META_FILE
                 : MultipleInviteMode.MANUAL
         );
-    }, [ isAlphanumericUsername ]);
+    }, [isAlphanumericUsername]);
     /**
      * Fetches SCIM dialects.
      */
@@ -430,14 +448,14 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
                         error?.response?.data?.description ||
                         t(
                             "console:manage.features.claims.dialects.notifications.fetchDialects" +
-                            ".genericError.description"
+                                ".genericError.description"
                         ),
                     level: AlertLevels.ERROR,
                     message:
                         error?.response?.data?.message ||
                         t(
                             "console:manage.features.claims.dialects.notifications.fetchDialects" +
-                            ".genericError.message"
+                                ".genericError.message"
                         )
                 })
             );
@@ -469,7 +487,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
                     (item: ExternalClaim): CSVAttributeMapping => {
                         return {
                             attributeName: item?.mappedLocalClaimURI
-                                .replace(UserManagementConstants.WSO2_LOCAL_CLAIM_DIALECT+"/", "")
+                                .replace(UserManagementConstants.WSO2_LOCAL_CLAIM_DIALECT + "/", "")
                                 .toLowerCase(),
                             mappedLocalClaimURI: item?.mappedLocalClaimURI,
                             mappedSCIMAttributeURI: item?.claimURI,
@@ -526,8 +544,8 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
     };
 
     const getMissingFields = (headers: string[], requiredFields: string[]): string[] => {
-        return requiredFields.filter((field: string) =>
-            !headers.some((header: string) => header.toLowerCase() === field.toLowerCase())
+        return requiredFields.filter(
+            (field: string) => !headers.some((header: string) => header.toLowerCase() === field.toLowerCase())
         );
     };
 
@@ -547,17 +565,19 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
 
     const getBlockedAttributes = (headers: string[], blockedAttributes: string[]): string[] => {
         return headers.filter((attribute: string) =>
-            blockedAttributes.some((blockedAttribute: string) =>
-                attribute.toLowerCase() === blockedAttribute.toLowerCase()
+            blockedAttributes.some(
+                (blockedAttribute: string) => attribute.toLowerCase() === blockedAttribute.toLowerCase()
             )
         );
     };
 
     const getInvalidHeaderAttributes = (headers: string[], externalClaimAttributes: string[]): string[] => {
-        return headers.filter((attribute: string) =>
-            !externalClaimAttributes.some((externalClaimAttributeName: string) =>
-                attribute.toLowerCase() === externalClaimAttributeName.toLowerCase()
-            )
+        return headers.filter(
+            (attribute: string) =>
+                !externalClaimAttributes.some(
+                    (externalClaimAttributeName: string) =>
+                        attribute.toLowerCase() === externalClaimAttributeName.toLowerCase()
+                )
         );
     };
 
@@ -568,9 +588,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
                 error.descriptionValues || {}
             ),
             level: AlertLevels.ERROR,
-            message: t(
-                `console:manage.features.users.notifications.bulkImportUser.validation.${error.messageKey}`
-            )
+            message: t(`console:manage.features.users.notifications.bulkImportUser.validation.${error.messageKey}`)
         });
     };
 
@@ -593,10 +611,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
      * @param externalClaimAttributes - external claim attribute names.
      * @returns
      */
-    const validateCSVFile = (
-        userData: CSVResult,
-        externalClaimAttributes: string[]
-    ): boolean => {
+    const validateCSVFile = (userData: CSVResult, externalClaimAttributes: string[]): boolean => {
         const headers: string[] = userData.headers;
         const rows: string[][] = userData.items;
 
@@ -685,8 +700,10 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
             .filter(Boolean);
 
         filteredAttributeList.push(
-            attributeMapping.find((attribute: CSVAttributeMapping) =>
-                attribute.attributeName.toLowerCase() === (ASK_PASSWORD_ATTRIBUTE.toLowerCase()))
+            attributeMapping.find(
+                (attribute: CSVAttributeMapping) =>
+                    attribute.attributeName.toLowerCase() === ASK_PASSWORD_ATTRIBUTE.toLowerCase()
+            )
         );
 
         return filteredAttributeList;
@@ -709,155 +726,151 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
      * @param headers - csv headers.
      * @returns
      */
-    const generateUserOperationData =
-        (   row: string[],
-            filteredAttributeMapping: CSVAttributeMapping[],
-            headers: string[]
-        ): Record<string, unknown> => {
-            const dataObj: Record<string, unknown> = {};
-            const schemasSet: Set<string> = new Set([ UserManagementConstants.SCIM2_USER_SCHEMA ]);
+    const generateUserOperationData = (
+        row: string[],
+        filteredAttributeMapping: CSVAttributeMapping[],
+        headers: string[]
+    ): Record<string, unknown> => {
+        const dataObj: Record<string, unknown> = {};
+        const schemasSet: Set<string> = new Set([UserManagementConstants.SCIM2_USER_SCHEMA]);
 
-            for (const attribute of filteredAttributeMapping) {
-                const scimAttribute: string = attribute.mappedSCIMAttributeURI.replace(
-                    `${attribute.mappedSCIMClaimDialectURI}:`,
-                    ""
-                );
-                const attributeValue: string = row[headers.indexOf(attribute.attributeName.toLowerCase())];
-                const isMultiValued: boolean = scimAttribute.includes("#");
+        for (const attribute of filteredAttributeMapping) {
+            const scimAttribute: string = attribute.mappedSCIMAttributeURI.replace(
+                `${attribute.mappedSCIMClaimDialectURI}:`,
+                ""
+            );
+            const attributeValue: string = row[headers.indexOf(attribute.attributeName.toLowerCase())];
+            const isMultiValued: boolean = scimAttribute.includes("#");
 
-                if (attribute.attributeName === UserManagementConstants.ROLES ||
-                    attribute.attributeName === UserManagementConstants.GROUPS) {
-                    continue;
+            if (
+                attribute.attributeName === UserManagementConstants.ROLES ||
+                attribute.attributeName === UserManagementConstants.GROUPS
+            ) {
+                continue;
+            }
+
+            // Handle username attribute.
+            if (scimAttribute === RequiredBulkUserImportAttributes.USERNAME) {
+                if (isEmptyAttribute(attributeValue)) {
+                    setEmptyDataFieldError(attribute.attributeName);
+                    throw new Error(DATA_VALIDATION_ERROR);
                 }
 
-                // Handle username attribute.
-                if (scimAttribute === RequiredBulkUserImportAttributes.USERNAME) {
-                    if (isEmptyAttribute(attributeValue)) {
-                        setEmptyDataFieldError(attribute.attributeName);
-                        throw new Error(DATA_VALIDATION_ERROR);
-                    }
-
-                    dataObj[RequiredBulkUserImportAttributes.USERNAME] = selectedUserStore &&
-                    selectedUserStore.toLowerCase() !== PRIMARY_USERSTORE.toLowerCase()
+                dataObj[RequiredBulkUserImportAttributes.USERNAME] =
+                    selectedUserStore && selectedUserStore.toLowerCase() !== PRIMARY_USERSTORE.toLowerCase()
                         ? `${selectedUserStore}/${attributeValue}`
                         : attributeValue;
 
-                    continue;
-                }
+                continue;
+            }
 
-                // Handle email attribute.
-                if (attribute.attributeName === RequiredBulkUserImportAttributes.EMAILADDRESS) {
-                    if (isEmptyAttribute(attributeValue)) {
-                        setEmptyDataFieldError(attribute.attributeName);
-                        throw new Error(DATA_VALIDATION_ERROR);
-                    } else if (!FormValidation.email(attributeValue)) {
-                        setAlert({
-                            description:  t(
-                                "console:manage.features.user.forms.addUserForm.inputs.email." +
-                                    "validations.invalid"
-                            ),
-                            level: AlertLevels.ERROR,
-                            message: t(
-                                "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
-                                "tableMessages.invalidDataMessage")
-                        });
-                        throw new Error(DATA_VALIDATION_ERROR);
-                    }
-                }
-
-                // Handle askPassword attribute.
-                if (attribute.attributeName.toLowerCase() === ASK_PASSWORD_ATTRIBUTE.toLowerCase()) {
-                    dataObj[attribute.mappedSCIMClaimDialectURI] = {
-                        ...(dataObj[attribute.mappedSCIMClaimDialectURI] as Record<string, unknown> || {}),
-                        [scimAttribute]: "true"
-                    };
-
-                    continue;
-                }
-
-                // Usage in your existing code
-                const specialMultiValuedComplex: SpecialMultiValuedComplexAttributes | undefined =
-                Object.values(SpecialMultiValuedComplexAttributes).find(
-                    (attrType: string) => scimAttribute.includes(attrType)
-                );
-
-                if (!isMultiValued && specialMultiValuedComplex) {
-                    const info: MultiValuedComplexAttribute = scimAttribute.includes(specialMultiValuedComplex + ".")
-                        ? { type: scimAttribute.split(".")[1], value: attributeValue }
-                        : { primary: true, value: attributeValue };
-
-                    dataObj[specialMultiValuedComplex] = dataObj[specialMultiValuedComplex] || [];
-                    (dataObj[specialMultiValuedComplex] as unknown[]).push(info);
-
-                    continue;
-
-                }
-
-                // Handle multi-valued address attribute.
-                if (scimAttribute.includes(ADDRESS_HOME_ATTRIBUTE)) {
-                    dataObj[ADDRESS_ATTRIBUTE] = dataObj[ADDRESS_ATTRIBUTE] || [];
-                    (dataObj[ADDRESS_ATTRIBUTE] as unknown[]).push(
-                        {
-                            type: HOME_ATTRIBUTE,
-                            [scimAttribute.replace(`${ADDRESS_HOME_ATTRIBUTE}.`, "")]:
-                            attributeValue
-                        }
-                    );
-
-                    continue;
-                }
-
-                // Add the schema to the set
-                schemasSet.add(attribute.mappedSCIMClaimDialectURI);
-
-                const cleanedAttribute: string = isMultiValued ? scimAttribute.split("#")[0] : scimAttribute;
-
-                // Handle simple attributes.
-                if (!cleanedAttribute.includes(".")) {
-                    const target: unknown =
-                    attribute.mappedSCIMClaimDialectURI === UserManagementConstants.SCIM2_USER_SCHEMA
-                        ? dataObj
-                        : dataObj[attribute.mappedSCIMClaimDialectURI] ||
-                        (dataObj[attribute.mappedSCIMClaimDialectURI] = {});
-
-                    if (isMultiValued) {
-                        target[cleanedAttribute] =
-                            ((target[cleanedAttribute] || [] ) as unknown[]).concat(attributeValue);
-                    } else {
-                        target[cleanedAttribute] = attributeValue;
-                    }
-
-                    continue;
-                }
-                // Handle complex attributes.
-                else if (cleanedAttribute.includes(".")) {
-                    const [ parentAttr, childAttr ] = cleanedAttribute.split(".");
-                    const target: unknown =
-                    attribute.mappedSCIMClaimDialectURI === UserManagementConstants.SCIM2_USER_SCHEMA
-                        ? dataObj
-                        : dataObj[attribute.mappedSCIMClaimDialectURI] ||
-                        (dataObj[attribute.mappedSCIMClaimDialectURI] = {});
-
-                    if (isMultiValued) {
-                        target[parentAttr] = ((target[parentAttr] || []) as unknown[]).concat({
-                            [childAttr]: attributeValue
-                        });
-                    } else {
-                        if (!target[parentAttr]) {
-                            target[parentAttr] = {};
-                        }
-                        target[parentAttr][childAttr] = attributeValue;
-                    }
-
-                    continue;
+            // Handle email attribute.
+            if (attribute.attributeName === RequiredBulkUserImportAttributes.EMAILADDRESS) {
+                if (isEmptyAttribute(attributeValue)) {
+                    setEmptyDataFieldError(attribute.attributeName);
+                    throw new Error(DATA_VALIDATION_ERROR);
+                } else if (!FormValidation.email(attributeValue)) {
+                    setAlert({
+                        description: t(
+                            "console:manage.features.user.forms.addUserForm.inputs.email." + "validations.invalid"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
+                                "tableMessages.invalidDataMessage"
+                        )
+                    });
+                    throw new Error(DATA_VALIDATION_ERROR);
                 }
             }
 
-            return {
-                schema: Array.from(schemasSet),
-                ...dataObj
-            };
+            // Handle askPassword attribute.
+            if (attribute.attributeName.toLowerCase() === ASK_PASSWORD_ATTRIBUTE.toLowerCase()) {
+                dataObj[attribute.mappedSCIMClaimDialectURI] = {
+                    ...((dataObj[attribute.mappedSCIMClaimDialectURI] as Record<string, unknown>) || {}),
+                    [scimAttribute]: "true"
+                };
+
+                continue;
+            }
+
+            // Usage in your existing code
+            const specialMultiValuedComplex: SpecialMultiValuedComplexAttributes | undefined = Object.values(
+                SpecialMultiValuedComplexAttributes
+            ).find((attrType: string) => scimAttribute.includes(attrType));
+
+            if (!isMultiValued && specialMultiValuedComplex) {
+                const info: MultiValuedComplexAttribute = scimAttribute.includes(specialMultiValuedComplex + ".")
+                    ? { type: scimAttribute.split(".")[1], value: attributeValue }
+                    : { primary: true, value: attributeValue };
+
+                dataObj[specialMultiValuedComplex] = dataObj[specialMultiValuedComplex] || [];
+                (dataObj[specialMultiValuedComplex] as unknown[]).push(info);
+
+                continue;
+            }
+
+            // Handle multi-valued address attribute.
+            if (scimAttribute.includes(ADDRESS_HOME_ATTRIBUTE)) {
+                dataObj[ADDRESS_ATTRIBUTE] = dataObj[ADDRESS_ATTRIBUTE] || [];
+                (dataObj[ADDRESS_ATTRIBUTE] as unknown[]).push({
+                    type: HOME_ATTRIBUTE,
+                    [scimAttribute.replace(`${ADDRESS_HOME_ATTRIBUTE}.`, "")]: attributeValue
+                });
+
+                continue;
+            }
+
+            // Add the schema to the set
+            schemasSet.add(attribute.mappedSCIMClaimDialectURI);
+
+            const cleanedAttribute: string = isMultiValued ? scimAttribute.split("#")[0] : scimAttribute;
+
+            // Handle simple attributes.
+            if (!cleanedAttribute.includes(".")) {
+                const target: unknown =
+                    attribute.mappedSCIMClaimDialectURI === UserManagementConstants.SCIM2_USER_SCHEMA
+                        ? dataObj
+                        : dataObj[attribute.mappedSCIMClaimDialectURI] ||
+                          (dataObj[attribute.mappedSCIMClaimDialectURI] = {});
+
+                if (isMultiValued) {
+                    target[cleanedAttribute] = ((target[cleanedAttribute] || []) as unknown[]).concat(attributeValue);
+                } else {
+                    target[cleanedAttribute] = attributeValue;
+                }
+
+                continue;
+            }
+            // Handle complex attributes.
+            else if (cleanedAttribute.includes(".")) {
+                const [parentAttr, childAttr] = cleanedAttribute.split(".");
+                const target: unknown =
+                    attribute.mappedSCIMClaimDialectURI === UserManagementConstants.SCIM2_USER_SCHEMA
+                        ? dataObj
+                        : dataObj[attribute.mappedSCIMClaimDialectURI] ||
+                          (dataObj[attribute.mappedSCIMClaimDialectURI] = {});
+
+                if (isMultiValued) {
+                    target[parentAttr] = ((target[parentAttr] || []) as unknown[]).concat({
+                        [childAttr]: attributeValue
+                    });
+                } else {
+                    if (!target[parentAttr]) {
+                        target[parentAttr] = {};
+                    }
+                    target[parentAttr][childAttr] = attributeValue;
+                }
+
+                continue;
+            }
+        }
+
+        return {
+            schema: Array.from(schemasSet),
+            ...dataObj
         };
+    };
 
     /**
      * Generate SCIM User Operation.
@@ -877,29 +890,33 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
         userOperation: SCIMBulkOperation;
     } => {
         const asyncOperationID: string = uuidv4();
-        const bulkId: string =
-            `${BULK_ID}:${row[headers.indexOf(
-                RequiredBulkUserImportAttributes.USERNAME.toLowerCase())]}:${asyncOperationID}`;
+        const bulkId: string = `${BULK_ID}:${
+            row[headers.indexOf(RequiredBulkUserImportAttributes.USERNAME.toLowerCase())]
+        }:${asyncOperationID}`;
         const username: string = row[headers.indexOf(RequiredBulkUserImportAttributes.USERNAME.toLowerCase())];
         let newGroupMemberAssociations: Record<string, GroupMemberAssociation> = { ...groupMemberAssociations };
 
         // Check if groups are included in the headers.
         if (headers.includes(UserManagementConstants.GROUPS)) {
             const csvGroups: string[] = row[headers.indexOf(UserManagementConstants.GROUPS)].split("|");
-            const uniqueCSVGroups: string[] = [ ...new Set(csvGroups) ];
+            const uniqueCSVGroups: string[] = [...new Set(csvGroups)];
 
             uniqueCSVGroups.forEach((group: string) => {
                 if (isEmptyAttribute(group)) return;
-                const domainGroupName: string = selectedUserStore &&
-                    selectedUserStore.toLowerCase() !== PRIMARY_USERSTORE.toLowerCase()
-                    ? `${selectedUserStore}/${group}`
-                    : group;
+                const domainGroupName: string =
+                    selectedUserStore && selectedUserStore.toLowerCase() !== PRIMARY_USERSTORE.toLowerCase()
+                        ? `${selectedUserStore}/${group}`
+                        : group;
 
                 if (domainGroupName.toLowerCase() in groupMemberAssociations) {
-                    newGroupMemberAssociations = addMemberToGroup(domainGroupName, {
-                        display: username,
-                        value: `bulkId:${bulkId}`
-                    }, newGroupMemberAssociations);
+                    newGroupMemberAssociations = addMemberToGroup(
+                        domainGroupName,
+                        {
+                            display: username,
+                            value: `bulkId:${bulkId}`
+                        },
+                        newGroupMemberAssociations
+                    );
                 } else {
                     setValidationError({
                         descriptionKey: "invalidGroup.description",
@@ -941,7 +958,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
 
         updatedGroupMemberAssociations[groupName.toLowerCase()] = {
             ...existingGroup,
-            members: Array.from(new Set([ ...existingGroup.members, member ]))
+            members: Array.from(new Set([...existingGroup.members, member]))
         };
 
         return updatedGroupMemberAssociations;
@@ -989,11 +1006,11 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
      * @param attributeMapping - attribute mapping.
      * @returns SCIMBulkRequestBody
      */
-    const generateSCIMRequestBody = async (attributeMapping: CSVAttributeMapping[]):
-        Promise<SCIMBulkEndpointInterface> => {
+    const generateSCIMRequestBody = async (
+        attributeMapping: CSVAttributeMapping[]
+    ): Promise<SCIMBulkEndpointInterface> => {
         const headers: string[] = userData.headers.map((header: string) => header.toLowerCase());
         const rows: string[][] = userData.items;
-
 
         const filteredAttributeMapping: CSVAttributeMapping[] = filterAttributes(headers, attributeMapping);
         let groupMemberAssociations: Record<string, GroupMemberAssociation> = await getGroupMemberAssociation();
@@ -1026,7 +1043,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
         return {
             Operations: operations,
             failOnErrors: 0,
-            schemas: [ UserManagementConstants.BULK_REQUEST_SCHEMA ]
+            schemas: [UserManagementConstants.BULK_REQUEST_SCHEMA]
         };
     };
 
@@ -1039,7 +1056,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
     const generateMultipleUsersSCIMRequestBody = (): SCIMBulkEndpointInterface => {
         // Create the data operations.
         const operations: SCIMBulkOperation[] = [];
-        const users : { display: string; value: string; }[]= [];
+        const users: { display: string; value: string }[] = [];
         const asyncOperationID: string = uuidv4();
 
         // Create the user record.
@@ -1059,10 +1076,9 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
                     selectedUserStore.toLowerCase() !== PRIMARY_USERSTORE.toLowerCase()
                         ? `${selectedUserStore}/${email}`
                         : email,
-                [ userstore.toLowerCase() !== PRIMARY_USERSTORE.toLowerCase()
+                [userstore.toLowerCase() !== PRIMARY_USERSTORE.toLowerCase()
                     ? UserManagementConstants.CUSTOMSCHEMA
-                    : UserManagementConstants.ENTERPRISESCHEMA
-                ]: {
+                    : UserManagementConstants.ENTERPRISESCHEMA]: {
                     askPassword: "true"
                 }
             };
@@ -1074,7 +1090,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
                 path: UserManagementConstants.SCIM_USER_PATH
             };
 
-            const user: { display: string; value: string; } = {
+            const user: { display: string; value: string } = {
                 display: email,
                 value: `bulkId:bulkId:${email}:${asyncOperationID}`
             };
@@ -1086,7 +1102,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
         // Create the group record.
         groupsData?.map((group: GroupsInterface) => {
             const groupDetails: PatchRoleDataInterface = {
-                "Operations":[
+                Operations: [
                     {
                         op: "add",
                         value: {
@@ -1109,7 +1125,7 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
         return {
             Operations: operations,
             failOnErrors: 0,
-            schemas: [ UserManagementConstants.BULK_REQUEST_SCHEMA ]
+            schemas: [UserManagementConstants.BULK_REQUEST_SCHEMA]
         };
     };
 
@@ -1128,15 +1144,17 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
                 throw new Error("Failed to import users.");
             }
 
-            const response: BulkUserImportOperationResponse[]
-                = scimResponse.data.Operations.map(generateManualInviteResponse);
+            const response: BulkUserImportOperationResponse[] = scimResponse.data.Operations.map(
+                generateManualInviteResponse
+            );
 
             setManualInviteResponse(response);
         } catch (error) {
             setHasError(true);
             setManualInviteAlert({
                 description: t(
-                    "console:manage.features.users.notifications.bulkImportUser.submit.genericError.description"),
+                    "console:manage.features.users.notifications.bulkImportUser.submit.genericError.description"
+                ),
                 level: AlertLevels.ERROR,
                 message: t("console:manage.features.users.notifications.bulkImportUser.submit.genericError.message")
             });
@@ -1172,12 +1190,10 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
 
             const scimResponsePromise: Promise<unknown> = addBulkUsers(scimRequestBody);
             const timeoutPromise: Promise<unknown> = new Promise((_: unknown, reject: (reason?: any) => void) => {
-                setTimeout(() => reject(
-                    new Error(TIMEOUT_ERROR)
-                ), FILE_IMPORT_TIMEOUT);
+                setTimeout(() => reject(new Error(TIMEOUT_ERROR)), FILE_IMPORT_TIMEOUT);
             });
 
-            const scimResponse: any = await Promise.race([ scimResponsePromise, timeoutPromise ]);
+            const scimResponse: any = await Promise.race([scimResponsePromise, timeoutPromise]);
 
             if (scimResponse.status !== 200) {
                 throw new Error("Failed to import users.");
@@ -1191,16 +1207,15 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
             if (error.message === TIMEOUT_ERROR) {
                 setFileModeTimeOutError(true);
                 setAlert({
-                    description: t(
-                        "console:manage.features.users.notifications.bulkImportUser.timeOut.description"),
+                    description: t("console:manage.features.users.notifications.bulkImportUser.timeOut.description"),
                     level: AlertLevels.WARNING,
-                    message: t(
-                        "console:manage.features.users.notifications.bulkImportUser.timeOut.message")
+                    message: t("console:manage.features.users.notifications.bulkImportUser.timeOut.message")
                 });
             } else if (error.message !== DATA_VALIDATION_ERROR) {
                 setAlert({
                     description: t(
-                        "console:manage.features.users.notifications.bulkImportUser.submit.genericError.description"),
+                        "console:manage.features.users.notifications.bulkImportUser.submit.genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
                     message: t("console:manage.features.users.notifications.bulkImportUser.submit.genericError.message")
                 });
@@ -1221,56 +1236,83 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
         const statusCode: number = operation?.status?.code;
         let operationType: BulkImportResponseOperationTypes = BulkImportResponseOperationTypes.USER_CREATION;
 
-        const defaultMsg: string = t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
-        "tableMessages.internalErrorMessage");
+        const defaultMsg: string = t(
+            "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
+                "tableMessages.internalErrorMessage"
+        );
 
         let statusMessages: Record<number, string> = {};
 
         if (operation?.method === HttpMethods.POST) {
             statusMessages = {
-                201: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "userCreatedMessage"),
-                202: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "userCreationAcceptedMessage"),
+                201: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userCreatedMessage"
+                ),
+                202: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userCreationAcceptedMessage"
+                ),
                 400: operation?.response?.includes(UserManagementConstants.USERNAME_REGEX_ERROR_CODE)
-                    ? t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "invalidUserNameFormatMessage")
-                    : t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "invalidDataMessage"),
-                409: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "userAlreadyExistsMessage"),
-                500: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "internalErrorMessage")
+                    ? t(
+                          "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                              "invalidUserNameFormatMessage"
+                      )
+                    : t(
+                          "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                              "invalidDataMessage"
+                      ),
+                409: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userAlreadyExistsMessage"
+                ),
+                500: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "internalErrorMessage"
+                )
             };
         } else if (operation?.method === HttpMethods.PATCH) {
             operationType = BulkImportResponseOperationTypes.ROLE_ASSIGNMENT;
             statusMessages = {
-                200: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                "userAssignmentSuccessMessage", { resource: resourceIdentifier }),
-                400: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                "userAssignmentFailedMessage", { resource: resourceIdentifier }),
-                500: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                "userAssignmentInternalErrorMessage", { resource: resourceIdentifier })
+                200: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userAssignmentSuccessMessage",
+                    { resource: resourceIdentifier }
+                ),
+                400: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userAssignmentFailedMessage",
+                    { resource: resourceIdentifier }
+                ),
+                500: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userAssignmentInternalErrorMessage",
+                    { resource: resourceIdentifier }
+                )
             };
         }
 
         // Functional update to update the bulk response summary.
         setBulkResponseSummary((prevSummary: BulkResponseSummary) => {
-            const successUserAssignment: number = (operation?.method === HttpMethods.PATCH && statusCode === 200) ?
-                prevSummary.successUserAssignment + 1 : prevSummary.successUserAssignment;
+            const successUserAssignment: number =
+                operation?.method === HttpMethods.PATCH && statusCode === 200
+                    ? prevSummary.successUserAssignment + 1
+                    : prevSummary.successUserAssignment;
 
-            const failedUserAssignment: number = (operation?.method === HttpMethods.PATCH && statusCode !== 200) ?
-                prevSummary.failedUserAssignment + 1 : prevSummary.failedUserAssignment;
+            const failedUserAssignment: number =
+                operation?.method === HttpMethods.PATCH && statusCode !== 200
+                    ? prevSummary.failedUserAssignment + 1
+                    : prevSummary.failedUserAssignment;
 
             const successUserCreation: number =
-                (operation?.method === HttpMethods.POST && (statusCode === 201 || statusCode === 202)) ?
-                    prevSummary.successUserCreation + 1 :
-                    prevSummary.successUserCreation;
+                operation?.method === HttpMethods.POST && (statusCode === 201 || statusCode === 202)
+                    ? prevSummary.successUserCreation + 1
+                    : prevSummary.successUserCreation;
 
             const failedUserCreation: number =
-                (operation?.method === HttpMethods.POST && (statusCode !== 201 && statusCode !== 202)) ?
-                    prevSummary.failedUserCreation + 1 :
-                    prevSummary.failedUserCreation;
+                operation?.method === HttpMethods.POST && statusCode !== 201 && statusCode !== 202
+                    ? prevSummary.failedUserCreation + 1
+                    : prevSummary.failedUserCreation;
 
             return {
                 ...prevSummary,
@@ -1306,56 +1348,83 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
         const statusCode: number = operation?.status?.code;
         let operationType: BulkImportResponseOperationTypes = BulkImportResponseOperationTypes.USER_CREATION;
 
-        const defaultMsg: string = t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
-        "tableMessages.internalErrorMessage");
+        const defaultMsg: string = t(
+            "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
+                "tableMessages.internalErrorMessage"
+        );
 
         let statusMessages: Record<number, string> = {};
 
         if (operation?.method === HttpMethods.POST) {
             statusMessages = {
-                201: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "userCreatedMessage"),
-                202: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "userCreationAcceptedMessage"),
+                201: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userCreatedMessage"
+                ),
+                202: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userCreationAcceptedMessage"
+                ),
                 400: operation?.response?.includes(UserManagementConstants.USERNAME_REGEX_ERROR_CODE)
-                    ? t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "invalidUserNameFormatMessage")
-                    : t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "invalidDataMessage"),
-                409: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "userAlreadyExistsMessage"),
-                500: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                    "internalErrorMessage")
+                    ? t(
+                          "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                              "invalidUserNameFormatMessage"
+                      )
+                    : t(
+                          "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                              "invalidDataMessage"
+                      ),
+                409: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userAlreadyExistsMessage"
+                ),
+                500: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "internalErrorMessage"
+                )
             };
         } else if (operation?.method === HttpMethods.PATCH) {
             operationType = BulkImportResponseOperationTypes.ROLE_ASSIGNMENT;
             statusMessages = {
-                200: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                "userAssignmentSuccessMessage", { resource: resourceIdentifier }),
-                400: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                "userAssignmentFailedMessage", { resource: resourceIdentifier }),
-                500: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
-                "userAssignmentInternalErrorMessage", { resource: resourceIdentifier })
+                200: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userAssignmentSuccessMessage",
+                    { resource: resourceIdentifier }
+                ),
+                400: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userAssignmentFailedMessage",
+                    { resource: resourceIdentifier }
+                ),
+                500: t(
+                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableMessages." +
+                        "userAssignmentInternalErrorMessage",
+                    { resource: resourceIdentifier }
+                )
             };
         }
 
         // Functional update to update the bulk response summary.
         setManualInviteesponseSummary((prevSummary: BulkResponseSummary) => {
-            const successUserAssignment: number = (operation?.method === HttpMethods.PATCH && statusCode === 200) ?
-                prevSummary.successUserAssignment + 1 : prevSummary.successUserAssignment;
+            const successUserAssignment: number =
+                operation?.method === HttpMethods.PATCH && statusCode === 200
+                    ? prevSummary.successUserAssignment + 1
+                    : prevSummary.successUserAssignment;
 
-            const failedUserAssignment: number = (operation?.method === HttpMethods.PATCH && statusCode !== 200) ?
-                prevSummary.failedUserAssignment + 1 : prevSummary.failedUserAssignment;
+            const failedUserAssignment: number =
+                operation?.method === HttpMethods.PATCH && statusCode !== 200
+                    ? prevSummary.failedUserAssignment + 1
+                    : prevSummary.failedUserAssignment;
 
             const successUserCreation: number =
-                (operation?.method === HttpMethods.POST && (statusCode === 201 || statusCode === 202)) ?
-                    prevSummary.successUserCreation + 1 :
-                    prevSummary.successUserCreation;
+                operation?.method === HttpMethods.POST && (statusCode === 201 || statusCode === 202)
+                    ? prevSummary.successUserCreation + 1
+                    : prevSummary.successUserCreation;
 
             const failedUserCreation: number =
-                (operation?.method === HttpMethods.POST && (statusCode !== 201 && statusCode !== 202)) ?
-                    prevSummary.failedUserCreation + 1 :
-                    prevSummary.failedUserCreation;
+                operation?.method === HttpMethods.POST && statusCode !== 201 && statusCode !== 202
+                    ? prevSummary.failedUserCreation + 1
+                    : prevSummary.failedUserCreation;
 
             return {
                 ...prevSummary,
@@ -1388,73 +1457,66 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
      * @returns - Status message.
      */
     const getStatusFromCode = (statusCode: number): BulkUserImportOperationStatus => {
-        if (statusCode === 201 || statusCode === 200) return t(
-            "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableStatus.success" );
-        if (statusCode === 202) return t(
-            "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableStatus.warning" );
+        if (statusCode === 201 || statusCode === 200)
+            return t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableStatus.success");
+        if (statusCode === 202)
+            return t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableStatus.warning");
 
-        return t(
-            "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableStatus.failed" );
+        return t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary.tableStatus.failed");
     };
 
     /**
      * Render Multiple Users mode selection section.
      */
     const resolveMultipleUsersModeSelection = (): ReactElement => {
-        return(
+        return (
             <Grid.Row>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                    <Button.Group
-                        size="large"
-                        labeled
-                        basic
-                    >
-                        {
-                            Object.values(MultipleInviteMode).map((mode: string, index: number) => {
-                                return(
-                                    <>
-                                        <Popup
-                                            trigger={ (
-                                                <div className={ "inline-button" } >
-                                                    <Button
-                                                        disabled={
-                                                            isAlphanumericUsername
-                                                            && mode === MultipleInviteMode.MANUAL
-                                                            && userConfig?.enableUsernameValidation
-                                                        }
-                                                        data-componentid={ `${componentId}-${mode}-tab-option` }
-                                                        key={ index }
-                                                        active={ configureMode === mode }
-                                                        className="multiple-users-config-mode-wizard-tab"
-                                                        content={
-                                                            UserManagementUtils.resolveMultipleInvitesDisplayName(
-                                                                mode as MultipleInviteMode)
-                                                        }
-                                                        onClick={ (
-                                                            event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-                                                            event.preventDefault();
-                                                            setConfigureMode(mode);
-                                                        } }
-                                                    />
-                                                </div>
-                                            ) }
-                                            content={
-                                                t("console:manage.features.user.modals.bulkImportUserWizard" +
-                                                ".wizardSummary.manualCreation.disabledHint" )
-                                            }
-                                            size="mini"
-                                            wide
-                                            disabled={
-                                                mode === MultipleInviteMode.META_FILE
-                                                || !isAlphanumericUsername
-                                                || !userConfig?.enableUsernameValidation
-                                            }
-                                            data-componentid={ `${componentId}-disabled-hint` }
-                                        />
-                                    </>
-                                );
-                            })
-                        }
+                <Grid.Column mobile={16} tablet={16} computer={16}>
+                    <Button.Group size="large" labeled basic>
+                        {Object.values(MultipleInviteMode).map((mode: string, index: number) => {
+                            return (
+                                <>
+                                    <Popup
+                                        trigger={
+                                            <div className={"inline-button"}>
+                                                <Button
+                                                    disabled={
+                                                        isAlphanumericUsername &&
+                                                        mode === MultipleInviteMode.MANUAL &&
+                                                        userConfig?.enableUsernameValidation
+                                                    }
+                                                    data-componentid={`${componentId}-${mode}-tab-option`}
+                                                    key={index}
+                                                    active={configureMode === mode}
+                                                    className="multiple-users-config-mode-wizard-tab"
+                                                    content={UserManagementUtils.resolveMultipleInvitesDisplayName(
+                                                        mode as MultipleInviteMode
+                                                    )}
+                                                    onClick={(
+                                                        event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+                                                    ) => {
+                                                        event.preventDefault();
+                                                        setConfigureMode(mode);
+                                                    }}
+                                                />
+                                            </div>
+                                        }
+                                        content={t(
+                                            "console:manage.features.user.modals.bulkImportUserWizard" +
+                                                ".wizardSummary.manualCreation.disabledHint"
+                                        )}
+                                        size="mini"
+                                        wide
+                                        disabled={
+                                            mode === MultipleInviteMode.META_FILE ||
+                                            !isAlphanumericUsername ||
+                                            !userConfig?.enableUsernameValidation
+                                        }
+                                        data-componentid={`${componentId}-disabled-hint`}
+                                    />
+                                </>
+                            );
+                        })}
                     </Button.Group>
                 </Grid.Column>
             </Grid.Row>
@@ -1466,52 +1528,40 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
      * @returns true if the manual invite button should be disabled.
      */
     const isManualInviteButtonDisabled = (): boolean => {
-        return isLoading
-            || isSubmitting
-            || hasError
-            || !emailData
-            || emailData?.length === 0;
+        return isLoading || isSubmitting || hasError || !emailData || emailData?.length === 0;
     };
 
     const userStoreDropDown = (): ReactElement => {
         return (
-            <Form.Field required={ true }>
+            <Form.Field required={true}>
                 <InputLabel
                     htmlFor="tags-filled"
                     disableAnimation
-                    shrink={ false }
+                    shrink={false}
                     margin="dense"
                     className="spacing-bottom"
-                    data-componentid={ `${componentId}-userstore-label` }
+                    data-componentid={`${componentId}-userstore-label`}
                 >
-                    { t("console:manage.features.user.forms.addUserForm." +
-                        "inputs.domain.label") }
+                    {t("console:manage.features.user.forms.addUserForm." + "inputs.domain.label")}
                 </InputLabel>
                 <Dropdown
                     className="mt-2"
                     fluid
                     selection
                     labeled
-                    options={ readWriteUserStoresList }
-                    loading={ false }
-                    data-testid={
-                        `${componentId}-userstore-dropdown`
-                    }
-                    data-componentid={
-                        `${componentId}-userstore-dropdown`
-                    }
+                    options={readWriteUserStoresList}
+                    loading={false}
+                    data-testid={`${componentId}-userstore-dropdown`}
+                    data-componentid={`${componentId}-userstore-dropdown`}
                     name="userstore"
-                    disabled={ false }
-                    readOnly={ false }
-                    value={ selectedUserStore }
-                    onChange={
-                        (e: React.ChangeEvent<HTMLInputElement>,
-                            data: DropdownProps) => {
-                            setSelectedUserStore(data.value.toString());
-                        }
-                    }
-                    tabIndex={ 1 }
-                    maxLength={ 60 }
+                    disabled={false}
+                    readOnly={false}
+                    value={selectedUserStore}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>, data: DropdownProps) => {
+                        setSelectedUserStore(data.value.toString());
+                    }}
+                    tabIndex={1}
+                    maxLength={60}
                 />
             </Form.Field>
         );
@@ -1521,317 +1571,273 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
      * Render Multiple Users configuration section.
      */
     const resolveMultipleUsersConfiguration = (): ReactElement => {
-
         if (configureMode == MultipleInviteMode.MANUAL) {
             return (
                 <>
-                    { manualInviteAlert
-                            && (
-                                <Grid.Row columns={ 1 }>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                        { manualInviteAlertComponent }
+                    {manualInviteAlert && (
+                        <Grid.Row columns={1}>
+                            <Grid.Column mobile={16} tablet={16} computer={16}>
+                                {manualInviteAlertComponent}
+                            </Grid.Column>
+                        </Grid.Row>
+                    )}
+                    {!showManualInviteTable ? (
+                        <>
+                            {!hideUserStoreDropdown() && (
+                                <Grid.Row columns={1} className="mb-0 pb-0">
+                                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                                        {userStoreDropDown()}
                                     </Grid.Column>
                                 </Grid.Row>
-                            )
-                    }
-                    {
-                        !showManualInviteTable
-                            ? (
-                                <>
-                                    { !hideUserStoreDropdown() &&
-                                        (<Grid.Row columns={ 1 } className="mb-0 pb-0">
-                                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                                { userStoreDropDown() }
-                                            </Grid.Column>
-                                        </Grid.Row>)
-                                    }
-                                    <Autocomplete
-                                        size="small"
-                                        limitTags={ userConfig.bulkUserImportLimit.inviteEmails }
-                                        fullWidth
-                                        multiple
-                                        id="tags-filled"
-                                        options={ optionsArray.map((option: string) => option) }
-                                        defaultValue={ [] }
-                                        freeSolo
-                                        renderTags={ (
-                                            value: readonly string[],
-                                            getTagProps: AutocompleteRenderGetTagProps
-                                        ) =>
-                                            value.map((option: string, index: number) => (
-                                                <Chip
-                                                    key={ index }
-                                                    size="small"
-                                                    sx={ { marginLeft: 1 } }
-                                                    className="oxygen-chip-beta"
-                                                    label={ option }
-                                                    { ...getTagProps({ index }) }
-                                                />
-                                            ))
-                                        }
-                                        renderInput={ (params: AutocompleteRenderInputParams) => (
-                                            <>
-                                                <InputLabel
-                                                    htmlFor="tags-filled"
-                                                    disableAnimation
-                                                    shrink={ false }
-                                                    margin="dense"
-                                                    className="mt-2"
-                                                    data-componentid={ `${componentId}-emails-label` }
-                                                >
-                                                    {
-                                                        t("console:manage.features.user.modals.bulkImportUserWizard" +
-                                                        ".wizardSummary.manualCreation.emailsLabel")
-                                                    }
-                                                </InputLabel>
-                                                <TextField
-                                                    id="tags-filled"
-                                                    margin="normal"
-                                                    error={ isEmailDataError }
-                                                    helperText= {
-                                                        isEmailDataError
-                                                        && emailDataError
-                                                    }
-                                                    InputLabelProps= { {
-                                                        required: true
-                                                    } }
-                                                    { ...params }
-                                                    required
-                                                    variant="outlined"
-                                                    placeholder={
-                                                        t("console:manage.features.user.modals.bulkImportUserWizard" +
-                                                        ".wizardSummary.manualCreation.emailsPlaceholder")
-                                                    }
-                                                    data-componentid={ `${componentId}-email-input` }
-                                                />
-                                            </>
-                                        ) }
-                                        onChange={ (
-                                            event: React.SyntheticEvent<Element, Event>,
-                                            value: string[]
-                                        ) => {
-                                            setEmailData(value);
-                                            validateEmail(value);
-                                        } }
-                                        onInputChange={ () => {
-                                            setIsEmailDataError(false);
-                                        } }
-                                    />
-                                    <Hint>
-                                        { t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary" +
-                                        ".manualCreation.hint" ) }
-                                    </Hint>
-                                    {
-                                        ( <Autocomplete
+                            )}
+                            <Autocomplete
+                                size="small"
+                                limitTags={userConfig.bulkUserImportLimit.inviteEmails}
+                                fullWidth
+                                multiple
+                                id="tags-filled"
+                                options={optionsArray.map((option: string) => option)}
+                                defaultValue={[]}
+                                freeSolo
+                                renderTags={(value: readonly string[], getTagProps: AutocompleteRenderGetTagProps) =>
+                                    value.map((option: string, index: number) => (
+                                        <Chip
+                                            key={index}
                                             size="small"
-                                            multiple
-                                            fullWidth
-                                            disablePortal
-                                            id="combo-box-demo"
-                                            options={
-                                                groupList?.Resources ?? []
-                                            }
-                                            getOptionLabel={ (option: GroupsInterface) => option?.displayName }
-                                            renderOption={ (
-                                                props: React.HTMLAttributes<HTMLLIElement>,
-                                                option: RolesInterface
-                                            ) => (
-                                                <Box
-                                                    component="li"
-                                                    { ...props }
-                                                >
-                                                    <Typography
-                                                        sx={ { fontWeight: 500 } }
-                                                    >
-                                                        { option?.displayName }
-                                                    </Typography>
-                                                </Box>
-                                            ) }
-                                            renderInput={ (params: AutocompleteRenderInputParams) =>
-                                                (<>
-                                                    <InputLabel
-                                                        htmlFor="tags-filled"
-                                                        disableAnimation
-                                                        shrink={ false }
-                                                        margin="dense"
-                                                        className="mt-2"
-                                                        data-componentid={ `${componentId}-roles-label` }
-                                                    >
-                                                        {
-                                                            t("console:manage.features.user.modals." +
-                                                            "bulkImportUserWizard.wizardSummary." +
-                                                            "manualCreation.groupsLabel")
-                                                        }
-                                                    </InputLabel>
-                                                    <TextField
-                                                        id="tags-filled"
-                                                        margin="normal"
-                                                        InputLabelProps= { {
-                                                            required: true
-                                                        } }
-                                                        { ...params }
-                                                        required
-                                                        variant="outlined"
-                                                        placeholder={
-                                                            t("console:manage.features.user.modals." +
-                                                            "bulkImportUserWizard.wizardSummary." +
-                                                            "manualCreation.groupsPlaceholder")
-                                                        }
-                                                        data-componentid={ `${componentId}-roles-input` }
-
-                                                    />
-                                                </>)
-                                            }
-                                            onChange={ (
-                                                event: React.SyntheticEvent<Element, Event>,
-                                                value: RolesInterface[]
-                                            ) => {
-                                                setGroupsData(value);
-                                            } }
-                                            renderTags={ (
-                                                value: RolesInterface[],
-                                                getTagProps: AutocompleteRenderGetTagProps
-                                            ) =>
-                                                value.map((option: RolesInterface, index: number) => (
-                                                    <Chip
-                                                        key={ index }
-                                                        size="small"
-                                                        className="oxygen-chip-beta"
-                                                        label={
-                                                            (<label>
-                                                                { option?.displayName }
-                                                            </label>)
-                                                        }
-                                                        { ...getTagProps({ index }) }
-                                                    />
-                                                ))
-                                            }
-                                        />)
-                                    }
-                                </>
-                            )
-                            : (
-                                <>
-                                    { manualInviteAlert && (
-                                        <Grid.Row columns={ 1 }>
-                                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                                { manualInviteAlertComponent }
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    ) }
-                                    <BulkImportResponseList
-                                        isLoading={ isSubmitting }
-                                        data-componentid={ `${componentId}-manual-response-list` }
-                                        hasError={ hasError }
-                                        responseList={ manualInviteResponse }
-                                        bulkResponseSummary={ manualInviteResponseSummary }
-                                        successAlert={ (
-                                            <Alert
-                                                severity="success"
-                                                data-componentid={ `${componentId}-success-alert` }
+                                            sx={{ marginLeft: 1 }}
+                                            className="oxygen-chip-beta"
+                                            label={option}
+                                            {...getTagProps({ index })}
+                                        />
+                                    ))
+                                }
+                                renderInput={(params: AutocompleteRenderInputParams) => (
+                                    <>
+                                        <InputLabel
+                                            htmlFor="tags-filled"
+                                            disableAnimation
+                                            shrink={false}
+                                            margin="dense"
+                                            className="mt-2"
+                                            data-componentid={`${componentId}-emails-label`}
+                                        >
+                                            {t(
+                                                "console:manage.features.user.modals.bulkImportUserWizard" +
+                                                    ".wizardSummary.manualCreation.emailsLabel"
+                                            )}
+                                        </InputLabel>
+                                        <TextField
+                                            id="tags-filled"
+                                            margin="normal"
+                                            error={isEmailDataError}
+                                            helperText={isEmailDataError && emailDataError}
+                                            InputLabelProps={{
+                                                required: true
+                                            }}
+                                            {...params}
+                                            required
+                                            variant="outlined"
+                                            placeholder={t(
+                                                "console:manage.features.user.modals.bulkImportUserWizard" +
+                                                    ".wizardSummary.manualCreation.emailsPlaceholder"
+                                            )}
+                                            data-componentid={`${componentId}-email-input`}
+                                        />
+                                    </>
+                                )}
+                                onChange={(event: React.SyntheticEvent<Element, Event>, value: string[]) => {
+                                    setEmailData(value);
+                                    validateEmail(value);
+                                }}
+                                onInputChange={() => {
+                                    setIsEmailDataError(false);
+                                }}
+                            />
+                            <Hint>
+                                {t(
+                                    "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary" +
+                                        ".manualCreation.hint"
+                                )}
+                            </Hint>
+                            {
+                                <Autocomplete
+                                    size="small"
+                                    multiple
+                                    fullWidth
+                                    disablePortal
+                                    id="combo-box-demo"
+                                    options={groupList?.Resources ?? []}
+                                    getOptionLabel={(option: GroupsInterface) => option?.displayName}
+                                    renderOption={(
+                                        props: React.HTMLAttributes<HTMLLIElement>,
+                                        option: RolesInterface
+                                    ) => (
+                                        <Box component="li" {...props}>
+                                            <Typography sx={{ fontWeight: 500 }}>{option?.displayName}</Typography>
+                                        </Box>
+                                    )}
+                                    renderInput={(params: AutocompleteRenderInputParams) => (
+                                        <>
+                                            <InputLabel
+                                                htmlFor="tags-filled"
+                                                disableAnimation
+                                                shrink={false}
+                                                margin="dense"
+                                                className="mt-2"
+                                                data-componentid={`${componentId}-roles-label`}
                                             >
-                                                <AlertTitle data-componentid={ `${componentId}-success-alert-title` }>
-                                                    {
-                                                        t("console:manage.features.user.modals.bulkImportUserWizard." +
-                                                    "wizardSummary.manualCreation.alerts.creationSuccess.message")
-                                                    }
-                                                </AlertTitle>
-                                                {
-                                                    t("console:manage.features.user.modals.bulkImportUserWizard." +
-                                                "wizardSummary.manualCreation.alerts.creationSuccess.description")
-                                                }
-                                            </Alert>
-                                        ) }
-                                    />
-                                </>
-                            )
-                    }
+                                                {t(
+                                                    "console:manage.features.user.modals." +
+                                                        "bulkImportUserWizard.wizardSummary." +
+                                                        "manualCreation.groupsLabel"
+                                                )}
+                                            </InputLabel>
+                                            <TextField
+                                                id="tags-filled"
+                                                margin="normal"
+                                                InputLabelProps={{
+                                                    required: true
+                                                }}
+                                                {...params}
+                                                required
+                                                variant="outlined"
+                                                placeholder={t(
+                                                    "console:manage.features.user.modals." +
+                                                        "bulkImportUserWizard.wizardSummary." +
+                                                        "manualCreation.groupsPlaceholder"
+                                                )}
+                                                data-componentid={`${componentId}-roles-input`}
+                                            />
+                                        </>
+                                    )}
+                                    onChange={(
+                                        event: React.SyntheticEvent<Element, Event>,
+                                        value: RolesInterface[]
+                                    ) => {
+                                        setGroupsData(value);
+                                    }}
+                                    renderTags={(value: RolesInterface[], getTagProps: AutocompleteRenderGetTagProps) =>
+                                        value.map((option: RolesInterface, index: number) => (
+                                            <Chip
+                                                key={index}
+                                                size="small"
+                                                className="oxygen-chip-beta"
+                                                label={<label>{option?.displayName}</label>}
+                                                {...getTagProps({ index })}
+                                            />
+                                        ))
+                                    }
+                                />
+                            }
+                        </>
+                    ) : (
+                        <>
+                            {manualInviteAlert && (
+                                <Grid.Row columns={1}>
+                                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                                        {manualInviteAlertComponent}
+                                    </Grid.Column>
+                                </Grid.Row>
+                            )}
+                            <BulkImportResponseList
+                                isLoading={isSubmitting}
+                                data-componentid={`${componentId}-manual-response-list`}
+                                hasError={hasError}
+                                responseList={manualInviteResponse}
+                                bulkResponseSummary={manualInviteResponseSummary}
+                                successAlert={
+                                    <Alert severity="success" data-componentid={`${componentId}-success-alert`}>
+                                        <AlertTitle data-componentid={`${componentId}-success-alert-title`}>
+                                            {t(
+                                                "console:manage.features.user.modals.bulkImportUserWizard." +
+                                                    "wizardSummary.manualCreation.alerts.creationSuccess.message"
+                                            )}
+                                        </AlertTitle>
+                                        {t(
+                                            "console:manage.features.user.modals.bulkImportUserWizard." +
+                                                "wizardSummary.manualCreation.alerts.creationSuccess.description"
+                                        )}
+                                    </Alert>
+                                }
+                            />
+                        </>
+                    )}
                 </>
             );
         } else if (configureMode === MultipleInviteMode.META_FILE) {
-            return (
-                !showResponseView
-                    ? (
-                        <>
-                            { alert
-                                && (
-                                    <Grid.Row columns={ 1 }>
-                                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                            { alertComponent }
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                )
-                            }
-                            { !isLoading && !hideUserStoreDropdown() &&
-                                (
-                                    <Grid.Row columns={ 1 } className="mb-0 pb-0">
-                                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                            { userStoreDropDown() }
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                )
-                            }
-                            <Grid.Row columns={ 1 } className="pt-0">
-                                <Grid.Column mobile={ 16 }>
-                                    <FilePicker
-                                        key={ 1 }
-                                        fileStrategy={ CSV_FILE_PROCESSING_STRATEGY }
-                                        file={ selectedCSVFile }
-                                        onChange={ (
-                                            result: PickerResult<{
-                                            headers: string[];
-                                            items: string[][];
-                                        }>) => {
-                                            setSelectedCSVFile(result.file);
-                                            setUserData(result.serialized);
-                                            setAlert(null);
-                                            setHasError(false);
-                                        } }
-                                        uploadButtonText="Upload CSV File"
-                                        dropzoneText="Drag and drop a CSV file here."
-                                        data-testid={ `${componentId}-form-wizard-csv-file-picker` }
-                                        data-componentid={ `${componentId}-form-wizard-csv-file-picker` }
-                                        icon={ getCertificateIllustrations().uploadPlaceholder }
-                                        placeholderIcon={ <Icon name="file code" size="huge" /> }
-                                        normalizeStateOnRemoveOperations={ true }
-                                        emptyFileError={ false }
-                                        hidePasteOption={ true }
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>
-                            {
-                                <Hint>
-                                    { t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary" +
-                                    ".fileBased.hint" ) }
-                                </Hint>
-                            }
-                        </>
-                    )
-                    : (
-                        <>
-                            { alert &&
-                                (
-                                    <Grid.Row columns={ 1 }>
-                                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                            { alertComponent }
-                                        </Grid.Column>
-                                    </Grid.Row>
-
-                                )
-                            }
-                            { !fileModeTimeOutError &&
-                                (
-                                    <BulkImportResponseList
-                                        isLoading={ isSubmitting }
-                                        data-componentid={ `${componentId}-response-list` }
-                                        hasError={ hasError }
-                                        responseList={ response }
-                                        bulkResponseSummary={ bulkResponseSummary }
-                                    />
-                                )
-                            }
-                        </>
-                    )
+            return !showResponseView ? (
+                <>
+                    {alert && (
+                        <Grid.Row columns={1}>
+                            <Grid.Column mobile={16} tablet={16} computer={16}>
+                                {alertComponent}
+                            </Grid.Column>
+                        </Grid.Row>
+                    )}
+                    {!isLoading && !hideUserStoreDropdown() && (
+                        <Grid.Row columns={1} className="mb-0 pb-0">
+                            <Grid.Column mobile={16} tablet={16} computer={16}>
+                                {userStoreDropDown()}
+                            </Grid.Column>
+                        </Grid.Row>
+                    )}
+                    <Grid.Row columns={1} className="pt-0">
+                        <Grid.Column mobile={16}>
+                            <FilePicker
+                                key={1}
+                                fileStrategy={CSV_FILE_PROCESSING_STRATEGY}
+                                file={selectedCSVFile}
+                                onChange={(
+                                    result: PickerResult<{
+                                        headers: string[];
+                                        items: string[][];
+                                    }>
+                                ) => {
+                                    setSelectedCSVFile(result.file);
+                                    setUserData(result.serialized);
+                                    setAlert(null);
+                                    setHasError(false);
+                                }}
+                                uploadButtonText="Upload CSV File"
+                                dropzoneText="Drag and drop a CSV file here."
+                                data-testid={`${componentId}-form-wizard-csv-file-picker`}
+                                data-componentid={`${componentId}-form-wizard-csv-file-picker`}
+                                icon={getCertificateIllustrations().uploadPlaceholder}
+                                placeholderIcon={<Icon name="file code" size="huge" />}
+                                normalizeStateOnRemoveOperations={true}
+                                emptyFileError={false}
+                                hidePasteOption={true}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                    {
+                        <Hint>
+                            {t(
+                                "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary" +
+                                    ".fileBased.hint"
+                            )}
+                        </Hint>
+                    }
+                </>
+            ) : (
+                <>
+                    {alert && (
+                        <Grid.Row columns={1}>
+                            <Grid.Column mobile={16} tablet={16} computer={16}>
+                                {alertComponent}
+                            </Grid.Column>
+                        </Grid.Row>
+                    )}
+                    {!fileModeTimeOutError && (
+                        <BulkImportResponseList
+                            isLoading={isSubmitting}
+                            data-componentid={`${componentId}-response-list`}
+                            hasError={hasError}
+                            responseList={response}
+                            bulkResponseSummary={bulkResponseSummary}
+                        />
+                    )}
+                </>
             );
         }
     };
@@ -1846,66 +1852,76 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
             <ModalWithSidePanel.SidePanel>
                 <ModalWithSidePanel.Header className="wizard-header help-panel-header muted">
                     <div className="help-panel-header-text">
-                        { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.heading") }
+                        {t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.heading")}
                     </div>
                 </ModalWithSidePanel.Header>
                 <ModalWithSidePanel.Content>
-                    <Suspense fallback={ <ContentLoader/> }>
+                    <Suspense fallback={<ContentLoader />}>
                         <Heading as="h5">
-                            { t("console:manage.features.user.modals.bulkImportUserWizard.sidePanel.manual") }
+                            {t("console:manage.features.user.modals.bulkImportUserWizard.sidePanel.manual")}
                         </Heading>
                         <p>
-                            { t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary" +
-                                ".manualCreation.hint" ) }
+                            {t(
+                                "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary" +
+                                    ".manualCreation.hint"
+                            )}
                         </p>
                         <Divider />
                         <Heading as="h5">
-                            { t("console:manage.features.user.modals.bulkImportUserWizard.sidePanel.fileBased") }
+                            {t("console:manage.features.user.modals.bulkImportUserWizard.sidePanel.fileBased")}
                         </Heading>
                         <p>
-                            { t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary" +
-                                ".fileBased.hint" ) }
+                            {t(
+                                "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary" +
+                                    ".fileBased.hint"
+                            )}
                         </p>
                         <Heading as="h6">
-                            { t("console:manage.features.user.modals.bulkImportUserWizard.sidePanel." +
-                                "fileFormatTitle") }
+                            {t(
+                                "console:manage.features.user.modals.bulkImportUserWizard.sidePanel." +
+                                    "fileFormatTitle"
+                            )}
                         </Heading>
                         <p>
-                            {
-                                !isSubOrganization()
-                                    ? (
-                                        <Trans
-                                            i18nKey={
-                                                "console:manage.features.user.modals.bulkImportUserWizard.sidePanel." +
-                                            "fileFormatContent"
-                                            }
-                                        >
-                                            Headers of the CSV file should be user attributes that are mapped to
-                                            local <Link onClick={ navigateToSCIMAttributesPage }>attribute names</Link>.
-                                        </Trans>
-                                    )
-                                    : (
-                                        <Trans
-                                            i18nKey={
-                                                "console:manage.features.user.modals.bulkImportUserWizard.sidePanel." +
-                                                "fileFormatContent"
-                                            }
-                                        >
-                                            Headers of the CSV file should be user attributes that are mapped to
-                                            <b>local attribute</b> names.
-                                        </Trans>
-                                    )
-                            }
-
+                            {!isSubOrganization() ? (
+                                <Trans
+                                    i18nKey={
+                                        "console:manage.features.user.modals.bulkImportUserWizard.sidePanel." +
+                                        "fileFormatContent"
+                                    }
+                                >
+                                    Headers of the CSV file should be user attributes that are mapped to local{" "}
+                                    <Link onClick={navigateToSCIMAttributesPage}>attribute names</Link>.
+                                </Trans>
+                            ) : (
+                                <Trans
+                                    i18nKey={
+                                        "console:manage.features.user.modals.bulkImportUserWizard.sidePanel." +
+                                        "fileFormatContent"
+                                    }
+                                >
+                                    Headers of the CSV file should be user attributes that are mapped to
+                                    <b>local attribute</b> names.
+                                </Trans>
+                            )}
                         </p>
-                        <p> { t("console:manage.features.user.modals.bulkImportUserWizard.sidePanel." +
-                                "fileFormatSampleHeading") }</p>
+                        <p>
+                            {" "}
+                            {t(
+                                "console:manage.features.user.modals.bulkImportUserWizard.sidePanel." +
+                                    "fileFormatSampleHeading"
+                            )}
+                        </p>
                         <p>
                             <code>
-                                username,givenname,emailaddress,groups<br />
-                                user1,john,john@test.com,group1|group2<br/>
-                                user2,jake,jake@test.com,group2<br/>
-                                user3,jane,jane@test.com,group1<br/>
+                                username,givenname,emailaddress,groups
+                                <br />
+                                user1,john,john@test.com,group1|group2
+                                <br />
+                                user2,jake,jake@test.com,group2
+                                <br />
+                                user3,jane,jane@test.com,group1
+                                <br />
                             </code>
                         </p>
                     </Suspense>
@@ -1914,130 +1930,126 @@ export const BulkImportUserWizard: FunctionComponent<BulkImportUserInterface> = 
         );
     };
 
-    const navigateToSCIMAttributesPage = () => history.push(AppConstants.getPaths()
-        .get("ATTRIBUTE_MAPPINGS")
-        .replace(":type", ClaimManagementConstants.SCIM));
+    const navigateToSCIMAttributesPage = () =>
+        history.push(
+            AppConstants.getPaths()
+                .get("ATTRIBUTE_MAPPINGS")
+                .replace(":type", ClaimManagementConstants.SCIM)
+        );
 
     return (
         <ModalWithSidePanel
-            data-testid={ componentId }
-            data-componentid={ componentId }
-            open={ true }
+            data-testid={componentId}
+            data-componentid={componentId}
+            open={true}
             className="wizard application-create-wizard"
             dimmer="blurring"
             size="small"
-            onClose={ closeWizard }
-            closeOnDimmerClick={ false }
+            onClose={closeWizard}
+            closeOnDimmerClick={false}
             closeOnEscape
         >
             <ModalWithSidePanel.MainPanel>
                 <ModalWithSidePanel.Header className="wizard-header">
-                    { t("console:manage.features.user.modals.bulkImportUserWizard.title") }
-                    <Heading as="h6">
-                        { t("console:manage.features.user.modals.bulkImportUserWizard.subTitle") }
-                    </Heading>
+                    {t("console:manage.features.user.modals.bulkImportUserWizard.title")}
+                    <Heading as="h6">{t("console:manage.features.user.modals.bulkImportUserWizard.subTitle")}</Heading>
                 </ModalWithSidePanel.Header>
 
                 <ModalWithSidePanel.Content className="content-container">
                     <Grid>
                         <>
-                            <Grid.Row columns={ 1 }>
+                            <Grid.Row columns={1}>
                                 <Grid.Column>
                                     <Message
                                         icon="mail"
-                                        content={ t("console:manage.features.user.modals.bulkImportUserWizard" +
-                                        ".wizardSummary.inviteEmailInfo") }
+                                        content={t(
+                                            "console:manage.features.user.modals.bulkImportUserWizard" +
+                                                ".wizardSummary.inviteEmailInfo"
+                                        )}
                                         hideDefaultIcon
                                     />
                                 </Grid.Column>
                             </Grid.Row>
                         </>
-                        { resolveMultipleUsersModeSelection() }
-                        { resolveMultipleUsersConfiguration() }
+                        {resolveMultipleUsersModeSelection()}
+                        {resolveMultipleUsersConfiguration()}
                     </Grid>
-
                 </ModalWithSidePanel.Content>
                 <ModalWithSidePanel.Actions>
                     <Grid>
-                        {
-                            configureMode == MultipleInviteMode.MANUAL
-                                ? (
-                                    <Grid.Row column={ 1 }>
-                                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                            <LinkButton
-                                                data-testid={ `${componentId}-close-button` }
-                                                data-componentid={ `${componentId}-close-button` }
-                                                floated="left"
-                                                onClick={ () => {
-                                                    closeWizard();
-                                                    setshowManualInviteTable(false);
-                                                } }
-                                                disabled={ isSubmitting }
-                                            >
-                                                { t("common:close") }
-                                            </LinkButton>
-                                        </Grid.Column>
-                                        { !showManualInviteTable || isSubmitting
-                                            ? (
-                                                <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                                    <PrimaryButton
-                                                        data-testid={ `${componentId}-invite-button` }
-                                                        data-componentid={ `${componentId}-invite-button` }
-                                                        floated="right"
-                                                        onClick={ manualInviteMultipleUsers }
-                                                        loading={ isSubmitting }
-                                                        disabled={ isManualInviteButtonDisabled() }
-                                                    >
-                                                        { t("console:manage.features.user.modals." +
-                                                    "bulkImportUserWizard.wizardSummary.manualCreation.primaryButton") }
-                                                    </PrimaryButton>
-                                                </Grid.Column>
-                                            )
-                                            : null
-                                        }
-                                    </Grid.Row>
-                                ) : (
-                                    <Grid.Row column={ 1 }>
-                                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                            <LinkButton
-                                                data-testid={ `${componentId}-cancel-button` }
-                                                data-componentid={ `${componentId}-cancel-button` }
-                                                floated="left"
-                                                onClick={ () => {
-                                                    closeWizard();
-                                                    setShowResponseView(false);
-                                                } }
-                                                disabled={ isSubmitting }
-                                            >
-                                                { t("common:close") }
-                                            </LinkButton>
-                                        </Grid.Column>
-                                        { !showResponseView || isSubmitting
-                                            ? (
-                                                <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                                    <PrimaryButton
-                                                        data-testid={ `${componentId}-finish-button` }
-                                                        data-componentid={ `${componentId}-finish-button` }
-                                                        floated="right"
-                                                        onClick={ handleBulkUserImport }
-                                                        loading={ isSubmitting }
-                                                        disabled={ isLoading || isSubmitting || hasError
-                                                        || !selectedCSVFile
-                                                        }
-                                                    >
-                                                        { t("console:manage.features.user.modals." +
-                                                    "bulkImportUserWizard.buttons.import") }
-                                                    </PrimaryButton>
-                                                </Grid.Column>
-                                            )
-                                            : null }
-                                    </Grid.Row>
-                                )
-                        }
+                        {configureMode == MultipleInviteMode.MANUAL ? (
+                            <Grid.Row column={1}>
+                                <Grid.Column mobile={8} tablet={8} computer={8}>
+                                    <LinkButton
+                                        data-testid={`${componentId}-close-button`}
+                                        data-componentid={`${componentId}-close-button`}
+                                        floated="left"
+                                        onClick={() => {
+                                            closeWizard();
+                                            setshowManualInviteTable(false);
+                                        }}
+                                        disabled={isSubmitting}
+                                    >
+                                        {t("common:close")}
+                                    </LinkButton>
+                                </Grid.Column>
+                                {!showManualInviteTable || isSubmitting ? (
+                                    <Grid.Column mobile={8} tablet={8} computer={8}>
+                                        <PrimaryButton
+                                            data-testid={`${componentId}-invite-button`}
+                                            data-componentid={`${componentId}-invite-button`}
+                                            floated="right"
+                                            onClick={manualInviteMultipleUsers}
+                                            loading={isSubmitting}
+                                            disabled={isManualInviteButtonDisabled()}
+                                        >
+                                            {t(
+                                                "console:manage.features.user.modals." +
+                                                    "bulkImportUserWizard.wizardSummary.manualCreation.primaryButton"
+                                            )}
+                                        </PrimaryButton>
+                                    </Grid.Column>
+                                ) : null}
+                            </Grid.Row>
+                        ) : (
+                            <Grid.Row column={1}>
+                                <Grid.Column mobile={8} tablet={8} computer={8}>
+                                    <LinkButton
+                                        data-testid={`${componentId}-cancel-button`}
+                                        data-componentid={`${componentId}-cancel-button`}
+                                        floated="left"
+                                        onClick={() => {
+                                            closeWizard();
+                                            setShowResponseView(false);
+                                        }}
+                                        disabled={isSubmitting}
+                                    >
+                                        {t("common:close")}
+                                    </LinkButton>
+                                </Grid.Column>
+                                {!showResponseView || isSubmitting ? (
+                                    <Grid.Column mobile={8} tablet={8} computer={8}>
+                                        <PrimaryButton
+                                            data-testid={`${componentId}-finish-button`}
+                                            data-componentid={`${componentId}-finish-button`}
+                                            floated="right"
+                                            onClick={handleBulkUserImport}
+                                            loading={isSubmitting}
+                                            disabled={isLoading || isSubmitting || hasError || !selectedCSVFile}
+                                        >
+                                            {t(
+                                                "console:manage.features.user.modals." +
+                                                    "bulkImportUserWizard.buttons.import"
+                                            )}
+                                        </PrimaryButton>
+                                    </Grid.Column>
+                                ) : null}
+                            </Grid.Row>
+                        )}
                     </Grid>
                 </ModalWithSidePanel.Actions>
             </ModalWithSidePanel.MainPanel>
-            { renderHelpPanel() }
+            {renderHelpPanel()}
         </ModalWithSidePanel>
     );
 };

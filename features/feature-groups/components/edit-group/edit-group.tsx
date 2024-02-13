@@ -21,6 +21,8 @@ import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertLevels, FeatureAccessConfigInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { GroupsInterface, GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
+import { GenericOrganization } from "@wso2is/feature-organizations.common/models/organizations";
+import { OrganizationUtils } from "@wso2is/feature-organizations.common/utils";
 import { getUsersList } from "@wso2is/feature-users.common/api/users";
 import { UserManagementConstants } from "@wso2is/feature-users.common/constants/user-management-constants";
 import { UserBasicInterface, UserListInterface } from "@wso2is/feature-users.common/models/user";
@@ -38,8 +40,6 @@ import { GroupRolesV1List } from "./edit-group-roles-v1";
 import { GroupUsersList } from "./edit-group-users";
 import { FeatureConfigInterface } from "../../../core/models";
 import { AppState } from "../../../core/store";
-import { GenericOrganization } from "../../../organizations/models/organizations";
-import { OrganizationUtils } from "../../../organizations/utils";
 import { GroupConstants } from "../../constants";
 import useGroupManagement from "../../hooks/use-group-management";
 
@@ -75,15 +75,7 @@ interface EditGroupProps extends SBACInterface<FeatureConfigInterface> {
  * @param props - contains group details to be edited.
  */
 export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupProps): ReactElement => {
-
-    const {
-        groupId,
-        group,
-        isLoading,
-        onGroupUpdate,
-        featureConfig,
-        readOnlyUserStores
-    } = props;
+    const { groupId, group, isLoading, onGroupUpdate, featureConfig, readOnlyUserStores } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
@@ -92,82 +84,89 @@ export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupPro
     const { activeTab, updateActiveTab } = useGroupManagement();
 
     const usersFeatureConfig: FeatureAccessConfigInterface = useSelector(
-        (state: AppState) => state?.config?.ui?.features?.users);
+        (state: AppState) => state?.config?.ui?.features?.users
+    );
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const roleV1Enabled: boolean = UIConfig?.legacyMode?.rolesV1;
 
-    const [ isUsersFetchRequestLoading, setIsUsersFetchRequestLoading ] = useState<boolean>(true);
-    const [ usersList, setUsersList ] = useState<UserBasicInterface[]>([]);
-    const [ selectedUsersList, setSelectedUsersList ] = useState<UserBasicInterface[]>([]);
-    const [ isReadOnly, setReadOnly ] = useState<boolean>(false);
+    const [isUsersFetchRequestLoading, setIsUsersFetchRequestLoading] = useState<boolean>(true);
+    const [usersList, setUsersList] = useState<UserBasicInterface[]>([]);
+    const [selectedUsersList, setSelectedUsersList] = useState<UserBasicInterface[]>([]);
+    const [isReadOnly, setReadOnly] = useState<boolean>(false);
 
     const currentOrganization: GenericOrganization = useSelector((state: AppState) => state.organization.organization);
-    const isSuperOrganization: boolean = useMemo(() =>
-        OrganizationUtils.isSuperOrganization(currentOrganization), [ currentOrganization ]);
+    const isSuperOrganization: boolean = useMemo(() => OrganizationUtils.isSuperOrganization(currentOrganization), [
+        currentOrganization
+    ]);
 
     const isUserReadOnly: boolean = useMemo(() => {
-        return !isFeatureEnabled(usersFeatureConfig,
-            UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")) ||
-            !hasRequiredScopes(usersFeatureConfig,
-                usersFeatureConfig?.scopes?.update, allowedScopes);
-    }, [ usersFeatureConfig, allowedScopes ]);
+        return (
+            !isFeatureEnabled(usersFeatureConfig, UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")) ||
+            !hasRequiredScopes(usersFeatureConfig, usersFeatureConfig?.scopes?.update, allowedScopes)
+        );
+    }, [usersFeatureConfig, allowedScopes]);
 
     useEffect(() => {
-
         getUserList();
-    }, [ group ]);
+    }, [group]);
 
     useEffect(() => {
-        if(!group) {
+        if (!group) {
             return;
         }
 
         const userStore: string[] = group?.displayName.split("/");
 
-        if (!isFeatureEnabled(featureConfig?.groups, GroupConstants.FEATURE_DICTIONARY.get("GROUP_UPDATE"))
-            || readOnlyUserStores?.includes(userStore?.toString())
-            || !hasRequiredScopes(featureConfig?.groups, featureConfig?.groups?.scopes?.update, allowedScopes)
+        if (
+            !isFeatureEnabled(featureConfig?.groups, GroupConstants.FEATURE_DICTIONARY.get("GROUP_UPDATE")) ||
+            readOnlyUserStores?.includes(userStore?.toString()) ||
+            !hasRequiredScopes(featureConfig?.groups, featureConfig?.groups?.scopes?.update, allowedScopes)
         ) {
             setReadOnly(true);
         }
-    }, [ group, readOnlyUserStores ]);
+    }, [group, readOnlyUserStores]);
 
     /**
      * Get the users list.
      */
     const getUserList = (): void => {
-
-        const userstore: string = group?.displayName?.indexOf("/") === -1
-            ? "primary"
-            : group?.displayName?.split("/")[ 0 ];
+        const userstore: string =
+            group?.displayName?.indexOf("/") === -1 ? "primary" : group?.displayName?.split("/")[0];
 
         setIsUsersFetchRequestLoading(true);
 
         getUsersList(null, null, null, null, userstore)
             .then((response: UserListInterface) => {
                 setUsersList(response.Resources);
-                setSelectedUsersList(filterUsersList([ ...response.Resources ]));
+                setSelectedUsersList(filterUsersList([...response.Resources]));
             })
             .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? error?.response?.data?.detail
-                        ?? t("console:manage.features.users.notifications.fetchUsers.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message
-                        ?? t("console:manage.features.users.notifications.fetchUsers.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:manage.features.users.notifications.fetchUsers.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:manage.features.users.notifications.fetchUsers.error.message")
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:manage.features.users.notifications.fetchUsers.genericError." +
-                    "description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.users.notifications.fetchUsers.genericError.message")
-                }));
-
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.users.notifications.fetchUsers.genericError." + "description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.users.notifications.fetchUsers.genericError.message")
+                    })
+                );
             })
             .finally(() => {
                 setIsUsersFetchRequestLoading(false);
@@ -181,7 +180,6 @@ export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupPro
      * @returns Filtered user list.
      */
     const filterUsersList = (usersToFilter: UserBasicInterface[]): UserBasicInterface[] => {
-
         if (!group?.members || !Array.isArray(group.members) || group.members.length < 1) {
             return;
         }
@@ -212,56 +210,61 @@ export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupPro
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.basic"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <BasicGroupDetails
                             data-testid="group-mgt-edit-group-basic"
-                            groupId={ groupId }
-                            isGroup={ true }
-                            groupObject={ group }
-                            onGroupUpdate={ onGroupUpdate }
-                            isReadOnly={ isReadOnly }
-                        />
-                    </ResourceTab.Pane>
-                )
-            },{
-                menuItem: t("console:manage.features.roles.edit.menuItems.users"),
-                render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false } loading={ isUsersFetchRequestLoading }>
-                        <GroupUsersList
-                            data-testid="group-mgt-edit-group-users"
-                            isGroup={ true }
-                            group={ group }
-                            users={ usersList }
-                            selectedUsers={ selectedUsersList }
-                            isLoading={ isUsersFetchRequestLoading }
-                            onGroupUpdate={ onGroupUpdate }
-                            isReadOnly={ isReadOnly }
+                            groupId={groupId}
+                            isGroup={true}
+                            groupObject={group}
+                            onGroupUpdate={onGroupUpdate}
+                            isReadOnly={isReadOnly}
                         />
                     </ResourceTab.Pane>
                 )
             },
-            isSuperOrganization && roleV1Enabled ? {
-                menuItem: t("console:manage.features.roles.edit.menuItems.roles"),
+            {
+                menuItem: t("console:manage.features.roles.edit.menuItems.users"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
-                        <GroupRolesV1List
-                            data-testid="group-mgt-edit-group-roles-v1"
-                            group={ group }
-                            onGroupUpdate={ onGroupUpdate }
-                            isReadOnly={ isReadOnly || isUserReadOnly }
+                    <ResourceTab.Pane controlledSegmentation attached={false} loading={isUsersFetchRequestLoading}>
+                        <GroupUsersList
+                            data-testid="group-mgt-edit-group-users"
+                            isGroup={true}
+                            group={group}
+                            users={usersList}
+                            selectedUsers={selectedUsersList}
+                            isLoading={isUsersFetchRequestLoading}
+                            onGroupUpdate={onGroupUpdate}
+                            isReadOnly={isReadOnly}
                         />
                     </ResourceTab.Pane>
                 )
-            } : null,
+            },
+            isSuperOrganization && roleV1Enabled
+                ? {
+                      menuItem: t("console:manage.features.roles.edit.menuItems.roles"),
+                      render: () => (
+                          <ResourceTab.Pane controlledSegmentation attached={false}>
+                              <GroupRolesV1List
+                                  data-testid="group-mgt-edit-group-roles-v1"
+                                  group={group}
+                                  onGroupUpdate={onGroupUpdate}
+                                  isReadOnly={isReadOnly || isUserReadOnly}
+                              />
+                          </ResourceTab.Pane>
+                      )
+                  }
+                : null,
             // ToDo - Enabled only for root organizations as BE doesn't have full SCIM support for organizations yet
-            isSuperOrganization && !roleV1Enabled ? {
-                menuItem: t("console:manage.features.roles.edit.menuItems.roles"),
-                render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
-                        <EditGroupRoles group={ group } />
-                    </ResourceTab.Pane>
-                )
-            } : null
+            isSuperOrganization && !roleV1Enabled
+                ? {
+                      menuItem: t("console:manage.features.roles.edit.menuItems.roles"),
+                      render: () => (
+                          <ResourceTab.Pane controlledSegmentation attached={false}>
+                              <EditGroupRoles group={group} />
+                          </ResourceTab.Pane>
+                      )
+                  }
+                : null
         ];
 
         return panes;
@@ -269,12 +272,12 @@ export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupPro
 
     return (
         <ResourceTab
-            activeIndex={ activeTab }
-            isLoading={ isLoading }
-            onTabChange={ (event: React.MouseEvent<HTMLDivElement>, data: TabProps) => {
+            activeIndex={activeTab}
+            isLoading={isLoading}
+            onTabChange={(event: React.MouseEvent<HTMLDivElement>, data: TabProps) => {
                 updateActiveTab(data.activeIndex as number);
-            } }
-            panes={ resolveResourcePanes() }
+            }}
+            panes={resolveResourcePanes()}
         />
     );
 };

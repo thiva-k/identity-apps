@@ -20,6 +20,7 @@ import { OrganizationType } from "@wso2is/common";
 import { RoleConstants } from "@wso2is/core/constants";
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { FeatureAccessConfigInterface, RolesInterface, SBACInterface } from "@wso2is/core/models";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { RoleConstants as LocalRoleConstants, RoleAudienceTypes } from "@wso2is/feature-roles.common/constants";
 import { UserManagementConstants } from "@wso2is/feature-users.common/constants/user-management-constants";
 import { ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
@@ -32,7 +33,6 @@ import { RoleGroupsList } from "./edit-role-groups";
 import { UpdatedRolePermissionDetails } from "./edit-role-permission";
 import { RoleUsersList } from "./edit-role-users";
 import { AppState, FeatureConfigInterface } from "../../../core";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
 
 /**
  * Captures props needed for edit role component
@@ -62,41 +62,38 @@ interface EditRoleProps extends SBACInterface<FeatureConfigInterface> {
  * @param props - contains role details to be edited.
  */
 export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps): ReactElement => {
-
-    const {
-        isLoading,
-        roleObject,
-        onRoleUpdate,
-        defaultActiveIndex
-    } = props;
+    const { isLoading, roleObject, onRoleUpdate, defaultActiveIndex } = props;
 
     const { t } = useTranslation();
     const { organizationType } = useGetCurrentOrganizationType();
 
     const featureConfig: FeatureAccessConfigInterface = useSelector(
-        (state: AppState) => state?.config?.ui?.features?.userRoles);
+        (state: AppState) => state?.config?.ui?.features?.userRoles
+    );
     const usersFeatureConfig: FeatureAccessConfigInterface = useSelector(
-        (state: AppState) => state?.config?.ui?.features?.users);
+        (state: AppState) => state?.config?.ui?.features?.users
+    );
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const administratorRoleDisplayName: string = useSelector(
-        (state: AppState) => state?.config?.ui?.administratorRoleDisplayName);
+        (state: AppState) => state?.config?.ui?.administratorRoleDisplayName
+    );
 
     const isReadOnly: boolean = useMemo(() => {
-        return !isFeatureEnabled(featureConfig,
-            LocalRoleConstants.FEATURE_DICTIONARY.get("ROLE_UPDATE")) ||
-            !hasRequiredScopes(featureConfig,
-                featureConfig?.scopes?.update, allowedScopes);
-    }, [ featureConfig, allowedScopes ]);
+        return (
+            !isFeatureEnabled(featureConfig, LocalRoleConstants.FEATURE_DICTIONARY.get("ROLE_UPDATE")) ||
+            !hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes)
+        );
+    }, [featureConfig, allowedScopes]);
 
     const isUserReadOnly: boolean = useMemo(() => {
-        return !isFeatureEnabled(usersFeatureConfig,
-            UserManagementConstants.FEATURE_DICTIONARY.get("USER_CREATE")) ||
-            !hasRequiredScopes(usersFeatureConfig,
-                usersFeatureConfig?.scopes?.update, allowedScopes);
-    }, [ usersFeatureConfig, allowedScopes ]);
+        return (
+            !isFeatureEnabled(usersFeatureConfig, UserManagementConstants.FEATURE_DICTIONARY.get("USER_CREATE")) ||
+            !hasRequiredScopes(usersFeatureConfig, usersFeatureConfig?.scopes?.update, allowedScopes)
+        );
+    }, [usersFeatureConfig, allowedScopes]);
 
-    const [ isAdminRole, setIsAdminRole ] = useState<boolean>(false);
-    const [ isEveryoneRole, setIsEveryoneRole ] = useState<boolean>(false);
+    const [isAdminRole, setIsAdminRole] = useState<boolean>(false);
+    const [isEveryoneRole, setIsEveryoneRole] = useState<boolean>(false);
 
     const isSubOrg: boolean = organizationType === OrganizationType.SUBORGANIZATION;
 
@@ -104,26 +101,30 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
      * Set the if the role is `Internal/admin`.
      */
     useEffect(() => {
-        if(roleObject) {
-            setIsAdminRole(roleObject.displayName === RoleConstants.ADMIN_ROLE ||
-                roleObject?.displayName === RoleConstants.ADMIN_GROUP ||
-                roleObject?.displayName === administratorRoleDisplayName);
-            setIsEveryoneRole(roleObject.displayName === RoleConstants.EVERYONE_ROLE ||
-                roleObject.displayName === RoleConstants.EVERYONE_GROUP);
+        if (roleObject) {
+            setIsAdminRole(
+                roleObject.displayName === RoleConstants.ADMIN_ROLE ||
+                    roleObject?.displayName === RoleConstants.ADMIN_GROUP ||
+                    roleObject?.displayName === administratorRoleDisplayName
+            );
+            setIsEveryoneRole(
+                roleObject.displayName === RoleConstants.EVERYONE_ROLE ||
+                    roleObject.displayName === RoleConstants.EVERYONE_GROUP
+            );
         }
-    }, [ roleObject ]);
+    }, [roleObject]);
 
     const resolveResourcePanes = () => {
         const panes: ResourceTabPaneInterface[] = [
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.basic"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <BasicRoleDetails
-                            isReadOnly={ isSubOrg || isAdminRole || isEveryoneRole || isReadOnly }
-                            role={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
-                            tabIndex={ 0 }
+                            isReadOnly={isSubOrg || isAdminRole || isEveryoneRole || isReadOnly}
+                            role={roleObject}
+                            onRoleUpdate={onRoleUpdate}
+                            tabIndex={0}
                         />
                     </ResourceTab.Pane>
                 )
@@ -131,12 +132,12 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.permissions"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <UpdatedRolePermissionDetails
-                            isReadOnly={ isSubOrg || isAdminRole || isReadOnly }
-                            role={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
-                            tabIndex={ 1 }
+                            isReadOnly={isSubOrg || isAdminRole || isReadOnly}
+                            role={roleObject}
+                            onRoleUpdate={onRoleUpdate}
+                            tabIndex={1}
                         />
                     </ResourceTab.Pane>
                 )
@@ -144,12 +145,12 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.groups"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RoleGroupsList
-                            isReadOnly={ isReadOnly }
-                            role={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
-                            tabIndex={ 2 }
+                            isReadOnly={isReadOnly}
+                            role={roleObject}
+                            onRoleUpdate={onRoleUpdate}
+                            tabIndex={2}
                         />
                     </ResourceTab.Pane>
                 )
@@ -157,12 +158,12 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.users"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RoleUsersList
-                            isReadOnly={ isReadOnly || isUserReadOnly }
-                            role={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
-                            tabIndex={ 3 }
+                            isReadOnly={isReadOnly || isUserReadOnly}
+                            role={roleObject}
+                            onRoleUpdate={onRoleUpdate}
+                            tabIndex={3}
                         />
                     </ResourceTab.Pane>
                 )
@@ -170,30 +171,25 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
             // Hide connected apps tab if the audience is application.
             roleObject?.audience?.type === RoleAudienceTypes.ORGANIZATION.toLocaleLowerCase()
                 ? {
-                    menuItem: t("console:manage.features.roles.edit.menuItems.connectedApps"),
-                    render: () => (
-                        <ResourceTab.Pane controlledSegmentation attached={ false }>
-                            <RoleConnectedApps
-                                isReadOnly={ isReadOnly }
-                                role={ roleObject }
-                                onRoleUpdate={ onRoleUpdate }
-                                tabIndex={ 4 }
-                            />
-                        </ResourceTab.Pane>
-                    )
-                }
+                      menuItem: t("console:manage.features.roles.edit.menuItems.connectedApps"),
+                      render: () => (
+                          <ResourceTab.Pane controlledSegmentation attached={false}>
+                              <RoleConnectedApps
+                                  isReadOnly={isReadOnly}
+                                  role={roleObject}
+                                  onRoleUpdate={onRoleUpdate}
+                                  tabIndex={4}
+                              />
+                          </ResourceTab.Pane>
+                      )
+                  }
                 : null
         ];
 
         return panes;
     };
 
-    return (
-        <ResourceTab
-            isLoading={ isLoading }
-            defaultActiveIndex={ defaultActiveIndex }
-            panes={ resolveResourcePanes() } />
-    );
+    return <ResourceTab isLoading={isLoading} defaultActiveIndex={defaultActiveIndex} panes={resolveResourcePanes()} />;
 };
 
 /**

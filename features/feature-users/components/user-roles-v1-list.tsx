@@ -24,6 +24,16 @@ import {
     RolesInterface,
     RolesMemberInterface
 } from "@wso2is/core/models";
+import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api";
+import {
+    OrganizationResponseInterface,
+    OrganizationRoleListItemInterface,
+    OrganizationRoleListResponseInterface
+} from "@wso2is/feature-organizations.common/models/organizations";
+import { OrganizationUtils } from "@wso2is/feature-organizations.common/utils";
+import { getRolesList } from "@wso2is/feature-roles.common/api/roles";
+import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "@wso2is/feature-roles.common/constants";
+import { UserRolePermissions } from "@wso2is/feature-users.common/components/user-role-permissions";
 import {
     ContentLoader,
     EmphasizedSegment,
@@ -36,9 +46,6 @@ import {
     TransferList,
     TransferListItem
 } from "@wso2is/react-components";
-import { getRolesList } from "@wso2is/feature-roles.common/api/roles";
-import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "@wso2is/feature-roles.common/constants";
-import { UserRolePermissions } from "@wso2is/feature-users.common/components/user-role-permissions";
 import { AxiosError, AxiosResponse } from "axios";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import forEachRight from "lodash-es/forEachRight";
@@ -50,14 +57,6 @@ import { Button, Divider, Grid, Icon, Input, InputOnChangeData, Label, Modal, Ta
 
 import { RolePermissions } from "./wizard/user-role-permissions";
 import { AppState, getEmptyPlaceholderIllustrations, updateResources } from "../../core";
-import { getOrganizationRoles } from "../../organizations/api";
-import {
-    OrganizationResponseInterface,
-    OrganizationRoleListItemInterface,
-    OrganizationRoleListResponseInterface
-} from "../../organizations/models/organizations";
-import { OrganizationUtils } from "../../organizations/utils";
-
 
 interface UserRolesV1PropsInterface {
     /**
@@ -97,7 +96,6 @@ interface UserRolesV1PropsInterface {
 export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
     props: UserRolesV1PropsInterface
 ): ReactElement => {
-
     const {
         onAlertFired,
         user,
@@ -111,39 +109,40 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
 
     const { t } = useTranslation();
 
-    const [ showAddNewRoleModal, setAddNewRoleModalView ] = useState(false);
-    const [ roleList, setRoleList ] = useState<(RolesInterface | OrganizationRoleListItemInterface)[]>([]);
-    const [ selectedRoleList, setSelectedRoleList ] = useState<
-        (RolesInterface | OrganizationRoleListItemInterface)[]>([]);
-    const [ initialRoleList, setInitialRoleList ] = useState([]);
-    const [ primaryRoles, setPrimaryRoles ] = useState<
-        RolesInterface[] | OrganizationRoleListItemInterface[]
-    >(undefined);
+    const [showAddNewRoleModal, setAddNewRoleModalView] = useState(false);
+    const [roleList, setRoleList] = useState<(RolesInterface | OrganizationRoleListItemInterface)[]>([]);
+    const [selectedRoleList, setSelectedRoleList] = useState<(RolesInterface | OrganizationRoleListItemInterface)[]>(
+        []
+    );
+    const [initialRoleList, setInitialRoleList] = useState([]);
+    const [primaryRoles, setPrimaryRoles] = useState<RolesInterface[] | OrganizationRoleListItemInterface[]>(undefined);
 
     // The following constant holds the state of role already assigned roles.
-    const [ primaryRolesList, setPrimaryRolesList ] = useState(undefined);
+    const [primaryRolesList, setPrimaryRolesList] = useState(undefined);
 
-    const [ isSelectAllRolesChecked, setIsSelectAllRolesChecked ] = useState(false);
-    const [ showRolePermissionModal, setRolePermissionModal ] = useState(false);
-    const [ selectedRoleId, setSelectedRoleId ] = useState<string>("");
-    const [ isRoleSelected, setRoleSelection ] = useState(false);
+    const [isSelectAllRolesChecked, setIsSelectAllRolesChecked] = useState(false);
+    const [showRolePermissionModal, setRolePermissionModal] = useState(false);
+    const [selectedRoleId, setSelectedRoleId] = useState<string>("");
+    const [isRoleSelected, setRoleSelection] = useState(false);
 
     // The following constant are used to persist the state of the unassigned roles permissions.
-    const [ viewRolePermissions, setViewRolePermissions ] = useState(false);
-    const [ roleId, setRoleId ] = useState<string>();
-    const [ isSelected, setSelection ] = useState(false);
+    const [viewRolePermissions, setViewRolePermissions] = useState(false);
+    const [roleId, setRoleId] = useState<string>();
+    const [isSelected, setSelection] = useState(false);
 
     // The following constant is used to persist the state whether user's assigned roles are still loading or finished.
-    const [ isPrimaryRolesLoading, setPrimaryRolesLoading ] = useState<boolean>(false);
+    const [isPrimaryRolesLoading, setPrimaryRolesLoading] = useState<boolean>(false);
 
-    const [ assignedRoles, setAssignedRoles ] = useState<RolesMemberInterface[]>([]);
-    const [ displayedRoles, setDisplayedRoles ] = useState([]);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [assignedRoles, setAssignedRoles] = useState<RolesMemberInterface[]>([]);
+    const [displayedRoles, setDisplayedRoles] = useState([]);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const currentOrganization: OrganizationResponseInterface = useSelector(
-        (state: AppState) => state.organization.organization);
-    const isRootOrganization: boolean = useMemo(() =>
-        OrganizationUtils.isSuperOrganization(currentOrganization), [ currentOrganization ]);
+        (state: AppState) => state.organization.organization
+    );
+    const isRootOrganization: boolean = useMemo(() => OrganizationUtils.isSuperOrganization(currentOrganization), [
+        currentOrganization
+    ]);
 
     useEffect(() => {
         if (!selectedRoleId) {
@@ -153,7 +152,7 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
         if (isRoleSelected) {
             handleOpenRolePermissionModal();
         }
-    }, [ isRoleSelected ]);
+    }, [isRoleSelected]);
 
     useEffect(() => {
         if (!roleId) {
@@ -163,17 +162,17 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
         if (isSelected) {
             setViewRolePermissions(true);
         }
-    }, [ isSelected ]);
+    }, [isSelected]);
 
     useEffect(() => {
         setAssignedRoles(displayedRoles);
-    }, [ displayedRoles ]);
+    }, [displayedRoles]);
 
     /**
      * The following useEffect will be triggered when the roles are updated.
      */
     useEffect(() => {
-        if (!(user)) {
+        if (!user) {
             return;
         }
         if (!hideApplicationRoles) {
@@ -183,18 +182,22 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
 
             return;
         }
-        setDisplayedRoles(user.roles.filter((role: RolesMemberInterface) =>
-            (role.display?.split("/").length !== 2) && (role.display?.split("/")[0] !== "Application")));
+        setDisplayedRoles(
+            user.roles.filter(
+                (role: RolesMemberInterface) =>
+                    role.display?.split("/").length !== 2 && role.display?.split("/")[0] !== "Application"
+            )
+        );
         mapUserRoles();
         resolveUserRoles();
-    }, [ user ]);
+    }, [user]);
 
     useEffect(() => {
-        if (!(user)) {
+        if (!user) {
             return;
         }
         setInitialLists();
-    }, [ user.roles && primaryRoles ]);
+    }, [user.roles && primaryRoles]);
 
     useEffect(() => {
         setPrimaryRolesLoading(true);
@@ -239,7 +242,8 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
                         }
                     }
                     setPrimaryRoles(response.Resources);
-                }).finally(() => {
+                })
+                .finally(() => {
                     setPrimaryRolesLoading(false);
                 });
         }
@@ -250,15 +254,17 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
      */
     const resolveUserRoles = (): void => {
         if (isGroupAndRoleSeparationEnabled) {
-            setAssignedRoles(hideApplicationRoles? displayedRoles : user?.roles);
+            setAssignedRoles(hideApplicationRoles ? displayedRoles : user?.roles);
         } else {
             const userRoles: RolesMemberInterface[] = [];
 
             user?.groups?.map((group: any) => {
                 const displayName: string[] = group?.display?.split("/");
 
-                if(displayName?.length > 1
-                    && (displayName[0] == APPLICATION_DOMAIN || displayName[0] == INTERNAL_DOMAIN)) {
+                if (
+                    displayName?.length > 1 &&
+                    (displayName[0] == APPLICATION_DOMAIN || displayName[0] == INTERNAL_DOMAIN)
+                ) {
                     if (hideApplicationRoles && group[0] === "Application" && group.length === 2) {
                         return;
                     }
@@ -272,7 +278,7 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
 
     const setInitialLists = () => {
         const roleListCopy: (RolesInterface | OrganizationRoleListItemInterface)[] = primaryRoles
-            ? [ ...primaryRoles ]
+            ? [...primaryRoles]
             : [];
         const addedRoles: (RolesInterface | OrganizationRoleListItemInterface)[] = [];
 
@@ -299,11 +305,11 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
     const mapUserRoles = () => {
         const rolesMap: Map<string, string> = new Map<string, string>();
 
-        if(!isGroupAndRoleSeparationEnabled) {
+        if (!isGroupAndRoleSeparationEnabled) {
             const groupsMap: Map<string, string> = new Map<string, string>();
 
             if (user.groups && user.groups instanceof Array) {
-                forEachRight (user.groups, (group: any) => {
+                forEachRight(user.groups, (group: any) => {
                     const groupName: string[] = group?.display?.split("/");
 
                     if (groupName?.length >= 1) {
@@ -320,7 +326,7 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
         }
 
         if (user.roles && user.roles instanceof Array) {
-            forEachRight (user.roles, (roles: RolesMemberInterface) => {
+            forEachRight(user.roles, (roles: RolesMemberInterface) => {
                 const role: string[] = roles?.display?.split("/");
 
                 if (role?.length >= 1 && roles?.value) {
@@ -351,7 +357,7 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
         const bulkData: any = {
             Operations: [],
             failOnErrors: 1,
-            schemas: [ "urn:ietf:params:scim:api:messages:2.0:BulkRequest" ]
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:BulkRequest"]
         };
 
         let removeOperation: {
@@ -365,11 +371,13 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
             method: string;
         } = {
             data: {
-                "Operations": [ {
-                    "op": "remove",
-                    "path": "users[value eq " + user.id + "]"
-                } ],
-                "schemas": [ "urn:ietf:params:scim:schemas:core:2.0:Role" ]
+                Operations: [
+                    {
+                        op: "remove",
+                        path: "users[value eq " + user.id + "]"
+                    }
+                ],
+                schemas: ["urn:ietf:params:scim:schemas:core:2.0:Role"]
             },
             method: "PATCH"
         };
@@ -389,15 +397,19 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
             method: string;
         } = {
             data: {
-                "Operations": [ {
-                    "op": "add",
-                    "value": {
-                        "users": [ {
-                            "value": user.id
-                        } ]
+                Operations: [
+                    {
+                        op: "add",
+                        value: {
+                            users: [
+                                {
+                                    value: user.id
+                                }
+                            ]
+                        }
                     }
-                } ],
-                "schemas": [ "urn:ietf:params:scim:schemas:core:2.0:Role" ]
+                ],
+                schemas: ["urn:ietf:params:scim:schemas:core:2.0:Role"]
             },
             method: "PATCH"
         };
@@ -430,7 +442,7 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
         const addedIds: string[] = [];
 
         if (primaryRolesList) {
-            removedIds = [ ...primaryRolesList.values() ];
+            removedIds = [...primaryRolesList.values()];
         }
 
         if (roleIds?.length > 0) {
@@ -452,18 +464,20 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
                 removeOperations.push(removeOperation);
             });
 
-            removeOperations.map((operation: {
-                data: {
-                    Operations: {
-                        op: string;
-                        path: string;
-                    }[];
-                    schemas: string[];
-                };
-                method: string;
-            }) => {
-                bulkData.Operations.push(operation);
-            });
+            removeOperations.map(
+                (operation: {
+                    data: {
+                        Operations: {
+                            op: string;
+                            path: string;
+                        }[];
+                        schemas: string[];
+                    };
+                    method: string;
+                }) => {
+                    bulkData.Operations.push(operation);
+                }
+            );
         }
 
         if (addedIds && addedIds?.length > 0) {
@@ -475,22 +489,24 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
                 addOperations.push(addOperation);
             });
 
-            addOperations.map((operation: {
-                data: {
-                    Operations: {
-                        op: string;
-                        value: {
-                            users: {
-                                value: any;
-                            }[];
-                        };
-                    }[];
-                    schemas: string[];
-                };
-                method: string;
-            }) => {
-                bulkData.Operations.push(operation);
-            });
+            addOperations.map(
+                (operation: {
+                    data: {
+                        Operations: {
+                            op: string;
+                            value: {
+                                users: {
+                                    value: any;
+                                }[];
+                            };
+                        }[];
+                        schemas: string[];
+                    };
+                    method: string;
+                }) => {
+                    bulkData.Operations.push(operation);
+                }
+            );
         }
 
         setIsSubmitting(true);
@@ -500,12 +516,12 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
                 onAlertFired({
                     description: t(
                         "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                        "success.description"
+                            "success.description"
                     ),
                     level: AlertLevels.SUCCESS,
                     message: t(
                         "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                        "success.message"
+                            "success.message"
                     )
                 });
                 handelAddNewRoleModalClose();
@@ -522,7 +538,7 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
                         level: AlertLevels.ERROR,
                         message: t(
                             "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                            "error.message"
+                                "error.message"
                         )
                     });
 
@@ -532,12 +548,12 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
                 onAlertFired({
                     description: t(
                         "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                        "genericError.description"
+                            "genericError.description"
                     ),
                     level: AlertLevels.ERROR,
                     message: t(
                         "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                        "genericError.message"
+                            "genericError.message"
                     )
                 });
             })
@@ -546,26 +562,24 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
             });
     };
 
-    const handleUnselectedListSearch = (
-        e: React.FormEvent<HTMLInputElement>,
-        { value }: { value: string; }
-    ) => {
+    const handleUnselectedListSearch = (e: React.FormEvent<HTMLInputElement>, { value }: { value: string }) => {
         let isMatch: boolean = false;
         const filteredRoleList: (RolesInterface | OrganizationRoleListItemInterface)[] = [];
 
         if (!isEmpty(value)) {
             const re: RegExp = new RegExp(escapeRegExp(value), "i");
 
-            roleList && roleList.map((role: RolesInterface | OrganizationRoleListItemInterface) => {
-                isMatch = re.test(role.displayName);
-                if (!showDomain && role.displayName.split("/").length > 1) {
-                    isMatch = re.test(role.displayName.split("/")[1]);
-                }
-                if (isMatch) {
-                    filteredRoleList.push(role);
-                    setRoleList(filteredRoleList);
-                }
-            });
+            roleList &&
+                roleList.map((role: RolesInterface | OrganizationRoleListItemInterface) => {
+                    isMatch = re.test(role.displayName);
+                    if (!showDomain && role.displayName.split("/").length > 1) {
+                        isMatch = re.test(role.displayName.split("/")[1]);
+                    }
+                    if (isMatch) {
+                        filteredRoleList.push(role);
+                        setRoleList(filteredRoleList);
+                    }
+                });
         } else {
             setRoleList(initialRoleList);
         }
@@ -576,8 +590,7 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
      * checkbox field of an unassigned item.
      */
     const handleUnassignedItemCheckboxChange = (role: RolesInterface | OrganizationRoleListItemInterface) => {
-
-        const checkedRoles: (RolesInterface | OrganizationRoleListItemInterface)[] = [ ...selectedRoleList ];
+        const checkedRoles: (RolesInterface | OrganizationRoleListItemInterface)[] = [...selectedRoleList];
 
         if (checkedRoles?.includes(role)) {
             checkedRoles.splice(checkedRoles.indexOf(role), 1);
@@ -647,115 +660,111 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
     };
 
     const addNewGroupModal = () => (
-        <Modal
-            data-testid="user-mgt-update-roles-modal"
-            open={ showAddNewRoleModal }
-            size="small"
-            className="user-roles"
-        >
+        <Modal data-testid="user-mgt-update-roles-modal" open={showAddNewRoleModal} size="small" className="user-roles">
             <Modal.Header>
-                { t("console:manage.features.user.updateUser.roles.addRolesModal.heading") }
+                {t("console:manage.features.user.updateUser.roles.addRolesModal.heading")}
                 <Heading subHeading ellipsis as="h6">
-                    { t("console:manage.features.user.updateUser.roles.addRolesModal.subHeading") }
+                    {t("console:manage.features.user.updateUser.roles.addRolesModal.subHeading")}
                 </Heading>
             </Modal.Header>
-            {
-                viewRolePermissions
-                    ? (
-                        <>
-                            <Modal.Content>
-                                <RolePermissions
-                                    data-testid="user-mgt-update-roles-modal-unselected-role-permissions"
-                                    handleNavigateBack={ handleViewRolePermission }
-                                    roleId={ roleId }
-                                />
-                            </Modal.Content>
-                            <Divider hidden/>
-                        </>
-                    ) : (
-                        <Modal.Content image>
-                            { !isPrimaryRolesLoading ? (
-                                <TransferComponent
-                                    selectionComponent
-                                    searchPlaceholder={ t("console:manage.features.transferList.searchPlaceholder",
-                                        { type: "Roles" }) }
-                                    handleUnelectedListSearch={ handleUnselectedListSearch }
-                                    data-testid="user-mgt-update-roles-modal"
-                                >
-                                    <TransferList
-                                        isListEmpty={ !(roleList?.length > 0) }
-                                        listType="unselected"
-                                        listHeaders={ showDomain ? [
-                                            t("console:manage.features.transferList.list.headers.0"),
-                                            t("console:manage.features.transferList.list.headers.1"), ""
-                                        ] : [
-                                            t("console:manage.features.transferList.list.headers.1"), ""
-                                        ] }
-                                        handleHeaderCheckboxChange={ selectAllRoles }
-                                        isHeaderCheckboxChecked={ isSelectAllRolesChecked }
-                                        emptyPlaceholderContent={ t("console:manage.features.transferList.list." +
-                                            "emptyPlaceholders.users.roles.unselected", { type: "roles" }) }
-                                        data-testid="user-mgt-update-roles-modal-unselected-roles-select-all-checkbox"
-                                        emptyPlaceholderDefaultContent={ t("console:manage.features.transferList.list."
-                                            + "emptyPlaceholders.default") }
-                                    >
-                                        {
-                                            roleList?.map((
-                                                role: RolesInterface | OrganizationRoleListItemInterface,
-                                                index: number
-                                            ) => {
-                                                const roleName: string[] = role?.displayName?.split("/");
+            {viewRolePermissions ? (
+                <>
+                    <Modal.Content>
+                        <RolePermissions
+                            data-testid="user-mgt-update-roles-modal-unselected-role-permissions"
+                            handleNavigateBack={handleViewRolePermission}
+                            roleId={roleId}
+                        />
+                    </Modal.Content>
+                    <Divider hidden />
+                </>
+            ) : (
+                <Modal.Content image>
+                    {!isPrimaryRolesLoading ? (
+                        <TransferComponent
+                            selectionComponent
+                            searchPlaceholder={t("console:manage.features.transferList.searchPlaceholder", {
+                                type: "Roles"
+                            })}
+                            handleUnelectedListSearch={handleUnselectedListSearch}
+                            data-testid="user-mgt-update-roles-modal"
+                        >
+                            <TransferList
+                                isListEmpty={!(roleList?.length > 0)}
+                                listType="unselected"
+                                listHeaders={
+                                    showDomain
+                                        ? [
+                                              t("console:manage.features.transferList.list.headers.0"),
+                                              t("console:manage.features.transferList.list.headers.1"),
+                                              ""
+                                          ]
+                                        : [t("console:manage.features.transferList.list.headers.1"), ""]
+                                }
+                                handleHeaderCheckboxChange={selectAllRoles}
+                                isHeaderCheckboxChecked={isSelectAllRolesChecked}
+                                emptyPlaceholderContent={t(
+                                    "console:manage.features.transferList.list." +
+                                        "emptyPlaceholders.users.roles.unselected",
+                                    { type: "roles" }
+                                )}
+                                data-testid="user-mgt-update-roles-modal-unselected-roles-select-all-checkbox"
+                                emptyPlaceholderDefaultContent={t(
+                                    "console:manage.features.transferList.list." + "emptyPlaceholders.default"
+                                )}
+                            >
+                                {roleList?.map(
+                                    (role: RolesInterface | OrganizationRoleListItemInterface, index: number) => {
+                                        const roleName: string[] = role?.displayName?.split("/");
 
-                                                if (roleName?.length >= 1) {
-                                                    return (
-                                                        <TransferListItem
-                                                            handleItemChange={
-                                                                () => handleUnassignedItemCheckboxChange(role)
-                                                            }
-                                                            key={ index }
-                                                            listItem={
-                                                                roleName?.length > 1 ? roleName[ 1 ] : roleName[ 0 ]
-                                                            }
-                                                            listItemId={ role.id }
-                                                            listItemIndex={ index }
-                                                            listItemTypeLabel={ showDomain ?
-                                                                createItemLabel(role?.displayName) : null }
-                                                            isItemChecked={ selectedRoleList.includes(role) }
-                                                            showSecondaryActions={ true }
-                                                            handleOpenPermissionModal={ () => handleRoleIdSet(role.id) }
-                                                            data-testid="user-mgt-update-roles-modal-unselected-roles"
-                                                        />
-                                                    );
-                                                }
-                                            })
+                                        if (roleName?.length >= 1) {
+                                            return (
+                                                <TransferListItem
+                                                    handleItemChange={() => handleUnassignedItemCheckboxChange(role)}
+                                                    key={index}
+                                                    listItem={roleName?.length > 1 ? roleName[1] : roleName[0]}
+                                                    listItemId={role.id}
+                                                    listItemIndex={index}
+                                                    listItemTypeLabel={
+                                                        showDomain ? createItemLabel(role?.displayName) : null
+                                                    }
+                                                    isItemChecked={selectedRoleList.includes(role)}
+                                                    showSecondaryActions={true}
+                                                    handleOpenPermissionModal={() => handleRoleIdSet(role.id)}
+                                                    data-testid="user-mgt-update-roles-modal-unselected-roles"
+                                                />
+                                            );
                                         }
-                                    </TransferList>
-                                </TransferComponent>
-                            ) : <ContentLoader/> }
-                        </Modal.Content>
-                    )
-            }
+                                    }
+                                )}
+                            </TransferList>
+                        </TransferComponent>
+                    ) : (
+                        <ContentLoader />
+                    )}
+                </Modal.Content>
+            )}
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 2 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={2}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
                                 data-testid="user-mgt-update-roles-modal-cancel-button"
                                 floated="left"
-                                onClick={ handleCloseAddNewGroupModal }
+                                onClick={handleCloseAddNewGroupModal}
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <PrimaryButton
                                 data-testid="user-mgt-update-roles-modal-save-button"
                                 floated="right"
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
-                                onClick={ () => updateUserRole(user, selectedRoleList) }
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
+                                onClick={() => updateUserRole(user, selectedRoleList)}
                             >
-                                { t("common:save") }
+                                {t("common:save")}
                             </PrimaryButton>
                         </Grid.Column>
                     </Grid.Row>
@@ -771,20 +780,21 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
         if (!isEmpty(value)) {
             const re: RegExp = new RegExp(escapeRegExp(value), "i");
 
-            assignedRoles && assignedRoles?.map((role: RolesMemberInterface) => {
-                const groupName: string[] = role?.display?.split("/");
+            assignedRoles &&
+                assignedRoles?.map((role: RolesMemberInterface) => {
+                    const groupName: string[] = role?.display?.split("/");
 
-                if (groupName?.length >= 1) {
-                    isMatch = re.test(role.display);
-                    if (!showDomain && groupName?.length > 1) {
-                        isMatch = re.test(groupName[1]);
+                    if (groupName?.length >= 1) {
+                        isMatch = re.test(role.display);
+                        if (!showDomain && groupName?.length > 1) {
+                            isMatch = re.test(groupName[1]);
+                        }
+                        if (isMatch) {
+                            filteredRoleList.push(role);
+                            setAssignedRoles(filteredRoleList);
+                        }
                     }
-                    if (isMatch) {
-                        filteredRoleList.push(role);
-                        setAssignedRoles(filteredRoleList);
-                    }
-                }
-            });
+                });
         } else {
             setAssignedRoles(displayedRoles);
         }
@@ -808,179 +818,174 @@ export const UserRolesV1List: FunctionComponent<UserRolesV1PropsInterface> = (
         return (
             <UserRolePermissions
                 data-testid="user-mgt-roles-list-roles-permission-modal"
-                openRolePermissionModal={ showRolePermissionModal }
-                handleCloseRolePermissionModal={ handleCloseRolePermissionModal }
-                roleId={ selectedRoleId }
-                permissionsToHide={ permissionsToHide }
+                openRolePermissionModal={showRolePermissionModal}
+                handleCloseRolePermissionModal={handleCloseRolePermissionModal}
+                roleId={selectedRoleId}
+                permissionsToHide={permissionsToHide}
             />
         );
     };
 
     return (
         <>
-            <Heading as="h4">
-                { t("console:manage.features.user.updateUser.roles.editRoles.heading") }
-            </Heading>
+            <Heading as="h4">{t("console:manage.features.user.updateUser.roles.editRoles.heading")}</Heading>
             <Heading subHeading ellipsis as="h6">
-                { t("console:manage.features.user.updateUser.roles.editRoles.subHeading") }
+                {t("console:manage.features.user.updateUser.roles.editRoles.subHeading")}
             </Heading>
-            <Divider hidden/>
+            <Divider hidden />
             <Grid>
                 <Grid.Row>
-                    <Grid.Column computer={ 10 } tablet={ 16 } mobile={ 16 }>
-                        {
-                            !isPrimaryRolesLoading && primaryRolesList?.size > 0 ? (
-                                <EmphasizedSegment
-                                    clearing
-                                    data-testid="user-mgt-roles-list"
-                                    className="user-role-edit-header-segment"
-                                >
-                                    <Grid.Row>
-                                        <Grid.Column>
-                                            <Input
-                                                data-testid="user-mgt-roles-list-search-input"
-                                                icon={ <Icon name="search"/> }
-                                                onChange={ handleAssignedRoleListSearch }
-                                                placeholder={ t("console:manage.features.user.updateUser.roles." +
-                                                    "editRoles.searchPlaceholder") }
-                                                floated="left"
-                                                size="small"
+                    <Grid.Column computer={10} tablet={16} mobile={16}>
+                        {!isPrimaryRolesLoading && primaryRolesList?.size > 0 ? (
+                            <EmphasizedSegment
+                                clearing
+                                data-testid="user-mgt-roles-list"
+                                className="user-role-edit-header-segment"
+                            >
+                                <Grid.Row>
+                                    <Grid.Column>
+                                        <Input
+                                            data-testid="user-mgt-roles-list-search-input"
+                                            icon={<Icon name="search" />}
+                                            onChange={handleAssignedRoleListSearch}
+                                            placeholder={t(
+                                                "console:manage.features.user.updateUser.roles." +
+                                                    "editRoles.searchPlaceholder"
+                                            )}
+                                            floated="left"
+                                            size="small"
+                                        />
+                                        {!isReadOnly && (
+                                            <Button
+                                                data-testid="user-mgt-roles-list-update-button"
+                                                size="medium"
+                                                icon="pencil"
+                                                floated="right"
+                                                onClick={handleOpenAddNewGroupModal}
                                             />
-                                            {
-                                                !isReadOnly && (
-                                                    <Button
-                                                        data-testid="user-mgt-roles-list-update-button"
-                                                        size="medium"
-                                                        icon="pencil"
-                                                        floated="right"
-                                                        onClick={ handleOpenAddNewGroupModal }
-                                                    />
-                                                )
-                                            }
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                    <Grid.Row>
-                                        <Table singleLine compact>
-                                            <Table.Header>
-                                                <Table.Row>
-                                                    {
-                                                        showDomain && (
-                                                            <Table.HeaderCell>
-                                                                <strong>
-                                                                    {
-                                                                        t("console:manage.features.user.updateUser" +
-                                                                            ".roles.editRoles.roleList.headers.0")
-                                                                    }
-                                                                </strong>
-                                                            </Table.HeaderCell>
-                                                        )
-                                                    }
+                                        )}
+                                    </Grid.Column>
+                                </Grid.Row>
+                                <Grid.Row>
+                                    <Table singleLine compact>
+                                        <Table.Header>
+                                            <Table.Row>
+                                                {showDomain && (
                                                     <Table.HeaderCell>
                                                         <strong>
-                                                            {
-                                                                t("console:manage.features.user.updateUser.roles." +
-                                                                "editRoles.roleList.headers.1")
-                                                            }
+                                                            {t(
+                                                                "console:manage.features.user.updateUser" +
+                                                                    ".roles.editRoles.roleList.headers.0"
+                                                            )}
                                                         </strong>
                                                     </Table.HeaderCell>
-                                                    <Table.HeaderCell/>
-                                                </Table.Row>
-                                            </Table.Header>
-                                            <Table.Body>
-                                                {
-                                                    assignedRoles?.map((group: RolesMemberInterface, index: number) => {
-                                                        const userRole: string[] = group?.display?.split("/");
+                                                )}
+                                                <Table.HeaderCell>
+                                                    <strong>
+                                                        {t(
+                                                            "console:manage.features.user.updateUser.roles." +
+                                                                "editRoles.roleList.headers.1"
+                                                        )}
+                                                    </strong>
+                                                </Table.HeaderCell>
+                                                <Table.HeaderCell />
+                                            </Table.Row>
+                                        </Table.Header>
+                                        <Table.Body>
+                                            {assignedRoles?.map((group: RolesMemberInterface, index: number) => {
+                                                const userRole: string[] = group?.display?.split("/");
 
-                                                        if (userRole?.length >= 1 && group?.value) {
-                                                            return (
-                                                                <Table.Row key={ index }>
-                                                                    { showDomain && (
-                                                                        userRole[ 0 ] == "Application" ? (
-                                                                            <Table.Cell>
-                                                                                <Label className="application-label">
-                                                                                    { APPLICATION_DOMAIN }
-                                                                                </Label>
-                                                                            </Table.Cell>
-                                                                        ) : (
-                                                                            <Table.Cell>
-                                                                                <Label className="internal-label">
-                                                                                    { INTERNAL_DOMAIN }
-                                                                                </Label>
-                                                                            </Table.Cell>
-                                                                        )
-                                                                    ) }
-                                                                    <Table.Cell width={ 8 }>
-                                                                        {
-                                                                            userRole?.length == 1
-                                                                                ? userRole[ 0 ] : userRole[ 1 ]
-                                                                        }
+                                                if (userRole?.length >= 1 && group?.value) {
+                                                    return (
+                                                        <Table.Row key={index}>
+                                                            {showDomain &&
+                                                                (userRole[0] == "Application" ? (
+                                                                    <Table.Cell>
+                                                                        <Label className="application-label">
+                                                                            {APPLICATION_DOMAIN}
+                                                                        </Label>
                                                                     </Table.Cell>
-                                                                    <Table.Cell textAlign="right">
-                                                                        <Popup
-                                                                            content="View permissions"
-                                                                            position="top right"
-                                                                            trigger={
-                                                                                (<Icon
-                                                                                    data-testid={
-                                                                                        `user-mgt-roles-list-
-                                                                                        ${ userRole[ 1 ] }-
-                                                                                        permissions-button` }
-                                                                                    color="grey"
-                                                                                    className="mr-2"
-                                                                                    name="key"
-                                                                                    onClick={
-                                                                                        () => handleSetSelectedId(
-                                                                                            group.value
-                                                                                        )
-                                                                                    }
-                                                                                />)
+                                                                ) : (
+                                                                    <Table.Cell>
+                                                                        <Label className="internal-label">
+                                                                            {INTERNAL_DOMAIN}
+                                                                        </Label>
+                                                                    </Table.Cell>
+                                                                ))}
+                                                            <Table.Cell width={8}>
+                                                                {userRole?.length == 1 ? userRole[0] : userRole[1]}
+                                                            </Table.Cell>
+                                                            <Table.Cell textAlign="right">
+                                                                <Popup
+                                                                    content="View permissions"
+                                                                    position="top right"
+                                                                    trigger={
+                                                                        <Icon
+                                                                            data-testid={`user-mgt-roles-list-
+                                                                                        ${userRole[1]}-
+                                                                                        permissions-button`}
+                                                                            color="grey"
+                                                                            className="mr-2"
+                                                                            name="key"
+                                                                            onClick={() =>
+                                                                                handleSetSelectedId(group.value)
                                                                             }
                                                                         />
-                                                                    </Table.Cell>
-                                                                </Table.Row>
-                                                            );
-                                                        }
-                                                    })
+                                                                    }
+                                                                />
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    );
                                                 }
-                                            </Table.Body>
-                                        </Table>
-                                    </Grid.Row>
-                                </EmphasizedSegment>
-                            ) : primaryRolesList?.size === 0 ? (
-                                <EmphasizedSegment>
-                                    <EmptyPlaceholder
-                                        data-testid="user-mgt-user-empty-roles-list"
-                                        title={ t("console:manage.features.user.updateUser.roles.editRoles." +
-                                            "roleList.emptyListPlaceholder.title") }
-                                        subtitle={ [
-                                            t("console:manage.features.user.updateUser.roles.editRoles." +
-                                                "roleList.emptyListPlaceholder.subTitle.0"),
-                                            t("console:manage.features.user.updateUser.roles.editRoles." +
-                                                "roleList.emptyListPlaceholder.subTitle.1"),
-                                            t("console:manage.features.user.updateUser.roles.editRoles." +
-                                                "roleList.emptyListPlaceholder.subTitle.2")
-                                        ] }
-                                        action={
-                                            !isReadOnly && (
-                                                <PrimaryButton
-                                                    data-testid="user-mgt-user-empty-roles-list-assign-group-button"
-                                                    onClick={ handleOpenAddNewGroupModal }
-                                                >
-                                                    <Icon name="plus"/>
-                                                    Assign Role
-                                                </PrimaryButton>
-                                            )
-                                        }
-                                        image={ getEmptyPlaceholderIllustrations().emptyList }
-                                        imageSize="tiny"
-                                    />
-                                </EmphasizedSegment>
-                            ) : <ContentLoader/>
-                        }
+                                            })}
+                                        </Table.Body>
+                                    </Table>
+                                </Grid.Row>
+                            </EmphasizedSegment>
+                        ) : primaryRolesList?.size === 0 ? (
+                            <EmphasizedSegment>
+                                <EmptyPlaceholder
+                                    data-testid="user-mgt-user-empty-roles-list"
+                                    title={t(
+                                        "console:manage.features.user.updateUser.roles.editRoles." +
+                                            "roleList.emptyListPlaceholder.title"
+                                    )}
+                                    subtitle={[
+                                        t(
+                                            "console:manage.features.user.updateUser.roles.editRoles." +
+                                                "roleList.emptyListPlaceholder.subTitle.0"
+                                        ),
+                                        t(
+                                            "console:manage.features.user.updateUser.roles.editRoles." +
+                                                "roleList.emptyListPlaceholder.subTitle.1"
+                                        ),
+                                        t(
+                                            "console:manage.features.user.updateUser.roles.editRoles." +
+                                                "roleList.emptyListPlaceholder.subTitle.2"
+                                        )
+                                    ]}
+                                    action={
+                                        !isReadOnly && (
+                                            <PrimaryButton
+                                                data-testid="user-mgt-user-empty-roles-list-assign-group-button"
+                                                onClick={handleOpenAddNewGroupModal}
+                                            >
+                                                <Icon name="plus" />
+                                                Assign Role
+                                            </PrimaryButton>
+                                        )
+                                    }
+                                    image={getEmptyPlaceholderIllustrations().emptyList}
+                                    imageSize="tiny"
+                                />
+                            </EmphasizedSegment>
+                        ) : (
+                            <ContentLoader />
+                        )}
                     </Grid.Column>
                 </Grid.Row>
-                { viewRolesPermissionModal() }
-                { addNewGroupModal() }
+                {viewRolesPermissionModal()}
+                {addNewGroupModal()}
             </Grid>
         </>
     );

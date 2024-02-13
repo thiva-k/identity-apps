@@ -1,5 +1,5 @@
 {
-    "name": "@wso2is/feature-users",
+    "name": "@wso2is/feature-organizations",
     "version": "2.12.0",
     "dependencies": {
         "@asgardeo/auth-react": "^4.0.1",
