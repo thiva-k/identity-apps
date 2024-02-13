@@ -32,6 +32,7 @@ import {
 }from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { CommonUtils } from "@wso2is/core/utils";
+import { getUserDetails, updateUserInfo } from "@wso2is/feature-users.common/api";
 import {
     EditAvatarModal,
     EmptyPlaceholder,
@@ -59,7 +60,6 @@ import { getIdPIcons } from "../../identity-providers/configs/ui";
 import { getGovernanceConnectors } from "../../server-configurations/api";
 import { ServerConfigurationsConstants } from "../../server-configurations/constants";
 import { ConnectorPropertyInterface, GovernanceConnectorInterface } from "../../server-configurations/models";
-import { getUserDetails, updateUserInfo } from "../api";
 import { EditUser } from "../components/edit-user";
 import UserManagementProvider from "../providers/user-management-provider";
 import { UserManagementUtils } from "../utils";

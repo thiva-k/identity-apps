@@ -18,9 +18,10 @@
 import { ProfileConstants } from "@wso2is/core/constants";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertInterface, AlertLevels, ProfileInfoInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models/roles";
+import { updateUserInfo } from "@wso2is/feature-users.common/api";
 import { Field, FormValue, Forms, RadioChild, Validation, useTrigger } from "@wso2is/forms";
 import { LinkButton, Message, PasswordValidation, PrimaryButton } from "@wso2is/react-components";
-import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models/roles";
 import { IdentityAppsApiException } from "modules/core/dist/types/exceptions";
 import React,
 {
@@ -44,7 +45,6 @@ import {
 } from "../../userstores/constants/user-store-constants";
 import { useValidationConfigData } from "../../validation/api";
 import { ValidationFormInterface } from "../../validation/models";
-import { updateUserInfo } from "../api";
 import { getConfiguration } from "../utils";
 
 /**

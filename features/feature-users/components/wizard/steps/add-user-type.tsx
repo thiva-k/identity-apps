@@ -23,10 +23,10 @@ import CardContent from "@oxygen-ui/react/CardContent";
 import Grid from "@oxygen-ui/react/Grid";
 import Typography from "@oxygen-ui/react/Typography";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { AdminAccountTypes } from "@wso2is/feature-users.common/constants/user-management-constants";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import "./add-user-type.scss";
-import { AdminAccountTypes } from "../../../constants/user-management-constants";
 
 /**
  * Interface for the AddUserType component.

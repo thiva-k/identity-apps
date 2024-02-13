@@ -25,8 +25,22 @@ import {
     TestableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { useTrigger } from "@wso2is/forms";
 import {GroupsInterface, getGroupList, updateGroupDetails } from "@wso2is/feature-groups.common";
+import { addUser } from "@wso2is/feature-users.common/api";
+import {
+    AdminAccountTypes,
+    HiddenFieldNames,
+    PasswordOptionTypes,
+    UserAccountTypesMain,
+    WizardStepsFormTypes
+} from "@wso2is/feature-users.common/constants";
+import {
+    AddUserWizardStateInterface,
+    PayloadInterface,
+    UserDetailsInterface,
+    WizardStepInterface,
+    createEmptyUserDetails } from "@wso2is/feature-users.common/models";
+import { useTrigger } from "@wso2is/forms";
 import { Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
 import cloneDeep from "lodash-es/cloneDeep";
@@ -50,21 +64,7 @@ import { AppState } from "../../../core/store";
 import { getAUserStore, getUserStores } from "../../../userstores/api";
 import { useValidationConfigData } from "../../../validation/api";
 import { ValidationFormInterface } from "../../../validation/models";
-import { addUser } from "../../api";
 import { getUserWizardStepIcons } from "../../configs";
-import {
-    AdminAccountTypes,
-    HiddenFieldNames,
-    PasswordOptionTypes,
-    UserAccountTypesMain,
-    WizardStepsFormTypes
-} from "../../constants";
-import {
-    AddUserWizardStateInterface,
-    PayloadInterface,
-    UserDetailsInterface,
-    WizardStepInterface,
-    createEmptyUserDetails } from "../../models";
 import { generatePassword, getConfiguration, getUsernameConfiguration } from "../../utils";
 
 interface AddUserWizardPropsInterface extends IdentifiableComponentInterface, TestableComponentInterface {

@@ -19,15 +19,20 @@
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { FormValue, useTrigger } from "@wso2is/forms";
 import {
     GroupsInterface,
     PatchGroupDataInterface,
     getGroupList,
     updateGroupDetails
 } from "@wso2is/feature-groups.common";
+import { addUser } from "@wso2is/feature-users.common/api/users";
+import {
+    AddUserWizardStateInterface,
+    UserDetailsInterface,
+    createEmptyUserDetails
+} from "@wso2is/feature-users.common/models/user";
+import { FormValue, useTrigger } from "@wso2is/forms";
 import { GenericIconProps, Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
-
 import { AxiosError, AxiosResponse } from "axios";
 import cloneDeep from "lodash-es/cloneDeep";
 import intersection from "lodash-es/intersection";
@@ -43,15 +48,8 @@ import { AddConsumerUserGroups } from "./steps/consumer-user-groups";
 import { CONSUMER_USERSTORE } from "../../../../extensions/components/users/constants/users";
 import { SCIMConfigs } from "../../../../extensions/configs/scim";
 import { UserBasicInterface } from "../../../../features/core";
-
-import { addUser } from "../../../../features/users/api/users";
-import { getUserWizardStepIcons } from "../../../../features/users/configs/ui";
-import {
-    AddUserWizardStateInterface,
-    UserDetailsInterface,
-    createEmptyUserDetails
-} from "../../../../features/users/models/user";
-import { getUsernameConfiguration } from "../../../../features/users/utils";
+import { getUserWizardStepIcons } from "../../configs/ui";
+import { getUsernameConfiguration } from "../../utils";
 import { useValidationConfigData } from "../../../../features/validation/api";
 import { ValidationFormInterface } from "../../../../features/validation/models";
 

@@ -26,6 +26,8 @@ import {
     TestableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getUserSessions, terminateAllUserSessions, terminateUserSession } from "@wso2is/feature-users.common/api";
+import { ApplicationSessionInterface, UserSessionInterface, UserSessionsInterface } from "@wso2is/feature-users.common/models";
 import {
     ConfirmationModal,
     ContentLoader,
@@ -52,8 +54,6 @@ import { Dispatch } from "redux";
 import { Grid, Icon, Label, List, SemanticICONS } from "semantic-ui-react";
 import { userstoresConfig } from "../../../extensions";
 import { AppState, FeatureConfigInterface, getEmptyPlaceholderIllustrations, history } from "../../core";
-import { getUserSessions, terminateAllUserSessions, terminateUserSession } from "../api";
-import { ApplicationSessionInterface, UserSessionInterface, UserSessionsInterface } from "../models";
 
 /**
  * Proptypes for the user sessions component.

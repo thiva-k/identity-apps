@@ -17,9 +17,9 @@
  * under the License.
  */
 import { RolesInterface, TestableComponentInterface } from "@wso2is/core/models";
-import { Heading, LinkButton } from "@wso2is/react-components";
 import { getRoleById } from "@wso2is/feature-roles.common/api/roles";
 import { PermissionList } from "@wso2is/feature-roles.common/components/wizard/role-permission";
+import { Heading, LinkButton } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

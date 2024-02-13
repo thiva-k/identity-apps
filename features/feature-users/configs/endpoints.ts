@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { UsersResourceEndpointsInterface } from "../models";
+import { UsersResourceEndpointsInterface } from "@wso2is/feature-users.common/models";
 
 /**
  * Get the resource endpoints for the Users feature.

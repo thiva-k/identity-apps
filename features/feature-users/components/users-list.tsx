@@ -26,6 +26,9 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { CommonUtils } from "@wso2is/core/utils";
+import { deleteUser } from "@wso2is/feature-users.common/api";
+import { UserManagementConstants } from "@wso2is/feature-users.common/constants";
+import { UserBasicInterface, UserListInterface } from "@wso2is/feature-users.common/models/user";
 import {
     ConfirmationModal,
     DataTable,
@@ -54,9 +57,6 @@ import {
     history
 } from "../../core";
 import { RealmConfigInterface } from "../../server-configurations";
-import { deleteUser } from "../api";
-import { UserManagementConstants } from "../constants";
-import { UserBasicInterface, UserListInterface } from "@wso2is/feature-users.common/models/user";
 
 /**
  * Prop types for the liked accounts component.

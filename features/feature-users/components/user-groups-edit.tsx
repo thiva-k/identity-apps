@@ -22,6 +22,9 @@ import {
     ProfileInfoInterface,
     RolesMemberInterface
 } from "@wso2is/core/models";
+import { getGroupList } from "@wso2is/feature-groups.common/api/groups";
+import { GroupsInterface, GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
+import { APPLICATION_DOMAIN, INTERNAL_DOMAIN, PRIMARY_DOMAIN } from "@wso2is/feature-roles.common/constants";
 import {
     ContentLoader,
     EmphasizedSegment,
@@ -34,9 +37,6 @@ import {
     TransferList,
     TransferListItem
 } from "@wso2is/react-components";
-import { getGroupList } from "@wso2is/feature-groups.common/api/groups";
-import { GroupsInterface, GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
-import { APPLICATION_DOMAIN, INTERNAL_DOMAIN, PRIMARY_DOMAIN } from "@wso2is/feature-roles.common/constants";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import forEachRight from "lodash-es/forEachRight";

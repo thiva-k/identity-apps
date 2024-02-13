@@ -38,6 +38,26 @@ import {
 import { addAlert } from "@wso2is/core/store";
 import { GroupsInterface, getGroupList, useGroupList } from "@wso2is/feature-groups.common";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models";
+import { addBulkUsers } from "@wso2is/feature-users.common/api";
+import {
+    BlockedBulkUserImportAttributes,
+    BulkImportResponseOperationTypes,
+    BulkUserImportStatus,
+    RequiredBulkUserImportAttributes,
+    SpecialMultiValuedComplexAttributes,
+    UserManagementConstants
+} from "@wso2is/feature-users.common/constants";
+import {
+    BulkResponseSummary,
+    BulkUserImportOperationResponse,
+    BulkUserImportOperationStatus,
+    MultipleInviteMode,
+    SCIMBulkEndpointInterface,
+    SCIMBulkOperation,
+    SCIMBulkResponseOperation,
+    UserDetailsInterface
+} from "@wso2is/feature-users.common/models";
 import {
     CSVFileStrategy,
     CSVResult,
@@ -53,9 +73,7 @@ import {
     PrimaryButton,
     useWizardAlert
 } from "@wso2is/react-components";
-import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models";
 import { FormValidation } from "@wso2is/validation";
-
 import Axios, { AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -76,30 +94,10 @@ import {
     getCertificateIllustrations,
     history
 } from "../../../core";
-
 import { getAUserStore, getUserStores } from "../../../userstores/api";
 import { PRIMARY_USERSTORE } from "../../../userstores/constants";
 import { useValidationConfigData } from "../../../validation/api";
 import { ValidationFormInterface } from "../../../validation/models";
-import { addBulkUsers } from "../../api";
-import {
-    BlockedBulkUserImportAttributes,
-    BulkImportResponseOperationTypes,
-    BulkUserImportStatus,
-    RequiredBulkUserImportAttributes,
-    SpecialMultiValuedComplexAttributes,
-    UserManagementConstants
-} from "../../constants";
-import {
-    BulkResponseSummary,
-    BulkUserImportOperationResponse,
-    BulkUserImportOperationStatus,
-    MultipleInviteMode,
-    SCIMBulkEndpointInterface,
-    SCIMBulkOperation,
-    SCIMBulkResponseOperation,
-    UserDetailsInterface
-} from "../../models";
 import { UserManagementUtils, getUsernameConfiguration } from "../../utils";
 import { BulkImportResponseList } from "../bulk-import-response-list";
 
