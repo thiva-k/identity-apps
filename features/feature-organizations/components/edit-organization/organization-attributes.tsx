@@ -17,39 +17,27 @@
  */
 
 import { IdentityAppsError } from "@wso2is/core/errors";
-import {
-    AlertLevels,
-    SBACInterface,
-    TestableComponentInterface
-} from "@wso2is/core/models";
+import { AlertLevels, SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { DynamicField, KeyValue, useTrigger } from "@wso2is/forms";
+import { patchOrganization } from "@wso2is/feature-organizations.common/api";
 import {
-    EmphasizedSegment,
-    PrimaryButton
-} from "@wso2is/react-components";
+    OrganizationAttributesInterface,
+    OrganizationPatchData,
+    OrganizationResponseInterface
+} from "@wso2is/feature-organizations.common/models";
+import { DynamicField, KeyValue, useTrigger } from "@wso2is/forms";
+import { EmphasizedSegment, PrimaryButton } from "@wso2is/react-components";
 import differenceBy from "lodash-es/differenceBy";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    useCallback,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, useCallback, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid } from "semantic-ui-react";
 import { FeatureConfigInterface } from "../../../core";
-import { patchOrganization } from "../../api";
-import {
-    OrganizationAttributesInterface,
-    OrganizationPatchData,
-    OrganizationResponseInterface
-} from "../../models";
 
 interface OrganizationAttributesPropsInterface
     extends SBACInterface<FeatureConfigInterface>,
-    TestableComponentInterface {
+        TestableComponentInterface {
     /**
      * Organization Data
      */
@@ -69,18 +57,13 @@ interface OrganizationAttributesPropsInterface
 export const OrganizationAttributes: FunctionComponent<OrganizationAttributesPropsInterface> = (
     props: OrganizationAttributesPropsInterface
 ): ReactElement => {
-    const {
-        organization,
-        isReadOnly,
-        onAttributeUpdate,
-        [ "data-testid" ]: testId
-    } = props;
+    const { organization, isReadOnly, onAttributeUpdate, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ submit, setSubmit ] = useTrigger();
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
+    const [submit, setSubmit] = useTrigger();
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const updateOrgAttributes: (data: KeyValue[]) => void = useCallback(
         (data: KeyValue[]) => {
@@ -91,24 +74,20 @@ export const OrganizationAttributes: FunctionComponent<OrganizationAttributesPro
                 (attribute: OrganizationAttributesInterface) => attribute.key
             );
 
-            const removedKeys: string[] = differenceBy(
-                existingKeys ?? [],
-                dataKeys ?? []
-            );
+            const removedKeys: string[] = differenceBy(existingKeys ?? [], dataKeys ?? []);
 
             const patchData: OrganizationPatchData[] = [
                 ...data.map((item: KeyValue) => {
                     const alreadyExists: boolean =
                         organization?.attributes?.filter(
-                            (attribute: OrganizationAttributesInterface) =>
-                                item.key === attribute.key
+                            (attribute: OrganizationAttributesInterface) => item.key === attribute.key
                         )?.length > 0
                             ? true
                             : false;
 
                     return {
                         operation: alreadyExists ? "REPLACE" : "ADD",
-                        path: `/attributes/${ item.key }`,
+                        path: `/attributes/${item.key}`,
                         value: item.value
                     };
                 })
@@ -117,7 +96,7 @@ export const OrganizationAttributes: FunctionComponent<OrganizationAttributesPro
             removedKeys?.forEach((key: string) => {
                 patchData.push({
                     operation: "REMOVE",
-                    path: `/attributes/${ key }`,
+                    path: `/attributes/${key}`,
                     value: ""
                 });
             });
@@ -128,12 +107,12 @@ export const OrganizationAttributes: FunctionComponent<OrganizationAttributesPro
                         addAlert({
                             description: t(
                                 "console:manage.features.organizations.notifications.updateOrganizationAttributes." +
-                                "success.description"
+                                    "success.description"
                             ),
                             level: AlertLevels.SUCCESS,
                             message: t(
                                 "console:manage.features.organizations.notifications.updateOrganizationAttributes." +
-                                "success.message"
+                                    "success.message"
                             )
                         })
                     );
@@ -148,8 +127,8 @@ export const OrganizationAttributes: FunctionComponent<OrganizationAttributesPro
                                 level: AlertLevels.ERROR,
                                 message: t(
                                     "console:manage.features.organizations.notifications." +
-                                    "updateOrganizationAttributes." +
-                                    "error.message"
+                                        "updateOrganizationAttributes." +
+                                        "error.message"
                                 )
                             })
                         );
@@ -161,78 +140,62 @@ export const OrganizationAttributes: FunctionComponent<OrganizationAttributesPro
                         addAlert({
                             description: t(
                                 "console:manage.features.organizations.notifications.updateOrganizationAttributes." +
-                                "genericError.description"
+                                    "genericError.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.organizations.notifications.updateOrganizationAttributes." +
-                                "genericError.message"
+                                    "genericError.message"
                             )
                         })
                     );
                 })
                 .finally(() => setIsSubmitting(false));
         },
-        [ organization ]
+        [organization]
     );
 
     return (
-        <EmphasizedSegment key={ organization.id } >
+        <EmphasizedSegment key={organization.id}>
             <Grid>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column
-                        tablet={ 16 }
-                        computer={ 12 }
-                        largeScreen={ 9 }
-                        widescreen={ 6 }
-                        mobile={ 16 }
-                    >
-                        <p>
-                            { t(
-                                "console:manage.features.organizations.edit.attributes.hint"
-                            ) }
-                        </p>
+                <Grid.Row columns={1}>
+                    <Grid.Column tablet={16} computer={12} largeScreen={9} widescreen={6} mobile={16}>
+                        <p>{t("console:manage.features.organizations.edit.attributes.hint")}</p>
                         <DynamicField
-                            data={ organization.attributes }
+                            data={organization.attributes}
                             keyType="text"
-                            keyName={ t(
-                                "console:manage.features.organizations.edit.attributes.key"
-                            ) }
-                            valueName={ t(
-                                "console:manage.features.organizations.edit.attributes.value"
-                            ) }
-                            submit={ submit }
-                            keyRequiredMessage={ t(
-                                "console:manage.features.organizations.edit.attributes." +
-                                "keyRequiredErrorMessage"
-                            ) }
-                            valueRequiredErrorMessage={ t(
-                                "console:manage.features.organizations.edit.attributes." +
-                                "valueRequiredErrorMessage"
-                            ) }
-                            requiredField={ true }
-                            update={ updateOrgAttributes }
-                            data-testid={ `${ testId }-form-dynamic-field` }
-                            readOnly={ isReadOnly }
+                            keyName={t("console:manage.features.organizations.edit.attributes.key")}
+                            valueName={t("console:manage.features.organizations.edit.attributes.value")}
+                            submit={submit}
+                            keyRequiredMessage={t(
+                                "console:manage.features.organizations.edit.attributes." + "keyRequiredErrorMessage"
+                            )}
+                            valueRequiredErrorMessage={t(
+                                "console:manage.features.organizations.edit.attributes." + "valueRequiredErrorMessage"
+                            )}
+                            requiredField={true}
+                            update={updateOrgAttributes}
+                            data-testid={`${testId}-form-dynamic-field`}
+                            readOnly={isReadOnly}
                         />
                     </Grid.Column>
                 </Grid.Row>
-                { !isReadOnly && (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 6 }>
+                {!isReadOnly && (
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={6}>
                             <PrimaryButton
-                                onClick={ () => {
+                                onClick={() => {
                                     setSubmit();
-                                } }
-                                data-testid={ `${ testId }-submit-button` }
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
+                                }}
+                                data-testid={`${testId}-submit-button`}
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
                             >
-                                { t("common:update") }
+                                {t("common:update")}
                             </PrimaryButton>
                         </Grid.Column>
                     </Grid.Row>
-                ) }
+                )}
             </Grid>
         </EmphasizedSegment>
     );

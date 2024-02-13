@@ -18,14 +18,15 @@
 
 import { AlertLevels } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { patchOrganizationRoleDetails } from "@wso2is/feature-organizations.common/api";
+import { OrganizationResponseInterface, OrganizationRoleInterface } from "@wso2is/feature-organizations.common/models";
+
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { OrganizationPermissionList } from "./organization-role-permission";
 import { AppState } from "../../../core";
-import { patchOrganizationRoleDetails } from "../../api";
-import { OrganizationResponseInterface, OrganizationRoleInterface, TreeNode } from "../../models";
-
+import { TreeNode } from "../../models";
 /**
  * Interface to capture permission edit props.
  */
@@ -53,30 +54,27 @@ interface RolePermissionDetailProps {
  *
  * @param props - Contains role id to get permission details.
  */
-export const RolePermissionDetails: FunctionComponent<RolePermissionDetailProps> = (props:
-    RolePermissionDetailProps): ReactElement => {
-
+export const RolePermissionDetails: FunctionComponent<RolePermissionDetailProps> = (
+    props: RolePermissionDetailProps
+): ReactElement => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const currentOrganization: OrganizationResponseInterface = useSelector(
         (state: AppState) => state.organization.organization
     );
 
-    const {
-        isReadOnly,
-        roleObject,
-        onRoleUpdate,
-        isGroup
-    } = props;
+    const { isReadOnly, roleObject, onRoleUpdate, isGroup } = props;
 
     const onPermissionUpdate = (updatedPerms: TreeNode[]) => {
         const roleData = {
-            "operations": [ {
-                "op": "REPLACE",
-                "path": "permissions",
-                "value": updatedPerms.map((perm: TreeNode) => perm.key)
-            } ]
+            operations: [
+                {
+                    op: "REPLACE",
+                    path: "permissions",
+                    value: updatedPerms.map((perm: TreeNode) => perm.key)
+                }
+            ]
         };
 
         setIsSubmitting(true);
@@ -113,10 +111,12 @@ export const RolePermissionDetails: FunctionComponent<RolePermissionDetailProps>
                     dispatch(
                         addAlert({
                             description: isGroup
-                                ? t("console:manage.features.groups.notifications.createPermission.error.description",
-                                    { description: error.response.data.detail })
-                                : t("console:manage.features.roles.notifications.createPermission.error.description",
-                                    { description: error.response.data.detail }),
+                                ? t("console:manage.features.groups.notifications.createPermission.error.description", {
+                                      description: error.response.data.detail
+                                  })
+                                : t("console:manage.features.roles.notifications.createPermission.error.description", {
+                                      description: error.response.data.detail
+                                  }),
                             level: AlertLevels.ERROR,
                             message: isGroup
                                 ? t("console:manage.features.groups.notifications.createPermission.error.message")
@@ -127,16 +127,24 @@ export const RolePermissionDetails: FunctionComponent<RolePermissionDetailProps>
                     dispatch(
                         addAlert({
                             description: isGroup
-                                ? t("console:manage.features.groups.notifications.createPermission.genericError."+
-                                "description")
-                                : t("console:manage.features.roles.notifications.createPermission.genericError."+
-                                "description"),
+                                ? t(
+                                      "console:manage.features.groups.notifications.createPermission.genericError." +
+                                          "description"
+                                  )
+                                : t(
+                                      "console:manage.features.roles.notifications.createPermission.genericError." +
+                                          "description"
+                                  ),
                             level: AlertLevels.ERROR,
                             message: isGroup
-                                ? t("console:manage.features.groups.notifications.createPermission.genericError."+
-                                "message")
-                                : t("console:manage.features.roles.notifications.createPermission.genericError."+
-                                "message")
+                                ? t(
+                                      "console:manage.features.groups.notifications.createPermission.genericError." +
+                                          "message"
+                                  )
+                                : t(
+                                      "console:manage.features.roles.notifications.createPermission.genericError." +
+                                          "message"
+                                  )
                         })
                     );
                 }
@@ -149,12 +157,12 @@ export const RolePermissionDetails: FunctionComponent<RolePermissionDetailProps>
     return (
         <div className="permissions-edit-container">
             <OrganizationPermissionList
-                isReadOnly={ isReadOnly }
-                isEdit={ !isReadOnly }
+                isReadOnly={isReadOnly}
+                isEdit={!isReadOnly}
                 isRole
-                onSubmit={ onPermissionUpdate }
-                roleObject={ roleObject }
-                isSubmitting={ isSubmitting }
+                onSubmit={onPermissionUpdate}
+                roleObject={roleObject}
+                isSubmitting={isSubmitting}
             />
         </div>
     );

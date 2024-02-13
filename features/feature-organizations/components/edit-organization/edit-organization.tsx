@@ -17,13 +17,13 @@
  */
 
 import { SBACInterface } from "@wso2is/core/models";
+import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
 import { ResourceTab } from "@wso2is/react-components";
 import React, { FunctionComponent } from "react";
 import { useTranslation } from "react-i18next";
 import { OrganizationAttributes } from "./organization-attributes";
 import { OrganizationOverview } from "./organization-overview";
 import { FeatureConfigInterface } from "../../../core";
-import { OrganizationResponseInterface } from "../../models";
 
 interface EditOrganizationPropsInterface extends SBACInterface<FeatureConfigInterface> {
     /**
@@ -50,26 +50,20 @@ interface EditOrganizationPropsInterface extends SBACInterface<FeatureConfigInte
 export const EditOrganization: FunctionComponent<EditOrganizationPropsInterface> = (
     props: EditOrganizationPropsInterface
 ): JSX.Element => {
-
-    const {
-        organization,
-        isReadOnly,
-        onOrganizationUpdate,
-        onOrganizationDelete
-    } = props;
+    const { organization, isReadOnly, onOrganizationUpdate, onOrganizationDelete } = props;
 
     const { t } = useTranslation();
 
-    const panes = () => ([
+    const panes = () => [
         {
             menuItem: t("console:manage.features.organizations.edit.tabTitles.overview"),
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <OrganizationOverview
-                        organization={ organization }
-                        isReadOnly={ isReadOnly }
-                        onOrganizationUpdate={ onOrganizationUpdate }
-                        onOrganizationDelete={ onOrganizationDelete }
+                        organization={organization}
+                        isReadOnly={isReadOnly}
+                        onOrganizationUpdate={onOrganizationUpdate}
+                        onOrganizationDelete={onOrganizationDelete}
                     />
                 </ResourceTab.Pane>
             )
@@ -77,21 +71,16 @@ export const EditOrganization: FunctionComponent<EditOrganizationPropsInterface>
         {
             menuItem: t("console:manage.features.organizations.edit.tabTitles.attributes"),
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <OrganizationAttributes
-                        organization={ organization }
-                        isReadOnly={ isReadOnly }
-                        onAttributeUpdate={ onOrganizationUpdate }
+                        organization={organization}
+                        isReadOnly={isReadOnly}
+                        onAttributeUpdate={onOrganizationUpdate}
                     />
                 </ResourceTab.Pane>
             )
         }
-    ]);
+    ];
 
-    return (
-        <ResourceTab
-            panes={ panes() }
-        />
-    );
-
+    return <ResourceTab panes={panes()} />;
 };

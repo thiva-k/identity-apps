@@ -19,10 +19,10 @@
 import { BasicUserInfo, useAuthContext } from "@asgardeo/auth-react";
 import { TokenConstants } from "@wso2is/core/constants";
 import { SessionStorageUtils } from "@wso2is/core/utils";
+import { BreadcrumbList, GenericOrganization } from "@wso2is/feature-organizations.common/models";
+import { OrganizationUtils } from "@wso2is/feature-organizations.common/utils";
 import useOrganizations from "./use-organizations";
 import { organizationConfigs } from "../../../extensions";
-import { BreadcrumbList, GenericOrganization } from "../models";
-import { OrganizationUtils } from "../utils";
 
 /**
  * Interface for the return type of the `useOrganizationSwitch` hook.
@@ -71,7 +71,7 @@ const useOrganizationSwitch = (): UseOrganizationSwitchInterface => {
                 data: {
                     client_id: "{{clientID}}",
                     grant_type: "organization_switch",
-                    scope: window[ "AppUtils" ].getConfig().idpConfigs?.scope.join(" ") ?? TokenConstants.SYSTEM_SCOPE,
+                    scope: window["AppUtils"].getConfig().idpConfigs?.scope.join(" ") ?? TokenConstants.SYSTEM_SCOPE,
                     switching_organization: orgId,
                     token: "{{token}}"
                 },
@@ -95,20 +95,20 @@ const useOrganizationSwitch = (): UseOrganizationSwitchInterface => {
      * @param org - Organization to switch to.
      */
     const switchOrganizationInLegacyMode = (breadcrumbList: BreadcrumbList, org: GenericOrganization): void => {
-
         let newOrgPath: string = "";
 
         if (
-            breadcrumbList && breadcrumbList.length > 0
-            && OrganizationUtils.isSuperOrganization(breadcrumbList[0])
-            && breadcrumbList[ 1 ]?.id === org.id
-            && organizationConfigs.showSwitcherInTenants
+            breadcrumbList &&
+            breadcrumbList.length > 0 &&
+            OrganizationUtils.isSuperOrganization(breadcrumbList[0]) &&
+            breadcrumbList[1]?.id === org.id &&
+            organizationConfigs.showSwitcherInTenants
         ) {
-            newOrgPath = "/t/" + org.name + "/" + window[ "AppUtils" ].getConfig().appBase;
+            newOrgPath = "/t/" + org.name + "/" + window["AppUtils"].getConfig().appBase;
         } else if (OrganizationUtils.isSuperOrganization(org)) {
-            newOrgPath = `/${ window[ "AppUtils" ].getConfig().appBase }`;
+            newOrgPath = `/${window["AppUtils"].getConfig().appBase}`;
         } else {
-            newOrgPath = "/o/" + org.id + "/" + window[ "AppUtils" ].getConfig().appBase;
+            newOrgPath = "/o/" + org.id + "/" + window["AppUtils"].getConfig().appBase;
         }
 
         // Clear the callback url of the previous organization.

@@ -18,6 +18,8 @@
 
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { SBACInterface } from "@wso2is/core/models";
+import { OrganizationRoleManagementConstants } from "@wso2is/feature-organizations.common/constants";
+import { OrganizationRoleInterface } from "@wso2is/feature-organizations.common/models";
 import { ContentLoader, ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -27,8 +29,6 @@ import { RolePermissionDetails } from "./edit-organization-permission";
 import { BasicRoleDetails } from "./edit-organization-role-basic";
 import { RoleUserDetails } from "./edit-organization-role-users";
 import { AppState, FeatureConfigInterface, history } from "../../../core";
-import { OrganizationRoleManagementConstants } from "../../constants";
-import { OrganizationRoleInterface } from "../../models";
 
 /**
  * Captures props needed for edit role component
@@ -46,24 +46,20 @@ interface EditRoleProps extends SBACInterface<FeatureConfigInterface> {
  * @param props - contains role details to be edited.
  */
 export const EditOrganizationRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps): ReactElement => {
-
-    const {
-        roleId,
-        roleObject,
-        onRoleUpdate
-    } = props;
+    const { roleId, roleObject, onRoleUpdate } = props;
 
     const { t } = useTranslation();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
-    const [ isGroup, setIsGroup ] = useState<boolean>(false);
+    const [isGroup, setIsGroup] = useState<boolean>(false);
 
     const isReadOnly: boolean = useMemo(() => {
-        return !hasRequiredScopes(featureConfig?.roles, featureConfig?.roles?.scopes?.update, allowedScopes)
-                || roleObject?.displayName === OrganizationRoleManagementConstants.ORG_CREATOR_ROLE_NAME;
-    }, [ featureConfig?.roles, roleObject,
-        OrganizationRoleManagementConstants.ORG_CREATOR_ROLE_NAME ] );
+        return (
+            !hasRequiredScopes(featureConfig?.roles, featureConfig?.roles?.scopes?.update, allowedScopes) ||
+            roleObject?.displayName === OrganizationRoleManagementConstants.ORG_CREATOR_ROLE_NAME
+        );
+    }, [featureConfig?.roles, roleObject, OrganizationRoleManagementConstants.ORG_CREATOR_ROLE_NAME]);
 
     /**
      * Get is groups url to proceed as groups
@@ -74,41 +70,41 @@ export const EditOrganizationRole: FunctionComponent<EditRoleProps> = (props: Ed
         }
 
         setIsGroup(history.location.pathname.includes("/groups/"));
-
-    }, [ roleObject ]);
+    }, [roleObject]);
 
     const resolveResourcePanes = () => {
         const panes: ResourceTabPaneInterface[] = [
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.basic"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <BasicRoleDetails
-                            isReadOnly={ 
-                                isReadOnly || 
-                                roleObject?.displayName === OrganizationRoleManagementConstants.ORG_ADMIN_ROLE_NAME 
+                            isReadOnly={
+                                isReadOnly ||
+                                roleObject?.displayName === OrganizationRoleManagementConstants.ORG_ADMIN_ROLE_NAME
                             }
                             data-testid="role-mgt-edit-role-basic"
-                            roleId={ roleId }
-                            isGroup={ isGroup }
-                            roleObject={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            roleId={roleId}
+                            isGroup={isGroup}
+                            roleObject={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
-            },{
+            },
+            {
                 menuItem: t("console:manage.features.roles.edit.menuItems.permissions"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RolePermissionDetails
-                            isReadOnly={ 
-                                isReadOnly || 
-                                roleObject?.displayName === OrganizationRoleManagementConstants.ORG_ADMIN_ROLE_NAME 
+                            isReadOnly={
+                                isReadOnly ||
+                                roleObject?.displayName === OrganizationRoleManagementConstants.ORG_ADMIN_ROLE_NAME
                             }
                             data-testid="role-mgt-edit-role-permissions"
-                            isGroup={ false }
-                            roleObject={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            isGroup={false}
+                            roleObject={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
@@ -116,12 +112,12 @@ export const EditOrganizationRole: FunctionComponent<EditRoleProps> = (props: Ed
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.groups"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RoleGroupsList
-                            isReadOnly={ isReadOnly }
+                            isReadOnly={isReadOnly}
                             data-testid="role-mgt-edit-role-groups"
-                            role={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            role={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
@@ -129,13 +125,13 @@ export const EditOrganizationRole: FunctionComponent<EditRoleProps> = (props: Ed
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.users"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RoleUserDetails
-                            isReadOnly={ isReadOnly }
+                            isReadOnly={isReadOnly}
                             data-testid="role-mgt-edit-role-users"
-                            isGroup={ false }
-                            roleObject={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            isGroup={false}
+                            roleObject={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
@@ -145,7 +141,5 @@ export const EditOrganizationRole: FunctionComponent<EditRoleProps> = (props: Ed
         return panes;
     };
 
-    return (
-        roleObject ? <ResourceTab panes={ resolveResourcePanes() } /> : <ContentLoader/>
-    );
+    return roleObject ? <ResourceTab panes={resolveResourcePanes()} /> : <ContentLoader />;
 };

@@ -17,15 +17,14 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { GenericOrganization, OrganizationInterface } from "@wso2is/feature-organizations.common/models";
 import { useInfiniteScroll } from "@wso2is/react-components";
 import React, { ReactElement, SyntheticEvent, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Icon, Loader, Ref, Segment } from "semantic-ui-react";
 import OrganizationListItem from "./organization-list-item";
-import { GenericOrganization, OrganizationInterface } from "../../models";
 
-interface OrganizationSwitcherListPropTypesInterface
-    extends IdentifiableComponentInterface {
+interface OrganizationSwitcherListPropTypesInterface extends IdentifiableComponentInterface {
     parents: GenericOrganization[];
     organizations: OrganizationInterface[];
     hasMore: boolean;
@@ -38,9 +37,7 @@ interface OrganizationSwitcherListPropTypesInterface
     showEdit?: boolean;
 }
 
-const OrganizationSwitcherList = (
-    props: OrganizationSwitcherListPropTypesInterface
-): ReactElement => {
+const OrganizationSwitcherList = (props: OrganizationSwitcherListPropTypesInterface): ReactElement => {
     const {
         parents,
         organizations,
@@ -56,80 +53,65 @@ const OrganizationSwitcherList = (
     } = props;
     const { t } = useTranslation();
 
-    const scrollableGrid: React.MutableRefObject<undefined>  = useRef();
+    const scrollableGrid: React.MutableRefObject<undefined> = useRef();
     const lastItem: React.MutableRefObject<undefined> = useRef();
 
     useInfiniteScroll(scrollableGrid, lastItem, hasMore, loadMore);
 
     return (
-        <Ref innerRef={ scrollableGrid }>
-            <Grid
-                data-componentid={ "associated-organizations-container" }
-                padded
-                className="organization-list-grid"
-            >
-                { parents?.length > 0 && (
+        <Ref innerRef={scrollableGrid}>
+            <Grid data-componentid={"associated-organizations-container"} padded className="organization-list-grid">
+                {parents?.length > 0 && (
                     <Grid.Row>
                         <Grid.Column>
                             <div
                                 className="organization-back-button"
-                                data-componentid={ `${ componentId }-back-button` }
-                                onClick={ handleBackButtonClick }
+                                data-componentid={`${componentId}-back-button`}
+                                onClick={handleBackButtonClick}
                             >
                                 <Icon name="arrow left" />
-                                { t(
-                                    "console:manage.features.organizations.switching.goBack"
-                                ) }
+                                {t("console:manage.features.organizations.switching.goBack")}
                             </div>
                         </Grid.Column>
                     </Grid.Row>
-                ) }
-                { organizations.length > 0 ? (
+                )}
+                {organizations.length > 0 ? (
                     <>
-                        { organizations.map(
-                            (organization: OrganizationInterface) =>
-                                organization.id !== currentOrganization?.id ? (
-                                    <OrganizationListItem
-                                        key={ organization.id }
-                                        organization={ organization }
-                                        showSwitch={ true }
-                                        isClickable={ !!handleOrgRowClick }
-                                        handleOrgRowClick={ handleOrgRowClick }
-                                        setShowDropdown={ setShowDropdown }
-                                        handleOrganizationSwitch={
-                                            handleOrganizationSwitch
-                                        }
-                                        showEdit={ showEdit }
-                                    />
-                                ) : null
-                        ) }
-                        { hasMore && (
-                            <Ref innerRef={ lastItem }>
+                        {organizations.map((organization: OrganizationInterface) =>
+                            organization.id !== currentOrganization?.id ? (
+                                <OrganizationListItem
+                                    key={organization.id}
+                                    organization={organization}
+                                    showSwitch={true}
+                                    isClickable={!!handleOrgRowClick}
+                                    handleOrgRowClick={handleOrgRowClick}
+                                    setShowDropdown={setShowDropdown}
+                                    handleOrganizationSwitch={handleOrganizationSwitch}
+                                    showEdit={showEdit}
+                                />
+                            ) : null
+                        )}
+                        {hasMore && (
+                            <Ref innerRef={lastItem}>
                                 <Grid.Row>
-                                    <Grid.Column width={ 16 }>
+                                    <Grid.Column width={16}>
                                         <Segment basic>
                                             <Loader active inline="centered" />
                                         </Segment>
                                     </Grid.Column>
                                 </Grid.Row>
                             </Ref>
-                        ) }
+                        )}
                     </>
                 ) : (
-                    <Grid.Row columns={ 1 }>
+                    <Grid.Row columns={1}>
                         <Grid.Column>
-                            <div
-                                className="message"
-                                data-componentid={ `${ componentId }-empty-message` }
-                            >
-                                { t(
-                                    "console:manage.features.organizations.switching." +
-                                    "emptyList"
-                                ) }
+                            <div className="message" data-componentid={`${componentId}-empty-message`}>
+                                {t("console:manage.features.organizations.switching." + "emptyList")}
                             </div>
                         </Grid.Column>
                     </Grid.Row>
-                ) }
+                )}
             </Grid>
         </Ref>
     );

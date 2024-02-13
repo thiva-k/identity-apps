@@ -18,6 +18,20 @@
 
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { addOrganization } from "@wso2is/feature-organizations.common/api";
+import {
+    ORGANIZATION_DESCRIPTION_MAX_LENGTH,
+    ORGANIZATION_DESCRIPTION_MIN_LENGTH,
+    ORGANIZATION_NAME_MAX_LENGTH,
+    ORGANIZATION_NAME_MIN_LENGTH,
+    ORGANIZATION_TYPE,
+    OrganizationManagementConstants
+} from "@wso2is/feature-organizations.common/constants";
+import {
+    AddOrganizationInterface,
+    GenericOrganization,
+    OrganizationResponseInterface
+} from "@wso2is/feature-organizations.common/models";
 import { Field, Form } from "@wso2is/form";
 import { Heading, LinkButton, Message, PrimaryButton } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useRef, useState } from "react";
@@ -26,16 +40,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Modal } from "semantic-ui-react";
 import { AppState, EventPublisher, TierLimitReachErrorModal } from "../../core";
-import { addOrganization } from "../api";
-import {
-    ORGANIZATION_DESCRIPTION_MAX_LENGTH,
-    ORGANIZATION_DESCRIPTION_MIN_LENGTH,
-    ORGANIZATION_NAME_MAX_LENGTH,
-    ORGANIZATION_NAME_MIN_LENGTH,
-    ORGANIZATION_TYPE,
-    OrganizationManagementConstants
-} from "../constants";
-import { AddOrganizationInterface, GenericOrganization, OrganizationResponseInterface } from "../models";
 
 interface OrganizationAddFormProps {
     name: string;
@@ -67,24 +71,25 @@ const SUB_ORG_LEVELS_EXCEEDED_ERROR: string = "sub organization levels";
 export const AddOrganizationModal: FunctionComponent<AddOrganizationModalPropsInterface> = (
     props: AddOrganizationModalPropsInterface
 ): ReactElement => {
-    const { closeWizard, parent, onUpdate, [ "data-componentid" ]: testId } = props;
+    const { closeWizard, parent, onUpdate, ["data-componentid"]: testId } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ error, setError ] = useState<string>("");
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
 
     const submitForm: any = useRef<() => void>();
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
     const currentOrganization: OrganizationResponseInterface = useSelector(
-        (state: AppState) => state.organization.organization);
-    const [ openLimitReachedModal, setOpenLimitReachedModal ] = useState<boolean>(false);
-    const [ orgLevelReachedError, setOrgLevelReachedError ] = useState<boolean>(false);
+        (state: AppState) => state.organization.organization
+    );
+    const [openLimitReachedModal, setOpenLimitReachedModal] = useState<boolean>(false);
+    const [orgLevelReachedError, setOrgLevelReachedError] = useState<boolean>(false);
 
-    const submitOrganization = async (values: OrganizationAddFormProps): Promise<Record<string, string>|void> => {
+    const submitOrganization = async (values: OrganizationAddFormProps): Promise<Record<string, string> | void> => {
         const organization: AddOrganizationInterface = {
             description: values?.description,
             name: values?.name,
@@ -108,7 +113,7 @@ export const AddOrganizationModal: FunctionComponent<AddOrganizationModalPropsIn
                     addAlert({
                         description: t(
                             "console:manage.features.organizations.notifications." +
-                            "addOrganization.success.description"
+                                "addOrganization.success.description"
                         ),
                         level: AlertLevels.SUCCESS,
                         message: t(
@@ -127,27 +132,32 @@ export const AddOrganizationModal: FunctionComponent<AddOrganizationModalPropsIn
                             setOrgLevelReachedError(true);
                         }
                         setOpenLimitReachedModal(true);
-                    } else if (error.code ===
-                        OrganizationManagementConstants.ERROR_SUB_ORGANIZATION_EXIST.getErrorCode()) {
-                        setError(t(OrganizationManagementConstants.ERROR_SUB_ORGANIZATION_EXIST.getErrorMessage(),
-                            {
+                    } else if (
+                        error.code === OrganizationManagementConstants.ERROR_SUB_ORGANIZATION_EXIST.getErrorCode()
+                    ) {
+                        setError(
+                            t(OrganizationManagementConstants.ERROR_SUB_ORGANIZATION_EXIST.getErrorMessage(), {
                                 description: error.description
-                            }
-                        ));
+                            })
+                        );
                     } else {
-                        setError(t(
-                            "console:manage.features.organizations.notifications." +
-                            "addOrganization.error.description",
-                            {
-                                description: error.description
-                            }
-                        ));
+                        setError(
+                            t(
+                                "console:manage.features.organizations.notifications." +
+                                    "addOrganization.error.description",
+                                {
+                                    description: error.description
+                                }
+                            )
+                        );
                     }
                 } else {
-                    setError(t(
-                        "console:manage.features.organizations.notifications." +
+                    setError(
+                        t(
+                            "console:manage.features.organizations.notifications." +
                                 "addOrganization.genericError.description"
-                    ));
+                        )
+                    );
                 }
             })
             .finally(() => {
@@ -173,119 +183,125 @@ export const AddOrganizationModal: FunctionComponent<AddOrganizationModalPropsIn
 
     return (
         <>
-            { openLimitReachedModal && (
+            {openLimitReachedModal && (
                 <TierLimitReachErrorModal
                     actionLabel={
                         orgLevelReachedError
-                            ?
-                            t("console:develop.features.suborganizations.notifications.subOrgLevelsLimitReachedError." +
-                        "emptyPlaceholder.action")
-                            :
-                            t("console:develop.features.suborganizations.notifications.tierLimitReachedError." +
-                        "emptyPlaceholder.action")
+                            ? t(
+                                  "console:develop.features.suborganizations.notifications.subOrgLevelsLimitReachedError." +
+                                      "emptyPlaceholder.action"
+                              )
+                            : t(
+                                  "console:develop.features.suborganizations.notifications.tierLimitReachedError." +
+                                      "emptyPlaceholder.action"
+                              )
                     }
-                    handleModalClose={ handleLimitReachedModalClose }
+                    handleModalClose={handleLimitReachedModalClose}
                     header={
                         orgLevelReachedError
-                            ?
-                            t("console:develop.features.suborganizations.notifications.subOrgLevelsLimitReachedError." +
-                        "heading")
-                            :
-                            t("console:develop.features.suborganizations.notifications.tierLimitReachedError.heading")
+                            ? t(
+                                  "console:develop.features.suborganizations.notifications.subOrgLevelsLimitReachedError." +
+                                      "heading"
+                              )
+                            : t("console:develop.features.suborganizations.notifications.tierLimitReachedError.heading")
                     }
                     description={
                         orgLevelReachedError
-                            ?
-                            t("console:develop.features.suborganizations.notifications.subOrgLevelsLimitReachedError." +
-                        "emptyPlaceholder.subtitles")
-                            :
-                            t("console:develop.features.suborganizations.notifications.tierLimitReachedError." +
-                        "emptyPlaceholder.subtitles")
+                            ? t(
+                                  "console:develop.features.suborganizations.notifications.subOrgLevelsLimitReachedError." +
+                                      "emptyPlaceholder.subtitles"
+                              )
+                            : t(
+                                  "console:develop.features.suborganizations.notifications.tierLimitReachedError." +
+                                      "emptyPlaceholder.subtitles"
+                              )
                     }
                     message={
                         orgLevelReachedError
-                            ?
-                            t("console:develop.features.suborganizations.notifications.subOrgLevelsLimitReachedError." +
-                        "emptyPlaceholder.title")
-                            :
-                            t("console:develop.features.suborganizations.notifications.tierLimitReachedError." +
-                        "emptyPlaceholder.title")
+                            ? t(
+                                  "console:develop.features.suborganizations.notifications.subOrgLevelsLimitReachedError." +
+                                      "emptyPlaceholder.title"
+                              )
+                            : t(
+                                  "console:develop.features.suborganizations.notifications.tierLimitReachedError." +
+                                      "emptyPlaceholder.title"
+                              )
                     }
-                    openModal={ openLimitReachedModal }
+                    openModal={openLimitReachedModal}
                 />
-            ) }
+            )}
             <Modal
-                open={ true }
+                open={true}
                 className="wizard application-create-wizard"
                 size="tiny"
                 dimmer="blurring"
-                onClose={ handleWizardClose }
-                closeOnDimmerClick={ false }
+                onClose={handleWizardClose}
+                closeOnDimmerClick={false}
                 closeOnEscape
-                data-componentid={ `${ testId }-modal` }
+                data-componentid={`${testId}-modal`}
             >
                 <Modal.Header className="wizard-header">
-                    { t("console:manage.features.organizations.modals.addOrganization.header") }
-                    <Heading as="h6" data-componentid={ `${ testId }-subheading` }>
-                        { parent?.name
+                    {t("console:manage.features.organizations.modals.addOrganization.header")}
+                    <Heading as="h6" data-componentid={`${testId}-subheading`}>
+                        {parent?.name
                             ? t("console:manage.features.organizations.modals.addOrganization.subtitle1", {
-                                parent: parent?.name
-                            })
-                            : t("console:manage.features.organizations.modals.addOrganization.subtitle2") }
+                                  parent: parent?.name
+                              })
+                            : t("console:manage.features.organizations.modals.addOrganization.subtitle2")}
                     </Heading>
                 </Modal.Header>
                 <Modal.Content>
                     <Grid>
-                        { (error && !isSubmitting) && (
-                            <Grid.Row columns={ 1 }>
-                                <Grid.Column width={ 16 }>
-                                    <Message type="error" content={ error } />
+                        {error && !isSubmitting && (
+                            <Grid.Row columns={1}>
+                                <Grid.Column width={16}>
+                                    <Message type="error" content={error} />
                                 </Grid.Column>
                             </Grid.Row>
-                        ) }
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column width={ 16 }>
+                        )}
+                        <Grid.Row columns={1}>
+                            <Grid.Column width={16}>
                                 <Form
-                                    id={ FORM_ID }
-                                    uncontrolledForm={ false }
-                                    onSubmit={ submitOrganization }
-                                    triggerSubmit={ (submit: () => void) => (submitForm.current = submit) }
+                                    id={FORM_ID}
+                                    uncontrolledForm={false}
+                                    onSubmit={submitOrganization}
+                                    triggerSubmit={(submit: () => void) => (submitForm.current = submit)}
                                 >
                                     <Field.Input
                                         ariaLabel="Organization Name"
                                         inputType="name"
                                         name="name"
-                                        label={ t(
+                                        label={t(
                                             "console:manage.features.organizations.forms." +
-                                            "addOrganization.name.label"
-                                        ) }
-                                        required={ true }
-                                        placeholder={ t(
+                                                "addOrganization.name.label"
+                                        )}
+                                        required={true}
+                                        placeholder={t(
                                             "console:manage.features.organizations.forms." +
-                                            "addOrganization.name.placeholder"
-                                        ) }
-                                        maxLength={ ORGANIZATION_NAME_MAX_LENGTH }
-                                        minLength={ ORGANIZATION_NAME_MIN_LENGTH }
-                                        data-componentid={ `${ testId }-organization-name-input` }
-                                        width={ 16 }
+                                                "addOrganization.name.placeholder"
+                                        )}
+                                        maxLength={ORGANIZATION_NAME_MAX_LENGTH}
+                                        minLength={ORGANIZATION_NAME_MIN_LENGTH}
+                                        data-componentid={`${testId}-organization-name-input`}
+                                        width={16}
                                     />
                                     <Field.Input
                                         ariaLabel="Description"
                                         inputType="description"
                                         name="description"
-                                        label={ t(
+                                        label={t(
                                             "console:manage.features.organizations.forms." +
-                                            "addOrganization.description.label"
-                                        ) }
-                                        required={ false }
-                                        placeholder={ t(
+                                                "addOrganization.description.label"
+                                        )}
+                                        required={false}
+                                        placeholder={t(
                                             "console:manage.features.organizations.forms." +
-                                            "addOrganization.description.placeholder"
-                                        ) }
-                                        maxLength={ ORGANIZATION_DESCRIPTION_MAX_LENGTH }
-                                        minLength={ ORGANIZATION_DESCRIPTION_MIN_LENGTH }
-                                        data-componentid={ `${ testId }-description-input` }
-                                        width={ 16 }
+                                                "addOrganization.description.placeholder"
+                                        )}
+                                        maxLength={ORGANIZATION_DESCRIPTION_MAX_LENGTH}
+                                        minLength={ORGANIZATION_DESCRIPTION_MIN_LENGTH}
+                                        data-componentid={`${testId}-description-input`}
+                                        width={16}
                                     />
                                 </Form>
                             </Grid.Column>
@@ -294,23 +310,23 @@ export const AddOrganizationModal: FunctionComponent<AddOrganizationModalPropsIn
                 </Modal.Content>
                 <Modal.Actions>
                     <Grid>
-                        <Grid.Row column={ 1 }>
-                            <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                <LinkButton floated="left" onClick={ handleWizardClose }>
-                                    { t("common:cancel") }
+                        <Grid.Row column={1}>
+                            <Grid.Column mobile={8} tablet={8} computer={8}>
+                                <LinkButton floated="left" onClick={handleWizardClose}>
+                                    {t("common:cancel")}
                                 </LinkButton>
                             </Grid.Column>
-                            <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                            <Grid.Column mobile={8} tablet={8} computer={8}>
                                 <PrimaryButton
                                     floated="right"
-                                    onClick={ () => {
+                                    onClick={() => {
                                         submitForm?.current && submitForm?.current();
-                                    } }
-                                    data-componentid={ `${ testId }-next-button` }
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
+                                    }}
+                                    data-componentid={`${testId}-next-button`}
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
                                 >
-                                    { t("common:create") }
+                                    {t("common:create")}
                                 </PrimaryButton>
                             </Grid.Column>
                         </Grid.Row>

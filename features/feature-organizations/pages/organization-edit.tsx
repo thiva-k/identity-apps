@@ -20,6 +20,14 @@ import { BasicUserInfo } from "@asgardeo/auth-react";
 import { isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertLevels, SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import {
+    getOrganization,
+    useAuthorizedOrganizationsList,
+    useGetOrganizationBreadCrumb
+} from "@wso2is/feature-organizations.common/api";
+import { OrganizationManagementConstants } from "@wso2is/feature-organizations.common/constants";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { OrganizationInterface, OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
 import { Button, GenericIcon, PageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,45 +39,36 @@ import { ApplicationManagementConstants } from "../../applications/constants";
 import useSignIn from "../../authentication/hooks/use-sign-in";
 import useAuthorization from "../../authorization/hooks/use-authorization";
 import { AppConstants, FeatureConfigInterface, history } from "../../core";
-import { getOrganization, useAuthorizedOrganizationsList, useGetOrganizationBreadCrumb } from "../api";
 import { EditOrganization } from "../components/edit-organization/edit-organization";
 import { OrganizationIcon } from "../configs";
-import { OrganizationManagementConstants } from "../constants";
-import { useGetCurrentOrganizationType } from "../hooks/use-get-organization-type";
 import useOrganizationSwitch from "../hooks/use-organization-switch";
-import { OrganizationInterface, OrganizationResponseInterface } from "../models";
 
-interface OrganizationEditPagePropsInterface extends SBACInterface<FeatureConfigInterface>,
-    TestableComponentInterface, RouteChildrenProps{
-}
+interface OrganizationEditPagePropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        TestableComponentInterface,
+        RouteChildrenProps {}
 
 const OrganizationEditPage: FunctionComponent<OrganizationEditPagePropsInterface> = (
     props: OrganizationEditPagePropsInterface
 ): ReactElement => {
-
-    const {
-        featureConfig,
-        location
-    } = props;
+    const { featureConfig, location } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ organization, setOrganization ] = useState<OrganizationResponseInterface>();
-    const [ isReadOnly, setIsReadOnly ] = useState(true);
-    const [ isAuthorizedOrganization, setIsAuthorizedOrganization ] = useState(false);
-    const [ filterQuery, setFilterQuery ] = useState<string>("");
+    const [organization, setOrganization] = useState<OrganizationResponseInterface>();
+    const [isReadOnly, setIsReadOnly] = useState(true);
+    const [isAuthorizedOrganization, setIsAuthorizedOrganization] = useState(false);
+    const [filterQuery, setFilterQuery] = useState<string>("");
 
     const { switchOrganization, switchOrganizationInLegacyMode } = useOrganizationSwitch();
-    const { legacyAuthzRuntime }  = useAuthorization();
+    const { legacyAuthzRuntime } = useAuthorization();
     const { onSignIn } = useSignIn();
     const { isFirstLevelOrganization, isSuperOrganization } = useGetCurrentOrganizationType();
 
     const shouldSendRequest: boolean = useMemo(() => {
-        return (
-            isFirstLevelOrganization() || isSuperOrganization() || window[ "AppUtils" ].getConfig().organizationName
-        );
-    }, [ isFirstLevelOrganization, isSuperOrganization ]);
+        return isFirstLevelOrganization() || isSuperOrganization() || window["AppUtils"].getConfig().organizationName;
+    }, [isFirstLevelOrganization, isSuperOrganization]);
 
     const { data: breadcrumbList, mutate: mutateOrganizationBreadCrumbFetchRequest } = useGetOrganizationBreadCrumb(
         shouldSendRequest
@@ -80,15 +79,22 @@ const OrganizationEditPage: FunctionComponent<OrganizationEditPagePropsInterface
             !isFeatureEnabled(
                 featureConfig?.organizations,
                 OrganizationManagementConstants.FEATURE_DICTIONARY.get("ORGANIZATION_UPDATE")
-            ) || !isAuthorizedOrganization);
-    }, [ featureConfig, organization, isAuthorizedOrganization ]);
+            ) || !isAuthorizedOrganization
+        );
+    }, [featureConfig, organization, isAuthorizedOrganization]);
 
     const {
         data: authorizedOrganizationList,
         isLoading: isAuthorizedOrganizationListRequestLoading,
         error: authorizedListFetchRequestError
-    } = useAuthorizedOrganizationsList(filterQuery, 10, null, null,
-        ApplicationManagementConstants.CONSOLE_APP_NAME, false);
+    } = useAuthorizedOrganizationsList(
+        filterQuery,
+        10,
+        null,
+        null,
+        ApplicationManagementConstants.CONSOLE_APP_NAME,
+        false
+    );
 
     /**
      * Handles the authorized list fetch request error.
@@ -99,7 +105,7 @@ const OrganizationEditPage: FunctionComponent<OrganizationEditPagePropsInterface
         }
 
         handleGetAuthoriziedListCallError(authorizedListFetchRequestError);
-    }, [ authorizedListFetchRequestError ]);
+    }, [authorizedListFetchRequestError]);
 
     /**
      * Handle check for authorized organization.
@@ -109,11 +115,12 @@ const OrganizationEditPage: FunctionComponent<OrganizationEditPagePropsInterface
             return;
         }
 
-        const isOrgAuthorized: boolean = !!authorizedOrganizationList.organizations
-            ?.find((org: OrganizationInterface) => org.id === organization?.id);
+        const isOrgAuthorized: boolean = !!authorizedOrganizationList.organizations?.find(
+            (org: OrganizationInterface) => org.id === organization?.id
+        );
 
         setIsAuthorizedOrganization(isOrgAuthorized);
-    }, [ authorizedOrganizationList ]);
+    }, [authorizedOrganizationList]);
 
     const handleGetAuthoriziedListCallError = (error: any) => {
         if (error?.response?.data?.description) {
@@ -122,8 +129,7 @@ const OrganizationEditPage: FunctionComponent<OrganizationEditPagePropsInterface
                     description: error?.response?.data?.description,
                     level: AlertLevels.ERROR,
                     message: t(
-                        "console:manage.features.organizations.notifications." +
-                        "getOrganizationList.error.message"
+                        "console:manage.features.organizations.notifications." + "getOrganizationList.error.message"
                     )
                 })
             );
@@ -134,12 +140,11 @@ const OrganizationEditPage: FunctionComponent<OrganizationEditPagePropsInterface
             addAlert({
                 description: t(
                     "console:manage.features.organizations.notifications.getOrganizationList" +
-                    ".genericError.description"
+                        ".genericError.description"
                 ),
                 level: AlertLevels.ERROR,
                 message: t(
-                    "console:manage.features.organizations.notifications." +
-                    "getOrganizationList.genericError.message"
+                    "console:manage.features.organizations.notifications." + "getOrganizationList.genericError.message"
                 )
             })
         );
@@ -147,42 +152,57 @@ const OrganizationEditPage: FunctionComponent<OrganizationEditPagePropsInterface
         return;
     };
 
-    const getOrganizationData: (organizationId: string) => void = useCallback((organizationId: string): void => {
-        getOrganization(organizationId)
-            .then((organization: OrganizationResponseInterface) => {
-                setOrganization(organization);
-                setFilterQuery("name eq " + organization?.name);
-            }).catch((error: any) => {
-                if (error?.description) {
-                    dispatch(addAlert({
-                        description: error.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.organizations.notifications.fetchOrganization." +
-                            "genericError.message")
-                    }));
+    const getOrganizationData: (organizationId: string) => void = useCallback(
+        (organizationId: string): void => {
+            getOrganization(organizationId)
+                .then((organization: OrganizationResponseInterface) => {
+                    setOrganization(organization);
+                    setFilterQuery("name eq " + organization?.name);
+                })
+                .catch((error: any) => {
+                    if (error?.description) {
+                        dispatch(
+                            addAlert({
+                                description: error.description,
+                                level: AlertLevels.ERROR,
+                                message: t(
+                                    "console:manage.features.organizations.notifications.fetchOrganization." +
+                                        "genericError.message"
+                                )
+                            })
+                        );
 
-                    return;
-                }
+                        return;
+                    }
 
-                dispatch(addAlert({
-                    description: t("console:manage.features.organizations.notifications.fetchOrganization." +
-                        "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.organizations.notifications.fetchOrganization." +
-                        "genericError.message")
-                }));
-            });
-    }, [ dispatch, t ]);
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.organizations.notifications.fetchOrganization." +
+                                    "genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.organizations.notifications.fetchOrganization." +
+                                    "genericError.message"
+                            )
+                        })
+                    );
+                });
+        },
+        [dispatch, t]
+    );
 
     useEffect(() => {
         const path: string[] = location.pathname.split("/");
         const id: string = path[path.length - 1];
 
         getOrganizationData(id);
-    }, [ location, getOrganizationData ]);
+    }, [location, getOrganizationData]);
 
-    const goBackToOrganizationList: () => void = useCallback(() =>
-        history.push(AppConstants.getPaths().get("ORGANIZATIONS")),[ history ]
+    const goBackToOrganizationList: () => void = useCallback(
+        () => history.push(AppConstants.getPaths().get("ORGANIZATIONS")),
+        [history]
     );
 
     /**
@@ -199,21 +219,26 @@ const OrganizationEditPage: FunctionComponent<OrganizationEditPagePropsInterface
 
         try {
             response = await switchOrganization(organization.id);
-            await onSignIn(response, () => null, () => null, () => null);
+            await onSignIn(
+                response,
+                () => null,
+                () => null,
+                () => null
+            );
             await mutateOrganizationBreadCrumbFetchRequest();
 
             history.push(AppConstants.getPaths().get("GETTING_STARTED"));
-        } catch(e) {
+        } catch (e) {
             dispatch(
                 addAlert({
                     description: t(
                         "console:manage.features.organizations.switching.notifications.switchOrganization" +
-                        ".genericError.description"
+                            ".genericError.description"
                     ),
                     level: AlertLevels.ERROR,
                     message: t(
                         "console:manage.features.organizations.switching.notifications.switchOrganization" +
-                        ".genericError.message"
+                            ".genericError.message"
                     )
                 })
             );
@@ -222,47 +247,44 @@ const OrganizationEditPage: FunctionComponent<OrganizationEditPagePropsInterface
 
     return (
         <PageLayout
-            isLoading={ isAuthorizedOrganizationListRequestLoading }
-            title={ organization?.name ?? t("console:manage.features.organizations.title") }
-            pageTitle={ organization?.name ?? t("console:manage.features.organizations.title") }
-            description={ isReadOnly
-                ? t("console:manage.features.organizations.view.description")
-                : t("console:manage.features.organizations.edit.description") }
-            image={ (
-                <GenericIcon
-                    defaultIcon
-                    relaxed="very"
-                    shape="rounded"
-                    size="x50"
-                    icon={ OrganizationIcon }
-                />
-            ) }
-            backButton={ {
+            isLoading={isAuthorizedOrganizationListRequestLoading}
+            title={organization?.name ?? t("console:manage.features.organizations.title")}
+            pageTitle={organization?.name ?? t("console:manage.features.organizations.title")}
+            description={
+                isReadOnly
+                    ? t("console:manage.features.organizations.view.description")
+                    : t("console:manage.features.organizations.edit.description")
+            }
+            image={<GenericIcon defaultIcon relaxed="very" shape="rounded" size="x50" icon={OrganizationIcon} />}
+            backButton={{
                 "data-testid": "org-mgt-edit-org-back-button",
                 onClick: goBackToOrganizationList,
                 text: t("console:manage.features.organizations.edit.back")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            action={ !isReadOnly && organization?.status === "ACTIVE" && (
-                <Button
-                    basic
-                    primary
-                    data-componentid="org-mgt-edit-org-switch-button"
-                    type="button"
-                    onClick={ handleOrganizationSwitch }
-                >
-                    <Icon name="exchange" />
-                    { t("console:manage.features.organizations.switching.switchButton") }
-                </Button>
-            ) }
+            bottomMargin={false}
+            action={
+                !isReadOnly &&
+                organization?.status === "ACTIVE" && (
+                    <Button
+                        basic
+                        primary
+                        data-componentid="org-mgt-edit-org-switch-button"
+                        type="button"
+                        onClick={handleOrganizationSwitch}
+                    >
+                        <Icon name="exchange" />
+                        {t("console:manage.features.organizations.switching.switchButton")}
+                    </Button>
+                )
+            }
         >
             <EditOrganization
-                organization={ organization }
-                isReadOnly={ isReadOnly }
-                featureConfig={ featureConfig }
-                onOrganizationUpdate={ getOrganizationData }
-                onOrganizationDelete={ goBackToOrganizationList }
+                organization={organization}
+                isReadOnly={isReadOnly}
+                featureConfig={featureConfig}
+                onOrganizationUpdate={getOrganizationData}
+                onOrganizationDelete={goBackToOrganizationList}
             />
         </PageLayout>
     );

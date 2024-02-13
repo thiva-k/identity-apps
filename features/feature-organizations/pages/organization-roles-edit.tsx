@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ * Copyright (c) {{year}}, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,14 +16,14 @@
  * under the License.
  */
 
+import { OrganizationResponseInterface, OrganizationRoleInterface } from "@wso2is/feature-organizations.common/models";
 import { PageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
-import { getOrganizationRoleById } from "../api";
+import { getOrganizationRoleById } from "@wso2is/feature-organizations.common/api";
 import { EditOrganizationRole } from "../components/edit-organization-role";
-import { OrganizationResponseInterface, OrganizationRoleInterface } from "../models";
 
 /**
  * Organization Roles edit page
@@ -31,19 +31,18 @@ import { OrganizationResponseInterface, OrganizationRoleInterface } from "../mod
  * @returns OrganizationRolesEdit component
  */
 const OrganizationRolesEdit: FunctionComponent = (): ReactElement => {
-
     const { t } = useTranslation();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ roleId, setRoleId ] = useState<string>(undefined);
-    const [ roleObject, setRoleObject ] = useState<OrganizationRoleInterface>();
-    const [ isRoleDetailsRequestLoading, setIsRoleDetailsRequestLoading ] = useState<boolean>(false);
+    const [roleId, setRoleId] = useState<string>(undefined);
+    const [roleObject, setRoleObject] = useState<OrganizationRoleInterface>();
+    const [isRoleDetailsRequestLoading, setIsRoleDetailsRequestLoading] = useState<boolean>(false);
     const currentOrganization: OrganizationResponseInterface = useSelector(
         (state: AppState) => state.organization.organization
     );
 
-    const getRoleDetails = (roleId: string ): void => {
+    const getRoleDetails = (roleId: string): void => {
         setIsRoleDetailsRequestLoading(true);
 
         getOrganizationRoleById(currentOrganization.id, roleId)
@@ -51,8 +50,9 @@ const OrganizationRolesEdit: FunctionComponent = (): ReactElement => {
                 if (response.status === 200) {
                     setRoleObject(response.data);
                 }
-            }).catch(() => {
-            // TODO: handle error
+            })
+            .catch(() => {
+                // TODO: handle error
             })
             .finally(() => {
                 setIsRoleDetailsRequestLoading(false);
@@ -68,7 +68,7 @@ const OrganizationRolesEdit: FunctionComponent = (): ReactElement => {
      */
     useEffect(() => {
         const path = history.location.pathname.split("/");
-        const roleId = path[ path.length - 1 ];
+        const roleId = path[path.length - 1];
 
         setRoleId(roleId);
         getRoleDetails(roleId);
@@ -80,29 +80,28 @@ const OrganizationRolesEdit: FunctionComponent = (): ReactElement => {
 
     return (
         <PageLayout
-            isLoading={ isRoleDetailsRequestLoading }
+            isLoading={isRoleDetailsRequestLoading}
             pageTitle={
-                roleObject && roleObject?.displayName ?
-                    roleObject?.displayName :
-                    t("console:manage.pages.rolesEdit.title")
+                roleObject && roleObject?.displayName
+                    ? roleObject?.displayName
+                    : t("console:manage.pages.rolesEdit.title")
             }
             title="Edit Organization Role"
-            backButton={ {
+            backButton={{
                 onClick: handleBackButtonClick,
                 text: t("console:manage.pages.rolesEdit.backButton", { type: "roles" })
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
+            bottomMargin={false}
         >
             <EditOrganizationRole
-                roleObject={ roleObject }
-                roleId={ roleId }
-                onRoleUpdate={ onRoleUpdate }
-                featureConfig={ featureConfig }
+                roleObject={roleObject}
+                roleId={roleId}
+                onRoleUpdate={onRoleUpdate}
+                featureConfig={featureConfig}
             />
         </PageLayout>
     );
-
 };
 
 export default OrganizationRolesEdit;

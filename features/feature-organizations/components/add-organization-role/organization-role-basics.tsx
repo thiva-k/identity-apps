@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ * Copyright (c) {{year}}, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -17,6 +17,12 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api";
+import { PRIMARY_DOMAIN } from "@wso2is/feature-organizations.common/constants";
+import {
+    OrganizationResponseInterface,
+    OrganizationRoleListResponseInterface
+} from "@wso2is/feature-organizations.common/models";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,11 +30,6 @@ import { useSelector } from "react-redux";
 import { Grid, GridColumn, GridRow } from "semantic-ui-react";
 import { AppState, SharedUserStoreConstants, SharedUserStoreUtils } from "../../../core";
 import { CreateRoleFormData } from "../../../roles/models/roles";
-import { getOrganizationRoles } from "../../api";
-import {
-    PRIMARY_DOMAIN
-} from "../../constants";
-import { OrganizationResponseInterface, OrganizationRoleListResponseInterface } from "../../models";
 
 /**
  * Interface to capture role basics props.
@@ -49,19 +50,13 @@ interface OrganizationRoleBasicProps extends TestableComponentInterface {
 export const OrganizationRoleBasics: FunctionComponent<OrganizationRoleBasicProps> = (
     props: OrganizationRoleBasicProps
 ): ReactElement => {
-
-    const {
-        onSubmit,
-        triggerSubmit,
-        initialValues,
-        [ "data-testid" ]: testId
-    } = props;
+    const { onSubmit, triggerSubmit, initialValues, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ isRoleNamePatternValid, setIsRoleNamePatternValid ] = useState<boolean>(true);
-    const [ userStore ] = useState<string>(SharedUserStoreConstants.PRIMARY_USER_STORE);
-    const [ isRegExLoading, setRegExLoading ] = useState<boolean>(false);
+    const [isRoleNamePatternValid, setIsRoleNamePatternValid] = useState<boolean>(true);
+    const [userStore] = useState<string>(SharedUserStoreConstants.PRIMARY_USER_STORE);
+    const [isRegExLoading, setRegExLoading] = useState<boolean>(false);
 
     const currentOrganization: OrganizationResponseInterface = useSelector(
         (state: AppState) => state.organization.organization
@@ -76,12 +71,13 @@ export const OrganizationRoleBasics: FunctionComponent<OrganizationRoleBasicProp
         let userStoreRegEx: string = "";
 
         if (userStore !== PRIMARY_DOMAIN) {
-            await SharedUserStoreUtils.getUserStoreRegEx(userStore,
-                SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.RolenameRegEx)
-                .then((response: string) => {
-                    setRegExLoading(true);
-                    userStoreRegEx = response;
-                });
+            await SharedUserStoreUtils.getUserStoreRegEx(
+                userStore,
+                SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.RolenameRegEx
+            ).then((response: string) => {
+                setRegExLoading(true);
+                userStoreRegEx = response;
+            });
         } else {
             userStoreRegEx = SharedUserStoreConstants.PRIMARY_USERSTORE_PROPERTY_VALUES.RolenameJavaScriptRegEx;
         }
@@ -101,33 +97,36 @@ export const OrganizationRoleBasics: FunctionComponent<OrganizationRoleBasicProp
 
     return (
         <Forms
-            data-testid={ testId }
-            onSubmit={ (values: Map<string, FormValue>) => {
+            data-testid={testId}
+            onSubmit={(values: Map<string, FormValue>) => {
                 onSubmit(getFormValues(values));
-            } }
-            submitState={ triggerSubmit }
+            }}
+            submitState={triggerSubmit}
         >
             <Grid>
                 <GridRow>
-                    <GridColumn mobile={ 16 } tablet={ 16 } computer={ 8 }>
+                    <GridColumn mobile={16} tablet={16} computer={8}>
                         <Field
-                            data-testid={ `${ testId }-role-name-input` }
+                            data-testid={`${testId}-role-name-input`}
                             type="text"
                             name="rolename"
-                            label={
-                                t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                                        "roleName.label",{ type: "Role" })
-                            }
-                            placeholder={
-                                t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails.roleName." +
-                                        "placeholder", { type: "Role" })
-                            }
-                            required={ true }
-                            requiredErrorMessage={
-                                t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails.roleName." +
-                                        "validations.empty", { type: "Role" })
-                            }
-                            validation={ async (value: string, validation: Validation) => {
+                            label={t(
+                                "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                                    "roleName.label",
+                                { type: "Role" }
+                            )}
+                            placeholder={t(
+                                "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails.roleName." +
+                                    "placeholder",
+                                { type: "Role" }
+                            )}
+                            required={true}
+                            requiredErrorMessage={t(
+                                "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails.roleName." +
+                                    "validations.empty",
+                                { type: "Role" }
+                            )}
+                            validation={async (value: string, validation: Validation) => {
                                 const response: OrganizationRoleListResponseInterface = await getOrganizationRoles(
                                     currentOrganization.id,
                                     `name eq ${value}`,
@@ -138,8 +137,11 @@ export const OrganizationRoleBasics: FunctionComponent<OrganizationRoleBasicProp
                                 if (response?.totalResults > 0) {
                                     validation.isValid = false;
                                     validation.errorMessages.push(
-                                        t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                                            "roleName.validations.duplicate", { type: "Role" })
+                                        t(
+                                            "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                                                "roleName.validations.duplicate",
+                                            { type: "Role" }
+                                        )
                                     );
                                 }
 
@@ -148,13 +150,16 @@ export const OrganizationRoleBasics: FunctionComponent<OrganizationRoleBasicProp
                                 if (!isRoleNamePatternValid) {
                                     validation.isValid = false;
                                     validation.errorMessages.push(
-                                        t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                                                "roleName.validations.invalid", { type: "role" })
+                                        t(
+                                            "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                                                "roleName.validations.invalid",
+                                            { type: "role" }
+                                        )
                                     );
                                 }
-                            } }
-                            value={ initialValues && initialValues.roleName }
-                            loading={ isRegExLoading }
+                            }}
+                            value={initialValues && initialValues.roleName}
+                            loading={isRegExLoading}
                         />
                     </GridColumn>
                 </GridRow>

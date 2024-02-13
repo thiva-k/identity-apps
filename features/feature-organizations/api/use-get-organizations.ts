@@ -17,13 +17,13 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
+import { OrganizationListInterface } from "@wso2is/feature-organizations.common/models/organizations";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
 import { store } from "../../core/store";
-import { OrganizationListInterface } from "../models/organizations";
 
 /**
  * Hook to get the list of organizations.
@@ -37,17 +37,15 @@ import { OrganizationListInterface } from "../models/organizations";
  * @param isRoot - Is root organization.
  * @returns SWR response object containing the data, error, isValidating, mutate.
  */
-const useGetOrganizations = <
-    Data = OrganizationListInterface,
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean,
-        filter: string,
-        limit: number,
-        after: string,
-        before: string,
-        recursive: boolean,
-        isRoot: boolean = false
-    ): RequestResultInterface<Data, Error> => {
+const useGetOrganizations = <Data = OrganizationListInterface, Error = RequestErrorInterface>(
+    shouldFetch: boolean,
+    filter: string,
+    limit: number,
+    after: string,
+    before: string,
+    recursive: boolean,
+    isRoot: boolean = false
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
@@ -68,7 +66,7 @@ const useGetOrganizations = <
         }/organizations`
     };
 
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch? requestConfig : null, {
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig : null, {
         shouldRetryOnError: false
     });
 

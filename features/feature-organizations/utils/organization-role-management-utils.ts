@@ -16,16 +16,15 @@
  * under the License.
  */
 
+import { getOrganizationPermissions } from "@wso2is/feature-organizations.common/api";
 import isEmpty from "lodash-es/isEmpty";
 import { generatePermissionTree } from "../../roles/components/role-utils";
-import { getOrganizationPermissions } from "../api";
 import { PermissionObject, TreeNode } from "../models";
 
 /**
  * Utility class for roles operations.
  */
 export class OrganizationRoleManagementUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
@@ -33,8 +32,7 @@ export class OrganizationRoleManagementUtils {
      * @hideconstructor
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() {
-    }
+    private constructor() {}
 
     /**
      * Util function to join split permission string for given array location.
@@ -46,7 +44,7 @@ export class OrganizationRoleManagementUtils {
         let permissionStringList = permissionString.split("/");
         const first = permissionStringList.splice(0, joinLocation);
 
-        permissionStringList = [ first.join("/"), ...permissionString ];
+        permissionStringList = [first.join("/"), ...permissionString];
 
         return permissionStringList;
     };
@@ -58,19 +56,18 @@ export class OrganizationRoleManagementUtils {
      * @return {Promise<TreeNode[]>}
      */
     public static getAllOrganizationLevelPermissions = (permissionsToSkip?: string[]): Promise<TreeNode[]> => {
-        return getOrganizationPermissions().then((response) => {
+        return getOrganizationPermissions().then(response => {
             if (response.status === 200 && response.data && response.data instanceof Array) {
-
                 const permissionStringArray: PermissionObject[] = !isEmpty(permissionsToSkip)
-                    ? response.data.filter((permission: { resourcePath: string; }) =>
-                        !permissionsToSkip.includes(permission.resourcePath))
+                    ? response.data.filter(
+                          (permission: { resourcePath: string }) => !permissionsToSkip.includes(permission.resourcePath)
+                      )
                     : response.data;
 
                 let permissionTree: TreeNode[] = [];
                 let isStartingWithTwoNodes: boolean = false;
 
                 permissionTree = permissionStringArray.reduce((arr, path, index) => {
-
                     let nodes: TreeNode[] = [];
 
                     if (index === 0 && path.resourcePath.replace(/^\/|\/$/g, "").split("/").length == 2) {
@@ -81,16 +78,13 @@ export class OrganizationRoleManagementUtils {
                         nodes = generatePermissionTree(
                             path,
                             OrganizationRoleManagementUtils.permissionJoining(
-                                path.resourcePath.replace(/^\/|\/$/g, ""), 2
+                                path.resourcePath.replace(/^\/|\/$/g, ""),
+                                2
                             ),
                             arr
                         );
                     } else {
-                        nodes = generatePermissionTree(
-                            path,
-                            path.resourcePath.replace(/^\/|\/$/g, "").split("/"),
-                            arr
-                        );
+                        nodes = generatePermissionTree(path, path.resourcePath.replace(/^\/|\/$/g, "").split("/"), arr);
                     }
 
                     return nodes;
@@ -99,7 +93,7 @@ export class OrganizationRoleManagementUtils {
                 return permissionTree;
             }
         });
-    }
+    };
 
     /**
      * A Util method to create an array of permission object with heirarchy.
@@ -110,9 +104,11 @@ export class OrganizationRoleManagementUtils {
      *
      * @returns {TreeNode[]} - Permission array with tree structure
      */
-    public static generatePermissionTree(permissioObject: PermissionObject, pathComponents: string[],
-        permissionTreeArray: TreeNode[]): TreeNode[] {
-
+    public static generatePermissionTree(
+        permissioObject: PermissionObject,
+        pathComponents: string[],
+        permissionTreeArray: TreeNode[]
+    ): TreeNode[] {
         const component = pathComponents.shift();
         let permissionComponent = permissionTreeArray.find((permission: TreeNode) => {
             return permission.name === component;
@@ -128,8 +124,11 @@ export class OrganizationRoleManagementUtils {
         }
 
         if (pathComponents.length) {
-            generatePermissionTree(permissioObject, pathComponents,
-                permissionComponent.children || (permissionComponent.children = []));
+            generatePermissionTree(
+                permissioObject,
+                pathComponents,
+                permissionComponent.children || (permissionComponent.children = [])
+            );
         }
 
         return permissionTreeArray;

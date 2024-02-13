@@ -17,6 +17,9 @@
  */
 import { AlertInterface, AlertLevels, RolesInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { patchOrganizationRoleDetails } from "@wso2is/feature-organizations.common/api";
+import { PRIMARY_DOMAIN } from "@wso2is/feature-organizations.common/constants";
+import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -25,11 +28,6 @@ import { AppState } from "../../../core";
 import { AddRoleUsers } from "../../../roles/components/wizard/role-user-assign";
 import { ScimOperationsInterface } from "../../../roles/models/roles";
 import { UserBasicInterface } from "../../../users/models/user";
-import { patchOrganizationRoleDetails } from "../../api";
-import { PRIMARY_DOMAIN } from "../../constants";
-import {
-    OrganizationResponseInterface
-} from "../../models";
 
 interface RoleUserDetailsProps {
     roleObject: RolesInterface;
@@ -38,20 +36,14 @@ interface RoleUserDetailsProps {
     isReadOnly?: boolean;
 }
 
-export const RoleUserDetails: FunctionComponent<RoleUserDetailsProps> = (
-    props: RoleUserDetailsProps
-): ReactElement => {
+export const RoleUserDetails: FunctionComponent<RoleUserDetailsProps> = (props: RoleUserDetailsProps): ReactElement => {
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const {
-        roleObject,
-        onRoleUpdate,
-        isReadOnly
-    } = props;
+    const { roleObject, onRoleUpdate, isReadOnly } = props;
 
-    const [ currentUserStore, setCurrentUserStore ] = useState<string>(undefined);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [currentUserStore, setCurrentUserStore] = useState<string>(undefined);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const currentOrganization: OrganizationResponseInterface = useSelector(
         (state: AppState) => state.organization.organization
     );
@@ -64,7 +56,7 @@ export const RoleUserDetails: FunctionComponent<RoleUserDetailsProps> = (
         } else {
             setCurrentUserStore(PRIMARY_DOMAIN);
         }
-    }, [ currentUserStore, roleObject ]);
+    }, [currentUserStore, roleObject]);
 
     /**
      * Dispatches the alert object to the redux store.
@@ -76,10 +68,10 @@ export const RoleUserDetails: FunctionComponent<RoleUserDetailsProps> = (
     };
 
     const onUserUpdate = async (addedUsers: UserBasicInterface[], removedUsers: UserBasicInterface[]) => {
-        if(addedUsers?.length === 0 && removedUsers?.length === 0) {
+        if (addedUsers?.length === 0 && removedUsers?.length === 0) {
             return;
         }
-        
+
         const addedUserIds: string[] = [];
         const removedUserIds: string[] = [];
 
@@ -93,19 +85,19 @@ export const RoleUserDetails: FunctionComponent<RoleUserDetailsProps> = (
 
         const operations: ScimOperationsInterface[] = [];
 
-        if(addedUserIds?.length > 0) {
+        if (addedUserIds?.length > 0) {
             operations.push({
-                "op": "ADD",
-                "path": "users",
-                "value": addedUserIds
+                op: "ADD",
+                path: "users",
+                value: addedUserIds
             });
         }
 
-        if(removedUserIds?.length > 0) {
+        if (removedUserIds?.length > 0) {
             removedUserIds.forEach((userId: string) => {
                 operations.push({
-                    "op": "REMOVE",
-                    "path": "users[ value eq " + userId + " ]]"
+                    op: "REMOVE",
+                    path: "users[ value eq " + userId + " ]]"
                 });
             });
         }
@@ -138,13 +130,13 @@ export const RoleUserDetails: FunctionComponent<RoleUserDetailsProps> = (
     return (
         <AddRoleUsers
             data-testid="role-mgt-edit-role-users"
-            isGroup={ false }
-            isEdit={ true }
-            isReadOnly={ isReadOnly }
-            userStore={ currentUserStore }
-            assignedUsers={ roleObject?.users }
-            onSubmit={ onUserUpdate }
-            isSubmitting={ isSubmitting }
+            isGroup={false}
+            isEdit={true}
+            isReadOnly={isReadOnly}
+            userStore={currentUserStore}
+            assignedUsers={roleObject?.users}
+            onSubmit={onUserUpdate}
+            isSubmitting={isSubmitting}
         />
     );
 };
