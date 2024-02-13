@@ -19,7 +19,6 @@
 import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { patchOrganization } from "@wso2is/feature-organizations.common/api";
 import {
     OrganizationAttributesInterface,
     OrganizationPatchData,
@@ -34,6 +33,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid } from "semantic-ui-react";
 import { FeatureConfigInterface } from "../../../core";
+import { patchOrganization } from "../../api";
 
 interface OrganizationAttributesPropsInterface
     extends SBACInterface<FeatureConfigInterface>,

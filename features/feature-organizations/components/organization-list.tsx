@@ -21,7 +21,6 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface, LoadableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { deleteOrganization, useGetOrganizationBreadCrumb } from "@wso2is/feature-organizations.common/api";
 import { OrganizationManagementConstants } from "@wso2is/feature-organizations.common/constants";
 import {
     GenericOrganization,
@@ -51,6 +50,7 @@ import useSignIn from "../../authentication/hooks/use-sign-in";
 import useAuthorization from "../../authorization/hooks/use-authorization";
 import { AppConstants, AppState, EventPublisher, FeatureConfigInterface, UIConstants, history } from "../../core";
 import { getEmptyPlaceholderIllustrations } from "../../core/configs/ui";
+import { deleteOrganization, useGetOrganizationBreadCrumb } from "../api";
 import { OrganizationIcon } from "../configs";
 import useOrganizationSwitch from "../hooks/use-organization-switch";
 

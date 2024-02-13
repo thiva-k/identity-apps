@@ -20,11 +20,6 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import {
-    getOrganization,
-    getOrganizations,
-    useAuthorizedOrganizationsList
-} from "@wso2is/feature-organizations.common/api";
-import {
     OrganizationInterface,
     OrganizationLinkInterface,
     OrganizationListInterface,
@@ -61,6 +56,7 @@ import {
 } from "semantic-ui-react";
 import { ApplicationManagementConstants } from "../../applications/constants";
 import { AdvancedSearchWithBasicFilters, AppState, EventPublisher, UIConstants } from "../../core";
+import { getOrganization, getOrganizations, useAuthorizedOrganizationsList } from "../api";
 import { AddOrganizationModal, OrganizationList } from "../components";
 
 const ORGANIZATIONS_LIST_SORTING_OPTIONS: DropdownItemProps[] = [

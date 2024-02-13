@@ -18,7 +18,6 @@
 
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { getOrganizations } from "@wso2is/feature-organizations.common/api";
 import {
     GenericOrganization,
     OrganizationInterface,
@@ -44,6 +43,7 @@ import OrganizationListItem from "./organization-list-item";
 import OrganizationSwitcherList from "./organization-switch-list";
 import { ReactComponent as CrossIcon } from "../../../../themes/default/assets/images/icons/cross-icon.svg";
 import { AppState } from "../../../core";
+import { getOrganizations } from "../../api";
 import { AddOrganizationModal } from "../add-organization-modal";
 
 /**
