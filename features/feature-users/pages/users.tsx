@@ -27,6 +27,10 @@ import {
 import { addAlert } from "@wso2is/core/store";
 import { LocalStorageUtils } from "@wso2is/core/utils";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { getUsersList } from "@wso2is/feature-users.common/api";
+import { UserAccountTypes, UserAccountTypesMain, UserAddOptionTypes, 
+    UserManagementConstants } from "@wso2is/feature-users.common/constants";
+import { UserListInterface } from "@wso2is/feature-users.common/models";
 import {
     ConfirmationModal,
     EmptyPlaceholder,
@@ -71,7 +75,6 @@ import {
 import { getUserStoreList } from "../../userstores/api";
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../userstores/constants/user-store-constants";
 import { UserStoreListItem, UserStorePostData, UserStoreProperty } from "../../userstores/models/user-stores";
-import { getUsersList } from "../api";
 import { useGetParentOrgUserInvites } from "../components/guests/api/use-get-parent-org-user-invites";
 import { UserInviteInterface } from "../components/guests/models/invite";
 import { GuestUsersList } from "../components/guests/pages/guest-users-list";
@@ -79,8 +82,6 @@ import { UsersList } from "../components/users-list";
 import { AddUserWizard } from "../components/wizard/add-user-wizard";
 import { BulkImportUserWizard } from "../components/wizard/bulk-import-user-wizard";
 import { InviteParentOrgUserWizard } from "../components/wizard/invite-parent-org-user-wizard";
-import { UserAccountTypes, UserAccountTypesMain, UserAddOptionTypes, UserManagementConstants } from "../constants";
-import { UserListInterface } from "../models";
 
 interface UserStoreItem {
     key: number;

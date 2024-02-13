@@ -26,7 +26,7 @@ import {
     ValidationFormInterface,
     ValidationPropertyInterface
 } from "../../validation/models";
-import { MultipleInviteMode, MultipleInvitesDisplayNames } from "../models";
+import { MultipleInviteMode, MultipleInvitesDisplayNames } from "@wso2is/feature-users.common/models";
 
 /**
  * Utility class for user management operations.

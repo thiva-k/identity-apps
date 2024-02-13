@@ -17,13 +17,13 @@
  */
 
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
+import { UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import { Heading, LinkButton, PrimaryButton, useWizardAlert } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Modal } from "semantic-ui-react";
 import { UsersConstants } from "../../../../extensions/components/users/constants";
-import { UserManagementConstants } from "../../constants";
 import { sendParentOrgUserInvite } from "../guests/api/invite";
 import {
     InviteParentOrgUserFormValuesInterface,

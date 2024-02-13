@@ -22,9 +22,9 @@ import {
     RoleGroupsInterface,
     RolesMemberInterface
 } from "@wso2is/core/models";
-import { EmphasizedSegment, EmptyPlaceholder, Heading, Message } from "@wso2is/react-components";
 import { ReadOnlyRoleList } from "@wso2is/feature-roles.common/components/readonly-role-list";
 import { APPLICATION_DOMAIN, DOMAIN_SEPARATOR, INTERNAL_DOMAIN } from "@wso2is/feature-roles.common/constants";
+import { EmphasizedSegment, EmptyPlaceholder, Heading, Message } from "@wso2is/react-components";
 import React, {
     FunctionComponent,
     ReactElement,
@@ -35,7 +35,6 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider } from "semantic-ui-react";
 import { AppState, getEmptyPlaceholderIllustrations } from "../../core";
-
 import "./user-roles-list.scss";
 
 interface UserRoleEditPropsInterface extends IdentifiableComponentInterface {

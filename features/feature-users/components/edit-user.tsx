@@ -22,6 +22,7 @@ import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertInterface, AlertLevels, ProfileInfoInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { AdminAccountTypes, UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import { ResourceTab } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import isEqual from "lodash-es/isEqual";
@@ -40,7 +41,6 @@ import { ServerConfigurationsInterface, getServerConfigs } from "../../../featur
 import { FeatureConfigInterface } from "../../core/models";
 import { AppState, store } from "../../core/store";
 import { ConnectorPropertyInterface } from "../../server-configurations/models";
-import { AdminAccountTypes, UserManagementConstants } from "../constants";
 import useUserManagement from "../hooks/use-user-management";
 
 interface EditUserPropsInterface extends SBACInterface<FeatureConfigInterface> {

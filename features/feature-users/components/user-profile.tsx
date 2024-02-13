@@ -30,6 +30,17 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { CommonUtils, ProfileUtils } from "@wso2is/core/utils";
+import { searchRoleList, updateRoleDetails } from "@wso2is/feature-roles.common/api/roles";
+import {
+    OperationValueInterface,
+    PatchRoleDataInterface,
+    ScimOperationsInterface,
+    SearchRoleInterface
+} from "@wso2is/feature-roles.common/models/roles";
+import { getUserDetails, updateUserInfo } from "@wso2is/feature-users.common/api";
+import { AdminAccountTypes, UserManagementConstants } from "@wso2is/feature-users.common/constants";
+import { AccountConfigSettingsInterface, SchemaAttributeValueInterface,
+     SubValueInterface } from "@wso2is/feature-users.common/models";
 import { Field, Forms, Validation } from "@wso2is/forms";
 import { SupportedLanguagesMeta } from "@wso2is/i18n";
 import {
@@ -40,13 +51,6 @@ import {
     EmphasizedSegment,
     useConfirmationModalAlert
 } from "@wso2is/react-components";
-import { searchRoleList, updateRoleDetails } from "@wso2is/feature-roles.common/api/roles";
-import {
-    OperationValueInterface,
-    PatchRoleDataInterface,
-    ScimOperationsInterface,
-    SearchRoleInterface
-} from "@wso2is/feature-roles.common/models/roles";
 import { AxiosError, AxiosResponse } from "axios";
 import isEmpty from "lodash-es/isEmpty";
 import moment from "moment";
@@ -63,11 +67,7 @@ import { GUEST_ADMIN_ASSOCIATION_TYPE } from "../../../extensions/components/use
 import { administratorConfig } from "../../../extensions/configs/administrator";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
 import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
-
 import { ConnectorPropertyInterface, ServerConfigurationsConstants  } from "../../server-configurations";
-import { getUserDetails, updateUserInfo } from "../api";
-import { AdminAccountTypes, UserManagementConstants } from "../constants";
-import { AccountConfigSettingsInterface, SchemaAttributeValueInterface, SubValueInterface } from "../models";
 
 /**
  * Prop types for the basic details component.

@@ -19,6 +19,7 @@
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { UserAccountTypesMain } from "@wso2is/feature-users.common/constants";
 import {
     ConfirmationModal,
     DataTable,
@@ -41,7 +42,6 @@ import {
     UserListInterface,
     getEmptyPlaceholderIllustrations
 } from "../../../../core";
-import { UserAccountTypesMain } from "../../../constants";
 import { deleteParentOrgInvite } from "../api/invite";
 import { UserInviteInterface } from "../models/invite";
 

@@ -20,6 +20,7 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, ProfileInfoInterface } from "@wso2is/core/models";
 import { PatchGroupDataInterface } from "@wso2is/feature-groups.common/models/groups";
+import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models";
 import { AxiosError, AxiosResponse } from "axios";
 import useRequest, {
     RequestConfigInterface,
@@ -28,9 +29,8 @@ import useRequest, {
 } from "../../core/hooks/use-request";
 import { store } from "../../core/store";
 
-
-import { UserManagementConstants } from "../constants";
-import {UserDetailsInterface, UserListInterface, UserSessionsInterface } from "../models/user";
+import { UserManagementConstants } from "../constants/user-management-constants";
+import { SCIMBulkEndpointInterface, UserDetailsInterface, UserListInterface, UserSessionsInterface } from "../models";
 
 /**
  * Initialize an axios Http client.
@@ -164,6 +164,28 @@ export const addUser = (data: UserDetailsInterface): Promise<any> => {
 /**
  * Bulk add users.
  *
+ * @param data - SCIM2.0 compliant request body
+ * @returns a promise containing the response.
+ */
+export const addBulkUsers = (data: SCIMBulkEndpointInterface): Promise<any> => {
+    const requestConfig: RequestConfigInterface = {
+        data,
+        headers: {
+            "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
+            "Content-Type": "application/json"
+        },
+        method: HttpMethods.POST,
+        url: store.getState().config.endpoints.bulk
+    };
+
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
+};
 
 /**
  * Delete user.
@@ -291,7 +313,32 @@ export const getUserDetails = (id: string, attributes: string): Promise<ProfileI
  * @returns `Promise<ProfileInfoInterface>` a promise containing the response.
  * @throws `IdentityAppsApiException`
  */
+export const updateUserInfo = (userId: string, data: PatchRoleDataInterface): Promise<ProfileInfoInterface> => {
 
+    const requestConfig: RequestConfigInterface = {
+        data,
+        headers: {
+            "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
+            "Content-Type": "application/json"
+        },
+        method: HttpMethods.PATCH,
+        url: store.getState().config.endpoints.users + "/" + userId
+    };
+
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse<ProfileInfoInterface>) => {
+            return Promise.resolve(response.data);
+        })
+        .catch((error: AxiosError) => {
+            throw new IdentityAppsApiException(
+                UserManagementConstants.USER_INFO_UPDATE_ERROR,
+                error.stack,
+                error.code,
+                error.request,
+                error.response,
+                error.config);
+        });
+};
 
 /**
  * Retrieves information related to the active sessions of a user identified by the user-id.

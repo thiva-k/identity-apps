@@ -15,7 +15,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+import { getUsersList } from "@wso2is/feature-users.common/api/users";
+import {
+    AskPasswordOptionTypes,
+    HiddenFieldNames,
+    PasswordOptionTypes
+} from "@wso2is/feature-users.common/constants";
+import {
+    BasicUserDetailsInterface,
+    UserListInterface
+} from "@wso2is/feature-users.common/models/user";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import { Button, Link, PasswordValidation, Popup } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
@@ -33,16 +42,6 @@ import {
     USERSTORE_REGEX_PROPERTIES
 } from "../../../../userstores/constants/user-store-constants";
 import { ValidationDataInterface, ValidationFormInterface } from "../../../../validation/models";
-import { getUsersList } from "../../../api/users";
-import {
-    AskPasswordOptionTypes,
-    HiddenFieldNames,
-    PasswordOptionTypes
-} from "../../../constants";
-import {
-    BasicUserDetailsInterface,
-    UserListInterface
-} from "../../../models/user";
 import {
     generatePassword,
     getConfiguration,
