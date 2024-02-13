@@ -16,13 +16,13 @@
  * under the License.
  */
 
+import { getOrganizationRoleById } from "@wso2is/feature-organizations.common/api";
 import { OrganizationResponseInterface, OrganizationRoleInterface } from "@wso2is/feature-organizations.common/models";
 import { PageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
-import { getOrganizationRoleById } from "@wso2is/feature-organizations.common/api";
 import { EditOrganizationRole } from "../components/edit-organization-role";
 
 /**

@@ -18,8 +18,8 @@
 
 import { AlertLevels, RoleGroupsInterface, RolesInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { GroupListInterface, GroupsInterface } from "@wso2is/feature-groups.common";
 import { getGroupList } from "@wso2is/feature-groups.common/api";
-import { GroupListInterface, GroupsInterface } from "@wso2is/feature-groups.common/models";
 import { patchOrganizationRoleDetails } from "@wso2is/feature-organizations.common/api";
 import { APPLICATION_DOMAIN, INTERNAL_DOMAIN, PRIMARY_DOMAIN } from "@wso2is/feature-organizations.common/constants";
 import {

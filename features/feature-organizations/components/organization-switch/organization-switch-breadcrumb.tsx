@@ -21,7 +21,6 @@ import { OrganizationType } from "@wso2is/common";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { SessionStorageUtils } from "@wso2is/core/utils";
-import { useGetOrganizationBreadCrumb } from "@wso2is/feature-organizations.common/api";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { BreadcrumbItem, BreadcrumbList, GenericOrganization } from "@wso2is/feature-organizations.common/models";
 import { OrganizationUtils } from "@wso2is/feature-organizations.common/utils";
@@ -38,6 +37,7 @@ import useAuthorization from "../../../authorization/hooks/use-authorization";
 import { AppConstants, AppState } from "../../../core";
 import { history } from "../../../core/helpers/history";
 import TenantDropdown from "../../../tenants/components/dropdown/tenant-dropdown";
+import { useGetOrganizationBreadCrumb } from "../../api";
 import useOrganizationSwitch from "../../hooks/use-organization-switch";
 
 /**

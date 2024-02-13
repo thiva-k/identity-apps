@@ -20,7 +20,6 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { deleteOrganization, patchOrganization } from "@wso2is/feature-organizations.common/api";
 import {
     ORGANIZATION_DESCRIPTION_MAX_LENGTH,
     ORGANIZATION_DESCRIPTION_MIN_LENGTH,
@@ -44,6 +43,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { CheckboxProps, Divider, Grid } from "semantic-ui-react";
 import { AppState, FeatureConfigInterface } from "../../../core";
+import { deleteOrganization, patchOrganization } from "../../api";
 
 interface OrganizationEditFormProps {
     name: string;

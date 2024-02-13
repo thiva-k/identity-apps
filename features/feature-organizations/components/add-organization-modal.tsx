@@ -18,7 +18,6 @@
 
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { addOrganization } from "@wso2is/feature-organizations.common/api";
 import {
     ORGANIZATION_DESCRIPTION_MAX_LENGTH,
     ORGANIZATION_DESCRIPTION_MIN_LENGTH,
@@ -40,6 +39,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Modal } from "semantic-ui-react";
 import { AppState, EventPublisher, TierLimitReachErrorModal } from "../../core";
+import { addOrganization } from "../api";
 
 interface OrganizationAddFormProps {
     name: string;
