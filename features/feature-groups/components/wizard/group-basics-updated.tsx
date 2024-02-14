@@ -18,13 +18,13 @@
 
 import { AlertLevels, IdentifiableComponentInterface, UserstoreListResponseInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import {SharedUserStoreConstants} from "@wso2is/feature-constants.common/constants";
+import { SharedUserStoreConstants } from "@wso2is/feature-constants.common";
 import { searchGroupList } from "@wso2is/feature-groups.common/api";
 import { CreateGroupFormData, SearchGroupInterface } from "@wso2is/feature-groups.common/models/groups";
-import {UserStoreDetails} from "@wso2is/feature-models.common/models";
+import { UserStoreDetails } from "@wso2is/feature-models.common";
 import { RootOnlyComponent } from "@wso2is/feature-organizations.common/components/root-only-component";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
-import {SharedUserStoreUtils} from "@wso2is/feature-utils.common/utils";
+import { SharedUserStoreUtils } from "@wso2is/feature-utils.common";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import { Code, Hint } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";

@@ -17,16 +17,11 @@
  */
 
 import { IdentifiableComponentInterface, RolesMemberInterface } from "@wso2is/core/models";
-import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/configs";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
 import { ReadOnlyRoleList } from "@wso2is/feature-roles.common/components/readonly-role-list";
 import { EmphasizedSegment, EmptyPlaceholder, Heading } from "@wso2is/react-components";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    useEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Divider } from "semantic-ui-react";
 import "./edit-group-roles.scss";
@@ -41,21 +36,20 @@ interface EditGroupRolesPropsInterface extends IdentifiableComponentInterface {
 export const EditGroupRoles: FunctionComponent<EditGroupRolesPropsInterface> = (
     props: EditGroupRolesPropsInterface
 ): ReactElement => {
-
     const { group } = props;
 
     const { t } = useTranslation();
 
-    const [ initialSelectedRolesOptions, setInitialSelectedRolesOptions ] = useState<RolesMemberInterface[]>([]);
+    const [initialSelectedRolesOptions, setInitialSelectedRolesOptions] = useState<RolesMemberInterface[]>([]);
 
     /**
      * Set initial selected roles options
      */
     useEffect(() => {
-        if ( group?.roles?.length > 0 ) {
+        if (group?.roles?.length > 0) {
             setInitialSelectedRolesOptions(group.roles);
         }
-    }, [ group ]);
+    }, [group]);
 
     /**
      * Get the placeholder components.
@@ -65,11 +59,9 @@ export const EditGroupRoles: FunctionComponent<EditGroupRolesPropsInterface> = (
     const getPlaceholders = () => {
         return (
             <EmptyPlaceholder
-                subtitle={
-                    [ t("console:manage.features.groups.edit.roles.placeHolders.emptyListPlaceholder.subtitles") ]
-                }
-                title={ t("console:manage.features.groups.edit.roles.placeHolders.emptyListPlaceholder.title") }
-                image={ getEmptyPlaceholderIllustrations().emptyList }
+                subtitle={[t("console:manage.features.groups.edit.roles.placeHolders.emptyListPlaceholder.subtitles")]}
+                title={t("console:manage.features.groups.edit.roles.placeHolders.emptyListPlaceholder.title")}
+                image={getEmptyPlaceholderIllustrations().emptyList}
                 imageSize="tiny"
             />
         );
@@ -77,16 +69,14 @@ export const EditGroupRoles: FunctionComponent<EditGroupRolesPropsInterface> = (
 
     return (
         <EmphasizedSegment padded="very" className="list-group-roles-section">
-            <Heading as="h4">
-                { t("console:manage.features.groups.edit.roles.heading") }
-            </Heading>
+            <Heading as="h4">{t("console:manage.features.groups.edit.roles.heading")}</Heading>
             <Heading subHeading ellipsis as="h6">
-                { t("console:manage.features.groups.edit.roles.subHeading") }
+                {t("console:manage.features.groups.edit.roles.subHeading")}
             </Heading>
-            <Divider hidden/>
+            <Divider hidden />
             <ReadOnlyRoleList
-                totalRoleList={ initialSelectedRolesOptions }
-                emptyRolesListPlaceholder={ getPlaceholders() }
+                totalRoleList={initialSelectedRolesOptions}
+                emptyRolesListPlaceholder={getPlaceholders()}
             />
         </EmphasizedSegment>
     );

@@ -18,8 +18,8 @@
 
 import { AlertLevels, RolesInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import {AssignRoles,RolePermissions} from "@wso2is/feature-components.common/components/roles";
-import { AppConstants } from "@wso2is/feature-constants.common/constants";
+import { AssignRoles, RolePermissions } from "@wso2is/feature-components.common";
+import { AppConstants } from "@wso2is/feature-constants.common";
 import { createGroup } from "@wso2is/feature-groups.common/api";
 import {
     CreateGroupInterface,
@@ -27,7 +27,7 @@ import {
     CreateGroupUserInterface,
     GroupsInterface
 } from "@wso2is/feature-groups.common/models/groups";
-import { history } from "@wso2is/feature-helpers.common/helpers";
+import { history } from "@wso2is/feature-helpers.common";
 import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api";
 // eslint-disable-next-line max-len
 import { OrganizationRoleManagementConstants } from "@wso2is/feature-organizations.common/constants/organization-constants";
@@ -39,7 +39,7 @@ import {
 } from "@wso2is/feature-organizations.common/models";
 import { getRolesList, updateRolesBulk } from "@wso2is/feature-roles.common/api/roles";
 import { PatchRoleDataInterface, RolesV2ResponseInterface } from "@wso2is/feature-roles.common/models";
-import { AppState } from "@wso2is/feature-store.common/store";
+import { AppState } from "@wso2is/feature-store.common";
 import { WizardStepInterface } from "@wso2is/feature-users.common/models/user";
 import { useTrigger } from "@wso2is/forms";
 import { Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
@@ -53,7 +53,6 @@ import { GroupBasics } from "./group-basics";
 import { CreateGroupSummary } from "./group-summary";
 import useAuthorization from "../../../authorization/hooks/use-authorization";
 import { getGroupsWizardStepIcons } from "../../configs";
-
 
 /**
  * Interface which captures create group props.

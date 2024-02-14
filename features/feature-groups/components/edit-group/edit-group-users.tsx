@@ -19,13 +19,18 @@
 import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { AlertLevels, LoadableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/configs";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { updateGroupDetails } from "@wso2is/feature-groups.common/api";
-import { CreateGroupMemberInterface, GroupsInterface,
-    PatchGroupDataInterface } from "@wso2is/feature-groups.common/models/groups";
+import {
+    CreateGroupMemberInterface,
+    GroupsInterface,
+    PatchGroupDataInterface
+} from "@wso2is/feature-groups.common/models/groups";
 import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
 import {
-    Button, Code, ContentLoader,
+    Button,
+    Code,
+    ContentLoader,
     EmphasizedSegment,
     EmptyPlaceholder,
     Heading,
@@ -67,42 +72,33 @@ interface GroupUsersListProps extends TestableComponentInterface, LoadableCompon
 }
 
 export const GroupUsersList: FunctionComponent<GroupUsersListProps> = (props: GroupUsersListProps): ReactElement => {
-    const {
-        isReadOnly,
-        group,
-        onGroupUpdate,
-        users,
-        isLoading,
-        selectedUsers,
-        [ "data-testid" ]: testId
-    } = props;
+    const { isReadOnly, group, onGroupUpdate, users, isLoading, selectedUsers, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
     const dispatch: ReduxDispatch = useDispatch();
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
-    const [ originalUserList, setOriginalUserList ] = useState<UserBasicInterface[]>(users);
-    const [ selectedUserList, setSelectedUserList ] = useState<UserBasicInterface[]>(selectedUsers);
-    const [ addModalUserList, setAddModalUserList ] = useState<UserBasicInterface[]>(users);
-    const [ isSelectAllUsers, setIsSelectAllUsers ] = useState<boolean>(false);
-    const [ newlySelectedUsers, setNewlySelectedUsers ] = useState<UserBasicInterface[]>([]);
-    const [ showAddNewUserModal, setAddNewUserModalView ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [originalUserList, setOriginalUserList] = useState<UserBasicInterface[]>(users);
+    const [selectedUserList, setSelectedUserList] = useState<UserBasicInterface[]>(selectedUsers);
+    const [addModalUserList, setAddModalUserList] = useState<UserBasicInterface[]>(users);
+    const [isSelectAllUsers, setIsSelectAllUsers] = useState<boolean>(false);
+    const [newlySelectedUsers, setNewlySelectedUsers] = useState<UserBasicInterface[]>([]);
+    const [showAddNewUserModal, setAddNewUserModalView] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
         setOriginalUserList(users);
-    }, [ users ]);
+    }, [users]);
 
     useEffect(() => {
         setSelectedUserList(selectedUsers);
-    }, [ selectedUsers ]);
+    }, [selectedUsers]);
 
     /**
      * Select all assigned users
      */
     const selectAllAssignedList = () => {
-
         if (!isSelectAllUsers) {
             setNewlySelectedUsers(originalUserList);
         } else {
@@ -112,22 +108,26 @@ export const GroupUsersList: FunctionComponent<GroupUsersListProps> = (props: Gr
         setIsSelectAllUsers(!isSelectAllUsers);
     };
 
-    const handleSearchFieldChange = (e: FormEvent<HTMLInputElement>, query: string, list: UserBasicInterface[],
-        stateAction: Dispatch<SetStateAction<any>>) => {
-
+    const handleSearchFieldChange = (
+        e: FormEvent<HTMLInputElement>,
+        query: string,
+        list: UserBasicInterface[],
+        stateAction: Dispatch<SetStateAction<any>>
+    ) => {
         let isMatch: boolean = false;
         const filteredRoleList: UserBasicInterface[] = [];
 
         if (!isEmpty(query)) {
             const regExp: RegExp = new RegExp(escapeRegExp(query), "i");
 
-            list && list.map((user: UserBasicInterface) => {
-                isMatch = regExp.test(user.userName);
+            list &&
+                list.map((user: UserBasicInterface) => {
+                    isMatch = regExp.test(user.userName);
 
-                if (isMatch) {
-                    filteredRoleList.push(user);
-                }
-            });
+                    if (isMatch) {
+                        filteredRoleList.push(user);
+                    }
+                });
 
             stateAction(filteredRoleList);
 
@@ -140,9 +140,7 @@ export const GroupUsersList: FunctionComponent<GroupUsersListProps> = (props: Gr
     };
 
     const handleAssignedItemCheckboxChange = (role: UserBasicInterface) => {
-        const checkedRoles: UserBasicInterface[] = !isEmpty(newlySelectedUsers)
-            ? [ ...newlySelectedUsers ]
-            : [];
+        const checkedRoles: UserBasicInterface[] = !isEmpty(newlySelectedUsers) ? [...newlySelectedUsers] : [];
 
         if (checkedRoles.includes(role)) {
             checkedRoles.splice(checkedRoles.indexOf(role), 1);
@@ -156,9 +154,7 @@ export const GroupUsersList: FunctionComponent<GroupUsersListProps> = (props: Gr
     };
 
     const deleteGroupUser = (user: UserBasicInterface) => {
-        const selectedUsers: UserBasicInterface[] = !isEmpty(selectedUserList)
-            ? [ ...selectedUserList ]
-            : [];
+        const selectedUsers: UserBasicInterface[] = !isEmpty(selectedUserList) ? [...selectedUserList] : [];
 
         if (selectedUsers.includes(user)) {
             selectedUsers.splice(selectedUsers.indexOf(user), 1);
@@ -197,144 +193,150 @@ export const GroupUsersList: FunctionComponent<GroupUsersListProps> = (props: Gr
         }
 
         const groupData: PatchGroupDataInterface = {
-            Operations: [ {
-                "op": "replace",
-                "value": {
-                    "members": newUsers
+            Operations: [
+                {
+                    op: "replace",
+                    value: {
+                        members: newUsers
+                    }
                 }
-            } ],
-            schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+            ],
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
 
         updateGroupDetails(group.id, groupData)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:manage.features.groups.notifications.updateGroup.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.groups.notifications.updateGroup.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t("console:manage.features.groups.notifications.updateGroup.success.description"),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:manage.features.groups.notifications.updateGroup.success.message")
+                    })
+                );
                 onGroupUpdate(group.id);
-            }).catch(() => {
+            })
+            .catch(() => {
                 setAlert({
                     description: t("console:manage.features.groups.notifications.updateGroup.error.description"),
                     level: AlertLevels.ERROR,
                     message: t("console:manage.features.groups.notifications.updateGroup.error.message")
                 });
-            }).finally(() => {
+            })
+            .finally(() => {
                 setIsSubmitting(false);
             });
     };
 
     const addNewUserModal = () => (
         <Modal
-            data-testid={ `${ testId }-assign-user-wizard-modal` }
+            data-testid={`${testId}-assign-user-wizard-modal`}
             dimmer="blurring"
-            open={ showAddNewUserModal }
+            open={showAddNewUserModal}
             size="small"
             className="user-roles"
         >
             <Modal.Header>
-                {
-                    t("console:manage.features.roles.addRoleWizard.users.assignUserModal.heading",
-                        { type: "Group" })
-                }
+                {t("console:manage.features.roles.addRoleWizard.users.assignUserModal.heading", { type: "Group" })}
                 <Heading subHeading ellipsis as="h6">
-                    {
-                        t("console:manage.features.roles.addRoleWizard.users.assignUserModal.subHeading",
-                            { type: "group" })
-                    }
+                    {t("console:manage.features.roles.addRoleWizard.users.assignUserModal.subHeading", {
+                        type: "group"
+                    })}
                 </Heading>
             </Modal.Header>
             <Modal.Content image>
-                { alert && alertComponent }
+                {alert && alertComponent}
                 <TransferComponent
                     compact
                     basic
                     bordered
                     className="one-column-selection"
                     selectionComponent
-                    searchPlaceholder={
-                        t("console:manage.features.roles.addRoleWizard.users.assignUserModal.list" +
-                            ".searchPlaceholder")
-                    }
-                    isLoading={ isLoading }
-                    handleHeaderCheckboxChange={ selectAllAssignedList }
-                    isHeaderCheckboxChecked={ isSelectAllUsers }
-                    handleUnelectedListSearch={ (e: FormEvent<HTMLInputElement>, { value }: { value: string }) => {
+                    searchPlaceholder={t(
+                        "console:manage.features.roles.addRoleWizard.users.assignUserModal.list" + ".searchPlaceholder"
+                    )}
+                    isLoading={isLoading}
+                    handleHeaderCheckboxChange={selectAllAssignedList}
+                    isHeaderCheckboxChecked={isSelectAllUsers}
+                    handleUnelectedListSearch={(e: FormEvent<HTMLInputElement>, { value }: { value: string }) => {
                         handleSearchFieldChange(e, value, originalUserList, setAddModalUserList);
-                    } }
-                    showSelectAllCheckbox={ !isLoading && users?.length > 0 }
-                    data-testid={ `${ testId }-user-list-transfer` }
+                    }}
+                    showSelectAllCheckbox={!isLoading && users?.length > 0}
+                    data-testid={`${testId}-user-list-transfer`}
                 >
                     <TransferList
                         selectionComponent
-                        isListEmpty={ !(users?.length > 0) }
-                        isLoading={ isLoading }
+                        isListEmpty={!(users?.length > 0)}
+                        isLoading={isLoading}
                         listType="unselected"
-                        selectAllCheckboxLabel={ "Select all users" }
-                        data-testid={ `${ testId }-unselected-transfer-list` }
-                        emptyPlaceholderContent={ t("console:manage.features.transferList.list.emptyPlaceholders." +
-                            "groups.selected", { type: "users" }) }
-                        emptyPlaceholderDefaultContent={ t("console:manage.features.transferList.list."
-                            + "emptyPlaceholders.default") }
+                        selectAllCheckboxLabel={"Select all users"}
+                        data-testid={`${testId}-unselected-transfer-list`}
+                        emptyPlaceholderContent={t(
+                            "console:manage.features.transferList.list.emptyPlaceholders." + "groups.selected",
+                            { type: "users" }
+                        )}
+                        emptyPlaceholderDefaultContent={t(
+                            "console:manage.features.transferList.list." + "emptyPlaceholders.default"
+                        )}
                     >
-                        {
-                            addModalUserList?.map((user: UserBasicInterface, index: number) => {
-                                const resolvedGivenName: string = (user.name && user.name.givenName !== undefined)
+                        {addModalUserList?.map((user: UserBasicInterface, index: number) => {
+                            const resolvedGivenName: string =
+                                user.name && user.name.givenName !== undefined
                                     ? user.name.givenName + " " + (user.name.familyName ? user.name.familyName : "")
                                     : undefined;
 
-                                const resolvedUsername: string = user.userName.split("/")?.length > 1
-                                    ? user.userName.split("/")[ 1 ]
-                                    : user.userName.split("/")[ 0 ];
+                            const resolvedUsername: string =
+                                user.userName.split("/")?.length > 1
+                                    ? user.userName.split("/")[1]
+                                    : user.userName.split("/")[0];
 
-                                return (
-                                    <TransferListItem
-                                        handleItemChange={ () => handleAssignedItemCheckboxChange(user) }
-                                        key={ index }
-                                        listItem={ resolvedGivenName ?? resolvedUsername }
-                                        listItemId={ user.id }
-                                        listItemIndex={ index }
-                                        isItemChecked={
-                                            newlySelectedUsers && newlySelectedUsers.includes(user)
-                                        }
-                                        showSecondaryActions={ false }
-                                        showListSubItem={ true }
-                                        listSubItem={ resolvedGivenName && (
-                                            <Code compact withBackground={ false }>{ resolvedUsername }</Code>
-                                        ) }
-                                        data-testid={ `${ testId }-unselected-transfer-list-item-${ index }` }
-                                    />
-                                );
-                            })
-                        }
+                            return (
+                                <TransferListItem
+                                    handleItemChange={() => handleAssignedItemCheckboxChange(user)}
+                                    key={index}
+                                    listItem={resolvedGivenName ?? resolvedUsername}
+                                    listItemId={user.id}
+                                    listItemIndex={index}
+                                    isItemChecked={newlySelectedUsers && newlySelectedUsers.includes(user)}
+                                    showSecondaryActions={false}
+                                    showListSubItem={true}
+                                    listSubItem={
+                                        resolvedGivenName && (
+                                            <Code compact withBackground={false}>
+                                                {resolvedUsername}
+                                            </Code>
+                                        )
+                                    }
+                                    data-testid={`${testId}-unselected-transfer-list-item-${index}`}
+                                />
+                            );
+                        })}
                     </TransferList>
                 </TransferComponent>
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row columns={ 2 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row columns={2}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
-                                data-testid={ `${ testId }-assign-user-wizard-modal-cancel-button` }
-                                onClick={ handleCloseAddNewGroupModal }
+                                data-testid={`${testId}-assign-user-wizard-modal-cancel-button`}
+                                onClick={handleCloseAddNewGroupModal}
                                 floated="left"
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <PrimaryButton
-                                data-testid={ `${ testId }-assign-user-wizard-modal-save-button` }
-                                onClick={ () => {
+                                data-testid={`${testId}-assign-user-wizard-modal-save-button`}
+                                onClick={() => {
                                     setIsSubmitting(true);
                                     handleAddUserSubmit();
-                                } }
+                                }}
                                 floated="right"
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
                             >
-                                { t("common:save") }
+                                {t("common:save")}
                             </PrimaryButton>
                         </Grid.Column>
                     </Grid.Row>
@@ -344,61 +346,52 @@ export const GroupUsersList: FunctionComponent<GroupUsersListProps> = (props: Gr
     );
 
     const renderUserTableRow = (user: UserBasicInterface): ReactElement => {
+        const resolvedGivenName: string =
+            user.name && user.name.givenName !== undefined
+                ? user.name.givenName + " " + (user.name.familyName ? user.name.familyName : "")
+                : undefined;
 
-        const resolvedGivenName: string = (user.name && user.name.givenName !== undefined)
-            ? user.name.givenName + " " + (user.name.familyName ? user.name.familyName : "")
-            : undefined;
-
-        const resolvedUsername: string = user.userName.split("/")?.length > 1
-            ? user.userName.split("/")[ 1 ]
-            : user.userName.split("/")[ 0 ];
+        const resolvedUsername: string =
+            user.userName.split("/")?.length > 1 ? user.userName.split("/")[1] : user.userName.split("/")[0];
 
         return (
-            <Table.Row key={ user.id }>
+            <Table.Row key={user.id}>
                 <Table.Cell>
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ testId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                         <UserAvatar
-                            data-testid={
-                                `${ testId }-users-list-${
-                                    user.userName }-avatar`
-                            }
-                            name={ resolvedUsername }
+                            data-testid={`${testId}-users-list-${user.userName}-avatar`}
+                            name={resolvedUsername}
                             spaced="right"
                             size="mini"
                             floated="left"
-                            image={ user.profileUrl }
+                            image={user.profileUrl}
                         />
                         <Header.Content>
-                            { resolvedGivenName ?? resolvedUsername }
-                            <Header.Subheader data-testid={ `${ testId }-item-sub-heading` }>
-                                { resolvedGivenName && resolvedUsername }
+                            {resolvedGivenName ?? resolvedUsername}
+                            <Header.Subheader data-testid={`${testId}-item-sub-heading`}>
+                                {resolvedGivenName && resolvedUsername}
                             </Header.Subheader>
                         </Header.Content>
                     </Header>
                 </Table.Cell>
                 <Table.Cell textAlign="right">
-                    <Show when={ AccessControlConstants.GROUP_EDIT }>
+                    <Show when={AccessControlConstants.GROUP_EDIT}>
                         <Popup
-                            trigger={ (
+                            trigger={
                                 <Icon
-                                    link={ true }
-                                    data-testid={ `${ testId }-user-delete-button` }
+                                    link={true}
+                                    data-testid={`${testId}-user-delete-button`}
                                     className="list-icon pr-4"
                                     size="large"
                                     color="grey"
                                     name="trash alternate"
-                                    onClick={ () => {
+                                    onClick={() => {
                                         deleteGroupUser(user);
-                                    } }
+                                    }}
                                 />
-                            ) }
+                            }
                             position="top right"
-                            content={ t("common:remove") }
+                            content={t("common:remove")}
                             inverted
                         />
                     </Show>
@@ -410,93 +403,87 @@ export const GroupUsersList: FunctionComponent<GroupUsersListProps> = (props: Gr
     return (
         <EmphasizedSegment padded="very">
             <Grid>
-                {
-                    selectedUsers?.length > 0
-                        ? (
-                            <>
-                                <Grid.Row>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 6 }>
-                                        <Input
-                                            data-testid={ `${ testId }-users-list-search-input` }
-                                            icon={ <Icon name="search"/> }
-                                            onChange={ (e: FormEvent<HTMLInputElement>,
-                                                { value }: { value: string }) => {
-                                                handleSearchFieldChange(e, value, selectedUsers,
-                                                    setSelectedUserList);
-                                            } }
-                                            placeholder={
-                                                t("console:manage.features.roles.addRoleWizard." +
-                                                    "users.assignUserModal.list.searchPlaceholder")
-                                            }
-                                            floated="left"
-                                            fluid
-                                        />
-                                    </Grid.Column>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 4 }>
-                                        {
-                                            !isReadOnly && (
-                                                <Button
-                                                    data-testid={ `${ testId }-users-list-edit-button` }
-                                                    size="medium"
-                                                    icon="pencil"
-                                                    floated="right"
-                                                    onClick={ handleOpenAddNewGroupModal }
-                                                />
-                                            )
-                                        }
-                                    </Grid.Column>
-                                </Grid.Row>
-                                <Grid.Row>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                        <Table singleLine compact>
-                                            <Table.Body>
-                                                {
-                                                    selectedUserList?.map((user: UserBasicInterface) => {
-                                                        return renderUserTableRow(user);
-                                                    })
-                                                }
-                                            </Table.Body>
-                                        </Table>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </>
-                        )
-                        : !isLoading
-                            ? (
-                                <Grid.Row>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                        <EmphasizedSegment>
-                                            <EmptyPlaceholder
-                                                title={ t("console:manage.features.roles.edit.users.list." +
-                                                    "emptyPlaceholder.title") }
-                                                subtitle={ [
-                                                    t("console:manage.features.roles.edit.users.list." +
-                                                        "emptyPlaceholder.subtitles", { type: "group" })
-                                                ] }
-                                                action={
-                                                    !isReadOnly && (
-                                                        <PrimaryButton
-                                                            data-testid={
-                                                                `${ testId }-users-list-empty-assign-users-button`
-                                                            }
-                                                            onClick={ handleOpenAddNewGroupModal }
-                                                        >
-                                                            <Icon name="plus"/>
-                                                            { t("console:manage.features.roles.edit.users.list." +
-                                                                "emptyPlaceholder.action") }
-                                                        </PrimaryButton>
-                                                    )
-                                                }
-                                                image={ getEmptyPlaceholderIllustrations().emptyList }
-                                                imageSize="tiny"
-                                            />
-                                        </EmphasizedSegment>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            )
-                            : <ContentLoader/>
-                }
-                { addNewUserModal() }
+                {selectedUsers?.length > 0 ? (
+                    <>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={16} computer={6}>
+                                <Input
+                                    data-testid={`${testId}-users-list-search-input`}
+                                    icon={<Icon name="search" />}
+                                    onChange={(e: FormEvent<HTMLInputElement>, { value }: { value: string }) => {
+                                        handleSearchFieldChange(e, value, selectedUsers, setSelectedUserList);
+                                    }}
+                                    placeholder={t(
+                                        "console:manage.features.roles.addRoleWizard." +
+                                            "users.assignUserModal.list.searchPlaceholder"
+                                    )}
+                                    floated="left"
+                                    fluid
+                                />
+                            </Grid.Column>
+                            <Grid.Column mobile={16} tablet={16} computer={4}>
+                                {!isReadOnly && (
+                                    <Button
+                                        data-testid={`${testId}-users-list-edit-button`}
+                                        size="medium"
+                                        icon="pencil"
+                                        floated="right"
+                                        onClick={handleOpenAddNewGroupModal}
+                                    />
+                                )}
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={16} computer={10}>
+                                <Table singleLine compact>
+                                    <Table.Body>
+                                        {selectedUserList?.map((user: UserBasicInterface) => {
+                                            return renderUserTableRow(user);
+                                        })}
+                                    </Table.Body>
+                                </Table>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </>
+                ) : !isLoading ? (
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <EmphasizedSegment>
+                                <EmptyPlaceholder
+                                    title={t(
+                                        "console:manage.features.roles.edit.users.list." + "emptyPlaceholder.title"
+                                    )}
+                                    subtitle={[
+                                        t(
+                                            "console:manage.features.roles.edit.users.list." +
+                                                "emptyPlaceholder.subtitles",
+                                            { type: "group" }
+                                        )
+                                    ]}
+                                    action={
+                                        !isReadOnly && (
+                                            <PrimaryButton
+                                                data-testid={`${testId}-users-list-empty-assign-users-button`}
+                                                onClick={handleOpenAddNewGroupModal}
+                                            >
+                                                <Icon name="plus" />
+                                                {t(
+                                                    "console:manage.features.roles.edit.users.list." +
+                                                        "emptyPlaceholder.action"
+                                                )}
+                                            </PrimaryButton>
+                                        )
+                                    }
+                                    image={getEmptyPlaceholderIllustrations().emptyList}
+                                    imageSize="tiny"
+                                />
+                            </EmphasizedSegment>
+                        </Grid.Column>
+                    </Grid.Row>
+                ) : (
+                    <ContentLoader />
+                )}
+                {addNewUserModal()}
             </Grid>
         </EmphasizedSegment>
     );
