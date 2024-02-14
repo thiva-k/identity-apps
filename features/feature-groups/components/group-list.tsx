@@ -19,7 +19,12 @@
 import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { LoadableComponentInterface, SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
+import {getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/configs"
+import { AppConstants,UIConstants } from "@wso2is/feature-constants.common/constants";
 import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
+import {history} from "@wso2is/feature-helpers.common/helpers"
+import { FeatureConfigInterface } from "@wso2is/feature-models.common/models";
+import {AppState} from "@wso2is/feature-store.common/store";
 import {
     AnimatedAvatar,
     AppAvatar,
@@ -36,14 +41,7 @@ import React, { ReactElement, ReactNode, SyntheticEvent, useState } from "react"
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
-import {
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
+
 import { GroupConstants } from "../constants";
 
 interface GroupListProps extends SBACInterface<FeatureConfigInterface>,

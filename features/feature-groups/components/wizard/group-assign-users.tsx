@@ -17,7 +17,11 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import {getUsersList} from "@wso2is/feature-apis.common/api";
+import {getEmptyPlaceholderIllustrations} from "@wso2is/feature-configs.common/configs"
+import { UIConstants } from "@wso2is/feature-constants.common/constants";
 import { GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
+import { UserBasicInterface,UserListInterface} from "@wso2is/feature-models.common/models";
 import { Forms } from "@wso2is/forms";
 import {
     Button,
@@ -36,13 +40,6 @@ import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Icon, Input, InputOnChangeData, Modal, Table } from "semantic-ui-react";
-import { 
-    UIConstants,
-    UserBasicInterface,
-    UserListInterface,
-    getEmptyPlaceholderIllustrations,
-    getUsersList
-} from "../../../core";
 
 /**
  * Proptypes for the application consents list component.

@@ -15,14 +15,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { AppConstants } from "@wso2is/feature-constants.common/constants";
 import { getGroupById } from "@wso2is/feature-groups.common/api";
 import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
+import {history} from "@wso2is/feature-helpers.common/helpers"
+import {FeatureConfigInterface} from "@wso2is/feature-models.common/models";
+import {AppState} from "@wso2is/feature-store.common/store";
 import { TabPageLayout } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
 import { EditGroup } from "../components";
 import GroupManagementProvider from "../providers/group-management-provider";
 

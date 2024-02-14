@@ -21,9 +21,13 @@ import {
     TestableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import {AppConstants,SharedUserStoreConstants } from "@wso2is/feature-constants.common/constants";
 import { deleteGroupById, searchGroupList, updateGroupDetails } from "@wso2is/feature-groups.common/api";
 import { GroupsInterface, PatchGroupDataInterface,
     SearchGroupInterface } from "@wso2is/feature-groups.common/models/groups";
+import {history} from "@wso2is/feature-helpers.common/helpers";
+import{UserStoreDetails, UserStoreProperty} from "@wso2is/feature-models.common/models";
+import {SharedUserStoreUtils} from "@wso2is/feature-utils.common/utils";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import { ConfirmationModal, DangerZone, DangerZoneGroup, EmphasizedSegment } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
@@ -32,14 +36,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Form, Grid } from "semantic-ui-react";
-import {
-    AppConstants,
-    SharedUserStoreConstants,
-    SharedUserStoreUtils,
-    UserStoreDetails,
-    UserStoreProperty,
-    history
-} from "../../../core";
+
 
 
 /**

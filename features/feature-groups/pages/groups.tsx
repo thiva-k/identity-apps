@@ -16,14 +16,22 @@
  * under the License.
  */
 import { AccessControlConstants, Show } from "@wso2is/access-control";
+import { FeatureConfigInterface } from "@wso2is/core/feature-models/models";
 import { AlertInterface, AlertLevels, RolesInterface, UserstoreListResponseInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getAUserStore } from "@wso2is/feature-apis.common/api";
+import {AdvancedSearchWithBasicFilters} from "@wso2is/feature-components.common/components/roles";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/configs";
+import { UIConstants } from "@wso2is/feature-constants.common/constants";
 import { deleteGroupById, useGroupList } from "@wso2is/feature-groups.common/api";
 import { GroupsInterface, WizardStepsFormTypes } from "@wso2is/feature-groups.common/models/groups";
 import { RootOnlyComponent } from "@wso2is/feature-organizations.common/components";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import {AppState} from "@wso2is/feature-store.common/store";
+import { SharedUserStoreUtils } from "@wso2is/feature-utils.common/utils";
 import { EmptyPlaceholder, ListLayout, PageLayout, PrimaryButton } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
+import { UserStoreProperty } from "features/feature-models.common/models";
 import find from "lodash-es/find";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -31,16 +39,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Dropdown, DropdownItemProps, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
 import { commonConfig } from "../../../extensions/configs";
-import {
-    AdvancedSearchWithBasicFilters,
-    AppState,
-    FeatureConfigInterface,
-    SharedUserStoreUtils,
-    UIConstants,
-    UserStoreProperty,
-    getAUserStore,
-    getEmptyPlaceholderIllustrations
-} from "../../core";
 import { getUserStoreList } from "../../userstores/api";
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../userstores/constants";
 import { UserStorePostData } from "../../userstores/models/user-stores";

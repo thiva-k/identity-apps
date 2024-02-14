@@ -19,6 +19,7 @@
 import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { AlertLevels, LoadableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/configs";
 import { updateGroupDetails } from "@wso2is/feature-groups.common/api";
 import { CreateGroupMemberInterface, GroupsInterface,
     PatchGroupDataInterface } from "@wso2is/feature-groups.common/models/groups";
@@ -52,7 +53,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch as ReduxDispatch } from "redux";
 import { Grid, Header, Icon, Input, Modal, Table } from "semantic-ui-react";
-import { getEmptyPlaceholderIllustrations } from "../../../core";
 
 /**
  * Proptypes for the group users list component.

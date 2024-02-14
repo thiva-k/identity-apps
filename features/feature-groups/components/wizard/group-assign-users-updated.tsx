@@ -18,6 +18,10 @@
 
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import {getUsersList} from "@wso2is/feature-apis.common/api";
+import { UIConstants } from "@wso2is/feature-constants.common/constants";
+import { GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
+import { UserBasicInterface,UserListInterface } from "@wso2is/feature-models.common/models";
 import { FormValue } from "@wso2is/forms";
 import {
     ContentLoader,
@@ -46,8 +50,6 @@ import { Header, Segment } from "semantic-ui-react";
 import { GroupBasicsUpdated } from "./group-basics-updated";
 import { UserManagementUtils } from "../../../../extensions/components/users/utils";
 import { SCIMConfigs } from "../../../../extensions/configs/scim";
-import { UIConstants, UserBasicInterface, UserListInterface, getUsersList } from "../../../core";
-import { GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
 
 /**
  * Proptypes for the application consents list component.

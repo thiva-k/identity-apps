@@ -24,6 +24,8 @@ import {
     RolesInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import {AssignRoles,RolePermissions} from "@wso2is/feature-components.common/components/roles";
+import { AppConstants } from "@wso2is/feature-constants.common/constants";
 import { createGroup } from "@wso2is/feature-groups.common/api";
 import {
     CreateGroupInterface,
@@ -34,14 +36,24 @@ import {
     WizardStepInterface,
     WizardStepsFormTypes
 } from "@wso2is/feature-groups.common/models/groups";
+import { history } from "@wso2is/feature-helpers.common/helpers";
+import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api";
+import { OrganizationRoleManagementConstants } from "@wso2is/feature-organizations.common/constants";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import {
+    GenericOrganization,
+    OrganizationRoleListItemInterface,
+    OrganizationRoleListResponseInterface
+} from "@wso2is/feature-organizations.common/models";
 import { getRolesList, updateRole } from "@wso2is/feature-roles.common/api/roles";
 import { RoleConstants } from "@wso2is/feature-roles.common/constants";
 import { BasicRoleInterface, PatchRoleDataInterface, 
     RolesV2ResponseInterface } from "@wso2is/feature-roles.common/models";
+import { AppState } from "@wso2is/feature-store.common/store";
 import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
+import { EventPublisher } from "@wso2is/feature-utils.common/utils";
 import { useTrigger } from "@wso2is/forms";
 import { Heading, LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
-
 import { AxiosError, AxiosResponse } from "axios";
 import intersection from "lodash-es/intersection";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
@@ -52,18 +64,6 @@ import { Grid, Icon, Modal } from "semantic-ui-react";
 import { AddGroupUsersUpdated } from "./group-assign-users-updated";
 import { commonConfig } from "../../../../extensions/configs";
 import useAuthorization from "../../../authorization/hooks/use-authorization";
-import { AppConstants, AppState, AssignRoles, RolePermissions, history } from "../../../core";
-import { EventPublisher } from "../../../core/utils";
-import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api";
-import { OrganizationRoleManagementConstants } from "@wso2is/feature-organizations.common/constants";
-import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
-import {
-    GenericOrganization,
-    OrganizationRoleListItemInterface,
-    OrganizationRoleListResponseInterface
-} from "@wso2is/feature-organizations.common/models";
-
-
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../../userstores/constants";
 import { getGroupsWizardStepIcons } from "../../configs";
 

@@ -17,6 +17,7 @@
  */
 
 import { IdentifiableComponentInterface, RolesMemberInterface } from "@wso2is/core/models";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/configs";
 import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
 import { ReadOnlyRoleList } from "@wso2is/feature-roles.common/components/readonly-role-list";
 import { EmphasizedSegment, EmptyPlaceholder, Heading } from "@wso2is/react-components";
@@ -28,7 +29,6 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { Divider } from "semantic-ui-react";
-import { getEmptyPlaceholderIllustrations } from "../../../core";
 import "./edit-group-roles.scss";
 
 interface EditGroupRolesPropsInterface extends IdentifiableComponentInterface {

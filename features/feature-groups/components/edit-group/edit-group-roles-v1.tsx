@@ -18,6 +18,8 @@
 
 import { AlertLevels, RolesMemberInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import {updateResources} from "@wso2is/feature-apis.common/api";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/configs";
 import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
 import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api";
 import {
@@ -27,6 +29,7 @@ import {
 import { OrganizationUtils } from "@wso2is/feature-organizations.common/utils";
 import { getRolesList } from "@wso2is/feature-roles.common/api/roles";
 import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "@wso2is/feature-roles.common/constants/role-constants";
+import {AppState} from "@wso2is/feature-store.common/store";
 import { UserRolePermissions } from "@wso2is/feature-users.common/components/user-role-permissions";
 import { RolePermissions } from "@wso2is/feature-users.common/components/wizard/user-role-permissions";
 import {
@@ -51,7 +54,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Grid, Icon, Input, InputOnChangeData, Label, Modal, Table } from "semantic-ui-react";
-import { AppState, getEmptyPlaceholderIllustrations, updateResources } from "../../../core";
+
 
 interface GroupRolesV1PropsInterface extends TestableComponentInterface {
     /**
