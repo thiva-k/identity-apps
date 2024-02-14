@@ -17,13 +17,13 @@
  */
 
 import { RolesInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { store } from "@wso2is/feature-store.common";
 import { Forms } from "@wso2is/forms";
 import { ContentLoader, EmphasizedSegment } from "@wso2is/react-components";
 import Tree from "rc-tree";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Divider, Grid } from "semantic-ui-react";
-import { store } from "../../../core";
 import { ServerConfigurationsInterface, getServerConfigs } from "../../../server-configurations";
 import { RoleConstants } from "../../constants";
 import { TreeNode } from "../../models";
@@ -32,7 +32,7 @@ import { RoleManagementUtils } from "../../utils";
 /**
  * Interface to capture permission list props
  */
-interface PermissionListProp extends  TestableComponentInterface {
+interface PermissionListProp extends TestableComponentInterface {
     /**
      * Should the content be emphasized.
      */
@@ -60,7 +60,6 @@ interface PermissionListProp extends  TestableComponentInterface {
  * @param props - props containing event handlers for permission component
  */
 export const PermissionList: FunctionComponent<PermissionListProp> = (props: PermissionListProp): ReactElement => {
-
     const {
         isReadOnly,
         emphasize,
@@ -72,31 +71,30 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
         isRole,
         isSubmitting,
         permissionsToHide,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ permissions, setPermissions ] = useState<TreeNode[]>([]);
-    const [ checkedPermission, setCheckedPermission ] = useState<TreeNode[]>([]);
-    const [ previouslyCheckedKeys, setPreviouslyCheckedKeys ] = useState<string[]>([]);
-    const [ defaultExpandedKeys, setDefaultExpandKeys ] = useState<string[]>([]);
-    const [ isPermissionsLoading, setIsPermissionsLoading ] = useState<boolean>(true);
-    const [ isSuperAdmin, setIsSuperAdmin ] = useState<boolean>(false);
+    const [permissions, setPermissions] = useState<TreeNode[]>([]);
+    const [checkedPermission, setCheckedPermission] = useState<TreeNode[]>([]);
+    const [previouslyCheckedKeys, setPreviouslyCheckedKeys] = useState<string[]>([]);
+    const [defaultExpandedKeys, setDefaultExpandKeys] = useState<string[]>([]);
+    const [isPermissionsLoading, setIsPermissionsLoading] = useState<boolean>(true);
+    const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false);
 
     useEffect(() => {
         const checkedNodes: TreeNode[] = [];
 
-        RoleManagementUtils.getAllPermissions(permissionsToHide)
-            .then((permissionTree: TreeNode[]) => {
-                disableSuperAdminTreeNode(isSuperAdmin, permissionTree);
-                setPermissions(permissionTree);
-                setDefaultExpandKeys([ permissionTree[ 0 ].key.toString() ]);
-                setIsPermissionsLoading(false);
-            });
+        RoleManagementUtils.getAllPermissions(permissionsToHide).then((permissionTree: TreeNode[]) => {
+            disableSuperAdminTreeNode(isSuperAdmin, permissionTree);
+            setPermissions(permissionTree);
+            setDefaultExpandKeys([permissionTree[0].key.toString()]);
+            setIsPermissionsLoading(false);
+        });
         checkIsSuperAdmin();
 
-        if ( initialValues && initialValues.length > 0 ) {
+        if (initialValues && initialValues.length > 0) {
             const previousFormCheckedKeys: string[] = [];
 
             initialValues.forEach((initialKey: TreeNode) => {
@@ -116,7 +114,7 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
             });
             setCheckedPermission(checkedNodes);
         }
-    }, [ permissions.length > 0 ]);
+    }, [permissions.length > 0]);
 
     /**
      * Util function to check if current user is a super admin.
@@ -178,20 +176,29 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
                 let checkedChildren: number = 1;
 
                 parentNode?.children?.forEach((childPermission: TreeNode) => {
-                    if ( checkedPermission.filter((checkedPermission: TreeNode) =>
-                        checkedPermission.key === childPermission.key).length > 0 ) {
+                    if (
+                        checkedPermission.filter(
+                            (checkedPermission: TreeNode) => checkedPermission.key === childPermission.key
+                        ).length > 0
+                    ) {
                         ++checkedChildren;
                     }
                 });
                 if (parentNode?.children?.length === checkedChildren) {
                     const filteredCheckedPermissions: TreeNode[] = checkedPermission.filter((permission: TreeNode) => {
-                        permission.key.toString().replace(/^\/|\/$/g, "").split("/") === parentNode.key.toString()
-                            .replace(/^\/|\/$/g, "").split("/");
+                        permission.key
+                            .toString()
+                            .replace(/^\/|\/$/g, "")
+                            .split("/") ===
+                            parentNode.key
+                                .toString()
+                                .replace(/^\/|\/$/g, "")
+                                .split("/");
                     });
 
-                    setCheckedPermission([ ...filteredCheckedPermissions, parentNode ]);
+                    setCheckedPermission([...filteredCheckedPermissions, parentNode]);
                 } else {
-                    setCheckedPermission([ ...checkedPermission, info.node ]);
+                    setCheckedPermission([...checkedPermission, info.node]);
                 }
             }
         } else {
@@ -207,13 +214,13 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
      * @param isParent - condition to find the parent of the key node
      */
     const getNodeByKey = (key: string, permissionTree: TreeNode[], isParent: boolean = false): TreeNode => {
-        const flattenedTree: TreeNode[] = [ permissionTree[0] ];
+        const flattenedTree: TreeNode[] = [permissionTree[0]];
 
-        while ( flattenedTree.length ) {
+        while (flattenedTree.length) {
             const node: TreeNode = flattenedTree.shift();
 
             if (isParent) {
-                if ( node.key === key.slice(0,key.lastIndexOf("/")) ) {
+                if (node.key === key.slice(0, key.lastIndexOf("/"))) {
                     return node;
                 }
             } else {
@@ -222,7 +229,7 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
                 }
             }
 
-            if ( node.children ) {
+            if (node.children) {
                 flattenedTree.push(...node.children);
             }
         }
@@ -236,14 +243,14 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
      * @param eventObject - event object
      */
     // eslint-disable-next-line @typescript-eslint/typedef
-    const switcherIcon = (eventObject) => {
+    const switcherIcon = eventObject => {
         if (eventObject.isLeaf) {
             return null;
         }
 
         return (
             <div className="tree-arrow-wrap">
-                <span className={ `tree-arrow ${ !eventObject.expanded ? "active" : "" }` }>
+                <span className={`tree-arrow ${!eventObject.expanded ? "active" : ""}`}>
                     <span></span>
                     <span></span>
                 </span>
@@ -254,67 +261,61 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
     const renderChildren = (): ReactElement => (
         <>
             <Forms
-                submitState={ triggerSubmit }
-                onSubmit={ () => { onSubmit(checkedPermission); } }
+                submitState={triggerSubmit}
+                onSubmit={() => {
+                    onSubmit(checkedPermission);
+                }}
             >
-                {
-                    !isPermissionsLoading
-                        ? (
-                            <div className="treeview-container">
-                                <Tree
-                                    className={ "customIcon" }
-                                    data-testid={ `${ testId }-tree` }
-                                    disabled={ isReadOnly }
-                                    checkedKeys={ checkedPermission.map( (permission: TreeNode) => permission.key ) }
-                                    defaultExpandedKeys={ defaultExpandedKeys }
-                                    showLine
-                                    showIcon={ false }
-                                    checkable
-                                    selectable={ false }
-                                    onCheck={ onCheck }
-                                    treeData={ permissions }
-                                    switcherIcon={ switcherIcon }
-                                />
-                            </div>
-                        )
-                        : <ContentLoader className="p-3" active />
-                }
-                { isEdit && !isPermissionsLoading && (
+                {!isPermissionsLoading ? (
+                    <div className="treeview-container">
+                        <Tree
+                            className={"customIcon"}
+                            data-testid={`${testId}-tree`}
+                            disabled={isReadOnly}
+                            checkedKeys={checkedPermission.map((permission: TreeNode) => permission.key)}
+                            defaultExpandedKeys={defaultExpandedKeys}
+                            showLine
+                            showIcon={false}
+                            checkable
+                            selectable={false}
+                            onCheck={onCheck}
+                            treeData={permissions}
+                            switcherIcon={switcherIcon}
+                        />
+                    </div>
+                ) : (
+                    <ContentLoader className="p-3" active />
+                )}
+                {isEdit && !isPermissionsLoading && (
                     <>
-                        <Divider hidden/>
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
+                        <Divider hidden />
+                        <Grid.Row columns={1}>
+                            <Grid.Column mobile={16} tablet={16} computer={8}>
                                 <Button
-                                    data-testid={ `${ testId }-update-button` }
+                                    data-testid={`${testId}-update-button`}
                                     primary
                                     type="submit"
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
                                     size="small"
                                     className="form-button"
                                 >
-                                    { t("console:manage.features.roles.addRoleWizard.permissions.buttons.update") }
+                                    {t("console:manage.features.roles.addRoleWizard.permissions.buttons.update")}
                                 </Button>
                             </Grid.Column>
                         </Grid.Row>
                     </>
-                ) }
+                )}
             </Forms>
         </>
     );
 
-    return (
-        emphasize
-            ? (
-                <EmphasizedSegment data-testid={ testId } padded="very">
-                    { renderChildren() }
-                </EmphasizedSegment>
-            )
-            : (
-                <div data-testid={ testId }>
-                    { renderChildren() }
-                </div>
-            )
+    return emphasize ? (
+        <EmphasizedSegment data-testid={testId} padded="very">
+            {renderChildren()}
+        </EmphasizedSegment>
+    ) : (
+        <div data-testid={testId}>{renderChildren()}</div>
     );
 };
 

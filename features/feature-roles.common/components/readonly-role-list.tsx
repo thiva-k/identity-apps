@@ -17,6 +17,9 @@
  */
 
 import { IdentifiableComponentInterface, LoadableComponentInterface, RolesMemberInterface } from "@wso2is/core/models";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
 import {
     AnimatedAvatar,
     AppAvatar,
@@ -29,7 +32,6 @@ import {
 import React, { ReactElement, ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dropdown, DropdownItemProps, DropdownProps, Header, Label, SemanticICONS } from "semantic-ui-react";
-import { AdvancedSearchWithBasicFilters, UIConstants, getEmptyPlaceholderIllustrations } from "../../core";
 import { RoleAudienceTypes } from "../constants";
 
 const DEFAULT_SEARCH_OPERATOR: string = "co";
@@ -54,22 +56,17 @@ interface ReadOnlyRoleListProps extends LoadableComponentInterface, Identifiable
 export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = (
     props: ReadOnlyRoleListProps
 ): ReactElement => {
-
-    const {
-        totalRoleList,
-        emptyRolesListPlaceholder,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { totalRoleList, emptyRolesListPlaceholder, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ isLoading, setIsLoading ] = useState<boolean>(true);
-    const [ resetPagination, setResetPagination ] = useState<boolean>(false);
-    const [ finalRoleList, setFinalRoleList ] = useState<RolesMemberInterface[]>(undefined);
-    const [ filteredRoleList, setFilteredRoleList ] = useState<RolesMemberInterface[]>(undefined);
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ roleNameSearchQuery, setRoleNameSearchQuery ] = useState<string>(undefined);
-    const [ roleAudienceFilter, setRoleAudienceFilter ] = useState<string>(undefined);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [resetPagination, setResetPagination] = useState<boolean>(false);
+    const [finalRoleList, setFinalRoleList] = useState<RolesMemberInterface[]>(undefined);
+    const [filteredRoleList, setFilteredRoleList] = useState<RolesMemberInterface[]>(undefined);
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [roleNameSearchQuery, setRoleNameSearchQuery] = useState<string>(undefined);
+    const [roleAudienceFilter, setRoleAudienceFilter] = useState<string>(undefined);
 
     /**
      * Filter options for the roles list.
@@ -93,17 +90,15 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
     ];
 
     useEffect(() => {
-
         if (!totalRoleList) {
             return;
         }
 
         setFilteredRoleList(totalRoleList);
         setIsLoading(false);
-    }, [ totalRoleList ]);
+    }, [totalRoleList]);
 
     useEffect(() => {
-
         let filteredList: RolesMemberInterface[] = totalRoleList;
 
         if (roleAudienceFilter) {
@@ -112,20 +107,22 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
             );
         }
         if (roleNameSearchQuery) {
-            const roleNameToFilter: string = roleNameSearchQuery.split(DEFAULT_SEARCH_OPERATOR)[1].trim().toLowerCase();
+            const roleNameToFilter: string = roleNameSearchQuery
+                .split(DEFAULT_SEARCH_OPERATOR)[1]
+                .trim()
+                .toLowerCase();
 
-            filteredList = filteredList.filter(
-                (role: RolesMemberInterface) => role.display.toLowerCase().includes(roleNameToFilter)
+            filteredList = filteredList.filter((role: RolesMemberInterface) =>
+                role.display.toLowerCase().includes(roleNameToFilter)
             );
         }
 
         setFilteredRoleList(filteredList);
-    }, [ roleNameSearchQuery, roleAudienceFilter ]);
-
+    }, [roleNameSearchQuery, roleAudienceFilter]);
 
     useEffect(() => {
         setFinalRoleList(getPaginatedRoleList(filteredRoleList));
-    }, [ listOffset, listItemLimit, filteredRoleList ]);
+    }, [listOffset, listItemLimit, filteredRoleList]);
 
     /**
      * Handles the dropdown change event of the items per page dropdown.
@@ -133,7 +130,6 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
      * @param data - Data from the selected dropdown option.
      */
     const handleItemsPerPageDropdownChange = (event: React.MouseEvent<HTMLAnchorElement>, data: DropdownProps) => {
-
         setListItemLimit(data.value as number);
     };
 
@@ -143,8 +139,7 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
      * @param data - Data from the selected dropdown option.
      */
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: DropdownProps) => {
-
-        const activePage: number = data?.activePage as number ?? 1;
+        const activePage: number = (data?.activePage as number) ?? 1;
 
         setListOffset((activePage - 1) * listItemLimit);
     };
@@ -155,7 +150,6 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
      * @returns Paginated list of roles.
      */
     const getPaginatedRoleList = (roleListToPaginate: RolesMemberInterface[]): RolesMemberInterface[] => {
-
         return roleListToPaginate?.length >= 0 ? roleListToPaginate.slice(listOffset, listOffset + listItemLimit) : [];
     };
 
@@ -164,7 +158,6 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
      * @param query - Search query.
      */
     const handleSearchByRoleName = (query: string) => {
-
         setListOffset(0);
         setResetPagination(true);
         setRoleNameSearchQuery(query);
@@ -176,7 +169,6 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
      * @param data - Data from the selected dropdown option.
      */
     const handleFilterByRoleAudience = (event: React.MouseEvent<HTMLAnchorElement>, data: DropdownProps) => {
-
         setListOffset(0);
         setResetPagination(true);
         setRoleAudienceFilter(data.value as string);
@@ -187,18 +179,17 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
      * name and the role audience combination.
      */
     const showPlaceholders = (): ReactElement => {
-
         if ((roleNameSearchQuery || roleAudienceFilter) && finalRoleList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    data-componentid={ `${ componentId }-search-empty-placeholder` }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    data-componentid={`${componentId}-search-empty-placeholder`}
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.roles.readOnlyList.emptyPlaceholders.searchAndFilter.title") }
-                    subtitle={ [
+                    title={t("console:manage.features.roles.readOnlyList.emptyPlaceholders.searchAndFilter.title")}
+                    subtitle={[
                         t("console:manage.features.roles.readOnlyList.emptyPlaceholders.searchAndFilter.subtitles.0"),
                         t("console:manage.features.roles.readOnlyList.emptyPlaceholders.searchAndFilter.subtitles.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -221,27 +212,20 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
                 id: "name",
                 key: "name",
                 render: (role: RolesMemberInterface): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-componentid={ `${ componentId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-componentid={`${componentId}-item-heading`}>
                         <AppAvatar
-                            image={ (
+                            image={
                                 <AnimatedAvatar
-                                    name={ role.display }
+                                    name={role.display}
                                     size="mini"
-                                    data-componentid={ `${ componentId }-item-image-inner` }
+                                    data-componentid={`${componentId}-item-image-inner`}
                                 />
-                            ) }
+                            }
                             size="mini"
                             spaced="right"
-                            data-componentid={ `${ componentId }-item-image` }
+                            data-componentid={`${componentId}-item-image`}
                         />
-                        <Header.Content>
-                            { role?.display }
-                        </Header.Content>
+                        <Header.Content>{role?.display}</Header.Content>
                     </Header>
                 ),
                 title: t("console:manage.features.roles.list.columns.name")
@@ -253,19 +237,13 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
                 key: "audience",
                 render: (role: RolesMemberInterface) => (
                     <Label size="mini">
-                        { role.audienceType }
-                        {
-                            role.audienceType.toUpperCase() === RoleAudienceTypes.APPLICATION
-                                ? ` | ${role.audienceDisplay} `
-                                : ""
-                        }
+                        {role.audienceType}
+                        {role.audienceType.toUpperCase() === RoleAudienceTypes.APPLICATION
+                            ? ` | ${role.audienceDisplay} `
+                            : ""}
                     </Label>
                 ),
-                title: (
-                    <div className="pl-3">
-                        { t("console:manage.features.roles.list.columns.audience") }
-                    </div>
-                )
+                title: <div className="pl-3">{t("console:manage.features.roles.list.columns.audience")}</div>
             },
             {
                 allowToggleVisibility: false,
@@ -285,72 +263,72 @@ export const ReadOnlyRoleList: React.FunctionComponent<ReadOnlyRoleListProps> = 
         return [
             {
                 icon: (): SemanticICONS => "eye",
-                onClick: (): void => { return;},
+                onClick: (): void => {
+                    return;
+                },
                 popupText: (): string => t("common:view"),
                 renderer: "semantic-icon"
-            } ];
+            }
+        ];
     };
 
     return (
         <ListLayout
-            advancedSearch={ (
+            advancedSearch={
                 <AdvancedSearchWithBasicFilters
-                    data-componentid={ `${componentId}-list-advanced-search` }
-                    onFilter={ handleSearchByRoleName }
-                    disableSearchFilterDropdown={ true }
-                    filterAttributeOptions={ [
+                    data-componentid={`${componentId}-list-advanced-search`}
+                    onFilter={handleSearchByRoleName}
+                    disableSearchFilterDropdown={true}
+                    filterAttributeOptions={[
                         {
                             key: 0,
                             text: t("console:manage.features.roles.list.filterAttirbutes.name"),
                             value: "displayName"
                         }
-                    ] }
-                    filterAttributePlaceholder={
-                        t("console:manage.features.roles.advancedSearch.form.inputs.filterAttribute." +
-                            "placeholder")
-                    }
-                    filterConditionsPlaceholder={
-                        t("console:manage.features.roles.advancedSearch.form.inputs.filterCondition" +
-                            ".placeholder")
-                    }
-                    filterValuePlaceholder={
-                        t("console:manage.features.roles.advancedSearch.form.inputs.filterValue" +
-                            ".placeholder")
-                    }
-                    placeholder={ t("console:manage.features.roles.advancedSearch.placeholder") }
+                    ]}
+                    filterAttributePlaceholder={t(
+                        "console:manage.features.roles.advancedSearch.form.inputs.filterAttribute." + "placeholder"
+                    )}
+                    filterConditionsPlaceholder={t(
+                        "console:manage.features.roles.advancedSearch.form.inputs.filterCondition" + ".placeholder"
+                    )}
+                    filterValuePlaceholder={t(
+                        "console:manage.features.roles.advancedSearch.form.inputs.filterValue" + ".placeholder"
+                    )}
+                    placeholder={t("console:manage.features.roles.advancedSearch.placeholder")}
                     defaultSearchAttribute="displayName"
-                    defaultSearchOperator= { DEFAULT_SEARCH_OPERATOR }
+                    defaultSearchOperator={DEFAULT_SEARCH_OPERATOR}
                 />
-            ) }
-            listItemLimit={ listItemLimit }
-            onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-            onPageChange={ handlePaginationChange }
-            showTopActionPanel={ true }
-            rightActionPanel={
-                (
-                    <Dropdown
-                        data-componentid={ `${componentId}-list-filters-dropdown` }
-                        selection
-                        options={ filterOptions }
-                        placeholder= { t("console:manage.features.roles.list.buttons.filterDropdown") }
-                        onChange={ handleFilterByRoleAudience }
-                    />
-                )
             }
-            showPagination={ filteredRoleList?.length > 0 }
-            totalPages={ Math.ceil(filteredRoleList?.length / listItemLimit) }
-            totalListSize={ filteredRoleList?.length }
-            isLoading={ isLoading }
-            resetPagination={ resetPagination }
+            listItemLimit={listItemLimit}
+            onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+            onPageChange={handlePaginationChange}
+            showTopActionPanel={true}
+            rightActionPanel={
+                <Dropdown
+                    data-componentid={`${componentId}-list-filters-dropdown`}
+                    selection
+                    options={filterOptions}
+                    placeholder={t("console:manage.features.roles.list.buttons.filterDropdown")}
+                    onChange={handleFilterByRoleAudience}
+                />
+            }
+            showPagination={filteredRoleList?.length > 0}
+            totalPages={Math.ceil(filteredRoleList?.length / listItemLimit)}
+            totalListSize={filteredRoleList?.length}
+            isLoading={isLoading}
+            resetPagination={resetPagination}
         >
             <DataTable<RolesMemberInterface>
-                loadingStateOptions={ { imageType: "square" } }
-                columns={ resolveTableColumns() }
-                actions={ resolveTableActions() }
-                data={ finalRoleList }
-                onRowClick={ () => { return; } }
-                placeholders={ showPlaceholders() }
-                data-componentid={ componentId }
+                loadingStateOptions={{ imageType: "square" }}
+                columns={resolveTableColumns()}
+                actions={resolveTableActions()}
+                data={finalRoleList}
+                onRowClick={() => {
+                    return;
+                }}
+                placeholders={showPlaceholders()}
+                data-componentid={componentId}
             />
         </ListLayout>
     );
