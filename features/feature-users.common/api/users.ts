@@ -19,15 +19,11 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, ProfileInfoInterface } from "@wso2is/core/models";
-import  {
-    RequestConfigInterface,
-    RequestErrorInterface,
-    RequestResultInterface
-} from "@wso2is/feature-hooks.common/hooks";
-import useRequest from "@wso2is/feature-hooks.common/hooks/use-request";
+import { RequestConfigInterface, RequestErrorInterface, RequestResultInterface } from "@wso2is/feature-hooks.common";
+import useRequest from "@wso2is/feature-hooks.common/use-request";
 import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models";
 import { PatchGroupDataInterface } from "@wso2is/feature-scim.common/models/groups";
-import { store } from "@wso2is/feature-store.common/store";
+import { store } from "@wso2is/feature-store.common";
 import { AxiosError, AxiosResponse } from "axios";
 import { UserManagementConstants } from "../constants/user-management-constants";
 import { SCIMBulkEndpointInterface, UserDetailsInterface, UserListInterface, UserSessionsInterface } from "../models";
@@ -36,8 +32,9 @@ import { SCIMBulkEndpointInterface, UserDetailsInterface, UserListInterface, Use
  * Initialize an axios Http client.
  *
  */
-const httpClient: HttpClientInstance
-    = AsgardeoSPAClient.getInstance().httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Retrieve the list of users that are currently in the system.
@@ -52,8 +49,7 @@ export const getUsersList = (
     attributes: string,
     domain: string,
     excludedAttributes?: string
-):
-    Promise<UserListInterface> => {
+): Promise<UserListInterface> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
@@ -117,12 +113,9 @@ export const useUsersList = (
         url: store.getState().config.endpoints.users
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate
-    } = useRequest<UserListInterface, RequestErrorInterface>(shouldFetch ? requestConfig : null);
+    const { data, error, isValidating, mutate } = useRequest<UserListInterface, RequestErrorInterface>(
+        shouldFetch ? requestConfig : null
+    );
 
     return {
         data,
@@ -250,9 +243,9 @@ export const addUserRole = (data: PatchGroupDataInterface, groupId: string): Pro
  * @returns `Promise<ProfileInfoInterface>` a promise containing the user details.
  */
 export const useUserDetails = <Data = ProfileInfoInterface, Error = AxiosError>(
-    userId: string, attributes?: string
+    userId: string,
+    attributes?: string
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
@@ -314,7 +307,6 @@ export const getUserDetails = (id: string, attributes: string): Promise<ProfileI
  * @throws `IdentityAppsApiException`
  */
 export const updateUserInfo = (userId: string, data: PatchRoleDataInterface): Promise<ProfileInfoInterface> => {
-
     const requestConfig: RequestConfigInterface = {
         data,
         headers: {
@@ -336,7 +328,8 @@ export const updateUserInfo = (userId: string, data: PatchRoleDataInterface): Pr
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -348,7 +341,6 @@ export const updateUserInfo = (userId: string, data: PatchRoleDataInterface): Pr
  * @throws `IdentityAppsApiException`
  */
 export const getUserSessions = (userId: string): Promise<AxiosResponse<UserSessionsInterface>> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
@@ -367,7 +359,8 @@ export const getUserSessions = (userId: string): Promise<AxiosResponse<UserSessi
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
@@ -379,7 +372,8 @@ export const getUserSessions = (userId: string): Promise<AxiosResponse<UserSessi
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -392,14 +386,13 @@ export const getUserSessions = (userId: string): Promise<AxiosResponse<UserSessi
  * @throws `IdentityAppsApiException`
  */
 export const terminateUserSession = (userId: string, sessionId: string): Promise<AxiosResponse> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
-        url: store.getState().config.endpoints.userSessions.replace("{0}", userId) + `/${ sessionId }`
+        url: store.getState().config.endpoints.userSessions.replace("{0}", userId) + `/${sessionId}`
     };
 
     return httpClient(requestConfig)
@@ -411,7 +404,8 @@ export const terminateUserSession = (userId: string, sessionId: string): Promise
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
@@ -423,7 +417,8 @@ export const terminateUserSession = (userId: string, sessionId: string): Promise
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -435,7 +430,6 @@ export const terminateUserSession = (userId: string, sessionId: string): Promise
  * @throws `IdentityAppsApiException`
  */
 export const terminateAllUserSessions = (userId: string): Promise<AxiosResponse> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
@@ -454,7 +448,8 @@ export const terminateAllUserSessions = (userId: string): Promise<AxiosResponse>
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
@@ -466,6 +461,7 @@ export const terminateAllUserSessions = (userId: string): Promise<AxiosResponse>
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

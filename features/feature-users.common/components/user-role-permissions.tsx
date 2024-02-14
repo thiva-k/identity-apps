@@ -17,14 +17,14 @@
  * under the License.
  */
 import { RolesInterface, TestableComponentInterface } from "@wso2is/core/models";
-import {AppConstants }from "@wso2is/feature-constants.common/constants";
-import { history } from "@wso2is/feature-helpers.common/helpers";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
 import { getOrganizationRoleById } from "@wso2is/feature-organizations.common/api";
 import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models/organizations";
 import { OrganizationUtils } from "@wso2is/feature-organizations.common/utils";
 import { getRoleById } from "@wso2is/feature-roles.common/api/roles";
 import { PermissionList } from "@wso2is/feature-roles.common/components/wizard/role-permission";
-import {AppState}from "@wso2is/feature-store.common/store";
+import { AppState } from "@wso2is/feature-store.common";
 import { LinkButton } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";

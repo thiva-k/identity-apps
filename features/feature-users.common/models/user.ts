@@ -17,7 +17,7 @@
  */
 
 import { LinkInterface, MultiValueAttributeInterface, NameInterface, RolesInterface } from "@wso2is/core/models";
-import { UserRoleInterface } from "@wso2is/feature-models.common/models";
+import { UserRoleInterface } from "@wso2is/feature-models.common";
 import { GroupsInterface, GroupsMemberInterface } from "@wso2is/feature-scim.common/models/groups";
 import React, { ReactElement } from "react";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
@@ -175,9 +175,11 @@ export interface UserDetailsInterface {
      * property name in an interface must directly refer to a built-in literal in ts.
      * issue - https://github.com/Microsoft/TypeScript/issues/21000
      */
-    [key: string]: {
-        askPassword: string;
-    } | any;
+    [key: string]:
+        | {
+              askPassword: string;
+          }
+        | any;
     profileUrl?: string;
 }
 
@@ -185,10 +187,12 @@ export interface UserDetailsInterface {
  * The following function creates an empty user details object
  */
 export const createEmptyUserDetails = (): UserDetailsInterface => ({
-    emails: [ {
-        primary: false,
-        value: ""
-    } ],
+    emails: [
+        {
+            primary: false,
+            value: ""
+        }
+    ],
     name: {
         familyName: "",
         givenName: ""
@@ -331,17 +335,17 @@ export interface PayloadInterface {
     Operations: {
         op: string;
         value: {
-          users?: {
-            display: string;
-            value: string;
-          }[];
-          members?: {
-            display: string;
-            value: string;
-          }[];
+            users?: {
+                display: string;
+                value: string;
+            }[];
+            members?: {
+                display: string;
+                value: string;
+            }[];
         };
-      }[];
-      schemas: string[];
+    }[];
+    schemas: string[];
 }
 
 /**
@@ -392,8 +396,8 @@ export interface PatchUserRemoveOpInterface {
 export interface PatchUserAddOpInterface {
     op: string;
     value: {
-        users: { value: string }[]
-    }
+        users: { value: string }[];
+    };
 }
 
 /**
@@ -408,9 +412,9 @@ export enum MultipleInviteMode {
 /**
  * Multiple Invites mode display name mapping.
  */
-export const MultipleInvitesDisplayNames: { manualConfiguration: string; metadataFile: string; } = {
-    [ MultipleInviteMode.MANUAL ]: "Manual",
-    [ MultipleInviteMode.META_FILE ]: "File Based"
+export const MultipleInvitesDisplayNames: { manualConfiguration: string; metadataFile: string } = {
+    [MultipleInviteMode.MANUAL]: "Manual",
+    [MultipleInviteMode.META_FILE]: "File Based"
 };
 
 /**
