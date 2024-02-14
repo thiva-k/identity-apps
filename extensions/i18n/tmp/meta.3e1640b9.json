@@ -1,0 +1,135 @@
+{
+    "en-US": {
+        "code": "en-US",
+        "flag": "us",
+        "name": "English (United States)",
+        "namespaces": [
+            "common",
+            "console",
+            "myAccount",
+            "extensions"
+        ],
+        "paths": {
+            "common": "en-US/portals/common.90fca593.json",
+            "console": "en-US/portals/console.6596644f.json",
+            "myAccount": "en-US/portals/myAccount.38635020.json",
+            "extensions": "en-US/portals/extensions.01c81315.json"
+        }
+    },
+    "fr-FR": {
+        "code": "fr-FR",
+        "flag": "fr",
+        "name": "Français (France)",
+        "namespaces": [
+            "common",
+            "console",
+            "myAccount",
+            "extensions"
+        ],
+        "paths": {
+            "common": "fr-FR/portals/common.d58bce1a.json",
+            "console": "fr-FR/portals/console.9c4b9e11.json",
+            "myAccount": "fr-FR/portals/myAccount.c5dbe108.json",
+            "extensions": "fr-FR/portals/extensions.236cdda9.json"
+        }
+    },
+    "pt-PT": {
+        "code": "pt-PT",
+        "flag": "pt",
+        "name": "Português (Portugal)",
+        "namespaces": [
+            "common",
+            "myAccount"
+        ],
+        "paths": {
+            "common": "pt-PT/portals/common.8594b893.json",
+            "myAccount": "pt-PT/portals/myAccount.3d430e8d.json"
+        }
+    },
+    "pt-BR": {
+        "code": "pt-BR",
+        "flag": "br",
+        "name": "Português (Brazil)",
+        "namespaces": [
+            "common",
+            "myAccount"
+        ],
+        "paths": {
+            "common": "pt-BR/portals/common.381a5160.json",
+            "myAccount": "pt-BR/portals/myAccount.2722a740.json"
+        }
+    },
+    "si-LK": {
+        "code": "si-LK",
+        "flag": "lk",
+        "name": "සිංහල (Sri Lanka)",
+        "namespaces": [
+            "common",
+            "myAccount",
+            "console",
+            "extensions"
+        ],
+        "paths": {
+            "common": "si-LK/portals/common.c2e881f3.json",
+            "myAccount": "si-LK/portals/myAccount.1f7985a4.json",
+            "console": "si-LK/portals/console.bbc27304.json",
+            "extensions": "si-LK/portals/extensions.6787da51.json"
+        }
+    },
+    "es-ES": {
+        "code": "es-ES",
+        "flag": "es",
+        "name": "Español (España)",
+        "namespaces": [
+            "common",
+            "myAccount",
+            "extensions"
+        ],
+        "paths": {
+            "common": "es-ES/portals/common.91d68fce.json",
+            "myAccount": "es-ES/portals/myAccount.c7522c0a.json"
+        }
+    },
+    "de-DE": {
+        "code": "de-DE",
+        "flag": "de",
+        "name": "Deutsch (Deutschland)",
+        "namespaces": [
+            "common",
+            "myAccount",
+            "extensions"
+        ],
+        "paths": {
+            "common": "de-DE/portals/common.db7987ae.json",
+            "myAccount": "de-DE/portals/myAccount.e361c5a7.json"
+        }
+    },
+    "ja-JP": {
+        "code": "ja-JP",
+        "flag": "jp",
+        "name": "日本語 (日本)",
+        "namespaces": [
+            "common",
+            "myAccount",
+            "extensions"
+        ],
+        "paths": {
+            "common": "ja-JP/portals/common.03bcfc15.json",
+            "myAccount": "ja-JP/portals/myAccount.80c67e86.json"
+        }
+    },
+    "zh-CN": {
+        "code": "zh-CN",
+        "flag": "cn",
+        "name": "中文 (中国)",
+        "namespaces": [
+            "common",
+            "myAccount",
+            "extensions"
+        ],
+        "paths": {
+            "common": "zh-CN/portals/common.8073abe0.json",
+            "myAccount": "zh-CN/portals/myAccount.9f2e658c.json"
+        }
+    }
+}
