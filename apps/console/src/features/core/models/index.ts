@@ -16,7 +16,7 @@
  * under the License.
  */
 
-export * from "./config";
+export * from "./SharedUserStoreConstants";
 export * from "./documentation";
 export * from "./help-panel";
 export * from "./reducer-state";
