@@ -21,13 +21,9 @@ import Chip from "@oxygen-ui/react/Chip";
 import Grid from "@oxygen-ui/react/Grid";
 import ListItemText from "@oxygen-ui/react/ListItemText";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { getSidePanelIcons } from "@wso2is/feature-configs.common";
 import { GenericIcon } from "@wso2is/react-components";
-import React, {
-    FunctionComponent,
-    HTMLAttributes,
-    ReactElement
-} from "react";
-import { getSidePanelIcons } from "../../../../core/configs/ui";
+import React, { FunctionComponent, HTMLAttributes, ReactElement } from "react";
 
 interface AutoCompleteRenderOption extends IdentifiableComponentInterface {
     /**
@@ -57,64 +53,43 @@ interface AutoCompleteRenderOption extends IdentifiableComponentInterface {
     /**
      * The props passed to the option.
      */
-    renderOptionProps: HTMLAttributes<HTMLLIElement>
+    renderOptionProps: HTMLAttributes<HTMLLIElement>;
 }
 
 export const AutoCompleteRenderOption: FunctionComponent<AutoCompleteRenderOption> = (
     props: AutoCompleteRenderOption
 ): ReactElement => {
-
-    const {
-        selected,
-        displayName,
-        subTitle,
-        ternaryTitle,
-        ternarySubTitle,
-        userstore,
-        renderOptionProps
-    } = props;
+    const { selected, displayName, subTitle, ternaryTitle, ternarySubTitle, userstore, renderOptionProps } = props;
 
     return (
-        <li { ...renderOptionProps }>
-            <Grid container justifyContent="space-between" alignItems="center" xs={ 12 }>
-                <Grid container alignItems="center" xs={ 8 }>
-                    <Grid>
-                        {
-                            typeof selected === "boolean" && (
-                                <Checkbox checked={ selected } />
-                            )
-                        }
+        <li {...renderOptionProps}>
+            <Grid container justifyContent="space-between" alignItems="center" xs={12}>
+                <Grid container alignItems="center" xs={8}>
+                    <Grid>{typeof selected === "boolean" && <Checkbox checked={selected} />}</Grid>
+                    <Grid xs={5}>
+                        <ListItemText primary={displayName} secondary={subTitle} />
                     </Grid>
-                    <Grid xs={ 5 }>
-                        <ListItemText primary={ displayName } secondary={ subTitle } />  
-                    </Grid>
-                    {
-                        ( ternaryTitle && ternarySubTitle ) 
-                            ? (
-                                <Grid>
-                                    <ListItemText primary={ ternaryTitle } secondary={ ternarySubTitle } />
-                                </Grid>
-                            )
-                            : null
-                    }
+                    {ternaryTitle && ternarySubTitle ? (
+                        <Grid>
+                            <ListItemText primary={ternaryTitle} secondary={ternarySubTitle} />
+                        </Grid>
+                    ) : null}
                 </Grid>
                 <Grid justifyContent="flex-end">
-                    {
-                        userstore ? (
-                            <Chip 
-                                icon={ ( 
-                                    <GenericIcon
-                                        inline
-                                        size="default"
-                                        transparent
-                                        icon={ getSidePanelIcons().userStore }
-                                        verticalAlign="middle"
-                                    /> 
-                                ) }
-                                label={ userstore }
-                            />
-                        ) : null
-                    }
+                    {userstore ? (
+                        <Chip
+                            icon={
+                                <GenericIcon
+                                    inline
+                                    size="default"
+                                    transparent
+                                    icon={getSidePanelIcons().userStore}
+                                    verticalAlign="middle"
+                                />
+                            }
+                            label={userstore}
+                        />
+                    ) : null}
                 </Grid>
             </Grid>
         </li>

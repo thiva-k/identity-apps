@@ -20,6 +20,9 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { OrganizationType } from "@wso2is/common";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface, RolesInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { AppConstants, UIConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { deleteRoleById, useRolesList } from "@wso2is/feature-roles.common/api";
 import { RoleConstants } from "@wso2is/feature-roles.common/constants";
@@ -31,8 +34,6 @@ import { useDispatch } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Dropdown, DropdownItemProps, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
-import { AdvancedSearchWithBasicFilters, AppConstants, UIConstants } from "../../core";
-import { history } from "../../core/helpers";
 import { RoleList } from "../components/role-list";
 
 type RolesPagePropsInterface = IdentifiableComponentInterface & RouteComponentProps;

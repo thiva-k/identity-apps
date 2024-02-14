@@ -18,44 +18,27 @@
 
 import { isFeatureEnabled } from "@wso2is/core/helpers";
 import { IdentifiableComponentInterface, RoleConnectedApplicationInterface, RolesInterface } from "@wso2is/core/models";
-import { 
-    AnimatedAvatar, 
-    AppAvatar,  
-    DataTable, 
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { AppConstants, UIConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import {
+    AnimatedAvatar,
+    AppAvatar,
+    DataTable,
     EmphasizedSegment,
-    EmptyPlaceholder, 
-    Heading, 
-    TableActionsInterface, 
-    TableColumnInterface 
+    EmptyPlaceholder,
+    Heading,
+    TableActionsInterface,
+    TableColumnInterface
 } from "@wso2is/react-components";
-import React, 
-{ 
-    FunctionComponent,
-    ReactElement, 
-    ReactNode, 
-    SyntheticEvent, 
-    useEffect, 
-    useState 
-} from "react";
+import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import {  
-    Divider,
-    Header, 
-    Icon, 
-    Input, 
-    SemanticICONS
-} from "semantic-ui-react";
+import { Divider, Header, Icon, Input, SemanticICONS } from "semantic-ui-react";
 import { applicationListConfig } from "../../../../extensions/configs/application-list";
 import { ApplicationManagementConstants } from "../../../applications/constants";
-import {  
-    AppConstants,
-    AppState, 
-    FeatureConfigInterface,   
-    UIConstants, 
-    getEmptyPlaceholderIllustrations, 
-    history
-} from "../../../core";
 
 /**
  * Proptypes for the advance settings component.
@@ -92,19 +75,14 @@ interface ConnectedAppsPropsInterface extends IdentifiableComponentInterface {
 export const RoleConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
     props: ConnectedAppsPropsInterface
 ): ReactElement => {
-
-    const {
-        role,
-        isLoading,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { role, isLoading, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ filterSelectedApps, setFilterSelectedApps ] = useState<RoleConnectedApplicationInterface[]>([]);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
+    const [filterSelectedApps, setFilterSelectedApps] = useState<RoleConnectedApplicationInterface[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
     const associatedApplications: RoleConnectedApplicationInterface[] = role?.associatedApplications;
 
@@ -114,8 +92,8 @@ export const RoleConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> =
         }
 
         setFilterSelectedApps(associatedApplications);
-    }, [ associatedApplications ]);
- 
+    }, [associatedApplications]);
+
     /**
      * Resolves data table columns.
      *
@@ -128,29 +106,27 @@ export const RoleConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> =
                 dataIndex: "name",
                 id: "name",
                 key: "name",
-                render: (app: RoleConnectedApplicationInterface): ReactNode => {                    
+                render: (app: RoleConnectedApplicationInterface): ReactNode => {
                     return (
                         <Header
                             image
                             as="h6"
                             className="header-with-icon"
-                            data-componentid={ `${ componentId }-item-heading` }
+                            data-componentid={`${componentId}-item-heading`}
                         >
                             <AppAvatar
-                                image={ (
+                                image={
                                     <AnimatedAvatar
-                                        name={ app?.display }
+                                        name={app?.display}
                                         size="mini"
-                                        data-componentid={ `${ componentId }-item-image-inner` }
+                                        data-componentid={`${componentId}-item-image-inner`}
                                     />
-                                ) }
+                                }
                                 size="mini"
                                 spaced="right"
-                                data-componentid={ `${ componentId }-item-image` }
+                                data-componentid={`${componentId}-item-image`}
                             />
-                            <Header.Content>
-                                { app?.display }
-                            </Header.Content>
+                            <Header.Content>{app?.display}</Header.Content>
                         </Header>
                     );
                 },
@@ -175,8 +151,10 @@ export const RoleConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> =
      */
     const handleApplicationEdit = (appId: string, tabName: string): void => {
         history.push({
-            pathname: AppConstants.getPaths().get("APPLICATION_SIGN_IN_METHOD_EDIT")
-                .replace(":id", appId).replace(":tabName", tabName),
+            pathname: AppConstants.getPaths()
+                .get("APPLICATION_SIGN_IN_METHOD_EDIT")
+                .replace(":id", appId)
+                .replace(":tabName", tabName),
             state: {
                 id: role.id,
                 name: role.displayName,
@@ -195,14 +173,14 @@ export const RoleConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> =
         if (searchQuery && filterSelectedApps?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:develop.placeholders.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("console:develop.placeholders.emptySearchResult.title")}
+                    subtitle={[
                         t("console:develop.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                         t("console:develop.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-componentid={ `${ componentId }-empty-search-placeholder` }
+                    ]}
+                    data-componentid={`${componentId}-empty-search-placeholder`}
                 />
             );
         }
@@ -210,14 +188,14 @@ export const RoleConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> =
         if (filterSelectedApps?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    subtitle={ [
+                    subtitle={[
                         t("console:develop.features.idp.connectedApps.placeholders.emptyList", {
                             idpName: role?.displayName
                         })
-                    ] }
-                    data-componentid={ `${ componentId }-empty-placeholder` }
+                    ]}
+                    data-componentid={`${componentId}-empty-placeholder`}
                 />
             );
         }
@@ -233,15 +211,17 @@ export const RoleConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> =
     const resolveTableActions = (): TableActionsInterface[] => {
         return [
             {
-                "data-componentid": `${ componentId }-item-edit-button`,
-                hidden: (): boolean => !isFeatureEnabled(featureConfig?.applications,
-                    ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT")),
-                icon: (): SemanticICONS => { 
+                "data-componentid": `${componentId}-item-edit-button`,
+                hidden: (): boolean =>
+                    !isFeatureEnabled(
+                        featureConfig?.applications,
+                        ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT")
+                    ),
+                icon: (): SemanticICONS => {
                     return "caret right";
                 },
                 onClick: (e: SyntheticEvent, app: RoleConnectedApplicationInterface): void =>
-                    handleApplicationEdit(app.value, "#tab=" +
-                        ApplicationManagementConstants.ROLES_TAB_URL_FRAG),
+                    handleApplicationEdit(app.value, "#tab=" + ApplicationManagementConstants.ROLES_TAB_URL_FRAG),
                 popupText: (): string => {
                     return t("console:develop.features.idp.connectedApps.action");
                 },
@@ -257,7 +237,7 @@ export const RoleConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> =
      */
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const changeValue: string = event.target.value.trim();
-        
+
         setSearchQuery(changeValue);
 
         if (changeValue.length > 0) {
@@ -274,47 +254,48 @@ export const RoleConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> =
      */
     const searchFilter = (changeValue: string) => {
         const appNameFilter: RoleConnectedApplicationInterface[] = associatedApplications?.filter(
-            (item: RoleConnectedApplicationInterface) => 
-                item?.display?.toLowerCase()?.indexOf(changeValue.toLowerCase()) !== -1); 
-        
-        setFilterSelectedApps(appNameFilter); 
+            (item: RoleConnectedApplicationInterface) =>
+                item?.display?.toLowerCase()?.indexOf(changeValue.toLowerCase()) !== -1
+        );
+
+        setFilterSelectedApps(appNameFilter);
     };
 
     return (
         <EmphasizedSegment padded="very">
-            <Heading as="h4">{ t("console:develop.features.idp.connectedApps.header", 
-                { idpName: role?.displayName }) }</Heading>
+            <Heading as="h4">
+                {t("console:develop.features.idp.connectedApps.header", { idpName: role?.displayName })}
+            </Heading>
             <Divider hidden />
-            { associatedApplications && (
-                <Input 
-                    icon={ <Icon name="search" /> }
+            {associatedApplications && (
+                <Input
+                    icon={<Icon name="search" />}
                     iconPosition="left"
-                    onChange={ handleChange }
-                    placeholder = { t("console:develop.features.idp.connectedApps.placeholders.search") }
+                    onChange={handleChange}
+                    placeholder={t("console:develop.features.idp.connectedApps.placeholders.search")}
                     floated="left"
                     size="small"
-                    style={ { width: "250px" } }
-                    data-componentid={ `${ componentId }-searched` }
+                    style={{ width: "250px" }}
+                    data-componentid={`${componentId}-searched`}
                 />
-            ) }
+            )}
             <DataTable<RoleConnectedApplicationInterface>
                 className="connected-applications-table"
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={  resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ filterSelectedApps }
-                onRowClick={ (e: SyntheticEvent, app: RoleConnectedApplicationInterface): void => {
-                    handleApplicationEdit(app.value, "#tab=" +
-                        ApplicationManagementConstants.ROLES_TAB_URL_FRAG);
-                } }
-                placeholders={ showPlaceholders() }
-                showHeader={ applicationListConfig.enableTableHeaders }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-componentid={ `${ componentId }-data-table` }
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={filterSelectedApps}
+                onRowClick={(e: SyntheticEvent, app: RoleConnectedApplicationInterface): void => {
+                    handleApplicationEdit(app.value, "#tab=" + ApplicationManagementConstants.ROLES_TAB_URL_FRAG);
+                }}
+                placeholders={showPlaceholders()}
+                showHeader={applicationListConfig.enableTableHeaders}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-componentid={`${componentId}-data-table`}
             />
         </EmphasizedSegment>
     );

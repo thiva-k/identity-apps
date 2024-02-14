@@ -20,3 +20,4 @@ export * from "./modal-with-side-panel";
 export * from "./roles";
 export * from "./tier-limit-reach-error-modal";
 export * from "./advanced-search-with-basic-filters";
+export * from "./groups";

@@ -20,6 +20,8 @@ import Grid from "@oxygen-ui/react/Grid";
 import { VerticalStepper, VerticalStepperStepInterface } from "@wso2is/common";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { createRole } from "@wso2is/feature-roles.common/api/roles";
 import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants";
@@ -32,15 +34,13 @@ import {
     SelectedPermissionsInterface
 } from "@wso2is/feature-roles.common/models";
 import { ScopeInterface } from "@wso2is/feature-roles.common/models/apiResources";
+import { store } from "@wso2is/feature-store.common";
 import { EmphasizedSegment, PageLayout } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import { AppConstants } from "../../core/constants";
-import { history } from "../../core/helpers";
-import { store } from "../../core/store";
 import { RoleBasics } from "../components/wizard-updated/role-basics";
 import { RolePermissionsList } from "../components/wizard-updated/role-permissions/role-permissions";
 

@@ -21,7 +21,6 @@ export * from "./footer";
 export * from "./header";
 export * from "./protected-route";
 export * from "./upload-certificate";
-export * from "./groups";
 export * from "./attribute-select-list";
 export * from "./pre-loader";
 export * from "./protocol-card";
