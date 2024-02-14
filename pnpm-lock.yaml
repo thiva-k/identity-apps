@@ -7521,6 +7521,9 @@ importers:
       '@wso2is/feature-apis.common':
         specifier: '*'
         version: link:../feature-apis.common
+      '@wso2is/feature-components.common':
+        specifier: '*'
+        version: link:../feature-components.common
       '@wso2is/feature-configs.common':
         specifier: '*'
         version: link:../feature-configs.common

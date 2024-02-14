@@ -26,13 +26,16 @@ import {
     TestableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import {getEmptyPlaceholderIllustrations} from "@wso2is/feature-configs.common/configs";
-import { history } from "@wso2is/feature-helpers.common/helpers";
-import {FeatureConfigInterface}from "@wso2is/feature-models.common/models";
-import {AppState}from "@wso2is/feature-store.common/store";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { getUserSessions, terminateAllUserSessions, terminateUserSession } from "@wso2is/feature-users.common/api";
-import { ApplicationSessionInterface, UserSessionInterface,
-    UserSessionsInterface } from "@wso2is/feature-users.common/models";
+import {
+    ApplicationSessionInterface,
+    UserSessionInterface,
+    UserSessionsInterface
+} from "@wso2is/feature-users.common/models";
 import {
     ConfirmationModal,
     ContentLoader,
@@ -46,19 +49,12 @@ import {
 } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
 import moment from "moment";
-import React, {
-    Fragment,
-    FunctionComponent,
-    ReactElement,
-    SyntheticEvent, useEffect,
-    useState
-} from "react";
+import React, { Fragment, FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Icon, Label, List, SemanticICONS } from "semantic-ui-react";
 import { userstoresConfig } from "../../../extensions";
-
 
 /**
  * Proptypes for the user sessions component.
@@ -91,14 +87,7 @@ interface UserSessionsPropsInterface extends SBACInterface<FeatureConfigInterfac
 export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
     props: UserSessionsPropsInterface
 ): ReactElement => {
-
-    const {
-        defaultActiveIndexes,
-        isLoading,
-        user,
-        showSessionTerminationButton,
-        [ "data-testid" ]: testId
-    } = props;
+    const { defaultActiveIndexes, isLoading, user, showSessionTerminationButton, ["data-testid"]: testId } = props;
 
     const userAgentParser: UserAgentParser = new UserAgentParser();
 
@@ -106,18 +95,14 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ userSessions, setUserSessions ] = useState<UserSessionsInterface>(undefined);
-    const [ terminatingSession, setTerminatingSession ] = useState<UserSessionInterface>(undefined);
-    const [ isUserSessionsFetchRequestLoading, setIsUserSessionsFetchRequestLoading ] = useState<boolean>(false);
-    const [ accordionActiveIndexes, setAccordionActiveIndexes ] = useState<number[]>(defaultActiveIndexes);
-    const [
-        showSessionTerminateConfirmationModal,
-        setShowSessionTerminateConfirmationModal
-    ] = useState<boolean>(false);
-    const [
-        showAllSessionsTerminateConfirmationModal,
-        setShowAllSessionsTerminateConfirmationModal
-    ] = useState<boolean>(false);
+    const [userSessions, setUserSessions] = useState<UserSessionsInterface>(undefined);
+    const [terminatingSession, setTerminatingSession] = useState<UserSessionInterface>(undefined);
+    const [isUserSessionsFetchRequestLoading, setIsUserSessionsFetchRequestLoading] = useState<boolean>(false);
+    const [accordionActiveIndexes, setAccordionActiveIndexes] = useState<number[]>(defaultActiveIndexes);
+    const [showSessionTerminateConfirmationModal, setShowSessionTerminateConfirmationModal] = useState<boolean>(false);
+    const [showAllSessionsTerminateConfirmationModal, setShowAllSessionsTerminateConfirmationModal] = useState<boolean>(
+        false
+    );
     const authenticatedUserTenanted: string = useSelector((state: AppState) => state?.auth?.username);
     const authenticatedUserComponents: string[] = authenticatedUserTenanted.split("@");
 
@@ -128,13 +113,12 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * Fetches the active sessions once the user prop is avaiable.
      */
     useEffect(() => {
-
         if (!user || !user.id) {
             return;
         }
 
         fetchUserSessions(user.id);
-    }, [ user ]);
+    }, [user]);
 
     /**
      * Fetches the active user sessions belonging to a specific user.
@@ -142,7 +126,6 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * @param id - User ID
      */
     const fetchUserSessions = (id: string): void => {
-
         setIsUserSessionsFetchRequestLoading(true);
 
         getUserSessions(id)
@@ -150,30 +133,37 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
                 setUserSessions(response.data);
             })
             .catch((error: AxiosError) => {
-                if (error.response
-                    && error.response.data
-                    && (error.response.data.description || error.response.data.detail)) {
-
-                    dispatch(addAlert<AlertInterface>({
-                        description: error.response.data.description || error.response.data.detail,
-                        level: AlertLevels.ERROR,
-                        message: t(
-                            "console:manage.features.users.userSessions.notifications.getUserSessions.error.message"
-                        )
-                    }));
+                if (
+                    error.response &&
+                    error.response.data &&
+                    (error.response.data.description || error.response.data.detail)
+                ) {
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: error.response.data.description || error.response.data.detail,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.users.userSessions.notifications.getUserSessions.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:manage.features.users.userSessions.notifications.getUserSessions." +
-                        "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t(
-                        "console:manage.features.users.userSessions.notifications.getUserSessions." +
-                        "genericError.message"
-                    )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.users.userSessions.notifications.getUserSessions." +
+                                "genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.users.userSessions.notifications.getUserSessions." +
+                                "genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsUserSessionsFetchRequestLoading(false);
@@ -187,21 +177,24 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * @returns Device type icon
      */
     const resolveDeviceType = (type: string): SemanticICONS => {
-        const deviceType: Record<string,{
-            icon: string;
-            values: string[]
-        }> = {
+        const deviceType: Record<
+            string,
+            {
+                icon: string;
+                values: string[];
+            }
+        > = {
             desktop: {
                 icon: "computer",
-                values: [ "desktop" ]
+                values: ["desktop"]
             },
             mobile: {
                 icon: "mobile alternate",
-                values: [ "mobile" ]
+                values: ["mobile"]
             },
             tablet: {
                 icon: "tablet alternate",
-                values: [ "tablet" ]
+                values: ["tablet"]
             }
         };
 
@@ -222,30 +215,32 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * @returns OSI Icon
      */
     const resolveOSIcon = (type: string): SemanticICONS => {
-
-        const osType: Record<string,{
-            icon: string;
-            values: string[]
-        }> = {
+        const osType: Record<
+            string,
+            {
+                icon: string;
+                values: string[];
+            }
+        > = {
             android: {
                 icon: "android",
-                values: [ "Android" ]
+                values: ["Android"]
             },
             ios: {
                 icon: "apple",
-                values: [ "iOS" ]
+                values: ["iOS"]
             },
             linux: {
                 icon: "linux",
-                values: [ "Linux" ]
+                values: ["Linux"]
             },
             mac: {
                 icon: "apple",
-                values: [ "Mac OS" ]
+                values: ["Mac OS"]
             },
             windows: {
                 icon: "windows",
-                values: [ "Windows [Phone/Mobile]" ]
+                values: ["Windows [Phone/Mobile]"]
             }
         };
 
@@ -263,30 +258,32 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * @returns Browser Icon
      */
     const resolveBrowserIcon = (type: string): SemanticICONS => {
-
-        const browserType: Record<string,{
-            icon: string;
-            values: string[]
-        }> = {
+        const browserType: Record<
+            string,
+            {
+                icon: string;
+                values: string[];
+            }
+        > = {
             chrome: {
                 icon: "chrome",
-                values: [ "Chrome", "Chrome Headless", "Chrome WebView", "Chromium" ]
+                values: ["Chrome", "Chrome Headless", "Chrome WebView", "Chromium"]
             },
             edge: {
                 icon: "edge",
-                values: [ "Edge" ]
+                values: ["Edge"]
             },
             firefox: {
                 icon: "firefox",
-                values: [ "Firefox" ]
+                values: ["Firefox"]
             },
             opera: {
                 icon: "opera",
-                values: [ "Opera Coast", "Opera Mini", "Opera Mobi", "Opera Tablet", "Opera" ]
+                values: ["Opera Coast", "Opera Mini", "Opera Mobi", "Opera Tablet", "Opera"]
             },
             safari: {
                 icon: "safari",
-                values: [ "Mobile Safari", "Safari" ]
+                values: ["Mobile Safari", "Safari"]
             }
         };
 
@@ -304,8 +301,7 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * @param index - Clicked on index.
      */
     const handleAccordionOnClick = (e: SyntheticEvent, { index }: { index: number }): void => {
-
-        const newIndexes: number[] = [ ...accordionActiveIndexes ];
+        const newIndexes: number[] = [...accordionActiveIndexes];
 
         if (newIndexes.includes(index)) {
             const removingIndex: number = newIndexes.indexOf(index);
@@ -325,7 +321,6 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * @returns username
      */
     const getUsername = (applicationSubject: string): string => {
-
         const splitComponents: string[] = applicationSubject.split("/");
         let username: string = applicationSubject;
 
@@ -333,7 +328,10 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
             username = splitComponents[1];
         }
         if (username.split("@").length > 1) {
-            return username.split("@")[0].concat("@").concat(username.split("@")[1]);
+            return username
+                .split("@")[0]
+                .concat("@")
+                .concat(username.split("@")[1]);
         }
 
         return username.split("@")[0];
@@ -346,7 +344,6 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * @returns Session Details Element
      */
     const renderSessionDetails = (session: UserSessionInterface): ReactElement => {
-
         userAgentParser.uaString = session.userAgent;
 
         return (
@@ -354,153 +351,142 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
                 <Grid.Column>
                     <List.Content>
                         <Grid padded>
-                            <Grid.Row columns={ 2 }>
-                                <Grid.Column width={ 5 }>
-                                    {
-                                        t("console:manage.features.users.userSessions.components.sessionDetails" +
-                                            ".labels.os")
-                                    }
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5}>
+                                    {t(
+                                        "console:manage.features.users.userSessions.components.sessionDetails" +
+                                            ".labels.os"
+                                    )}
                                 </Grid.Column>
-                                <Grid.Column width={ 11 }>
+                                <Grid.Column width={11}>
                                     <List.Description>
-                                        <Icon
-                                            name={ resolveOSIcon(userAgentParser.os.name) }
-                                            color="grey"
-                                        />
-                                        { userAgentParser.os.name }{ " " }{ userAgentParser.os.version }
+                                        <Icon name={resolveOSIcon(userAgentParser.os.name)} color="grey" />
+                                        {userAgentParser.os.name} {userAgentParser.os.version}
                                     </List.Description>
                                 </Grid.Column>
                             </Grid.Row>
-                            <Grid.Row columns={ 2 }>
-                                <Grid.Column width={ 5 }>
-                                    {
-                                        t("console:manage.features.users.userSessions.components.sessionDetails" +
-                                            ".labels.browser")
-                                    }
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5}>
+                                    {t(
+                                        "console:manage.features.users.userSessions.components.sessionDetails" +
+                                            ".labels.browser"
+                                    )}
                                 </Grid.Column>
-                                <Grid.Column width={ 11 }>
+                                <Grid.Column width={11}>
                                     <List.Description>
-                                        <Icon
-                                            name={ resolveBrowserIcon(userAgentParser.browser.name) }
-                                            color="grey"
-                                        />
-                                        { userAgentParser.browser.name }{ " " }{ userAgentParser.browser.version }
+                                        <Icon name={resolveBrowserIcon(userAgentParser.browser.name)} color="grey" />
+                                        {userAgentParser.browser.name} {userAgentParser.browser.version}
                                     </List.Description>
                                 </Grid.Column>
                             </Grid.Row>
-                            <Grid.Row columns={ 2 }>
-                                <Grid.Column width={ 5 }>
-                                    {
-                                        t("console:manage.features.users.userSessions.components.sessionDetails" +
-                                            ".labels.ip")
-                                    }
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5}>
+                                    {t(
+                                        "console:manage.features.users.userSessions.components.sessionDetails" +
+                                            ".labels.ip"
+                                    )}
                                 </Grid.Column>
-                                <Grid.Column width={ 11 }>
-                                    <List.Description data-suppress="">{ session.ip }</List.Description>
+                                <Grid.Column width={11}>
+                                    <List.Description data-suppress="">{session.ip}</List.Description>
                                 </Grid.Column>
                             </Grid.Row>
-                            {
-                                userAgentParser.device.vendor
-                                    ? (
-                                        <Grid.Row columns={ 2 }>
-                                            <Grid.Column width={ 5 }>
-                                                {
-                                                    t("console:manage.features.users.userSessions.components" +
-                                                        ".sessionDetails.labels.deviceModel")
-                                                }
-                                            </Grid.Column>
-                                            <Grid.Column width={ 11 }>
-                                                <List.Description>
-                                                    { userAgentParser.device.vendor }
-                                                    { " " }
-                                                    { userAgentParser.device.model }
-                                                </List.Description>
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    )
-                                    : null
-                            }
-                            <Grid.Row columns={ 2 }>
-                                <Grid.Column width={ 5 }>
-                                    {
-                                        t("console:manage.features.users.userSessions.components" +
-                                            ".sessionDetails.labels.loginTime")
-                                    }
+                            {userAgentParser.device.vendor ? (
+                                <Grid.Row columns={2}>
+                                    <Grid.Column width={5}>
+                                        {t(
+                                            "console:manage.features.users.userSessions.components" +
+                                                ".sessionDetails.labels.deviceModel"
+                                        )}
+                                    </Grid.Column>
+                                    <Grid.Column width={11}>
+                                        <List.Description>
+                                            {userAgentParser.device.vendor} {userAgentParser.device.model}
+                                        </List.Description>
+                                    </Grid.Column>
+                                </Grid.Row>
+                            ) : null}
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5}>
+                                    {t(
+                                        "console:manage.features.users.userSessions.components" +
+                                            ".sessionDetails.labels.loginTime"
+                                    )}
                                 </Grid.Column>
-                                <Grid.Column width={ 11 }>
+                                <Grid.Column width={11}>
                                     <List.Description>
-                                        { moment(parseInt(session.loginTime, 10)).format("lll") }
+                                        {moment(parseInt(session.loginTime, 10)).format("lll")}
                                     </List.Description>
                                 </Grid.Column>
                             </Grid.Row>
-                            <Grid.Row columns={ 2 }>
-                                <Grid.Column width={ 5 }>
-                                    {
-                                        t("console:manage.features.users.userSessions.components" +
-                                            ".sessionDetails.labels.lastAccessed", {
+                            <Grid.Row columns={2}>
+                                <Grid.Column width={5}>
+                                    {t(
+                                        "console:manage.features.users.userSessions.components" +
+                                            ".sessionDetails.labels.lastAccessed",
+                                        {
                                             date: ""
-                                        })
-                                    }
+                                        }
+                                    )}
                                 </Grid.Column>
-                                <Grid.Column width={ 11 }>
+                                <Grid.Column width={11}>
                                     <List.Description>
-                                        { moment(parseInt(session.lastAccessTime, 10)).fromNow() }
+                                        {moment(parseInt(session.lastAccessTime, 10)).fromNow()}
                                     </List.Description>
                                 </Grid.Column>
                             </Grid.Row>
-                            {
-                                (session.applications && session.applications.length > 0)
-                                    ? (
-                                        <Grid.Row columns={ 2 }>
-                                            <Grid.Column width={ 5 }>
-                                                {
-                                                    t("console:manage.features.users.userSessions.components" +
-                                                        ".sessionDetails.labels.activeApplication")
-                                                }
-                                            </Grid.Column>
-                                            <Grid.Column mobile={ 16 } computer={ 11 }>
-                                                {
-                                                    session.applications.map((application: ApplicationSessionInterface,
-                                                        index: number) => (
-                                                        <List.Description className="pb-2" key={ index }>
-                                                            <Label
-                                                                className="micro spaced-right"
-                                                                circular
-                                                                color="green"
-                                                                size="mini"
-                                                            />
-                                                            { application.appName }
-                                                        </List.Description>
-                                                    ))
-                                                }
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    )
-                                    : null
-                            }
-                            <Grid.Row columns={ 1 }>
-                                <Grid.Column width={ 16 }>
-                                    { showSessionTerminationButton && (
-                                        <Show when={ AccessControlConstants.USER_EDIT }>
-                                            <DangerZoneGroup sectionHeader={ t("common:dangerZone") }>
+                            {session.applications && session.applications.length > 0 ? (
+                                <Grid.Row columns={2}>
+                                    <Grid.Column width={5}>
+                                        {t(
+                                            "console:manage.features.users.userSessions.components" +
+                                                ".sessionDetails.labels.activeApplication"
+                                        )}
+                                    </Grid.Column>
+                                    <Grid.Column mobile={16} computer={11}>
+                                        {session.applications.map(
+                                            (application: ApplicationSessionInterface, index: number) => (
+                                                <List.Description className="pb-2" key={index}>
+                                                    <Label
+                                                        className="micro spaced-right"
+                                                        circular
+                                                        color="green"
+                                                        size="mini"
+                                                    />
+                                                    {application.appName}
+                                                </List.Description>
+                                            )
+                                        )}
+                                    </Grid.Column>
+                                </Grid.Row>
+                            ) : null}
+                            <Grid.Row columns={1}>
+                                <Grid.Column width={16}>
+                                    {showSessionTerminationButton && (
+                                        <Show when={AccessControlConstants.USER_EDIT}>
+                                            <DangerZoneGroup sectionHeader={t("common:dangerZone")}>
                                                 <DangerZone
-                                                    actionTitle={ t("console:manage.features.users.userSessions." +
-                                                        "dangerZones.terminate." +
-                                                        "actionTitle") }
-                                                    header={
-                                                        t("console:manage.features.users.userSessions.dangerZones." +
-                                                        "terminate.header") }
-                                                    subheader={ t("console:manage.features.users.userSessions." +
-                                                        "dangerZones.terminate.subheader") }
-                                                    onActionClick={ () => {
+                                                    actionTitle={t(
+                                                        "console:manage.features.users.userSessions." +
+                                                            "dangerZones.terminate." +
+                                                            "actionTitle"
+                                                    )}
+                                                    header={t(
+                                                        "console:manage.features.users.userSessions.dangerZones." +
+                                                            "terminate.header"
+                                                    )}
+                                                    subheader={t(
+                                                        "console:manage.features.users.userSessions." +
+                                                            "dangerZones.terminate.subheader"
+                                                    )}
+                                                    onActionClick={() => {
                                                         setTerminatingSession(session);
                                                         setShowSessionTerminateConfirmationModal(true);
-                                                    } }
-                                                    data-testid={ `${ testId }-terminate-button` }
+                                                    }}
+                                                    data-testid={`${testId}-terminate-button`}
                                                 />
                                             </DangerZoneGroup>
                                         </Show>
-                                    ) }
+                                    )}
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
@@ -514,53 +500,61 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * Terminates all active user sessions.
      */
     const handleAllSessionsTerminate = (): void => {
-
         terminateAllUserSessions(user.id)
             .then(() => {
                 // Redirect to login page if all the sessions are terminated.
                 if (authenticatedUser === user?.userName) {
                     history.push(window["AppUtils"].getConfig().routes.logout);
                 }
-                dispatch(addAlert<AlertInterface>({
-                    description: t(
-                        "console:manage.features.users.userSessions.notifications.terminateAllUserSessions." +
-                        "success.description"
-                    ),
-                    level: AlertLevels.SUCCESS,
-                    message: t(
-                        "console:manage.features.users.userSessions.notifications.terminateAllUserSessions." +
-                        "success.message"
-                    )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.users.userSessions.notifications.terminateAllUserSessions." +
+                                "success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.users.userSessions.notifications.terminateAllUserSessions." +
+                                "success.message"
+                        )
+                    })
+                );
             })
             .catch((error: AxiosError) => {
                 // fetch the sessions if and only if the session termination fails.
                 fetchUserSessions(user.id);
-                if (error.response
-                    && error.response.data
-                    && (error.response.data.description || error.response.data.detail)) {
-
-                    dispatch(addAlert<AlertInterface>({
-                        description: error.response.data.description || error.response.data.detail,
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.users.userSessions.notifications" +
-                            ".terminateAllUserSessions.error.message")
-                    }));
+                if (
+                    error.response &&
+                    error.response.data &&
+                    (error.response.data.description || error.response.data.detail)
+                ) {
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: error.response.data.description || error.response.data.detail,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.users.userSessions.notifications" +
+                                    ".terminateAllUserSessions.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t(
-                        "console:manage.features.users.userSessions.notifications.terminateAllUserSessions." +
-                        "genericError.description"
-                    ),
-                    level: AlertLevels.ERROR,
-                    message: t(
-                        "console:manage.features.users.userSessions.notifications.terminateAllUserSessions." +
-                        "genericError.message"
-                    )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.users.userSessions.notifications.terminateAllUserSessions." +
+                                "genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.users.userSessions.notifications.terminateAllUserSessions." +
+                                "genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 if (authenticatedUser !== user?.userName) {
@@ -575,43 +569,55 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * @param sessionId - ID of the session to be terminated.
      */
     const handleSessionTerminate = (sessionId: string): void => {
-
         terminateUserSession(user.id, sessionId)
             .then(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:manage.features.users.userSessions.notifications.terminateUserSession." +
-                        "success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t(
-                        "console:manage.features.users.userSessions.notifications.terminateUserSession." +
-                        "success.message"
-                    )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.users.userSessions.notifications.terminateUserSession." +
+                                "success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.users.userSessions.notifications.terminateUserSession." +
+                                "success.message"
+                        )
+                    })
+                );
             })
             .catch((error: AxiosError) => {
-                if (error.response
-                    && error.response.data
-                    && (error.response.data.description || error.response.data.detail)) {
-
-                    dispatch(addAlert<AlertInterface>({
-                        description: error.response.data.description || error.response.data.detail,
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.users.userSessions.notifications" +
-                            ".terminateUserSession.error.message")
-                    }));
+                if (
+                    error.response &&
+                    error.response.data &&
+                    (error.response.data.description || error.response.data.detail)
+                ) {
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: error.response.data.description || error.response.data.detail,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.users.userSessions.notifications" +
+                                    ".terminateUserSession.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:manage.features.users.userSessions.notifications.terminateUserSession." +
-                        "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t(
-                        "console:manage.features.users.userSessions.notifications.terminateUserSession." +
-                        "genericError.message"
-                    )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.users.userSessions.notifications.terminateUserSession." +
+                                "genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.users.userSessions.notifications.terminateUserSession." +
+                                "genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 fetchUserSessions(user.id);
@@ -623,230 +629,198 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
      * @returns Accordion element
      */
     const renderAccordion = (): ReactElement => {
-
         return (
-            <SegmentedAccordion fluid data-testid={ `${ testId }-accordion` }>
-                {
-                    userSessions.sessions.map((session: UserSessionInterface, index: number) => {
+            <SegmentedAccordion fluid data-testid={`${testId}-accordion`}>
+                {userSessions.sessions.map((session: UserSessionInterface, index: number) => {
+                    userAgentParser.uaString = session.userAgent;
 
-                        userAgentParser.uaString = session.userAgent;
-
-                        return (
-                            <Fragment key={ session.id }>
-                                <SegmentedAccordion.Title
-                                    id={ session.id }
-                                    data-testid={ `${ testId }-${ session.id }-title` }
-                                    active={ accordionActiveIndexes.includes(index) }
-                                    index={ index }
-                                    onClick={ handleAccordionOnClick }
-                                    content={ (
-                                        <>
-                                            <GenericIcon
-                                                icon={
-                                                    (
-                                                        <Icon
-                                                            name={ resolveDeviceType(userAgentParser.device.type) }
-                                                            size="big"
-                                                            color="grey"
-                                                        />
-                                                    )
-                                                }
-                                                transparent
-                                                spaced="right"
-                                                floated="left"
-                                                data-testid={
-                                                    `${ testId }-${ session.id }-title-icon`
-                                                }
-                                            />
-                                            <List.Content>
-                                                <List.Header>
-                                                    { userAgentParser.browser.name }
-                                                    { " on " }
-                                                    { userAgentParser.os.name }
-                                                </List.Header>
-                                                <List.Description>
-                                                    <Text size={ 11 }>
+                    return (
+                        <Fragment key={session.id}>
+                            <SegmentedAccordion.Title
+                                id={session.id}
+                                data-testid={`${testId}-${session.id}-title`}
+                                active={accordionActiveIndexes.includes(index)}
+                                index={index}
+                                onClick={handleAccordionOnClick}
+                                content={
+                                    <>
+                                        <GenericIcon
+                                            icon={
+                                                <Icon
+                                                    name={resolveDeviceType(userAgentParser.device.type)}
+                                                    size="big"
+                                                    color="grey"
+                                                />
+                                            }
+                                            transparent
+                                            spaced="right"
+                                            floated="left"
+                                            data-testid={`${testId}-${session.id}-title-icon`}
+                                        />
+                                        <List.Content>
+                                            <List.Header>
+                                                {userAgentParser.browser.name}
+                                                {" on "}
+                                                {userAgentParser.os.name}
+                                            </List.Header>
+                                            <List.Description>
+                                                <Text size={11}>
+                                                    {t(
+                                                        "console:manage.features.users.userSessions." +
+                                                            "components.sessionDetails.labels.lastAccessed",
                                                         {
-                                                            t("console:manage.features.users.userSessions." +
-                                                                "components.sessionDetails.labels.lastAccessed",
-                                                            {
-                                                                date: moment(
-                                                                    parseInt(session.lastAccessTime, 10)
-                                                                ).fromNow()
-                                                            }
-                                                            )
+                                                            date: moment(parseInt(session.lastAccessTime, 10)).fromNow()
                                                         }
-                                                    </Text>
-                                                </List.Description>
-                                            </List.Content>
-                                        </>
-                                    ) }
-                                    hideChevron={ false }
-                                />
-                                <SegmentedAccordion.Content
-                                    active={ accordionActiveIndexes.includes(index) }
-                                    data-testid={ `${ testId }-${ session.id }-content` }
-                                >
-                                    { renderSessionDetails(session) }
-                                </SegmentedAccordion.Content>
-                            </Fragment>
-                        );
-                    })
-                }
+                                                    )}
+                                                </Text>
+                                            </List.Description>
+                                        </List.Content>
+                                    </>
+                                }
+                                hideChevron={false}
+                            />
+                            <SegmentedAccordion.Content
+                                active={accordionActiveIndexes.includes(index)}
+                                data-testid={`${testId}-${session.id}-content`}
+                            >
+                                {renderSessionDetails(session)}
+                            </SegmentedAccordion.Content>
+                        </Fragment>
+                    );
+                })}
             </SegmentedAccordion>
         );
     };
 
-    return (
-        (!isLoading && !isUserSessionsFetchRequestLoading)
-            ? (userSessions
-                && userSessions.sessions
-                && Array.isArray(userSessions.sessions)
-                && userSessions.sessions.length > 0)
-                ? (
-                    <Grid data-testid={ testId }>
-                        <Grid.Row>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                { showSessionTerminationButton && (
-                                    <Show when={ AccessControlConstants.USER_EDIT }>
-                                        <DangerButton
-                                            floated="right"
-                                            data-testid={ `${ testId }-terminate-all-button` }
-                                            onClick={ () => setShowAllSessionsTerminateConfirmationModal(true) }
-                                        >
-                                            {
-                                                t("console:manage.features.users.userSessions." +
-                                                    "components.sessionDetails.actions.terminateAllSessions")
-                                            }
-                                        </DangerButton>
-                                    </Show>
-                                ) }
-                            </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                { renderAccordion() }
-                            </Grid.Column>
-                        </Grid.Row>
-                        {
-                            (showSessionTerminateConfirmationModal || showAllSessionsTerminateConfirmationModal) && (
-                                <ConfirmationModal
-                                    onClose={ (): void => {
-                                        if (showSessionTerminateConfirmationModal) {
-                                            setShowSessionTerminateConfirmationModal(false);
-
-                                            return;
-                                        }
-
-                                        setShowAllSessionsTerminateConfirmationModal(false);
-                                    } }
-                                    type="warning"
-                                    open={
-                                        showSessionTerminateConfirmationModal
-                                        || showAllSessionsTerminateConfirmationModal
-                                    }
-                                    assertion={ getUsername(user.userName) }
-                                    assertionHint={ showSessionTerminateConfirmationModal
-                                        ? t("console:manage.features.users.confirmations." +
-                                        "terminateSession.assertionHint")
-                                        : t("console:manage.features.users.confirmations." +
-                                        "terminateAllSessions.assertionHint") }
-                                    assertionType="checkbox"
-                                    primaryAction={ t("common:confirm") }
-                                    secondaryAction={ t("common:cancel") }
-                                    onSecondaryActionClick={ (): void => {
-                                        if (showSessionTerminateConfirmationModal) {
-                                            setShowSessionTerminateConfirmationModal(false);
-
-                                            return;
-                                        }
-
-                                        setShowAllSessionsTerminateConfirmationModal(false);
-                                    } }
-                                    onPrimaryActionClick={ (): void => {
-                                        if (showSessionTerminateConfirmationModal) {
-                                            handleSessionTerminate(terminatingSession.id);
-                                            setShowSessionTerminateConfirmationModal(false);
-
-                                            return;
-                                        }
-
-                                        handleAllSessionsTerminate();
-                                        setShowAllSessionsTerminateConfirmationModal(false);
-                                    } }
-                                    data-testid={
-                                        showSessionTerminateConfirmationModal
-                                            ? "session-terminate-confirmation-modal"
-                                            : "all-sessions-terminate-confirmation-modal"
-                                    }
-                                    closeOnDimmerClick={ false }
+    return !isLoading && !isUserSessionsFetchRequestLoading ? (
+        userSessions &&
+        userSessions.sessions &&
+        Array.isArray(userSessions.sessions) &&
+        userSessions.sessions.length > 0 ? (
+            <Grid data-testid={testId}>
+                <Grid.Row>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        {showSessionTerminationButton && (
+                            <Show when={AccessControlConstants.USER_EDIT}>
+                                <DangerButton
+                                    floated="right"
+                                    data-testid={`${testId}-terminate-all-button`}
+                                    onClick={() => setShowAllSessionsTerminateConfirmationModal(true)}
                                 >
-                                    <ConfirmationModal.Header
-                                        data-testid={
-                                            showSessionTerminateConfirmationModal
-                                                ? "session-terminate-confirmation-modal-header"
-                                                : "all-sessions-terminate-confirmation-modal-header"
-                                        }
-                                    >
-                                        {
-                                            showSessionTerminateConfirmationModal
-                                                ? t("console:manage.features.users.confirmations." +
-                                                "terminateSession.header")
-                                                : t("console:manage.features.users.confirmations." +
-                                                "terminateAllSessions.header")
-                                        }
-                                    </ConfirmationModal.Header>
-                                    <ConfirmationModal.Message
-                                        attached
-                                        warning
-                                        data-testid={
-                                            showSessionTerminateConfirmationModal
-                                                ? "session-terminate-confirmation-modal-message"
-                                                : "all-sessions-terminate-confirmation-modal-message"
-                                        }
-                                    >
-                                        {
-                                            showSessionTerminateConfirmationModal
-                                                ? t("console:manage.features.users.confirmations." +
-                                                "terminateSession.message")
-                                                : t("console:manage.features.users.confirmations." +
-                                                "terminateAllSessions.message")
-                                        }
-                                    </ConfirmationModal.Message>
-                                    <ConfirmationModal.Content
-                                        data-testid={
-                                            showSessionTerminateConfirmationModal
-                                                ? "session-terminate-confirmation-modal-content"
-                                                : "all-sessions-terminate-confirmation-modal-content"
-                                        }
-                                    >
-                                        {
-                                            showSessionTerminateConfirmationModal
-                                                ? t("console:manage.features.users.confirmations." +
-                                                "terminateSession.content")
-                                                : t("console:manage.features.users.confirmations." +
-                                                "terminateAllSessions.content")
-                                        }
-                                    </ConfirmationModal.Content>
-                                </ConfirmationModal>
-                            )
+                                    {t(
+                                        "console:manage.features.users.userSessions." +
+                                            "components.sessionDetails.actions.terminateAllSessions"
+                                    )}
+                                </DangerButton>
+                            </Show>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        {renderAccordion()}
+                    </Grid.Column>
+                </Grid.Row>
+                {(showSessionTerminateConfirmationModal || showAllSessionsTerminateConfirmationModal) && (
+                    <ConfirmationModal
+                        onClose={(): void => {
+                            if (showSessionTerminateConfirmationModal) {
+                                setShowSessionTerminateConfirmationModal(false);
+
+                                return;
+                            }
+
+                            setShowAllSessionsTerminateConfirmationModal(false);
+                        }}
+                        type="warning"
+                        open={showSessionTerminateConfirmationModal || showAllSessionsTerminateConfirmationModal}
+                        assertion={getUsername(user.userName)}
+                        assertionHint={
+                            showSessionTerminateConfirmationModal
+                                ? t("console:manage.features.users.confirmations." + "terminateSession.assertionHint")
+                                : t(
+                                      "console:manage.features.users.confirmations." +
+                                          "terminateAllSessions.assertionHint"
+                                  )
                         }
-                    </Grid>
-                )
-                :
-                (
-                    <EmptyPlaceholder
-                        image={ getEmptyPlaceholderIllustrations().emptyList }
-                        imageSize="tiny"
-                        title={
-                            t("console:manage.features.users.userSessions.placeholders.emptyListPlaceholder.title")
+                        assertionType="checkbox"
+                        primaryAction={t("common:confirm")}
+                        secondaryAction={t("common:cancel")}
+                        onSecondaryActionClick={(): void => {
+                            if (showSessionTerminateConfirmationModal) {
+                                setShowSessionTerminateConfirmationModal(false);
+
+                                return;
+                            }
+
+                            setShowAllSessionsTerminateConfirmationModal(false);
+                        }}
+                        onPrimaryActionClick={(): void => {
+                            if (showSessionTerminateConfirmationModal) {
+                                handleSessionTerminate(terminatingSession.id);
+                                setShowSessionTerminateConfirmationModal(false);
+
+                                return;
+                            }
+
+                            handleAllSessionsTerminate();
+                            setShowAllSessionsTerminateConfirmationModal(false);
+                        }}
+                        data-testid={
+                            showSessionTerminateConfirmationModal
+                                ? "session-terminate-confirmation-modal"
+                                : "all-sessions-terminate-confirmation-modal"
                         }
-                        subtitle={ [
-                            t("console:manage.features.users.userSessions.placeholders.emptyListPlaceholder.subtitles")
-                        ] }
-                    />
-                )
-            : <ContentLoader/>
+                        closeOnDimmerClick={false}
+                    >
+                        <ConfirmationModal.Header
+                            data-testid={
+                                showSessionTerminateConfirmationModal
+                                    ? "session-terminate-confirmation-modal-header"
+                                    : "all-sessions-terminate-confirmation-modal-header"
+                            }
+                        >
+                            {showSessionTerminateConfirmationModal
+                                ? t("console:manage.features.users.confirmations." + "terminateSession.header")
+                                : t("console:manage.features.users.confirmations." + "terminateAllSessions.header")}
+                        </ConfirmationModal.Header>
+                        <ConfirmationModal.Message
+                            attached
+                            warning
+                            data-testid={
+                                showSessionTerminateConfirmationModal
+                                    ? "session-terminate-confirmation-modal-message"
+                                    : "all-sessions-terminate-confirmation-modal-message"
+                            }
+                        >
+                            {showSessionTerminateConfirmationModal
+                                ? t("console:manage.features.users.confirmations." + "terminateSession.message")
+                                : t("console:manage.features.users.confirmations." + "terminateAllSessions.message")}
+                        </ConfirmationModal.Message>
+                        <ConfirmationModal.Content
+                            data-testid={
+                                showSessionTerminateConfirmationModal
+                                    ? "session-terminate-confirmation-modal-content"
+                                    : "all-sessions-terminate-confirmation-modal-content"
+                            }
+                        >
+                            {showSessionTerminateConfirmationModal
+                                ? t("console:manage.features.users.confirmations." + "terminateSession.content")
+                                : t("console:manage.features.users.confirmations." + "terminateAllSessions.content")}
+                        </ConfirmationModal.Content>
+                    </ConfirmationModal>
+                )}
+            </Grid>
+        ) : (
+            <EmptyPlaceholder
+                image={getEmptyPlaceholderIllustrations().emptyList}
+                imageSize="tiny"
+                title={t("console:manage.features.users.userSessions.placeholders.emptyListPlaceholder.title")}
+                subtitle={[t("console:manage.features.users.userSessions.placeholders.emptyListPlaceholder.subtitles")]}
+            />
+        )
+    ) : (
+        <ContentLoader />
     );
 };
 
@@ -855,6 +829,6 @@ export const UserSessions: FunctionComponent<UserSessionsPropsInterface> = (
  */
 UserSessions.defaultProps = {
     "data-testid": "user-sessions",
-    defaultActiveIndexes: [ -1 ],
+    defaultActiveIndexes: [-1],
     showSessionTerminationButton: true
 };

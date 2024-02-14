@@ -25,7 +25,7 @@ import {
     getGroupList,
     updateGroupDetails
 } from "@wso2is/feature-groups.common";
-import { UserBasicInterface } from "@wso2is/feature-models.common/models";
+import { UserBasicInterface } from "@wso2is/feature-models.common";
 import { addUser } from "@wso2is/feature-users.common/api/users";
 import {
     AddUserWizardStateInterface,
@@ -62,11 +62,11 @@ interface AddUserWizardPropsInterface extends TestableComponentInterface {
     updateList?: () => void;
     rolesList?: any;
     emailVerificationEnabled: boolean;
-    hiddenFields?: AddConsumerUserProps[ "hiddenFields" ];
+    hiddenFields?: AddConsumerUserProps["hiddenFields"];
     requiredSteps?: WizardStepsFormTypes[] | string[];
     submitStep?: WizardStepsFormTypes | string;
     showStepper?: boolean;
-    requestedPasswordOption?: AddConsumerUserProps[ "requestedPasswordOption" ];
+    requestedPasswordOption?: AddConsumerUserProps["requestedPasswordOption"];
     onSuccessfulUserAddition?: (id: string) => void;
     title?: string;
     description?: string;
@@ -76,7 +76,7 @@ interface AddUserWizardPropsInterface extends TestableComponentInterface {
  * Interface for the wizard state.
  */
 interface WizardStateInterface {
-    [ key: string ]: any;
+    [key: string]: any;
 }
 
 /**
@@ -95,7 +95,7 @@ interface WizardStepInterface {
  */
 enum WizardStepsFormTypes {
     BASIC_DETAILS = "BasicDetails",
-    GROUP_LIST= "GroupList",
+    GROUP_LIST = "GroupList",
     SUMMARY = "summary"
 }
 
@@ -107,7 +107,6 @@ enum WizardStepsFormTypes {
 export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterface> = (
     props: AddUserWizardPropsInterface
 ): ReactElement => {
-
     const {
         compact,
         closeWizard,
@@ -121,30 +120,30 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
         onSuccessfulUserAddition,
         title,
         description,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ submitGeneralSettings, setSubmitGeneralSettings ] = useTrigger();
-    const [ submitGroupList, setSubmitGroupList ] = useTrigger();
-    const [ finishSubmit, setFinishSubmit ] = useTrigger();
+    const [submitGeneralSettings, setSubmitGeneralSettings] = useTrigger();
+    const [submitGroupList, setSubmitGroupList] = useTrigger();
+    const [finishSubmit, setFinishSubmit] = useTrigger();
 
-    const [ partiallyCompletedStep, setPartiallyCompletedStep ] = useState<number>(undefined);
-    const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(currentStep);
-    const [ wizardState, setWizardState ] = useState<WizardStateInterface>(undefined);
-    const [ wizardSteps, setWizardSteps ] = useState<WizardStepInterface[]>(undefined);
-    const [ isStepsAvailable, setIsStepsAvailable ] = useState(false);
-    const [ submitting, setSubmitting ] = useState(false);
+    const [partiallyCompletedStep, setPartiallyCompletedStep] = useState<number>(undefined);
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(currentStep);
+    const [wizardState, setWizardState] = useState<WizardStateInterface>(undefined);
+    const [wizardSteps, setWizardSteps] = useState<WizardStepInterface[]>(undefined);
+    const [isStepsAvailable, setIsStepsAvailable] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
 
-    const [ groupList, setGroupsList ] = useState<GroupsInterface[]>(undefined);
-    const [ fixedGroupList, setFixedGroupsList ] = useState<GroupsInterface[]>(undefined);
-    const [ tempGroupList, setTempGroupList ] = useState<GroupsInterface[]>([]);
-    const [ initialGroupList, setInitialGroupList ] = useState<GroupsInterface[]>([]);
-    const [ initialTempGroupList, setInitialTempGroupList ] = useState<GroupsInterface[]>([]);
+    const [groupList, setGroupsList] = useState<GroupsInterface[]>(undefined);
+    const [fixedGroupList, setFixedGroupsList] = useState<GroupsInterface[]>(undefined);
+    const [tempGroupList, setTempGroupList] = useState<GroupsInterface[]>([]);
+    const [initialGroupList, setInitialGroupList] = useState<GroupsInterface[]>([]);
+    const [initialTempGroupList, setInitialTempGroupList] = useState<GroupsInterface[]>([]);
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     const { data: validationData } = useValidationConfigData();
 
@@ -156,13 +155,16 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
         if (wizardSteps?.length > 0) {
             setIsStepsAvailable(true);
         }
-    }, [ fixedGroupList, wizardSteps ]);
+    }, [fixedGroupList, wizardSteps]);
 
     useEffect(() => {
-        setWizardSteps(filterSteps([
-            WizardStepsFormTypes.BASIC_DETAILS,
-            WizardStepsFormTypes.GROUP_LIST,
-            WizardStepsFormTypes.SUMMARY ]));
+        setWizardSteps(
+            filterSteps([
+                WizardStepsFormTypes.BASIC_DETAILS,
+                WizardStepsFormTypes.GROUP_LIST,
+                WizardStepsFormTypes.SUMMARY
+            ])
+        );
     }, []);
 
     useEffect(() => {
@@ -171,16 +173,19 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
         }
 
         if (fixedGroupList.length === 0) {
-            setWizardSteps(filterSteps([ WizardStepsFormTypes.BASIC_DETAILS, WizardStepsFormTypes.SUMMARY ]));
+            setWizardSteps(filterSteps([WizardStepsFormTypes.BASIC_DETAILS, WizardStepsFormTypes.SUMMARY]));
 
             return;
         }
 
-        setWizardSteps(filterSteps([
-            WizardStepsFormTypes.BASIC_DETAILS,
-            WizardStepsFormTypes.GROUP_LIST,
-            WizardStepsFormTypes.SUMMARY ]));
-    }, [ fixedGroupList ]);
+        setWizardSteps(
+            filterSteps([
+                WizardStepsFormTypes.BASIC_DETAILS,
+                WizardStepsFormTypes.GROUP_LIST,
+                WizardStepsFormTypes.SUMMARY
+            ])
+        );
+    }, [fixedGroupList]);
 
     /**
      * Sets the current wizard step to the previous on every `partiallyCompletedStep`
@@ -193,17 +198,16 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
 
         setCurrentWizardStep(currentWizardStep - 1);
         setPartiallyCompletedStep(undefined);
-    }, [ partiallyCompletedStep ]);
+    }, [partiallyCompletedStep]);
 
     const handleEnterKeyDown = (event: KeyboardEvent) => {
         if (event.keyCode === 13) {
-            const nextButton: HTMLElement = document.getElementById(`${ testId }-next-button`);
-            const finishButton: HTMLElement = document.getElementById(`${ testId }-finish-button`);
+            const nextButton: HTMLElement = document.getElementById(`${testId}-next-button`);
+            const finishButton: HTMLElement = document.getElementById(`${testId}-finish-button`);
 
-            if (nextButton)
-                document.getElementById(`${ testId }-next-button`).click();
+            if (nextButton) document.getElementById(`${testId}-next-button`).click();
             else if (finishButton) {
-                document.getElementById(`${ testId }-finish-button`).click();
+                document.getElementById(`${testId}-finish-button`).click();
             }
         }
     };
@@ -214,18 +218,17 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
     }, []);
 
     const getGroupListForDomain = (domain: string) => {
-        getGroupList(domain)
-            .then((response: AxiosResponse) => {
-                if (response.data.totalResults == 0) {
-                    setGroupsList([]);
-                    setInitialGroupList([]);
-                    setFixedGroupsList([]);
-                } else {
-                    setGroupsList(response.data.Resources);
-                    setInitialGroupList(response.data.Resources);
-                    setFixedGroupsList(response.data.Resources);
-                }
-            });
+        getGroupList(domain).then((response: AxiosResponse) => {
+            if (response.data.totalResults == 0) {
+                setGroupsList([]);
+                setInitialGroupList([]);
+                setFixedGroupsList([]);
+            } else {
+                setGroupsList(response.data.Resources);
+                setInitialGroupList(response.data.Resources);
+                setFixedGroupsList(response.data.Resources);
+            }
+        });
     };
 
     const handleGroupListChange = (groupList: GroupsInterface[]) => {
@@ -288,7 +291,7 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
                     }
                 }
             ],
-            schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
 
         if (groups.length > 0) {
@@ -297,43 +300,32 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
             });
 
             for (const groupId of groupIds) {
-                updateGroupDetails(groupId, groupData)
-                    .catch((error: AxiosError) => {
-                        if (!error.response || error.response.status === 401) {
-                            setAlert({
-                                description: t(
-                                    "console:manage.features.users.notifications.addUser.error.description"
-                                ),
-                                level: AlertLevels.ERROR,
-                                message: t(
-                                    "console:manage.features.users.notifications.addUser.error.message"
-                                )
-                            });
-                        } else if (error.response && error.response.data && error.response.data.detail) {
-
-                            setAlert({
-                                description: t(
-                                    "console:manage.features.users.notifications.addUser.error.description",
-                                    { description: error.response.data.detail }
-                                ),
-                                level: AlertLevels.ERROR,
-                                message: t(
-                                    "console:manage.features.users.notifications.addUser.error.message"
-                                )
-                            });
-                        } else {
-                            // Generic error message
-                            setAlert({
-                                description: t(
-                                    "console:manage.features.users.notifications.addUser.genericError.description"
-                                ),
-                                level: AlertLevels.ERROR,
-                                message: t(
-                                    "console:manage.features.users.notifications.addUser.genericError.message"
-                                )
-                            });
-                        }
-                    });
+                updateGroupDetails(groupId, groupData).catch((error: AxiosError) => {
+                    if (!error.response || error.response.status === 401) {
+                        setAlert({
+                            description: t("console:manage.features.users.notifications.addUser.error.description"),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.users.notifications.addUser.error.message")
+                        });
+                    } else if (error.response && error.response.data && error.response.data.detail) {
+                        setAlert({
+                            description: t("console:manage.features.users.notifications.addUser.error.description", {
+                                description: error.response.data.detail
+                            }),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.users.notifications.addUser.error.message")
+                        });
+                    } else {
+                        // Generic error message
+                        setAlert({
+                            description: t(
+                                "console:manage.features.users.notifications.addUser.genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.users.notifications.addUser.genericError.message")
+                        });
+                    }
+                });
             }
         }
     };
@@ -356,58 +348,52 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
         let userDetails: UserDetailsInterface = createEmptyUserDetails();
         const password: string = userInfo.newPassword;
 
-        (requestedPasswordOption && requestedPasswordOption !== "ask-password")
-        || (userInfo.passwordOption && userInfo.passwordOption !== "ask-password")
-            ? (
-                userDetails = {
-                    emails:[
-                        {
-                            primary: true,
-                            value: userInfo.email
-                        }
-                    ],
-                    name: {
-                        familyName: userInfo.lastName,
-                        givenName: userInfo.firstName
-                    },
-                    password,
-                    profileUrl: userInfo.profileUrl,
-                    userName: userName
-                }
-            )
-            : (
-                userDetails = {
-                    emails: [
-                        {
-                            primary: true,
-                            value: userInfo.email
-                        }
-                    ],
-                    name: {
-                        familyName: userInfo.lastName,
-                        givenName: userInfo.firstName
-                    },
-                    password: userInfo.newPassword ? userInfo.newPassword : "password",
-                    profileUrl: userInfo.profileUrl,
-                    [SCIMConfigs.scim.enterpriseSchema]: {
-                        askPassword: "true"
-                    },
-                    userName: userName
-                }
-            );
+        (requestedPasswordOption && requestedPasswordOption !== "ask-password") ||
+        (userInfo.passwordOption && userInfo.passwordOption !== "ask-password")
+            ? (userDetails = {
+                  emails: [
+                      {
+                          primary: true,
+                          value: userInfo.email
+                      }
+                  ],
+                  name: {
+                      familyName: userInfo.lastName,
+                      givenName: userInfo.firstName
+                  },
+                  password,
+                  profileUrl: userInfo.profileUrl,
+                  userName: userName
+              })
+            : (userDetails = {
+                  emails: [
+                      {
+                          primary: true,
+                          value: userInfo.email
+                      }
+                  ],
+                  name: {
+                      familyName: userInfo.lastName,
+                      givenName: userInfo.firstName
+                  },
+                  password: userInfo.newPassword ? userInfo.newPassword : "password",
+                  profileUrl: userInfo.profileUrl,
+                  [SCIMConfigs.scim.enterpriseSchema]: {
+                      askPassword: "true"
+                  },
+                  userName: userName
+              });
 
         setSubmitting(true);
         addUser(userDetails)
             .then((response: AxiosResponse) => {
-                dispatch(addAlert({
-                    description: t(
-                        "console:manage.features.users.notifications.addUser.success.description"
-                    ),
-                    level: AlertLevels.SUCCESS,
-                    message: t(
-                        "console:manage.features.users.notifications.addUser.success.message"
-                    )
-                }));
+                dispatch(
+                    addAlert({
+                        description: t("console:manage.features.users.notifications.addUser.success.description"),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:manage.features.users.notifications.addUser.success.message")
+                    })
+                );
 
                 setSubmitting(false);
                 if (wizardState?.GroupList?.groups) {
@@ -422,40 +408,34 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
                 // As a temporary solution, a check to see if a response
                 // is available has be used.
                 if (!error.response || error.response.status === 401) {
-
-                    dispatch(addAlert({
-                        description: t(
-                            "console:manage.features.users.notifications.addUser.error.description"
-                        ),
-                        level: AlertLevels.ERROR,
-                        message: t(
-                            "console:manage.features.users.notifications.addUser.error.message"
-                        )
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t("console:manage.features.users.notifications.addUser.error.description"),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.users.notifications.addUser.error.message")
+                        })
+                    );
                 } else if (error.response && error.response.data && error.response.data.detail) {
-
-                    dispatch(addAlert({
-                        description: t(
-                            "console:manage.features.users.notifications.addUser.error.description",
-                            { description: error.response.data.detail }
-                        ),
-                        level: AlertLevels.ERROR,
-                        message: t(
-                            "console:manage.features.users.notifications.addUser.error.message"
-                        )
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t("console:manage.features.users.notifications.addUser.error.description", {
+                                description: error.response.data.detail
+                            }),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.users.notifications.addUser.error.message")
+                        })
+                    );
                 } else {
-
                     // Generic error message
-                    dispatch(addAlert({
-                        description: t(
-                            "console:manage.features.users.notifications.addUser.genericError.description"
-                        ),
-                        level: AlertLevels.ERROR,
-                        message: t(
-                            "console:manage.features.users.notifications.addUser.genericError.message"
-                        )
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.users.notifications.addUser.genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.users.notifications.addUser.genericError.message")
+                        })
+                    );
                 }
             })
             .finally(() => {
@@ -470,7 +450,6 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
      * @param formType - Type of the form.
      */
     const handleWizardFormSubmit = (values: any, formType: WizardStepsFormTypes) => {
-
         // If the submit step is not default, and submit step is the current step, submit the form.
         if (submitStep !== WizardStepsFormTypes.SUMMARY && submitStep === formType) {
             handleWizardFormFinish(values);
@@ -479,7 +458,7 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
         }
 
         setCurrentWizardStep(currentWizardStep + 1);
-        setWizardState({ ...wizardState, [ formType ]: values });
+        setWizardState({ ...wizardState, [formType]: values });
     };
 
     /**
@@ -518,8 +497,8 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
     const handleProfileImageChange = (url: string): void => {
         setWizardState({
             ...wizardState,
-            [ WizardStepsFormTypes.BASIC_DETAILS ]: {
-                ...wizardState[ WizardStepsFormTypes.BASIC_DETAILS ],
+            [WizardStepsFormTypes.BASIC_DETAILS]: {
+                ...wizardState[WizardStepsFormTypes.BASIC_DETAILS],
                 profileUrl: url
             }
         });
@@ -548,9 +527,7 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
      * @returns filtered steps.
      */
     const filterSteps = (steps: WizardStepsFormTypes[]): WizardStepInterface[] => {
-
         const getStepContent = (stepsToFilter: WizardStepsFormTypes[] | string[]) => {
-
             const filteredSteps: any[] = [];
 
             stepsToFilter.forEach((step: WizardStepsFormTypes) => {
@@ -578,17 +555,17 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
      * @returns Basic details wizard step.
      */
     const getBasicDetailsWizardStep = (): WizardStepInterface => {
-
         return {
             content: (
                 <AddConsumerUser
-                    triggerSubmit={ submitGeneralSettings }
-                    initialValues={ wizardState && wizardState[ WizardStepsFormTypes.BASIC_DETAILS ] }
-                    emailVerificationEnabled={ emailVerificationEnabled }
-                    onSubmit={ (values: Map<string, FormValue>) =>
-                        handleWizardFormSubmit(values, WizardStepsFormTypes.BASIC_DETAILS) }
-                    hiddenFields={ hiddenFields }
-                    requestedPasswordOption={ requestedPasswordOption }
+                    triggerSubmit={submitGeneralSettings}
+                    initialValues={wizardState && wizardState[WizardStepsFormTypes.BASIC_DETAILS]}
+                    emailVerificationEnabled={emailVerificationEnabled}
+                    onSubmit={(values: Map<string, FormValue>) =>
+                        handleWizardFormSubmit(values, WizardStepsFormTypes.BASIC_DETAILS)
+                    }
+                    hiddenFields={hiddenFields}
+                    requestedPasswordOption={requestedPasswordOption}
                 />
             ),
             icon: getUserWizardStepIcons().general,
@@ -602,27 +579,26 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
      * @returns Group Wizard Step.
      */
     const getUserGroupsWizardStep = (): WizardStepInterface => {
-
         return {
             content: (
                 <AddConsumerUserGroups
-                    triggerSubmit={ submitGroupList }
-                    onSubmit={ (values: Map<string, FormValue>) =>
-                        handleWizardFormSubmit(values, WizardStepsFormTypes.GROUP_LIST) }
-                    initialValues={
-                        {
-                            groupList: groupList,
-                            initialGroupList: initialGroupList,
-                            initialTempGroupList: initialTempGroupList,
-                            tempGroupList: tempGroupList
-                        }
+                    triggerSubmit={submitGroupList}
+                    onSubmit={(values: Map<string, FormValue>) =>
+                        handleWizardFormSubmit(values, WizardStepsFormTypes.GROUP_LIST)
                     }
-                    handleGroupListChange={ (groups: GroupsInterface[]) => handleGroupListChange(groups) }
-                    handleTempListChange={ (groups: GroupsInterface[]) => handleAddedGroupListChange(groups) }
-                    handleInitialTempListChange={ (groups: GroupsInterface[]) =>
-                        handleAddedGroupInitialListChange(groups) }
-                    handleInitialGroupListChange={ (groups: GroupsInterface[]) => handleInitialGroupListChange(groups) }
-                    handleSetGroupId={ null }
+                    initialValues={{
+                        groupList: groupList,
+                        initialGroupList: initialGroupList,
+                        initialTempGroupList: initialTempGroupList,
+                        tempGroupList: tempGroupList
+                    }}
+                    handleGroupListChange={(groups: GroupsInterface[]) => handleGroupListChange(groups)}
+                    handleTempListChange={(groups: GroupsInterface[]) => handleAddedGroupListChange(groups)}
+                    handleInitialTempListChange={(groups: GroupsInterface[]) =>
+                        handleAddedGroupInitialListChange(groups)
+                    }
+                    handleInitialGroupListChange={(groups: GroupsInterface[]) => handleInitialGroupListChange(groups)}
+                    handleSetGroupId={null}
                 />
             ),
             icon: getUserWizardStepIcons().groups,
@@ -636,14 +612,13 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
      * @returns Summary wizard Step.
      */
     const getSummaryWizardStep = (): WizardStepInterface => {
-
-        return  {
+        return {
             content: (
                 <AddConsumerUserWizardSummary
-                    triggerSubmit={ finishSubmit }
-                    onSubmit={ handleWizardFormFinish }
-                    summary={ generateWizardSummary() }
-                    onProfileImageChange={ handleProfileImageChange }
+                    triggerSubmit={finishSubmit}
+                    onSubmit={handleWizardFormFinish}
+                    summary={generateWizardSummary()}
+                    onProfileImageChange={handleProfileImageChange}
                 />
             ),
             icon: getUserWizardStepIcons().summary,
@@ -652,114 +627,97 @@ export const AddConsumerUserWizard: FunctionComponent<AddUserWizardPropsInterfac
         };
     };
 
-    return (
-        wizardSteps && isStepsAvailable ? (
-            <Modal
-                data-testid={ testId }
-                open={ true }
-                className="wizard application-create-wizard"
-                dimmer="blurring"
-                size="small"
-                onClose={ closeWizard }
-                closeOnDimmerClick={ false }
-                closeOnEscape
-            >
-                <Modal.Header className="wizard-header">
-                    {
-                        title
-                            ? title
-                            : (
-                                <>
-                                    { "Create New Business User" }
-                                    {
-                                        wizardState && wizardState[ WizardStepsFormTypes.BASIC_DETAILS ]?.firstName
-                                            ? " - " + wizardState[ WizardStepsFormTypes.BASIC_DETAILS ]?.firstName
-                                            : ""
-                                    }
-                                </>
-                            )
-                    }
-                    <Heading as="h6">
-                        {
-                            description
-                                ? description
-                                : "Follow the steps to create a new business user"
-                        }
-                    </Heading>
-                </Modal.Header>
-                {
-                    showStepper && (
-                        <Modal.Content className="steps-container">
-                            <Steps.Group
-                                current={ currentWizardStep }
-                            >
-                                { wizardSteps?.map((step: WizardStepInterface, index: number) => (
-                                    <Steps.Step
-                                        key={ index }
-                                        icon={ step.icon }
-                                        title={ step.title }
-                                    />
-                                )) }
-                            </Steps.Group>
-                        </Modal.Content>
-                    )
-                }
-                <Modal.Content className={ "content-container" + compact ? " height-auto" : "" } scrolling>
-                    { alert && alertComponent }
-                    { resolveStepContent() }
+    return wizardSteps && isStepsAvailable ? (
+        <Modal
+            data-testid={testId}
+            open={true}
+            className="wizard application-create-wizard"
+            dimmer="blurring"
+            size="small"
+            onClose={closeWizard}
+            closeOnDimmerClick={false}
+            closeOnEscape
+        >
+            <Modal.Header className="wizard-header">
+                {title ? (
+                    title
+                ) : (
+                    <>
+                        {"Create New Business User"}
+                        {wizardState && wizardState[WizardStepsFormTypes.BASIC_DETAILS]?.firstName
+                            ? " - " + wizardState[WizardStepsFormTypes.BASIC_DETAILS]?.firstName
+                            : ""}
+                    </>
+                )}
+                <Heading as="h6">
+                    {description ? description : "Follow the steps to create a new business user"}
+                </Heading>
+            </Modal.Header>
+            {showStepper && (
+                <Modal.Content className="steps-container">
+                    <Steps.Group current={currentWizardStep}>
+                        {wizardSteps?.map((step: WizardStepInterface, index: number) => (
+                            <Steps.Step key={index} icon={step.icon} title={step.title} />
+                        ))}
+                    </Steps.Group>
                 </Modal.Content>
-                <Modal.Actions>
-                    <Grid>
-                        <Grid.Row column={ 1 }>
-                            <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                <LinkButton
-                                    data-testid={ `${ testId }-cancel-button` }
-                                    floated="left"
-                                    onClick={ () => closeWizard() }
+            )}
+            <Modal.Content className={"content-container" + compact ? " height-auto" : ""} scrolling>
+                {alert && alertComponent}
+                {resolveStepContent()}
+            </Modal.Content>
+            <Modal.Actions>
+                <Grid>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            <LinkButton
+                                data-testid={`${testId}-cancel-button`}
+                                floated="left"
+                                onClick={() => closeWizard()}
+                            >
+                                {t("common:cancel")}
+                            </LinkButton>
+                        </Grid.Column>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            {currentWizardStep < wizardSteps?.length - 1 && (
+                                <PrimaryButton
+                                    id={`${testId}-next-button`}
+                                    data-testid={`${testId}-next-button`}
+                                    floated="right"
+                                    onClick={navigateToNext}
                                 >
-                                    { t("common:cancel") }
+                                    {t("console:manage.features.user.modals.addUserWizard.buttons.next")}
+                                    <Icon name="arrow right" />
+                                </PrimaryButton>
+                            )}
+                            {currentWizardStep === wizardSteps?.length - 1 && (
+                                <PrimaryButton
+                                    id={`${testId}-finish-button`}
+                                    data-testid={`${testId}-finish-button`}
+                                    disabled={submitting}
+                                    floated="right"
+                                    loading={submitting}
+                                    onClick={navigateToNext}
+                                >
+                                    Finish
+                                </PrimaryButton>
+                            )}
+                            {wizardSteps?.length > 1 && currentWizardStep > 0 && (
+                                <LinkButton
+                                    data-testid={`${testId}-previous-button`}
+                                    floated="right"
+                                    onClick={navigateToPrevious}
+                                >
+                                    <Icon name="arrow left" />
+                                    {t("console:manage.features.user.modals.addUserWizard.buttons.previous")}
                                 </LinkButton>
-                            </Grid.Column>
-                            <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                { currentWizardStep < wizardSteps?.length - 1 && (
-                                    <PrimaryButton
-                                        id={ `${ testId }-next-button` }
-                                        data-testid={ `${ testId }-next-button` }
-                                        floated="right"
-                                        onClick={ navigateToNext }
-                                    >
-                                        { t("console:manage.features.user.modals.addUserWizard.buttons.next") }
-                                        <Icon name="arrow right"/>
-                                    </PrimaryButton>
-                                ) }
-                                { currentWizardStep === wizardSteps?.length - 1 && (
-                                    <PrimaryButton
-                                        id={ `${ testId }-finish-button` }
-                                        data-testid={ `${ testId }-finish-button` }
-                                        disabled={ submitting }
-                                        floated="right"
-                                        loading={ submitting }
-                                        onClick={ navigateToNext }
-                                    >
-                                        Finish</PrimaryButton>
-                                ) }
-                                { (wizardSteps?.length > 1 && currentWizardStep > 0) && (
-                                    <LinkButton
-                                        data-testid={ `${ testId }-previous-button` }
-                                        floated="right"
-                                        onClick={ navigateToPrevious }
-                                    >
-                                        <Icon name="arrow left"/>
-                                        { t("console:manage.features.user.modals.addUserWizard.buttons.previous") }
-                                    </LinkButton>
-                                ) }
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </Modal.Actions>
-            </Modal>
-        ) : null
-    );
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Modal.Actions>
+        </Modal>
+    ) : null;
 };
 
 /**

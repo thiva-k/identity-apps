@@ -17,20 +17,17 @@
  */
 
 import { ProfileSchemaInterface } from "@wso2is/core/src/models";
-import {AppState} from "@wso2is/feature-store.common/store/";
+import { AppState } from "@wso2is/feature-store.common";
 import { getUsersList } from "@wso2is/feature-users.common/api";
 import { UserListInterface } from "@wso2is/feature-users.common/models/user";
-import { SharedUserStoreUtils } from "@wso2is/feature-utils.common/utils";
+import { SharedUserStoreUtils } from "@wso2is/feature-utils.common";
 import { Field, FormValue, Forms, RadioChild, Validation } from "@wso2is/forms";
 import { Hint, PasswordValidation } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
 import React, { ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import {
-    Grid,
-    Message
-} from "semantic-ui-react";
+import { Grid, Message } from "semantic-ui-react";
 import { CONSUMER_USERSTORE, UsersConstants } from "../../../../../extensions/components/users/constants/users";
 import { USERSTORE_REGEX_PROPERTIES } from "../../../../../features/userstores/constants/user-store-constants";
 import { useValidationConfigData } from "../../../../../features/validation/api";
@@ -57,8 +54,8 @@ export interface AddConsumerUserProps {
  * returns AddConsumerUser component.
  */
 export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
-    props: AddConsumerUserProps): ReactElement => {
-
+    props: AddConsumerUserProps
+): ReactElement => {
     const {
         initialValues,
         triggerSubmit,
@@ -68,39 +65,46 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
         requestedPasswordOption
     } = props;
 
-    const [ passwordOption, setPasswordOption ] = useState(initialValues?.passwordOption);
-    const [ password, setPassword ] = useState<string>("");
-    const [ usernameConfig, setUsernameConfig ] = useState<ValidationFormInterface>(undefined);
-    const [ isEmailRequired, setEmailRequired ] = useState<boolean>(true);
-    const [ passwordConfig, setPasswordConfig ] = useState<ValidationFormInterface>(undefined);
-    const [ isValidPassword, setIsValidPassword ] = useState<boolean>(true);
-    const [ userstore ] = useState<string>(CONSUMER_USERSTORE);
+    const [passwordOption, setPasswordOption] = useState(initialValues?.passwordOption);
+    const [password, setPassword] = useState<string>("");
+    const [usernameConfig, setUsernameConfig] = useState<ValidationFormInterface>(undefined);
+    const [isEmailRequired, setEmailRequired] = useState<boolean>(true);
+    const [passwordConfig, setPasswordConfig] = useState<ValidationFormInterface>(undefined);
+    const [isValidPassword, setIsValidPassword] = useState<boolean>(true);
+    const [userstore] = useState<string>(CONSUMER_USERSTORE);
 
     const profileSchemas: ProfileSchemaInterface[] = useSelector((state: AppState) => state.profile.profileSchemas);
 
     const { t } = useTranslation();
 
     // Username input validation error messages.
-    const USER_ALREADY_EXIST_ERROR_MESSAGE: string = t("console:manage.features.user.forms.addUserForm.inputs." +
-        "username.validations.invalid");
-    const USERNAME_REGEX_VIOLATION_ERROR_MESSAGE: string = t("console:manage.features.user.forms.addUserForm.inputs." +
-        "username.validations.regExViolation");
-    const USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE: string = t("console:manage.features.user.forms.addUserForm." +
-        "inputs.username.validations.invalidCharacters");
+    const USER_ALREADY_EXIST_ERROR_MESSAGE: string = t(
+        "console:manage.features.user.forms.addUserForm.inputs." + "username.validations.invalid"
+    );
+    const USERNAME_REGEX_VIOLATION_ERROR_MESSAGE: string = t(
+        "console:manage.features.user.forms.addUserForm.inputs." + "username.validations.regExViolation"
+    );
+    const USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE: string = t(
+        "console:manage.features.user.forms.addUserForm." + "inputs.username.validations.invalidCharacters"
+    );
     const USERNAME_JAVA_REGEX: string = "UsernameJavaRegEx";
-    const USERNAME_HAS_INVALID_SYMBOLS_ERROR_MESSAGE: string = t("extensions:manage.features.user.addUser.validation." +
-        "usernameSymbols");
-    const USERNAME_HAS_INVALID_LENGTH_ERROR_MESSAGE: string =
-        t("extensions:manage.features.user.addUser.validation.usernameLength", {
+    const USERNAME_HAS_INVALID_SYMBOLS_ERROR_MESSAGE: string = t(
+        "extensions:manage.features.user.addUser.validation." + "usernameSymbols"
+    );
+    const USERNAME_HAS_INVALID_LENGTH_ERROR_MESSAGE: string = t(
+        "extensions:manage.features.user.addUser.validation.usernameLength",
+        {
             maxLength: usernameConfig?.maxLength,
             minLength: usernameConfig?.minLength
-        });
+        }
+    );
 
     const { data: validationData } = useValidationConfigData();
 
     useEffect(() => {
-        const emailSchema: ProfileSchemaInterface = profileSchemas
-            .find((schema: ProfileSchemaInterface) => (schema.name === "emails"));
+        const emailSchema: ProfileSchemaInterface = profileSchemas.find(
+            (schema: ProfileSchemaInterface) => schema.name === "emails"
+        );
 
         if (emailSchema) {
             setEmailRequired(emailSchema.required);
@@ -112,7 +116,7 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
             setUsernameConfig(getUsernameConfiguration(validationData));
             setPasswordConfig(getConfiguration(validationData));
         }
-    }, [ validationData ]);
+    }, [validationData]);
 
     /**
      * Callback function to validate password.
@@ -121,7 +125,6 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
      * @param validationStatus - detailed validation status.
      */
     const onPasswordValidate = (isValid: boolean): void => {
-
         setIsValidPassword(isValid);
     };
 
@@ -138,7 +141,7 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
 
             setPasswordOption(requestedPasswordOption);
         }
-    }, [ requestedPasswordOption ]);
+    }, [requestedPasswordOption]);
 
     const passwordOptions: RadioChild[] = [
         {
@@ -159,14 +162,14 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
      * @param password - The password to validate.
      */
     const isNewPasswordValid = async (password: string) => {
-
         if (passwordConfig) {
             return isValidPassword;
         }
 
         const passwordRegex: string = await SharedUserStoreUtils.getUserStoreRegEx(
             userstore,
-            USERSTORE_REGEX_PROPERTIES.PasswordRegEx);
+            USERSTORE_REGEX_PROPERTIES.PasswordRegEx
+        );
 
         return SharedUserStoreUtils.validateInputAgainstRegEx(password, passwordRegex);
     };
@@ -178,13 +181,10 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
     const handleSubmit = async (values: Map<string, FormValue>) => {
         if (passwordOption === "create-password") {
             // Check whether the new password is valid.
-            if (await isNewPasswordValid(values.get("newPassword")
-                ? values.get("newPassword").toString()
-                : "")) {
+            if (await isNewPasswordValid(values.get("newPassword") ? values.get("newPassword").toString() : "")) {
                 onSubmit(getFormValues(values));
             }
-        }
-        else {
+        } else {
             onSubmit(getFormValues(values));
         }
     };
@@ -196,15 +196,13 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
      * @param validation - The validation object.
      */
     const validateNewPassword = async (value: string, validation: Validation) => {
-
-        if (!await isNewPasswordValid(value)) {
+        if (!(await isNewPasswordValid(value))) {
             validation.isValid = false;
-            validation.errorMessages.push(passwordConfig ?
-                t(
-                    "extensions:manage.features.user.addUser.validation.error.passwordValidation"
-                ) : t(
-                    "extensions:manage.features.user.addUser.validation.password"
-                ));
+            validation.errorMessages.push(
+                passwordConfig
+                    ? t("extensions:manage.features.user.addUser.validation.error.passwordValidation")
+                    : t("extensions:manage.features.user.addUser.validation.password")
+            );
         }
     };
 
@@ -235,9 +233,10 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
             email: values.get("email")?.toString(),
             firstName: values.get("firstName")?.toString(),
             lastName: values.get("lastName")?.toString(),
-            newPassword: values.get("newPassword") && values.get("newPassword") !== undefined
-                ? values.get("newPassword").toString()
-                : "",
+            newPassword:
+                values.get("newPassword") && values.get("newPassword") !== undefined
+                    ? values.get("newPassword").toString()
+                    : "",
             passwordOption: values.get("passwordOption")?.toString(),
             userName: values.get("username")?.toString()
         };
@@ -246,99 +245,103 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
     const handlePasswordOptions = () => {
         if (passwordOption && passwordOption === "create-password") {
             return (
-                <Grid.Row columns={ 2 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
+                <Grid.Row columns={2}>
+                    <Grid.Column mobile={16} tablet={16} computer={10}>
                         <Field
                             data-testid="user-mgt-add-user-form-newPassword-input"
                             className="addon-field-wrapper"
-                            hidePassword={ t("common:hidePassword") }
-                            label={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs.newPassword.label"
-                            ) }
+                            hidePassword={t("common:hidePassword")}
+                            label={t("console:manage.features.user.forms.addUserForm.inputs.newPassword.label")}
                             name="newPassword"
-                            placeholder={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs." +
-                                "newPassword.placeholder"
-                            ) }
-                            required={ true }
-                            requiredErrorMessage={ t(
+                            placeholder={t(
+                                "console:manage.features.user.forms.addUserForm.inputs." + "newPassword.placeholder"
+                            )}
+                            required={true}
+                            requiredErrorMessage={t(
                                 "console:manage.features.user.forms.addUserForm." +
-                                "inputs.newPassword.validations.empty"
-                            ) }
-                            showPassword={ t("common:showPassword") }
+                                    "inputs.newPassword.validations.empty"
+                            )}
+                            showPassword={t("common:showPassword")}
                             type="password"
-                            value={ initialValues?.newPassword }
-                            validation={ validateNewPassword }
-                            tabIndex={ 5 }
-                            enableReinitialize={ true }
-                            listen={ handlePasswordChange }
-                            maxWidth={ 60 }
+                            value={initialValues?.newPassword}
+                            validation={validateNewPassword}
+                            tabIndex={5}
+                            enableReinitialize={true}
+                            listen={handlePasswordChange}
+                            maxWidth={60}
                         />
-                        { passwordConfig && (
+                        {passwordConfig && (
                             <PasswordValidation
-                                password={ password }
-                                minLength={ Number(passwordConfig.minLength) }
-                                maxLength={ Number(passwordConfig.maxLength) }
-                                minNumbers={ Number(passwordConfig.minNumbers) }
-                                minUpperCase={ Number(passwordConfig.minUpperCaseCharacters) }
-                                minLowerCase={ Number(passwordConfig.minLowerCaseCharacters) }
-                                minSpecialChr={ Number(passwordConfig.minSpecialCharacters) }
-                                minUniqueChr={ Number(passwordConfig.minUniqueCharacters) }
-                                maxConsecutiveChr={ Number(passwordConfig.maxConsecutiveCharacters) }
-                                onPasswordValidate={ onPasswordValidate }
-                                translations={ {
-                                    case: (Number(passwordConfig?.minUpperCaseCharacters) > 0 &&
-                                        Number(passwordConfig?.minLowerCaseCharacters) > 0) ?
-                                        t("extensions:manage.features.user.addUser.validation.passwordCase", {
-                                            minLowerCase: passwordConfig.minLowerCaseCharacters,
-                                            minUpperCase: passwordConfig.minUpperCaseCharacters
-                                        }) : (
-                                            Number(passwordConfig?.minUpperCaseCharacters) > 0 ?
-                                                t("extensions:manage.features.user.addUser.validation.upperCase", {
-                                                    minUpperCase: passwordConfig.minUpperCaseCharacters
-                                                }) : t("extensions:manage.features.user.addUser.validation" +
-                                                    ".lowerCase", {
-                                                    minLowerCase: passwordConfig.minLowerCaseCharacters
-                                                })
-                                        ),
-                                    consecutiveChr: t("extensions:manage.features.user.addUser.validation" +
-                                        ".consecutiveCharacters", {
-                                        repeatedChr : passwordConfig.maxConsecutiveCharacters
-                                    }),
+                                password={password}
+                                minLength={Number(passwordConfig.minLength)}
+                                maxLength={Number(passwordConfig.maxLength)}
+                                minNumbers={Number(passwordConfig.minNumbers)}
+                                minUpperCase={Number(passwordConfig.minUpperCaseCharacters)}
+                                minLowerCase={Number(passwordConfig.minLowerCaseCharacters)}
+                                minSpecialChr={Number(passwordConfig.minSpecialCharacters)}
+                                minUniqueChr={Number(passwordConfig.minUniqueCharacters)}
+                                maxConsecutiveChr={Number(passwordConfig.maxConsecutiveCharacters)}
+                                onPasswordValidate={onPasswordValidate}
+                                translations={{
+                                    case:
+                                        Number(passwordConfig?.minUpperCaseCharacters) > 0 &&
+                                        Number(passwordConfig?.minLowerCaseCharacters) > 0
+                                            ? t("extensions:manage.features.user.addUser.validation.passwordCase", {
+                                                  minLowerCase: passwordConfig.minLowerCaseCharacters,
+                                                  minUpperCase: passwordConfig.minUpperCaseCharacters
+                                              })
+                                            : Number(passwordConfig?.minUpperCaseCharacters) > 0
+                                            ? t("extensions:manage.features.user.addUser.validation.upperCase", {
+                                                  minUpperCase: passwordConfig.minUpperCaseCharacters
+                                              })
+                                            : t("extensions:manage.features.user.addUser.validation" + ".lowerCase", {
+                                                  minLowerCase: passwordConfig.minLowerCaseCharacters
+                                              }),
+                                    consecutiveChr: t(
+                                        "extensions:manage.features.user.addUser.validation" + ".consecutiveCharacters",
+                                        {
+                                            repeatedChr: passwordConfig.maxConsecutiveCharacters
+                                        }
+                                    ),
                                     length: t("extensions:manage.features.user.addUser.validation.passwordLength", {
-                                        max: passwordConfig.maxLength, min: passwordConfig.minLength
+                                        max: passwordConfig.maxLength,
+                                        min: passwordConfig.minLength
                                     }),
                                     numbers: t("extensions:manage.features.user.addUser.validation.passwordNumeric", {
-                                        min : passwordConfig.minNumbers
+                                        min: passwordConfig.minNumbers
                                     }),
-                                    specialChr: t("extensions:manage.features.user.addUser.validation" +
-                                        ".specialCharacter", {
-                                        specialChr : passwordConfig.minSpecialCharacters
-                                    }),
-                                    uniqueChr: t("extensions:manage.features.user.addUser.validation" +
-                                        ".uniqueCharacters", {
-                                        uniqueChr : passwordConfig.minUniqueCharacters
-                                    })
-                                } }
+                                    specialChr: t(
+                                        "extensions:manage.features.user.addUser.validation" + ".specialCharacter",
+                                        {
+                                            specialChr: passwordConfig.minSpecialCharacters
+                                        }
+                                    ),
+                                    uniqueChr: t(
+                                        "extensions:manage.features.user.addUser.validation" + ".uniqueCharacters",
+                                        {
+                                            uniqueChr: passwordConfig.minUniqueCharacters
+                                        }
+                                    )
+                                }}
                             />
-                        ) }
+                        )}
                     </Grid.Column>
-                    { /*<Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>*/ }
-                    { /*    <Field*/ }
-                    { /*        className="generate-password-button"*/ }
-                    { /*        onClick={ generateRandomPassword }*/ }
-                    { /*        type="button"*/ }
-                    { /*        value={ t("common:generatePassword") }*/ }
-                    { /*        icon="random"*/ }
-                    { /*    />*/ }
-                    { /*</Grid.Column>*/ }
+                    {/*<Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>*/}
+                    {/*    <Field*/}
+                    {/*        className="generate-password-button"*/}
+                    {/*        onClick={ generateRandomPassword }*/}
+                    {/*        type="button"*/}
+                    {/*        value={ t("common:generatePassword") }*/}
+                    {/*        icon="random"*/}
+                    {/*    />*/}
+                    {/*</Grid.Column>*/}
                 </Grid.Row>
             );
         } else if (passwordOption && passwordOption === "ask-password") {
             return (
                 <>
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
+                    <Grid.Row columns={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
                             <Message
                                 icon="mail"
                                 content="An email with a confirmation link will be sent to the provided email address
@@ -377,246 +380,223 @@ export const AddConsumerUser: React.FunctionComponent<AddConsumerUserProps> = (
      * The modal to add new user.
      */
     const addUserBasicForm = () => (
-        <Forms
-            data-testid="user-mgt-add-user-form"
-            onSubmit={ handleSubmit }
-            submitState={ triggerSubmit }
-        >
+        <Forms data-testid="user-mgt-add-user-form" onSubmit={handleSubmit} submitState={triggerSubmit}>
             <Grid>
-                {
-                    !hiddenFields.includes("userName")
-                    && (usernameConfig?.enableValidator === "false")
-                        ? (
-                            <Grid.Row>
-                                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                    <Field
-                                        data-testid="user-mgt-add-user-form-email-input"
-                                        label={ "Email (username)" }
-                                        name="email"
-                                        placeholder={ t(
-                                            "console:manage.features.user.forms.addUserForm.inputs." +
-                                            "email.placeholder"
-                                        ) }
-                                        required={ true }
-                                        requiredErrorMessage={ t(
-                                            "console:manage.features.user.forms.addUserForm.inputs." +
-                                            "email.validations.empty"
-                                        ) }
-                                        validation={ async (value: string, validation: Validation) => {
-
-                                            if (!value) {
-                                                return;
-                                            }
-
-                                            const userRegex: string = await validateUserNamePattern();
-
-                                            if (!SharedUserStoreUtils.validateInputAgainstRegEx(value, userRegex) ||
-                                            !FormValidation.email(value)) {
-                                                validation.isValid = false;
-                                                validation.errorMessages.push(USERNAME_REGEX_VIOLATION_ERROR_MESSAGE);
-
-                                                return;
-                                            }
-
-
-                                            try {
-                                                if (value) {
-                                                    const usersList: UserListInterface = await getUsersList(null,
-                                                        null,
-                                                        "userName eq " + value,
-                                                        null,
-                                                        CONSUMER_USERSTORE);
-
-                                                    if (usersList?.totalResults > 0) {
-                                                        validation.isValid = false;
-                                                        validation.errorMessages.push(USER_ALREADY_EXIST_ERROR_MESSAGE);
-                                                    }
-                                                }
-                                            } catch (error) {
-                                            // Some non ascii characters are not accepted by DBs with certain charsets.
-                                            // Hence, the API sends a `500` status code.
-                                            // see https://github.com/wso2/product-is/issues/
-                                            // 10190#issuecomment-719760318
-                                                if (error?.response?.status === 500) {
-                                                    validation.isValid = false;
-                                                    validation.errorMessages.push(
-                                                        USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE);
-                                                }
-                                            }
-                                        }
-                                        }
-                                        displayErrorOn="blur"
-                                        type="email"
-                                        value={ initialValues && initialValues.email }
-                                        tabIndex={ 1 }
-                                        maxLength={ 60 }
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>
-                        ) : (
-                            <Grid.Row>
-                                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                    <Field
-                                        data-testid="user-mgt-add-user-form-username-input"
-                                        label={ t("extensions:manage.features.user.addUser.inputLabel" +
-                                        ".alphanumericUsername") }
-                                        name="username"
-                                        placeholder={ t("extensions:manage.features.user.addUser.inputLabel" +
-                                        ".alphanumericUsernamePlaceholder") }
-                                        required={ true }
-                                        requiredErrorMessage={ t(
-                                            "console:manage.features.user.forms.addUserForm.inputs.email." +
-                                            "validations.empty"
-                                        ) }
-                                        validation={ async (value: string, validation: Validation) => {
-                                        // Regular expression to validate having alphanumeric characters.
-                                            const regExpInvalidUsername: RegExp
-                                            = new RegExp(UsersConstants.USERNAME_VALIDATION_REGEX);
-
-                                            // Check username length validations.
-                                            if (value.length < Number(usernameConfig.minLength)
-                                            || value.length > Number(usernameConfig.maxLength)) {
-                                                validation.isValid = false;
-                                                validation.errorMessages.push(
-                                                    USERNAME_HAS_INVALID_LENGTH_ERROR_MESSAGE);
-                                                // Check username validity against userstore regex.
-                                            } else if (!regExpInvalidUsername.test(value)) {
-                                                validation.isValid = false;
-                                                validation.errorMessages.push(
-                                                    USERNAME_HAS_INVALID_SYMBOLS_ERROR_MESSAGE);
-                                            }
-                                        } }
-                                        type="text"
-                                        value={ initialValues && initialValues.username }
-                                        tabIndex={ 1 }
-                                        maxLength={ 60 }
-                                    />
-                                    <Hint>
-                                        { t("extensions:manage.features.user.addUser.validation.usernameHint", {
-                                            maxLength: usernameConfig?.maxLength,
-                                            minLength: usernameConfig?.minLength
-                                        }) }
-                                    </Hint>
-                                    <Field
-                                        data-testid="user-mgt-add-user-form-alphanumeric-email-input"
-                                        label={ "Email" }
-                                        name="email"
-                                        placeholder={ t(
-                                            "console:manage.features.user.forms.addUserForm.inputs." +
-                                        "email.placeholder"
-                                        ) }
-                                        required={ isEmailRequired }
-                                        requiredErrorMessage={ t(
-                                            "console:manage.features.user.forms.addUserForm.inputs.email." +
-                                        "validations.empty"
-                                        ) }
-                                        validation={ async (value: string, validation: Validation) => {
-
-                                            const userRegex: string = await validateUserNamePattern();
-
-                                            // Check username validity against userstore regex.
-                                            if (value && (
-                                                !SharedUserStoreUtils.validateInputAgainstRegEx(
-                                                    value, userRegex))
-                                                || !FormValidation.email(value)) {
-                                                validation.isValid = false;
-                                                validation.errorMessages.push(USERNAME_REGEX_VIOLATION_ERROR_MESSAGE);
-                                            }
-                                        } }
-                                        type="email"
-                                        value={ initialValues && initialValues.email }
-                                        tabIndex={ 1 }
-                                        maxLength={ 60 }
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>
-                        )
-                }
-                {
-                    !hiddenFields.includes("firstName") && (
-                        <Grid.Row>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                <Field
-                                    data-testid="user-mgt-add-user-form-firstName-input"
-                                    label={ t(
-                                        "console:manage.features.user.forms.addUserForm.inputs.firstName.label"
-                                    ) }
-                                    name="firstName"
-                                    placeholder={ t(
-                                        "console:manage.features.user.forms.addUserForm.inputs." +
-                                        "firstName.placeholder"
-                                    ) }
-                                    required={ false }
-                                    requiredErrorMessage={ t(
-                                        "console:manage.features.user.forms.addUserForm." +
-                                        "inputs.firstName.validations.empty"
-                                    ) }
-                                    type="text"
-                                    value={ initialValues && initialValues.firstName }
-                                    tabIndex={ 2 }
-                                    maxLength={ 30 }
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    )
-                }
-                {
-                    !hiddenFields.includes("lastName") && (
-                        <Grid.Row>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                <Field
-                                    data-testid="user-mgt-add-user-form-lastName-input"
-                                    label={ t(
-                                        "console:manage.features.user.forms.addUserForm.inputs.lastName.label"
-                                    ) }
-                                    name="lastName"
-                                    placeholder={ t(
-                                        "console:manage.features.user.forms.addUserForm.inputs." +
-                                        "lastName.placeholder"
-                                    ) }
-                                    required={ false }
-                                    requiredErrorMessage={ t(
-                                        "console:manage.features.user.forms.addUserForm." +
-                                        "inputs.lastName.validations.empty"
-                                    ) }
-                                    type="text"
-                                    value={ initialValues && initialValues.lastName }
-                                    tabIndex={ 3 }
-                                    maxLength={ 30 }
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    )
-                }
-                { emailVerificationEnabled && (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
+                {!hiddenFields.includes("userName") && usernameConfig?.enableValidator === "false" ? (
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
                             <Field
-                                type="radio"
-                                label={ t("console:manage.features.user.forms.addUserForm.buttons.radioButton.label") }
-                                name="passwordOption"
-                                default="ask-password"
-                                listen={ (values: Map<string, FormValue>) =>
-                                { setPasswordOption(values.get("passwordOption").toString()); } }
-                                children={ passwordOptions }
-                                value={ initialValues?.passwordOption ? initialValues?.passwordOption : "ask-password" }
-                                tabIndex={ 4 }
-                                maxWidth={ 60 }
-                                width={ 60 }
+                                data-testid="user-mgt-add-user-form-email-input"
+                                label={"Email (username)"}
+                                name="email"
+                                placeholder={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs." + "email.placeholder"
+                                )}
+                                required={true}
+                                requiredErrorMessage={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs." + "email.validations.empty"
+                                )}
+                                validation={async (value: string, validation: Validation) => {
+                                    if (!value) {
+                                        return;
+                                    }
+
+                                    const userRegex: string = await validateUserNamePattern();
+
+                                    if (
+                                        !SharedUserStoreUtils.validateInputAgainstRegEx(value, userRegex) ||
+                                        !FormValidation.email(value)
+                                    ) {
+                                        validation.isValid = false;
+                                        validation.errorMessages.push(USERNAME_REGEX_VIOLATION_ERROR_MESSAGE);
+
+                                        return;
+                                    }
+
+                                    try {
+                                        if (value) {
+                                            const usersList: UserListInterface = await getUsersList(
+                                                null,
+                                                null,
+                                                "userName eq " + value,
+                                                null,
+                                                CONSUMER_USERSTORE
+                                            );
+
+                                            if (usersList?.totalResults > 0) {
+                                                validation.isValid = false;
+                                                validation.errorMessages.push(USER_ALREADY_EXIST_ERROR_MESSAGE);
+                                            }
+                                        }
+                                    } catch (error) {
+                                        // Some non ascii characters are not accepted by DBs with certain charsets.
+                                        // Hence, the API sends a `500` status code.
+                                        // see https://github.com/wso2/product-is/issues/
+                                        // 10190#issuecomment-719760318
+                                        if (error?.response?.status === 500) {
+                                            validation.isValid = false;
+                                            validation.errorMessages.push(USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE);
+                                        }
+                                    }
+                                }}
+                                displayErrorOn="blur"
+                                type="email"
+                                value={initialValues && initialValues.email}
+                                tabIndex={1}
+                                maxLength={60}
                             />
                         </Grid.Column>
                     </Grid.Row>
-                ) }
-                { !hiddenFields.includes("password") && handlePasswordOptions() }
+                ) : (
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <Field
+                                data-testid="user-mgt-add-user-form-username-input"
+                                label={t(
+                                    "extensions:manage.features.user.addUser.inputLabel" + ".alphanumericUsername"
+                                )}
+                                name="username"
+                                placeholder={t(
+                                    "extensions:manage.features.user.addUser.inputLabel" +
+                                        ".alphanumericUsernamePlaceholder"
+                                )}
+                                required={true}
+                                requiredErrorMessage={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs.email." + "validations.empty"
+                                )}
+                                validation={async (value: string, validation: Validation) => {
+                                    // Regular expression to validate having alphanumeric characters.
+                                    const regExpInvalidUsername: RegExp = new RegExp(
+                                        UsersConstants.USERNAME_VALIDATION_REGEX
+                                    );
+
+                                    // Check username length validations.
+                                    if (
+                                        value.length < Number(usernameConfig.minLength) ||
+                                        value.length > Number(usernameConfig.maxLength)
+                                    ) {
+                                        validation.isValid = false;
+                                        validation.errorMessages.push(USERNAME_HAS_INVALID_LENGTH_ERROR_MESSAGE);
+                                        // Check username validity against userstore regex.
+                                    } else if (!regExpInvalidUsername.test(value)) {
+                                        validation.isValid = false;
+                                        validation.errorMessages.push(USERNAME_HAS_INVALID_SYMBOLS_ERROR_MESSAGE);
+                                    }
+                                }}
+                                type="text"
+                                value={initialValues && initialValues.username}
+                                tabIndex={1}
+                                maxLength={60}
+                            />
+                            <Hint>
+                                {t("extensions:manage.features.user.addUser.validation.usernameHint", {
+                                    maxLength: usernameConfig?.maxLength,
+                                    minLength: usernameConfig?.minLength
+                                })}
+                            </Hint>
+                            <Field
+                                data-testid="user-mgt-add-user-form-alphanumeric-email-input"
+                                label={"Email"}
+                                name="email"
+                                placeholder={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs." + "email.placeholder"
+                                )}
+                                required={isEmailRequired}
+                                requiredErrorMessage={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs.email." + "validations.empty"
+                                )}
+                                validation={async (value: string, validation: Validation) => {
+                                    const userRegex: string = await validateUserNamePattern();
+
+                                    // Check username validity against userstore regex.
+                                    if (
+                                        (value && !SharedUserStoreUtils.validateInputAgainstRegEx(value, userRegex)) ||
+                                        !FormValidation.email(value)
+                                    ) {
+                                        validation.isValid = false;
+                                        validation.errorMessages.push(USERNAME_REGEX_VIOLATION_ERROR_MESSAGE);
+                                    }
+                                }}
+                                type="email"
+                                value={initialValues && initialValues.email}
+                                tabIndex={1}
+                                maxLength={60}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
+                {!hiddenFields.includes("firstName") && (
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <Field
+                                data-testid="user-mgt-add-user-form-firstName-input"
+                                label={t("console:manage.features.user.forms.addUserForm.inputs.firstName.label")}
+                                name="firstName"
+                                placeholder={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs." + "firstName.placeholder"
+                                )}
+                                required={false}
+                                requiredErrorMessage={t(
+                                    "console:manage.features.user.forms.addUserForm." +
+                                        "inputs.firstName.validations.empty"
+                                )}
+                                type="text"
+                                value={initialValues && initialValues.firstName}
+                                tabIndex={2}
+                                maxLength={30}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
+                {!hiddenFields.includes("lastName") && (
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <Field
+                                data-testid="user-mgt-add-user-form-lastName-input"
+                                label={t("console:manage.features.user.forms.addUserForm.inputs.lastName.label")}
+                                name="lastName"
+                                placeholder={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs." + "lastName.placeholder"
+                                )}
+                                required={false}
+                                requiredErrorMessage={t(
+                                    "console:manage.features.user.forms.addUserForm." +
+                                        "inputs.lastName.validations.empty"
+                                )}
+                                type="text"
+                                value={initialValues && initialValues.lastName}
+                                tabIndex={3}
+                                maxLength={30}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
+                {emailVerificationEnabled && (
+                    <Grid.Row columns={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <Field
+                                type="radio"
+                                label={t("console:manage.features.user.forms.addUserForm.buttons.radioButton.label")}
+                                name="passwordOption"
+                                default="ask-password"
+                                listen={(values: Map<string, FormValue>) => {
+                                    setPasswordOption(values.get("passwordOption").toString());
+                                }}
+                                children={passwordOptions}
+                                value={initialValues?.passwordOption ? initialValues?.passwordOption : "ask-password"}
+                                tabIndex={4}
+                                maxWidth={60}
+                                width={60}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
+                {!hiddenFields.includes("password") && handlePasswordOptions()}
             </Grid>
         </Forms>
     );
 
-    return (
-        <>
-            { addUserBasicForm() }
-        </>
-    );
+    return <>{addUserBasicForm()}</>;
 };
 
 AddConsumerUser.defaultProps = {

@@ -16,13 +16,12 @@
  * under the License.
  */
 
-
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { ProfileConstants } from "@wso2is/core/constants";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, ProfileInfoInterface, ProfileSchemaInterface } from "@wso2is/core/models";
-import { Config } from "@wso2is/feature-configs.common/configs";
-import { store } from "@wso2is/feature-store.common/store";
+import { Config } from "@wso2is/feature-configs.common";
+import { store } from "@wso2is/feature-store.common";
 import { AxiosError, AxiosResponse } from "axios";
 
 /**
@@ -40,13 +39,14 @@ const httpClient = AsgardeoSPAClient.getInstance().httpRequest.bind(AsgardeoSPAC
  * @returns {Promise<ProfileInfoInterface>} Profile information as a Promise.
  * @throws {IdentityAppsApiException}
  */
-export const getProfileInfo = (endpoint: string,
+export const getProfileInfo = (
+    endpoint: string,
     clientOrigin: string,
-    onSCIMDisabled?: () => void): Promise<ProfileInfoInterface> => {
-
+    onSCIMDisabled?: () => void
+): Promise<ProfileInfoInterface> => {
     const requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/scim+json"
         },
         method: HttpMethods.GET,
@@ -55,7 +55,6 @@ export const getProfileInfo = (endpoint: string,
 
     return httpClient(requestConfig)
         .then(async (response: AxiosResponse) => {
-
             if (response.status !== 200) {
                 throw new IdentityAppsApiException(
                     ProfileConstants.PROFILE_INFO_FETCH_REQUEST_INVALID_RESPONSE_CODE_ERROR,
@@ -63,7 +62,8 @@ export const getProfileInfo = (endpoint: string,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             const profileResponse: ProfileInfoInterface = {
@@ -84,11 +84,12 @@ export const getProfileInfo = (endpoint: string,
         .catch((error: AxiosError) => {
             // Check if the API responds with a `500` error, if it does,
             // navigate the user to the login error page.
-            if (error.response
-                && error.response.data
-                && error.response.data.status
-                && error.response.data.status === "500") {
-
+            if (
+                error.response &&
+                error.response.data &&
+                error.response.data.status &&
+                error.response.data.status === "500"
+            ) {
                 // Fire `onSCIMDisabled` callback which will navigate the
                 // user to the corresponding error page.
                 onSCIMDisabled && onSCIMDisabled();
@@ -100,7 +101,8 @@ export const getProfileInfo = (endpoint: string,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -112,11 +114,10 @@ export const getProfileInfo = (endpoint: string,
  * @throws {IdentityAppsApiException}
  */
 export const updateProfileInfo = (info: Record<string, unknown>): Promise<ProfileInfoInterface> => {
-
     const requestConfig = {
         data: info,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/scim+json"
         },
         method: HttpMethods.PATCH,
@@ -132,7 +133,8 @@ export const updateProfileInfo = (info: Record<string, unknown>): Promise<Profil
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -144,7 +146,8 @@ export const updateProfileInfo = (info: Record<string, unknown>): Promise<Profil
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -165,7 +168,7 @@ export const updateProfileImageURL = (url: string): Promise<ProfileInfoInterface
                 }
             }
         ],
-        schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+        schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
     };
 
     return updateProfileInfo(data);
@@ -178,10 +181,9 @@ export const updateProfileImageURL = (url: string): Promise<ProfileInfoInterface
  * @throws {IdentityAppsApiException}
  */
 export const getProfileSchemas = (): Promise<ProfileSchemaInterface[]> => {
-
     const requestConfig = {
         headers: {
-            "Accept": "application/json"
+            Accept: "application/json"
         },
         method: HttpMethods.GET,
         url: Config.getServiceResourceEndpoints().schemas
@@ -189,7 +191,7 @@ export const getProfileSchemas = (): Promise<ProfileSchemaInterface[]> => {
     const schemaAttributes: ProfileSchemaInterface[] = [];
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 throw new IdentityAppsApiException(
                     ProfileConstants.SCHEMA_FETCH_REQUEST_INVALID_RESPONSE_CODE_ERROR,
@@ -197,22 +199,22 @@ export const getProfileSchemas = (): Promise<ProfileSchemaInterface[]> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             // Retrieve the attributes from all the available resources, and if the
             // attribute belongs to an schema extension the boolean extended will be
             // appended to the attribute object.
-            response.data.map((schema) => {
-                schema.attributes.map((attribute) => {
+            response.data.map(schema => {
+                schema.attributes.map(attribute => {
                     if (schema.id !== ProfileConstants.SCIM2_CORE_USER_SCHEMA) {
                         const modifiedSubAttributes = [];
 
-                        if(attribute.type === "COMPLEX") {
-                            attribute.subAttributes.map((subAttribute) => {
-                                modifiedSubAttributes.push({ ...subAttribute,  extended: true, schemaId: schema.id });
-                            }
-                            );
+                        if (attribute.type === "COMPLEX") {
+                            attribute.subAttributes.map(subAttribute => {
+                                modifiedSubAttributes.push({ ...subAttribute, extended: true, schemaId: schema.id });
+                            });
                             attribute.subAttributes = modifiedSubAttributes;
                         }
                         schemaAttributes.push({ ...attribute, extended: true, schemaId: schema.id });
@@ -225,13 +227,14 @@ export const getProfileSchemas = (): Promise<ProfileSchemaInterface[]> => {
 
             return Promise.resolve(schemaAttributes as ProfileSchemaInterface[]);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 ProfileConstants.SCHEMA_FETCH_REQUEST_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

@@ -21,36 +21,22 @@ import Alert from "@oxygen-ui/react/Alert";
 import Tab from "@oxygen-ui/react/Tab";
 import Tabs from "@oxygen-ui/react/Tabs";
 import Typography from "@oxygen-ui/react/Typography";
-import {getEmptyPlaceholderIllustrations} from "@wso2is/feature-configs.common/configs";
-import { UIConstants } from "@wso2is/feature-constants.common/constants";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
 import { BulkImportResponseOperationTypes, BulkUserImportStatus } from "@wso2is/feature-users.common/constants";
 import { BulkResponseSummary, BulkUserImportOperationResponse } from "@wso2is/feature-users.common/models";
 import { DropdownChild } from "@wso2is/forms";
-import {
-    DataTable,
-    EmptyPlaceholder,
-    LinkButton,
-    ListLayout,
-    TableColumnInterface
-} from "@wso2is/react-components";
+import { DataTable, EmptyPlaceholder, LinkButton, ListLayout, TableColumnInterface } from "@wso2is/react-components";
 import React, { ReactElement, ReactNode, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import {
-    Dropdown,
-    DropdownItemProps,
-    DropdownProps,
-    Grid,
-    Header,
-    Label
-} from "semantic-ui-react";
-import {
-    AdvancedSearchWithBasicFilters } from "../../core";
+import { Dropdown, DropdownItemProps, DropdownProps, Grid, Header, Label } from "semantic-ui-react";
 
 interface BulkImportResponseListProps {
     responseList: BulkUserImportOperationResponse[];
     isLoading?: boolean;
     ["data-componentid"]?: string;
-    bulkResponseSummary?: BulkResponseSummary
+    bulkResponseSummary?: BulkResponseSummary;
     hasError: boolean;
     /**
      * Alert component to show the success message.
@@ -71,7 +57,6 @@ type FilterStatus = BulkUserImportStatus | typeof ALL_STATUS;
 export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseListProps> = (
     props: BulkImportResponseListProps
 ): ReactElement => {
-
     const {
         responseList,
         isLoading,
@@ -81,13 +66,14 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
         ["data-componentid"]: componentId
     } = props;
 
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ selectedStatus, setSelectedStatus ] = useState<FilterStatus>(ALL_STATUS);
-    const [ filteredResponseList, setFilteredResponseList ] = useState<BulkUserImportOperationResponse[]>([]);
-    const [ responseOperationType, setResponseOperationType ] =
-        useState<BulkImportResponseOperationTypes>(BulkImportResponseOperationTypes.USER_CREATION);
-    const [ responseOperationTypeTab, setResponseOperationTypeTab ] = useState<number>(0);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [selectedStatus, setSelectedStatus] = useState<FilterStatus>(ALL_STATUS);
+    const [filteredResponseList, setFilteredResponseList] = useState<BulkUserImportOperationResponse[]>([]);
+    const [responseOperationType, setResponseOperationType] = useState<BulkImportResponseOperationTypes>(
+        BulkImportResponseOperationTypes.USER_CREATION
+    );
+    const [responseOperationTypeTab, setResponseOperationTypeTab] = useState<number>(0);
 
     const { t } = useTranslation();
 
@@ -114,14 +100,18 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
     const bulkResponseOperationTypes: DropdownItemProps[] = [
         {
             key: 0,
-            text: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
-                "responseOperationType.userCreation"),
+            text: t(
+                "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
+                    "responseOperationType.userCreation"
+            ),
             value: BulkImportResponseOperationTypes.USER_CREATION
         },
         {
             key: 1,
-            text: t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
-                "responseOperationType.roleAssignment"),
+            text: t(
+                "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
+                    "responseOperationType.roleAssignment"
+            ),
             value: BulkImportResponseOperationTypes.ROLE_ASSIGNMENT
         }
     ];
@@ -131,7 +121,7 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
      */
     useEffect(() => {
         filterResponseListByOperationType();
-    }, [ responseList ]);
+    }, [responseList]);
 
     /**
      * Set the filtered response list based on the response operation type.
@@ -140,17 +130,17 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
         handleSearchQueryClear();
         setSelectedStatus(ALL_STATUS);
         filterResponseListByOperationType();
-    }, [ responseOperationType ]);
+    }, [responseOperationType]);
 
     /**
      * Filter the response list based on the response operation type.
      */
     const filterResponseListByOperationType = () => {
-        const filteredResponse: BulkUserImportOperationResponse[] =
-            responseList.filter((response: BulkUserImportOperationResponse) => {
-
+        const filteredResponse: BulkUserImportOperationResponse[] = responseList.filter(
+            (response: BulkUserImportOperationResponse) => {
                 return response.operationType === responseOperationType;
-            });
+            }
+        );
 
         setFilteredResponseList(filteredResponse);
     };
@@ -169,12 +159,8 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
                 key: "resourceIdentifier",
                 render: (response: BulkUserImportOperationResponse): ReactNode => {
                     return (
-                        <Header as="h6" data-componentid={ `${componentId}-username-item-heading` }>
-                            <Header.Content>
-                                {
-                                    response.resourceIdentifier
-                                }
-                            </Header.Content>
+                        <Header as="h6" data-componentid={`${componentId}-username-item-heading`}>
+                            <Header.Content>{response.resourceIdentifier}</Header.Content>
                         </Header>
                     );
                 },
@@ -187,14 +173,14 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
                 key: "status",
                 render: (response: BulkUserImportOperationResponse): ReactNode => {
                     return (
-                        <Header as="h6" data-componentid={ `${componentId}-status-item-heading` } >
+                        <Header as="h6" data-componentid={`${componentId}-status-item-heading`}>
                             <Header.Content>
                                 <Label
-                                    data-componentid={ `${componentId}-bulk-label` }
-                                    content={ response.status }
+                                    data-componentid={`${componentId}-bulk-label`}
+                                    content={response.status}
                                     size="small"
-                                    color={ response.statusCode === BulkUserImportStatus.SUCCESS ? "green" : "red" }
-                                    className={ "group-label" }
+                                    color={response.statusCode === BulkUserImportStatus.SUCCESS ? "green" : "red"}
+                                    className={"group-label"}
                                 />
                             </Header.Content>
                         </Header>
@@ -209,10 +195,8 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
                 key: "message",
                 render: (response: BulkUserImportOperationResponse): ReactNode => {
                     return (
-                        <Header as="h6" data-componentid={ `${componentId}-status-item-heading` }>
-                            <Header.Content>
-                                { response.message }
-                            </Header.Content>
+                        <Header as="h6" data-componentid={`${componentId}-status-item-heading`}>
+                            <Header.Content>{response.message}</Header.Content>
                         </Header>
                     );
                 },
@@ -230,16 +214,14 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
         let filteredList: BulkUserImportOperationResponse[] = responseList?.filter(
             (response: BulkUserImportOperationResponse) => {
                 return response?.operationType === responseOperationType;
-            });
+            }
+        );
 
         if (searchQuery && searchQuery !== "") {
-            const [ , condition, value ] = searchQuery.split(" ");
+            const [, condition, value] = searchQuery.split(" ");
 
             filteredList = filteredList.filter((item: BulkUserImportOperationResponse) => {
-                if (
-                    selectedStatus !== ALL_STATUS
-                    && item.statusCode !== selectedStatus
-                ) return false;
+                if (selectedStatus !== ALL_STATUS && item.statusCode !== selectedStatus) return false;
 
                 switch (condition) {
                     case "sw":
@@ -267,7 +249,7 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
 
     useEffect(() => {
         filterBulkUsersResponseList();
-    }, [ searchQuery, selectedStatus ]);
+    }, [searchQuery, selectedStatus]);
 
     const handleSearchQueryClear = (): void => {
         setTriggerClearQuery(!triggerClearQuery);
@@ -296,23 +278,24 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
     const showPlaceholders = (): ReactElement => {
         return (
             <EmptyPlaceholder
-                data-testid={ `${componentId}-empty-search-result` }
-                data-componentid={ `${componentId}-empty-search-result` }
-                action={ !searchQuery
-                    ? null
-                    : (
-                        <LinkButton onClick={ handleSearchQueryClear }>
-                            { t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton") }
+                data-testid={`${componentId}-empty-search-result`}
+                data-componentid={`${componentId}-empty-search-result`}
+                action={
+                    !searchQuery ? null : (
+                        <LinkButton onClick={handleSearchQueryClear}>
+                            {t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton")}
                         </LinkButton>
-                    ) }
-                image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    )
+                }
+                image={getEmptyPlaceholderIllustrations().emptySearch}
                 imageSize="tiny"
-                title={ t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title") }
-                subtitle={ [
-                    t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0",
-                        { query: !searchQuery ? selectedStatus : searchQuery }),
+                title={t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title")}
+                subtitle={[
+                    t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0", {
+                        query: !searchQuery ? selectedStatus : searchQuery
+                    }),
                     t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.1")
-                ] }
+                ]}
             />
         );
     };
@@ -324,8 +307,9 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
      * @param newTabIndex - New tab index.
      */
     const handleTabChange = (_: React.SyntheticEvent, newTabIndex: number): void => {
-        const item: DropdownItemProps = bulkResponseOperationTypes.find((item: DropdownItemProps) =>
-            item.key === newTabIndex);
+        const item: DropdownItemProps = bulkResponseOperationTypes.find(
+            (item: DropdownItemProps) => item.key === newTabIndex
+        );
 
         if (item) {
             setResponseOperationType(item.value as BulkImportResponseOperationTypes);
@@ -337,23 +321,23 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
      * Render user creation and user assignment operation type selection.
      */
     const resolveBulkResponseOperationTypeSelection = (): ReactElement => {
-        return(
+        return (
             <Tabs
-                value={ responseOperationTypeTab }
-                onChange={ handleTabChange }
-                component-id={ `${componentId}-operation-type-tab` }
+                value={responseOperationTypeTab}
+                onChange={handleTabChange}
+                component-id={`${componentId}-operation-type-tab`}
             >
-                { bulkResponseOperationTypes.map((item: DropdownItemProps) => (
+                {bulkResponseOperationTypes.map((item: DropdownItemProps) => (
                     <Tab
-                        key={ item.key }
-                        label={ (
+                        key={item.key}
+                        label={
                             <div className="beta-feature-tab-item">
-                                <Typography sx={ { fontWeight: 500 } }>{ item.text }</Typography>
+                                <Typography sx={{ fontWeight: 500 }}>{item.text}</Typography>
                             </div>
-                        ) }
-                        data-componentid={ `${componentId}-${ item.value }-tab` }
+                        }
+                        data-componentid={`${componentId}-${item.value}-tab`}
                     />
-                )) }
+                ))}
             </Tabs>
         );
     };
@@ -363,214 +347,213 @@ export const BulkImportResponseList: React.FunctionComponent<BulkImportResponseL
         const isRoleAssignment: boolean = responseOperationType === BulkImportResponseOperationTypes.ROLE_ASSIGNMENT;
 
         const noFailedOrSuccessfulUserCreation: boolean =
-            (bulkResponseSummary.failedUserCreation === 0 || bulkResponseSummary.successUserCreation === 0);
+            bulkResponseSummary.failedUserCreation === 0 || bulkResponseSummary.successUserCreation === 0;
         const noFailedOrSuccessfulUserAssignment: boolean =
-            (bulkResponseSummary.failedUserAssignment === 0 || bulkResponseSummary.successUserAssignment === 0);
+            bulkResponseSummary.failedUserAssignment === 0 || bulkResponseSummary.successUserAssignment === 0;
 
-        return (isUserCreation && noFailedOrSuccessfulUserCreation) ||
-            (isRoleAssignment && noFailedOrSuccessfulUserAssignment);
+        return (
+            (isUserCreation && noFailedOrSuccessfulUserCreation) ||
+            (isRoleAssignment && noFailedOrSuccessfulUserAssignment)
+        );
     };
 
     const advanceSearchFilterOptions: DropdownChild[] =
         responseOperationType === BulkImportResponseOperationTypes.USER_CREATION
             ? [
-                {
-                    key: 0,
-                    text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                    "filterAttributeOptions.username"),
-                    value: "userName"
-                }
-            ]
+                  {
+                      key: 0,
+                      text: t(
+                          "console:manage.features.users.advancedSearch.form.dropdown." +
+                              "filterAttributeOptions.username"
+                      ),
+                      value: "userName"
+                  }
+              ]
             : [
-                {
-                    key: 1,
-                    text:  t("console:manage.features.user.modals.bulkImportUserWizard." +
-                    "wizardSummary.advanceSearch.roleGroupFilterAttributePlaceHolder"),
-                    value: "roleName"
-                }
-            ];
+                  {
+                      key: 1,
+                      text: t(
+                          "console:manage.features.user.modals.bulkImportUserWizard." +
+                              "wizardSummary.advanceSearch.roleGroupFilterAttributePlaceHolder"
+                      ),
+                      value: "roleName"
+                  }
+              ];
 
     return (
         <>
-            <Grid.Row columns={ 1 }>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                    {
-                        isLoading || hasError
-                            ? null
-                            : bulkResponseSummary.failedUserCreation === 0 &&
-                                bulkResponseSummary.failedUserAssignment === 0
-                                ? (
-                                    successAlert ?? (
-                                        <Alert severity="success" data-componentid={ `${componentId}-success-alert` }>
-                                            <AlertTitle data-componentid={ `${componentId}-success-alert-title` }>
-                                                {
-                                                    t("console:manage.features.user.modals.bulkImportUserWizard." +
-                                            "wizardSummary.alerts.importSuccess.message")
-                                                }
-                                            </AlertTitle>
-                                            {
-                                                t("console:manage.features.user.modals.bulkImportUserWizard." +
-                                            "wizardSummary.alerts.importSuccess.description")
-                                            }
-                                        </Alert>
-                                    )
-                                ) : (
-                                    <Alert severity="error" data-componentid={ `${componentId}-error-alert` }>
-                                        <AlertTitle data-componentid={ `${componentId}-error-alert-title` }>
-                                            {
-                                                t("console:manage.features.user.modals.bulkImportUserWizard." +
-                                                "wizardSummary.alerts.importFailed.message")
-                                            }
-                                        </AlertTitle>
-                                        {
-                                            bulkResponseSummary.failedUserCreation !== 0 &&
-                                            (
-                                                <li>
-                                                    <Trans
-                                                        i18nKey={
-                                                            "console:manage.features.user.modals." +
-                                                            "bulkImportUserWizard.wizardSummary.alerts.importFailed." +
-                                                            "userCreation"
-                                                        }
-                                                        tOptions={ {
-                                                            failedUserCreationCount:
-                                                                bulkResponseSummary.failedUserCreation
-                                                        } }
-                                                    >
-                                                        Issues encountered in
-                                                        <b>{ bulkResponseSummary.failedUserCreation } user
-                                                        creations</b>.
-                                                    </Trans>
-                                                </li>
-                                            )
+            <Grid.Row columns={1}>
+                <Grid.Column mobile={16} tablet={16} computer={16}>
+                    {isLoading || hasError ? null : bulkResponseSummary.failedUserCreation === 0 &&
+                      bulkResponseSummary.failedUserAssignment === 0 ? (
+                        successAlert ?? (
+                            <Alert severity="success" data-componentid={`${componentId}-success-alert`}>
+                                <AlertTitle data-componentid={`${componentId}-success-alert-title`}>
+                                    {t(
+                                        "console:manage.features.user.modals.bulkImportUserWizard." +
+                                            "wizardSummary.alerts.importSuccess.message"
+                                    )}
+                                </AlertTitle>
+                                {t(
+                                    "console:manage.features.user.modals.bulkImportUserWizard." +
+                                        "wizardSummary.alerts.importSuccess.description"
+                                )}
+                            </Alert>
+                        )
+                    ) : (
+                        <Alert severity="error" data-componentid={`${componentId}-error-alert`}>
+                            <AlertTitle data-componentid={`${componentId}-error-alert-title`}>
+                                {t(
+                                    "console:manage.features.user.modals.bulkImportUserWizard." +
+                                        "wizardSummary.alerts.importFailed.message"
+                                )}
+                            </AlertTitle>
+                            {bulkResponseSummary.failedUserCreation !== 0 && (
+                                <li>
+                                    <Trans
+                                        i18nKey={
+                                            "console:manage.features.user.modals." +
+                                            "bulkImportUserWizard.wizardSummary.alerts.importFailed." +
+                                            "userCreation"
                                         }
-                                        {
-                                            bulkResponseSummary.failedUserAssignment !== 0 &&
-                                            (
-                                                <li>
-                                                    <Trans
-                                                        i18nKey={
-                                                            "console:manage.features.user.modals." +
-                                                            "bulkImportUserWizard.wizardSummary.alerts.importFailed." +
-                                                            "groupAssignment"
-                                                        }
-                                                        tOptions={ {
-                                                            failedUserAssignmentCount:
-                                                            bulkResponseSummary.failedUserAssignment
-                                                        } }
-                                                    >
-                                                        Issues encountered in
-                                                        <b>{ bulkResponseSummary.failedUserAssignment } group
-                                                        assignments</b>. Users in the affected groups were created
-                                                        but not assigned. Please navigate to User Management section
-                                                        to review  and assign groups to the users.
-                                                    </Trans>
-                                                </li>
-                                            )
+                                        tOptions={{
+                                            failedUserCreationCount: bulkResponseSummary.failedUserCreation
+                                        }}
+                                    >
+                                        Issues encountered in
+                                        <b>{bulkResponseSummary.failedUserCreation} user creations</b>.
+                                    </Trans>
+                                </li>
+                            )}
+                            {bulkResponseSummary.failedUserAssignment !== 0 && (
+                                <li>
+                                    <Trans
+                                        i18nKey={
+                                            "console:manage.features.user.modals." +
+                                            "bulkImportUserWizard.wizardSummary.alerts.importFailed." +
+                                            "groupAssignment"
                                         }
-                                    </Alert>
-                                )
-                    }
+                                        tOptions={{
+                                            failedUserAssignmentCount: bulkResponseSummary.failedUserAssignment
+                                        }}
+                                    >
+                                        Issues encountered in
+                                        <b>{bulkResponseSummary.failedUserAssignment} group assignments</b>. Users in
+                                        the affected groups were created but not assigned. Please navigate to User
+                                        Management section to review and assign groups to the users.
+                                    </Trans>
+                                </li>
+                            )}
+                        </Alert>
+                    )}
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns={ 1 }>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                    { resolveBulkResponseOperationTypeSelection() }
+            <Grid.Row columns={1}>
+                <Grid.Column mobile={16} tablet={16} computer={16}>
+                    {resolveBulkResponseOperationTypeSelection()}
                 </Grid.Column>
             </Grid.Row>
-            <Grid.Row columns={ 1 }>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
+            <Grid.Row columns={1}>
+                <Grid.Column mobile={16} tablet={16} computer={16}>
                     <ListLayout
-                        advancedSearch={ (
+                        advancedSearch={
                             <AdvancedSearchWithBasicFilters
-                                onFilter={ handleUserFilter }
-                                filterAttributeOptions={ advanceSearchFilterOptions }
+                                onFilter={handleUserFilter}
+                                filterAttributeOptions={advanceSearchFilterOptions}
                                 filterAttributePlaceholder={
                                     responseOperationType === BulkImportResponseOperationTypes.USER_CREATION
-                                        ? t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                            "filterAttributeOptions.username")
-                                        : t("console:manage.features.user.modals.bulkImportUserWizard." +
-                                            "wizardSummary.advanceSearch.roleGroupFilterAttributePlaceHolder")
+                                        ? t(
+                                              "console:manage.features.users.advancedSearch.form.dropdown." +
+                                                  "filterAttributeOptions.username"
+                                          )
+                                        : t(
+                                              "console:manage.features.user.modals.bulkImportUserWizard." +
+                                                  "wizardSummary.advanceSearch.roleGroupFilterAttributePlaceHolder"
+                                          )
                                 }
-                                filterConditionsPlaceholder={
-                                    t("console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
-                                    ".placeholder")
-                                }
-                                filterValuePlaceholder={
-                                    t("console:manage.features.users.advancedSearch.form.inputs.filterValue" +
-                                    ".placeholder")
-                                }
+                                filterConditionsPlaceholder={t(
+                                    "console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
+                                        ".placeholder"
+                                )}
+                                filterValuePlaceholder={t(
+                                    "console:manage.features.users.advancedSearch.form.inputs.filterValue" +
+                                        ".placeholder"
+                                )}
                                 placeholder={
                                     responseOperationType === BulkImportResponseOperationTypes.USER_CREATION
-                                        ? t("console:manage.features.user.modals.bulkImportUserWizard." +
-                                            "wizardSummary.advanceSearch.searchByUsername")
-                                        : t("console:manage.features.user.modals.bulkImportUserWizard." +
-                                            "wizardSummary.advanceSearch.searchByGroup")
+                                        ? t(
+                                              "console:manage.features.user.modals.bulkImportUserWizard." +
+                                                  "wizardSummary.advanceSearch.searchByUsername"
+                                          )
+                                        : t(
+                                              "console:manage.features.user.modals.bulkImportUserWizard." +
+                                                  "wizardSummary.advanceSearch.searchByGroup"
+                                          )
                                 }
                                 defaultSearchAttribute="resourceName"
                                 defaultSearchOperator="co"
-                                triggerClearQuery={ triggerClearQuery }
-                                data-testid={ `${componentId}-advanced-search` }
-                                data-componentid={ `${componentId}-advanced-search` }
+                                triggerClearQuery={triggerClearQuery}
+                                data-testid={`${componentId}-advanced-search`}
+                                data-componentid={`${componentId}-advanced-search`}
                             />
-                        ) }
-                        rightActionPanel={
-                            (
-                                <>
-                                    <Dropdown
-                                        data-testid={ `${componentId}-filter-status-dropdown` }
-                                        data-componentid={ `${componentId}-filter-status-dropdown` }
-                                        selection
-                                        options={ statusOptions }
-                                        onChange={ handleStatusDropdownChange }
-                                        value={ selectedStatus }
-                                        disabled={ isResponseStatusFilterDisabled() }
-                                    />
-                                </>
-                            )
                         }
-                        showPagination={ false }
-                        showTopActionPanel={ true }
-                        totalPages={ Math.ceil(totalUserCreationCount / listItemLimit) }
-                        totalListSize={ totalUserCreationCount }
-                        isLoading={ isLoading }
-                        listItemLimit={ UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT }
-                        data-testid={ `${componentId}-list-layout` }
-                        data-componentid={ `${componentId}-list-layout` }
-                        onPageChange={ () => null }
-                        disableRightActionPanel={ false }
+                        rightActionPanel={
+                            <>
+                                <Dropdown
+                                    data-testid={`${componentId}-filter-status-dropdown`}
+                                    data-componentid={`${componentId}-filter-status-dropdown`}
+                                    selection
+                                    options={statusOptions}
+                                    onChange={handleStatusDropdownChange}
+                                    value={selectedStatus}
+                                    disabled={isResponseStatusFilterDisabled()}
+                                />
+                            </>
+                        }
+                        showPagination={false}
+                        showTopActionPanel={true}
+                        totalPages={Math.ceil(totalUserCreationCount / listItemLimit)}
+                        totalListSize={totalUserCreationCount}
+                        isLoading={isLoading}
+                        listItemLimit={UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT}
+                        data-testid={`${componentId}-list-layout`}
+                        data-componentid={`${componentId}-list-layout`}
+                        onPageChange={() => null}
+                        disableRightActionPanel={false}
                     >
-                        <Typography variant="body2" style={ { textAlign: "right" } }>
-                            {
-                                responseOperationType === BulkImportResponseOperationTypes.USER_CREATION
-                                    ? (
-                                        t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
-                                        "totalUserCreationCount") + " : " + totalUserCreationCount
-                                    )
-                                    : (
-                                        t("console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
-                                        "totalUserAssignmentCount") + " : " + totalUserAssignmentCount
-                                    )
-                            }
+                        <Typography variant="body2" style={{ textAlign: "right" }}>
+                            {responseOperationType === BulkImportResponseOperationTypes.USER_CREATION
+                                ? t(
+                                      "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
+                                          "totalUserCreationCount"
+                                  ) +
+                                  " : " +
+                                  totalUserCreationCount
+                                : t(
+                                      "console:manage.features.user.modals.bulkImportUserWizard.wizardSummary." +
+                                          "totalUserAssignmentCount"
+                                  ) +
+                                  " : " +
+                                  totalUserAssignmentCount}
                         </Typography>
                         <DataTable<BulkUserImportOperationResponse>
                             className="addon-field-wrapper"
-                            isLoading={ isLoading }
-                            actions={ [] }
-                            columns={ resolveTableColumns() }
-                            data={ filteredResponseList }
-                            onColumnSelectionChange={ () => null }
-                            onRowClick={ () => null }
-                            placeholders={ showPlaceholders() }
-                            transparent={ true }
-                            selectable={ false }
-                            showHeader={ false }
-                            data-testid={ `${componentId}-data-table` }
-                            data-componentid={ `${componentId}-data-table` }
-                            loadingStateOptions={ {
+                            isLoading={isLoading}
+                            actions={[]}
+                            columns={resolveTableColumns()}
+                            data={filteredResponseList}
+                            onColumnSelectionChange={() => null}
+                            onRowClick={() => null}
+                            placeholders={showPlaceholders()}
+                            transparent={true}
+                            selectable={false}
+                            showHeader={false}
+                            data-testid={`${componentId}-data-table`}
+                            data-componentid={`${componentId}-data-table`}
+                            loadingStateOptions={{
                                 count: UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                                 imageType: "circular"
-                            } }
+                            }}
                         />
                     </ListLayout>
                 </Grid.Column>

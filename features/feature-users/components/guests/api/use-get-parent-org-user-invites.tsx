@@ -16,20 +16,18 @@
  * under the License.
  */
 import { HttpMethods } from "@wso2is/core/models";
-import { RequestErrorInterface, RequestResultInterface } from "@wso2is/feature-hooks.common/hooks";
-import { store } from "@wso2is/feature-store.common/store";
+import { RequestErrorInterface, RequestResultInterface } from "@wso2is/feature-hooks.common";
+import useRequest from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
 import { AxiosRequestConfig } from "axios";
-import useRequest from "features/0feature-hooks.common/hooks/use-request";
 import { InvitationsInterface } from "../models/invite";
 
 /**
  * Hook to get the parent org user invites list.
  */
-export const useGetParentOrgUserInvites = <Data = InvitationsInterface,
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean = true
-    ): RequestResultInterface<Data, Error> => {
-
+export const useGetParentOrgUserInvites = <Data = InvitationsInterface, Error = RequestErrorInterface>(
+    shouldFetch: boolean = true
+): RequestResultInterface<Data, Error> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
             "Content-Type": "application/json"

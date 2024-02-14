@@ -24,8 +24,8 @@ import {
     RolesInterface,
     RolesMemberInterface
 } from "@wso2is/core/models";
-import { updateResources } from "@wso2is/feature-apis.common/api";
-import {getEmptyPlaceholderIllustrations} from "@wso2is/feature-configs.common/configs";
+import { updateResources } from "@wso2is/feature-apis.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api";
 import {
     OrganizationResponseInterface,
@@ -35,7 +35,7 @@ import {
 import { OrganizationUtils } from "@wso2is/feature-organizations.common/utils";
 import { getRolesList } from "@wso2is/feature-roles.common/api/roles";
 import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "@wso2is/feature-roles.common/constants";
-import {AppState}from "@wso2is/feature-store.common/store";
+import { AppState } from "@wso2is/feature-store.common";
 import { UserRolePermissions } from "@wso2is/feature-users.common/components/user-role-permissions";
 import {
     ContentLoader,
@@ -58,9 +58,6 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Button, Divider, Grid, Icon, Input, InputOnChangeData, Label, Modal, Table } from "semantic-ui-react";
 import { RolePermissions } from "./wizard/user-role-permissions";
-
-
-
 
 interface UserRolesV1PropsInterface {
     /**

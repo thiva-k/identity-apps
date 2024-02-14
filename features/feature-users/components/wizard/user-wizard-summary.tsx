@@ -21,7 +21,7 @@ import { addAlert } from "@wso2is/core/store";
 import { CommonUtils } from "@wso2is/core/utils";
 import { OrganizationType } from "@wso2is/feature-organizations.common/constants";
 import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
-import { AppState } from "@wso2is/feature-store.common/store";
+import { AppState } from "@wso2is/feature-store.common";
 import { ContentLoader, CopyInputField, Message, Popup } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";

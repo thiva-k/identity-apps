@@ -18,7 +18,7 @@
 
 import { getUserNameWithoutDomain } from "@wso2is/core/helpers";
 import { ProfileInfoInterface } from "@wso2is/core/models";
-import { UserRoleInterface } from "@wso2is/feature-models.common/models";
+import { UserRoleInterface } from "@wso2is/feature-models.common";
 import { MultipleInviteMode, MultipleInvitesDisplayNames } from "@wso2is/feature-users.common/models";
 import { administratorConfig } from "../../../extensions/configs/administrator";
 import {
@@ -44,7 +44,10 @@ export class UserManagementUtils {
 
         if (authenticatedUsername.split("@").length > 2) {
             // If the username contains 2 @ symbols, it contains the tenant domain as well.
-            authenticatedUsername = authenticatedUser.split("@").slice(0,2).join("@");
+            authenticatedUsername = authenticatedUser
+                .split("@")
+                .slice(0, 2)
+                .join("@");
         }
 
         return getUserNameWithoutDomain(username) === authenticatedUsername;
@@ -54,9 +57,7 @@ export class UserManagementUtils {
      * Checks whether administrator role is present in the user roles.
      */
     public static isAdminUser = (roles: UserRoleInterface[]): boolean => {
-        return roles.some((role: UserRoleInterface) =>
-            role.display === administratorConfig.adminRoleName
-        );
+        return roles.some((role: UserRoleInterface) => role.display === administratorConfig.adminRoleName);
     };
 
     /**
@@ -99,9 +100,9 @@ export class UserManagementUtils {
  * @returns the userbane validation configuration.
  */
 export const getUsernameConfiguration = (configs: ValidationDataInterface[]): ValidationFormInterface => {
-
-    const usernameConf: ValidationDataInterface[] =
-        configs?.filter((data: ValidationDataInterface) => data.field === "username");
+    const usernameConf: ValidationDataInterface[] = configs?.filter(
+        (data: ValidationDataInterface) => data.field === "username"
+    );
 
     if (usernameConf === undefined || usernameConf.length < 1) {
         return;
@@ -116,20 +117,18 @@ export const getUsernameConfiguration = (configs: ValidationDataInterface[]): Va
 
     return {
         enableValidator:
-                (getValidationConfig(rules, "AlphanumericValidator", "enable.validator") === "true"
-                || !(getValidationConfig(rules, "EmailFormatValidator", "enable.validator") === "true"))
-                    ? "true"
-                    : "false",
+            getValidationConfig(rules, "AlphanumericValidator", "enable.validator") === "true" ||
+            !(getValidationConfig(rules, "EmailFormatValidator", "enable.validator") === "true")
+                ? "true"
+                : "false",
         field: "username",
         isAlphanumericOnly: getValidationConfig(rules, "AlphanumericValidator", "enable.special.characters") !== "true",
-        maxLength:
-            getValidationConfig(rules, "LengthValidator", "max.length")
-                ? getValidationConfig(rules, "LengthValidator", "max.length")
-                : null,
-        minLength:
-            getValidationConfig(rules, "LengthValidator", "min.length")
-                ? getValidationConfig(rules, "LengthValidator", "min.length")
-                : null,
+        maxLength: getValidationConfig(rules, "LengthValidator", "max.length")
+            ? getValidationConfig(rules, "LengthValidator", "max.length")
+            : null,
+        minLength: getValidationConfig(rules, "LengthValidator", "min.length")
+            ? getValidationConfig(rules, "LengthValidator", "min.length")
+            : null,
         type: "rules"
     };
 };
@@ -142,7 +141,6 @@ const getValidationConfig = (
     validatorName: string,
     attributeName: string
 ): string => {
-
     const config: ValidationConfInterface[] = rules?.filter((data: ValidationConfInterface) => {
         return data.validator === validatorName;
     });

@@ -18,35 +18,22 @@
 import { ProfileConstants } from "@wso2is/core/constants";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertInterface, AlertLevels, ProfileInfoInterface, TestableComponentInterface } from "@wso2is/core/models";
-import {AppConstants}from "@wso2is/feature-constants.common/constants";
-import { history } from "@wso2is/feature-helpers.common/helpers";
-import {FeatureConfigInterface}from "@wso2is/feature-models.common/models";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models/roles";
-import {AppState}from "@wso2is/feature-store.common/store";
+import { AppState } from "@wso2is/feature-store.common/";
 import { updateUserInfo } from "@wso2is/feature-users.common/api";
-import { SharedUserStoreUtils } from "@wso2is/feature-utils.common/utils";
+import { SharedUserStoreUtils } from "@wso2is/feature-utils.common";
 import { Field, FormValue, Forms, RadioChild, Validation, useTrigger } from "@wso2is/forms";
 import { LinkButton, Message, PasswordValidation, PrimaryButton } from "@wso2is/react-components";
 import { IdentityAppsApiException } from "modules/core/dist/types/exceptions";
-import React,
-{
-    FunctionComponent,
-    ReactElement,
-    ReactNode,
-    useEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, ReactNode, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid, Icon, Modal, SemanticCOLORS } from "semantic-ui-react";
-import {
-    ConnectorPropertyInterface,
-    ServerConfigurationsConstants
-} from "../../server-configurations";
-import {
-    PRIMARY_USERSTORE,
-    USERSTORE_REGEX_PROPERTIES
-} from "../../userstores/constants/user-store-constants";
+import { ConnectorPropertyInterface, ServerConfigurationsConstants } from "../../server-configurations";
+import { PRIMARY_USERSTORE, USERSTORE_REGEX_PROPERTIES } from "../../userstores/constants/user-store-constants";
 import { useValidationConfigData } from "../../validation/api";
 import { ValidationFormInterface } from "../../validation/models";
 import { getConfiguration } from "../utils";
@@ -94,7 +81,6 @@ interface ChangePasswordPropsInterface extends TestableComponentInterface {
 export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInterface> = (
     props: ChangePasswordPropsInterface
 ): ReactElement => {
-
     const {
         onAlertFired,
         user,
@@ -103,32 +89,29 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
         handleCloseChangePasswordModal,
         connectorProperties,
         handleForcePasswordResetTrigger,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ passwordConfig, setPasswordConfig ] = useState<ValidationFormInterface>(undefined);
-    const [ userStorePasswordRegex, setUserStorePasswordRegex ] = useState<string>("");
-    const [ isPasswordRegExLoading, setPasswordRegExLoading ] = useState<boolean>(false);
-    const [ isPasswordPatternValid, setIsPasswordPatternValid ] = useState<boolean>(true);
-    const [ isConfirmPasswordMatch, setIsConfirmPasswordMatch ] = useState<boolean>(undefined);
-    const [ password, setPassword ] = useState<string>("");
-    const [ passwordResetOption, setPasswordResetOption ] = useState("setPassword");
-    const [ triggerSubmit, setTriggerSubmit ] = useTrigger();
-    const [
-        governanceConnectorProperties,
-        setGovernanceConnectorProperties
-    ] = useState<ConnectorPropertyInterface[]>(undefined);
-    const [ forcePasswordReset, setForcePasswordReset ] = useState<string>("false");
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [passwordConfig, setPasswordConfig] = useState<ValidationFormInterface>(undefined);
+    const [userStorePasswordRegex, setUserStorePasswordRegex] = useState<string>("");
+    const [isPasswordRegExLoading, setPasswordRegExLoading] = useState<boolean>(false);
+    const [isPasswordPatternValid, setIsPasswordPatternValid] = useState<boolean>(true);
+    const [isConfirmPasswordMatch, setIsConfirmPasswordMatch] = useState<boolean>(undefined);
+    const [password, setPassword] = useState<string>("");
+    const [passwordResetOption, setPasswordResetOption] = useState("setPassword");
+    const [triggerSubmit, setTriggerSubmit] = useTrigger();
+    const [governanceConnectorProperties, setGovernanceConnectorProperties] = useState<ConnectorPropertyInterface[]>(
+        undefined
+    );
+    const [forcePasswordReset, setForcePasswordReset] = useState<string>("false");
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const {
-        data: validationConfig
-    } = useValidationConfigData();
+    const { data: validationConfig } = useValidationConfigData();
 
     /**
      * Retrieve the password validation configuration from the validation data.
@@ -137,7 +120,7 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
         if (validationConfig) {
             setPasswordConfig(getConfiguration(validationConfig));
         }
-    }, [ validationConfig ]);
+    }, [validationConfig]);
 
     /**
      * This gets regex for the current user's userstore.
@@ -154,7 +137,7 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
             .finally(() => {
                 setPasswordRegExLoading(false);
             });
-    }, [ user ]);
+    }, [user]);
 
     useEffect(() => {
         if (!connectorProperties) {
@@ -164,24 +147,23 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
         if (governanceConnectorProperties === undefined) {
             setGovernanceConnectorProperties(connectorProperties);
         }
-    }, [ connectorProperties ]);
+    }, [connectorProperties]);
 
     useEffect(() => {
-
-        if (governanceConnectorProperties &&
+        if (
+            governanceConnectorProperties &&
             Array.isArray(governanceConnectorProperties) &&
-            governanceConnectorProperties?.length > 0) {
-
+            governanceConnectorProperties?.length > 0
+        ) {
             for (const property of governanceConnectorProperties) {
                 if (property.name === ServerConfigurationsConstants.RECOVERY_LINK_PASSWORD_RESET) {
-
-                    if(property.value === "true") {
+                    if (property.value === "true") {
                         setForcePasswordReset(property.value);
                     }
                 }
             }
         }
-    }, [ governanceConnectorProperties ]);
+    }, [governanceConnectorProperties]);
 
     const handleModalClose = () => {
         setPassword("");
@@ -210,63 +192,65 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
                     "console:manage.features.user.profile.notifications.noPasswordResetOptions.error.description"
                 ),
                 level: AlertLevels.WARNING,
-                message: t(
-                    "console:manage.features.user.profile.notifications.noPasswordResetOptions.error.message"
-                )
+                message: t("console:manage.features.user.profile.notifications.noPasswordResetOptions.error.message")
             });
 
             return;
         }
 
         const data: PatchRoleDataInterface = {
-            "Operations": [
+            Operations: [
                 {
-                    "op": "add",
-                    "value": {
+                    op: "add",
+                    value: {
                         [ProfileConstants.SCIM2_ENT_USER_SCHEMA]: {
-                            "forcePasswordReset": true
+                            forcePasswordReset: true
                         }
                     }
                 }
             ],
-            "schemas": [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
 
         setIsSubmitting(true);
 
-        updateUserInfo(user.id, data).then(() => {
-            onAlertFired({
-                description: t(
-                    "console:manage.features.user.profile.notifications.forcePasswordReset.success.description"
-                ),
-                level: AlertLevels.SUCCESS,
-                message: t(
-                    "console:manage.features.user.profile.notifications.forcePasswordReset.success.message"
-                )
-            });
-            handleForcePasswordResetTrigger();
-            handleModalClose();
-            handleCloseChangePasswordModal();
-            handleUserUpdate(user.id);
-        })
+        updateUserInfo(user.id, data)
+            .then(() => {
+                onAlertFired({
+                    description: t(
+                        "console:manage.features.user.profile.notifications.forcePasswordReset.success.description"
+                    ),
+                    level: AlertLevels.SUCCESS,
+                    message: t("console:manage.features.user.profile.notifications.forcePasswordReset.success.message")
+                });
+                handleForcePasswordResetTrigger();
+                handleModalClose();
+                handleCloseChangePasswordModal();
+                handleUserUpdate(user.id);
+            })
             .catch((error: IdentityAppsApiException) => {
                 if (error.response && error.response.data && error.response.data.description) {
                     onAlertFired({
                         description: error.response.data.description,
                         level: AlertLevels.ERROR,
-                        message: t("console:manage.features.user.profile.notifications.forcePasswordReset.error." +
-                            "message")
+                        message: t(
+                            "console:manage.features.user.profile.notifications.forcePasswordReset.error." + "message"
+                        )
                     });
 
                     return;
                 }
 
                 onAlertFired({
-                    description: t("console:manage.features.user.profile.notifications.forcePasswordReset." +
-                        "genericError.description"),
+                    description: t(
+                        "console:manage.features.user.profile.notifications.forcePasswordReset." +
+                            "genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:manage.features.user.profile.notifications.forcePasswordReset.genericError." +
-                        "message")
+                    message: t(
+                        "console:manage.features.user.profile.notifications.forcePasswordReset.genericError." +
+                            "message"
+                    )
                 });
                 handleModalClose();
                 handleCloseChangePasswordModal();
@@ -277,11 +261,12 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
     };
 
     const handleLoginAndRegistrationPageRedirect = () => {
-        history.push(AppConstants.getPaths().get("GOVERNANCE_CONNECTOR_EDIT")
-            .replace(":categoryId",
-                ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID)
-            .replace(":connectorId",
-                ServerConfigurationsConstants.ADMIN_FORCED_PASSWORD_RESET));
+        history.push(
+            AppConstants.getPaths()
+                .get("GOVERNANCE_CONNECTOR_EDIT")
+                .replace(":categoryId", ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID)
+                .replace(":connectorId", ServerConfigurationsConstants.ADMIN_FORCED_PASSWORD_RESET)
+        );
     };
 
     const resolveConfigurationList = (governanceConnectorProperties: ConnectorPropertyInterface[]): ReactNode => {
@@ -289,18 +274,17 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
             if (property?.name === ServerConfigurationsConstants.RECOVERY_LINK_PASSWORD_RESET) {
                 if (property?.value === "true") {
                     return (
-                        <Grid.Row key={ index }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                        <Grid.Row key={index}>
+                            <Grid.Column mobile={16} tablet={16} computer={14}>
                                 <Message
-                                    key={ index }
+                                    key={index}
                                     hideDefaultIcon
                                     icon="mail"
-                                    content=
-                                        {
-                                            t("extensions:manage.users." +
+                                    content={t(
+                                        "extensions:manage.users." +
                                             "editUserProfile.resetPassword." +
-                                            "changePasswordModal.emailResetWarning")
-                                        }
+                                            "changePasswordModal.emailResetWarning"
+                                    )}
                                 />
                             </Grid.Column>
                         </Grid.Row>
@@ -308,37 +292,40 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
                 }
 
                 return (
-                    <Grid.Row key={ index }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                    <Grid.Row key={index}>
+                        <Grid.Column mobile={16} tablet={16} computer={14}>
                             <Message
                                 hideDefaultIcon
                                 error
-                                key={ index }
+                                key={index}
                                 content={
-                                    (
-                                        <>
-                                            <Icon color="red" name="times circle" />
-                                            <Trans
-                                                i18nKey={ "extensions:manage.users.editUserProfile.resetPassword." +
-                                                    "changePasswordModal.passwordResetConfigDisabled" }>
-                                                Password reset via recovery email is not enabled.
-                                                Please make sure to enable it from
-                                                {
-                                                    hasRequiredScopes(featureConfig?.loginAndRegistration,
-                                                        featureConfig?.loginAndRegistration?.scopes?.feature,
-                                                        allowedScopes)
-                                                        ? (
-                                                            <a
-                                                                onClick={ handleLoginAndRegistrationPageRedirect }
-                                                                className="ml-1 external-link link pointing primary"
-                                                            >
-                                                                Login and Registration
-                                                            </a>
-                                                        ) : "Login and Registration"
-                                                } configurations
-                                            </Trans>
-                                        </>
-                                    )
+                                    <>
+                                        <Icon color="red" name="times circle" />
+                                        <Trans
+                                            i18nKey={
+                                                "extensions:manage.users.editUserProfile.resetPassword." +
+                                                "changePasswordModal.passwordResetConfigDisabled"
+                                            }
+                                        >
+                                            Password reset via recovery email is not enabled. Please make sure to enable
+                                            it from
+                                            {hasRequiredScopes(
+                                                featureConfig?.loginAndRegistration,
+                                                featureConfig?.loginAndRegistration?.scopes?.feature,
+                                                allowedScopes
+                                            ) ? (
+                                                <a
+                                                    onClick={handleLoginAndRegistrationPageRedirect}
+                                                    className="ml-1 external-link link pointing primary"
+                                                >
+                                                    Login and Registration
+                                                </a>
+                                            ) : (
+                                                "Login and Registration"
+                                            )}{" "}
+                                            configurations
+                                        </Trans>
+                                    </>
                                 }
                             />
                         </Grid.Column>
@@ -390,12 +377,11 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
     const validateNewPassword = (value: string, validation: Validation) => {
         if (!isNewPasswordValid(value)) {
             validation.isValid = false;
-            validation?.errorMessages?.push(passwordConfig ?
-                t(
-                    "extensions:manage.features.user.addUser.validation.error.passwordValidation"
-                ) : t(
-                    "extensions:manage.features.user.addUser.validation.password"
-                ));
+            validation?.errorMessages?.push(
+                passwordConfig
+                    ? t("extensions:manage.features.user.addUser.validation.error.passwordValidation")
+                    : t("extensions:manage.features.user.addUser.validation.password")
+            );
         }
     };
 
@@ -406,108 +392,109 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
         return (
             <>
                 <Grid.Row>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                    <Grid.Column mobile={16} tablet={16} computer={14}>
                         <Field
                             data-testid="user-mgt-edit-user-form-newPassword-input"
                             className="addon-field-wrapper"
-                            hidePassword={ t("common:hidePassword") }
-                            label={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs.newPassword.label"
-                            ) }
+                            hidePassword={t("common:hidePassword")}
+                            label={t("console:manage.features.user.forms.addUserForm.inputs.newPassword.label")}
                             name="newPassword"
-                            placeholder={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs." +
-                                "newPassword.placeholder"
-                            ) }
-                            required={ true }
-                            requiredErrorMessage={ t(
+                            placeholder={t(
+                                "console:manage.features.user.forms.addUserForm.inputs." + "newPassword.placeholder"
+                            )}
+                            required={true}
+                            requiredErrorMessage={t(
                                 "console:manage.features.user.forms.addUserForm." +
-                                "inputs.newPassword.validations.empty"
-                            ) }
-                            showPassword={ t("common:showPassword") }
+                                    "inputs.newPassword.validations.empty"
+                            )}
+                            showPassword={t("common:showPassword")}
                             type="password"
                             value=""
-                            listen={ handlePasswordChange }
-                            loading={ isPasswordRegExLoading }
-                            validation={ validateNewPassword }
+                            listen={handlePasswordChange}
+                            loading={isPasswordRegExLoading}
+                            validation={validateNewPassword}
                         />
-                        { passwordConfig && (
+                        {passwordConfig && (
                             <PasswordValidation
-                                password={ password }
-                                minLength={ Number(passwordConfig?.minLength) }
-                                maxLength={ Number(passwordConfig?.maxLength) }
-                                minNumbers={ Number(passwordConfig?.minNumbers) }
-                                minUpperCase={ Number(passwordConfig?.minUpperCaseCharacters) }
-                                minLowerCase={ Number(passwordConfig?.minLowerCaseCharacters) }
-                                minSpecialChr={ Number(passwordConfig?.minSpecialCharacters) }
-                                minUniqueChr={ Number(passwordConfig?.minUniqueCharacters) }
-                                maxConsecutiveChr={ Number(passwordConfig?.maxConsecutiveCharacters) }
-                                onPasswordValidate={ onPasswordValidate }
-                                translations={ {
-                                    case: (Number(passwordConfig?.minUpperCaseCharacters) > 0 &&
-                                        Number(passwordConfig?.minLowerCaseCharacters) > 0) ?
-                                        t("extensions:manage.features.user.addUser.validation.passwordCase", {
-                                            minLowerCase: passwordConfig?.minLowerCaseCharacters,
-                                            minUpperCase: passwordConfig?.minUpperCaseCharacters
-                                        }) : (
-                                            Number(passwordConfig?.minUpperCaseCharacters) > 0 ?
-                                                t("extensions:manage.features.user.addUser.validation.upperCase", {
-                                                    minUpperCase: passwordConfig?.minUpperCaseCharacters
-                                                }) : t("extensions:manage.features.user.addUser.validation" +
-                                                    ".lowerCase", {
-                                                    minLowerCase: passwordConfig?.minLowerCaseCharacters
-                                                })
-                                        ),
-                                    consecutiveChr:
-                                        t("extensions:manage.features.user.addUser.validation." +
-                                            "consecutiveCharacters", {
+                                password={password}
+                                minLength={Number(passwordConfig?.minLength)}
+                                maxLength={Number(passwordConfig?.maxLength)}
+                                minNumbers={Number(passwordConfig?.minNumbers)}
+                                minUpperCase={Number(passwordConfig?.minUpperCaseCharacters)}
+                                minLowerCase={Number(passwordConfig?.minLowerCaseCharacters)}
+                                minSpecialChr={Number(passwordConfig?.minSpecialCharacters)}
+                                minUniqueChr={Number(passwordConfig?.minUniqueCharacters)}
+                                maxConsecutiveChr={Number(passwordConfig?.maxConsecutiveCharacters)}
+                                onPasswordValidate={onPasswordValidate}
+                                translations={{
+                                    case:
+                                        Number(passwordConfig?.minUpperCaseCharacters) > 0 &&
+                                        Number(passwordConfig?.minLowerCaseCharacters) > 0
+                                            ? t("extensions:manage.features.user.addUser.validation.passwordCase", {
+                                                  minLowerCase: passwordConfig?.minLowerCaseCharacters,
+                                                  minUpperCase: passwordConfig?.minUpperCaseCharacters
+                                              })
+                                            : Number(passwordConfig?.minUpperCaseCharacters) > 0
+                                            ? t("extensions:manage.features.user.addUser.validation.upperCase", {
+                                                  minUpperCase: passwordConfig?.minUpperCaseCharacters
+                                              })
+                                            : t("extensions:manage.features.user.addUser.validation" + ".lowerCase", {
+                                                  minLowerCase: passwordConfig?.minLowerCaseCharacters
+                                              }),
+                                    consecutiveChr: t(
+                                        "extensions:manage.features.user.addUser.validation." + "consecutiveCharacters",
+                                        {
                                             repeatedChr: passwordConfig?.maxConsecutiveCharacters
-                                        }),
+                                        }
+                                    ),
                                     length: t("extensions:manage.features.user.addUser.validation.passwordLength", {
-                                        max: passwordConfig?.maxLength, min: passwordConfig?.minLength
+                                        max: passwordConfig?.maxLength,
+                                        min: passwordConfig?.minLength
                                     }),
-                                    numbers:
-                                        t("extensions:manage.features.user.addUser.validation.passwordNumeric", {
-                                            min: passwordConfig?.minNumbers
-                                        }),
-                                    specialChr:
-                                        t("extensions:manage.features.user.addUser.validation.specialCharacter", {
+                                    numbers: t("extensions:manage.features.user.addUser.validation.passwordNumeric", {
+                                        min: passwordConfig?.minNumbers
+                                    }),
+                                    specialChr: t(
+                                        "extensions:manage.features.user.addUser.validation.specialCharacter",
+                                        {
                                             specialChr: passwordConfig?.minSpecialCharacters
-                                        }),
-                                    uniqueChr:
-                                        t("extensions:manage.features.user.addUser.validation.uniqueCharacters", {
+                                        }
+                                    ),
+                                    uniqueChr: t(
+                                        "extensions:manage.features.user.addUser.validation.uniqueCharacters",
+                                        {
                                             uniqueChr: passwordConfig?.minUniqueCharacters
-                                        })
-                                } }
+                                        }
+                                    )
+                                }}
                             />
-                        ) }
+                        )}
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                    <Grid.Column mobile={16} tablet={16} computer={14}>
                         <Field
                             data-testid="user-mgt-edit-user-form-confirmPassword-input"
                             className="addon-field-wrapper"
-                            hidePassword={ t("common:hidePassword") }
-                            label={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs.confirmPassword.label"
-                            ) }
+                            hidePassword={t("common:hidePassword")}
+                            label={t("console:manage.features.user.forms.addUserForm.inputs.confirmPassword.label")}
                             name="confirmPassword"
-                            placeholder={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs." +
-                                "confirmPassword.placeholder"
-                            ) }
-                            required={ true }
-                            requiredErrorMessage={ t(
+                            placeholder={t(
+                                "console:manage.features.user.forms.addUserForm.inputs." + "confirmPassword.placeholder"
+                            )}
+                            required={true}
+                            requiredErrorMessage={t(
                                 "console:manage.features.user.forms.addUserForm." +
-                                "inputs.confirmPassword.validations.empty"
-                            ) }
-                            showPassword={ t("common:showPassword") }
+                                    "inputs.confirmPassword.validations.empty"
+                            )}
+                            showPassword={t("common:showPassword")}
                             type="password"
                             value=""
-                            listen={ (values: Map<string, FormValue>): void => {
-                                if (values?.get("newPassword") === values?.get("confirmPassword")
-                                    && values?.get("confirmPassword") !== "") {
+                            listen={(values: Map<string, FormValue>): void => {
+                                if (
+                                    values?.get("newPassword") === values?.get("confirmPassword") &&
+                                    values?.get("confirmPassword") !== ""
+                                ) {
                                     setIsConfirmPasswordMatch(true);
 
                                     return;
@@ -516,18 +503,19 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
                                 if (isConfirmPasswordMatch !== undefined) {
                                     setIsConfirmPasswordMatch(undefined);
                                 }
-                            } }
-                            validation={
-                                (value: string, validation: Validation, formValues: Map<string, FormValue>) => {
-                                    if (formValues?.get("newPassword") !== value) {
-                                        validation.isValid = false;
-                                        setIsConfirmPasswordMatch(false);
-                                        validation?.errorMessages?.push(
-                                            t("console:manage.features.user.forms.addUserForm.inputs" +
-                                            ".confirmPassword.validations.mismatch"));
-                                    }
+                            }}
+                            validation={(value: string, validation: Validation, formValues: Map<string, FormValue>) => {
+                                if (formValues?.get("newPassword") !== value) {
+                                    validation.isValid = false;
+                                    setIsConfirmPasswordMatch(false);
+                                    validation?.errorMessages?.push(
+                                        t(
+                                            "console:manage.features.user.forms.addUserForm.inputs" +
+                                                ".confirmPassword.validations.mismatch"
+                                        )
+                                    );
                                 }
-                            }
+                            }}
                         />
                         <div className="password-policy-description">
                             <Icon
@@ -535,19 +523,19 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
                                     isConfirmPasswordMatch === undefined
                                         ? "circle thin"
                                         : isConfirmPasswordMatch
-                                            ? "check circle"
-                                            : "remove circle"
+                                        ? "check circle"
+                                        : "remove circle"
                                 }
                                 color={
                                     isConfirmPasswordMatch === undefined
-                                        ? "grey" as SemanticCOLORS
+                                        ? ("grey" as SemanticCOLORS)
                                         : isConfirmPasswordMatch
-                                            ? "green" as SemanticCOLORS
-                                            : "red" as SemanticCOLORS
+                                        ? ("green" as SemanticCOLORS)
+                                        : ("red" as SemanticCOLORS)
                                 }
                                 inverted
                             />
-                            <p>{ t("extensions:manage.features.user.addUser.validation.confirmPassword") }</p>
+                            <p>{t("extensions:manage.features.user.addUser.validation.confirmPassword")}</p>
                         </div>
                     </Grid.Column>
                 </Grid.Row>
@@ -568,53 +556,56 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
     };
 
     const handleChangeUserPassword = (values: Map<string, string | string[]>): void => {
-
         const data: PatchRoleDataInterface = {
-            "Operations": [
+            Operations: [
                 {
-                    "op": "replace",
-                    "value": {
-                        "password": values.get("newPassword").toString()
+                    op: "replace",
+                    value: {
+                        password: values.get("newPassword").toString()
                     }
                 }
             ],
-            "schemas": [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
 
         setIsSubmitting(true);
 
-        updateUserInfo(user.id, data).then(() => {
-            onAlertFired({
-                description: t(
-                    "console:manage.features.user.profile.notifications.changeUserPassword.success.description"
-                ),
-                level: AlertLevels.SUCCESS,
-                message: t(
-                    "console:manage.features.user.profile.notifications.changeUserPassword.success.message"
-                )
-            });
-            handleCloseChangePasswordModal();
-            handleModalClose();
-            handleUserUpdate(user.id);
-        })
+        updateUserInfo(user.id, data)
+            .then(() => {
+                onAlertFired({
+                    description: t(
+                        "console:manage.features.user.profile.notifications.changeUserPassword.success.description"
+                    ),
+                    level: AlertLevels.SUCCESS,
+                    message: t("console:manage.features.user.profile.notifications.changeUserPassword.success.message")
+                });
+                handleCloseChangePasswordModal();
+                handleModalClose();
+                handleUserUpdate(user.id);
+            })
             .catch((error: any) => {
                 if (error.response && error.response.data && error.response.data.description) {
                     onAlertFired({
                         description: error.response.data.description,
                         level: AlertLevels.ERROR,
-                        message: t("console:manage.features.user.profile.notifications.changeUserPassword.error." +
-                        "message")
+                        message: t(
+                            "console:manage.features.user.profile.notifications.changeUserPassword.error." + "message"
+                        )
                     });
 
                     return;
                 }
 
                 onAlertFired({
-                    description: t("console:manage.features.user.profile.notifications.changeUserPassword" +
-                        ".genericError.description"),
+                    description: t(
+                        "console:manage.features.user.profile.notifications.changeUserPassword" +
+                            ".genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:manage.features.user.profile.notifications.changeUserPassword.genericError." +
-                        "message")
+                    message: t(
+                        "console:manage.features.user.profile.notifications.changeUserPassword.genericError." +
+                            "message"
+                    )
                 });
                 handleCloseChangePasswordModal();
                 handleModalClose();
@@ -633,31 +624,32 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
             return (
                 <>
                     <Grid.Row>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                        <Grid.Column mobile={16} tablet={16} computer={14}>
                             <Field
                                 data-testid="user-mgt-add-user-form-passwordOption-radio-button"
                                 type="radio"
-                                label={ t("console:manage.features.user.forms.addUserForm.buttons." +
-                                    "radioButton.label") }
+                                label={t(
+                                    "console:manage.features.user.forms.addUserForm.buttons." + "radioButton.label"
+                                )}
                                 name="passwordOption"
                                 default="setPassword"
-                                listen={ (values: Map<string, FormValue>) => {
+                                listen={(values: Map<string, FormValue>) => {
                                     setPasswordResetOption(values.get("passwordOption").toString());
-                                } }
-                                children={ passwordResetOptions }
-                                value={ "setPassword" }
-                                tabIndex={ 4 }
-                                maxWidth={ 60 }
-                                width={ 60 }
+                                }}
+                                children={passwordResetOptions}
+                                value={"setPassword"}
+                                tabIndex={4}
+                                maxWidth={60}
+                                width={60}
                             />
                         </Grid.Column>
                     </Grid.Row>
-                    { handlePasswordResetOptionChange() }
+                    {handlePasswordResetOptionChange()}
                     <Grid.Row>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                        <Grid.Column mobile={16} tablet={16} computer={14}>
                             <Message
                                 type="warning"
-                                content={ t("console:manage.features.user.modals.changePasswordModal.message") }
+                                content={t("console:manage.features.user.modals.changePasswordModal.message")}
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -666,12 +658,12 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
         } else {
             return (
                 <>
-                    { passwordFormFields() }
+                    {passwordFormFields()}
                     <Grid.Row>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                        <Grid.Column mobile={16} tablet={16} computer={14}>
                             <Message
                                 type="warning"
-                                content={ t("console:manage.features.user.modals.changePasswordModal.message") }
+                                content={t("console:manage.features.user.modals.changePasswordModal.message")}
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -681,53 +673,45 @@ export const ChangePasswordComponent: FunctionComponent<ChangePasswordPropsInter
     };
 
     return (
-        <Modal
-            data-testid={ testId }
-            open={ openChangePasswordModal }
-            size="tiny"
-        >
-            <Modal.Header>
-                { t("console:manage.features.user.modals.changePasswordModal.header") }
-            </Modal.Header>
+        <Modal data-testid={testId} open={openChangePasswordModal} size="tiny">
+            <Modal.Header>{t("console:manage.features.user.modals.changePasswordModal.header")}</Modal.Header>
             <Modal.Content>
                 <Forms
-                    data-testid={ `${ testId }-form` }
-                    onSubmit={ (values: Map<string, FormValue>) => {
+                    data-testid={`${testId}-form`}
+                    onSubmit={(values: Map<string, FormValue>) => {
                         if (passwordResetOption === "setPassword") {
                             handleChangeUserPassword(values);
                         } else {
                             handleForcePasswordReset();
                         }
-                    } }
-                    submitState={ triggerSubmit }
+                    }}
+                    submitState={triggerSubmit}
                 >
-                    <Grid>
-                        { resolveModalContent() }
-                    </Grid>
+                    <Grid>{resolveModalContent()}</Grid>
                 </Forms>
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={16}>
                             <PrimaryButton
-                                data-testid={ `${ testId }-save-button` }
+                                data-testid={`${testId}-save-button`}
                                 floated="right"
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
-                                onClick={ () => setTriggerSubmit() }
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
+                                onClick={() => setTriggerSubmit()}
                             >
-                                { t("console:manage.features.user.modals.changePasswordModal.button") }
+                                {t("console:manage.features.user.modals.changePasswordModal.button")}
                             </PrimaryButton>
                             <LinkButton
-                                data-testid={ `${ testId }-cancel-button` }
+                                data-testid={`${testId}-cancel-button`}
                                 floated="left"
-                                onClick={ () => {
+                                onClick={() => {
                                     handleCloseChangePasswordModal();
                                     handleModalClose();
-                                } }
+                                }}
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
                     </Grid.Row>

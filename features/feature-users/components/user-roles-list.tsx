@@ -22,17 +22,12 @@ import {
     RoleGroupsInterface,
     RolesMemberInterface
 } from "@wso2is/core/models";
-import {getEmptyPlaceholderIllustrations} from "@wso2is/feature-configs.common/configs";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { ReadOnlyRoleList } from "@wso2is/feature-roles.common/components/readonly-role-list";
 import { APPLICATION_DOMAIN, DOMAIN_SEPARATOR, INTERNAL_DOMAIN } from "@wso2is/feature-roles.common/constants";
-import {AppState}from "@wso2is/feature-store.common/store";
+import { AppState } from "@wso2is/feature-store.common";
 import { EmphasizedSegment, EmptyPlaceholder, Heading, Message } from "@wso2is/react-components";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    useEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider } from "semantic-ui-react";
@@ -49,14 +44,14 @@ interface UserRoleEditPropsInterface extends IdentifiableComponentInterface {
 export const UserRolesList: FunctionComponent<UserRoleEditPropsInterface> = (
     props: UserRoleEditPropsInterface
 ): ReactElement => {
-
     const { user } = props;
 
     const { t } = useTranslation();
 
-    const [ initialSelectedRolesOptions, setInitialSelectedRolesOptions ] = useState<RolesMemberInterface[]>([]);
-    const isGroupAndRoleSeparationEnabled: boolean = useSelector((state: AppState) =>
-        state?.config?.ui?.isGroupAndRoleSeparationEnabled);
+    const [initialSelectedRolesOptions, setInitialSelectedRolesOptions] = useState<RolesMemberInterface[]>([]);
+    const isGroupAndRoleSeparationEnabled: boolean = useSelector(
+        (state: AppState) => state?.config?.ui?.isGroupAndRoleSeparationEnabled
+    );
 
     /**
      * Set initial selected roles options
@@ -73,7 +68,7 @@ export const UserRolesList: FunctionComponent<UserRoleEditPropsInterface> = (
         if (userRoles?.length > 0) {
             setInitialSelectedRolesOptions(userRoles);
         }
-    }, [ user ]);
+    }, [user]);
 
     /**
      * When Group and Role Separation is enabled, the groups section of the user will contain both roles and groups.
@@ -83,13 +78,12 @@ export const UserRolesList: FunctionComponent<UserRoleEditPropsInterface> = (
      * @returns Roles of the user
      */
     const extractUserRolesFromGroups = (groups: RoleGroupsInterface[]): RolesMemberInterface[] => {
-
         const userRoles: RolesMemberInterface[] = [];
 
         groups?.forEach((group: RoleGroupsInterface) => {
-            const [ domain, displayName ]: string[] = group?.display?.split(DOMAIN_SEPARATOR);
+            const [domain, displayName]: string[] = group?.display?.split(DOMAIN_SEPARATOR);
 
-            if (domain && displayName && [ APPLICATION_DOMAIN, INTERNAL_DOMAIN ].includes(domain)) {
+            if (domain && displayName && [APPLICATION_DOMAIN, INTERNAL_DOMAIN].includes(domain)) {
                 userRoles.push({
                     $ref: group.$ref,
                     display: displayName,
@@ -111,13 +105,16 @@ export const UserRolesList: FunctionComponent<UserRoleEditPropsInterface> = (
     const getPlaceholders = () => {
         return (
             <EmptyPlaceholder
-                subtitle={
-                    [ t("console:manage.features.user.updateUser.roles.editRoles.placeholders.emptyPlaceholder" +
-                        ".subtitles") ]
-                }
-                title={ t("console:manage.features.user.updateUser.roles.editRoles.placeholders.emptyPlaceholder" +
-                    ".title") }
-                image={ getEmptyPlaceholderIllustrations().emptyList }
+                subtitle={[
+                    t(
+                        "console:manage.features.user.updateUser.roles.editRoles.placeholders.emptyPlaceholder" +
+                            ".subtitles"
+                    )
+                ]}
+                title={t(
+                    "console:manage.features.user.updateUser.roles.editRoles.placeholders.emptyPlaceholder" + ".title"
+                )}
+                image={getEmptyPlaceholderIllustrations().emptyList}
                 imageSize="tiny"
             />
         );
@@ -125,20 +122,15 @@ export const UserRolesList: FunctionComponent<UserRoleEditPropsInterface> = (
 
     return (
         <EmphasizedSegment padded="very" className="list-user-roles-section">
-            <Heading as="h4">
-                { t("console:manage.features.user.updateUser.roles.editRoles.heading") }
-            </Heading>
+            <Heading as="h4">{t("console:manage.features.user.updateUser.roles.editRoles.heading")}</Heading>
             <Heading subHeading ellipsis as="h6">
-                { t("console:manage.features.user.updateUser.roles.editRoles.subHeading") }
+                {t("console:manage.features.user.updateUser.roles.editRoles.subHeading")}
             </Heading>
-            <Message
-                type="info"
-                content={ t("console:manage.features.user.updateUser.roles.editRoles.infoMessage") }
-            />
-            <Divider hidden/>
+            <Message type="info" content={t("console:manage.features.user.updateUser.roles.editRoles.infoMessage")} />
+            <Divider hidden />
             <ReadOnlyRoleList
-                totalRoleList={ initialSelectedRolesOptions }
-                emptyRolesListPlaceholder={ getPlaceholders() }
+                totalRoleList={initialSelectedRolesOptions}
+                emptyRolesListPlaceholder={getPlaceholders()}
             />
         </EmphasizedSegment>
     );
