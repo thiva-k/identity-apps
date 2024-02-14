@@ -17,10 +17,10 @@
  */
 
 import { LinkInterface, MultiValueAttributeInterface, NameInterface, RolesInterface } from "@wso2is/core/models";
+import { UserRoleInterface } from "@wso2is/feature-models.common/models";
 import { GroupsInterface, GroupsMemberInterface } from "@wso2is/feature-scim.common/models/groups";
 import React, { ReactElement } from "react";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
-import { UserRoleInterface } from "../../core";
 //import { BulkImportResponseOperationTypes, BulkUserImportStatus } from "../constants";
 
 /**

@@ -21,6 +21,7 @@ import { addAlert } from "@wso2is/core/store";
 import { CommonUtils } from "@wso2is/core/utils";
 import { OrganizationType } from "@wso2is/feature-organizations.common/constants";
 import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
+import { AppState } from "@wso2is/feature-store.common/store";
 import { ContentLoader, CopyInputField, Message, Popup } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
@@ -28,7 +29,6 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Grid, Icon } from "semantic-ui-react";
-import { AppState } from "../../../core/store";
 import { generateInviteLink } from "../../api";
 
 interface AddUserWizardSummaryProps extends IdentifiableComponentInterface {

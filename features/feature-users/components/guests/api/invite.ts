@@ -18,8 +18,8 @@
 
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
+import { store } from "@wso2is/feature-store.common/store";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../../../core/store";
 import { ParentOrgUserInviteInterface } from "../models/invite";
 
 /**

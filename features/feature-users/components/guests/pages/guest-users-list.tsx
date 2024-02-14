@@ -19,6 +19,12 @@
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import {getEmptyPlaceholderIllustrations} from "@wso2is/feature-configs.common/configs"
+import {
+    FeatureConfigInterface,
+    UserListInterface,
+} from "@wso2is/feature-models.common/models";
+import {AppState} from "@wso2is/feature-store.common/store/";
 import { UserAccountTypesMain } from "@wso2is/feature-users.common/constants";
 import {
     ConfirmationModal,
@@ -36,12 +42,6 @@ import { Dispatch } from "redux";
 import { Header, SemanticICONS } from "semantic-ui-react";
 import { deleteInvite, resendInvite } from "../../../../../extensions/components/users/api";
 import { InvitationStatus } from "../../../../../extensions/components/users/models";
-import {
-    AppState,
-    FeatureConfigInterface,
-    UserListInterface,
-    getEmptyPlaceholderIllustrations
-} from "../../../../core";
 import { deleteParentOrgInvite } from "../api/invite";
 import { UserInviteInterface } from "../models/invite";
 

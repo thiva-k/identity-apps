@@ -21,7 +21,9 @@ import { UserstoreConstants } from "@wso2is/core/constants";
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertInterface, AlertLevels, ProfileInfoInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common/models";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { AppState, store } from "@wso2is/feature-store.common/store";
 import { AdminAccountTypes, UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import { ResourceTab } from "@wso2is/react-components";
 import { AxiosError } from "axios";
@@ -38,8 +40,6 @@ import { UserRolesV1List } from "./user-roles-v1-list";
 import { UserSessions } from "./user-sessions";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
 import { ServerConfigurationsInterface, getServerConfigs } from "../../../features/server-configurations";
-import { FeatureConfigInterface } from "../../core/models";
-import { AppState, store } from "../../core/store";
 import { ConnectorPropertyInterface } from "../../server-configurations/models";
 import useUserManagement from "../hooks/use-user-management";
 

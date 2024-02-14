@@ -22,6 +22,8 @@ import {
     ProfileInfoInterface,
     RolesMemberInterface
 } from "@wso2is/core/models";
+import { updateResources } from "@wso2is/feature-apis.common/api";
+import {getEmptyPlaceholderIllustrations} from "@wso2is/feature-configs.common/configs";
 import { getGroupList } from "@wso2is/feature-groups.common/api/groups";
 import { GroupsInterface, GroupsMemberInterface } from "@wso2is/feature-groups.common/models/groups";
 import { APPLICATION_DOMAIN, INTERNAL_DOMAIN, PRIMARY_DOMAIN } from "@wso2is/feature-roles.common/constants";
@@ -53,7 +55,7 @@ import {
     Modal,
     Table
 } from "semantic-ui-react";
-import { getEmptyPlaceholderIllustrations, updateResources } from "../../core";
+
 
 
 interface UserGroupsPropsInterface {

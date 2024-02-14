@@ -26,6 +26,8 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import {GroupsInterface, getGroupList, updateGroupDetails } from "@wso2is/feature-groups.common";
+import { UserStoreDetails, UserStoreProperty } from "@wso2is/feature-models.common/models/";
+import { AppState } from "@wso2is/feature-store.common/store";
 import { addUser } from "@wso2is/feature-users.common/api";
 import {
     AdminAccountTypes,
@@ -59,8 +61,6 @@ import { AddUserWizardSummary } from "./user-wizard-summary";
 import { UsersConstants } from "../../../../extensions/components/users/constants";
 import { administratorConfig } from "../../../../extensions/configs/administrator";
 import { SCIMConfigs } from "../../../../extensions/configs/scim";
-import { UserStoreDetails, UserStoreProperty } from "../../../core/models";
-import { AppState } from "../../../core/store";
 import { getAUserStore, getUserStores } from "../../../userstores/api";
 import { useValidationConfigData } from "../../../validation/api";
 import { ValidationFormInterface } from "../../../validation/models";

@@ -19,16 +19,16 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, ProfileInfoInterface } from "@wso2is/core/models";
-import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models";
-import { PatchGroupDataInterface } from "@wso2is/feature-scim.common/models/groups";
-import { AxiosError, AxiosResponse } from "axios";
-import useRequest, {
+import  {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
-import { store } from "../../core/store";
-
+} from "@wso2is/feature-hooks.common/hooks";
+import useRequest from "@wso2is/feature-hooks.common/hooks/use-request";
+import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models";
+import { PatchGroupDataInterface } from "@wso2is/feature-scim.common/models/groups";
+import { store } from "@wso2is/feature-store.common/store";
+import { AxiosError, AxiosResponse } from "axios";
 import { UserManagementConstants } from "../constants/user-management-constants";
 import { SCIMBulkEndpointInterface, UserDetailsInterface, UserListInterface, UserSessionsInterface } from "../models";
 

@@ -16,9 +16,10 @@
  * under the License.
  */
 import { HttpMethods } from "@wso2is/core/models";
+import { RequestErrorInterface, RequestResultInterface } from "@wso2is/feature-hooks.common/hooks";
+import { store } from "@wso2is/feature-store.common/store";
 import { AxiosRequestConfig } from "axios";
-import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../../../core/hooks/use-request";
-import { store } from "../../../../core/store";
+import useRequest from "features/0feature-hooks.common/hooks/use-request";
 import { InvitationsInterface } from "../models/invite";
 
 /**

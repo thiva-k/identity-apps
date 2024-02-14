@@ -18,8 +18,13 @@
 import { ProfileConstants } from "@wso2is/core/constants";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertInterface, AlertLevels, ProfileInfoInterface, TestableComponentInterface } from "@wso2is/core/models";
+import {AppConstants}from "@wso2is/feature-constants.common/constants";
+import { history } from "@wso2is/feature-helpers.common/helpers";
+import {FeatureConfigInterface}from "@wso2is/feature-models.common/models";
 import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models/roles";
+import {AppState}from "@wso2is/feature-store.common/store";
 import { updateUserInfo } from "@wso2is/feature-users.common/api";
+import { SharedUserStoreUtils } from "@wso2is/feature-utils.common/utils";
 import { Field, FormValue, Forms, RadioChild, Validation, useTrigger } from "@wso2is/forms";
 import { LinkButton, Message, PasswordValidation, PrimaryButton } from "@wso2is/react-components";
 import { IdentityAppsApiException } from "modules/core/dist/types/exceptions";
@@ -34,7 +39,6 @@ import React,
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid, Icon, Modal, SemanticCOLORS } from "semantic-ui-react";
-import { AppConstants, AppState, FeatureConfigInterface, SharedUserStoreUtils, history } from "../../core";
 import {
     ConnectorPropertyInterface,
     ServerConfigurationsConstants

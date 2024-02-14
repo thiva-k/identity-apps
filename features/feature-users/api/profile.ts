@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ * Copyright (c) {{year}}, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,13 +16,14 @@
  * under the License.
  */
 
+
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { ProfileConstants } from "@wso2is/core/constants";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, ProfileInfoInterface, ProfileSchemaInterface } from "@wso2is/core/models";
+import { Config } from "@wso2is/feature-configs.common/configs";
+import { store } from "@wso2is/feature-store.common/store";
 import { AxiosError, AxiosResponse } from "axios";
-import { Config } from "../../core/configs";
-import { store } from "../../core/store";
 
 /**
  * Initialize an axios Http client.

@@ -32,7 +32,13 @@ import {
 }from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { CommonUtils } from "@wso2is/core/utils";
+import {getEmptyPlaceholderIllustrations, getSidePanelIcons} from "@wso2is/feature-configs.common/configs";
+import {AppConstants}from "@wso2is/feature-constants.common/constants";
+import { history } from "@wso2is/feature-helpers.common/helpers";
+import {FeatureConfigInterface}from "@wso2is/feature-models.common/models";
+import {AppState}from "@wso2is/feature-store.common/store";
 import { getUserDetails, updateUserInfo } from "@wso2is/feature-users.common/api";
+import {SharedUserStoreUtils,} from "@wso2is/feature-utils.common/utils";
 import {
     EditAvatarModal,
     EmptyPlaceholder,
@@ -47,15 +53,6 @@ import { Dispatch } from "redux";
 import { Icon, Label } from "semantic-ui-react";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
 import { getProfileInformation } from "../../authentication/store";
-import {
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    SharedUserStoreUtils,
-    getEmptyPlaceholderIllustrations,
-    getSidePanelIcons,
-    history
-} from "../../core";
 import { getIdPIcons } from "../../identity-providers/configs/ui";
 import { getGovernanceConnectors } from "../../server-configurations/api";
 import { ServerConfigurationsConstants } from "../../server-configurations/constants";

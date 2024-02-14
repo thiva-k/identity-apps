@@ -15,6 +15,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { AppConstants, SharedUserStoreConstants } from "@wso2is/feature-constants.common/constants";
+import { history } from "@wso2is/feature-helpers.common/helpers";
 import { getUsersList } from "@wso2is/feature-users.common/api/users";
 import {
     AskPasswordOptionTypes,
@@ -25,15 +27,13 @@ import {
     BasicUserDetailsInterface,
     UserListInterface
 } from "@wso2is/feature-users.common/models/user";
+import { EventPublisher, SharedUserStoreUtils } from "@wso2is/feature-utils.common/utils";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import { Button, Link, PasswordValidation, Popup } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
 import React, { MutableRefObject, ReactElement, useEffect, useRef, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Dropdown, DropdownItemProps, DropdownProps, Form, Grid, Menu, Message, Radio } from "semantic-ui-react";
-import { AppConstants, SharedUserStoreConstants } from "../../../../core/constants";
-import { history } from "../../../../core/helpers/history";
-import { EventPublisher, SharedUserStoreUtils } from "../../../../core/utils";
 import {
     ServerConfigurationsConstants
 } from "../../../../server-configurations/constants/server-configurations-constants";

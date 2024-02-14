@@ -26,11 +26,18 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { LocalStorageUtils } from "@wso2is/core/utils";
+import {getAUserStore}from "@wso2is/feature-apis.common/api";
+import {getEmptyPlaceholderIllustrations}from "@wso2is/feature-configs.common/configs";
+import {UIConstants}from "@wso2is/feature-constants.common/constants";
+import { history } from "@wso2is/feature-helpers.common/helpers";
+import {FeatureConfigInterface,UserBasicInterface}from "@wso2is/feature-models.common/models";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import {AppState, store}from "@wso2is/feature-store.common/store";
 import { getUsersList } from "@wso2is/feature-users.common/api";
 import { UserAccountTypes, UserAccountTypesMain, UserAddOptionTypes, 
     UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import { UserListInterface } from "@wso2is/feature-users.common/models";
+import { EventPublisher , SharedUserStoreUtils} from "@wso2is/feature-utils.common/utils";
 import {
     ConfirmationModal,
     EmptyPlaceholder,
@@ -49,19 +56,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Dropdown, DropdownItemProps, DropdownProps, Icon, PaginationProps, TabProps } from "semantic-ui-react";
-import {
-    AdvancedSearchWithBasicFilters,
-    AppState,
-    EventPublisher,
-    FeatureConfigInterface,
-    SharedUserStoreUtils,
-    UIConstants,
-    UserBasicInterface,
-    getAUserStore,
-    getEmptyPlaceholderIllustrations,
-    history,
-    store
-} from "../../core";
+import {AdvancedSearchWithBasicFilters} from "../../core";
 import {
     ConnectorPropertyInterface,
     GovernanceConnectorCategoryInterface,

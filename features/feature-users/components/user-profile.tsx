@@ -30,6 +30,9 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { CommonUtils, ProfileUtils } from "@wso2is/core/utils";
+import {AppConstants}from "@wso2is/feature-constants.common/constants";
+import { history } from "@wso2is/feature-helpers.common/helpers";
+import {FeatureConfigInterface}from "@wso2is/feature-models.common/models";
 import { searchRoleList, updateRoleDetails } from "@wso2is/feature-roles.common/api/roles";
 import {
     OperationValueInterface,
@@ -37,10 +40,11 @@ import {
     ScimOperationsInterface,
     SearchRoleInterface
 } from "@wso2is/feature-roles.common/models/roles";
+import {AppState}from "@wso2is/feature-store.common/store";
 import { getUserDetails, updateUserInfo } from "@wso2is/feature-users.common/api";
 import { AdminAccountTypes, UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import { AccountConfigSettingsInterface, SchemaAttributeValueInterface,
-     SubValueInterface } from "@wso2is/feature-users.common/models";
+    SubValueInterface } from "@wso2is/feature-users.common/models";
 import { Field, Forms, Validation } from "@wso2is/forms";
 import { SupportedLanguagesMeta } from "@wso2is/i18n";
 import {
@@ -66,7 +70,6 @@ import { getAssociationType } from "../../../extensions/components/tenants/utils
 import { GUEST_ADMIN_ASSOCIATION_TYPE } from "../../../extensions/components/users/constants";
 import { administratorConfig } from "../../../extensions/configs/administrator";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
 import { ConnectorPropertyInterface, ServerConfigurationsConstants  } from "../../server-configurations";
 
 /**

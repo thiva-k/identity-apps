@@ -19,10 +19,10 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
+import { Config } from "@wso2is/feature-configs.common/configs";
+import { store } from "@wso2is/feature-store.common/store";
 import { UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { Config } from "../../core/configs";
-import { store } from "../../core/store";
 
 const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
     AsgardeoSPAClient.getInstance());

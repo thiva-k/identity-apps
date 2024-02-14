@@ -1,6 +1,5 @@
 {
-   
-    "name": "@wso2is/feature-users.common",
+    "name": "@wso2is/feature-hooks.common",
     "version": "2.12.0",
     "dependencies": {
         "@asgardeo/auth-react": "^4.0.1",
@@ -27,17 +26,6 @@
         "@wso2is/validation": "^2.0.3",
         "@wso2is/common": "^2.0.31",
         "@wso2is/dynamic-forms": "^2.0.29",
-        "@wso2is/feature-roles.common":"*",
-        "@wso2is/feature-organizations.common":"*",
-        "@wso2is/feature-scim.common":"*",
-        "@wso2is/feature-store.common":"*",
-        "@wso2is/feature-configs.common":"*",
-        "@wso2is/feature-hooks.common":"*",
-        "@wso2is/feature-models.common":"*",
-        "@wso2is/feature-utils.common":"*",
-        "@wso2is/feature-constants.common":"*",
-        "@wso2is/feature-helpers.common":"*",
-        "@wso2is/feature-apis.common":"*",
         "axios": "^0.19.2",
         "codemirror": "^5.52.0",
         "country-language": "^0.1.7",
@@ -132,5 +120,4 @@
         "ts-node": "^10.8.1",
         "typescript": "^4.6.4"
     }
-
 }

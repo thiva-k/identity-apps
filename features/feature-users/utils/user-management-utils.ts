@@ -18,15 +18,15 @@
 
 import { getUserNameWithoutDomain } from "@wso2is/core/helpers";
 import { ProfileInfoInterface } from "@wso2is/core/models";
+import { UserRoleInterface } from "@wso2is/feature-models.common/models";
+import { MultipleInviteMode, MultipleInvitesDisplayNames } from "@wso2is/feature-users.common/models";
 import { administratorConfig } from "../../../extensions/configs/administrator";
-import { UserRoleInterface } from "../../core/models";
 import {
     ValidationConfInterface,
     ValidationDataInterface,
     ValidationFormInterface,
     ValidationPropertyInterface
 } from "../../validation/models";
-import { MultipleInviteMode, MultipleInvitesDisplayNames } from "@wso2is/feature-users.common/models";
 
 /**
  * Utility class for user management operations.

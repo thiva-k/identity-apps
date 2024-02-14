@@ -25,6 +25,7 @@ import {
     getGroupList,
     updateGroupDetails
 } from "@wso2is/feature-groups.common";
+import { UserBasicInterface } from "@wso2is/feature-models.common/models";
 import { addUser } from "@wso2is/feature-users.common/api/users";
 import {
     AddUserWizardStateInterface,
@@ -47,7 +48,6 @@ import { AddConsumerUserWizardSummary } from "./steps/add-consumer-user-wizard-s
 import { AddConsumerUserGroups } from "./steps/consumer-user-groups";
 import { CONSUMER_USERSTORE } from "../../../../extensions/components/users/constants/users";
 import { SCIMConfigs } from "../../../../extensions/configs/scim";
-import { UserBasicInterface } from "../../../../features/core";
 import { getUserWizardStepIcons } from "../../configs/ui";
 import { getUsernameConfiguration } from "../../utils";
 import { useValidationConfigData } from "../../../../features/validation/api";

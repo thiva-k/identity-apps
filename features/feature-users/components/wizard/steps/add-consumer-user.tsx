@@ -17,8 +17,10 @@
  */
 
 import { ProfileSchemaInterface } from "@wso2is/core/src/models";
+import {AppState} from "@wso2is/feature-store.common/store/";
 import { getUsersList } from "@wso2is/feature-users.common/api";
 import { UserListInterface } from "@wso2is/feature-users.common/models/user";
+import { SharedUserStoreUtils } from "@wso2is/feature-utils.common/utils";
 import { Field, FormValue, Forms, RadioChild, Validation } from "@wso2is/forms";
 import { Hint, PasswordValidation } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
@@ -30,12 +32,10 @@ import {
     Message
 } from "semantic-ui-react";
 import { CONSUMER_USERSTORE, UsersConstants } from "../../../../../extensions/components/users/constants/users";
-import { AppState } from "../../../../../features/core";
-import { SharedUserStoreUtils } from "../../../../../features/core/utils";
-import { getConfiguration, getUsernameConfiguration } from "../../../utils";
 import { USERSTORE_REGEX_PROPERTIES } from "../../../../../features/userstores/constants/user-store-constants";
 import { useValidationConfigData } from "../../../../../features/validation/api";
 import { ValidationFormInterface } from "../../../../../features/validation/models";
+import { getConfiguration, getUsernameConfiguration } from "../../../utils";
 
 /**
  * Proptypes for the add consumer user component.

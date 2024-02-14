@@ -21,6 +21,8 @@ import Alert from "@oxygen-ui/react/Alert";
 import Tab from "@oxygen-ui/react/Tab";
 import Tabs from "@oxygen-ui/react/Tabs";
 import Typography from "@oxygen-ui/react/Typography";
+import {getEmptyPlaceholderIllustrations} from "@wso2is/feature-configs.common/configs";
+import { UIConstants } from "@wso2is/feature-constants.common/constants";
 import { BulkImportResponseOperationTypes, BulkUserImportStatus } from "@wso2is/feature-users.common/constants";
 import { BulkResponseSummary, BulkUserImportOperationResponse } from "@wso2is/feature-users.common/models";
 import { DropdownChild } from "@wso2is/forms";
@@ -42,7 +44,7 @@ import {
     Label
 } from "semantic-ui-react";
 import {
-    AdvancedSearchWithBasicFilters, UIConstants, getEmptyPlaceholderIllustrations } from "../../core";
+    AdvancedSearchWithBasicFilters } from "../../core";
 
 interface BulkImportResponseListProps {
     responseList: BulkUserImportOperationResponse[];

@@ -19,6 +19,8 @@
 import Alert from "@oxygen-ui/react/Alert";
 import AlertTitle from "@oxygen-ui/react/AlertTitle";
 import Typography from "@oxygen-ui/react/Typography";
+import {getEmptyPlaceholderIllustrations} from"@wso2is/feature-configs.common/configs";
+import { UIConstants } from "@wso2is/feature-constants.common/constants";
 import {
     DataTable,
     EmptyPlaceholder,
@@ -31,7 +33,6 @@ import {
     Header,
     Label
 } from "semantic-ui-react";
-import { UIConstants, getEmptyPlaceholderIllustrations } from "../../core";
 import {
     ParentOrgUserInvitationResult,
     ParentOrgUserInviteErrorCode,

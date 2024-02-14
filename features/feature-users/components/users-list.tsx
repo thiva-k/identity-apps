@@ -26,6 +26,11 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { CommonUtils } from "@wso2is/core/utils";
+import {getEmptyPlaceholderIllustrations} from "@wso2is/feature-configs.common/configs";
+import {AppConstants, UIConstants}from "@wso2is/feature-constants.common/constants";
+import { history } from "@wso2is/feature-helpers.common/helpers";
+import {FeatureConfigInterface}from "@wso2is/feature-models.common/models";
+import {AppState}from "@wso2is/feature-store.common/store";
 import { deleteUser } from "@wso2is/feature-users.common/api";
 import { UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import { UserBasicInterface, UserListInterface } from "@wso2is/feature-users.common/models/user";
@@ -48,14 +53,6 @@ import { Header, Icon, Label, ListItemProps, SemanticICONS } from "semantic-ui-r
 import { UserManagementUtils } from "../../../extensions/components/users/utils";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
 import { userConfig } from "../../../extensions/configs/user";
-import {
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
 import { RealmConfigInterface } from "../../server-configurations";
 
 /**

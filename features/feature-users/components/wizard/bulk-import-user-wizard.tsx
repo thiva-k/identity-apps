@@ -36,7 +36,12 @@ import {
     TestableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import {ModalWithSidePanel, } from "@wso2is/feature-components.common/components";
+import {getCertificateIllustrations} from "@wso2is/feature-configs.common/configs";
+import { AppConstants } from "@wso2is/feature-constants.common/constants";
 import { GroupsInterface, getGroupList, useGroupList } from "@wso2is/feature-groups.common";
+import {history} from "@wso2is/feature-helpers.common/helpers";
+import {UserStoreDetails,UserStoreProperty} from "@wso2is/feature-models.common/models";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models";
 import { addBulkUsers } from "@wso2is/feature-users.common/api";
@@ -84,16 +89,7 @@ import { v4 as uuidv4 } from "uuid";
 import { UsersConstants } from "../../../../extensions/components/users/constants";
 import { userConfig } from "../../../../extensions/configs";
 import { ClaimManagementConstants } from "../../../../features/claims/constants";
-
 import { getAllExternalClaims, getDialects, getSCIMResourceTypes } from "../../../claims/api";
-import {
-    AppConstants,
-    ModalWithSidePanel,
-    UserStoreDetails,
-    UserStoreProperty,
-    getCertificateIllustrations,
-    history
-} from "../../../core";
 import { getAUserStore, getUserStores } from "../../../userstores/api";
 import { PRIMARY_USERSTORE } from "../../../userstores/constants";
 import { useValidationConfigData } from "../../../validation/api";
