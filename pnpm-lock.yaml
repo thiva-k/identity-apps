@@ -2918,9 +2918,6 @@ importers:
       '@wso2is/feature-scim.common':
         specifier: '*'
         version: link:../feature-scim.common
-      '@wso2is/feature-users.common':
-        specifier: '*'
-        version: link:../feature-users.common
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form
