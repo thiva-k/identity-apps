@@ -18,16 +18,13 @@
  * under the License.
  */
 
-
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { AssignGroups } from "@wso2is/feature-components.common";
 import { GroupsInterface } from "@wso2is/feature-groups.common/models/groups";
 import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
 import { ResourceTab } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
 import { AddRoleUsers } from "./role-user-assign";
-import { AssignGroups } from "../../../core";
-
-
 
 /**
  * Captures props needed for the assign roles and users component.
@@ -57,7 +54,6 @@ interface AssignGroupsUsersPropsInterface extends TestableComponentInterface {
 export const AssignGroupsUsers: FunctionComponent<AssignGroupsUsersPropsInterface> = (
     props: AssignGroupsUsersPropsInterface
 ): ReactElement => {
-
     const {
         initialUsersList,
         initialGroupList,
@@ -69,7 +65,7 @@ export const AssignGroupsUsers: FunctionComponent<AssignGroupsUsersPropsInterfac
         handleTempUsersListChange
     } = props;
 
-    const panes = () => ([
+    const panes = () => [
         {
             menuItem: {
                 content: "Groups",
@@ -77,15 +73,17 @@ export const AssignGroupsUsers: FunctionComponent<AssignGroupsUsersPropsInterfac
                 key: "groups"
             },
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <AssignGroups
-                        initialValues={ initialGroupList }
-                        handleGroupListChange={ (groups: GroupsInterface[]) => handleGroupListChange(groups) }
-                        handleTempListChange={ (groups: GroupsInterface[]) => handleAddedGroupListChange(groups) }
-                        handleInitialTempListChange={ 
-                            (groups: GroupsInterface[]) => handleAddedGroupInitialListChange(groups) }
-                        handleInitialGroupListChange={ 
-                            (groups: GroupsInterface[]) => handleInitialGroupListChange(groups) }
+                        initialValues={initialGroupList}
+                        handleGroupListChange={(groups: GroupsInterface[]) => handleGroupListChange(groups)}
+                        handleTempListChange={(groups: GroupsInterface[]) => handleAddedGroupListChange(groups)}
+                        handleInitialTempListChange={(groups: GroupsInterface[]) =>
+                            handleAddedGroupInitialListChange(groups)
+                        }
+                        handleInitialGroupListChange={(groups: GroupsInterface[]) =>
+                            handleInitialGroupListChange(groups)
+                        }
                     />
                 </ResourceTab.Pane>
             )
@@ -97,21 +95,19 @@ export const AssignGroupsUsers: FunctionComponent<AssignGroupsUsersPropsInterfac
                 key: "users"
             },
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <AddRoleUsers
                         data-testid="new-role"
-                        isEdit={ false }
-                        isGroup={ false }
-                        userStore={ selectedUserStore }
-                        initialValues={ initialUsersList }
-                        handleTempUsersListChange={ handleTempUsersListChange }
+                        isEdit={false}
+                        isGroup={false}
+                        userStore={selectedUserStore}
+                        initialValues={initialUsersList}
+                        handleTempUsersListChange={handleTempUsersListChange}
                     />
                 </ResourceTab.Pane>
             )
         }
-    ]);
+    ];
 
-    return (
-        <ResourceTab panes={ panes() } />
-    );
+    return <ResourceTab panes={panes()} />;
 };

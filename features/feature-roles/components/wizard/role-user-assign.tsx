@@ -18,7 +18,10 @@
  */
 
 import { RolesMemberInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
 import { OrganizationManagementConstants } from "@wso2is/feature-organizations.common/constants";
+import { AppState } from "@wso2is/feature-store.common";
 import { getUsersList } from "@wso2is/feature-users.common/api/users";
 import { UserBasicInterface, UserListInterface } from "@wso2is/feature-users.common/models/user";
 import { Forms } from "@wso2is/forms";
@@ -42,7 +45,6 @@ import React, { FunctionComponent, MutableRefObject, ReactElement, useEffect, us
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid, Icon, Input, Modal, Table } from "semantic-ui-react";
-import { AppState, UIConstants, getEmptyPlaceholderIllustrations } from "../../../core";
 
 /**
  * Proptypes for the role user list component.

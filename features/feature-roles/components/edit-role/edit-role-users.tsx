@@ -61,8 +61,8 @@ import { Icon } from "semantic-ui-react";
 import { AutoCompleteRenderOption } from "./edit-role-common/auto-complete-render-option";
 import { RenderChip } from "./edit-role-common/render-chip";
 import { RemoteUserStoreConstants } from "../../../../extensions/components/user-stores/constants";
-import { updateResources } from "../../../core/api/bulk-operations";
-import { getEmptyPlaceholderIllustrations } from "../../../core/configs/ui";
+import { updateResources } from "@wso2is/feature-apis.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { useUserStores } from "../../../userstores/api";
 import { UserStoreListItem } from "../../../userstores/models/user-stores";
 

@@ -20,8 +20,10 @@ import { OrganizationType } from "@wso2is/common";
 import { RoleConstants } from "@wso2is/core/constants";
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { FeatureAccessConfigInterface, RolesInterface, SBACInterface } from "@wso2is/core/models";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { RoleConstants as LocalRoleConstants, RoleAudienceTypes } from "@wso2is/feature-roles.common/constants";
+import { AppState } from "@wso2is/feature-store.common";
 import { UserManagementConstants } from "@wso2is/feature-users.common/constants/user-management-constants";
 import { ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
@@ -32,7 +34,6 @@ import { RoleConnectedApps } from "./edit-role-connected-apps";
 import { RoleGroupsList } from "./edit-role-groups";
 import { UpdatedRolePermissionDetails } from "./edit-role-permission";
 import { RoleUsersList } from "./edit-role-users";
-import { AppState, FeatureConfigInterface } from "../../../core";
 
 /**
  * Captures props needed for edit role component
