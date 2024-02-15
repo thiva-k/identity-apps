@@ -30,7 +30,7 @@ import React, { CSSProperties, FunctionComponent, ReactElement, useState } from 
 import { useTranslation } from "react-i18next";
 import { Divider, Form, Grid } from "semantic-ui-react";
 import { commonConfig } from "../../../extensions";
-import { getAdvancedSearchIcons } from "../configs";
+import { getAdvancedSearchIcons } from "../../core";
 
 /**
  * Filter attribute field identifier.
@@ -70,7 +70,7 @@ export interface AdvancedSearchWithBasicFiltersPropsInterface extends TestableCo
     /**
      * Fill color.
      */
-    fill?: AdvancedSearchPropsInterface[ "fill" ];
+    fill?: AdvancedSearchPropsInterface["fill"];
     /**
      * Callback to be triggered on filter query change.
      */
@@ -127,10 +127,6 @@ export interface AdvancedSearchWithBasicFiltersPropsInterface extends TestableCo
      * Enable query search with shift and enter.
      */
     enableQuerySearch?: boolean;
-    /**
-     * Disable search and filter options.
-     */
-    disableSearchAndFilterOptions?: boolean;
 }
 
 /**
@@ -150,7 +146,6 @@ export interface DefaultFilterConditionOptionInterface {
 export const AdvancedSearchWithBasicFilters: FunctionComponent<AdvancedSearchWithBasicFiltersPropsInterface> = (
     props: AdvancedSearchWithBasicFiltersPropsInterface
 ): ReactElement => {
-
     const {
         defaultSearchAttribute,
         defaultSearchOperator,
@@ -171,15 +166,14 @@ export const AdvancedSearchWithBasicFilters: FunctionComponent<AdvancedSearchWit
         style,
         submitButtonLabel,
         triggerClearQuery,
-        disableSearchAndFilterOptions,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ isFormSubmitted, setIsFormSubmitted ] = useState<boolean>(false);
-    const [ isFiltersReset, setIsFiltersReset ] = useState<boolean>(false);
-    const [ externalSearchQuery, setExternalSearchQuery ] = useState<string>("");
+    const [isFormSubmitted, setIsFormSubmitted] = useState<boolean>(false);
+    const [isFiltersReset, setIsFiltersReset] = useState<boolean>(false);
+    const [externalSearchQuery, setExternalSearchQuery] = useState<string>("");
     const sessionTimedOut: boolean = React.useContext(SessionTimedOutContext);
 
     /**
@@ -188,11 +182,12 @@ export const AdvancedSearchWithBasicFilters: FunctionComponent<AdvancedSearchWit
      * @param values - Form values.
      */
     const handleFormSubmit = (values: Map<string, string | string[]>): void => {
-        const query: string = values.get(FILTER_ATTRIBUTE_FIELD_IDENTIFIER)
-            + " "
-            + values.get(FILTER_CONDITION_FIELD_IDENTIFIER)
-            + " "
-            + getFilterValue(values?.get(FILTER_VALUES_FIELD_IDENTIFIER) as string);
+        const query: string =
+            values.get(FILTER_ATTRIBUTE_FIELD_IDENTIFIER) +
+            " " +
+            values.get(FILTER_CONDITION_FIELD_IDENTIFIER) +
+            " " +
+            getFilterValue(values.get(FILTER_VALUES_FIELD_IDENTIFIER)[0]);
 
         setExternalSearchQuery(query);
         onFilter(query);
@@ -285,148 +280,150 @@ export const AdvancedSearchWithBasicFilters: FunctionComponent<AdvancedSearchWit
 
     return (
         <AdvancedSearch
-            disableSearchAndFilterOptions={ disableSearchAndFilterOptions }
             aligned="left"
-            disableSearchFilterDropdown={ disableSearchFilterDropdown }
-            clearButtonPopupLabel={ t("console:common.advancedSearch.popups.clear") }
-            clearIcon={ getAdvancedSearchIcons().clear }
-            style={ style }
-            defaultSearchStrategy={ handleDefaultSearchStrategy() }
-            dropdownTriggerPopupLabel={ t("console:common.advancedSearch.popups.dropdown") }
-            fill={ fill }
-            hintActionKeys={ t("console:common.advancedSearch.hints.querySearch.actionKeys") }
-            hintLabel={ t("console:common.advancedSearch.hints.querySearch.label") }
-            onExternalSearchQueryClear={ handleExternalSearchQueryClear }
-            onSearchQuerySubmit={ handleSearchQuerySubmit }
-            placeholder={ placeholder }
-            resetSubmittedState={ handleResetSubmittedState }
-            searchOptionsHeader={ t("console:common.advancedSearch.options.header") }
-            sessionTimedOut={ sessionTimedOut }
-            enableQuerySearch={ enableQuerySearch }
-            externalSearchQuery={ externalSearchQuery }
-            submitted={ isFormSubmitted }
-            dropdownPosition={ dropdownPosition }
-            triggerClearQuery={ triggerClearQuery }
-            filterConditionOptions={ filterConditionOptions || defaultFilterConditionOptions }
-            filterAttributeOptions={ filterAttributeOptions }
-            data-testid={ testId }
-            data-componentid={ testId }
+            disableSearchFilterDropdown={disableSearchFilterDropdown}
+            clearButtonPopupLabel={t("console:common.advancedSearch.popups.clear")}
+            clearIcon={getAdvancedSearchIcons().clear}
+            style={style}
+            defaultSearchStrategy={handleDefaultSearchStrategy()}
+            dropdownTriggerPopupLabel={t("console:common.advancedSearch.popups.dropdown")}
+            fill={fill}
+            hintActionKeys={t("console:common.advancedSearch.hints.querySearch.actionKeys")}
+            hintLabel={t("console:common.advancedSearch.hints.querySearch.label")}
+            onExternalSearchQueryClear={handleExternalSearchQueryClear}
+            onSearchQuerySubmit={handleSearchQuerySubmit}
+            placeholder={placeholder}
+            resetSubmittedState={handleResetSubmittedState}
+            searchOptionsHeader={t("console:common.advancedSearch.options.header")}
+            sessionTimedOut={sessionTimedOut}
+            enableQuerySearch={enableQuerySearch}
+            externalSearchQuery={externalSearchQuery}
+            submitted={isFormSubmitted}
+            dropdownPosition={dropdownPosition}
+            triggerClearQuery={triggerClearQuery}
+            filterConditionOptions={filterConditionOptions || defaultFilterConditionOptions}
+            filterAttributeOptions={filterAttributeOptions}
+            data-testid={testId}
+            data-componentid={testId}
         >
             <Grid>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column width={ 16 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column width={16}>
                         <Forms
-                            onSubmit={ (values: Map<string, FormValue>) => handleFormSubmit(values) }
-                            resetState={ isFiltersReset }
-                            onChange={ () => setIsFiltersReset(false) }
+                            onSubmit={(values: Map<string, FormValue>) => handleFormSubmit(values)}
+                            resetState={isFiltersReset}
+                            onChange={() => setIsFiltersReset(false)}
                         >
                             <Field
-                                children={
-                                    filterAttributeOptions.map((attribute: DropdownChild, index: number) => {
-                                        return {
-                                            key: index,
-                                            text: attribute.text,
-                                            value: attribute.value
-                                        };
-                                    })
-                                }
+                                children={filterAttributeOptions.map((attribute: DropdownChild, index: number) => {
+                                    return {
+                                        key: index,
+                                        text: attribute.text,
+                                        value: attribute.value
+                                    };
+                                })}
                                 // TODO: Enable this once default value is working properly for the dropdowns.
                                 // readOnly={ filterAttributeOptions.length === 1 }
-                                label={ t("console:common.advancedSearch.form.inputs.filterAttribute.label") }
-                                name={ FILTER_ATTRIBUTE_FIELD_IDENTIFIER }
+                                label={t("console:common.advancedSearch.form.inputs.filterAttribute.label")}
+                                name={FILTER_ATTRIBUTE_FIELD_IDENTIFIER}
                                 placeholder={
                                     filterAttributePlaceholder
                                         ? filterAttributePlaceholder
-                                        : t("console:common.advancedSearch.form.inputs.filterAttribute" +
-                                        ".placeholder")
+                                        : t(
+                                              "console:common.advancedSearch.form.inputs.filterAttribute" +
+                                                  ".placeholder"
+                                          )
                                 }
-                                required={ true }
-                                requiredErrorMessage={
-                                    t("console:common.advancedSearch.form.inputs.filterAttribute" +
-                                        ".validations.empty")
-                                }
+                                required={true}
+                                requiredErrorMessage={t(
+                                    "console:common.advancedSearch.form.inputs.filterAttribute" + ".validations.empty"
+                                )}
                                 type="dropdown"
-                                value={ defaultSearchAttribute }
-                                data-testid={ `${ testId }-filter-attribute-dropdown` }
-                                data-componentid={ `${ testId }-filter-attribute-dropdown` }
+                                value={defaultSearchAttribute}
+                                data-testid={`${testId}-filter-attribute-dropdown`}
+                                data-componentid={`${testId}-filter-attribute-dropdown`}
                             />
                             <Form.Group widths="equal">
                                 <Field
                                     children={
                                         filterConditionOptions
                                             ? filterConditionOptions.map((attribute: DropdownChild, index: number) => {
-                                                return {
-                                                    key: index,
-                                                    text: attribute.text,
-                                                    value: attribute.value
-                                                };
-                                            })
+                                                  return {
+                                                      key: index,
+                                                      text: attribute.text,
+                                                      value: attribute.value
+                                                  };
+                                              })
                                             : defaultFilterConditionOptions.map(
-                                                (attribute: DefaultFilterConditionOptionInterface, index: number) => {
-                                                    return {
-                                                        key: index,
-                                                        text: attribute.text,
-                                                        value: attribute.value
-                                                    };
-                                                })
+                                                  (attribute: DefaultFilterConditionOptionInterface, index: number) => {
+                                                      return {
+                                                          key: index,
+                                                          text: attribute.text,
+                                                          value: attribute.value
+                                                      };
+                                                  }
+                                              )
                                     }
-                                    label={
-                                        t("console:common.advancedSearch.form.inputs.filterCondition.label")
-                                    }
-                                    name={ FILTER_CONDITION_FIELD_IDENTIFIER }
+                                    label={t("console:common.advancedSearch.form.inputs.filterCondition.label")}
+                                    name={FILTER_CONDITION_FIELD_IDENTIFIER}
                                     placeholder={
                                         filterConditionsPlaceholder
                                             ? filterConditionsPlaceholder
-                                            : t("console:common.advancedSearch.form.inputs.filterCondition" +
-                                            ".placeholder")
+                                            : t(
+                                                  "console:common.advancedSearch.form.inputs.filterCondition" +
+                                                      ".placeholder"
+                                              )
                                     }
-                                    required={ true }
-                                    requiredErrorMessage={ t("console:common.advancedSearch.form.inputs" +
-                                        ".filterCondition.validations.empty") }
+                                    required={true}
+                                    requiredErrorMessage={t(
+                                        "console:common.advancedSearch.form.inputs" +
+                                            ".filterCondition.validations.empty"
+                                    )}
                                     type="dropdown"
-                                    value={ defaultSearchOperator }
-                                    data-testid={ `${ testId }-filter-condition-dropdown` }
+                                    value={defaultSearchOperator}
+                                    data-testid={`${testId}-filter-condition-dropdown`}
                                 />
                                 <Field
-                                    label={ t("console:common.advancedSearch.form.inputs.filterValue.label") }
-                                    name={ FILTER_VALUES_FIELD_IDENTIFIER }
+                                    label={t("console:common.advancedSearch.form.inputs.filterValue.label")}
+                                    name={FILTER_VALUES_FIELD_IDENTIFIER}
                                     placeholder={
                                         filterValuePlaceholder
                                             ? filterValuePlaceholder
-                                            : t("console:common.advancedSearch.form.inputs.filterValue" +
-                                            ".placeholder")
+                                            : t(
+                                                  "console:common.advancedSearch.form.inputs.filterValue" +
+                                                      ".placeholder"
+                                              )
                                     }
-                                    required={ true }
-                                    requiredErrorMessage={ t("console:common.advancedSearch.form.inputs" +
-                                        ".filterValue.validations.empty") }
+                                    required={true}
+                                    requiredErrorMessage={t(
+                                        "console:common.advancedSearch.form.inputs" + ".filterValue.validations.empty"
+                                    )}
                                     type="text"
-                                    data-testid={ `${ testId }-filter-value-input` }
-                                    data-componentid={ `${ testId }-filter-value-input` }
+                                    data-testid={`${testId}-filter-value-input`}
+                                    data-componentid={`${testId}-filter-value-input`}
                                 />
                             </Form.Group>
-                            <Divider hidden/>
+                            <Divider hidden />
                             <Form.Group inline>
                                 <PrimaryButton
                                     size="small"
                                     type="submit"
-                                    data-testid={ `${ testId }-search-button` }
-                                    data-componentid={ `${ testId }-search-button` }
+                                    data-testid={`${testId}-search-button`}
+                                    data-componentid={`${testId}-search-button`}
                                 >
-                                    { submitButtonLabel ? submitButtonLabel : t("common:search") }
+                                    {submitButtonLabel ? submitButtonLabel : t("common:search")}
                                 </PrimaryButton>
-                                {
-                                    showResetButton && (
-                                        <LinkButton
-                                            size="small"
-                                            type="reset"
-                                            data-testid={ `${ testId }-reset-button` }
-                                            data-componentid={ `${ testId }-reset-button` }
-                                            onClick={ () => handleResetFilter() }
-                                        >
-                                            { resetButtonLabel ? resetButtonLabel : t("common:resetFilters") }
-                                        </LinkButton>
-                                    )
-                                }
+                                {showResetButton && (
+                                    <LinkButton
+                                        size="small"
+                                        type="reset"
+                                        data-testid={`${testId}-reset-button`}
+                                        data-componentid={`${testId}-reset-button`}
+                                        onClick={() => handleResetFilter()}
+                                    >
+                                        {resetButtonLabel ? resetButtonLabel : t("common:resetFilters")}
+                                    </LinkButton>
+                                )}
                             </Form.Group>
                         </Forms>
                     </Grid.Column>
