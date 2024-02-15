@@ -9,7 +9,7 @@
         "skipDefaultLibCheck": true,
         "types": [ "node", "webpack-env", "jest", "@testing-library/jest-dom" ]
     },
-    "exclude": [types
+    "exclude": [
         "build",
         "cache",
         "coverage",
