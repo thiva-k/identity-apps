@@ -16,19 +16,18 @@
  * under the License.
  */
 
-import { AppConstants } from "../../core";
+import { AppConstants } from "@wso2is/feature-constants.common";
 
 /**
  * Class containing API resources constants.
  */
 export class APIResourcesConstants {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
-    private constructor() { }
+    private constructor() {}
 
     public static readonly NEXT_REL: string = "next";
     public static readonly PREVIOUS_REL: string = "previous";
@@ -49,13 +48,16 @@ export class APIResourcesConstants {
      * @returns `Map<string, string>`
      */
     public static getPaths(): Map<string, string> {
-
         return new Map<string, string>()
-            .set("API_RESOURCES", `${ AppConstants.getDeveloperViewBasePath() }/` + `${this.API_RESOURCE_DIR}`)
-            .set("API_RESOURCES_CATEGORY",
-                `${ AppConstants.getDeveloperViewBasePath() }/${this.API_RESOURCE_DIR}/:categoryId`)
-            .set("API_RESOURCE_EDIT",
-                `${ AppConstants.getDeveloperViewBasePath() }/${this.API_RESOURCE_DIR}/:categoryId/:id`);
+            .set("API_RESOURCES", `${AppConstants.getDeveloperViewBasePath()}/` + `${this.API_RESOURCE_DIR}`)
+            .set(
+                "API_RESOURCES_CATEGORY",
+                `${AppConstants.getDeveloperViewBasePath()}/${this.API_RESOURCE_DIR}/:categoryId`
+            )
+            .set(
+                "API_RESOURCE_EDIT",
+                `${AppConstants.getDeveloperViewBasePath()}/${this.API_RESOURCE_DIR}/:categoryId/:id`
+            );
     }
 
     /**
@@ -68,8 +70,8 @@ export class APIResourcesConstants {
 }
 
 /*
-* The types of API Resources.
-*/
+ * The types of API Resources.
+ */
 export enum APIResourceType {
     MANAGEMENT = "management",
     ORGANIZATION = "organization",
@@ -77,23 +79,23 @@ export enum APIResourceType {
 }
 
 /*
-* The API Resource category type prefix.
-* Manamgement API Resources are prefixed with `TENANT`.
-* Organization API Resources are prefixed with `ORGANIZATION`.
-*/
+ * The API Resource category type prefix.
+ * Manamgement API Resources are prefixed with `TENANT`.
+ * Organization API Resources are prefixed with `ORGANIZATION`.
+ */
 export enum APIResourceCategoryPrefixes {
     MANAGEMENT = "TENANT",
     ORGANIZATION = "ORGANIZATION"
 }
 
 /*
-* The API Resource category.
-*/
+ * The API Resource category.
+ */
 export enum APIResourceCategories {
     BUSINESS = "BUSINESS",
     CONSOLE_FEATURE = "CONSOLE_FEATURE",
     ORGANIZATION = "ORGANIZATION",
     CONSOLE_ORG_LEVEL = "CONSOLE_ORG_LEVEL",
     SYSTEM = "SYSTEM",
-    TENANT = "TENANT",
+    TENANT = "TENANT"
 }

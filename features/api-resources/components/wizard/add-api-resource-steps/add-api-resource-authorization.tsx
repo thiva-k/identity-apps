@@ -17,19 +17,21 @@
  */
 
 import { IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { Field, Form } from "@wso2is/form";
 import { DocumentationLink, Message, useDocumentation } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppState, FeatureConfigInterface } from "../../../../core";
 import { AuthorizationAPIResourceInterface } from "../../../models";
 
 /**
  * Prop-types for the add API resources wizard authorization component.
  */
-interface AddAPIResourceAuthorizationInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
+interface AddAPIResourceAuthorizationInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Trigger submission
      */
@@ -59,7 +61,6 @@ const FORM_ID: string = "apiResource-authorization";
 export const AddAPIResourceAuthorization: FunctionComponent<AddAPIResourceAuthorizationInterface> = (
     props: AddAPIResourceAuthorizationInterface
 ): ReactElement => {
-
     const {
         triggerSubmission,
         initalRequiredAuthorizationValue,
@@ -85,50 +86,56 @@ export const AddAPIResourceAuthorization: FunctionComponent<AddAPIResourceAuthor
 
     return (
         <Form
-            data-testid={ `${componentId}-form` }
-            onSubmit={ submitAuthorization }
-            triggerSubmit={ (submitFunction: () => void) => triggerSubmission(submitFunction) }
-            id={ FORM_ID }
-            uncontrolledForm={ false }
+            data-testid={`${componentId}-form`}
+            onSubmit={submitAuthorization}
+            triggerSubmit={(submitFunction: () => void) => triggerSubmission(submitFunction)}
+            id={FORM_ID}
+            uncontrolledForm={false}
         >
             <Message
                 type="info"
-                content={ 
-                    (<>
-                        { t("extensions:develop.apiResource.wizard.addApiResource.steps.authorization.form." + 
-                            "rbacMessage", { productName }) }
-                        <DocumentationLink
-                            link={ getLink("develop.apiResources.addAPIResource.rbacInfoBox.learnMore") }
-                        >
-                            { t("extensions:common.learnMore") }
+                content={
+                    <>
+                        {t(
+                            "extensions:develop.apiResource.wizard.addApiResource.steps.authorization.form." +
+                                "rbacMessage",
+                            { productName }
+                        )}
+                        <DocumentationLink link={getLink("develop.apiResources.addAPIResource.rbacInfoBox.learnMore")}>
+                            {t("extensions:common.learnMore")}
                         </DocumentationLink>
-                    </>)                   
+                    </>
                 }
             />
             <Field.Checkbox
                 ariaLabel="authorization"
                 name="authorization"
-                label={ t("extensions:develop.apiResource.wizard.addApiResource.steps.authorization.form.fields." + 
-                    "authorize.label") }
-                tabIndex={ 3 }
+                label={t(
+                    "extensions:develop.apiResource.wizard.addApiResource.steps.authorization.form.fields." +
+                        "authorize.label"
+                )}
+                tabIndex={3}
                 hint={
-                    (<>
-                        <Trans 
-                            i18nKey= { "extensions:develop.apiResource.wizard.addApiResource.steps.authorization." + 
-                                "form.fields.authorize.hint" }>
-                            If checked, it will be mandatory to add authorization when configuring the application to 
+                    <>
+                        <Trans
+                            i18nKey={
+                                "extensions:develop.apiResource.wizard.addApiResource.steps.authorization." +
+                                "form.fields.authorize.hint"
+                            }
+                        >
+                            If checked, it will be mandatory to add authorization when configuring the application to
                             consume the API resource. <b>This field cannot be edited once created.</b>
                         </Trans>
                         <DocumentationLink
-                            link={ getLink("develop.apiResources.addAPIResource.requiredAuthorization.learnMore") }
+                            link={getLink("develop.apiResources.addAPIResource.requiredAuthorization.learnMore")}
                         >
-                            { t("extensions:common.learnMore") }
+                            {t("extensions:common.learnMore")}
                         </DocumentationLink>
-                    </>)
+                    </>
                 }
-                width={ 16 }
-                defaultValue={ initalRequiredAuthorizationValue }           
-                data-componentid={ `${componentId}-authorize` }
+                width={16}
+                defaultValue={initalRequiredAuthorizationValue}
+                data-componentid={`${componentId}-authorize`}
             />
         </Form>
     );

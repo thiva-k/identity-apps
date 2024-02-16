@@ -42,25 +42,20 @@ interface AddAPIResourcePermissionPropsInterface extends IdentifiableComponentIn
 export const AddAPIResourcePermission: FunctionComponent<AddAPIResourcePermissionPropsInterface> = (
     props: AddAPIResourcePermissionPropsInterface
 ): ReactElement => {
-
-    const {
-        closeWizard,
-        handleUpdateAPIResource,
-        ["data-componentid"]: componentId
-    } = props;
+    const { closeWizard, handleUpdateAPIResource, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
-    const [ submitAddPermissionForm, setSubmitAddPermissionForm ] = useTrigger();
+    const [submitAddPermissionForm, setSubmitAddPermissionForm] = useTrigger();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ permissionValidationLoading, setPermissionValidationLoading ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [permissionValidationLoading, setPermissionValidationLoading] = useState<boolean>(false);
 
     const addPermission = (permission: APIResourcePermissionInterface): void => {
         handleUpdateAPIResource(
             {
-                addedScopes: [ permission ]
+                addedScopes: [permission]
             },
-            (): void => { 
+            (): void => {
                 closeWizard();
                 setIsSubmitting(false);
             }
@@ -69,48 +64,48 @@ export const AddAPIResourcePermission: FunctionComponent<AddAPIResourcePermissio
 
     return (
         <Modal
-            data-testid={ componentId }
-            open={ true }
+            data-testid={componentId}
+            open={true}
             className="wizard api-resource-permission-create-wizard"
             dimmer="blurring"
             size="small"
-            onClose={ closeWizard }
-            closeOnDimmerClick={ false }
+            onClose={closeWizard}
+            closeOnDimmerClick={false}
             closeOnEscape
         >
             <Modal.Header className="wizard-header">
-                { t("console:apiResources.tabs.scopes.form.title") }
-                <Heading as="h6">{ t("console:apiResources.tabs.scopes.form.subTitle") }</Heading>
+                {t("console:apiResources.tabs.scopes.form.title")}
+                <Heading as="h6">{t("console:apiResources.tabs.scopes.form.subTitle")}</Heading>
             </Modal.Header>
             <Modal.Content className="content-container">
-                <AddAPIResourcePermissionForm 
-                    triggerAddPermission={ submitAddPermissionForm } 
-                    addPermission={ addPermission }
-                    setIsSubmitting={ setIsSubmitting }
-                    permissionValidationLoading={ permissionValidationLoading }
-                    setPermissionValidationLoading={ setPermissionValidationLoading }
+                <AddAPIResourcePermissionForm
+                    triggerAddPermission={submitAddPermissionForm}
+                    addPermission={addPermission}
+                    setIsSubmitting={setIsSubmitting}
+                    permissionValidationLoading={permissionValidationLoading}
+                    setPermissionValidationLoading={setPermissionValidationLoading}
                 />
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
-                                data-testid={ `${componentId}-cancel-button` }
+                                data-testid={`${componentId}-cancel-button`}
                                 floated="left"
-                                onClick={ () => closeWizard() }
+                                onClick={() => closeWizard()}
                             >
-                                { t("console:apiResources.tabs.scopes.form.cancelButton") }
+                                {t("console:apiResources.tabs.scopes.form.cancelButton")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <PrimaryButton
-                                data-testid={ `${componentId}-finish-button` }
+                                data-testid={`${componentId}-finish-button`}
                                 floated="right"
-                                onClick={ () => setSubmitAddPermissionForm() }
-                                loading={ isSubmitting }
+                                onClick={() => setSubmitAddPermissionForm()}
+                                loading={isSubmitting}
                             >
-                                { t("console:apiResources.tabs.scopes.form.submitButton") }
+                                {t("console:apiResources.tabs.scopes.form.submitButton")}
                             </PrimaryButton>
                         </Grid.Column>
                     </Grid.Row>

@@ -17,12 +17,12 @@
  */
 
 import { IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import { Hint } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Grid } from "semantic-ui-react";
-import { FeatureConfigInterface } from "../../../../core";
 import { getAPIResourcePermissions } from "../../../api";
 import { APIResourcesConstants } from "../../../constants";
 import { APIResourcePermissionInterface } from "../../../models";
@@ -30,8 +30,7 @@ import { APIResourcePermissionInterface } from "../../../models";
 /**
  * Prop-types for the API resources page component.
  */
-interface AddAPIResourceBasicInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
+interface AddAPIResourceBasicInterface extends SBACInterface<FeatureConfigInterface>, IdentifiableComponentInterface {
     /**
      * trigger submission
      */
@@ -65,7 +64,6 @@ const FORM_ID: string = "apiResource-general-details";
 export const AddAPIResourcePermissionForm: FunctionComponent<AddAPIResourceBasicInterface> = (
     props: AddAPIResourceBasicInterface
 ): ReactElement => {
-
     const {
         permissionValidationLoading,
         triggerAddPermission,
@@ -97,97 +95,116 @@ export const AddAPIResourcePermissionForm: FunctionComponent<AddAPIResourceBasic
 
     return (
         <Forms
-            data-componentid={ `${componentId}-form` }
-            onSubmit={ submitAddPermission }
-            id={ FORM_ID }
-            submitState={ triggerAddPermission }
-            uncontrolledForm={ false }
+            data-componentid={`${componentId}-form`}
+            onSubmit={submitAddPermission}
+            id={FORM_ID}
+            submitState={triggerAddPermission}
+            uncontrolledForm={false}
         >
             <Grid>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={12}>
                         <Field
                             type="text"
                             name="identifier"
-                            label={ t("console:apiResources.tabs.scopes.form.fields.scope.label") }
-                            placeholder={ t("console:apiResources.tabs.scopes.form.fields." +
-                                "scope.placeholder") }
-                            required={ true }
-                            tabIndex={ 1 }
-                            requiredErrorMessage={ t("console:apiResources.wizard.addApiResource.steps." +
-                                "scopes.form.fields.permission.emptyValidate") }
-                            validation={ async (value: string, validation: Validation) => {
-
+                            label={t("console:apiResources.tabs.scopes.form.fields.scope.label")}
+                            placeholder={t("console:apiResources.tabs.scopes.form.fields." + "scope.placeholder")}
+                            required={true}
+                            tabIndex={1}
+                            requiredErrorMessage={t(
+                                "console:apiResources.wizard.addApiResource.steps." +
+                                    "scopes.form.fields.permission.emptyValidate"
+                            )}
+                            validation={async (value: string, validation: Validation) => {
                                 setPermissionValidationLoading(true);
 
                                 if (value) {
                                     if (!APIResourcesConstants.checkValidPermissionIdentifier(value)) {
                                         validation.isValid = false;
-                                        validation.errorMessages.push(t("console:apiResources.wizard." +
-                                            "addApiResource.steps.scopes.form.fields.permission.invalid"));
+                                        validation.errorMessages.push(
+                                            t(
+                                                "console:apiResources.wizard." +
+                                                    "addApiResource.steps.scopes.form.fields.permission.invalid"
+                                            )
+                                        );
                                     } else {
                                         const filter: string = "name eq " + value;
 
-                                        const response: APIResourcePermissionInterface[] =
-                                            await getAPIResourcePermissions(filter);
+                                        const response: APIResourcePermissionInterface[] = await getAPIResourcePermissions(
+                                            filter
+                                        );
 
                                         if (response?.length > 0) {
                                             validation.isValid = false;
-                                            validation.errorMessages.push(t("console:apiResources.wizard." +
-                                            "addApiResource.steps.scopes.form.fields.permission.uniqueValidate"));
+                                            validation.errorMessages.push(
+                                                t(
+                                                    "console:apiResources.wizard." +
+                                                        "addApiResource.steps.scopes.form.fields.permission.uniqueValidate"
+                                                )
+                                            );
                                         }
                                     }
 
                                     setPermissionValidationLoading(false);
                                 }
-                            } }
-                            data-testid={ `${componentId}-identifier` }
-                            loading={ permissionValidationLoading }
+                            }}
+                            data-testid={`${componentId}-identifier`}
+                            loading={permissionValidationLoading}
                         />
                         <Hint>
                             <Trans
-                                i18nKey= { "console:apiResources.wizard.addApiResource.steps." +
-                                    "scopes.form.fields.scope.hint" }>
+                                i18nKey={
+                                    "console:apiResources.wizard.addApiResource.steps." +
+                                    "scopes.form.fields.scope.hint"
+                                }
+                            >
                                 A unique value that acts as the scope when requesting an access token.&nbsp;
                                 <b>Note that the scope cannot be modified once created.</b>
                             </Trans>
                         </Hint>
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={12}>
                         <Field
                             type="text"
                             name="displayName"
-                            label={ t("extensions:develop.apiResource.tabs.permissions.form.fields.displayName.label") }
-                            placeholder={ t("extensions:develop.apiResource.tabs.permissions.form.fields." +
-                                "displayName.placeholder") }
-                            required={ true }
-                            tabIndex={ 2 }
-                            requiredErrorMessage={ t("extensions:develop.apiResource.tabs.permissions.form.fields." +
-                                "displayName.emptyValidate") }
-                            data-testid={ `${componentId}-displayName` }
+                            label={t("extensions:develop.apiResource.tabs.permissions.form.fields.displayName.label")}
+                            placeholder={t(
+                                "extensions:develop.apiResource.tabs.permissions.form.fields." +
+                                    "displayName.placeholder"
+                            )}
+                            required={true}
+                            tabIndex={2}
+                            requiredErrorMessage={t(
+                                "extensions:develop.apiResource.tabs.permissions.form.fields." +
+                                    "displayName.emptyValidate"
+                            )}
+                            data-testid={`${componentId}-displayName`}
                         />
                         <Hint>
-                            { t("extensions:develop.apiResource.wizard.addApiResource.steps." +
-                                "permissions.form.fields.displayName.hint") }
+                            {t(
+                                "extensions:develop.apiResource.wizard.addApiResource.steps." +
+                                    "permissions.form.fields.displayName.hint"
+                            )}
                         </Hint>
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={12}>
                         <Field
                             type="text"
                             name="description"
-                            label={ t("console:apiResources.tabs.scopes.form.fields.description.label") }
-                            placeholder={ t("console:apiResources.tabs.scopes.form.fields." +
-                                "description.placeholder") }
-                            tabIndex={ 3 }
-                            data-testid={ `${componentId}-description` }
+                            label={t("console:apiResources.tabs.scopes.form.fields.description.label")}
+                            placeholder={t("console:apiResources.tabs.scopes.form.fields." + "description.placeholder")}
+                            tabIndex={3}
+                            data-testid={`${componentId}-description`}
                         />
                         <Hint>
-                            { t("console:apiResources.wizard.addApiResource.steps." +
-                                "scopes.form.fields.description.hint") }
+                            {t(
+                                "console:apiResources.wizard.addApiResource.steps." +
+                                    "scopes.form.fields.description.hint"
+                            )}
                         </Hint>
                     </Grid.Column>
                 </Grid.Row>

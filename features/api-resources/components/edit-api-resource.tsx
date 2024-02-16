@@ -18,21 +18,20 @@
 
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { ResourceTab } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { AuthorizationAPIResource, GeneralAPIResource, PermissionAPIResource } from "./api-resource-panes";
-import { FeatureConfigInterface } from "../../core";
 import { deleteScopeFromAPIResource, updateAPIResource } from "../api";
 import { APIResourceInterface, UpdatedAPIResourceInterface } from "../models";
 
 /**
  * Prop-types for the API resources page component.
  */
-interface EditAPIResourceInterface extends SBACInterface<FeatureConfigInterface>, 
-    IdentifiableComponentInterface {
+interface EditAPIResourceInterface extends SBACInterface<FeatureConfigInterface>, IdentifiableComponentInterface {
     /**
      * List of API Resources
      */
@@ -60,64 +59,60 @@ interface EditAPIResourceInterface extends SBACInterface<FeatureConfigInterface>
 export const EditAPIResource: FunctionComponent<EditAPIResourceInterface> = (
     props: EditAPIResourceInterface
 ): ReactElement => {
-
-    const {
-        featureConfig,
-        isReadOnly,
-        apiResourceData,
-        isAPIResourceDataLoading,
-        mutateAPIResource
-    } = props;
+    const { featureConfig, isReadOnly, apiResourceData, isAPIResourceDataLoading, mutateAPIResource } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     /**
      * Panes for the resource tab.
      * @returns `ResourceTab.Pane[]`
      */
-    const panes = () => ([
+    const panes = () => [
         {
             menuItem: t("extensions:develop.apiResource.tabs.general.label"),
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
-                    <GeneralAPIResource 
-                        apiResourceData={ apiResourceData }
-                        isAPIResourceDataLoading={ isAPIResourceDataLoading }
-                        featureConfig={ featureConfig }
-                        isReadOnly={ isReadOnly }
-                        isSubmitting = { isSubmitting }
-                        handleUpdateAPIResource = { handleUpdateAPIResource } />
+                <ResourceTab.Pane controlledSegmentation attached={false}>
+                    <GeneralAPIResource
+                        apiResourceData={apiResourceData}
+                        isAPIResourceDataLoading={isAPIResourceDataLoading}
+                        featureConfig={featureConfig}
+                        isReadOnly={isReadOnly}
+                        isSubmitting={isSubmitting}
+                        handleUpdateAPIResource={handleUpdateAPIResource}
+                    />
                 </ResourceTab.Pane>
             )
         },
         {
             menuItem: t("console:apiResources.tabs.scopes.label"),
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
-                    <PermissionAPIResource 
-                        apiResourceData={ apiResourceData }
-                        isAPIResourceDataLoading={ isAPIResourceDataLoading }
-                        isSubmitting = { isSubmitting }
-                        isReadOnly={ isReadOnly }
-                        handleUpdateAPIResource = { handleUpdateAPIResource }
-                        handleDeleteAPIScope = { handleDeleteAPIScope } />
+                <ResourceTab.Pane controlledSegmentation attached={false}>
+                    <PermissionAPIResource
+                        apiResourceData={apiResourceData}
+                        isAPIResourceDataLoading={isAPIResourceDataLoading}
+                        isSubmitting={isSubmitting}
+                        isReadOnly={isReadOnly}
+                        handleUpdateAPIResource={handleUpdateAPIResource}
+                        handleDeleteAPIScope={handleDeleteAPIScope}
+                    />
                 </ResourceTab.Pane>
             )
         },
         {
             menuItem: t("extensions:develop.apiResource.tabs.authorization.label"),
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <AuthorizationAPIResource
-                        apiResourceData={ apiResourceData }
-                        isAPIResourceDataLoading={ isAPIResourceDataLoading } />
+                        apiResourceData={apiResourceData}
+                        isAPIResourceDataLoading={isAPIResourceDataLoading}
+                    />
                 </ResourceTab.Pane>
             )
         }
-    ]);
+    ];
 
     /**
      * Handles API Resource update actions.
@@ -130,26 +125,34 @@ export const EditAPIResource: FunctionComponent<EditAPIResourceInterface> = (
 
         updateAPIResource(apiResourceData.id, updatedAPIResource)
             .then(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.apiResource.notifications.updateAPIResource.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("extensions:develop.apiResource.notifications.updateAPIResource.success.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.apiResource.notifications.updateAPIResource.success" + ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t("extensions:develop.apiResource.notifications.updateAPIResource.success.message")
+                    })
+                );
                 mutateAPIResource();
             })
             .catch(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.apiResource.notifications.updateAPIResource" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:develop.apiResource.notifications.updateAPIResource" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.apiResource.notifications.updateAPIResource" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "extensions:develop.apiResource.notifications.updateAPIResource" + ".genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsSubmitting(false);
-                
+
                 // Callback function to be executed after the update is completed.
                 callback && callback();
             });
@@ -166,36 +169,38 @@ export const EditAPIResource: FunctionComponent<EditAPIResourceInterface> = (
 
         deleteScopeFromAPIResource(apiResourceData.id, deletingScopeName)
             .then(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.apiResource.notifications.updateAPIResource.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("extensions:develop.apiResource.notifications.updateAPIResource.success.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.apiResource.notifications.updateAPIResource.success" + ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t("extensions:develop.apiResource.notifications.updateAPIResource.success.message")
+                    })
+                );
                 mutateAPIResource();
             })
             .catch(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.apiResource.notifications.updateAPIResource" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:develop.apiResource.notifications.updateAPIResource" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.apiResource.notifications.updateAPIResource" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "extensions:develop.apiResource.notifications.updateAPIResource" + ".genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsSubmitting(false);
-                
+
                 // Callback function to be executed after the update is completed.
                 callback && callback();
             });
     };
 
-    return (
-        <ResourceTab
-            isLoading={ isAPIResourceDataLoading }
-            panes={ panes() }
-        />
-    );
-
+    return <ResourceTab isLoading={isAPIResourceDataLoading} panes={panes()} />;
 };

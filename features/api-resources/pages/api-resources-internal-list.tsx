@@ -19,23 +19,17 @@
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface, LinkInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import {
-    EmptyPlaceholder,
-    ListLayout,
-    PageLayout
-} from "@wso2is/react-components";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { EmptyPlaceholder, ListLayout, PageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, MouseEvent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { PaginationProps } from "semantic-ui-react";
-import {
-    AdvancedSearchWithBasicFilters,
-    AppState,
-    FeatureConfigInterface,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
 import { useAPIResources } from "../api";
 import { APIResourcesList } from "../components";
 import { APIResourceCategories, APIResourceType, APIResourcesConstants } from "../constants";
@@ -55,10 +49,7 @@ type APIResourcesPageInterface = IdentifiableComponentInterface;
 const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
     props: APIResourcesPageInterface
 ): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const path: string[] = history.location.pathname.split("/");
     const categoryId: string = path[path.length - 1];
@@ -67,18 +58,20 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
     const dispatch: Dispatch = useDispatch();
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ activePage, setActivePage ] = useState<number>(1);
-    const [ isListUpdated, setListUpdated ] = useState<boolean>(false);
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ apiResourcesList, setAPIResourcesList ] = useState<APIResourceInterface[]>([]);
-    const [ after, setAfter ] = useState<string>(undefined);
-    const [ before, setBefore ] = useState<string>(undefined);
-    const [ nextAfter, setNextAfter ] = useState<string>(undefined);
-    const [ nextBefore, setNextBefore ] = useState<string>(undefined);
-    const [ filter, setFilter ] = useState<string>(categoryId === APIResourceType.MANAGEMENT
-        ? `type eq ${ APIResourceCategories.TENANT }`
-        : `type eq ${ APIResourceCategories.ORGANIZATION }`);
+    const [activePage, setActivePage] = useState<number>(1);
+    const [isListUpdated, setListUpdated] = useState<boolean>(false);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [apiResourcesList, setAPIResourcesList] = useState<APIResourceInterface[]>([]);
+    const [after, setAfter] = useState<string>(undefined);
+    const [before, setBefore] = useState<string>(undefined);
+    const [nextAfter, setNextAfter] = useState<string>(undefined);
+    const [nextBefore, setNextBefore] = useState<string>(undefined);
+    const [filter, setFilter] = useState<string>(
+        categoryId === APIResourceType.MANAGEMENT
+            ? `type eq ${APIResourceCategories.TENANT}`
+            : `type eq ${APIResourceCategories.ORGANIZATION}`
+    );
 
     const {
         data: apiResourcesListData,
@@ -92,20 +85,23 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
      */
     useEffect(() => {
         if (apiResourcesListData instanceof IdentityAppsApiException) {
-            dispatch(addAlert<AlertInterface>({
-                description: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.message")
-            }));
+            dispatch(
+                addAlert<AlertInterface>({
+                    description: t(
+                        "extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t("extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.message")
+                })
+            );
 
             return;
         }
 
         if (apiResourcesListData) {
             const apiResourceList: APIResourceInterface[] = apiResourcesListData.apiResources.map(
-                (apiResource: APIResourceInterface) => apiResource);
+                (apiResource: APIResourceInterface) => apiResource
+            );
 
             setNextAfter(undefined);
             setNextBefore(undefined);
@@ -130,22 +126,24 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
 
             setAPIResourcesList(apiResourceList);
         }
-    }, [ apiResourcesListData ]);
+    }, [apiResourcesListData]);
 
     /**
      * The following useEffect is used to handle if any error occurs while fetching the API resources list
      */
     useEffect(() => {
         if (apiResourcesFetchRequestError) {
-            dispatch(addAlert<AlertInterface>({
-                description: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.message")
-            }));
+            dispatch(
+                addAlert<AlertInterface>({
+                    description: t(
+                        "extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t("extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.message")
+                })
+            );
         }
-    }, [ apiResourcesFetchRequestError ]);
+    }, [apiResourcesFetchRequestError]);
 
     /**
      * The following useEffect is used to update the API resources list once a mutate function is called.
@@ -155,22 +153,23 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
             mutateAPIResourcesFetchRequest();
             setListUpdated(false);
         }
-    }, [ isListUpdated ]);
+    }, [isListUpdated]);
 
     /**
      * The following useEffect is used to update the filter value
      */
     useEffect(() => {
-        const typeFilter: string = categoryId === APIResourceType.MANAGEMENT
-            ? `type eq ${ APIResourceCategories.TENANT }`
-            : `type eq ${ APIResourceCategories.ORGANIZATION }`;
+        const typeFilter: string =
+            categoryId === APIResourceType.MANAGEMENT
+                ? `type eq ${APIResourceCategories.TENANT}`
+                : `type eq ${APIResourceCategories.ORGANIZATION}`;
 
         if (searchQuery) {
-            setFilter(`${ searchQuery } and ${ typeFilter }`);
+            setFilter(`${searchQuery} and ${typeFilter}`);
         } else {
             setFilter(typeFilter);
         }
-    }, [ searchQuery ]);
+    }, [searchQuery]);
 
     /**
      * set the after and before values needed for the `mutateAPIResourcesFetchRequest`
@@ -230,94 +229,97 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
 
     return (
         <PageLayout
-            pageTitle={ categoryId === APIResourceType.MANAGEMENT
-                ? t("extensions:develop.apiResource.managementAPI.header")
-                : t("extensions:develop.apiResource.organizationAPI.header")
+            pageTitle={
+                categoryId === APIResourceType.MANAGEMENT
+                    ? t("extensions:develop.apiResource.managementAPI.header")
+                    : t("extensions:develop.apiResource.organizationAPI.header")
             }
-            title={ categoryId === APIResourceType.MANAGEMENT
-                ? t("extensions:develop.apiResource.managementAPI.header")
-                : t("extensions:develop.apiResource.organizationAPI.header")
+            title={
+                categoryId === APIResourceType.MANAGEMENT
+                    ? t("extensions:develop.apiResource.managementAPI.header")
+                    : t("extensions:develop.apiResource.organizationAPI.header")
             }
-            data-componentid={ `${componentId}-page-layout` }
-            data-testid={ `${componentId}-page-layout` }
+            data-componentid={`${componentId}-page-layout`}
+            data-testid={`${componentId}-page-layout`}
             headingColumnWidth="11"
             actionColumnWidth="5"
-            loadingStateOptions={ {
+            loadingStateOptions={{
                 count: 5,
                 imageType: "circular"
-            } }
-            backButton={ {
+            }}
+            backButton={{
                 "data-testid": `${componentId}-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:manage.pages.rolesEdit.backButton", { type: "APIs" })
-            } }
+            }}
         >
             <ListLayout
-                advancedSearch={ (
+                advancedSearch={
                     <AdvancedSearchWithBasicFilters
-                        onFilter={ handleApiFilter }
-                        filterAttributeOptions={ [
+                        onFilter={handleApiFilter}
+                        filterAttributeOptions={[
                             {
                                 key: 0,
                                 text: t("common:name"),
                                 value: "name"
                             }
-                        ] }
-                        filterAttributePlaceholder={
-                            t("console:develop.features.applications.advancedSearch.form" +
-                                ".inputs.filterAttribute.placeholder")
-                        }
-                        filterConditionsPlaceholder={
-                            t("console:develop.features.applications.advancedSearch.form" +
-                                ".inputs.filterCondition.placeholder")
-                        }
-                        filterValuePlaceholder={
-                            t("console:develop.features.applications.advancedSearch.form.inputs.filterValue" +
-                                ".placeholder")
-                        }
-                        placeholder={ "Search APIs by name" }
-                        style={ { minWidth: "425px" } }
+                        ]}
+                        filterAttributePlaceholder={t(
+                            "console:develop.features.applications.advancedSearch.form" +
+                                ".inputs.filterAttribute.placeholder"
+                        )}
+                        filterConditionsPlaceholder={t(
+                            "console:develop.features.applications.advancedSearch.form" +
+                                ".inputs.filterCondition.placeholder"
+                        )}
+                        filterValuePlaceholder={t(
+                            "console:develop.features.applications.advancedSearch.form.inputs.filterValue" +
+                                ".placeholder"
+                        )}
+                        placeholder={"Search APIs by name"}
+                        style={{ minWidth: "425px" }}
                         defaultSearchAttribute="name"
                         defaultSearchOperator="co"
-                        triggerClearQuery={ triggerClearQuery }
-                        data-componentid={ `${ componentId }-list-advanced-search` }
+                        triggerClearQuery={triggerClearQuery}
+                        data-componentid={`${componentId}-list-advanced-search`}
                     />
-                ) }
-                showTopActionPanel={ true }
-                data-componentid={ `${ componentId }-api-resources-list-layout` }
-                data-testid={ `${ componentId }-api-resources-list-layout` }
-                onPageChange={ handlePaginationChange }
-                showPagination={ true }
-                totalPages={ APIResourcesConstants.DEFAULT_TOTAL_PAGES }
-                totalListSize={ apiResourcesList?.length }
-                showPaginationPageLimit={ false }
-                isLoading={ isAPIResourcesListLoading }
-                activePage={ activePage }
-                paginationOptions={ {
+                }
+                showTopActionPanel={true}
+                data-componentid={`${componentId}-api-resources-list-layout`}
+                data-testid={`${componentId}-api-resources-list-layout`}
+                onPageChange={handlePaginationChange}
+                showPagination={true}
+                totalPages={APIResourcesConstants.DEFAULT_TOTAL_PAGES}
+                totalListSize={apiResourcesList?.length}
+                showPaginationPageLimit={false}
+                isLoading={isAPIResourcesListLoading}
+                activePage={activePage}
+                paginationOptions={{
                     disableNextButton: !nextAfter,
                     disablePreviousButton: !nextBefore
-                } }
+                }}
             >
-                {
-                    apiResourcesFetchRequestError
-                        ? (<EmptyPlaceholder
-                            subtitle={ [ t("extensions:develop.apiResource.apiResourceError.subtitles.0"),
-                                t("extensions:develop.apiResource.apiResourceError.subtitles.1") ] }
-                            title={ t("extensions:develop.apiResource.apiResourceError.title") }
-                            image={ getEmptyPlaceholderIllustrations().genericError }
-                            imageSize="tiny"
-                        />)
-                        : (<APIResourcesList
-                            apiResourcesList={ apiResourcesList }
-                            isAPIResourcesListLoading={ isAPIResourcesListLoading }
-                            featureConfig={ featureConfig }
-                            onAPIResourceDelete={ null }
-                            onSearchQueryClear={ handleSearchQueryClear }
-                            searchQuery={ searchQuery }
-                            categoryId={ categoryId }
-                        />)
-
-                }
+                {apiResourcesFetchRequestError ? (
+                    <EmptyPlaceholder
+                        subtitle={[
+                            t("extensions:develop.apiResource.apiResourceError.subtitles.0"),
+                            t("extensions:develop.apiResource.apiResourceError.subtitles.1")
+                        ]}
+                        title={t("extensions:develop.apiResource.apiResourceError.title")}
+                        image={getEmptyPlaceholderIllustrations().genericError}
+                        imageSize="tiny"
+                    />
+                ) : (
+                    <APIResourcesList
+                        apiResourcesList={apiResourcesList}
+                        isAPIResourcesListLoading={isAPIResourcesListLoading}
+                        featureConfig={featureConfig}
+                        onAPIResourceDelete={null}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        searchQuery={searchQuery}
+                        categoryId={categoryId}
+                    />
+                )}
             </ListLayout>
         </PageLayout>
     );

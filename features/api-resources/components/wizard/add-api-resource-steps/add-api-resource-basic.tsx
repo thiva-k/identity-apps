@@ -17,13 +17,14 @@
  */
 
 import { IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { Field, FormField, FormValue, Forms, Validation } from "@wso2is/forms";
 import { Hint } from "@wso2is/react-components";
 import React, { FunctionComponent, MutableRefObject, ReactElement, useRef } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
-import { AppState, FeatureConfigInterface } from "../../../../core";
 import { getAPIResourcesForIdenitifierValidation } from "../../../api";
 import { APIResourcesConstants } from "../../../constants";
 import { APIResourcesListInterface, BasicAPIResourceInterface } from "../../../models";
@@ -31,8 +32,7 @@ import { APIResourcesListInterface, BasicAPIResourceInterface } from "../../../m
 /**
  * Prop-types for the API resources page component.
  */
-interface AddAPIResourceBasicInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
+interface AddAPIResourceBasicInterface extends SBACInterface<FeatureConfigInterface>, IdentifiableComponentInterface {
     /**
      * initial basic details
      */
@@ -68,7 +68,6 @@ interface AddAPIResourceBasicInterface extends SBACInterface<FeatureConfigInterf
 export const AddAPIResourceBasic: FunctionComponent<AddAPIResourceBasicInterface> = (
     props: AddAPIResourceBasicInterface
 ): ReactElement => {
-
     const {
         triggerSubmission,
         initalBasicDetails,
@@ -98,85 +97,107 @@ export const AddAPIResourceBasic: FunctionComponent<AddAPIResourceBasicInterface
     };
 
     return (
-        <Forms
-            data-testid={ `${componentId}-form` }
-            onSubmit={ submitBasicDetails }
-            submitState={ triggerSubmission }
-        >
+        <Forms data-testid={`${componentId}-form`} onSubmit={submitBasicDetails} submitState={triggerSubmission}>
             <Grid>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={12}>
                         <Field
-                            ref={ identifierRef }
+                            ref={identifierRef}
                             type="text"
                             name="identifier"
-                            label={ t("extensions:develop.apiResource.wizard.addApiResource.steps.basic.form." +
-                                "fields.identifier.label") }
-                            placeholder={ t("extensions:develop.apiResource.wizard.addApiResource.steps.basic." +
-                                "form.fields.identifier.placeholder") }
-                            requiredErrorMessage={ t("extensions:develop.apiResource.wizard.addApiResource.steps." +
-                                "basic.form.fields.identifier.emptyValidate") }
-                            required={ true }
-                            tabIndex={ 1 }
-                            value={ initalBasicDetails && initalBasicDetails.identifier }
-                            validation={ async (value: string, validation: Validation) => {
-                                
+                            label={t(
+                                "extensions:develop.apiResource.wizard.addApiResource.steps.basic.form." +
+                                    "fields.identifier.label"
+                            )}
+                            placeholder={t(
+                                "extensions:develop.apiResource.wizard.addApiResource.steps.basic." +
+                                    "form.fields.identifier.placeholder"
+                            )}
+                            requiredErrorMessage={t(
+                                "extensions:develop.apiResource.wizard.addApiResource.steps." +
+                                    "basic.form.fields.identifier.emptyValidate"
+                            )}
+                            required={true}
+                            tabIndex={1}
+                            value={initalBasicDetails && initalBasicDetails.identifier}
+                            validation={async (value: string, validation: Validation) => {
                                 setIdentifierValidationLoading(true);
 
                                 if (!APIResourcesConstants.checkValidPermissionIdentifier(value)) {
                                     validation.isValid = false;
-                                    validation.errorMessages.push(t("extensions:develop.apiResource.wizard." +
-                                        "addApiResource.steps.basic.form.fields.identifier.invalid"));
+                                    validation.errorMessages.push(
+                                        t(
+                                            "extensions:develop.apiResource.wizard." +
+                                                "addApiResource.steps.basic.form.fields.identifier.invalid"
+                                        )
+                                    );
                                 } else {
                                     const filter: string = "identifier eq " + value;
 
-                                    const response: APIResourcesListInterface = 
-                                        await getAPIResourcesForIdenitifierValidation(filter);
-    
+                                    const response: APIResourcesListInterface = await getAPIResourcesForIdenitifierValidation(
+                                        filter
+                                    );
+
                                     if (response?.apiResources?.length > 0) {
                                         validation.isValid = false;
-                                        validation.errorMessages.push(t("extensions:develop.apiResource.wizard." +
-                                            "addApiResource.steps.basic.form.fields.identifier.alreadyExistsError"));
+                                        validation.errorMessages.push(
+                                            t(
+                                                "extensions:develop.apiResource.wizard." +
+                                                    "addApiResource.steps.basic.form.fields.identifier.alreadyExistsError"
+                                            )
+                                        );
                                     }
                                 }
 
                                 setIdentifierValidationLoading(false);
-                            } }
-                            data-testid={ `${componentId}-basic-form-identifier` }
-                            loading={ isIdentifierValidationLoading }
+                            }}
+                            data-testid={`${componentId}-basic-form-identifier`}
+                            loading={isIdentifierValidationLoading}
                         />
                         <Hint className="mb-0">
-                            <Trans 
-                                i18nKey= { "extensions:develop.apiResource.wizard.addApiResource.steps.basic." +
-                                    "form.fields.identifier.hint" }
-                                tOptions={ { productName } }>
-                                We recommend using a URI as the identifier, but you do not need to make the URI 
-                                publicly available since WSO2 Identity Server will not access your API. 
-                                WSO2 Identity Server will use this identifier value as the audience(aud) claim in the 
-                                issued JWT tokens. <b>This field should be unique; once created, it is not editable.</b>
+                            <Trans
+                                i18nKey={
+                                    "extensions:develop.apiResource.wizard.addApiResource.steps.basic." +
+                                    "form.fields.identifier.hint"
+                                }
+                                tOptions={{ productName }}
+                            >
+                                We recommend using a URI as the identifier, but you do not need to make the URI publicly
+                                available since WSO2 Identity Server will not access your API. WSO2 Identity Server will
+                                use this identifier value as the audience(aud) claim in the issued JWT tokens.{" "}
+                                <b>This field should be unique; once created, it is not editable.</b>
                             </Trans>
                         </Hint>
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
-                        <Field            
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={12}>
+                        <Field
                             type="text"
                             name="displayName"
-                            label={ t("extensions:develop.apiResource.wizard.addApiResource.steps.basic.form.fields." + 
-                                "name.label") }
-                            placeholder={ t("extensions:develop.apiResource.wizard.addApiResource.steps.basic.form." +
-                                "fields.name.placeholder") }
-                            required={ true }
-                            tabIndex={ 2 }
-                            requiredErrorMessage={ t("extensions:develop.apiResource.wizard.addApiResource.steps." + 
-                                "basic.form.fields.name.emptyValidate") }
-                            value={ initalBasicDetails?.displayName }
-                            data-testid={ `${componentId}-basic-form-displayName` }
+                            label={t(
+                                "extensions:develop.apiResource.wizard.addApiResource.steps.basic.form.fields." +
+                                    "name.label"
+                            )}
+                            placeholder={t(
+                                "extensions:develop.apiResource.wizard.addApiResource.steps.basic.form." +
+                                    "fields.name.placeholder"
+                            )}
+                            required={true}
+                            tabIndex={2}
+                            requiredErrorMessage={t(
+                                "extensions:develop.apiResource.wizard.addApiResource.steps." +
+                                    "basic.form.fields.name.emptyValidate"
+                            )}
+                            value={initalBasicDetails?.displayName}
+                            data-testid={`${componentId}-basic-form-displayName`}
                         />
                         <Hint className="mb-0">
-                            { t("extensions:develop.apiResource.wizard.addApiResource.steps.basic.form.fields." +
-                                "name.hint", { productName }) }
+                            {t(
+                                "extensions:develop.apiResource.wizard.addApiResource.steps.basic.form.fields." +
+                                    "name.hint",
+                                { productName }
+                            )}
                         </Hint>
                     </Grid.Column>
                 </Grid.Row>
