@@ -17,7 +17,11 @@
  */
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { PortalDocumentationStructureInterface } from "../../../feature-models.common/help-panel";
+=======
+import { PortalDocumentationStructureInterface } from "../../../models";
+>>>>>>> Stashed changes
 =======
 import { PortalDocumentationStructureInterface } from "../../../models";
 >>>>>>> Stashed changes
@@ -98,8 +102,12 @@ export interface SetHelpPanelActiveTabIndexActionInterface extends HelpPanelBase
  * Export action interfaces.
  */
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 export type HelpPanelActions =
     | SetHelpPanelDocsContentURLActionInterface
+=======
+export type HelpPanelActions = SetHelpPanelDocsContentURLActionInterface
+>>>>>>> Stashed changes
 =======
 export type HelpPanelActions = SetHelpPanelDocsContentURLActionInterface
 >>>>>>> Stashed changes

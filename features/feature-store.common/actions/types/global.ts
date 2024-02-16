@@ -17,7 +17,11 @@
  */
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { AppViewTypes } from "../../../feature-models.common/ui";
+=======
+import { AppViewTypes } from "../../../models";
+>>>>>>> Stashed changes
 =======
 import { AppViewTypes } from "../../../models";
 >>>>>>> Stashed changes

@@ -17,8 +17,13 @@
  */
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { OrganizationType } from "../../../feature-organizations.common/constants";
 import { OrganizationResponseInterface } from "../../../feature-organizations.common/models";
+=======
+import { OrganizationType } from "../../../../organizations/constants";
+import { OrganizationResponseInterface } from "../../../../organizations/models";
+>>>>>>> Stashed changes
 =======
 import { OrganizationType } from "../../../../organizations/constants";
 import { OrganizationResponseInterface } from "../../../../organizations/models";
