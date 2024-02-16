@@ -16,15 +16,7 @@
  * under the License.
  */
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 import { AppViewTypes } from "../../../feature-models.common/ui";
-=======
-import { AppViewTypes } from "../../../models";
->>>>>>> Stashed changes
-=======
-import { AppViewTypes } from "../../../models";
->>>>>>> Stashed changes
 
 /**
  * Enum for Global action types.
@@ -58,3 +50,4 @@ export interface SetActiveViewAction extends GlobalBaseAction {
  * Export action interfaces.
  */
 export type GlobalActions = SetActiveViewAction;
+

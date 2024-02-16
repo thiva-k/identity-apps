@@ -16,8 +16,8 @@
  * under the License.
  */
 
-import { OrganizationManagementConstants, OrganizationType } from "../../../organizations/constants";
-import { OrganizationReducerStateInterface } from "../../models";
+import { OrganizationManagementConstants, OrganizationType } from "../../feature-organizations.common/constants";
+import { OrganizationReducerStateInterface } from "../../feature-models.common";
 import { OrganizationAction, OrganizationActionTypes } from "../actions/types";
 
 const initialState: OrganizationReducerStateInterface = {

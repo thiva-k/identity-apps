@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { HelpPanelReducerStateInterface } from "../../models";
+import { HelpPanelReducerStateInterface } from "../../feature-models.common";
 import { HelpPanelActionTypes, HelpPanelActions } from "../actions/types";
 
 /**

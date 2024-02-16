@@ -23,11 +23,7 @@ import {
     SetHelpPanelDocsContentURLActionInterface,
     ToggleHelpPanelVisibilityActionInterface
 } from "./types";
-<<<<<<< Updated upstream:features/feature-store.common/actions/help-panel.ts
 import { PortalDocumentationStructureInterface } from "../../feature-models.common/help-panel";
-=======
-import { PortalDocumentationStructureInterface } from "../../feature-models.common";
->>>>>>> Stashed changes:features/feature-core/store/actions/help-panel.ts
 
 /**
  * Redux action to set the help panel docs tab content URL.

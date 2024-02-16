@@ -22,7 +22,7 @@ import { SupportedLanguagesMeta } from "@wso2is/i18n";
 import { System } from "react-notification-system";
 import reduceReducers from "reduce-reducers";
 import { Reducer } from "redux";
-import { GlobalReducerStateInterface } from "../../models";
+import { GlobalReducerStateInterface } from "../../feature-models.common";
 import { GlobalActionTypes, GlobalActions } from "../actions/types";
 
 /**

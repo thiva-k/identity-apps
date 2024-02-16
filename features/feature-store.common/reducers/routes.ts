@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { RoutesReducerStateInterface } from "../../models";
+import { RoutesReducerStateInterface } from "../../feature-models.common";
 import { RoutesAction, RoutesActionTypes } from "../actions/types";
 
 const initialState: RoutesReducerStateInterface = {

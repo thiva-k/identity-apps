@@ -23,7 +23,7 @@ import {
     FeatureConfigInterface,
     ServiceResourceEndpointsInterface,
     UIConfigInterface
-} from "../../models";
+} from "../../feature-models.common";
 
 /**
  * Initial state for the common config reducer.
