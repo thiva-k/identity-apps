@@ -19,12 +19,17 @@
 import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
+import { getOrganization, getOrganizations, useAuthorizedOrganizationsList } from "@wso2is/feature-organizations.common/api";
 import {
     OrganizationInterface,
     OrganizationLinkInterface,
     OrganizationListInterface,
     OrganizationResponseInterface
 } from "@wso2is/feature-organizations.common/models";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import { useTrigger } from "@wso2is/forms";
 import { I18n } from "@wso2is/i18n";
 import { ListLayout, PageLayout, PrimaryButton } from "@wso2is/react-components";
@@ -55,8 +60,6 @@ import {
     PaginationProps
 } from "semantic-ui-react";
 import { ApplicationManagementConstants } from "../../applications/constants";
-import { AdvancedSearchWithBasicFilters, AppState, EventPublisher, UIConstants } from "../../core";
-import { getOrganization, getOrganizations, useAuthorizedOrganizationsList } from "../api";
 import { AddOrganizationModal, OrganizationList } from "../components";
 
 const ORGANIZATIONS_LIST_SORTING_OPTIONS: DropdownItemProps[] = [

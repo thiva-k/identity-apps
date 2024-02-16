@@ -19,7 +19,7 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { CreateGroupMemberInterface } from "@wso2is/feature-groups.common/models";
+import { CreateGroupMemberInterface } from "@wso2is/feature-groups.common/models/groups";
 import {
     createOrganizationRole,
     getOrganizationRoles
@@ -50,14 +50,12 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownItemProps, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
-import {
-    AdvancedSearchWithBasicFilters,
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    history
-} from "../../core";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
 import { OrganizationRoleList } from "../components";
 import { AddOrganizationRoleWizard } from "../components/add-organization-role-wizard";
 

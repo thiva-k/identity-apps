@@ -16,10 +16,10 @@
  * under the License.
  */
 
+import { MultitenantConstants } from "@wso2is/feature-constants.common/multitenant-constants";
+import useAppSettings from "@wso2is/feature-hooks.common/use-app-settings";
 import { useContext } from "react";
 import useAuthorization from "../../authorization/hooks/use-authorization";
-import { MultitenantConstants } from "../../core/constants/multitenant-constants";
-import useAppSettings from "../../core/hooks/use-app-settings";
 import OrganizationsContext, { OrganizationsContextProps } from "../context/organizations-context";
 
 /**

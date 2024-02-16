@@ -22,7 +22,10 @@ import { PageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { history } from "@wso2is/feature-helpers.common";
 import { EditOrganizationRole } from "../components/edit-organization-role";
 
 /**
