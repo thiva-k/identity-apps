@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -16,14 +17,14 @@
  * under the License.
  */
 import { SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { ProtocolCard } from "@wso2is/feature-components.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { AnimatedAvatar, EmphasizedSegment, Heading, Text } from "@wso2is/react-components";
 import isEmpty from "lodash-es/isEmpty";
 import kebabCase from "lodash-es/kebabCase";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, Divider, Grid } from "semantic-ui-react";
-import { FeatureConfigInterface } from "../../../../core";
-import { ProtocolCard } from "../../../../core/components";
 import { getInboundProtocolLogos } from "../../../configs/ui";
 import { SAMLConfigModes, SupportedAuthProtocolTypes } from "../../../models";
 import { ApplicationManagementUtils } from "../../../utils/application-management-utils";
@@ -71,13 +72,7 @@ interface ProtocolLandingPropsInterface extends SBACInterface<FeatureConfigInter
 export const ProtocolLanding: FunctionComponent<ProtocolLandingPropsInterface> = (
     props: ProtocolLandingPropsInterface
 ): ReactElement => {
-
-    const {
-        setProtocol,
-        availableProtocols,
-        setSAMLProtocol,
-        ["data-testid"]: testId
-    } = props;
+    const { setProtocol, availableProtocols, setSAMLProtocol, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
@@ -107,7 +102,8 @@ export const ProtocolLanding: FunctionComponent<ProtocolLandingPropsInterface> =
         if (availableProtocols.includes(SupportedAuthProtocolTypes.WS_FEDERATION)) {
             const protocolContent: ProtocolContentInterface = {
                 description: ApplicationManagementUtils.resolveProtocolDescription(
-                    SupportedAuthProtocolTypes.WS_FEDERATION),
+                    SupportedAuthProtocolTypes.WS_FEDERATION
+                ),
                 image: getInboundProtocolLogos()["passive-sts"],
                 name: ApplicationManagementUtils.resolveProtocolDisplayName(SupportedAuthProtocolTypes.WS_FEDERATION),
                 protocol: SupportedAuthProtocolTypes.WS_FEDERATION
@@ -116,78 +112,68 @@ export const ProtocolLanding: FunctionComponent<ProtocolLandingPropsInterface> =
             protocolContentList.push(protocolContent);
         }
 
-        availableProtocols.map(
-            (protocol: string)=> {
-                if (protocol !== SupportedAuthProtocolTypes.OIDC && protocol !== SupportedAuthProtocolTypes.SAML
-                 && protocol !== SupportedAuthProtocolTypes.WS_FEDERATION) {
-                    const protocolContent: ProtocolContentInterface = {
-                        description: protocol,
-                        image: <AnimatedAvatar
-                            name={ protocol }
-                            size="tiny"
-                            data-testid={ `${ testId }-item-image-inner` }
-                        />,
-                        name: protocol,
-                        protocol: protocol
-                    };
+        availableProtocols.map((protocol: string) => {
+            if (
+                protocol !== SupportedAuthProtocolTypes.OIDC &&
+                protocol !== SupportedAuthProtocolTypes.SAML &&
+                protocol !== SupportedAuthProtocolTypes.WS_FEDERATION
+            ) {
+                const protocolContent: ProtocolContentInterface = {
+                    description: protocol,
+                    image: <AnimatedAvatar name={protocol} size="tiny" data-testid={`${testId}-item-image-inner`} />,
+                    name: protocol,
+                    protocol: protocol
+                };
 
-                    protocolContentList.push(protocolContent);
-                }
-
-            });
+                protocolContentList.push(protocolContent);
+            }
+        });
 
         return protocolContentList;
     };
 
     const resolveContent = (): ReactElement => {
-
         const protocolContentList: ProtocolContentInterface[] = resolveProtocols();
 
         return (
             <Grid.Row className="protocol-selection-wrapper check" textAlign="center">
-                <Grid.Column width={ 16 }>
-                    <div data-testid={ testId }>
+                <Grid.Column width={16}>
+                    <div data-testid={testId}>
                         <Heading as="h2" className="mb-1" compact>
-                            { t("console:develop.features.applications.edit.sections.access.protocolLanding.heading") }
+                            {t("console:develop.features.applications.edit.sections.access.protocolLanding.heading")}
                         </Heading>
                         <Text muted>
-                            {
-                                t("console:develop.features.applications.edit.sections.access" +
-                                    ".protocolLanding.subHeading")
-                            }
+                            {t(
+                                "console:develop.features.applications.edit.sections.access" +
+                                    ".protocolLanding.subHeading"
+                            )}
                         </Text>
-                        <Divider hidden/>
-                        {
-                            (!isEmpty(protocolContentList) && Array.isArray(protocolContentList)
-                                && protocolContentList.length > 0) && (
-                                <Card.Group
-                                    centered
-                                    className="tech-selection-cards mt-3"
-                                    itemsPerRow={ 9 }
-                                >
-                                    {
-                                        protocolContentList.map((protocol: ProtocolContentInterface, index: number) => (
-                                            <ProtocolCard
-                                                key={ index }
-                                                raised={ false }
-                                                data-testid={
-                                                    protocol[ "data-testid" ]
-                                                    ?? `technology-card-${ kebabCase(protocol.name) }`
-                                                }
-                                                onClick={
-                                                    protocol.protocol === SupportedAuthProtocolTypes.SAML ?
-                                                        setSAMLProtocol : () =>  setProtocol(protocol.protocol) }
-                                                displayName={ protocol.name }
-                                                overlayOpacity={ 0.6 }
-                                                image={ protocol.image }
-                                                className={ "protocol-card" }
-                                                showOption={ protocol.protocol === SupportedAuthProtocolTypes.SAML }
-                                            />
-                                        ))
-                                    }
+                        <Divider hidden />
+                        {!isEmpty(protocolContentList) &&
+                            Array.isArray(protocolContentList) &&
+                            protocolContentList.length > 0 && (
+                                <Card.Group centered className="tech-selection-cards mt-3" itemsPerRow={9}>
+                                    {protocolContentList.map((protocol: ProtocolContentInterface, index: number) => (
+                                        <ProtocolCard
+                                            key={index}
+                                            raised={false}
+                                            data-testid={
+                                                protocol["data-testid"] ?? `technology-card-${kebabCase(protocol.name)}`
+                                            }
+                                            onClick={
+                                                protocol.protocol === SupportedAuthProtocolTypes.SAML
+                                                    ? setSAMLProtocol
+                                                    : () => setProtocol(protocol.protocol)
+                                            }
+                                            displayName={protocol.name}
+                                            overlayOpacity={0.6}
+                                            image={protocol.image}
+                                            className={"protocol-card"}
+                                            showOption={protocol.protocol === SupportedAuthProtocolTypes.SAML}
+                                        />
+                                    ))}
                                 </Card.Group>
-                            )
-                        }
+                            )}
                     </div>
                 </Grid.Column>
             </Grid.Row>
@@ -195,13 +181,8 @@ export const ProtocolLanding: FunctionComponent<ProtocolLandingPropsInterface> =
     };
 
     return (
-        <EmphasizedSegment
-            basic
-            data-testid={ testId }
-        >
-            <Grid>
-                { resolveContent() }
-            </Grid>
+        <EmphasizedSegment basic data-testid={testId}>
+            <Grid>{resolveContent()}</Grid>
         </EmphasizedSegment>
     );
 };

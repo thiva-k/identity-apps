@@ -17,6 +17,12 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { getEmptyPlaceholderIllustrations, getTechnologyLogos } from "@wso2is/feature-configs.common";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import { ContentLoader, EmptyPlaceholder, PageLayout, TemplateGrid } from "@wso2is/react-components";
 import cloneDeep from "lodash-es/cloneDeep";
 import isEmpty from "lodash-es/isEmpty";
@@ -25,34 +31,17 @@ import orderBy from "lodash-es/orderBy";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import {
-    Divider,
-    Dropdown,
-    DropdownItemProps,
-    DropdownProps,
-    Grid,
-    Icon,
-    Input
-} from "semantic-ui-react";
-import {
-    AppConstants,
-    AppState,
-    ConfigReducerStateInterface,
-    EventPublisher,
-    getEmptyPlaceholderIllustrations,
-    getTechnologyLogos,
-    history
-} from "../../core";
+import { Divider, Dropdown, DropdownItemProps, DropdownProps, Grid, Icon, Input } from "semantic-ui-react";
+
 import { InboundProtocolsMeta } from "../components/meta";
 import { MinimalAppCreateWizard } from "../components/wizard/minimal-application-create-wizard";
 import { getApplicationTemplateIllustrations } from "../configs/ui";
 import { ApplicationManagementConstants } from "../constants";
-import CustomApplicationTemplate
-    from "../data/application-templates/templates/custom-application/custom-application.json";
-import CustomProtocolApplicationTemplate
-    from "../data/application-templates/templates/custom-protocol-application/custom-protocol-application.json";
+import CustomApplicationTemplate from "../data/application-templates/templates/custom-application/custom-application.json";
+import CustomProtocolApplicationTemplate from "../data/application-templates/templates/custom-protocol-application/custom-protocol-application.json";
 import {
-    ApplicationTemplateCategories, ApplicationTemplateCategoryInterface,
+    ApplicationTemplateCategories,
+    ApplicationTemplateCategoryInterface,
     ApplicationTemplateInterface,
     ApplicationTemplateListItemInterface,
     AuthProtocolMetaListItemInterface
@@ -91,35 +80,27 @@ type ApplicationTemplateSelectPageInterface = TestableComponentInterface;
 const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelectPageInterface> = (
     props: ApplicationTemplateSelectPageInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     const applicationTemplates: ApplicationTemplateListItemInterface[] = useSelector(
-        (state: AppState) => state?.application?.groupedTemplates);
+        (state: AppState) => state?.application?.groupedTemplates
+    );
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
-    const customInboundProtocols: AuthProtocolMetaListItemInterface[] = useSelector((state: AppState) =>
-        state.application.meta.customInboundProtocols);
+    const customInboundProtocols: AuthProtocolMetaListItemInterface[] = useSelector(
+        (state: AppState) => state.application.meta.customInboundProtocols
+    );
 
-    const [ categorizedTemplates, setCategorizedTemplates ] = useState<ApplicationTemplateCategoryInterface[]>([]);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ selectedTemplate, setSelectedTemplate ] = useState<ApplicationTemplateListItemInterface>(null);
-    const [
-        isApplicationTemplateRequestLoading,
-        setApplicationTemplateRequestLoadingStatus
-    ] = useState<boolean>(false);
-    const [
-        filteredTemplateList,
-        setFilteredTemplateList
-    ] = useState<ApplicationTemplateListItemInterface[]>(undefined);
-    const [ searchTriggered, setSearchTriggered ] = useState<boolean>(false);
-    const [ showCustomProtocolApplicationTemplate, setShowCustomProtocolApplicationTemplate ] =
-        useState<boolean>(false);
+    const [categorizedTemplates, setCategorizedTemplates] = useState<ApplicationTemplateCategoryInterface[]>([]);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [selectedTemplate, setSelectedTemplate] = useState<ApplicationTemplateListItemInterface>(null);
+    const [isApplicationTemplateRequestLoading, setApplicationTemplateRequestLoadingStatus] = useState<boolean>(false);
+    const [filteredTemplateList, setFilteredTemplateList] = useState<ApplicationTemplateListItemInterface[]>(undefined);
+    const [searchTriggered, setSearchTriggered] = useState<boolean>(false);
+    const [showCustomProtocolApplicationTemplate, setShowCustomProtocolApplicationTemplate] = useState<boolean>(false);
 
-    const [ templateFilterTypes, setTemplateFilterTypes ] = useState<DropdownItemProps[]>(TEMPLATE_FILTER_TYPES);
+    const [templateFilterTypes, setTemplateFilterTypes] = useState<DropdownItemProps[]>(TEMPLATE_FILTER_TYPES);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -135,7 +116,7 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
      */
     useEffect(() => {
         setShowCustomProtocolApplicationTemplate(customInboundProtocols.length > 0);
-    }, [ customInboundProtocols ]);
+    }, [customInboundProtocols]);
 
     /**
      *  Get Application templates.
@@ -147,11 +128,10 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
 
         setApplicationTemplateRequestLoadingStatus(true);
 
-        ApplicationTemplateManagementUtils.getApplicationTemplates()
-            .finally(() => {
-                setApplicationTemplateRequestLoadingStatus(false);
-            });
-    }, [ applicationTemplates ]);
+        ApplicationTemplateManagementUtils.getApplicationTemplates().finally(() => {
+            setApplicationTemplateRequestLoadingStatus(false);
+        });
+    }, [applicationTemplates]);
 
     useEffect(() => {
         if (filteredTemplateList == undefined) {
@@ -163,7 +143,7 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
         } else {
             setSearchTriggered(true);
         }
-    }, [ filteredTemplateList ]);
+    }, [filteredTemplateList]);
 
     /**
      * Populate the filter types based on VENDOR template types.
@@ -175,13 +155,16 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
 
         const filterTypes: DropdownItemProps[] = TEMPLATE_FILTER_TYPES;
 
-        [ ...applicationTemplates ].forEach((template: ApplicationTemplateListItemInterface) => {
-            if (ApplicationManagementConstants.FILTERABLE_TEMPLATE_CATEGORIES
-                .includes(template.category as ApplicationTemplateCategories)) {
-
+        [...applicationTemplates].forEach((template: ApplicationTemplateListItemInterface) => {
+            if (
+                ApplicationManagementConstants.FILTERABLE_TEMPLATE_CATEGORIES.includes(
+                    template.category as ApplicationTemplateCategories
+                )
+            ) {
                 template.types.forEach((type: string) => {
                     const isAvailable: boolean = filterTypes.some(
-                        (filterType: DropdownItemProps) => filterType.value === type);
+                        (filterType: DropdownItemProps) => filterType.value === type
+                    );
 
                     if (isAvailable) {
                         return;
@@ -197,7 +180,7 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
         });
 
         setTemplateFilterTypes(filterTypes);
-    }, [ applicationTemplates ]);
+    }, [applicationTemplates]);
 
     /**
      * Categorize the application templates.
@@ -214,7 +197,7 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
             .catch(() => {
                 setCategorizedTemplates([]);
             });
-    }, [ applicationTemplates ]);
+    }, [applicationTemplates]);
 
     /**
      * Handles back button click.
@@ -230,13 +213,13 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
      * @param id - Id of the template.
      */
     const handleTemplateSelection = (e: SyntheticEvent, { id }: { id: string }): void => {
-
         if (!applicationTemplates) {
             return;
         }
 
-        let selected: ApplicationTemplateListItemInterface = applicationTemplates
-            .find((template: ApplicationTemplateListItemInterface) => template.id === id);
+        let selected: ApplicationTemplateListItemInterface = applicationTemplates.find(
+            (template: ApplicationTemplateListItemInterface) => template.id === id
+        );
 
         if (!selected) {
             return;
@@ -262,8 +245,12 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
      */
     const handleTemplateSearch = (e: SyntheticEvent, { value }: { value: string }): void => {
         if (value.length > 0) {
-            setFilteredTemplateList(applicationTemplates.filter((item: ApplicationTemplateListItemInterface) =>
-                item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1));
+            setFilteredTemplateList(
+                applicationTemplates.filter(
+                    (item: ApplicationTemplateListItemInterface) =>
+                        item.name.toLowerCase().indexOf(value.toLowerCase()) !== -1
+                )
+            );
         } else {
             setFilteredTemplateList(applicationTemplates);
         }
@@ -280,8 +267,8 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
             setFilteredTemplateList(applicationTemplates);
         } else {
             const filtered: ApplicationTemplateListItemInterface[] = applicationTemplates.filter(
-                (template: ApplicationTemplateListItemInterface) =>
-                    template.types?.includes(data.value));
+                (template: ApplicationTemplateListItemInterface) => template.types?.includes(data.value)
+            );
 
             setFilteredTemplateList(filtered);
         }
@@ -297,52 +284,49 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
      * @param isSearchView - Is the requested view search ro not.
      * @returns Template grid.
      */
-    const renderTemplateGrid = (templates: ApplicationTemplateInterface[],
+    const renderTemplateGrid = (
+        templates: ApplicationTemplateInterface[],
         additionalProps: Record<string, unknown>,
         placeholder?: ReactElement,
         templatesOverrides?: ApplicationTemplateInterface[],
-        isSearchView?: boolean): ReactElement => {
-
+        isSearchView?: boolean
+    ): ReactElement => {
         // Don't show the grid if there are no templates unless the view requested is search.
         if (!isSearchView && isEmpty(templatesOverrides) && isEmpty(templates)) {
-
             return null;
         }
 
-        let templateToShow: ApplicationTemplateInterface[] = templatesOverrides
-            ? templatesOverrides
-            : templates;
+        let templateToShow: ApplicationTemplateInterface[] = templatesOverrides ? templatesOverrides : templates;
 
         if (!showCustomProtocolApplicationTemplate) {
-            templateToShow = templateToShow.filter((template: ApplicationTemplateInterface) =>
-                template.id !== CustomProtocolApplicationTemplate.id);
+            templateToShow = templateToShow.filter(
+                (template: ApplicationTemplateInterface) => template.id !== CustomProtocolApplicationTemplate.id
+            );
         }
 
         // Order the templates by pushing coming soon items to the end.
-        templateToShow = orderBy(templateToShow, [ "comingSoon" ], [ "desc" ]);
+        templateToShow = orderBy(templateToShow, ["comingSoon"], ["desc"]);
 
         return (
             <TemplateGrid<ApplicationTemplateListItemInterface>
                 type="application"
-                templates={
-                    templateToShow
-                }
-                templateIcons={ { ...getApplicationTemplateIllustrations(), ...getTechnologyLogos() } as any }
-                templateIconOptions={ {
+                templates={templateToShow}
+                templateIcons={{ ...getApplicationTemplateIllustrations(), ...getTechnologyLogos() } as any}
+                templateIconOptions={{
                     fill: "primary"
-                } }
+                }}
                 templateIconSize="tiny"
-                onTemplateSelect={ handleTemplateSelection }
-                paginate={ true }
-                paginationLimit={ 6 }
-                paginationOptions={ {
+                onTemplateSelect={handleTemplateSelection}
+                paginate={true}
+                paginationLimit={6}
+                paginationOptions={{
                     showLessButtonLabel: t("common:showLess"),
                     showMoreButtonLabel: t("common:showMore")
-                } }
-                comingSoonRibbonLabel={ t("common:comingSoon") }
-                renderDisabledItemsAsGrayscale={ true }
-                emptyPlaceholder={ placeholder }
-                { ...additionalProps }
+                }}
+                comingSoonRibbonLabel={t("common:comingSoon")}
+                renderDisabledItemsAsGrayscale={true}
+                emptyPlaceholder={placeholder}
+                {...additionalProps}
             />
         );
     };
@@ -354,44 +338,35 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
      * @returns Template grids.
      */
     const renderTemplateGrids = (view: "CATEGORIZED" | "SEARCH_RESULTS"): ReactElement => {
-
         if (view === "CATEGORIZED") {
             return (
                 <>
-                    {
-                        categorizedTemplates.map((category: ApplicationTemplateCategoryInterface, index: number) => (
-                            <div key={ index } className="templates quick-start-templates">
+                    {categorizedTemplates.map((category: ApplicationTemplateCategoryInterface, index: number) => (
+                        <div key={index} className="templates quick-start-templates">
+                            {renderTemplateGrid(
+                                category.templates,
                                 {
-                                    renderTemplateGrid(
-                                        category.templates,
-                                        {
-                                            "data-testid": `${ category.id }-template-grid`,
-                                            heading: category.displayName,
-                                            showTagIcon: category.viewConfigs?.tags?.showTagIcon,
-                                            showTags:  category.viewConfigs?.tags?.showTags,
-                                            subHeading: category.description,
-                                            tagSize: category.viewConfigs?.tags?.tagSize,
-                                            tagsAs: category.viewConfigs?.tags?.as,
-                                            tagsKey: category.viewConfigs?.tags?.tagsKey,
-                                            tagsSectionTitle: category.viewConfigs?.tags?.sectionTitle
-                                        },
-                                        <EmptyPlaceholder
-                                            image={ getEmptyPlaceholderIllustrations().newList }
-                                            imageSize="tiny"
-                                            title={ t("console:develop.features.templates.emptyPlaceholder." +
-                                                    "title") }
-                                            subtitle={ [ t("console:develop.features.templates." +
-                                                    "emptyPlaceholder.subtitles") ] }
-                                            data-testid={
-                                                `${ testId }-quick-start-template-grid-empty-placeholder`
-                                            }
-                                        />
-                                    )
-                                }
-                                <Divider hidden />
-                            </div>
-                        ))
-                    }
+                                    "data-testid": `${category.id}-template-grid`,
+                                    heading: category.displayName,
+                                    showTagIcon: category.viewConfigs?.tags?.showTagIcon,
+                                    showTags: category.viewConfigs?.tags?.showTags,
+                                    subHeading: category.description,
+                                    tagSize: category.viewConfigs?.tags?.tagSize,
+                                    tagsAs: category.viewConfigs?.tags?.as,
+                                    tagsKey: category.viewConfigs?.tags?.tagsKey,
+                                    tagsSectionTitle: category.viewConfigs?.tags?.sectionTitle
+                                },
+                                <EmptyPlaceholder
+                                    image={getEmptyPlaceholderIllustrations().newList}
+                                    imageSize="tiny"
+                                    title={t("console:develop.features.templates.emptyPlaceholder." + "title")}
+                                    subtitle={[t("console:develop.features.templates." + "emptyPlaceholder.subtitles")]}
+                                    data-testid={`${testId}-quick-start-template-grid-empty-placeholder`}
+                                />
+                            )}
+                            <Divider hidden />
+                        </div>
+                    ))}
                 </>
             );
         }
@@ -399,32 +374,32 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
         if (view === "SEARCH_RESULTS") {
             return (
                 <div className="templates search-results">
-                    {
-                        renderTemplateGrid(
-                            [],
-                            {
-                                "data-testid": `${ testId }-search-template-grid`
-                            },
-                            <Grid centered>
-                                <Grid.Row>
-                                    <Grid.Column>
-                                        <EmptyPlaceholder
-                                            image={ getEmptyPlaceholderIllustrations().emptySearch }
-                                            imageSize="tiny"
-                                            title="No results found"
-                                            subtitle={ [ "We weren't able to find the type you" +
-                                            " were looking for.", "Please try a different term or use one of" +
-                                            " the following application types to create a new application." ] }
-                                            data-testid={ `${ testId }-quick-start-template-grid-empty-
-                                                    placeholder` }
-                                        />
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>,
-                            filteredTemplateList,
-                            true
-                        )
-                    }
+                    {renderTemplateGrid(
+                        [],
+                        {
+                            "data-testid": `${testId}-search-template-grid`
+                        },
+                        <Grid centered>
+                            <Grid.Row>
+                                <Grid.Column>
+                                    <EmptyPlaceholder
+                                        image={getEmptyPlaceholderIllustrations().emptySearch}
+                                        imageSize="tiny"
+                                        title="No results found"
+                                        subtitle={[
+                                            "We weren't able to find the type you" + " were looking for.",
+                                            "Please try a different term or use one of" +
+                                                " the following application types to create a new application."
+                                        ]}
+                                        data-testid={`${testId}-quick-start-template-grid-empty-
+                                                    placeholder`}
+                                    />
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>,
+                        filteredTemplateList,
+                        true
+                    )}
                 </div>
             );
         }
@@ -435,86 +410,77 @@ const ApplicationTemplateSelectPage: FunctionComponent<ApplicationTemplateSelect
     return (
         <PageLayout
             pageTitle="Register New Application"
-            title={ t("console:develop.pages.applicationTemplate.title") }
-            contentTopMargin={ true }
-            description={ t("console:develop.pages.applicationTemplate.subTitle") }
-            backButton={ {
-                "data-testid": `${ testId }-page-back-button`,
+            title={t("console:develop.pages.applicationTemplate.title")}
+            contentTopMargin={true}
+            description={t("console:develop.pages.applicationTemplate.subTitle")}
+            backButton={{
+                "data-testid": `${testId}-page-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:develop.pages.applicationTemplate.backButton")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
+            bottomMargin={false}
             showBottomDivider
-            data-testid={ `${ testId }-page-layout` }
-            headingColumnWidth={ 13 }
-            actionColumnWidth={ 3 }
+            data-testid={`${testId}-page-layout`}
+            headingColumnWidth={13}
+            actionColumnWidth={3}
         >
-            {
-                (SHOW_TEMPLATE_SEARCH || SHOW_TEMPLATE_FILTER) && (
-                    <>
-                        <Grid>
-                            <Grid.Row>
-                                <Grid.Column>
-                                    {
-                                        SHOW_TEMPLATE_SEARCH && (
-                                            <Input
-                                                data-testid={ `${ testId }-search` }
-                                                icon={ <Icon name="search"/> }
-                                                onChange={ handleTemplateSearch }
-                                                placeholder="Search application type"
-                                                floated="left"
-                                                width={ 6 }
-                                                style={ { width: "270px" } }
-                                            />
-                                        )
-                                    }
-                                    {
-                                        SHOW_TEMPLATE_FILTER && (
-                                            <Dropdown
-                                                data-testid={ `${ testId }-sort` }
-                                                className="floated right"
-                                                placeholder="Select type"
-                                                selection
-                                                defaultValue="all"
-                                                options={ templateFilterTypes }
-                                                onChange={ handleTemplateTypeChange }
-                                            />
-                                        )
-                                    }
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                        <Divider hidden />
-                    </>
-                )
-            }
-            {
-                searchTriggered && filteredTemplateList
-                    ? renderTemplateGrids("SEARCH_RESULTS")
-                    : (
-                        applicationTemplates && !isApplicationTemplateRequestLoading
-                            ? renderTemplateGrids("CATEGORIZED")
-                            : <ContentLoader dimmer/>
-
-                    )
-            }
-            { showWizard && (
+            {(SHOW_TEMPLATE_SEARCH || SHOW_TEMPLATE_FILTER) && (
+                <>
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column>
+                                {SHOW_TEMPLATE_SEARCH && (
+                                    <Input
+                                        data-testid={`${testId}-search`}
+                                        icon={<Icon name="search" />}
+                                        onChange={handleTemplateSearch}
+                                        placeholder="Search application type"
+                                        floated="left"
+                                        width={6}
+                                        style={{ width: "270px" }}
+                                    />
+                                )}
+                                {SHOW_TEMPLATE_FILTER && (
+                                    <Dropdown
+                                        data-testid={`${testId}-sort`}
+                                        className="floated right"
+                                        placeholder="Select type"
+                                        selection
+                                        defaultValue="all"
+                                        options={templateFilterTypes}
+                                        onChange={handleTemplateTypeChange}
+                                    />
+                                )}
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                    <Divider hidden />
+                </>
+            )}
+            {searchTriggered && filteredTemplateList ? (
+                renderTemplateGrids("SEARCH_RESULTS")
+            ) : applicationTemplates && !isApplicationTemplateRequestLoading ? (
+                renderTemplateGrids("CATEGORIZED")
+            ) : (
+                <ContentLoader dimmer />
+            )}
+            {showWizard && (
                 <MinimalAppCreateWizard
-                    title={ selectedTemplate?.name }
-                    subTitle={ selectedTemplate?.description }
-                    closeWizard={ (): void => setShowWizard(false) }
-                    template={ selectedTemplate }
-                    showHelpPanel={ true }
-                    subTemplates={ selectedTemplate?.subTemplates }
-                    subTemplatesSectionTitle={ selectedTemplate?.subTemplatesSectionTitle }
-                    addProtocol={ false }
+                    title={selectedTemplate?.name}
+                    subTitle={selectedTemplate?.description}
+                    closeWizard={(): void => setShowWizard(false)}
+                    template={selectedTemplate}
+                    showHelpPanel={true}
+                    subTemplates={selectedTemplate?.subTemplates}
+                    subTemplatesSectionTitle={selectedTemplate?.subTemplatesSectionTitle}
+                    addProtocol={false}
                     templateLoadingStrategy={
-                        config.ui.applicationTemplateLoadingStrategy
-                            ?? ApplicationManagementConstants.DEFAULT_APP_TEMPLATE_LOADING_STRATEGY
+                        config.ui.applicationTemplateLoadingStrategy ??
+                        ApplicationManagementConstants.DEFAULT_APP_TEMPLATE_LOADING_STRATEGY
                     }
                 />
-            ) }
+            )}
         </PageLayout>
     );
 };

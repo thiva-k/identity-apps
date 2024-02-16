@@ -19,13 +19,12 @@
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface, StorageIdentityAppsSettingsInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import {
-    AnimatedAvatar,
-    AppAvatar,
-    LabelWithPopup,
-    Popup,
-    TabPageLayout
-} from "@wso2is/react-components";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface, PortalDocumentationStructureInterface } from "@wso2is/feature-models.common";
+import { AppState, setHelpPanelDocsContentURL, toggleHelpPanelVisibility } from "@wso2is/feature-store.common";
+import { AppUtils } from "@wso2is/feature-utils.common";
+import { AnimatedAvatar, AppAvatar, LabelWithPopup, Popup, TabPageLayout } from "@wso2is/react-components";
 import cloneDeep from "lodash-es/cloneDeep";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
@@ -36,23 +35,12 @@ import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Label } from "semantic-ui-react";
 import { applicationConfig } from "../../../extensions/configs/application";
-import {
-    AppConstants,
-    AppState,
-    AppUtils,
-    FeatureConfigInterface,
-    PortalDocumentationStructureInterface,
-    history,
-    setHelpPanelDocsContentURL,
-    toggleHelpPanelVisibility
-} from "../../core";
 import { IdentityProviderConstants } from "../../identity-providers/constants";
 import { useGetApplication } from "../api/use-get-application";
 import { EditApplication } from "../components/edit-application";
 import { InboundProtocolDefaultFallbackTemplates } from "../components/meta/inbound-protocols.meta";
 import { ApplicationManagementConstants } from "../constants";
-import CustomApplicationTemplate
-    from "../data/application-templates/templates/custom-application/custom-application.json";
+import CustomApplicationTemplate from "../data/application-templates/templates/custom-application/custom-application.json";
 import {
     ApplicationAccessTypes,
     ApplicationTemplateListItemInterface,
@@ -66,8 +54,7 @@ import { ApplicationTemplateManagementUtils } from "../utils/application-templat
 /**
  * Proptypes for the applications edit page component.
  */
-interface ApplicationEditPageInterface extends IdentifiableComponentInterface, RouteComponentProps {
-}
+interface ApplicationEditPageInterface extends IdentifiableComponentInterface, RouteComponentProps {}
 
 /**
  * Application Edit page component.
@@ -79,11 +66,7 @@ interface ApplicationEditPageInterface extends IdentifiableComponentInterface, R
 const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
     props: ApplicationEditPageInterface
 ): ReactElement => {
-
-    const {
-        location,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { location, ["data-componentid"]: componentId } = props;
 
     const urlSearchParams: URLSearchParams = new URLSearchParams(location.search);
     const applicationHelpShownStatusKey: string = "isApplicationHelpShown";
@@ -96,23 +79,25 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const helpPanelDocStructure: PortalDocumentationStructureInterface = useSelector(
-        (state: AppState) => state.helpPanel.docStructure);
+        (state: AppState) => state.helpPanel.docStructure
+    );
     const applicationTemplates: ApplicationTemplateListItemInterface[] = useSelector(
-        (state: AppState) => state.application.templates);
+        (state: AppState) => state.application.templates
+    );
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const tenantDomain: string = useSelector((state: AppState) => state.auth.tenantDomain);
 
-    const [ applicationId, setApplicationId ] = useState<string>(undefined);
-    const [ applicationTemplate, setApplicationTemplate ] = useState<ApplicationTemplateListItemInterface>(undefined);
-    const [ isApplicationRequestLoading, setApplicationRequestLoading ] = useState<boolean>(undefined);
-    const [ inboundProtocolList, setInboundProtocolList ] = useState<string[]>(undefined);
-    const [ inboundProtocolConfigs, setInboundProtocolConfigs ] = useState<Record<string, any>>(undefined);
-    const [ isDescTruncated, setIsDescTruncated ] = useState<boolean>(false);
+    const [applicationId, setApplicationId] = useState<string>(undefined);
+    const [applicationTemplate, setApplicationTemplate] = useState<ApplicationTemplateListItemInterface>(undefined);
+    const [isApplicationRequestLoading, setApplicationRequestLoading] = useState<boolean>(undefined);
+    const [inboundProtocolList, setInboundProtocolList] = useState<string[]>(undefined);
+    const [inboundProtocolConfigs, setInboundProtocolConfigs] = useState<Record<string, any>>(undefined);
+    const [isDescTruncated, setIsDescTruncated] = useState<boolean>(false);
 
-    const [ isConnectedAppsRedirect, setisConnectedAppsRedirect ] = useState(false);
-    const [ callBackIdpID, setcallBackIdpID ] = useState<string>();
-    const [ callBackIdpName, setcallBackIdpName ] = useState<string>();
-    const [ callBackRedirect, setcallBackRedirect ] = useState<string>();
+    const [isConnectedAppsRedirect, setisConnectedAppsRedirect] = useState(false);
+    const [callBackIdpID, setcallBackIdpID] = useState<string>();
+    const [callBackIdpName, setcallBackIdpName] = useState<string>();
+    const [callBackRedirect, setcallBackRedirect] = useState<string>();
 
     const {
         data: application,
@@ -127,7 +112,7 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
      */
     useEffect(() => {
         setApplicationRequestLoading(isApplicationGetRequestLoading);
-    }, [ isApplicationGetRequestLoading ]);
+    }, [isApplicationGetRequestLoading]);
 
     /**
      * Handles the application get request error.
@@ -138,23 +123,29 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
         }
 
         if (applicationGetRequestError.response?.data?.description) {
-            dispatch(addAlert({
-                description: applicationGetRequestError.response.data.description,
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.notifications.fetchApplication.error.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: applicationGetRequestError.response.data.description,
+                    level: AlertLevels.ERROR,
+                    message: t("console:develop.features.applications.notifications.fetchApplication.error.message")
+                })
+            );
 
             return;
         }
 
-        dispatch(addAlert({
-            description: t("console:develop.features.applications.notifications.fetchApplication" +
-                ".genericError.description"),
-            level: AlertLevels.ERROR,
-            message: t("console:develop.features.applications.notifications.fetchApplication.genericError." +
-                "message")
-        }));
-    }, [ applicationGetRequestError ]);
+        dispatch(
+            addAlert({
+                description: t(
+                    "console:develop.features.applications.notifications.fetchApplication" + ".genericError.description"
+                ),
+                level: AlertLevels.ERROR,
+                message: t(
+                    "console:develop.features.applications.notifications.fetchApplication.genericError." + "message"
+                )
+            })
+        );
+    }, [applicationGetRequestError]);
 
     useEffect(() => {
         /**
@@ -198,22 +189,23 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
         if (appDescElement || isApplicationRequestLoading) {
             const nativeElement: HTMLDivElement = appDescElement?.current;
 
-            if (nativeElement && (nativeElement.offsetWidth < nativeElement.scrollWidth)) {
+            if (nativeElement && nativeElement.offsetWidth < nativeElement.scrollWidth) {
                 setIsDescTruncated(true);
             }
         }
-    }, [ appDescElement, isApplicationRequestLoading ]);
+    }, [appDescElement, isApplicationRequestLoading]);
 
     /**
      * Get whether to show the help panel
      * Help panel only shows for the first time
      */
     const showHelpPanel = (): boolean => {
-
         const userPreferences: StorageIdentityAppsSettingsInterface = AppUtils.getUserPreferences();
 
-        return !isEmpty(userPreferences) &&
-            !userPreferences.identityAppsSettings?.devPortal?.[ applicationHelpShownStatusKey ];
+        return (
+            !isEmpty(userPreferences) &&
+            !userPreferences.identityAppsSettings?.devPortal?.[applicationHelpShownStatusKey]
+        );
     };
 
     /**
@@ -228,7 +220,7 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
 
         const newPref: StorageIdentityAppsSettingsInterface = cloneDeep(userPreferences);
 
-        newPref.identityAppsSettings.devPortal[ applicationHelpShownStatusKey ] = true;
+        newPref.identityAppsSettings.devPortal[applicationHelpShownStatusKey] = true;
         AppUtils.setUserPreferences(newPref);
     };
 
@@ -237,7 +229,7 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
      */
     useEffect(() => {
         const path: string[] = history.location.pathname?.split("/");
-        const id: string = path[ path?.length - 1 ];
+        const id: string = path[path?.length - 1];
 
         if (showHelpPanel()) {
             dispatch(toggleHelpPanelVisibility(true));
@@ -248,8 +240,8 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
     }, []);
 
     /**
-    * Fetch the identity provider id & name when calling the app edit through connected apps
-    */
+     * Fetch the identity provider id & name when calling the app edit through connected apps
+     */
     useEffect(() => {
         if (typeof history.location.state !== "object") {
             return;
@@ -267,12 +259,10 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
      * Load the template that the application is built on.
      */
     useEffect(() => {
-
-        if (!application
-            || !(applicationTemplates
-                && applicationTemplates instanceof Array
-                && applicationTemplates.length > 0)) {
-
+        if (
+            !application ||
+            !(applicationTemplates && applicationTemplates instanceof Array && applicationTemplates.length > 0)
+        ) {
             /**
              * What's this?
              *
@@ -293,19 +283,15 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
              * Consider this as a **failsafe workaround**. We shouldn't rely
              * on this. This may get removed in the future.
              */
-            ApplicationTemplateManagementUtils
-                .getApplicationTemplates()
-                .finally();
+            ApplicationTemplateManagementUtils.getApplicationTemplates().finally();
 
             return;
         }
 
         determineApplicationTemplate();
-
-    }, [ applicationTemplates, application ]);
+    }, [applicationTemplates, application]);
 
     useEffect(() => {
-
         /**
          * If there's no application {@link ApplicationInterface.templateId}
          * in the application instance, then we manually bind a templateId. You
@@ -326,14 +312,14 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
          */
         if (!application?.templateId) {
             if (application?.inboundProtocols?.length > 0) {
-                application.templateId = InboundProtocolDefaultFallbackTemplates.get(
-                    application.inboundProtocols[ 0 /*We pick the first*/ ].type
-                ) ?? ApplicationManagementConstants.CUSTOM_APPLICATION_OIDC;
+                application.templateId =
+                    InboundProtocolDefaultFallbackTemplates.get(
+                        application.inboundProtocols[0 /*We pick the first*/].type
+                    ) ?? ApplicationManagementConstants.CUSTOM_APPLICATION_OIDC;
                 determineApplicationTemplate();
             }
         }
-
-    }, [ isApplicationRequestLoading, application ]);
+    }, [isApplicationRequestLoading, application]);
 
     /**
      * Push to 404 if application edit feature is disabled.
@@ -343,12 +329,15 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
             return;
         }
 
-        if (!isFeatureEnabled(featureConfig.applications,
-            ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT"))) {
-
+        if (
+            !isFeatureEnabled(
+                featureConfig.applications,
+                ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT")
+            )
+        ) {
             history.push(AppConstants.getPaths().get("PAGE_NOT_FOUND"));
         }
-    }, [ featureConfig ]);
+    }, [featureConfig]);
 
     /**
      * Set the default doc content URL for the tab.
@@ -358,32 +347,39 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
             return;
         }
 
-        const editApplicationDocs: PortalDocumentationStructureInterface[] = get(helpPanelDocStructure,
-            ApplicationManagementConstants.EDIT_APPLICATIONS_DOCS_KEY);
+        const editApplicationDocs: PortalDocumentationStructureInterface[] = get(
+            helpPanelDocStructure,
+            ApplicationManagementConstants.EDIT_APPLICATIONS_DOCS_KEY
+        );
 
         if (!editApplicationDocs) {
             return;
         }
 
         dispatch(
-            setHelpPanelDocsContentURL(editApplicationDocs[
-                ApplicationManagementConstants.APPLICATION_TEMPLATE_DOC_MAPPING
-                    .get(applicationTemplate.id)]?.[ApplicationManagementConstants.APPLICATION_DOCS_OVERVIEW])
+            setHelpPanelDocsContentURL(
+                editApplicationDocs[
+                    ApplicationManagementConstants.APPLICATION_TEMPLATE_DOC_MAPPING.get(applicationTemplate.id)
+                ]?.[ApplicationManagementConstants.APPLICATION_DOCS_OVERVIEW]
+            )
         );
-    }, [ applicationTemplate, helpPanelDocStructure ]);
+    }, [applicationTemplate, helpPanelDocStructure]);
 
     const determineApplicationTemplate = () => {
-
         let template: ApplicationTemplateListItemInterface = applicationTemplates?.find(
             (template: ApplicationTemplateListItemInterface) => {
                 return template.id === application.templateId;
-            });
+            }
+        );
 
-        if (application.templateId === ApplicationManagementConstants.CUSTOM_APPLICATION_OIDC
-            || application.templateId === ApplicationManagementConstants.CUSTOM_APPLICATION_SAML
-            || application.templateId === ApplicationManagementConstants.CUSTOM_APPLICATION_PASSIVE_STS) {
-            template = applicationTemplates?.find((template: ApplicationTemplateListItemInterface) =>
-                template.id === CustomApplicationTemplate.id);
+        if (
+            application.templateId === ApplicationManagementConstants.CUSTOM_APPLICATION_OIDC ||
+            application.templateId === ApplicationManagementConstants.CUSTOM_APPLICATION_SAML ||
+            application.templateId === ApplicationManagementConstants.CUSTOM_APPLICATION_PASSIVE_STS
+        ) {
+            template = applicationTemplates?.find(
+                (template: ApplicationTemplateListItemInterface) => template.id === CustomApplicationTemplate.id
+            );
         }
 
         setApplicationTemplate(template);
@@ -398,12 +394,16 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
         } else {
             if (callBackRedirect === ApplicationManagementConstants.ROLE_CALLBACK_REDIRECT) {
                 history.push({
-                    pathname: AppConstants.getPaths().get("ROLE_EDIT").replace(":id", callBackIdpID),
+                    pathname: AppConstants.getPaths()
+                        .get("ROLE_EDIT")
+                        .replace(":id", callBackIdpID),
                     state: IdentityProviderConstants.CONNECTED_APPS_TAB_ID
                 });
             } else {
                 history.push({
-                    pathname: AppConstants.getPaths().get("IDP_EDIT").replace(":id", callBackIdpID),
+                    pathname: AppConstants.getPaths()
+                        .get("IDP_EDIT")
+                        .replace(":id", callBackIdpID),
                     state: IdentityProviderConstants.CONNECTED_APPS_TAB_ID
                 });
             }
@@ -433,33 +433,31 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const resolveApplicationStatusLabel = (): ReactElement => {
-
         if (!inboundProtocolList || !inboundProtocolConfigs) {
             return null;
         }
 
         if (inboundProtocolList.length === 0) {
-
             return (
                 <LabelWithPopup
-                    popupHeader={ t("console:develop.features.applications.popups.appStatus.notConfigured.header") }
-                    popupSubHeader={ t("console:develop.features.applications.popups.appStatus.notConfigured.content") }
+                    popupHeader={t("console:develop.features.applications.popups.appStatus.notConfigured.header")}
+                    popupSubHeader={t("console:develop.features.applications.popups.appStatus.notConfigured.content")}
                     labelColor="yellow"
                 />
             );
         }
 
-        if (inboundProtocolList.length === 1
-                && inboundProtocolList.includes(SupportedAuthProtocolTypes.OIDC)
-                && inboundProtocolConfigs
-                && inboundProtocolConfigs[ SupportedAuthProtocolTypes.OIDC ]) {
-
-            if (inboundProtocolConfigs[ SupportedAuthProtocolTypes.OIDC ].state === State.REVOKED) {
-
+        if (
+            inboundProtocolList.length === 1 &&
+            inboundProtocolList.includes(SupportedAuthProtocolTypes.OIDC) &&
+            inboundProtocolConfigs &&
+            inboundProtocolConfigs[SupportedAuthProtocolTypes.OIDC]
+        ) {
+            if (inboundProtocolConfigs[SupportedAuthProtocolTypes.OIDC].state === State.REVOKED) {
                 return (
                     <LabelWithPopup
-                        popupHeader={ t("console:develop.features.applications.popups.appStatus.revoked.header") }
-                        popupSubHeader={ t("console:develop.features.applications.popups.appStatus.revoked.content") }
+                        popupHeader={t("console:develop.features.applications.popups.appStatus.revoked.header")}
+                        popupSubHeader={t("console:develop.features.applications.popups.appStatus.revoked.content")}
                         labelColor="grey"
                     />
                 );
@@ -468,8 +466,8 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
 
         return (
             <LabelWithPopup
-                popupHeader={ t("console:develop.features.applications.popups.appStatus.active.header") }
-                popupSubHeader={ t("console:develop.features.applications.popups.appStatus.active.content") }
+                popupHeader={t("console:develop.features.applications.popups.appStatus.active.header")}
+                popupSubHeader={t("console:develop.features.applications.popups.appStatus.active.content")}
                 labelColor="green"
             />
         );
@@ -482,118 +480,101 @@ const ApplicationEditPage: FunctionComponent<ApplicationEditPageInterface> = (
      * @returns If an application is Read Only or not.
      */
     const resolveReadOnlyState = (): boolean => {
-
-        return urlSearchParams.get(ApplicationManagementConstants.APP_READ_ONLY_STATE_URL_SEARCH_PARAM_KEY) === "true"
-            || application?.access === ApplicationAccessTypes.READ
-            || !hasRequiredScopes(featureConfig?.applications, featureConfig?.applications?.scopes?.update,
-                allowedScopes);
+        return (
+            urlSearchParams.get(ApplicationManagementConstants.APP_READ_ONLY_STATE_URL_SEARCH_PARAM_KEY) === "true" ||
+            application?.access === ApplicationAccessTypes.READ ||
+            !hasRequiredScopes(featureConfig?.applications, featureConfig?.applications?.scopes?.update, allowedScopes)
+        );
     };
 
     return (
         <TabPageLayout
             pageTitle="Edit Application"
-            title={ (
+            title={
                 <>
-                    <span>{ application?.name }</span>
-                    { /*TODO - Application status is not shown until the backend support for disabling is given
+                    <span>{application?.name}</span>
+                    {/*TODO - Application status is not shown until the backend support for disabling is given
                         @link https://github.com/wso2/product-is/issues/11453
-                        { resolveApplicationStatusLabel() }*/ }
+                        { resolveApplicationStatusLabel() }*/}
                 </>
-            ) }
-            contentTopMargin={ true }
-            description={ (
-                applicationConfig.editApplication.getOverriddenDescription(inboundProtocolConfigs?.oidc?.clientId,
-                    tenantDomain, applicationTemplate?.name)
-                    ?? (
-                        <div className="with-label ellipsis" ref={ appDescElement }>
-                            { applicationTemplate?.name && (
-                                <Label size="small">{ applicationTemplate.name }</Label>
-                            ) }
-                            {
-                                ApplicationManagementUtils.isChoreoApplication(application)
-                                    && (<Label
-                                        size="small"
-                                        className="choreo-label no-margin-left"
-                                    >
-                                        { t("extensions:develop.apiResource.managedByChoreoText") }
-                                    </Label>)
-                            }
-                            <Popup
-                                disabled={ !isDescTruncated }
-                                content={ application?.description }
-                                trigger={ (
-                                    <span>{ application?.description }</span>
-                                ) }
-                            />
-                        </div>
-                    )
-            ) }
-            image={
-                applicationConfig.editApplication.getOverriddenImage(inboundProtocolConfigs?.oidc?.clientId,
-                    tenantDomain)
-                ?? (
-                    application?.imageUrl
-                        ? (
-                            <AppAvatar
-                                name={ application?.name }
-                                image={ application?.imageUrl }
-                                size="tiny"
-                            />
-                        )
-                        : (
-                            <AnimatedAvatar
-                                name={ application?.name }
-                                size="tiny"
-                                floated="left"
-                            />
-                        )
+            }
+            contentTopMargin={true}
+            description={
+                applicationConfig.editApplication.getOverriddenDescription(
+                    inboundProtocolConfigs?.oidc?.clientId,
+                    tenantDomain,
+                    applicationTemplate?.name
+                ) ?? (
+                    <div className="with-label ellipsis" ref={appDescElement}>
+                        {applicationTemplate?.name && <Label size="small">{applicationTemplate.name}</Label>}
+                        {ApplicationManagementUtils.isChoreoApplication(application) && (
+                            <Label size="small" className="choreo-label no-margin-left">
+                                {t("extensions:develop.apiResource.managedByChoreoText")}
+                            </Label>
+                        )}
+                        <Popup
+                            disabled={!isDescTruncated}
+                            content={application?.description}
+                            trigger={<span>{application?.description}</span>}
+                        />
+                    </div>
                 )
             }
-            loadingStateOptions={ {
+            image={
+                applicationConfig.editApplication.getOverriddenImage(
+                    inboundProtocolConfigs?.oidc?.clientId,
+                    tenantDomain
+                ) ??
+                (application?.imageUrl ? (
+                    <AppAvatar name={application?.name} image={application?.imageUrl} size="tiny" />
+                ) : (
+                    <AnimatedAvatar name={application?.name} size="tiny" floated="left" />
+                ))
+            }
+            loadingStateOptions={{
                 count: 5,
                 imageType: "square"
-            } }
-            isLoading={ isApplicationRequestLoading }
-            backButton={ {
+            }}
+            isLoading={isApplicationRequestLoading}
+            backButton={{
                 "data-componentid": `${componentId}-page-back-button`,
                 onClick: handleBackButtonClick,
-                text: isConnectedAppsRedirect ? t("console:develop.features.idp.connectedApps.applicationEdit.back",
-                    { idpName: callBackIdpName }) : t("console:develop.pages.applicationsEdit.backButton")
-            } }
+                text: isConnectedAppsRedirect
+                    ? t("console:develop.features.idp.connectedApps.applicationEdit.back", { idpName: callBackIdpName })
+                    : t("console:develop.pages.applicationsEdit.backButton")
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            pageHeaderMaxWidth={ true }
-            data-componentid={ `${ componentId }-page-layout` }
-            truncateContent={ true }
-            action={ (
+            bottomMargin={false}
+            pageHeaderMaxWidth={true}
+            data-componentid={`${componentId}-page-layout`}
+            truncateContent={true}
+            action={
                 <>
-                    {
-                        applicationConfig.editApplication.getActions(
-                            inboundProtocolConfigs?.oidc?.clientId,
-                            tenantDomain,
-                            componentId
-                        )
-                    }
+                    {applicationConfig.editApplication.getActions(
+                        inboundProtocolConfigs?.oidc?.clientId,
+                        tenantDomain,
+                        componentId
+                    )}
                 </>
-            ) }
+            }
         >
             <EditApplication
-                application={ application }
-                featureConfig={ featureConfig }
-                isLoading={ isApplicationRequestLoading }
-                setIsLoading={ setApplicationRequestLoading }
-                onDelete={ handleApplicationDelete }
-                onUpdate={ handleApplicationUpdate }
-                template={ applicationTemplate }
-                data-componentid={ componentId }
-                urlSearchParams={ urlSearchParams }
-                getConfiguredInboundProtocolsList={ (list: string[]) => {
+                application={application}
+                featureConfig={featureConfig}
+                isLoading={isApplicationRequestLoading}
+                setIsLoading={setApplicationRequestLoading}
+                onDelete={handleApplicationDelete}
+                onUpdate={handleApplicationUpdate}
+                template={applicationTemplate}
+                data-componentid={componentId}
+                urlSearchParams={urlSearchParams}
+                getConfiguredInboundProtocolsList={(list: string[]) => {
                     setInboundProtocolList(list);
-                } }
-                getConfiguredInboundProtocolConfigs={ (configs: Record<string, unknown>) => {
+                }}
+                getConfiguredInboundProtocolConfigs={(configs: Record<string, unknown>) => {
                     setInboundProtocolConfigs(configs);
-                } }
-                readOnly={ resolveReadOnlyState() }
+                }}
+                readOnly={resolveReadOnlyState()}
             />
         </TabPageLayout>
     );

@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -22,14 +23,13 @@ import { ApplicationManagementConstants } from "../constants";
  * Utility class for adaptive script operations.
  */
 export class AdaptiveScriptUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     public static getDefaultScript(): string[] {
         return ApplicationManagementConstants.DEFAULT_ADAPTIVE_AUTH_SCRIPT;
@@ -51,7 +51,7 @@ export class AdaptiveScriptUtils {
             steps.push(newStepIdentifier.replace(":index", i.toString()));
         }
 
-        const script: string[] = [ ...ApplicationManagementConstants.DEFAULT_ADAPTIVE_AUTH_SCRIPT ];
+        const script: string[] = [...ApplicationManagementConstants.DEFAULT_ADAPTIVE_AUTH_SCRIPT];
 
         script.splice(1, 0, ...steps);
 
@@ -66,21 +66,21 @@ export class AdaptiveScriptUtils {
      * @returns True if default.
      */
     public static isDefaultScript(script: string | string[], steps: number): boolean {
-
         let scriptBody: string = ApplicationManagementConstants.EMPTY_STRING;
         const moderatedScript: string = Array.isArray(script)
             ? script.join(ApplicationManagementConstants.EMPTY_STRING)
             : script;
         const scriptStringContent: string[] = [];
 
-        for(let i: number = 0; i < steps; i++) {
+        for (let i: number = 0; i < steps; i++) {
             scriptStringContent.push("executeStep(" + (i + 1) + ");");
             scriptBody += scriptStringContent[i];
         }
 
-        const scriptComposed: string = ApplicationManagementConstants.DEFAULT_ADAPTIVE_AUTH_SCRIPT_HEADER
-            + scriptBody
-            + ApplicationManagementConstants.DEFAULT_ADAPTIVE_AUTH_SCRIPT_FOOTER;
+        const scriptComposed: string =
+            ApplicationManagementConstants.DEFAULT_ADAPTIVE_AUTH_SCRIPT_HEADER +
+            scriptBody +
+            ApplicationManagementConstants.DEFAULT_ADAPTIVE_AUTH_SCRIPT_FOOTER;
 
         const userDefined: string = AdaptiveScriptUtils.minifyScript(moderatedScript, false);
         const defaultScript: string = AdaptiveScriptUtils.minifyScript(scriptComposed, false);
@@ -95,11 +95,7 @@ export class AdaptiveScriptUtils {
      * @param ignoreComments - Whether to ignore code comments.
      * @returns Minified string.
      */
-    public static minifyScript(
-        originalScript: string | string[],
-        ignoreComments: boolean = true
-    ): string {
-
+    public static minifyScript(originalScript: string | string[], ignoreComments: boolean = true): string {
         if (!originalScript) return ApplicationManagementConstants.EMPTY_STRING;
 
         const script: string = Array.isArray(originalScript)
@@ -129,11 +125,7 @@ export class AdaptiveScriptUtils {
 
         let minimized: string = script;
 
-        if (ignoreComments)
-            minimized = minimized.replace(
-                comments,
-                ApplicationManagementConstants.EMPTY_STRING
-            );
+        if (ignoreComments) minimized = minimized.replace(comments, ApplicationManagementConstants.EMPTY_STRING);
 
         minimized = minimized
             .replace(/(?:\r\n|\r|\n)/g, ApplicationManagementConstants.EMPTY_STRING)
@@ -141,15 +133,16 @@ export class AdaptiveScriptUtils {
             .trim();
 
         return minimized;
-
     }
 
     public static isEmptyScript(script: string | string[]): boolean {
-        return !script ||
-            (Array.isArray(script) && (script.length === 0 ||
-                script.join(ApplicationManagementConstants.EMPTY_STRING).trim().length == 0)) ||
+        return (
+            !script ||
+            (Array.isArray(script) &&
+                (script.length === 0 || script.join(ApplicationManagementConstants.EMPTY_STRING).trim().length == 0)) ||
             (script instanceof String && script.trim().length === 0) ||
-            !AdaptiveScriptUtils.minifyScript(script);
+            !AdaptiveScriptUtils.minifyScript(script)
+        );
     }
 
     /**
@@ -164,5 +157,4 @@ export class AdaptiveScriptUtils {
             return code ?? ApplicationManagementConstants.EMPTY_STRING;
         }
     }
-
 }

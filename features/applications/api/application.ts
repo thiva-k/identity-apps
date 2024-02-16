@@ -19,14 +19,11 @@
 import { AsgardeoSPAClient, HttpClientInstance, HttpRequestConfig } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
+import { RequestConfigInterface, RequestErrorInterface, RequestResultInterface } from "@wso2is/feature-hooks.common";
+import useRequest from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import isEmpty from "lodash-es/isEmpty";
-import useRequest, {
-    RequestConfigInterface,
-    RequestErrorInterface,
-    RequestResultInterface
-} from "../../core/hooks/use-request";
-import { store } from "../../core/store";
 import { ApplicationManagementConstants } from "../constants";
 import {
     AdaptiveAuthTemplateCategoryListItemInterface,
@@ -59,8 +56,9 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
     .httpRequest.bind(AsgardeoSPAClient.getInstance())
     .bind(AsgardeoSPAClient.getInstance());
 
-const httpClientAll: (config: HttpRequestConfig[]) => Promise<AxiosResponse[]> = AsgardeoSPAClient.getInstance()
-    .httpRequestAll.bind(AsgardeoSPAClient.getInstance());
+const httpClientAll: (
+    config: HttpRequestConfig[]
+) => Promise<AxiosResponse[]> = AsgardeoSPAClient.getInstance().httpRequestAll.bind(AsgardeoSPAClient.getInstance());
 
 /**
  * Gets the basic information about the application.
@@ -72,7 +70,7 @@ const httpClientAll: (config: HttpRequestConfig[]) => Promise<AxiosResponse[]> =
 export const getApplicationDetails = (id: string): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -87,7 +85,8 @@ export const getApplicationDetails = (id: string): Promise<any> => {
             }
 
             return Promise.resolve(response.data as ApplicationBasicInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -101,7 +100,7 @@ export const getApplicationDetails = (id: string): Promise<any> => {
 export const deleteApplication = (id: string): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -116,7 +115,8 @@ export const deleteApplication = (id: string): Promise<any> => {
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -142,7 +142,7 @@ export const updateApplicationDetails = (
     const requestConfig: AxiosRequestConfig = {
         data: rest,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -157,7 +157,8 @@ export const updateApplicationDetails = (
             }
 
             return Promise.resolve(response.data as ApplicationBasicInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -171,11 +172,14 @@ export const updateApplicationDetails = (
  *
  * @returns A promise containing the response.
  */
-export const getApplicationList = (limit: number, offset: number,
-    filter: string): Promise<ApplicationListInterface> => {
+export const getApplicationList = (
+    limit: number,
+    offset: number,
+    filter: string
+): Promise<ApplicationListInterface> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -195,7 +199,8 @@ export const getApplicationList = (limit: number, offset: number,
             }
 
             return Promise.resolve(response.data as ApplicationListInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -215,22 +220,21 @@ export const useApplicationList = <Data = ApplicationListInterface, Error = Requ
     filter?: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: AxiosRequestConfig = shouldFetch
         ? {
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            method: HttpMethods.GET,
-            params: {
-                attributes,
-                filter,
-                limit,
-                offset
-            },
-            url: store.getState().config.endpoints.applications
-        }
+              headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json"
+              },
+              method: HttpMethods.GET,
+              params: {
+                  attributes,
+                  filter,
+                  limit,
+                  offset
+              },
+              url: store.getState().config.endpoints.applications
+          }
         : null;
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
@@ -244,16 +248,13 @@ export const useApplicationList = <Data = ApplicationListInterface, Error = Requ
     };
 };
 
-export const getApplicationsByIds = async (
-    ids: Set<string>
-): Promise<AxiosResponse<ApplicationInterface>[]> => {
-
+export const getApplicationsByIds = async (ids: Set<string>): Promise<AxiosResponse<ApplicationInterface>[]> => {
     const requests: AxiosRequestConfig[] = [];
 
     for (const id of ids) {
         requests.push({
             headers: {
-                "Accept": "application/json",
+                Accept: "application/json",
                 "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
                 "Content-Type": "application/json"
             },
@@ -266,7 +267,7 @@ export const getApplicationsByIds = async (
         const responses: Array<AxiosResponse> = await httpClientAll(requests);
 
         return Promise.resolve<AxiosResponse<ApplicationInterface>[]>(responses);
-    } catch (error: AxiosError | any) {
+    } catch (error) {
         return Promise.reject(
             new IdentityAppsApiException(
                 ApplicationManagementConstants.UNABLE_FETCH_APPLICATIONS,
@@ -278,7 +279,6 @@ export const getApplicationsByIds = async (
             )
         );
     }
-
 };
 
 /**
@@ -290,26 +290,25 @@ export const useMyAccountApplicationData = <Data = ApplicationListInterface, Err
     attributes?: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
-    const FILTERES: string = `name eq ${ ApplicationManagementConstants.MY_ACCOUNT_APP_NAME }`;
+    const FILTERES: string = `name eq ${ApplicationManagementConstants.MY_ACCOUNT_APP_NAME}`;
     const LIMIT: number = 1;
     const OFFSET: number = 0;
 
     const requestConfig: AxiosRequestConfig = shouldFetch
         ? {
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-            },
-            method: HttpMethods.GET,
-            params: {
-                attributes,
-                filter: FILTERES,
-                limit: LIMIT,
-                offset: OFFSET
-            },
-            url: store.getState().config.endpoints.applications
-        }
+              headers: {
+                  Accept: "application/json",
+                  "Content-Type": "application/json"
+              },
+              method: HttpMethods.GET,
+              params: {
+                  attributes,
+                  filter: FILTERES,
+                  limit: LIMIT,
+                  offset: OFFSET
+              },
+              url: store.getState().config.endpoints.applications
+          }
         : null;
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
@@ -331,7 +330,7 @@ export const useMyAccountApplicationData = <Data = ApplicationListInterface, Err
 export const getAvailableInboundProtocols = (customOnly: boolean): Promise<AuthProtocolMetaListItemInterface[]> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -346,7 +345,8 @@ export const getAvailableInboundProtocols = (customOnly: boolean): Promise<AuthP
             }
 
             return Promise.resolve(response.data as AuthProtocolMetaListItemInterface[]);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -361,12 +361,12 @@ export const getAvailableInboundProtocols = (customOnly: boolean): Promise<AuthP
 export const getAuthProtocolMetadata = <T>(protocol: string): Promise<T> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.applications }/meta/inbound-protocols/${ protocol }`
+        url: `${store.getState().config.endpoints.applications}/meta/inbound-protocols/${protocol}`
     };
 
     return httpClient(requestConfig)
@@ -378,18 +378,21 @@ export const getAuthProtocolMetadata = <T>(protocol: string): Promise<T> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as T);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ApplicationManagementConstants.AUTH_PROTOCOL_METADATA_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -401,7 +404,7 @@ export const getAuthProtocolMetadata = <T>(protocol: string): Promise<T> => {
 export const getOIDCData = (id: string): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -416,7 +419,8 @@ export const getOIDCData = (id: string): Promise<any> => {
             }
 
             return Promise.resolve(response.data as OIDCDataInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -436,13 +440,12 @@ export const getOIDCData = (id: string): Promise<any> => {
 export const getInboundProtocolConfig = (applicationId: string, inboundProtocolId: string): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.applications }/${ applicationId }/inbound-protocols/${
-            inboundProtocolId }`
+        url: `${store.getState().config.endpoints.applications}/${applicationId}/inbound-protocols/${inboundProtocolId}`
     };
 
     return httpClient(requestConfig)
@@ -452,7 +455,8 @@ export const getInboundProtocolConfig = (applicationId: string, inboundProtocolI
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -470,7 +474,7 @@ export const updateOIDCData = (id: string, OIDC: Record<string, unknown>): Promi
     const requestConfig: AxiosRequestConfig = {
         data: OIDC,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -485,7 +489,8 @@ export const updateOIDCData = (id: string, OIDC: Record<string, unknown>): Promi
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -500,9 +505,7 @@ export const updateOIDCData = (id: string, OIDC: Record<string, unknown>): Promi
  * @returns Response as a promise.
  * @throws IdentityAppsApiException
  */
-export const updateAuthProtocolConfig = <T>(id: string, config: T,
-    protocol: string): Promise<T> => {
-
+export const updateAuthProtocolConfig = <T>(id: string, config: T, protocol: string): Promise<T> => {
     /**
      * On template level we use {@link SupportedAuthProtocolTypes.OAUTH2_OIDC}
      * to determine custom oidc applications. But for the API "oauth2-oidc" is
@@ -516,12 +519,12 @@ export const updateAuthProtocolConfig = <T>(id: string, config: T,
     const requestConfig: AxiosRequestConfig = {
         data: config,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
-        url: `${ store.getState().config.endpoints.applications }/${ id }/inbound-protocols/${ protocol }`
+        url: `${store.getState().config.endpoints.applications}/${id}/inbound-protocols/${protocol}`
     };
 
     return httpClient(requestConfig)
@@ -533,18 +536,21 @@ export const updateAuthProtocolConfig = <T>(id: string, config: T,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as T);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ApplicationManagementConstants.AUTH_PROTOCOL_CONFIG_UPDATE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -560,12 +566,12 @@ export const updateAuthProtocolConfig = <T>(id: string, config: T,
 export const deleteProtocol = <T>(id: string, protocol: string): Promise<T> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
-        url: `${ store.getState().config.endpoints.applications }/${ id }/inbound-protocols/${ protocol }`
+        url: `${store.getState().config.endpoints.applications}/${id}/inbound-protocols/${protocol}`
     };
 
     return httpClient(requestConfig)
@@ -577,18 +583,21 @@ export const deleteProtocol = <T>(id: string, protocol: string): Promise<T> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as T);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ApplicationManagementConstants.APP_PROTOCOL_DELETE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -603,7 +612,7 @@ export const updateApplicationConfigurations = (id: string, configs: Record<stri
     const requestConfig: AxiosRequestConfig = {
         data: configs,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -618,7 +627,8 @@ export const updateApplicationConfigurations = (id: string, configs: Record<stri
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -633,7 +643,7 @@ export const createApplication = (application: MainApplicationInterface): Promis
     const requestConfig: AxiosRequestConfig = {
         data: application,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -643,12 +653,13 @@ export const createApplication = (application: MainApplicationInterface): Promis
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
-            if ((response.status !== 201)) {
+            if (response.status !== 201) {
                 return Promise.reject(new Error("Failed to create the application."));
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -663,7 +674,7 @@ export const updateAuthenticationSequence = (id: string, data: Record<string, un
     const requestConfig: AxiosRequestConfig = {
         data,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -678,7 +689,8 @@ export const updateAuthenticationSequence = (id: string, data: Record<string, un
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -694,7 +706,7 @@ export const updateClaimConfiguration = (id: string, data: UpdateClaimConfigurat
     const requestConfig: AxiosRequestConfig = {
         data,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -709,7 +721,8 @@ export const updateClaimConfiguration = (id: string, data: UpdateClaimConfigurat
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -724,23 +737,23 @@ export const updateClaimConfiguration = (id: string, data: UpdateClaimConfigurat
 export const regenerateClientSecret = (appId: string): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: store.getState().config.endpoints.applications + "/" + appId +
-            "/inbound-protocols/oidc/regenerate-secret"
+        url: store.getState().config.endpoints.applications + "/" + appId + "/inbound-protocols/oidc/regenerate-secret"
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
-            if ((response.status !== 200)) {
+            if (response.status !== 200) {
                 return Promise.reject(new Error("Failed to regenerate the application secret."));
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -755,7 +768,7 @@ export const regenerateClientSecret = (appId: string): Promise<any> => {
 export const revokeClientSecret = (appId: string): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -765,12 +778,13 @@ export const revokeClientSecret = (appId: string): Promise<any> => {
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
-            if ((response.status !== 200)) {
+            if (response.status !== 200) {
                 return Promise.reject(new Error("Failed to revoke the application secret."));
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -784,12 +798,12 @@ export const revokeClientSecret = (appId: string): Promise<any> => {
 export const getAdaptiveAuthTemplates = (): Promise<AdaptiveAuthTemplatesListInterface> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.applications }/meta/adaptive-auth-templates`
+        url: `${store.getState().config.endpoints.applications}/meta/adaptive-auth-templates`
     };
 
     return httpClient(requestConfig)
@@ -801,20 +815,23 @@ export const getAdaptiveAuthTemplates = (): Promise<AdaptiveAuthTemplatesListInt
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve({
                 templatesJSON: JSON.parse(response?.data?.templatesJSON)
             } as AdaptiveAuthTemplatesListInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ApplicationManagementConstants.ADAPTIVE_AUTH_TEMPLATES_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -836,19 +853,14 @@ export const useGetAdaptiveAuthTemplates = <
         url: `${store.getState().config.endpoints.applications}/meta/adaptive-auth-templates`
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate
-    } = useRequest<Data, Error>(requestConfig);
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
 
     let parsed: Data | undefined = undefined;
 
     if ((data as AdaptiveAuthTemplatesListInterface)?.templatesJSON) {
         try {
             parsed = JSON.parse((data as any).templatesJSON);
-        } catch(e) {
+        } catch (e) {
             parsed = undefined;
         }
     }
@@ -873,7 +885,7 @@ export const useGetAdaptiveAuthTemplates = <
 export const getApplicationTemplateData = (templateId: string): Promise<ApplicationTemplateInterface> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -890,18 +902,21 @@ export const getApplicationTemplateData = (templateId: string): Promise<Applicat
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as ApplicationTemplateInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ApplicationManagementConstants.APPLICATION_TEMPLATE_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -915,11 +930,14 @@ export const getApplicationTemplateData = (templateId: string): Promise<Applicat
  * @returns A promise containing the response.
  * @throws IdentityAppsApiException
  */
-export const getApplicationTemplateList = (limit?: number, offset?: number,
-    filter?: string): Promise<ApplicationTemplateListInterface> => {
+export const getApplicationTemplateList = (
+    limit?: number,
+    offset?: number,
+    filter?: string
+): Promise<ApplicationTemplateListInterface> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -941,18 +959,21 @@ export const getApplicationTemplateList = (limit?: number, offset?: number,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as ApplicationTemplateListInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ApplicationManagementConstants.APPLICATION_TEMPLATES_LIST_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -965,7 +986,7 @@ export const getApplicationTemplateList = (limit?: number, offset?: number,
 export const getOIDCApplicationConfigurations = (): Promise<OIDCApplicationConfigurationInterface> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -982,7 +1003,8 @@ export const getOIDCApplicationConfigurations = (): Promise<OIDCApplicationConfi
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             const oidcConfigs: OIDCApplicationConfigurationInterface = {
@@ -997,18 +1019,20 @@ export const getOIDCApplicationConfigurations = (): Promise<OIDCApplicationConfi
                 tokenRevocationEndpoint: response.data.revocation_endpoint,
                 userEndpoint: response.data.userinfo_endpoint,
                 webFingerEndpoint: response.data.webfinger_endpoint,
-                wellKnownEndpoint: `${ response.data.token_endpoint }/.well-known/openid-configuration`
+                wellKnownEndpoint: `${response.data.token_endpoint}/.well-known/openid-configuration`
             };
 
             return Promise.resolve(oidcConfigs);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ApplicationManagementConstants.APPLICATION_OIDC_CONFIGURATIONS_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -1021,7 +1045,7 @@ export const getOIDCApplicationConfigurations = (): Promise<OIDCApplicationConfi
 export const getSAMLApplicationConfigurations = (): Promise<SAMLApplicationConfigurationInterface> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -1038,18 +1062,21 @@ export const getSAMLApplicationConfigurations = (): Promise<SAMLApplicationConfi
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(ApplicationManagementUtils.getIDPDetailsFromMetaXML(response.data));
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ApplicationManagementConstants.APPLICATION_SAML_CONFIGURATIONS_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -1060,10 +1087,9 @@ export const getSAMLApplicationConfigurations = (): Promise<SAMLApplicationConfi
  * @throws IdentityAppsApiException
  */
 export const getRequestPathAuthenticators = (): Promise<any> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -1080,7 +1106,8 @@ export const getRequestPathAuthenticators = (): Promise<any> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -1092,7 +1119,8 @@ export const getRequestPathAuthenticators = (): Promise<any> => {
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -1105,7 +1133,6 @@ export const getRequestPathAuthenticators = (): Promise<any> => {
  * @throws IdentityAppsApiException
  */
 export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalStatusInterface> => {
-
     const requestConfig: AxiosRequestConfig = {
         data: {
             attributes: [
@@ -1117,7 +1144,7 @@ export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalS
             name: "status"
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -1134,7 +1161,8 @@ export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalS
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as MyAccountPortalStatusInterface);
@@ -1146,7 +1174,8 @@ export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalS
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -1158,10 +1187,9 @@ export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalS
 export const useMyAccountStatus = <Data = MyAccountPortalStatusInterface, Error = RequestErrorInterface>(
     shouldSendRequest: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,

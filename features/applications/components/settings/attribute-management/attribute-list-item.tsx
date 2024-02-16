@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -66,11 +67,11 @@ interface AttributeListItemPropInterface extends TestableComponentInterface {
     /**
      * Specify whether there is an OIDC mapping.
      */
-     isOIDCMapping?: boolean;
-     /**
+    isOIDCMapping?: boolean;
+    /**
      * List of duplicated mapping values.
      */
-     duplicatedMappingValues?: Array<string>;
+    duplicatedMappingValues?: Array<string>;
 }
 
 /**
@@ -83,7 +84,6 @@ interface AttributeListItemPropInterface extends TestableComponentInterface {
 export const AttributeListItem: FunctionComponent<AttributeListItemPropInterface> = (
     props: AttributeListItemPropInterface
 ): ReactElement => {
-
     const {
         claimURI,
         displayName,
@@ -105,24 +105,23 @@ export const AttributeListItem: FunctionComponent<AttributeListItemPropInterface
         label,
         isOIDCMapping,
         duplicatedMappingValues,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ mappingOn, setMappingOn ] = useState(false);
-    const [ errorInClaimMapping, setErrorInClaimMapping ] = useState(false);
-    const [ mandatory, setMandatory ] = useState(false);
-    const [ requested, setRequested ] = useState(true);
-    const [ mappedAttribute, setMappedAttribute ] = useState(claimURI);
-    const [ defaultMappedAttribute ] = useState(mappedAttribute);
+    const [mappingOn, setMappingOn] = useState(false);
+    const [errorInClaimMapping, setErrorInClaimMapping] = useState(false);
+    const [mandatory, setMandatory] = useState(false);
+    const [requested, setRequested] = useState(true);
+    const [mappedAttribute, setMappedAttribute] = useState(claimURI);
+    const [defaultMappedAttribute] = useState(mappedAttribute);
     const localDialectURI: string = "http://wso2.org/claims";
 
     /**
      * Mandatory state of an attribute will be handled here
      */
     const handleMandatoryCheckChange = () => {
-
         if (localDialect) {
             if (mandatory) {
                 selectMandatory(claimURI, false);
@@ -175,17 +174,17 @@ export const AttributeListItem: FunctionComponent<AttributeListItemPropInterface
 
     useEffect(() => {
         setMandatory(initialMandatory);
-    }, [ initialMandatory ]);
+    }, [initialMandatory]);
 
     useEffect(() => {
         setRequested(initialRequested);
-    }, [ initialRequested ]);
+    }, [initialRequested]);
 
     useEffect(() => {
         if (isEmpty(mapping?.applicationClaim) && isEmpty(mapping)) {
             setErrorInClaimMapping(claimMappingError);
         }
-    }, [ claimMappingError ]);
+    }, [claimMappingError]);
 
     useEffect(() => {
         setMappingOn(claimMappingOn);
@@ -193,16 +192,16 @@ export const AttributeListItem: FunctionComponent<AttributeListItemPropInterface
         if (mapping) {
             addToMapping(claimURI, claimMappingOn);
             // If mapped value available then show that value.
-            if (mapping?.applicationClaim){
-                setMappedAttribute(mapping?.applicationClaim );
-                updateMapping(claimURI,mapping?.applicationClaim);
+            if (mapping?.applicationClaim) {
+                setMappedAttribute(mapping?.applicationClaim);
+                updateMapping(claimURI, mapping?.applicationClaim);
                 // If mapped value available then enable warning modal.
                 isDefaultMappingChanged(true);
             } else {
-                updateMapping(claimURI,defaultMappedAttribute);
+                updateMapping(claimURI, defaultMappedAttribute);
             }
         }
-    }, [ claimMappingOn ]);
+    }, [claimMappingOn]);
 
     /**
      * This function will resolve whether the mandatory checkbox should be read only or not.
@@ -217,122 +216,127 @@ export const AttributeListItem: FunctionComponent<AttributeListItemPropInterface
     };
 
     return (
-        <Table.Row data-testid={ testId }>
-            {
-                !localDialect && (<Table.Cell></Table.Cell>)
-            }
+        <Table.Row data-testid={testId}>
+            {!localDialect && <Table.Cell></Table.Cell>}
             <Table.Cell>
-                <div>
-                    { !localDialect ? localClaimDisplayName : displayName }
-                </div>
-                {
-                    isOIDCMapping ?
-                        (<Hint warning={ true } popup>
-                            {
-                                t("console:develop.features.applications.edit.sections.attributes" +
-                                    ".selection.mappingTable.listItem.faultyAttributeMappingHint")
-                            }
-                        </Hint>)
-                        : ""
-                }
+                <div>{!localDialect ? localClaimDisplayName : displayName}</div>
+                {isOIDCMapping ? (
+                    <Hint warning={true} popup>
+                        {t(
+                            "console:develop.features.applications.edit.sections.attributes" +
+                                ".selection.mappingTable.listItem.faultyAttributeMappingHint"
+                        )}
+                    </Hint>
+                ) : (
+                    ""
+                )}
                 {
                     <Popup
-                        content={ isOIDCMapping && claimURI.startsWith(localDialectURI)
-                            ? t("console:develop.features.applications.edit.sections.attributes" +
-                            ".selection.mappingTable.listItem.faultyAttributeMapping")
-                            : claimURI }
+                        content={
+                            isOIDCMapping && claimURI.startsWith(localDialectURI)
+                                ? t(
+                                      "console:develop.features.applications.edit.sections.attributes" +
+                                          ".selection.mappingTable.listItem.faultyAttributeMapping"
+                                  )
+                                : claimURI
+                        }
                         inverted
-                        trigger={ (
+                        trigger={
                             localDialect ? (
-                                <Code compact withBackground={ false }>
-                                    { isOIDCMapping && claimURI.startsWith(localDialectURI)
-                                        ? t("console:develop.features.applications.edit.sections.attributes" +
-                                        ".selection.mappingTable.listItem.faultyAttributeMapping")
-                                        : claimURI }
+                                <Code compact withBackground={false}>
+                                    {isOIDCMapping && claimURI.startsWith(localDialectURI)
+                                        ? t(
+                                              "console:develop.features.applications.edit.sections.attributes" +
+                                                  ".selection.mappingTable.listItem.faultyAttributeMapping"
+                                          )
+                                        : claimURI}
                                 </Code>
                             ) : (
                                 <Code>
-                                    { isOIDCMapping && claimURI.startsWith(localDialectURI)
-                                        ? t("console:develop.features.applications.edit.sections.attributes" +
-                                        ".selection.mappingTable.listItem.faultyAttributeMapping")
-                                        : claimURI }
+                                    {isOIDCMapping && claimURI.startsWith(localDialectURI)
+                                        ? t(
+                                              "console:develop.features.applications.edit.sections.attributes" +
+                                                  ".selection.mappingTable.listItem.faultyAttributeMapping"
+                                          )
+                                        : claimURI}
                                 </Code>
                             )
-                        ) }
-                        position="bottom left">
-                    </Popup>
+                        }
+                        position="bottom left"
+                    ></Popup>
                 }
-                <Hint warning={ true } hidden= { label ? false : true }>{ label }</Hint>
+                <Hint warning={true} hidden={label ? false : true}>
+                    {label}
+                </Hint>
             </Table.Cell>
-            {
-                localDialect && mappingOn && (
-                    <>
-                        <Table.Cell error={ errorInClaimMapping }>
-                            <Input
-                                placeholder={
-                                    t("console:develop.features.applications.edit.sections.attributes" +
-                                        ".selection.mappingTable.listItem.fields.claim.placeholder",
-                                    { name: displayName })
-                                }
-                                value={ mappingOn ? mappedAttribute : defaultMappedAttribute }
-                                onChange={ !readOnly && handleClaimMapping }
-                                disabled={ !mappingOn }
-                                readOnly={ readOnly }
-                                required
-                                error={ errorInClaimMapping || duplicatedMappingValues.includes(mappedAttribute)
-                                         || duplicatedMappingValues.includes(defaultMappedAttribute) }
-                            />
-                        </Table.Cell>
-                    </>
-                )
-            }
-            {
-                !localDialect && (
-                    <Table.Cell
-                        { ...(localDialect && !mappingOn && { textAlign: "center" }) }
-                        { ...(localDialect && mappingOn && { textAlign: "center" }) }
-                        { ...(!localDialect && { textAlign: "center" }) }
-                    >
-                        <Checkbox
-                            checked={ initialRequested || requested || subject }
-                            onClick={ !readOnly && handleRequestedCheckChange }
-                            disabled={ mappingOn ? !mandatory : false }
-                            readOnly={ subject || readOnly || isOIDCMapping }
+            {localDialect && mappingOn && (
+                <>
+                    <Table.Cell error={errorInClaimMapping}>
+                        <Input
+                            placeholder={t(
+                                "console:develop.features.applications.edit.sections.attributes" +
+                                    ".selection.mappingTable.listItem.fields.claim.placeholder",
+                                { name: displayName }
+                            )}
+                            value={mappingOn ? mappedAttribute : defaultMappedAttribute}
+                            onChange={!readOnly && handleClaimMapping}
+                            disabled={!mappingOn}
+                            readOnly={readOnly}
+                            required
+                            error={
+                                errorInClaimMapping ||
+                                duplicatedMappingValues.includes(mappedAttribute) ||
+                                duplicatedMappingValues.includes(defaultMappedAttribute)
+                            }
                         />
                     </Table.Cell>
-                )
-            }
+                </>
+            )}
+            {!localDialect && (
+                <Table.Cell
+                    {...(localDialect && !mappingOn && { textAlign: "center" })}
+                    {...(localDialect && mappingOn && { textAlign: "center" })}
+                    {...(!localDialect && { textAlign: "center" })}
+                >
+                    <Checkbox
+                        checked={initialRequested || requested || subject}
+                        onClick={!readOnly && handleRequestedCheckChange}
+                        disabled={mappingOn ? !mandatory : false}
+                        readOnly={subject || readOnly || isOIDCMapping}
+                    />
+                </Table.Cell>
+            )}
             <Table.Cell
-                { ...(localDialect && !mappingOn && { textAlign: "center" }) }
-                { ...(localDialect && mappingOn && { textAlign: "center" }) }
-                { ...(!localDialect && { textAlign: "center" }) }
+                {...(localDialect && !mappingOn && { textAlign: "center" })}
+                {...(localDialect && mappingOn && { textAlign: "center" })}
+                {...(!localDialect && { textAlign: "center" })}
             >
                 <Checkbox
-                    checked={ initialMandatory || mandatory || subject }
-                    onClick={ !isMandatoryCheckboxReadOnly() ? handleMandatoryCheckChange : () => null }
-                    disabled={ mappingOn ? !requested : false }
-                    readOnly={ isMandatoryCheckboxReadOnly() }
+                    checked={initialMandatory || mandatory || subject}
+                    onClick={!isMandatoryCheckboxReadOnly() ? handleMandatoryCheckChange : () => null}
+                    disabled={mappingOn ? !requested : false}
+                    readOnly={isMandatoryCheckboxReadOnly()}
                 />
             </Table.Cell>
-            { (!readOnly || isOIDCMapping) && deleteAttribute ? (
+            {(!readOnly || isOIDCMapping) && deleteAttribute ? (
                 <Table.Cell textAlign="right">
                     <Popup
-                        trigger={ (
+                        trigger={
                             <Icon
-                                link={ true }
+                                link={true}
                                 className="list-icon pr-4"
                                 size="large"
                                 color="grey"
                                 name="trash alternate"
-                                onClick={ deleteAttribute }
+                                onClick={deleteAttribute}
                             />
-                        ) }
+                        }
                         position="top right"
-                        content={ t("common:remove") }
+                        content={t("common:remove")}
                         inverted
                     />
                 </Table.Cell>
-            ) : null }
+            ) : null}
         </Table.Row>
     );
 };

@@ -19,6 +19,7 @@
 import Button from "@oxygen-ui/react/Button";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import {
     Code,
     ContentLoader,
@@ -33,19 +34,14 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Dropdown, DropdownItemProps, DropdownProps, Form, Grid, Header } from "semantic-ui-react";
-import { FeatureConfigInterface } from "../../../core";
 import { patchScopesOfAuthorizedAPI } from "../../api/api-authorization";
 import useScopesOfAPIResources from "../../api/use-scopes-of-api-resources";
-import {
-    AuthorizedAPIListItemInterface,
-    AuthorizedPermissionListItemInterface
-} from "../../models/api-authorization";
+import { AuthorizedAPIListItemInterface, AuthorizedPermissionListItemInterface } from "../../models/api-authorization";
 
 /**
  * Prop-types for the API resources page component.
  */
-interface ScopeFormInterface extends
-    SBACInterface<FeatureConfigInterface>, IdentifiableComponentInterface {
+interface ScopeFormInterface extends SBACInterface<FeatureConfigInterface>, IdentifiableComponentInterface {
     /**
      * Application ID.
      */
@@ -70,10 +66,7 @@ interface ScopeFormInterface extends
  * @param props - Props injected to the component.
  * @returns API Resources Page component
  */
-export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
-    props: ScopeFormInterface
-): ReactElement => {
-
+export const ScopeForm: FunctionComponent<ScopeFormInterface> = (props: ScopeFormInterface): ReactElement => {
     const {
         appId,
         subscribedAPIResource,
@@ -85,17 +78,18 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ isLoading, setIsLoading ] = useState<boolean>(false);
-    const [ isUpdateButtonDisabled, setIsUpdateButtonDisabled ] = useState<boolean>(true);
-    const [ dropdownOptions, setDropdownOptions ] = useState<DropdownItemProps[]>(null);
-    const [ defaultDropdownValues, setDefaultDropdownValues ] = useState<string[]>(null);
-    const [ previousSelectedScopes, setPreviousSelectedScopes ]
-        = useState<AuthorizedPermissionListItemInterface[]>(subscribedAPIResource.authorizedScopes);
-    const [ selectedScopes, setSelectedScopes ] = useState<string[]>(null);
-    const [ addedScopesIdentifiers, setAddedScopesIdentifiers ] = useState<string[]>([]);
-    const [ removedScopesIdentifiers, setRemovedScopesIdentifiers ] = useState<string[]>([]);
-    const [ isSelectAllDisabled, setIsSelectAllDisabled ] = useState<boolean>(false);
-    const [ isSelectNoneDisabled, setIsSelectNoneDisabled ] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isUpdateButtonDisabled, setIsUpdateButtonDisabled] = useState<boolean>(true);
+    const [dropdownOptions, setDropdownOptions] = useState<DropdownItemProps[]>(null);
+    const [defaultDropdownValues, setDefaultDropdownValues] = useState<string[]>(null);
+    const [previousSelectedScopes, setPreviousSelectedScopes] = useState<AuthorizedPermissionListItemInterface[]>(
+        subscribedAPIResource.authorizedScopes
+    );
+    const [selectedScopes, setSelectedScopes] = useState<string[]>(null);
+    const [addedScopesIdentifiers, setAddedScopesIdentifiers] = useState<string[]>([]);
+    const [removedScopesIdentifiers, setRemovedScopesIdentifiers] = useState<string[]>([]);
+    const [isSelectAllDisabled, setIsSelectAllDisabled] = useState<boolean>(false);
+    const [isSelectNoneDisabled, setIsSelectNoneDisabled] = useState<boolean>(false);
 
     const {
         data: currentAPIResourceScopeListData,
@@ -108,23 +102,23 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
      */
     useEffect(() => {
         if (currentAPIResourceScopeListFetchError) {
-            dispatch(addAlert<AlertInterface>({
-                description: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.message")
-            }));
+            dispatch(
+                addAlert<AlertInterface>({
+                    description: t(
+                        "extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t("extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.message")
+                })
+            );
         }
-    }, [ currentAPIResourceScopeListFetchError ]);
+    }, [currentAPIResourceScopeListFetchError]);
 
     /**
      * Check if the place holders should be shown.
      */
-    const showPlaceHolders: boolean = isLoading ||
-        dropdownOptions === null ||
-        defaultDropdownValues === null ||
-        selectedScopes === null ;
+    const showPlaceHolders: boolean =
+        isLoading || dropdownOptions === null || defaultDropdownValues === null || selectedScopes === null;
 
     /**
      * Initialize the dropdown options.
@@ -136,15 +130,11 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
             currentAPIResourceScopeListData?.forEach((scope: AuthorizedPermissionListItemInterface) => {
                 options.push({
                     content: (
-                        <Header
-                            as="h6"
-                            className="header-with-icon"
-                            data-componentId={ `${componentId}-heading` }
-                        >
+                        <Header as="h6" className="header-with-icon" data-componentId={`${componentId}-heading`}>
                             <Header.Content>
-                                { scope.displayName }
+                                {scope.displayName}
                                 <Header.Subheader>
-                                    <Code withBackground>{ scope.name }</Code>
+                                    <Code withBackground>{scope.name}</Code>
                                 </Header.Subheader>
                             </Header.Content>
                         </Header>
@@ -156,7 +146,7 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
             });
             setDropdownOptions(options);
         }
-    }, [ currentAPIResourceScopeListData ]);
+    }, [currentAPIResourceScopeListData]);
 
     /**
      * Intialize the default dropdown values.
@@ -169,22 +159,21 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
         });
         setDefaultDropdownValues(defaultValues);
         setSelectedScopes(defaultValues);
-    }, [ subscribedAPIResource ]);
+    }, [subscribedAPIResource]);
 
     /**
      * Handles the disabled state of the select all button.
      */
     useEffect(() => {
         setIsSelectAllDisabled(currentAPIResourceScopeListData?.length === selectedScopes?.length);
-    }, [ selectedScopes, subscribedAPIResource ]);
+    }, [selectedScopes, subscribedAPIResource]);
 
     /**
      * Handles the disabled state of the select none button.
      */
     useEffect(() => {
         setIsSelectNoneDisabled(selectedScopes?.length === 0);
-    }, [ selectedScopes ]);
-
+    }, [selectedScopes]);
 
     /**
      * Handles patch request to update the scopes of the API resource.
@@ -192,31 +181,38 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
      * @param apiResourceId - API resource ID.
      */
     const updateScopesOfAPIResource = (): void => {
-
         setIsLoading(true);
         patchScopesOfAuthorizedAPI(appId, subscribedAPIResource?.id, addedScopesIdentifiers, removedScopesIdentifiers)
             .then(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.applications.edit.sections.apiAuthorization" +
-                        ".sections.apiSubscriptions.notifications.patchScopes.success.description" ),
-                    level: AlertLevels.SUCCESS,
-                    message: t("extensions:develop.applications.edit.sections.apiAuthorization" +
-                        ".sections.apiSubscriptions.notifications.patchScopes.success.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization" +
+                                ".sections.apiSubscriptions.notifications.patchScopes.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization" +
+                                ".sections.apiSubscriptions.notifications.patchScopes.success.message"
+                        )
+                    })
+                );
 
-                const addedScopes: AuthorizedPermissionListItemInterface[]
-                    = currentAPIResourceScopeListData?.map((scope: AuthorizedPermissionListItemInterface) => {
+                const addedScopes: AuthorizedPermissionListItemInterface[] = currentAPIResourceScopeListData
+                    ?.map((scope: AuthorizedPermissionListItemInterface) => {
                         if (addedScopesIdentifiers.includes(scope.name)) {
                             return scope;
                         }
-                    }).filter((scope: AuthorizedPermissionListItemInterface) => scope !== undefined);
+                    })
+                    .filter((scope: AuthorizedPermissionListItemInterface) => scope !== undefined);
 
-                const removedScopes: AuthorizedPermissionListItemInterface[]
-                    = currentAPIResourceScopeListData?.map((scope: AuthorizedPermissionListItemInterface) => {
+                const removedScopes: AuthorizedPermissionListItemInterface[] = currentAPIResourceScopeListData
+                    ?.map((scope: AuthorizedPermissionListItemInterface) => {
                         if (removedScopesIdentifiers.includes(scope.name)) {
                             return scope;
                         }
-                    }).filter((scope: AuthorizedPermissionListItemInterface) => scope !== undefined);
+                    })
+                    .filter((scope: AuthorizedPermissionListItemInterface) => scope !== undefined);
 
                 if (addedScopes?.length !== 0) {
                     bulkChangeAllAuthorizedScopes(addedScopes, false);
@@ -237,13 +233,19 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
                 setIsUpdateButtonDisabled(true);
             })
             .catch(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.applications.edit.sections.apiAuthorization" +
-                        ".sections.apiSubscriptions.notifications.patchScopes.genericError.description" ),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:develop.applications.edit.sections.apiAuthorization" +
-                        ".sections.apiSubscriptions.notifications.patchScopes.genericError.message" )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization" +
+                                ".sections.apiSubscriptions.notifications.patchScopes.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization" +
+                                ".sections.apiSubscriptions.notifications.patchScopes.genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => setIsLoading(false));
     };
@@ -252,12 +254,7 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
      * Placeholder for the scope form.
      */
     const getPlaceholders = (): ReactElement => {
-        if (
-            selectedScopes === null ||
-            dropdownOptions === null ||
-            defaultDropdownValues === null ||
-            isLoading
-        ) {
+        if (selectedScopes === null || dropdownOptions === null || defaultDropdownValues === null || isLoading) {
             return <ContentLoader inline="centered" active />;
         }
 
@@ -282,45 +279,50 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
         // Handles if a scope is added.
         if (scopes.length >= previousSelectedScopes.length) {
             const scopeObject: AuthorizedPermissionListItemInterface = currentAPIResourceScopeListData?.find(
-                (scopeObject: AuthorizedPermissionListItemInterface) =>
-                    scopeObject.name === scopes[scopes.length - 1]);
+                (scopeObject: AuthorizedPermissionListItemInterface) => scopeObject.name === scopes[scopes.length - 1]
+            );
 
             // Update the all authorized scopes.
             if (scopeObject) {
-                setPreviousSelectedScopes([ ...previousSelectedScopes, scopeObject ]);
+                setPreviousSelectedScopes([...previousSelectedScopes, scopeObject]);
             }
 
             // Set the added scopes identifiers.
             if (!defaultDropdownValues.includes(scopeObject.name)) {
-                setAddedScopesIdentifiers([ ...addedScopesIdentifiers, scopeObject.name ]);
+                setAddedScopesIdentifiers([...addedScopesIdentifiers, scopeObject.name]);
             }
 
             // Remove the scope from the removed scopes identifiers if it is already added.
             if (removedScopesIdentifiers.includes(scopeObject.name)) {
-                setRemovedScopesIdentifiers(removedScopesIdentifiers.filter(
-                    (scopeIdentifier: string) => scopeIdentifier !== scopeObject.name));
+                setRemovedScopesIdentifiers(
+                    removedScopesIdentifiers.filter((scopeIdentifier: string) => scopeIdentifier !== scopeObject.name)
+                );
             }
         } else {
             // Handles if a scope is removed.
             const scopeObject: AuthorizedPermissionListItemInterface = previousSelectedScopes?.filter(
-                (scope: AuthorizedPermissionListItemInterface) =>
-                    !scopes.includes(scope.name))[0];
+                (scope: AuthorizedPermissionListItemInterface) => !scopes.includes(scope.name)
+            )[0];
 
             // Update the all authorized scopes.
             if (scopeObject) {
-                setPreviousSelectedScopes(previousSelectedScopes.filter(
-                    (scope: AuthorizedPermissionListItemInterface) => scope.name !== scopeObject.name));
+                setPreviousSelectedScopes(
+                    previousSelectedScopes.filter(
+                        (scope: AuthorizedPermissionListItemInterface) => scope.name !== scopeObject.name
+                    )
+                );
             }
 
             // Set the removed scopes identifiers.
             if (defaultDropdownValues.includes(scopeObject.name)) {
-                setRemovedScopesIdentifiers([ ...removedScopesIdentifiers, scopeObject.name ]);
+                setRemovedScopesIdentifiers([...removedScopesIdentifiers, scopeObject.name]);
             }
 
             // Remove the scope from the added scopes identifiers if it is already added.
             if (addedScopesIdentifiers.includes(scopeObject.name)) {
-                setAddedScopesIdentifiers(addedScopesIdentifiers.filter(
-                    (scopeIdentifier: string) => scopeIdentifier !== scopeObject.name));
+                setAddedScopesIdentifiers(
+                    addedScopesIdentifiers.filter((scopeIdentifier: string) => scopeIdentifier !== scopeObject.name)
+                );
             }
         }
     };
@@ -328,10 +330,13 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
     /**
      * Handle bulk dropdown change.
      */
-    const handleBulkDropdownChange = (scopeObjectList: AuthorizedPermissionListItemInterface[],
-        remove: boolean): void => {
-        const scopeNameList: string[] =
-            scopeObjectList.map((scope: AuthorizedPermissionListItemInterface) => scope.name);
+    const handleBulkDropdownChange = (
+        scopeObjectList: AuthorizedPermissionListItemInterface[],
+        remove: boolean
+    ): void => {
+        const scopeNameList: string[] = scopeObjectList.map(
+            (scope: AuthorizedPermissionListItemInterface) => scope.name
+        );
 
         // Handles `Select None` option.
         if (remove) {
@@ -363,8 +368,9 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
 
             setSelectedScopes(scopeNameList);
             // Set the added scopes identifiers.
-            setAddedScopesIdentifiers(scopeNameList.filter(
-                (scopeName: string) => !defaultDropdownValues.includes(scopeName)));
+            setAddedScopesIdentifiers(
+                scopeNameList.filter((scopeName: string) => !defaultDropdownValues.includes(scopeName))
+            );
 
             // Remove the scope from the removed scopes identifiers if it is already added.
             setRemovedScopesIdentifiers([]);
@@ -381,137 +387,139 @@ export const ScopeForm: FunctionComponent<ScopeFormInterface> = (
 
     return (
         <EmphasizedSegment padded="very">
-            {
-                showPlaceHolders
-                    ? getPlaceholders()
-                    : (
-                        <Grid>
-                            <Grid.Row columns={ 1 }>
-                                <Grid.Column>
-                                    <Form>
-                                        <Form.Field>
-                                            <Grid>
-                                                <Grid.Row columns={ 2 }>
-                                                    <Grid.Column
-                                                        className="pb-1"
-                                                        floated="left"
-                                                        stretched
-                                                        verticalAlign="bottom"
-                                                    >
-                                                        <label>
-                                                            { t("extensions:develop.applications.edit.sections." +
-                                                                "apiAuthorization.sections.apiSubscriptions." +
-                                                                "scopesSection.label" ) }
-                                                        </label>
-                                                    </Grid.Column>
-                                                    <Grid.Column floated="right" textAlign="right">
-                                                        {
-                                                            isScopesAvailableForUpdate && (
-                                                                <Text className="mb-0" muted subHeading size={ 12 }>
-                                                                    <Button
-                                                                        variant="text"
-                                                                        size="small"
-                                                                        tabIndex={ 6 }
-                                                                        disabled={ isSelectAllDisabled }
-                                                                        onClick={ () =>
-                                                                            handleBulkDropdownChange(
-                                                                                currentAPIResourceScopeListData
-                                                                                    ? currentAPIResourceScopeListData
-                                                                                    : [],
-                                                                                false ) }
-                                                                    >
-                                                                        {
-                                                                            t("extensions:develop.applications.edit." +
-                                                                            "sections.apiAuthorization.sections." +
-                                                                            "apiSubscriptions.scopesSection.selectAll" )
-                                                                        }
-                                                                    </Button>
-                                                                    |
-                                                                    <Button
-                                                                        variant="text"
-                                                                        size="small"
-                                                                        tabIndex={ 7 }
-                                                                        disabled={ isSelectNoneDisabled }
-                                                                        onClick={ () =>
-                                                                            handleBulkDropdownChange(
-                                                                                currentAPIResourceScopeListData
-                                                                                    ? currentAPIResourceScopeListData
-                                                                                    : [],
-                                                                                true ) }
-                                                                    >
-                                                                        {
-                                                                            t("extensions:develop.applications.edit." +
-                                                                            "sections.apiAuthorization.sections." +
-                                                                            "apiSubscriptions.scopesSection." +
-                                                                            "selectNone" )
-                                                                        }
-                                                                    </Button>
-                                                                </Text>
-                                                            )
-                                                        }
-                                                    </Grid.Column>
-                                                </Grid.Row>
-                                            </Grid>
-                                            <Dropdown
-                                                placeholder={ t("extensions:develop.applications.edit.sections." +
-                                                    "apiAuthorization.sections.apiSubscriptions.scopesSection." +
-                                                    "placeholder") }
-                                                fluid
-                                                multiple
-                                                search
-                                                selection
-                                                options={
-                                                    dropdownOptions
-                                                        ? dropdownOptions
-                                                        : []
-                                                }
-                                                defaultValue={ defaultDropdownValues }
-                                                value={ selectedScopes }
-                                                onChange={ handleDropdownChange }
-                                                disabled={ !isScopesAvailableForUpdate }
-                                            />
-                                            <Hint>
-                                                { t("extensions:develop.applications.edit.sections." +
-                                                    "apiAuthorization.sections.apiSubscriptions.scopesSection." +
-                                                    "hint") }
-                                            </Hint>
-                                        </Form.Field>
-                                    </Form>
-                                </Grid.Column>
-                            </Grid.Row>
-                            {
-                                isScopesAvailableForUpdate && (
-                                    <Grid.Row>
-                                        <Grid.Column floated="left">
-                                            <LinkButton
-                                                size="small"
+            {showPlaceHolders ? (
+                getPlaceholders()
+            ) : (
+                <Grid>
+                    <Grid.Row columns={1}>
+                        <Grid.Column>
+                            <Form>
+                                <Form.Field>
+                                    <Grid>
+                                        <Grid.Row columns={2}>
+                                            <Grid.Column
+                                                className="pb-1"
                                                 floated="left"
-                                                tabIndex={ 8 }
-                                                onClick={ resetDropdown }
-                                                data-componentid={ `${componentId}-cancel-btn` }
-                                                disabled={ isUpdateButtonDisabled }
+                                                stretched
+                                                verticalAlign="bottom"
                                             >
-                                                { t("common:cancel") }
-                                            </LinkButton>
+                                                <label>
+                                                    {t(
+                                                        "extensions:develop.applications.edit.sections." +
+                                                            "apiAuthorization.sections.apiSubscriptions." +
+                                                            "scopesSection.label"
+                                                    )}
+                                                </label>
+                                            </Grid.Column>
+                                            <Grid.Column floated="right" textAlign="right">
+                                                {isScopesAvailableForUpdate && (
+                                                    <Text className="mb-0" muted subHeading size={12}>
+                                                        <Button
+                                                            variant="text"
+                                                            size="small"
+                                                            tabIndex={6}
+                                                            disabled={isSelectAllDisabled}
+                                                            onClick={() =>
+                                                                handleBulkDropdownChange(
+                                                                    currentAPIResourceScopeListData
+                                                                        ? currentAPIResourceScopeListData
+                                                                        : [],
+                                                                    false
+                                                                )
+                                                            }
+                                                        >
+                                                            {t(
+                                                                "extensions:develop.applications.edit." +
+                                                                    "sections.apiAuthorization.sections." +
+                                                                    "apiSubscriptions.scopesSection.selectAll"
+                                                            )}
+                                                        </Button>
+                                                        |
+                                                        <Button
+                                                            variant="text"
+                                                            size="small"
+                                                            tabIndex={7}
+                                                            disabled={isSelectNoneDisabled}
+                                                            onClick={() =>
+                                                                handleBulkDropdownChange(
+                                                                    currentAPIResourceScopeListData
+                                                                        ? currentAPIResourceScopeListData
+                                                                        : [],
+                                                                    true
+                                                                )
+                                                            }
+                                                        >
+                                                            {t(
+                                                                "extensions:develop.applications.edit." +
+                                                                    "sections.apiAuthorization.sections." +
+                                                                    "apiSubscriptions.scopesSection." +
+                                                                    "selectNone"
+                                                            )}
+                                                        </Button>
+                                                    </Text>
+                                                )}
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Grid>
+                                    <Dropdown
+                                        placeholder={t(
+                                            "extensions:develop.applications.edit.sections." +
+                                                "apiAuthorization.sections.apiSubscriptions.scopesSection." +
+                                                "placeholder"
+                                        )}
+                                        fluid
+                                        multiple
+                                        search
+                                        selection
+                                        options={dropdownOptions ? dropdownOptions : []}
+                                        defaultValue={defaultDropdownValues}
+                                        value={selectedScopes}
+                                        onChange={handleDropdownChange}
+                                        disabled={!isScopesAvailableForUpdate}
+                                    />
+                                    <Hint>
+                                        {t(
+                                            "extensions:develop.applications.edit.sections." +
+                                                "apiAuthorization.sections.apiSubscriptions.scopesSection." +
+                                                "hint"
+                                        )}
+                                    </Hint>
+                                </Form.Field>
+                            </Form>
+                        </Grid.Column>
+                    </Grid.Row>
+                    {isScopesAvailableForUpdate && (
+                        <Grid.Row>
+                            <Grid.Column floated="left">
+                                <LinkButton
+                                    size="small"
+                                    floated="left"
+                                    tabIndex={8}
+                                    onClick={resetDropdown}
+                                    data-componentid={`${componentId}-cancel-btn`}
+                                    disabled={isUpdateButtonDisabled}
+                                >
+                                    {t("common:cancel")}
+                                </LinkButton>
 
-                                            <PrimaryButton
-                                                size="small"
-                                                floated="right"
-                                                tabIndex={ 9 }
-                                                onClick={ updateScopesOfAPIResource }
-                                                data-componentid={ `${componentId}-update-btn` }
-                                                disabled={ isUpdateButtonDisabled }
-                                            >
-                                                { t("extensions:develop.applications.edit.sections.apiAuthorization." +
-                                                    "sections.policySection.buttons.update") }
-                                            </PrimaryButton>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                )
-                            }
-                        </Grid>
-                    )
-            }
+                                <PrimaryButton
+                                    size="small"
+                                    floated="right"
+                                    tabIndex={9}
+                                    onClick={updateScopesOfAPIResource}
+                                    data-componentid={`${componentId}-update-btn`}
+                                    disabled={isUpdateButtonDisabled}
+                                >
+                                    {t(
+                                        "extensions:develop.applications.edit.sections.apiAuthorization." +
+                                            "sections.policySection.buttons.update"
+                                    )}
+                                </PrimaryButton>
+                            </Grid.Column>
+                        </Grid.Row>
+                    )}
+                </Grid>
+            )}
         </EmphasizedSegment>
     );
 };

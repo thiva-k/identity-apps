@@ -61,7 +61,6 @@ interface InboundCustomFormPropsInterface extends TestableComponentInterface {
      * Specifies if API calls are pending.
      */
     isLoading?: boolean;
-
 }
 
 /**
@@ -74,25 +73,16 @@ interface InboundCustomFormPropsInterface extends TestableComponentInterface {
 export const InboundCustomProtocolForm: FunctionComponent<InboundCustomFormPropsInterface> = (
     props: InboundCustomFormPropsInterface
 ): ReactElement => {
-
-    const {
-        certificate,
-        metadata,
-        initialValues,
-        onSubmit,
-        readOnly,
-        isLoading,
-        [ "data-testid" ]: testId
-    } = props;
+    const { certificate, metadata, initialValues, onSubmit, readOnly, isLoading, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ isPEMSelected, setPEMSelected ] = useState<boolean>(false);
-    const [ showCertificateModal, setShowCertificateModal ] = useState<boolean>(false);
-    const [ PEMValue, setPEMValue ] = useState<string>(undefined);
-    const [ certificateDisplay, setCertificateDisplay ] = useState<DisplayCertificate>(null);
+    const [isPEMSelected, setPEMSelected] = useState<boolean>(false);
+    const [showCertificateModal, setShowCertificateModal] = useState<boolean>(false);
+    const [PEMValue, setPEMValue] = useState<string>(undefined);
+    const [certificateDisplay, setCertificateDisplay] = useState<DisplayCertificate>(null);
 
     /**
      * Set initial PEM values.
@@ -104,121 +94,124 @@ export const InboundCustomProtocolForm: FunctionComponent<InboundCustomFormProps
                 setPEMValue(certificate.value);
             }
         }
-    }, [ certificate ]);
+    }, [certificate]);
 
     const createInputComponent = (
-        (config: CustomInboundProtocolPropertyInterface, initialValue?: PropertyModelInterface) => {
-            if (config?.availableValues?.length > 0) {
-                return (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                            <Field
-                                label={ config?.displayName }
-                                name={ config?.name }
-                                type="dropdown"
-                                value={ initialValue?.value }
-                                required={ config?.required }
-                                requiredErrorMessage={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.dropdown" +
-                                        ".validations.empty", { name: config?.displayName })
+        config: CustomInboundProtocolPropertyInterface,
+        initialValue?: PropertyModelInterface
+    ) => {
+        if (config?.availableValues?.length > 0) {
+            return (
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        <Field
+                            label={config?.displayName}
+                            name={config?.name}
+                            type="dropdown"
+                            value={initialValue?.value}
+                            required={config?.required}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.dropdown" +
+                                    ".validations.empty",
+                                { name: config?.displayName }
+                            )}
+                            default={config?.defaultValue}
+                            children={createDropDownOption(config?.availableValues)}
+                            data-testid={`${testId}-${config?.name}-dropdown`}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            );
+        } else if (config?.isConfidential) {
+            return (
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        <Field
+                            label={config?.displayName}
+                            name={config?.name}
+                            hidePassword={t("common:hide") + " " + config?.displayName}
+                            showPassword={t("common:show") + " " + config?.displayName}
+                            value={initialValue?.value}
+                            required={config?.required}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.password" +
+                                    ".validations.empty",
+                                { name: config?.displayName }
+                            )}
+                            placeholder={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.password" +
+                                    ".placeholder",
+                                { name: config?.displayName }
+                            )}
+                            type="password"
+                            default={config?.defaultValue}
+                            data-testid={`${testId}-${config?.name}-password-input`}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            );
+        } else if (config?.type === CustomTypeEnum.BOOLEAN) {
+            return (
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        <Field
+                            name={config?.name}
+                            label=""
+                            required={config?.required}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.checkbox" +
+                                    ".validations.empty",
+                                { user: config?.displayName }
+                            )}
+                            value={initialValue?.value ? [config.name] : []}
+                            type="checkbox"
+                            children={[
+                                {
+                                    label: config.displayName,
+                                    value: config.name
                                 }
-                                default={ config?.defaultValue }
-                                children={ createDropDownOption(config?.availableValues) }
-                                data-testid={ `${ testId }-${ config?.name }-dropdown` }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                );
-            } else if (config?.isConfidential) {
-                return (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                            <Field
-                                label={ config?.displayName }
-                                name={ config?.name }
-                                hidePassword={ t("common:hide") + " " + config?.displayName }
-                                showPassword={ t("common:show") + " " + config?.displayName }
-                                value={ initialValue?.value }
-                                required={ config?.required }
-                                requiredErrorMessage={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.password" +
-                                        ".validations.empty",
-                                    { name: config?.displayName })
-                                }
-                                placeholder={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.password" +
-                                        ".placeholder",
-                                    { name: config?.displayName })
-                                }
-                                type="password"
-                                default={ config?.defaultValue }
-                                data-testid={ `${ testId }-${ config?.name }-password-input` }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                );
-            } else if (config?.type === CustomTypeEnum.BOOLEAN) {
-                return (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                            <Field
-                                name={ config?.name }
-                                label=""
-                                required={ config?.required }
-                                requiredErrorMessage={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.checkbox" +
-                                        ".validations.empty",
-                                    { user: config?.displayName })
-                                }
-                                value={ initialValue?.value ? [ config.name ] : [] }
-                                type="checkbox"
-                                children={ [
-                                    {
-                                        label: config.displayName,
-                                        value: config.name
-                                    }
-                                ] }
-                                data-testid={ `${ testId }-${ config?.name }-checkbox` }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                );
-            } else {
-                return (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                            <Field
-                                label={ config?.displayName }
-                                name={ config?.name }
-                                required={ config?.required }
-                                value={ initialValue?.value }
-                                requiredErrorMessage={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.generic" +
-                                        ".validations.empty",
-                                    { name: config?.displayName })
-                                }
-                                placeholder={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.generic" +
-                                        ".placeholder",
-                                    { name: config?.displayName })
-                                }
-                                type={ (config?.type === CustomTypeEnum.INTEGER) ? "number" : "text" }
-                                data-testid={ `${ testId }-${ config?.name }-input` }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                );
-            }
-        });
+                            ]}
+                            data-testid={`${testId}-${config?.name}-checkbox`}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            );
+        } else {
+            return (
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        <Field
+                            label={config?.displayName}
+                            name={config?.name}
+                            required={config?.required}
+                            value={initialValue?.value}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.generic" +
+                                    ".validations.empty",
+                                { name: config?.displayName }
+                            )}
+                            placeholder={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.generic" +
+                                    ".placeholder",
+                                { name: config?.displayName }
+                            )}
+                            type={config?.type === CustomTypeEnum.INTEGER ? "number" : "text"}
+                            data-testid={`${testId}-${config?.name}-input`}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            );
+        }
+    };
 
-    const generateFormElements = (() => {
+    const generateFormElements = () => {
         if (metadata) {
             const configs: CustomInboundProtocolPropertyInterface[] = metadata?.properties;
 
             if (configs.length > 0) {
-                configs.sort(
-                    (a: CustomInboundProtocolPropertyInterface, b: CustomInboundProtocolPropertyInterface) =>
-                        (a.displayOrder > b.displayOrder) ? 1 : -1);
+                configs.sort((a: CustomInboundProtocolPropertyInterface, b: CustomInboundProtocolPropertyInterface) =>
+                    a.displayOrder > b.displayOrder ? 1 : -1
+                );
             }
 
             return configs.map((config: CustomInboundProtocolPropertyInterface) => {
@@ -229,7 +222,7 @@ export const InboundCustomProtocolForm: FunctionComponent<InboundCustomFormProps
                 return createInputComponent(config, initialValue);
             });
         }
-    });
+    };
 
     /**
      * Create drop down options.
@@ -257,7 +250,7 @@ export const InboundCustomProtocolForm: FunctionComponent<InboundCustomFormProps
         const valueProperties: SubmitFormCustomPropertiesInterface[] = [];
 
         //Iterate over map entries
-        for (const [ key, value ] of values) {
+        for (const [key, value] of values) {
             let property: SubmitFormCustomPropertiesInterface = undefined;
 
             if (value instanceof Array) {
@@ -286,9 +279,7 @@ export const InboundCustomProtocolForm: FunctionComponent<InboundCustomFormProps
             inbound: {
                 configName: initialValues?.configName,
                 name: initialValues?.name,
-                properties: [
-                    ...valueProperties
-                ]
+                properties: [...valueProperties]
             }
         };
     };
@@ -297,14 +288,13 @@ export const InboundCustomProtocolForm: FunctionComponent<InboundCustomFormProps
         if (metadata) {
             generateFormElements();
         }
-    }, [ metadata ]);
+    }, [metadata]);
 
     /**
      * Construct the details from the pem value.
      */
     const viewCertificate = () => {
         if (isPEMSelected && PEMValue) {
-
             let displayCertificate: DisplayCertificate;
 
             if (CertificateManagementUtils.canSafelyParseCertificate(PEMValue)) {
@@ -317,194 +307,179 @@ export const InboundCustomProtocolForm: FunctionComponent<InboundCustomFormProps
                 setCertificateDisplay(displayCertificate);
                 setShowCertificateModal(true);
             } else {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:common.notifications.invalidPEMFile.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:common.notifications.invalidPEMFile.genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t("console:common.notifications.invalidPEMFile.genericError.description"),
+                        level: AlertLevels.ERROR,
+                        message: t("console:common.notifications.invalidPEMFile.genericError.message")
+                    })
+                );
             }
         }
     };
 
     return (
         <Forms
-            onSubmit={ (values: Map<string, FormValue>) => {
+            onSubmit={(values: Map<string, FormValue>) => {
                 onSubmit(updateConfiguration(values));
-            } }
+            }}
         >
             <Grid>
-                { generateFormElements() }
-                { /* Certificates */ }
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                        <Divider/>
+                {generateFormElements()}
+                {/* Certificates */}
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        <Divider />
                     </Grid.Column>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
                         <Heading as="h5">
-                            {
-                                t("console:develop.features.applications.forms." +
-                                    "advancedConfig.sections.certificate.heading") }
+                            {t(
+                                "console:develop.features.applications.forms." +
+                                    "advancedConfig.sections.certificate.heading"
+                            )}
                         </Heading>
                         <Field
-                            label={
-                                t("console:develop.features.applications.forms." +
-                                    "advancedConfig.sections.certificate.fields.type.label")
-                            }
+                            label={t(
+                                "console:develop.features.applications.forms." +
+                                    "advancedConfig.sections.certificate.fields.type.label"
+                            )}
                             name="type"
-                            default={ CertificateTypeInterface.JWKS }
-                            listen={
-                                (values: Map<string, FormValue>) => {
-                                    setPEMSelected(values.get("type") === "PEM");
-                                }
-                            }
+                            default={CertificateTypeInterface.JWKS}
+                            listen={(values: Map<string, FormValue>) => {
+                                setPEMSelected(values.get("type") === "PEM");
+                            }}
                             type="radio"
-                            value={ certificate?.type }
-                            children={ [
+                            value={certificate?.type}
+                            children={[
                                 {
-                                    label: t("console:develop.features.applications.forms." +
-                                        "advancedConfig.sections.certificate.fields.type.children.jwks.label"),
+                                    label: t(
+                                        "console:develop.features.applications.forms." +
+                                            "advancedConfig.sections.certificate.fields.type.children.jwks.label"
+                                    ),
                                     value: CertificateTypeInterface.JWKS
                                 },
                                 {
-                                    label: t("console:develop.features.applications.forms." +
-                                        "advancedConfig.sections.certificate.fields.type.children.pem.label"),
+                                    label: t(
+                                        "console:develop.features.applications.forms." +
+                                            "advancedConfig.sections.certificate.fields.type.children.pem.label"
+                                    ),
                                     value: CertificateTypeInterface.PEM
                                 }
-                            ] }
-                            readOnly={ readOnly }
-                            data-testid={ `${ testId }-certificate-type-radio-group` }
+                            ]}
+                            readOnly={readOnly}
+                            data-testid={`${testId}-certificate-type-radio-group`}
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                        {
-                            isPEMSelected
-                                ?
-                                (
-                                    <>
-                                        <Field
-                                            name="certificateValue"
-                                            label={
-                                                t("console:develop.features.applications.forms.advancedConfig" +
-                                                    ".sections.certificate.fields.pemValue.label")
-                                            }
-                                            required={ false }
-                                            requiredErrorMessage={
-                                                t("console:develop.features.applications.forms.advancedConfig" +
-                                                    ".sections.certificate.fields.pemValue.validations.empty")
-                                            }
-                                            placeholder={
-                                                ApplicationManagementConstants.PEM_CERTIFICATE_PLACEHOLDER
-                                            }
-                                            type="textarea"
-                                            value={
-                                                (CertificateTypeInterface.PEM === certificate?.type)
-                                                && certificate?.value
-                                            }
-                                            listen={
-                                                (values: Map<string, FormValue>) => {
-                                                    setPEMValue(
-                                                        values.get("certificateValue") as string
-                                                    );
-                                                }
-                                            }
-                                            readOnly={ readOnly }
-                                            data-testid={ `${ testId }-certificate-textarea` }
-                                        />
-                                        < Hint>
-                                            {
-                                                t("console:develop.features.applications.forms." +
-                                                    "advancedConfig.sections.certificate.fields.pemValue.hint")
-                                            }
-                                        </Hint>
-                                        <LinkButton
-                                            className="certificate-info-link-button"
-                                            onClick={ (e: MouseEvent<HTMLButtonElement>) => {
-                                                e.preventDefault();
-                                                viewCertificate();
-                                            } }
-                                            disabled={ isEmpty(PEMValue) }
-                                            data-testid={ `${ testId }-certificate-info-button` }
-                                        >
-                                            {
-                                                t("console:develop.features.applications.forms." +
-                                                    "advancedConfig.sections.certificate.fields.pemValue." +
-                                                    "actions.view")
-                                            }
-                                        </LinkButton>
-                                    </>
-                                )
-                                : (
-                                    <>
-                                        <Field
-                                            name="jwksValue"
-                                            label={
-                                                t("console:develop.features.applications.forms.advancedConfig" +
-                                                    ".sections.certificate.fields.jwksValue.label")
-                                            }
-                                            required={ false }
-                                            requiredErrorMessage={
-                                                t("console:develop.features.applications.forms.advancedConfig" +
-                                                    ".sections.certificate.fields.jwksValue.validations.empty")
-                                            }
-                                            placeholder={
-                                                t("console:develop.features.applications.forms.advancedConfig" +
-                                                    ".sections.certificate.fields.jwksValue.placeholder") }
-                                            type="text"
-                                            validation={ (value: string, validation: Validation) => {
-                                                if (!FormValidation.url(value)) {
-                                                    validation.isValid = false;
-                                                    validation.errorMessages.push(
-                                                        t(
-                                                            "console:develop.features.applications.forms" +
-                                                            ".advancedConfig.sections.certificate.fields." +
-                                                            "jwksValue.validations.invalid"
-                                                        )
-                                                    );
-                                                }
-                                            } }
-                                            value={
-                                                (CertificateTypeInterface.JWKS === certificate?.type)
-                                                && certificate?.value
-                                            }
-                                            readOnly={ readOnly }
-                                            data-testid={ `${ testId }-jwks-input` }
-                                        />
-                                    </>
-                                )
-                        }
-                    </Grid.Column>
-                </Grid.Row>
-                {
-                    showCertificateModal && (
-                        <CertificateFormFieldModal
-                            open={ showCertificateModal }
-                            certificate={ certificateDisplay }
-                            onClose={ () => {
-                                setShowCertificateModal(false);
-                            } }
-                        />
-                    )
-                }
-                {
-                    !readOnly && (
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                <Button
-                                    primary
-                                    type="submit"
-                                    size="small"
-                                    className="form-button"
-                                    loading={ isLoading }
-                                    disabled={ isLoading }
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        {isPEMSelected ? (
+                            <>
+                                <Field
+                                    name="certificateValue"
+                                    label={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.pemValue.label"
+                                    )}
+                                    required={false}
+                                    requiredErrorMessage={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.pemValue.validations.empty"
+                                    )}
+                                    placeholder={ApplicationManagementConstants.PEM_CERTIFICATE_PLACEHOLDER}
+                                    type="textarea"
+                                    value={CertificateTypeInterface.PEM === certificate?.type && certificate?.value}
+                                    listen={(values: Map<string, FormValue>) => {
+                                        setPEMValue(values.get("certificateValue") as string);
+                                    }}
+                                    readOnly={readOnly}
+                                    data-testid={`${testId}-certificate-textarea`}
+                                />
+                                <Hint>
+                                    {t(
+                                        "console:develop.features.applications.forms." +
+                                            "advancedConfig.sections.certificate.fields.pemValue.hint"
+                                    )}
+                                </Hint>
+                                <LinkButton
+                                    className="certificate-info-link-button"
+                                    onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                                        e.preventDefault();
+                                        viewCertificate();
+                                    }}
+                                    disabled={isEmpty(PEMValue)}
+                                    data-testid={`${testId}-certificate-info-button`}
                                 >
-                                    { t("common:update") }
-                                </Button>
-                            </Grid.Column>
-                        </Grid.Row>
-                    )
-                }
+                                    {t(
+                                        "console:develop.features.applications.forms." +
+                                            "advancedConfig.sections.certificate.fields.pemValue." +
+                                            "actions.view"
+                                    )}
+                                </LinkButton>
+                            </>
+                        ) : (
+                            <>
+                                <Field
+                                    name="jwksValue"
+                                    label={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.jwksValue.label"
+                                    )}
+                                    required={false}
+                                    requiredErrorMessage={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.jwksValue.validations.empty"
+                                    )}
+                                    placeholder={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.jwksValue.placeholder"
+                                    )}
+                                    type="text"
+                                    validation={(value: string, validation: Validation) => {
+                                        if (!FormValidation.url(value)) {
+                                            validation.isValid = false;
+                                            validation.errorMessages.push(
+                                                t(
+                                                    "console:develop.features.applications.forms" +
+                                                        ".advancedConfig.sections.certificate.fields." +
+                                                        "jwksValue.validations.invalid"
+                                                )
+                                            );
+                                        }
+                                    }}
+                                    value={CertificateTypeInterface.JWKS === certificate?.type && certificate?.value}
+                                    readOnly={readOnly}
+                                    data-testid={`${testId}-jwks-input`}
+                                />
+                            </>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                {showCertificateModal && (
+                    <CertificateFormFieldModal
+                        open={showCertificateModal}
+                        certificate={certificateDisplay}
+                        onClose={() => {
+                            setShowCertificateModal(false);
+                        }}
+                    />
+                )}
+                {!readOnly && (
+                    <Grid.Row columns={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={16}>
+                            <Button
+                                primary
+                                type="submit"
+                                size="small"
+                                className="form-button"
+                                loading={isLoading}
+                                disabled={isLoading}
+                            >
+                                {t("common:update")}
+                            </Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
             </Grid>
         </Forms>
     );

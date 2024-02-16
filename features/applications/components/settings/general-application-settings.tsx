@@ -20,6 +20,8 @@ import { Show } from "@wso2is/access-control";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { FeatureConfigInterface, UIConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import {
     ConfirmationModal,
     ContentLoader,
@@ -34,8 +36,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider } from "semantic-ui-react";
 import { applicationConfig } from "../../../../extensions";
-import { AccessControlConstants } from "../../../feature-access-control/constants/access-control";
-import { AppState, FeatureConfigInterface, UIConfigInterface } from "../../../core";
+import { AccessControlConstants } from "../../../access-control/constants/access-control";
 import { deleteApplication, updateApplicationDetails } from "../../api";
 import { ApplicationInterface, ApplicationTemplateListItemInterface } from "../../models";
 import { ApplicationManagementUtils } from "../../utils/application-management-utils";

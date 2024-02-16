@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -50,12 +51,7 @@ interface GenericMinimalWizardFormHelpPropsInterface extends TestableComponentIn
 export const GenericMinimalWizardFormHelp: FunctionComponent<GenericMinimalWizardFormHelpPropsInterface> = (
     props: GenericMinimalWizardFormHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        parentTemplate,
-        template,
-        [ "data-testid" ]: testId
-    } = props;
+    const { parentTemplate, template, ["data-testid"]: testId } = props;
 
     /**
      * Resolves to teh right help panel content.
@@ -74,83 +70,73 @@ export const GenericMinimalWizardFormHelp: FunctionComponent<GenericMinimalWizar
             case ApplicationManagementConstants.TEMPLATE_IDS.get("workday"):
             case ApplicationManagementConstants.TEMPLATE_IDS.get("zoom"):
                 return (
-                    <div data-testid={ testId }>
+                    <div data-testid={testId}>
                         <Heading as="h5">Name</Heading>
                         <p>Provide a unique name for the application so that it can be easily identified.</p>
                         <p>E.g. Zoom, Salesforce, etc.</p>
 
-                        {
-                            (parentTemplate.id === DefaultTemplateGroupIds.WEB_APPLICATION) && (
-                                <>
-                                    <Divider/>
-                                    <Heading as="h5">Protocol</Heading>
-                                    <p>
-                                        The access configuration protocol which will be used to SSO (single sign-on) to
-                                        the
-                                        application.
-                                    </p>
-                                    <Message
-                                        type="info"
-                                        content={
-                                            (<>
-                                                <a href="#" target="_blank">
-                                                    Click here
-                                                </a>{ " " }
-                                                to learn more about supported protocols for agent-based single sign-on.
-                                            </>)
-                                        }
-                                    />
-                                </>
-                            )
-                        }
+                        {parentTemplate.id === DefaultTemplateGroupIds.WEB_APPLICATION && (
+                            <>
+                                <Divider />
+                                <Heading as="h5">Protocol</Heading>
+                                <p>
+                                    The access configuration protocol which will be used to SSO (single sign-on) to the
+                                    application.
+                                </p>
+                                <Message
+                                    type="info"
+                                    content={
+                                        <>
+                                            <a href="#" target="_blank">
+                                                Click here
+                                            </a>{" "}
+                                            to learn more about supported protocols for agent-based single sign-on.
+                                        </>
+                                    }
+                                />
+                            </>
+                        )}
 
-                        <Divider/>
+                        <Divider />
 
-                        {
-                            (template.authenticationProtocol === SupportedAuthProtocolTypes.OIDC) && (
-                                <>
-                                    <Heading as="h5">Authorized redirect URIs</Heading>
-                                    <p>
-                                        After user sign-in/sign-out, the user is redirected to a web page within
-                                        your application. Add the list of possible redirect URLs here. You can
-                                        specify multiple valid URLs. Make sure to specify the protocol (https://)
-                                        otherwise the redirect may fail in some cases.
-                                    </p>
-                                    <p>E.g. https://sample.app/login</p>
+                        {template.authenticationProtocol === SupportedAuthProtocolTypes.OIDC && (
+                            <>
+                                <Heading as="h5">Authorized redirect URIs</Heading>
+                                <p>
+                                    After user sign-in/sign-out, the user is redirected to a web page within your
+                                    application. Add the list of possible redirect URLs here. You can specify multiple
+                                    valid URLs. Make sure to specify the protocol (https://) otherwise the redirect may
+                                    fail in some cases.
+                                </p>
+                                <p>E.g. https://sample.app/login</p>
 
-                                    <p>
-                                        You can also configure this field later under the <strong>Protocol </strong>
-                                        tab in application-edit view.
-                                    </p>
-                                </>
-                            )
-                        }
-                        {
-                            (template.authenticationProtocol === SupportedAuthProtocolTypes.SAML) && (
-                                <>
-                                    <Heading as="h5">Issuer</Heading>
-                                    <p>
-                                        This is the saml:Issuer element that contains the unique identifier of the
-                                        service
-                                        provider. This is also the issuer value specified in the SAML Authentication
-                                        Request
-                                        issued by the service provider.
-                                    </p>
-                                    <p>E.g. saml2-web-app-travelocity.com</p>
+                                <p>
+                                    You can also configure this field later under the <strong>Protocol </strong>
+                                    tab in application-edit view.
+                                </p>
+                            </>
+                        )}
+                        {template.authenticationProtocol === SupportedAuthProtocolTypes.SAML && (
+                            <>
+                                <Heading as="h5">Issuer</Heading>
+                                <p>
+                                    This is the saml:Issuer element that contains the unique identifier of the service
+                                    provider. This is also the issuer value specified in the SAML Authentication Request
+                                    issued by the service provider.
+                                </p>
+                                <p>E.g. saml2-web-app-travelocity.com</p>
 
-                                    <Divider/>
+                                <Divider />
 
-                                    <Heading as="h5">Assertion consumer URLs</Heading>
-                                    <p>
-                                        This is the URL to which the browser should be redirected to after the
-                                        authentication is
-                                        successful. This is the Assertion Consumer Service (ACS) URL of the service
-                                        provider.
-                                    </p>
-                                    <p>E.g. http://localhost:8080/travelocity.com/home.jsp</p>
-                                </>
-                            )
-                        }
+                                <Heading as="h5">Assertion consumer URLs</Heading>
+                                <p>
+                                    This is the URL to which the browser should be redirected to after the
+                                    authentication is successful. This is the Assertion Consumer Service (ACS) URL of
+                                    the service provider.
+                                </p>
+                                <p>E.g. http://localhost:8080/travelocity.com/home.jsp</p>
+                            </>
+                        )}
                     </div>
                 );
             default:

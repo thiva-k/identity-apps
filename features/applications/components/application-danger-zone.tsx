@@ -20,6 +20,11 @@ import { Show } from "@wso2is/access-control";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface, UIConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import { ConfirmationModal, DangerZone, DangerZoneGroup } from "@wso2is/react-components";
 import { IdentityAppsApiException } from "modules/core/dist/types/exceptions";
 import React, { FunctionComponent, ReactElement, useState } from "react";
@@ -27,60 +32,54 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
-import { AppConstants, AppState, EventPublisher, FeatureConfigInterface, UIConfigInterface, history } from "../../core";
 import { deleteApplication } from "../api";
-   
+
 /**
  * Prop types of the  ApplicationDangerZone component.
- */ 
-interface ApplicationDangerZonePropsInterface extends 
-    SBACInterface<FeatureConfigInterface>, IdentifiableComponentInterface {
-        /**
-         * Currently editing application id.
-         */
-        appId?: string;
-        /**
-         * Client Id of the application.
-         */
-        clientId?: string;
-        /**
-         * Name of the application.
-         */
-        name: string;
-        /**
-         * Customized content.
-         */
-        content?: string;
-    }
-    
+ */
+
+interface ApplicationDangerZonePropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
+    /**
+     * Currently editing application id.
+     */
+    appId?: string;
+    /**
+     * Client Id of the application.
+     */
+    clientId?: string;
+    /**
+     * Name of the application.
+     */
+    name: string;
+    /**
+     * Customized content.
+     */
+    content?: string;
+}
+
 /**
  * Application Danger Zone component
- * 
+ *
  * @param props - Props injected to the component.
- * 
+ *
  * @returns ApplicationDangerZoneComponent.
  */
 export const ApplicationDangerZoneComponent: FunctionComponent<ApplicationDangerZonePropsInterface> = (
     props: ApplicationDangerZonePropsInterface
 ): ReactElement => {
-    const {
-        featureConfig,
-        appId,
-        clientId,
-        name,
-        content,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { featureConfig, appId, clientId, name, content, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const UIConfig: UIConfigInterface = useSelector((state: AppState) => state?.config?.ui);
- 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ isDeletionInProgress, setIsDeletionInProgress ] = useState<boolean>(false);
- 
+
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [isDeletionInProgress, setIsDeletionInProgress] = useState<boolean>(false);
+
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
     /**
      * Deletes an application.
@@ -90,133 +89,140 @@ export const ApplicationDangerZoneComponent: FunctionComponent<ApplicationDanger
         deleteApplication(appId)
             .then(() => {
                 setIsDeletionInProgress(false);
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.deleteApplication.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.notifications.deleteApplication.success.message")
-                }));
- 
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.deleteApplication.success" +
+                                ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.applications.notifications.deleteApplication.success.message"
+                        )
+                    })
+                );
+
                 setShowDeleteConfirmationModal(false);
                 onDelete();
 
-                eventPublisher.publish(
-                    "application-delete", 
-                    { "client-id": clientId }
-                );
+                eventPublisher.publish("application-delete", { "client-id": clientId });
             })
             .catch((error: IdentityAppsApiException) => {
                 setIsDeletionInProgress(false);
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.deleteApplication.error" +
-                            ".message")
-                    }));
- 
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.deleteApplication.error" +
+                                    ".message"
+                            )
+                        })
+                    );
+
                     return;
                 }
- 
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.deleteApplication" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.deleteApplication.genericError" +
-                        ".message")
-                }));
-                eventPublisher.publish(
-                    "application-delete-error", 
-                    { "client-id": clientId }
+
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.deleteApplication" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.deleteApplication.genericError" +
+                                ".message"
+                        )
+                    })
                 );
+                eventPublisher.publish("application-delete-error", { "client-id": clientId });
             });
     };
- 
+
     /**
      * Called when an application is deleted.
      */
     const onDelete = (): void => {
         history.push(AppConstants.getPaths().get("APPLICATIONS"));
     };
- 
+
     /**
      * Resolves the danger actions.
      *
      * @returns DangerZoneGroup element.
      */
     const resolveDangerActions = (): ReactElement => {
-        if (!hasRequiredScopes(
-            featureConfig?.applications, featureConfig?.applications?.scopes?.update, allowedScopes)) {
+        if (
+            !hasRequiredScopes(featureConfig?.applications, featureConfig?.applications?.scopes?.update, allowedScopes)
+        ) {
             return null;
         }
- 
+
         if (UIConfig.systemAppsIdentifiers.includes(name)) {
             return null;
         }
- 
+
         return (
-            <Show
-                when={ AccessControlConstants.APPLICATION_DELETE }
-            >
-                <DangerZoneGroup
-                    sectionHeader={ t("console:develop.features.applications.dangerZoneGroup.header") }
-                >
+            <Show when={AccessControlConstants.APPLICATION_DELETE}>
+                <DangerZoneGroup sectionHeader={t("console:develop.features.applications.dangerZoneGroup.header")}>
                     <DangerZone
-                        actionTitle={
-                            t("console:develop.features.applications.dangerZoneGroup.deleteApplication" +
-                                ".actionTitle")
-                        }
-                        header={
-                            t("console:develop.features.applications.dangerZoneGroup.deleteApplication.header")
-                        }
+                        actionTitle={t(
+                            "console:develop.features.applications.dangerZoneGroup.deleteApplication" + ".actionTitle"
+                        )}
+                        header={t("console:develop.features.applications.dangerZoneGroup.deleteApplication.header")}
                         subheader={
-                            !content ?
-                                t("console:develop.features.applications.dangerZoneGroup.deleteApplication" +
-                                ".subheader")
+                            !content
+                                ? t(
+                                      "console:develop.features.applications.dangerZoneGroup.deleteApplication" +
+                                          ".subheader"
+                                  )
                                 : content
                         }
-                        onActionClick={ (): void => setShowDeleteConfirmationModal(true) }
-                        data-componentid={ `${ componentId }-danger-zone` }
+                        onActionClick={(): void => setShowDeleteConfirmationModal(true)}
+                        data-componentid={`${componentId}-danger-zone`}
                     />
                 </DangerZoneGroup>
             </Show>
         );
     };
-     
+
     return (
         <>
-            { resolveDangerActions() }
+            {resolveDangerActions()}
             <ConfirmationModal
-                onClose={ (): void => setShowDeleteConfirmationModal(false) }
+                onClose={(): void => setShowDeleteConfirmationModal(false)}
                 type="negative"
-                open={ showDeleteConfirmationModal }
-                assertionHint={ t("console:develop.features.applications.confirmations.deleteApplication." +
-                             "assertionHint") }
+                open={showDeleteConfirmationModal}
+                assertionHint={t(
+                    "console:develop.features.applications.confirmations.deleteApplication." + "assertionHint"
+                )}
                 assertionType="checkbox"
-                primaryAction={ t("common:confirm") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                onPrimaryActionClick={ (): void => handleApplicationDelete() }
-                data-componentid={ `${ componentId }-application-delete-confirmation-modal` }
-                closeOnDimmerClick={ false }
-                primaryActionLoading={ isDeletionInProgress }
+                primaryAction={t("common:confirm")}
+                secondaryAction={t("common:cancel")}
+                onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                onPrimaryActionClick={(): void => handleApplicationDelete()}
+                data-componentid={`${componentId}-application-delete-confirmation-modal`}
+                closeOnDimmerClick={false}
+                primaryActionLoading={isDeletionInProgress}
             >
                 <ConfirmationModal.Header
-                    data-componentid={ `${ componentId }-application-delete-confirmation-modal-header` }
+                    data-componentid={`${componentId}-application-delete-confirmation-modal-header`}
                 >
-                    { t("console:develop.features.applications.confirmations.deleteApplication.header") }
+                    {t("console:develop.features.applications.confirmations.deleteApplication.header")}
                 </ConfirmationModal.Header>
                 <ConfirmationModal.Message
                     attached
                     negative
-                    data-componentid={ `${ componentId }-application-delete-confirmation-modal-message` }
+                    data-componentid={`${componentId}-application-delete-confirmation-modal-message`}
                 >
-                    { t("console:develop.features.applications.confirmations.deleteApplication.message") }
+                    {t("console:develop.features.applications.confirmations.deleteApplication.message")}
                 </ConfirmationModal.Message>
                 <ConfirmationModal.Content
-                    data-componentid={ `${ componentId }-application-delete-confirmation-modal-content` }
-                >   
-                    { t("console:develop.features.applications.confirmations.deleteApplication.content") }
+                    data-componentid={`${componentId}-application-delete-confirmation-modal-content`}
+                >
+                    {t("console:develop.features.applications.confirmations.deleteApplication.content")}
                 </ConfirmationModal.Content>
             </ConfirmationModal>
         </>

@@ -25,7 +25,7 @@ import { Divider } from "semantic-ui-react";
 /**
  * Prop types of the component.
  */
-type SinglePageApplicationCreateWizardHelpPropsInterface = TestableComponentInterface
+type SinglePageApplicationCreateWizardHelpPropsInterface = TestableComponentInterface;
 
 /**
  * Help content for the Single page application template creation wizard.
@@ -36,27 +36,30 @@ type SinglePageApplicationCreateWizardHelpPropsInterface = TestableComponentInte
 const SinglePageApplicationCreateWizardHelp: FunctionComponent<SinglePageApplicationCreateWizardHelpPropsInterface> = (
     props: SinglePageApplicationCreateWizardHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     return (
-        <div data-testid={ testId }>
+        <div data-testid={testId}>
             <React.Fragment>
                 <Heading as="h5">
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".heading.title") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".heading.title"
+                    )}
                 </Heading>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".heading.subTitle") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".heading.subTitle"
+                    )}
                 </p>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".heading.example") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".heading.example"
+                    )}
                 </p>
             </React.Fragment>
 
@@ -64,19 +67,24 @@ const SinglePageApplicationCreateWizardHelp: FunctionComponent<SinglePageApplica
 
             <React.Fragment>
                 <Heading as="h5">
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".authorizedRedirectURLs.title") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".authorizedRedirectURLs.title"
+                    )}
                 </Heading>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".authorizedRedirectURLs.subTitle") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".authorizedRedirectURLs.subTitle"
+                    )}
                 </p>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".authorizedRedirectURLs.example") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".authorizedRedirectURLs.example"
+                    )}
                 </p>
             </React.Fragment>
-
         </div>
     );
 };

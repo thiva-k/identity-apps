@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -16,12 +17,12 @@
  * under the License.
  */
 
+import { ApplicationManagementConstants } from "../../constants";
 import {
     ApplicationTemplateInterface,
     ApplicationTemplateListItemInterface,
     DefaultProtocolTemplate
 } from "../../models";
-import {ApplicationManagementConstants} from "../../constants";
 
 export const SAMLProtocolTemplateItem: ApplicationTemplateListItemInterface = {
     authenticationProtocol: "saml",
@@ -37,7 +38,7 @@ export const SAMLProtocolTemplate: ApplicationTemplateInterface = {
         inboundProtocolConfiguration: {
             saml: {
                 manualConfiguration: {
-                    assertionConsumerUrls: [ "" ],
+                    assertionConsumerUrls: [""],
                     issuer: ""
                 }
             }

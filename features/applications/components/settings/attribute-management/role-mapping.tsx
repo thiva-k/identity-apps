@@ -67,28 +67,21 @@ interface RoleMappingPropsInterface extends TestableComponentInterface {
 export const RoleMapping: FunctionComponent<RoleMappingPropsInterface> = (
     props: RoleMappingPropsInterface
 ): React.ReactElement => {
-
-    const {
-        initialMappings,
-        readOnly,
-        onChange,
-        [ "data-testid" ]: testId
-    } = props;
+    const { initialMappings, readOnly, onChange, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
     const { UIConfig } = useUIConfig();
     const dispatch: Dispatch = useDispatch();
 
-    const [ roleList, setRoleList ] = useState<RolesInterface[]>();
+    const [roleList, setRoleList] = useState<RolesInterface[]>();
 
     /**
      * Filter out Application related and Internal roles.
      */
     const getFilteredRoles = () => {
-        const filterRole: RolesInterface[] = roleList.filter(
-            (role: RolesInterface) => {
-                return !(role.displayName.includes("Application/") || role.displayName.includes("Internal/"));
-            });
+        const filterRole: RolesInterface[] = roleList.filter((role: RolesInterface) => {
+            return !(role.displayName.includes("Application/") || role.displayName.includes("Internal/"));
+        });
 
         return filterRole.map((role: RolesInterface) => {
             return {
@@ -108,78 +101,86 @@ export const RoleMapping: FunctionComponent<RoleMappingPropsInterface> = (
                 }
             })
             .catch(() => {
-                dispatch(addAlert({
-                    description: t("console:manage.features.roles.notifications.fetchRoles.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.roles.notifications.fetchRoles.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.roles.notifications.fetchRoles.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.roles.notifications.fetchRoles.genericError.message")
+                    })
+                );
             });
-    }, [ initialMappings ]);
+    }, [initialMappings]);
 
     return (
         <>
-            { (UIConfig?.legacyMode?.roleMapping) && (
-                <Grid.Row columns={ 2 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
+            {UIConfig?.legacyMode?.roleMapping && (
+                <Grid.Row columns={2}>
+                    <Grid.Column mobile={16} tablet={16} computer={10}>
                         <Heading as="h5">
-                            { t("console:develop.features.applications.edit.sections.attributes.roleMapping." +
-                                "heading") }
+                            {t(
+                                "console:develop.features.applications.edit.sections.attributes.roleMapping." +
+                                    "heading"
+                            )}
                         </Heading>
                         <DynamicField
-                            bottomMargin={ false }
+                            bottomMargin={false}
                             data={
-                                initialMappings ?
-                                    initialMappings.map((mapping: RoleMappingInterface) => {
-                                        return {
-                                            key: mapping.localRole.includes("/")
-                                                ? mapping.localRole.split("/")[1]
-                                                : mapping.localRole,
-                                            value: mapping.applicationRole
-                                        };
-                                    }) : []
+                                initialMappings
+                                    ? initialMappings.map((mapping: RoleMappingInterface) => {
+                                          return {
+                                              key: mapping.localRole.includes("/")
+                                                  ? mapping.localRole.split("/")[1]
+                                                  : mapping.localRole,
+                                              value: mapping.applicationRole
+                                          };
+                                      })
+                                    : []
                             }
                             keyType="dropdown"
-                            keyData={ roleList ? getFilteredRoles() : [] }
-                            keyName={
-                                t("console:develop.features.applications.edit.sections.attributes.forms.fields." +
-                                "dynamic.localRole.label")
-                            }
-                            valueName={
-                                t("console:develop.features.applications.edit.sections.attributes.forms.fields." +
-                                "dynamic.applicationRole.label")
-                            }
-                            keyRequiredMessage={
-                                t("console:develop.features.applications.edit.sections.attributes.forms.fields." +
-                                "dynamic.localRole.validations.empty")
-                            }
-                            valueRequiredErrorMessage={
-                                t("console:develop.features.applications.edit.sections.attributes.forms.fields." +
-                                "dynamic.applicationRole.validations.empty")
-                            }
-                            duplicateKeyErrorMsg={
-                                t("console:develop.features.applications.edit.sections.attributes.forms.fields." +
-                                "dynamic.applicationRole.validations.duplicate")
-                            }
-                            readOnly={ readOnly }
-                            data-testid={ `${ testId }-dynamic-field` }
-                            listen={ (data: KeyValue[]) => {
+                            keyData={roleList ? getFilteredRoles() : []}
+                            keyName={t(
+                                "console:develop.features.applications.edit.sections.attributes.forms.fields." +
+                                    "dynamic.localRole.label"
+                            )}
+                            valueName={t(
+                                "console:develop.features.applications.edit.sections.attributes.forms.fields." +
+                                    "dynamic.applicationRole.label"
+                            )}
+                            keyRequiredMessage={t(
+                                "console:develop.features.applications.edit.sections.attributes.forms.fields." +
+                                    "dynamic.localRole.validations.empty"
+                            )}
+                            valueRequiredErrorMessage={t(
+                                "console:develop.features.applications.edit.sections.attributes.forms.fields." +
+                                    "dynamic.applicationRole.validations.empty"
+                            )}
+                            duplicateKeyErrorMsg={t(
+                                "console:develop.features.applications.edit.sections.attributes.forms.fields." +
+                                    "dynamic.applicationRole.validations.duplicate"
+                            )}
+                            readOnly={readOnly}
+                            data-testid={`${testId}-dynamic-field`}
+                            listen={(data: KeyValue[]) => {
                                 if (onChange) {
-                                    const finalData: RoleMappingInterface[] = data?.map((mapping: KeyValue) => {
-                                        return {
-                                            applicationRole: mapping.value,
-                                            localRole: mapping.key.includes("/")
-                                                ? mapping.key
-                                                : "Internal/" + mapping.key
-                                        };
-                                    }) ?? [];
+                                    const finalData: RoleMappingInterface[] =
+                                        data?.map((mapping: KeyValue) => {
+                                            return {
+                                                applicationRole: mapping.value,
+                                                localRole: mapping.key.includes("/")
+                                                    ? mapping.key
+                                                    : "Internal/" + mapping.key
+                                            };
+                                        }) ?? [];
 
                                     onChange(finalData);
                                 }
-                            } }
+                            }}
                         />
                     </Grid.Column>
                 </Grid.Row>
-            ) }
+            )}
         </>
     );
 };

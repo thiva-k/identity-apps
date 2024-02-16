@@ -24,8 +24,6 @@ import {
     CommonGlobalReducerStateInterface,
     RouteInterface
 } from "@wso2is/core/models";
-import { OrganizationType } from "@wso2is/feature-organizations.common/constants";
-import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
 import { I18nModuleOptionsInterface, SupportedLanguagesMeta } from "@wso2is/i18n";
 import { System } from "react-notification-system";
 import {
@@ -35,7 +33,9 @@ import {
     UIConfigInterface
 } from "./config";
 import { PortalDocumentationStructureInterface } from "./help-panel";
-import { AppViewTypes } from "./ui";
+import { AppViewTypes } from "../feature-core/models/ui";
+import { OrganizationType } from "../../organizations/constants";
+import { OrganizationResponseInterface } from "../../organizations/models";
 
 /**
  * Portal config reducer state interface.
@@ -45,16 +45,14 @@ export type ConfigReducerStateInterface = CommonConfigReducerStateInterface<
     ServiceResourceEndpointsInterface,
     FeatureConfigInterface,
     I18nModuleOptionsInterface,
-    UIConfigInterface>;
+    UIConfigInterface
+>;
 
 /**
  * Global reducer state interface.
  */
-export interface GlobalReducerStateInterface extends CommonGlobalReducerStateInterface<
-    AlertInterface,
-    System,
-    SupportedLanguagesMeta> {
-
+export interface GlobalReducerStateInterface
+    extends CommonGlobalReducerStateInterface<AlertInterface, System, SupportedLanguagesMeta> {
     activeView: AppViewTypes;
 }
 
@@ -69,14 +67,14 @@ export interface HelpPanelReducerStateInterface {
 }
 
 export interface AccessControlReducerStateInterface {
-    isDevelopAllowed: boolean,
-    isManageAllowed: boolean
+    isDevelopAllowed: boolean;
+    isManageAllowed: boolean;
 }
 
 /**
  * Organization Reducer State Interface.
  */
-export interface OrganizationReducerStateInterface { 
+export interface OrganizationReducerStateInterface {
     superAdmin: string;
     currentOrganization: string;
     organization?: OrganizationResponseInterface;
@@ -97,4 +95,4 @@ export interface RoutesReducerStateInterface {
     };
 }
 
-export interface AuthReducerStateInterface extends CommonAuthReducerStateInterface, AuthenticatedUserInfo { }
+export interface AuthReducerStateInterface extends CommonAuthReducerStateInterface, AuthenticatedUserInfo {}

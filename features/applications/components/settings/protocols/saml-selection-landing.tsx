@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -16,13 +17,13 @@
  * under the License.
  */
 import { SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { ProtocolCard } from "@wso2is/feature-components.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { EmphasizedSegment, Heading, Text } from "@wso2is/react-components";
 import isEmpty from "lodash-es/isEmpty";
 import kebabCase from "lodash-es/kebabCase";
 import React, { FunctionComponent, ReactElement } from "react";
 import { Card, Divider, Grid } from "semantic-ui-react";
-import { FeatureConfigInterface } from "../../../../core";
-import { ProtocolCard } from "../../../../core/components";
 import { getSAMLModeIcons } from "../../../configs/ui";
 import { SAMLConfigModes } from "../../../models";
 import { ApplicationManagementUtils } from "../../../utils/application-management-utils";
@@ -64,12 +65,7 @@ interface SAMLSelectionLandingPropsInterface extends SBACInterface<FeatureConfig
 export const SAMLSelectionLanding: FunctionComponent<SAMLSelectionLandingPropsInterface> = (
     props: SAMLSelectionLandingPropsInterface
 ): ReactElement => {
-
-    const {
-        setSAMLProtocol,
-        ["data-testid"]: testId
-    } = props;
-
+    const { setSAMLProtocol, ["data-testid"]: testId } = props;
 
     const resolveSAMLMode = (): SAMLConfigModeInterface[] => {
         const samlModeList: SAMLConfigModeInterface[] = [
@@ -94,49 +90,34 @@ export const SAMLSelectionLanding: FunctionComponent<SAMLSelectionLandingPropsIn
     };
 
     const resolveContent = (): ReactElement => {
-
         const samlModeList: SAMLConfigModeInterface[] = resolveSAMLMode();
 
         return (
             <Grid.Row className="protocol-selection-wrapper check" textAlign="center">
-                <Grid.Column width={ 16 }>
-                    <div data-testid={ testId }>
+                <Grid.Column width={16}>
+                    <div data-testid={testId}>
                         <Heading as="h2" className="mb-1" compact>
                             Which mode are you using?
                         </Heading>
-                        <Text muted>
-                            Select the mode of configuration for your SAML application.
-                        </Text>
-                        <Divider hidden/>
-                        {
-                            (!isEmpty(samlModeList) && Array.isArray(samlModeList)
-                                && samlModeList.length > 0) && (
-                                <Card.Group
-                                    centered
-                                    className="tech-selection-cards mt-3"
-                                    itemsPerRow={ 9 }
-                                >
-                                    {
-                                        samlModeList.map((mode: SAMLConfigModeInterface, index: number) => (
-                                            <ProtocolCard
-                                                key={ index }
-                                                raised={ false }
-                                                data-testid={
-                                                    mode["data-testid"]
-                                                    ?? `technology-card-${kebabCase(mode.name)}`
-                                                }
-                                                onClick={ () => setSAMLProtocol(mode.mode) }
-                                                displayName={ mode.name }
-                                                overlayOpacity={ 0.6 }
-                                                image={ mode.image }
-                                                className={ "protocol-card" }
-                                                iconClass={ mode.mode === SAMLConfigModes.META_FILE }
-                                            />
-                                        ))
-                                    }
-                                </Card.Group>
-                            )
-                        }
+                        <Text muted>Select the mode of configuration for your SAML application.</Text>
+                        <Divider hidden />
+                        {!isEmpty(samlModeList) && Array.isArray(samlModeList) && samlModeList.length > 0 && (
+                            <Card.Group centered className="tech-selection-cards mt-3" itemsPerRow={9}>
+                                {samlModeList.map((mode: SAMLConfigModeInterface, index: number) => (
+                                    <ProtocolCard
+                                        key={index}
+                                        raised={false}
+                                        data-testid={mode["data-testid"] ?? `technology-card-${kebabCase(mode.name)}`}
+                                        onClick={() => setSAMLProtocol(mode.mode)}
+                                        displayName={mode.name}
+                                        overlayOpacity={0.6}
+                                        image={mode.image}
+                                        className={"protocol-card"}
+                                        iconClass={mode.mode === SAMLConfigModes.META_FILE}
+                                    />
+                                ))}
+                            </Card.Group>
+                        )}
                     </div>
                 </Grid.Column>
             </Grid.Row>
@@ -144,13 +125,8 @@ export const SAMLSelectionLanding: FunctionComponent<SAMLSelectionLandingPropsIn
     };
 
     return (
-        <EmphasizedSegment
-            basic
-            data-testid={ testId }
-        >
-            <Grid>
-                { resolveContent() }
-            </Grid>
+        <EmphasizedSegment basic data-testid={testId}>
+            <Grid>{resolveContent()}</Grid>
         </EmphasizedSegment>
     );
 };

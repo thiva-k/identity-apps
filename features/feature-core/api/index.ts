@@ -17,5 +17,4 @@
  */
 
 export * from "./user-store";
-export * from "./cors-configurations";
 export * from "./theme";

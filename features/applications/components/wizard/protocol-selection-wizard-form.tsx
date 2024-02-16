@@ -16,25 +16,16 @@
  * under the License.
  */
 
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { AnimatedAvatar, AppAvatar, EmptyPlaceholder, GenericIcon } from "@wso2is/react-components";
 import { IdentifiableComponentInterface } from "modules/core/src/models";
-import React, {
-    FunctionComponent,
-    MutableRefObject,
-    ReactElement,
-    useEffect,
-    useRef,
-    useState
-} from "react";
+import React, { FunctionComponent, MutableRefObject, ReactElement, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Card } from "semantic-ui-react";
-import { AppState, getEmptyPlaceholderIllustrations } from "../../../core";
 import { getInboundProtocolLogos } from "../../configs/ui";
-import {
-    ApplicationTemplateListItemInterface,
-    AuthProtocolMetaListItemInterface
-} from "../../models";
+import { ApplicationTemplateListItemInterface, AuthProtocolMetaListItemInterface } from "../../models";
 import { ApplicationManagementUtils } from "../../utils/application-management-utils";
 import { InboundProtocolsMeta } from "../meta";
 
@@ -59,30 +50,28 @@ interface ProtocolSelectionWizardFormPropsInterface extends IdentifiableComponen
 export const ProtocolSelectionWizardForm: FunctionComponent<ProtocolSelectionWizardFormPropsInterface> = (
     props: ProtocolSelectionWizardFormPropsInterface
 ): ReactElement => {
-
     const {
         initialSelectedTemplate,
         selectedProtocols,
         onSubmit,
         setSelectedCustomInboundProtocol,
         triggerSubmit,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
-    const customInboundProtocols: AuthProtocolMetaListItemInterface[] = useSelector((state: AppState) =>
-        state.application.meta.customInboundProtocols);
+    const customInboundProtocols: AuthProtocolMetaListItemInterface[] = useSelector(
+        (state: AppState) => state.application.meta.customInboundProtocols
+    );
 
-    const [
-        selectedTemplate,
-        setSelectedTemplate
-    ] = useState<ApplicationTemplateListItemInterface>(undefined);
+    const [selectedTemplate, setSelectedTemplate] = useState<ApplicationTemplateListItemInterface>(undefined);
 
-    const [ availableCustomInboundProtocols, setAvailableCustomInboundProtocols ] =
-        useState<ApplicationTemplateListItemInterface[]>(undefined);
+    const [availableCustomInboundProtocols, setAvailableCustomInboundProtocols] = useState<
+        ApplicationTemplateListItemInterface[]
+    >(undefined);
 
-    const [ isInboundProtocolsRequestLoading, setInboundProtocolsRequestLoading ] = useState<boolean>(false);
+    const [isInboundProtocolsRequestLoading, setInboundProtocolsRequestLoading] = useState<boolean>(false);
 
     const init: MutableRefObject<boolean> = useRef(true);
 
@@ -91,15 +80,14 @@ export const ProtocolSelectionWizardForm: FunctionComponent<ProtocolSelectionWiz
     useEffect(() => {
         setInboundProtocolsRequestLoading(true);
 
-        ApplicationManagementUtils.getCustomInboundProtocols(InboundProtocolsMeta, true)
-            .finally(() => {
-                setInboundProtocolsRequestLoading(false);
-            });
+        ApplicationManagementUtils.getCustomInboundProtocols(InboundProtocolsMeta, true).finally(() => {
+            setInboundProtocolsRequestLoading(false);
+        });
     }, []);
 
     useEffect(() => {
         filterCustomProtocol();
-    }, [ customInboundProtocols ]);
+    }, [customInboundProtocols]);
 
     /**
      * Called when submit is triggered.
@@ -110,13 +98,13 @@ export const ProtocolSelectionWizardForm: FunctionComponent<ProtocolSelectionWiz
         } else {
             onSubmit(selectedTemplate);
         }
-    }, [ triggerSubmit ]);
+    }, [triggerSubmit]);
 
     useEffect(() => {
         if (initialSelectedTemplate) {
             setSelectedTemplate(initialSelectedTemplate);
         }
-    }, [ initialSelectedTemplate ]);
+    }, [initialSelectedTemplate]);
 
     /**
      * Filter already existing protocol from the custom inbound template.
@@ -140,32 +128,30 @@ export const ProtocolSelectionWizardForm: FunctionComponent<ProtocolSelectionWiz
                 customTemplates.push(customTemplate);
             });
 
-            setAvailableCustomInboundProtocols(customTemplates.filter(
-                (temp: ApplicationTemplateListItemInterface) =>
-                    !selectedProtocols.includes(temp.authenticationProtocol)));
+            setAvailableCustomInboundProtocols(
+                customTemplates.filter(
+                    (temp: ApplicationTemplateListItemInterface) =>
+                        !selectedProtocols.includes(temp.authenticationProtocol)
+                )
+            );
         }
     };
 
     return (
         <>
-            {
-                availableCustomInboundProtocols?.length > 0 ? (
-                    <Card.Group className="authenticators-grid">
-                        {
-                            availableCustomInboundProtocols && availableCustomInboundProtocols.map((
-                                customInboundProtocol: ApplicationTemplateListItemInterface,
-                                templateIndex: number
-                            ) => (
+            {availableCustomInboundProtocols?.length > 0 ? (
+                <Card.Group className="authenticators-grid">
+                    {availableCustomInboundProtocols &&
+                        availableCustomInboundProtocols.map(
+                            (customInboundProtocol: ApplicationTemplateListItemInterface, templateIndex: number) => (
                                 <Card
-                                    key={ templateIndex }
-                                    onClick={ () => {
+                                    key={templateIndex}
+                                    onClick={() => {
                                         setSelectedCustomInboundProtocol(true);
                                         setSelectedTemplate(customInboundProtocol);
-                                    } }
-                                    data-testid={ `${ componentId }-${ customInboundProtocol.name }` }
-                                    selected={
-                                        selectedTemplate?.id === customInboundProtocol.id
-                                    }
+                                    }}
+                                    data-testid={`${componentId}-${customInboundProtocol.name}`}
+                                    selected={selectedTemplate?.id === customInboundProtocol.id}
                                     className={
                                         selectedTemplate?.id === customInboundProtocol.id
                                             ? "selection-info-card selected"
@@ -179,60 +165,54 @@ export const ProtocolSelectionWizardForm: FunctionComponent<ProtocolSelectionWiz
                                             className="card-header ellipsis pt-1 inline"
                                             inline
                                         >
-                                            {
-                                                getInboundProtocolLogos()[customInboundProtocol.id] ? (
-                                                    <GenericIcon
-                                                        icon={ getInboundProtocolLogos()[customInboundProtocol.id] }
-                                                        size="x22"
-                                                        floated="left"
-                                                        shape="square"
-                                                        className="theme-icon hover-rounded card-image p-1"
-                                                        inline
-                                                    />
-                                                ) : (
-                                                    <AppAvatar
-                                                        image={ (
-                                                            <AnimatedAvatar
-                                                                name={ customInboundProtocol.id }
-                                                                size="mini"
-                                                                data-componentid={
-                                                                    `${ componentId }-item-image-inner` }
-                                                            />
-                                                        ) }
-                                                        size="mini"
-                                                        spaced="right"
-                                                        data-testid={ `${ componentId }-item-image` }
-                                                        inline
-                                                    />
-                                                )
-                                            }
-                                            { customInboundProtocol.name }
+                                            {getInboundProtocolLogos()[customInboundProtocol.id] ? (
+                                                <GenericIcon
+                                                    icon={getInboundProtocolLogos()[customInboundProtocol.id]}
+                                                    size="x22"
+                                                    floated="left"
+                                                    shape="square"
+                                                    className="theme-icon hover-rounded card-image p-1"
+                                                    inline
+                                                />
+                                            ) : (
+                                                <AppAvatar
+                                                    image={
+                                                        <AnimatedAvatar
+                                                            name={customInboundProtocol.id}
+                                                            size="mini"
+                                                            data-componentid={`${componentId}-item-image-inner`}
+                                                        />
+                                                    }
+                                                    size="mini"
+                                                    spaced="right"
+                                                    data-testid={`${componentId}-item-image`}
+                                                    inline
+                                                />
+                                            )}
+                                            {customInboundProtocol.name}
                                         </Card.Header>
-                                        <Card.Description
-                                            className="card-description"
-                                        >
-                                            { customInboundProtocol.description }
+                                        <Card.Description className="card-description">
+                                            {customInboundProtocol.description}
                                         </Card.Description>
                                     </Card.Content>
                                 </Card>
-                            ))
-                        }
-                    </Card.Group>
-                ) : (
-                    <EmptyPlaceholder
-                        image={ getEmptyPlaceholderIllustrations().newList }
-                        imageSize="tiny"
-                        title={
-                            t("console:develop.features.applications.edit.sections.access.addProtocolWizard" +
-                                ".steps.protocolSelection.quickSetup.emptyPlaceholder.title")
-                        }
-                        subtitle={
-                            t("console:develop.features.applications.edit.sections.access.addProtocolWizard" +
-                                ".steps.protocolSelection.quickSetup.emptyPlaceholder.subtitles")
-                        }
-                    />
-                )
-            }
+                            )
+                        )}
+                </Card.Group>
+            ) : (
+                <EmptyPlaceholder
+                    image={getEmptyPlaceholderIllustrations().newList}
+                    imageSize="tiny"
+                    title={t(
+                        "console:develop.features.applications.edit.sections.access.addProtocolWizard" +
+                            ".steps.protocolSelection.quickSetup.emptyPlaceholder.title"
+                    )}
+                    subtitle={t(
+                        "console:develop.features.applications.edit.sections.access.addProtocolWizard" +
+                            ".steps.protocolSelection.quickSetup.emptyPlaceholder.subtitles"
+                    )}
+                />
+            )}
         </>
     );
 };

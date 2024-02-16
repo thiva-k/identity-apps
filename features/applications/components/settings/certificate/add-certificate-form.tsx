@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2021, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -18,11 +19,11 @@
 
 import { Certificate, TestableComponentInterface } from "@wso2is/core/models";
 import { CertificateManagementUtils } from "@wso2is/core/utils";
+import { UploadCertificate } from "@wso2is/feature-components.common";
 import { Forms } from "@wso2is/forms";
 import * as forge from "node-forge";
 import React, { ReactElement, useEffect, useState } from "react";
 import { Grid } from "semantic-ui-react";
-import { UploadCertificate } from "../../../../core";
 
 /**
  * Proptypes for the add Application certificate form component.
@@ -45,28 +46,23 @@ interface AddApplicationCertificateFormProps extends TestableComponentInterface 
  * @return {ReactElement}
  */
 export const AddApplicationCertificateFormComponent: React.FunctionComponent<AddApplicationCertificateFormProps> = (
-    props: AddApplicationCertificateFormProps): ReactElement => {
+    props: AddApplicationCertificateFormProps
+): ReactElement => {
+    const { triggerCertificateUpload, onSubmit, setShowFinishButton, ["data-testid"]: testId } = props;
 
-    const {
-        triggerCertificateUpload,
-        onSubmit,
-        setShowFinishButton,
-        ["data-testid"]: testId
-    } = props;
-
-    const [ name, setName ] = useState("");
-    const [ fileDecoded, setFileDecoded ] = useState("");
-    const [ pem, setPem ] = useState("");
-    const [ file, setFile ] = useState<File>(null);
-    const [ certificate, setCertificate ] = useState<forge.pki.Certificate>(null);
-    const [ certString, setCertString ] = useState("");
+    const [name, setName] = useState("");
+    const [fileDecoded, setFileDecoded] = useState("");
+    const [pem, setPem] = useState("");
+    const [file, setFile] = useState<File>(null);
+    const [certificate, setCertificate] = useState<forge.pki.Certificate>(null);
+    const [certString, setCertString] = useState("");
 
     useEffect(() => {
         if (certString === "") {
             return;
         }
         onSubmit(certString);
-    }, [ certString ]);
+    }, [certString]);
 
     /**
      * This is called when the first step is submitted.
@@ -99,23 +95,21 @@ export const AddApplicationCertificateFormComponent: React.FunctionComponent<Add
     };
 
     const addApplicationCertificateForm = (): ReactElement => (
-        <Forms
-            data-testid={ `${testId}-form` }
-        >
+        <Forms data-testid={`${testId}-form`}>
             <Grid>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
                         <UploadCertificate
-                            submit={ onSubmitCertificate }
-                            triggerSubmit={ triggerCertificateUpload }
-                            pemData={ pem }
-                            nameData={ name }
-                            fileDecodedData={ fileDecoded }
-                            fileData={ file }
-                            forgeCertificateData={ certificate }
-                            data-testid={ `${testId}-upload` }
-                            hideAliasInput={ true }
-                            setShowFinishButton={ setShowFinishButton }
+                            submit={onSubmitCertificate}
+                            triggerSubmit={triggerCertificateUpload}
+                            pemData={pem}
+                            nameData={name}
+                            fileDecodedData={fileDecoded}
+                            fileData={file}
+                            forgeCertificateData={certificate}
+                            data-testid={`${testId}-upload`}
+                            hideAliasInput={true}
+                            setShowFinishButton={setShowFinishButton}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -123,12 +117,7 @@ export const AddApplicationCertificateFormComponent: React.FunctionComponent<Add
         </Forms>
     );
 
-    return (
-        <>
-            { addApplicationCertificateForm() }
-        </>
-    );
-
+    return <>{addApplicationCertificateForm()}</>;
 };
 
 /**

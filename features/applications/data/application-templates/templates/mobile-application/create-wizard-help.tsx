@@ -1,5 +1,6 @@
+/* eslint-disable header/header */
 /**
- * Copyright (c) 2022, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ * Copyright (c) {{year}}, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -24,7 +25,7 @@ import { Divider } from "semantic-ui-react";
 /**
  * Prop types of the component.
  */
-type MobileApplicationCreateWizardHelpPropsInterface = TestableComponentInterface
+type MobileApplicationCreateWizardHelpPropsInterface = TestableComponentInterface;
 
 /**
  * Help content for the mobile application template creation wizard.
@@ -35,13 +36,10 @@ type MobileApplicationCreateWizardHelpPropsInterface = TestableComponentInterfac
 const MobileApplicationCreateWizardHelp: FunctionComponent<MobileApplicationCreateWizardHelpPropsInterface> = (
     props: MobileApplicationCreateWizardHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     return (
-        <div data-testid={ testId }>
+        <div data-testid={testId}>
             <Heading as="h5">Name</Heading>
             <p>A unique name to identify your application.</p>
             <p>E.g., My App</p>
@@ -51,13 +49,12 @@ const MobileApplicationCreateWizardHelp: FunctionComponent<MobileApplicationCrea
             <React.Fragment>
                 <Heading as="h5">Authorized redirect URIs</Heading>
                 <p>
-                    The URI to which the authorization code is sent to upon authentication and where the user
-                    is redirected to upon logout.
+                    The URI to which the authorization code is sent to upon authentication and where the user is
+                    redirected to upon logout.
                 </p>
                 <p>
                     E.g., https://myapp.io/login, <br></br>
-                    &emsp;&emsp;
-                    myapp://oauth2
+                    &emsp;&emsp; myapp://oauth2
                 </p>
             </React.Fragment>
         </div>

@@ -22,22 +22,21 @@ import { LocalStorageUtils } from "@wso2is/core/utils";
 import cloneDeep from "lodash-es/cloneDeep";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
-import isLegacyAuthzRuntime from "../../authorization/utils/get-legacy-authz-runtime";
-import { AppConstants } from "../constants";
-import { store } from "../store";
+import isLegacyAuthzRuntime from "../authorization/utils/get-legacy-authz-runtime";
+import { AppConstants } from "../feature-core/constants";
+import { store } from "../feature-core/store";
 
 /**
  * Utility class for common app operations.
  */
 export class AppUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Get the logged in user's preferences.
@@ -75,10 +74,13 @@ export class AppUtils {
             return;
         }
 
-        LocalStorageUtils.setValueInLocalStorage(tenantName, JSON.stringify({
-            ...JSON.parse(LocalStorageUtils.getValueFromLocalStorage(tenantName)),
-            [ username ]: preferences
-        }));
+        LocalStorageUtils.setValueInLocalStorage(
+            tenantName,
+            JSON.stringify({
+                ...JSON.parse(LocalStorageUtils.getValueFromLocalStorage(tenantName)),
+                [username]: preferences
+            })
+        );
     }
 
     /**
@@ -87,7 +89,6 @@ export class AppUtils {
      * @returns Hidden routes.
      */
     public static getHiddenRoutes(): string[] {
-
         const userPreferences: StorageIdentityAppsSettingsInterface = AppUtils.getUserPreferences();
 
         if (isEmpty(userPreferences)) {
@@ -117,7 +118,7 @@ export class AppUtils {
 
         const newPref: StorageIdentityAppsSettingsInterface = cloneDeep(userPreferences);
 
-        newPref.identityAppsSettings.devPortal.hiddenRoutes = [ ...hiddenRoutes, routeId ];
+        newPref.identityAppsSettings.devPortal.hiddenRoutes = [...hiddenRoutes, routeId];
 
         this.setUserPreferences(newPref);
     }
@@ -126,7 +127,6 @@ export class AppUtils {
      * Callback to be fired on every chunk load error.
      */
     public static onChunkLoadError(): void {
-
         dispatchEvent(new Event(CommonAppConstants.CHUNK_LOAD_ERROR_EVENT));
     }
 
@@ -138,12 +138,12 @@ export class AppUtils {
      * @returns If the auth callback URL belongs to another tenant.
      */
     public static isAuthCallbackURLFromAnotherTenant(authCallbackURL: string, tenantDomain: string): boolean {
-        const tenantName: string = (isLegacyAuthzRuntime() && 
-                AppConstants.getSuperTenant() === tenantDomain) ? "" : tenantDomain;
+        const tenantName: string =
+            isLegacyAuthzRuntime() && AppConstants.getSuperTenant() === tenantDomain ? "" : tenantDomain;
         const tenantRegex: RegExp = new RegExp("t/([^/]+)/");
         const matches: RegExpExecArray = tenantRegex.exec(authCallbackURL);
 
-        const tenantFromURL: string = matches?.[ 1 ] ?? (isLegacyAuthzRuntime() ? "" : AppConstants.getSuperTenant());
+        const tenantFromURL: string = matches?.[1] ?? (isLegacyAuthzRuntime() ? "" : AppConstants.getSuperTenant());
 
         if (tenantFromURL === tenantName) {
             return false;

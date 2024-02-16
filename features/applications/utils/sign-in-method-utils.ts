@@ -17,9 +17,7 @@
  */
 
 import flatten from "lodash-es/flatten";
-import {
-    IdentityProviderManagementConstants
-} from "../../identity-providers/constants/identity-provider-management-constants";
+import { IdentityProviderManagementConstants } from "../../identity-providers/constants/identity-provider-management-constants";
 import {
     GenericAuthenticatorInterface,
     ProvisioningInterface
@@ -36,12 +34,11 @@ import {
  * Utility class for Sign In Method.
  */
 export class SignInMethodUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      */
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Splits the steps to two parts based on the passed in index.
@@ -51,23 +48,18 @@ export class SignInMethodUtils {
      *
      * @returns AuthenticationStepInterface[][]
      */
-    public static getLeftAndRightSideSteps = (stepIndex: number,
+    public static getLeftAndRightSideSteps = (
+        stepIndex: number,
         steps: AuthenticationStepInterface[]
     ): AuthenticationStepInterface[][] => {
+        const leftSideSteps: AuthenticationStepInterface[] = stepIndex !== 0 ? steps.slice(0, stepIndex) : [];
 
-        const leftSideSteps: AuthenticationStepInterface[] = (stepIndex !== 0)
-            ? steps.slice(0, stepIndex)
-            : [];
+        const rightSideSteps: AuthenticationStepInterface[] = stepIndex + 1 in steps ? steps.slice(stepIndex + 1) : [];
 
-        const rightSideSteps: AuthenticationStepInterface[] = ((stepIndex + 1) in steps)
-            ? steps.slice(stepIndex + 1)
-            : [];
+        const nextStep: AuthenticationStepInterface[] =
+            stepIndex + 1 in steps ? steps.slice(stepIndex + 1, stepIndex + 2) : [];
 
-        const nextStep: AuthenticationStepInterface[] = ((stepIndex + 1) in steps)
-            ? steps.slice(stepIndex + 1, stepIndex + 2)
-            : [];
-
-        return [ leftSideSteps, rightSideSteps, nextStep ];
+        return [leftSideSteps, rightSideSteps, nextStep];
     };
 
     /**
@@ -79,7 +71,6 @@ export class SignInMethodUtils {
      * @returns boolean
      */
     public static hasSpecificFactorsInSteps = (factors: string[], steps: AuthenticationStepInterface[]): boolean => {
-
         let isFound: boolean = false;
 
         for (const step of steps) {
@@ -107,13 +98,14 @@ export class SignInMethodUtils {
      *
      * @returns number
      */
-    public static getImmediateStepHavingSpecificFactors = (factors: string[],
-        steps: AuthenticationStepInterface[]): number => {
-
+    public static getImmediateStepHavingSpecificFactors = (
+        factors: string[],
+        steps: AuthenticationStepInterface[]
+    ): number => {
         let isFound: boolean = false;
         let foundInStep: number = -1;
 
-        for (const [ index, step ] of steps.entries()) {
+        for (const [index, step] of steps.entries()) {
             for (const option of step.options) {
                 if (factors.includes(option.authenticator)) {
                     isFound = true;
@@ -132,34 +124,35 @@ export class SignInMethodUtils {
     };
 
     /**
-      * Checks if immediate step is having at least one of the passed factors.
-      *
-      * @param factors - Set of factors to check.
-      * @param steps - Authentication steps.
-      *
-      * @returns boolean
-      */
-      public static checkImmediateStepHavingSpecificFactors = (factors: string[],
-          steps: AuthenticationStepInterface[]): boolean => {
+     * Checks if immediate step is having at least one of the passed factors.
+     *
+     * @param factors - Set of factors to check.
+     * @param steps - Authentication steps.
+     *
+     * @returns boolean
+     */
+    public static checkImmediateStepHavingSpecificFactors = (
+        factors: string[],
+        steps: AuthenticationStepInterface[]
+    ): boolean => {
+        let isFound: boolean = false;
 
-          let isFound: boolean = false;
+        for (const [, step] of steps.entries()) {
+            for (const option of step.options) {
+                if (factors.includes(option.authenticator)) {
+                    isFound = true;
 
-          for (const [ , step ] of steps.entries()) {
-              for (const option of step.options) {
-                  if (factors.includes(option.authenticator)) {
-                      isFound = true;
+                    break;
+                }
+            }
 
-                      break;
-                  }
-              }
+            if (isFound) {
+                break;
+            }
+        }
 
-              if (isFound) {
-                  break;
-              }
-          }
-
-          return isFound;
-      };
+        return isFound;
+    };
 
     /**
      * Counts the occurrence of a specific factors in the passed in steps.
@@ -170,7 +163,6 @@ export class SignInMethodUtils {
      * @returns number
      */
     public static countSpecificFactorInSteps = (factors: string[], steps: AuthenticationStepInterface[]): number => {
-
         let count: number = 0;
 
         for (const step of steps) {
@@ -193,10 +185,12 @@ export class SignInMethodUtils {
      *
      * @returns boolean
      */
-    public static isSecondFactorAdditionValid(authenticatorId: string, addingStep: number,
-        steps: AuthenticationStepInterface[]): boolean {
-
-        const [ leftSideSteps ]: AuthenticationStepInterface[][] = this.getLeftAndRightSideSteps(addingStep, steps);
+    public static isSecondFactorAdditionValid(
+        authenticatorId: string,
+        addingStep: number,
+        steps: AuthenticationStepInterface[]
+    ): boolean {
+        const [leftSideSteps]: AuthenticationStepInterface[][] = this.getLeftAndRightSideSteps(addingStep, steps);
 
         // If the adding authenticator is TOTP, evaluate if there are valid TOTP handlers in previous steps.
         if (authenticatorId === IdentityProviderManagementConstants.TOTP_AUTHENTICATOR_ID) {
@@ -213,8 +207,10 @@ export class SignInMethodUtils {
             return this.hasSpecificFactorsInSteps(ApplicationManagementConstants.SMS_OTP_HANDLERS, leftSideSteps);
         }
 
-        return this.hasSpecificFactorsInSteps(ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS,
-            leftSideSteps);
+        return this.hasSpecificFactorsInSteps(
+            ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS,
+            leftSideSteps
+        );
     }
 
     /**
@@ -238,7 +234,6 @@ export class SignInMethodUtils {
     public static isConnectionsJITUPConflictWithMFA(
         args: ConnectionsJITUPConflictWithMFAArgs
     ): ConnectionsJITUPConflictWithMFAReturnValue {
-
         const { federatedAuthenticators, steps, subjectStepId } = args;
 
         /**
@@ -259,8 +254,8 @@ export class SignInMethodUtils {
             /** Start solving the 1st problem **/
             const allOptions: AuthenticatorInterface[] = flatten(
                 steps
-                    .filter(({ id } : { id: number }) => id === subjectStepId)
-                    .map(({ options } : { options: AuthenticatorInterface[] }) => options)
+                    .filter(({ id }: { id: number }) => id === subjectStepId)
+                    .map(({ options }: { options: AuthenticatorInterface[] }) => options)
             );
 
             /**
@@ -270,16 +265,17 @@ export class SignInMethodUtils {
              */
             const jitDisabledIdPsInSubjectIdStep: GenericAuthenticatorWithProvisioningConfigs[] =
                 // Extract all the IdP names.
-                [ ...(new Set((allOptions).map(({ idp } : { idp: string }) => idp))) ]
+                [...new Set(allOptions.map(({ idp }: { idp: string }) => idp))]
                     // Find the authenticator model.
-                    .map((idpName: string) => federatedAuthenticators.find(
-                        ({ name } : { name: string }) => name === idpName))
+                    .map((idpName: string) =>
+                        federatedAuthenticators.find(({ name }: { name: string }) => name === idpName)
+                    )
                     // Remove all the {@code undefined|null} ones please.
                     .filter(Boolean)
                     // Find all the JIT disabled ones in the subject identifier step.
-                    .filter((auth: GenericAuthenticatorWithProvisioningConfigs) => (
-                        !auth?.provisioning?.jit?.isEnabled
-                    )) as GenericAuthenticatorWithProvisioningConfigs[];
+                    .filter(
+                        (auth: GenericAuthenticatorWithProvisioningConfigs) => !auth?.provisioning?.jit?.isEnabled
+                    ) as GenericAuthenticatorWithProvisioningConfigs[];
 
             /** Start solving the 2nd problem **/
 
@@ -298,12 +294,10 @@ export class SignInMethodUtils {
             const allOtherOptions: AuthenticatorInterface[] = flatten(
                 steps
                     .slice(1) // Remove the first element (subject identifier step)
-                    .map(({ options } : { options: AuthenticatorInterface[] }) => options) // Get all the options.
+                    .map(({ options }: { options: AuthenticatorInterface[] }) => options) // Get all the options.
             );
 
-            const LOCAL_MFA_OPTIONS: Set<string> = new Set(
-                ApplicationManagementConstants.SECOND_FACTOR_AUTHENTICATORS
-            );
+            const LOCAL_MFA_OPTIONS: Set<string> = new Set(ApplicationManagementConstants.SECOND_FACTOR_AUTHENTICATORS);
 
             /**
              * If this list contains one or more items it means
@@ -315,11 +309,9 @@ export class SignInMethodUtils {
 
             /** Finally compose the outcome **/
             return {
-                conflicting: jitDisabledIdPsInSubjectIdStep.length > 0
-                    && configuredForwardMFA.length > 0,
+                conflicting: jitDisabledIdPsInSubjectIdStep.length > 0 && configuredForwardMFA.length > 0,
                 idpList: jitDisabledIdPsInSubjectIdStep ?? []
             };
-
         } catch (e) {
             return {
                 conflicting: false,
@@ -331,7 +323,6 @@ export class SignInMethodUtils {
     public static isFederatedConflictWithSMSOTP(
         args: FederatedConflictWithSMSOTPArgsInterface
     ): FederatedConflictWithSMSOTPReturnValueInterface {
-
         const { federatedAuthenticators, steps, subjectStepId } = args;
 
         /**
@@ -349,23 +340,24 @@ export class SignInMethodUtils {
          */
 
         try {
-
             /** Start solving the 1st problem **/
 
             const allOptions: AuthenticatorInterface[] = flatten(
                 steps
-                    .filter(({ id } : { id: number }) => id === subjectStepId)
-                    .map(({ options } : { options: AuthenticatorInterface[] }) => options)
+                    .filter(({ id }: { id: number }) => id === subjectStepId)
+                    .map(({ options }: { options: AuthenticatorInterface[] }) => options)
             );
 
             /** Get the list of idps configured in the subject identifier step. **/
 
             // Extract all the IdP names.
-            const uniqueIdpNames: string[] = [ ...(new Set((allOptions).map(({ idp } : { idp: string }) => idp))) ];
+            const uniqueIdpNames: string[] = [...new Set(allOptions.map(({ idp }: { idp: string }) => idp))];
             // Find the authenticator model.
-            const idPsInSubjectIdStep: GenericAuthenticatorInterface[] =
-                uniqueIdpNames.map((idpName: string) => federatedAuthenticators
-                    .find(({ name } : { name: string }) => name === idpName)).filter(Boolean);
+            const idPsInSubjectIdStep: GenericAuthenticatorInterface[] = uniqueIdpNames
+                .map((idpName: string) =>
+                    federatedAuthenticators.find(({ name }: { name: string }) => name === idpName)
+                )
+                .filter(Boolean);
 
             /** Start solving the 2nd problem. **/
 
@@ -384,19 +376,19 @@ export class SignInMethodUtils {
             const allOtherOptions: AuthenticatorInterface[] = flatten(
                 steps
                     .slice(1) // Remove the first element (subject identifier step)
-                    .map(({ options } : { options: AuthenticatorInterface[] }) => options) // Get all the options.
+                    .map(({ options }: { options: AuthenticatorInterface[] }) => options) // Get all the options.
             );
 
             const SMS_OTP_AUTHENTICATOR_NAME: string = "sms-otp-authenticator";
             const isSMSOTPConfigured: boolean = allOtherOptions.some(
-                (op: AuthenticatorInterface) => op.authenticator === SMS_OTP_AUTHENTICATOR_NAME);
+                (op: AuthenticatorInterface) => op.authenticator === SMS_OTP_AUTHENTICATOR_NAME
+            );
 
             /** Finally compose the outcome **/
             return {
                 conflicting: idPsInSubjectIdStep.length > 0 && isSMSOTPConfigured,
                 idpList: idPsInSubjectIdStep ?? []
             };
-
         } catch (e) {
             return {
                 conflicting: false,
@@ -414,7 +406,8 @@ export class SignInMethodUtils {
      * @returns number of 2FAs
      */
     public static countTwoFactorAuthenticatorsInCurrentStep(
-        currentStep: number, authenticationSteps: AuthenticationStepInterface[]
+        currentStep: number,
+        authenticationSteps: AuthenticationStepInterface[]
     ): number {
         const secondFactor: AuthenticatorInterface[] = authenticationSteps[currentStep].options.filter(
             (authenticator: AuthenticatorInterface) =>
@@ -435,11 +428,12 @@ export class SignInMethodUtils {
      * @returns boolean
      */
     public static hasSpecificAuthenticatorInCurrentStep(
-        authenticator: string, currentStep: number, authenticationSteps: AuthenticationStepInterface[]
+        authenticator: string,
+        currentStep: number,
+        authenticationSteps: AuthenticationStepInterface[]
     ): boolean {
         const hasAuthenticator: AuthenticatorInterface = authenticationSteps[currentStep].options.find(
-            (el: AuthenticatorInterface) =>
-                el.authenticator === authenticator
+            (el: AuthenticatorInterface) => el.authenticator === authenticator
         );
 
         if (hasAuthenticator) {
@@ -465,7 +459,7 @@ export type ConnectionsJITUPConflictWithMFAArgs = {
 };
 
 export type GenericAuthenticatorWithProvisioningConfigs = GenericAuthenticatorInterface & {
-    provisioning: ProvisioningInterface
+    provisioning: ProvisioningInterface;
 };
 
 export type ConnectionsJITUPConflictWithMFAReturnValue = {

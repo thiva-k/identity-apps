@@ -19,6 +19,10 @@
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AuthenticatorAccordion } from "@wso2is/feature-components.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { AppState } from "@wso2is/feature-store.common";
 import { Heading } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
 import React, { FunctionComponent, MouseEvent, ReactElement, useEffect, useState } from "react";
@@ -26,8 +30,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { AccordionTitleProps, Divider, Grid } from "semantic-ui-react";
-import { AppState, AuthenticatorAccordion, FeatureConfigInterface } from "../../../../core";
-import { useGetCurrentOrganizationType } from "../../../../organizations/hooks/use-get-organization-type";
 import { getUserStoreList } from "../../../../userstores/api";
 import { updateApplicationConfigurations } from "../../../api";
 import { ProvisioningConfigurationInterface, SimpleUserStoreListItemInterface } from "../../../models";
@@ -36,9 +38,9 @@ import { ProvisioningConfigurationsForm } from "../../forms";
 /**
  *  Inbound Provisioning Configurations for the Application.
  */
-interface InboundProvisioningConfigurationsPropsInterface extends SBACInterface<FeatureConfigInterface>,
-    TestableComponentInterface {
-
+interface InboundProvisioningConfigurationsPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        TestableComponentInterface {
     /**
      * Currently editing application id.
      */
@@ -70,7 +72,6 @@ interface InboundProvisioningConfigurationsPropsInterface extends SBACInterface<
 export const InboundProvisioningConfigurations: FunctionComponent<InboundProvisioningConfigurationsPropsInterface> = (
     props: InboundProvisioningConfigurationsPropsInterface
 ): ReactElement => {
-
     const {
         appId,
         provisioningConfigurations,
@@ -78,19 +79,19 @@ export const InboundProvisioningConfigurations: FunctionComponent<InboundProvisi
         featureConfig,
         defaultActiveIndexes,
         readOnly,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
     const { isSuperOrganization } = useGetCurrentOrganizationType();
     const dispatch: Dispatch = useDispatch();
 
-    const [ userStore, setUserStore ] = useState<SimpleUserStoreListItemInterface[]>([]);
+    const [userStore, setUserStore] = useState<SimpleUserStoreListItemInterface[]>([]);
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ accordionActiveIndexes, setAccordionActiveIndexes ] = useState<number[]>(defaultActiveIndexes);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [accordionActiveIndexes, setAccordionActiveIndexes] = useState<number[]>(defaultActiveIndexes);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     /**
      * Handles the provisioning config form submit action.
@@ -102,24 +103,36 @@ export const InboundProvisioningConfigurations: FunctionComponent<InboundProvisi
 
         updateApplicationConfigurations(appId, values)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications" +
-                        ".updateInboundProvisioningConfig.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.notifications.updateInboundProvisioningConfig" +
-                        ".success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications" +
+                                ".updateInboundProvisioningConfig.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.applications.notifications.updateInboundProvisioningConfig" +
+                                ".success.message"
+                        )
+                    })
+                );
 
                 onUpdate(appId);
             })
             .catch(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications" +
-                        ".updateInboundProvisioningConfig.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.updateInboundProvisioningConfig" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications" +
+                                ".updateInboundProvisioningConfig.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.updateInboundProvisioningConfig" +
+                                ".genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsSubmitting(false);
@@ -132,12 +145,14 @@ export const InboundProvisioningConfigurations: FunctionComponent<InboundProvisi
      * @param e - Click event.
      * @param SegmentedAuthenticatedAccordion - Clicked title.
      */
-    const handleAccordionOnClick = (e: MouseEvent<HTMLDivElement>,
-        SegmentedAuthenticatedAccordion: AccordionTitleProps): void => {
+    const handleAccordionOnClick = (
+        e: MouseEvent<HTMLDivElement>,
+        SegmentedAuthenticatedAccordion: AccordionTitleProps
+    ): void => {
         if (!SegmentedAuthenticatedAccordion) {
             return;
         }
-        const newIndexes: number[] = [ ...accordionActiveIndexes ];
+        const newIndexes: number[] = [...accordionActiveIndexes];
 
         if (newIndexes.includes(SegmentedAuthenticatedAccordion.accordionIndex)) {
             const removingIndex: number = newIndexes.indexOf(SegmentedAuthenticatedAccordion.accordionIndex);
@@ -160,12 +175,14 @@ export const InboundProvisioningConfigurations: FunctionComponent<InboundProvisi
             name: "PRIMARY"
         });
         if (isSuperOrganization()) {
-            getUserStoreList().then((response: AxiosResponse) => {
-                userstore.push(...response.data);
-                setUserStore(userstore);
-            }).catch(() => {
-                setUserStore(userstore);
-            });
+            getUserStoreList()
+                .then((response: AxiosResponse) => {
+                    userstore.push(...response.data);
+                    setUserStore(userstore);
+                })
+                .catch(() => {
+                    setUserStore(userstore);
+                });
         } else {
             setUserStore(userstore);
         }
@@ -174,49 +191,48 @@ export const InboundProvisioningConfigurations: FunctionComponent<InboundProvisi
     return (
         <>
             <Heading as="h4">
-                { t("console:develop.features.applications.edit.sections.provisioning.inbound.heading") }
+                {t("console:develop.features.applications.edit.sections.provisioning.inbound.heading")}
             </Heading>
             <Heading subHeading as="h6">
-                { t("console:develop.features.applications.edit.sections.provisioning.inbound.subHeading") }
+                {t("console:develop.features.applications.edit.sections.provisioning.inbound.subHeading")}
             </Heading>
-            <Divider hidden/>
+            <Divider hidden />
             <Grid>
                 <Grid.Row>
                     <Grid.Column>
                         <AuthenticatorAccordion
-                            globalActions={ [] }
-                            authenticators={
-                                [
-                                    {
-                                        content: (
-                                            <ProvisioningConfigurationsForm
-                                                config={ provisioningConfigurations }
-                                                onSubmit={ handleProvisioningConfigFormSubmit }
-                                                useStoreList={ userStore }
-                                                readOnly={
-                                                    readOnly
-                                                    || !hasRequiredScopes(featureConfig?.applications,
-                                                        featureConfig?.applications?.scopes?.update,
-                                                        allowedScopes)
-                                                }
-                                                data-testid={ `${ testId }-form` }
-                                                isSubmitting={ isSubmitting }
-                                            />
-                                        ),
-                                        id: "scim",
-                                        title: "SCIM"
-                                    }
-                                ]
-                            }
-                            accordionActiveIndexes = { accordionActiveIndexes }
-                            accordionIndex = { 0 }
-                            handleAccordionOnClick = { handleAccordionOnClick }
-                            data-testid={ `${ testId }-inbound-connector-accordion` }
+                            globalActions={[]}
+                            authenticators={[
+                                {
+                                    content: (
+                                        <ProvisioningConfigurationsForm
+                                            config={provisioningConfigurations}
+                                            onSubmit={handleProvisioningConfigFormSubmit}
+                                            useStoreList={userStore}
+                                            readOnly={
+                                                readOnly ||
+                                                !hasRequiredScopes(
+                                                    featureConfig?.applications,
+                                                    featureConfig?.applications?.scopes?.update,
+                                                    allowedScopes
+                                                )
+                                            }
+                                            data-testid={`${testId}-form`}
+                                            isSubmitting={isSubmitting}
+                                        />
+                                    ),
+                                    id: "scim",
+                                    title: "SCIM"
+                                }
+                            ]}
+                            accordionActiveIndexes={accordionActiveIndexes}
+                            accordionIndex={0}
+                            handleAccordionOnClick={handleAccordionOnClick}
+                            data-testid={`${testId}-inbound-connector-accordion`}
                         />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-
         </>
     );
 };
@@ -226,5 +242,5 @@ export const InboundProvisioningConfigurations: FunctionComponent<InboundProvisi
  */
 InboundProvisioningConfigurations.defaultProps = {
     "data-testid": "application-inbound-provisioning-configurations",
-    defaultActiveIndexes: [ -1 ]
+    defaultActiveIndexes: [-1]
 };

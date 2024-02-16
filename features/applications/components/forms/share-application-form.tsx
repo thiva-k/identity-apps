@@ -18,11 +18,22 @@
 
 import { IdentityAppsError } from "@wso2is/core/errors";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
-import {
-    AlertLevels,
-    IdentifiableComponentInterface
-} from "@wso2is/core/models";
+import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import {
+    getOrganizations,
+    getSharedOrganizations,
+    shareApplication,
+    stopSharingApplication,
+    unshareApplication
+} from "@wso2is/feature-organizations.common/api";
+import {
+    OrganizationInterface,
+    OrganizationListInterface,
+    OrganizationResponseInterface,
+    ShareApplicationRequestInterface
+} from "@wso2is/feature-organizations.common/models";
+import { AppState } from "@wso2is/feature-store.common";
 import {
     Heading,
     Hint,
@@ -35,36 +46,11 @@ import { AxiosError, AxiosResponse } from "axios";
 import differenceBy from "lodash-es/differenceBy";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import isEmpty from "lodash-es/isEmpty";
-import React, {
-    FormEvent,
-    FunctionComponent,
-    useCallback,
-    useEffect,
-    useState
-} from "react";
+import React, { FormEvent, FunctionComponent, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import {
-    Divider,
-    Grid,
-    Radio,
-    Transition
-} from "semantic-ui-react";
-import { AppState } from "../../../core";
-import {
-    getOrganizations,
-    getSharedOrganizations,
-    shareApplication,
-    stopSharingApplication,
-    unshareApplication
-} from "../../../organizations/api";
-import {
-    OrganizationInterface,
-    OrganizationListInterface,
-    OrganizationResponseInterface,
-    ShareApplicationRequestInterface
-} from "../../../organizations/models";
+import { Divider, Grid, Radio, Transition } from "semantic-ui-react";
 import { ApplicationInterface, additionalSpProperty } from "../../models";
 
 enum ShareType {
@@ -73,8 +59,7 @@ enum ShareType {
     UNSHARE
 }
 
-export interface ApplicationShareFormPropsInterface
-    extends IdentifiableComponentInterface {
+export interface ApplicationShareFormPropsInterface extends IdentifiableComponentInterface {
     /**
      * Editing application.
      */
@@ -96,12 +81,11 @@ export interface ApplicationShareFormPropsInterface
 export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsInterface> = (
     props: ApplicationShareFormPropsInterface
 ) => {
-
     const {
         application,
         triggerApplicationShare,
         onApplicationSharingCompleted,
-        [ "data-componentid" ]: componentId,
+        ["data-componentid"]: componentId,
         readOnly
     } = props;
 
@@ -112,61 +96,49 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
         (state: AppState) => state.organization.organization
     );
 
-    const [ subOrganizationList, setSubOrganizationList ] = useState<Array<OrganizationInterface>>([]);
-    const [ sharedOrganizationList, setSharedOrganizationList ] = useState<Array<OrganizationInterface>>([]);
-    const [ tempOrganizationList, setTempOrganizationList ] = useState<OrganizationInterface[]>([]);
-    const [ checkedUnassignedListItems, setCheckedUnassignedListItems ] = useState<OrganizationInterface[]>([]);
-    const [ shareType, setShareType ] = useState<ShareType>(ShareType.UNSHARE);
-    const [ sharedWithAll, setSharedWithAll ] = useState<boolean>(false);
-    const [ filter, setFilter ] = useState<string>();
+    const [subOrganizationList, setSubOrganizationList] = useState<Array<OrganizationInterface>>([]);
+    const [sharedOrganizationList, setSharedOrganizationList] = useState<Array<OrganizationInterface>>([]);
+    const [tempOrganizationList, setTempOrganizationList] = useState<OrganizationInterface[]>([]);
+    const [checkedUnassignedListItems, setCheckedUnassignedListItems] = useState<OrganizationInterface[]>([]);
+    const [shareType, setShareType] = useState<ShareType>(ShareType.UNSHARE);
+    const [sharedWithAll, setSharedWithAll] = useState<boolean>(false);
+    const [filter, setFilter] = useState<string>();
 
-    useEffect(() => setTempOrganizationList(subOrganizationList || []),
-        [ subOrganizationList ]
-    );
+    useEffect(() => setTempOrganizationList(subOrganizationList || []), [subOrganizationList]);
 
-    useEffect(() => setCheckedUnassignedListItems(sharedOrganizationList || []),
-        [ sharedOrganizationList ]
-    );
+    useEffect(() => setCheckedUnassignedListItems(sharedOrganizationList || []), [sharedOrganizationList]);
 
     useEffect(() => {
         if (!application) {
             return;
         }
 
-        const isSharedWithAll: additionalSpProperty[] = application?.advancedConfigurations
-            ?.additionalSpProperties?.filter((property: additionalSpProperty) =>
-                property?.name === "shareWithAllChildren"
-            );
+        const isSharedWithAll: additionalSpProperty[] = application?.advancedConfigurations?.additionalSpProperties?.filter(
+            (property: additionalSpProperty) => property?.name === "shareWithAllChildren"
+        );
 
         if (!isSharedWithAll || isSharedWithAll.length === 0) {
             setSharedWithAll(false);
         } else {
-            setSharedWithAll(
-                JSON.parse(isSharedWithAll[ 0 ]?.value)
-                    ? JSON.parse(isSharedWithAll[ 0 ]?.value)
-                    : false
-            );
+            setSharedWithAll(JSON.parse(isSharedWithAll[0]?.value) ? JSON.parse(isSharedWithAll[0]?.value) : false);
         }
-
-    }, [ application ]);
+    }, [application]);
 
     useEffect(() => {
         if (sharedWithAll) {
             setShareType(ShareType.SHARE_ALL);
         } else if (sharedOrganizationList?.length > 0 && !sharedWithAll) {
             setShareType(ShareType.SHARE_SELECTED);
-        } else if ((!sharedOrganizationList || sharedOrganizationList?.length === 0) &&
-            !sharedWithAll
-        ) {
+        } else if ((!sharedOrganizationList || sharedOrganizationList?.length === 0) && !sharedWithAll) {
             setShareType(ShareType.UNSHARE);
         }
-    }, [ sharedWithAll, sharedOrganizationList ]);
+    }, [sharedWithAll, sharedOrganizationList]);
 
     useEffect(() => {
         if (triggerApplicationShare) {
             handleShareApplication();
         }
-    }, [ triggerApplicationShare ]);
+    }, [triggerApplicationShare]);
 
     /**
      * Load the list of sub organizations under the current organization & list of already shared organizations of the
@@ -177,79 +149,79 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
             return;
         }
 
-        getOrganizations(
-            null,
-            null,
-            null,
-            null,
-            true,
-            false
-        ).then((response: OrganizationListInterface) => {
-            setSubOrganizationList(response.organizations);
-        }).catch((error: IdentityAppsError) => {
-            if (error?.description) {
+        getOrganizations(null, null, null, null, true, false)
+            .then((response: OrganizationListInterface) => {
+                setSubOrganizationList(response.organizations);
+            })
+            .catch((error: IdentityAppsError) => {
+                if (error?.description) {
+                    dispatch(
+                        addAlert({
+                            description: error.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.organizations.notifications." +
+                                    "getOrganizationList.error.message"
+                            )
+                        })
+                    );
+
+                    return;
+                }
+
                 dispatch(
                     addAlert({
-                        description: error.description,
+                        description: t(
+                            "console:manage.features.organizations.notifications.getOrganizationList" +
+                                ".genericError.description"
+                        ),
                         level: AlertLevels.ERROR,
                         message: t(
                             "console:manage.features.organizations.notifications." +
-                                "getOrganizationList.error.message"
+                                "getOrganizationList.genericError.message"
                         )
                     })
                 );
-
-                return;
-            }
-
-            dispatch(
-                addAlert({
-                    description: t(
-                        "console:manage.features.organizations.notifications.getOrganizationList" +
-                            ".genericError.description"
-                    ),
-                    level: AlertLevels.ERROR,
-                    message: t(
-                        "console:manage.features.organizations.notifications." +
-                            "getOrganizationList.genericError.message"
-                    )
-                })
-            );
-        });
+            });
 
         fetchSharedOrganizationsList();
-    }, [ getOrganizations ]);
+    }, [getOrganizations]);
 
     const fetchSharedOrganizationsList = (): void => {
-        getSharedOrganizations(
-            currentOrganization.id,
-            application.id
-        ).then((response: AxiosResponse) => {
-            setSharedOrganizationList(response.data.organizations);
-        }).catch((error: IdentityAppsApiException) => {
-            if (error.response.data.description) {
+        getSharedOrganizations(currentOrganization.id, application.id)
+            .then((response: AxiosResponse) => {
+                setSharedOrganizationList(response.data.organizations);
+            })
+            .catch((error: IdentityAppsApiException) => {
+                if (error.response.data.description) {
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.edit.sections.shareApplication" +
+                                    ".getSharedOrganizations.genericError.message"
+                            )
+                        })
+                    );
+
+                    return;
+                }
+
                 dispatch(
                     addAlert({
-                        description: error.response.data.description,
+                        description: t(
+                            "console:develop.features.applications.edit.sections.shareApplication" +
+                                ".getSharedOrganizations.genericError.description"
+                        ),
                         level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.edit.sections.shareApplication" +
-                                ".getSharedOrganizations.genericError.message")
+                        message: t(
+                            "console:develop.features.applications.edit.sections.shareApplication" +
+                                ".getSharedOrganizations.genericError.message"
+                        )
                     })
                 );
-
-                return;
-            }
-
-            dispatch(
-                addAlert({
-                    description: t("console:develop.features.applications.edit.sections.shareApplication" +
-                            ".getSharedOrganizations.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.edit.sections.shareApplication" +
-                            ".getSharedOrganizations.genericError.message")
-                })
-            );
-        });
+            });
     };
 
     const handleShareApplication: () => Promise<void> = useCallback(async () => {
@@ -267,19 +239,12 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
                 addedOrganizations = checkedUnassignedListItems.map((org: OrganizationInterface) => org.id);
 
                 await unshareApplication(application.id, currentOrganization.id);
-
             } else {
-                addedOrganizations = differenceBy(
-                    checkedUnassignedListItems,
-                    sharedOrganizationList,
-                    "id"
-                ).map((organization: OrganizationInterface) => organization.id);
-
-                removedOrganization = differenceBy(
-                    sharedOrganizationList,
-                    checkedUnassignedListItems,
-                    "id"
+                addedOrganizations = differenceBy(checkedUnassignedListItems, sharedOrganizationList, "id").map(
+                    (organization: OrganizationInterface) => organization.id
                 );
+
+                removedOrganization = differenceBy(sharedOrganizationList, checkedUnassignedListItems, "id");
             }
 
             shareAppData = {
@@ -289,22 +254,18 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
         }
 
         if (shareType === ShareType.SHARE_ALL || shareType === ShareType.SHARE_SELECTED) {
-            shareApplication(
-                currentOrganization.id,
-                application.id,
-                shareAppData
-            )
+            shareApplication(currentOrganization.id, application.id, shareAppData)
                 .then(() => {
                     dispatch(
                         addAlert({
                             description: t(
                                 "console:develop.features.applications.edit.sections.shareApplication" +
-                                ".addSharingNotification.success.description"
+                                    ".addSharingNotification.success.description"
                             ),
                             level: AlertLevels.SUCCESS,
                             message: t(
                                 "console:develop.features.applications.edit.sections.shareApplication" +
-                                ".addSharingNotification.success.message"
+                                    ".addSharingNotification.success.message"
                             )
                         })
                     );
@@ -317,7 +278,7 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
                                 level: AlertLevels.ERROR,
                                 message: t(
                                     "console:develop.features.applications.edit.sections.shareApplication" +
-                                    ".addSharingNotification.genericError.message"
+                                        ".addSharingNotification.genericError.message"
                                 )
                             })
                         );
@@ -326,12 +287,12 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
                             addAlert({
                                 description: t(
                                     "console:develop.features.applications.edit.sections.shareApplication" +
-                                    ".addSharingNotification.genericError.description"
+                                        ".addSharingNotification.genericError.description"
                                 ),
                                 level: AlertLevels.ERROR,
                                 message: t(
                                     "console:develop.features.applications.edit.sections.shareApplication" +
-                                    ".addSharingNotification.genericError.message"
+                                        ".addSharingNotification.genericError.message"
                                 )
                             })
                         );
@@ -346,23 +307,19 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
                 });
 
             removedOrganization?.forEach((removedOrganization: OrganizationInterface) => {
-                stopSharingApplication(
-                    currentOrganization.id,
-                    application.id,
-                    removedOrganization.id
-                )
+                stopSharingApplication(currentOrganization.id, application.id, removedOrganization.id)
                     .then(() => {
                         dispatch(
                             addAlert({
                                 description: t(
                                     "console:develop.features.applications.edit.sections.shareApplication" +
-                                    ".stopSharingNotification.success.description",
+                                        ".stopSharingNotification.success.description",
                                     { organization: removedOrganization.name }
                                 ),
                                 level: AlertLevels.SUCCESS,
                                 message: t(
                                     "console:develop.features.applications.edit.sections.shareApplication" +
-                                    ".stopSharingNotification.success.message"
+                                        ".stopSharingNotification.success.message"
                                 )
                             })
                         );
@@ -375,7 +332,7 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
                                     level: AlertLevels.ERROR,
                                     message: t(
                                         "console:develop.features.applications.edit.sections.shareApplication" +
-                                        ".stopSharingNotification.genericError.message"
+                                            ".stopSharingNotification.genericError.message"
                                     )
                                 })
                             );
@@ -384,16 +341,15 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
                                 addAlert({
                                     description: t(
                                         "console:develop.features.applications.edit.sections.shareApplication" +
-                                        ".stopSharingNotification.genericError.description",
+                                            ".stopSharingNotification.genericError.description",
                                         {
-                                            organization:
-                                                removedOrganization.name
+                                            organization: removedOrganization.name
                                         }
                                     ),
                                     level: AlertLevels.ERROR,
                                     message: t(
                                         "console:develop.features.applications.edit.sections.shareApplication" +
-                                        ".stopSharingNotification.genericError.message"
+                                            ".stopSharingNotification.genericError.message"
                                     )
                                 })
                             );
@@ -407,12 +363,12 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
                         addAlert({
                             description: t(
                                 "console:develop.features.applications.edit.sections.shareApplication" +
-                                ".stopAllSharingNotification.success.description"
+                                    ".stopAllSharingNotification.success.description"
                             ),
                             level: AlertLevels.SUCCESS,
                             message: t(
                                 "console:develop.features.applications.edit.sections.shareApplication" +
-                                ".stopAllSharingNotification.success.message"
+                                    ".stopAllSharingNotification.success.message"
                             )
                         })
                     );
@@ -425,7 +381,7 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
                                 level: AlertLevels.ERROR,
                                 message: t(
                                     "console:develop.features.applications.edit.sections.shareApplication" +
-                                    ".addSharingNotification.genericError.message"
+                                        ".addSharingNotification.genericError.message"
                                 )
                             })
                         );
@@ -434,12 +390,12 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
                             addAlert({
                                 description: t(
                                     "console:develop.features.applications.edit.sections.shareApplication" +
-                                    ".addSharingNotification.genericError.description"
+                                        ".addSharingNotification.genericError.description"
                                 ),
                                 level: AlertLevels.ERROR,
                                 message: t(
                                     "console:develop.features.applications.edit.sections.shareApplication" +
-                                    ".addSharingNotification.genericError.message"
+                                        ".addSharingNotification.genericError.message"
                                 )
                             })
                         );
@@ -483,7 +439,7 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
     };
 
     const handleUnassignedItemCheckboxChange = (organization: OrganizationInterface) => {
-        const checkedOrganizations: OrganizationInterface[] = [ ...checkedUnassignedListItems ];
+        const checkedOrganizations: OrganizationInterface[] = [...checkedUnassignedListItems];
         const index: number = checkedOrganizations.findIndex(
             (org: OrganizationInterface) => org.id === organization.id
         );
@@ -505,150 +461,113 @@ export const ApplicationShareForm: FunctionComponent<ApplicationShareFormPropsIn
         }
 
         setCheckedUnassignedListItems(subOrganizationList);
-    }, [
-        subOrganizationList,
-        setTempOrganizationList,
-        checkedUnassignedListItems
-    ]);
+    }, [subOrganizationList, setTempOrganizationList, checkedUnassignedListItems]);
 
     return (
         <>
             <Heading ellipsis as="h6">
-                { t("console:develop.features.applications.edit.sections.sharedAccess.subTitle") }
+                {t("console:develop.features.applications.edit.sections.sharedAccess.subTitle")}
             </Heading>
             <Grid>
                 <Grid.Row>
-                    <Grid.Column width={ 8 }>
+                    <Grid.Column width={8}>
                         <Radio
-                            disabled={ readOnly }
-                            label={ t(
-                                "console:manage.features.organizations.unshareApplicationRadio"
-                            ) }
-                            onChange={ () => setShareType(ShareType.UNSHARE) }
-                            checked={ shareType === ShareType.UNSHARE }
-                            data-componentid={ `${ componentId }-share-with-all-checkbox` }
+                            disabled={readOnly}
+                            label={t("console:manage.features.organizations.unshareApplicationRadio")}
+                            onChange={() => setShareType(ShareType.UNSHARE)}
+                            checked={shareType === ShareType.UNSHARE}
+                            data-componentid={`${componentId}-share-with-all-checkbox`}
                         />
                         <Hint inline popup>
-                            { t(
-                                "console:manage.features.organizations.unshareApplicationInfo"
-                            ) }
+                            {t("console:manage.features.organizations.unshareApplicationInfo")}
                         </Hint>
                         <Divider hidden className="mb-0 mt-0" />
                         <Radio
-                            disabled={ readOnly }
-                            label={ t(
-                                "console:manage.features.organizations.shareWithSelectedOrgsRadio"
-                            ) }
-                            onChange={ () => setShareType(ShareType.SHARE_SELECTED) }
-                            checked={ shareType === ShareType.SHARE_SELECTED }
-                            data-componentid={ `${ componentId }-share-with-all-checkbox` }
+                            disabled={readOnly}
+                            label={t("console:manage.features.organizations.shareWithSelectedOrgsRadio")}
+                            onChange={() => setShareType(ShareType.SHARE_SELECTED)}
+                            checked={shareType === ShareType.SHARE_SELECTED}
+                            data-componentid={`${componentId}-share-with-all-checkbox`}
                         />
                         <Transition
-                            visible={ shareType === ShareType.SHARE_SELECTED }
+                            visible={shareType === ShareType.SHARE_SELECTED}
                             animation="slide down"
-                            duration={ 1000 }
+                            duration={1000}
                         >
                             <TransferComponent
                                 className="pl-2"
-                                disabled={ shareType !== ShareType.SHARE_SELECTED }
+                                disabled={shareType !== ShareType.SHARE_SELECTED}
                                 selectionComponent
-                                searchPlaceholder={ t(
-                                    "console:manage.features.transferList.searchPlaceholder",
-                                    { type: "organizations" }
-                                ) }
-                                handleUnelectedListSearch={
-                                    handleUnselectedListSearch
-                                }
+                                searchPlaceholder={t("console:manage.features.transferList.searchPlaceholder", {
+                                    type: "organizations"
+                                })}
+                                handleUnelectedListSearch={handleUnselectedListSearch}
                                 data-componentId="application-share-modal-organization-transfer-component"
                             >
                                 <TransferList
-                                    disabled={
-                                        shareType !== ShareType.SHARE_SELECTED
-                                    }
-                                    isListEmpty={
-                                        !(tempOrganizationList?.length > 0)
-                                    }
-                                    handleHeaderCheckboxChange={
-                                        handleHeaderCheckboxChange
-                                    }
+                                    disabled={shareType !== ShareType.SHARE_SELECTED}
+                                    isListEmpty={!(tempOrganizationList?.length > 0)}
+                                    handleHeaderCheckboxChange={handleHeaderCheckboxChange}
                                     isHeaderCheckboxChecked={
-                                        checkedUnassignedListItems?.length ===
-                                            subOrganizationList?.length
+                                        checkedUnassignedListItems?.length === subOrganizationList?.length
                                     }
                                     listType="unselected"
-                                    listHeaders={ [
-                                        t(
-                                            "console:manage.features.transferList.list.headers.1"
-                                        ),
-                                        ""
-                                    ] }
+                                    listHeaders={[t("console:manage.features.transferList.list.headers.1"), ""]}
                                     emptyPlaceholderContent={
-                                        t("console:develop.placeholders.emptySearchResult.subtitles.0",
-                                            { query: filter }) + ". " +
-                                            t("console:develop.placeholders.emptySearchResult.subtitles.1")
+                                        t("console:develop.placeholders.emptySearchResult.subtitles.0", {
+                                            query: filter
+                                        }) +
+                                        ". " +
+                                        t("console:develop.placeholders.emptySearchResult.subtitles.1")
                                     }
                                     data-testid="application-share-modal-organization-transfer-component-all-items"
-                                    emptyPlaceholderDefaultContent={ t(
-                                        "console:manage.features.transferList.list." +
-                                            "emptyPlaceholders.default"
-                                    ) }
+                                    emptyPlaceholderDefaultContent={t(
+                                        "console:manage.features.transferList.list." + "emptyPlaceholders.default"
+                                    )}
                                 >
-                                    { tempOrganizationList?.map(
-                                        (organization: OrganizationInterface, index: number) => {
-                                            const organizationName: string =
-                                                    organization?.name;
-                                            const isChecked: boolean =
-                                                    checkedUnassignedListItems.findIndex(
-                                                        (org: OrganizationInterface) =>
-                                                            org.id === organization.id
-                                                    ) !== -1;
+                                    {tempOrganizationList?.map((organization: OrganizationInterface, index: number) => {
+                                        const organizationName: string = organization?.name;
+                                        const isChecked: boolean =
+                                            checkedUnassignedListItems.findIndex(
+                                                (org: OrganizationInterface) => org.id === organization.id
+                                            ) !== -1;
 
-                                            return (
-                                                <TransferListItem
-                                                    disabled={
-                                                        shareType !==
-                                                            ShareType.SHARE_SELECTED
-                                                    }
-                                                    handleItemChange={ () =>
-                                                        handleUnassignedItemCheckboxChange(
-                                                            organization
-                                                        )
-                                                    }
-                                                    key={ index }
-                                                    listItem={ organizationName }
-                                                    listItemId={ organization.id }
-                                                    listItemIndex={ index }
-                                                    isItemChecked={ isChecked }
-                                                    showSecondaryActions={ false }
-                                                    data-testid="application-share-modal-organization-transfer-component
+                                        return (
+                                            <TransferListItem
+                                                disabled={shareType !== ShareType.SHARE_SELECTED}
+                                                handleItemChange={() =>
+                                                    handleUnassignedItemCheckboxChange(organization)
+                                                }
+                                                key={index}
+                                                listItem={organizationName}
+                                                listItemId={organization.id}
+                                                listItemIndex={index}
+                                                isItemChecked={isChecked}
+                                                showSecondaryActions={false}
+                                                data-testid="application-share-modal-organization-transfer-component
                                                     -unselected-organizations"
-                                                />
-                                            );
-                                        }
-                                    ) }
+                                            />
+                                        );
+                                    })}
                                 </TransferList>
                             </TransferComponent>
                         </Transition>
                         <Divider hidden className="mb-0 mt-0" />
                         <Radio
-                            label={ t(
-                                "console:manage.features.organizations.shareApplicationRadio"
-                            ) }
-                            onChange={ () => setShareType(ShareType.SHARE_ALL) }
-                            checked={ shareType === ShareType.SHARE_ALL }
-                            data-componentid={ `${ componentId }-share-with-all-checkbox` }
+                            label={t("console:manage.features.organizations.shareApplicationRadio")}
+                            onChange={() => setShareType(ShareType.SHARE_ALL)}
+                            checked={shareType === ShareType.SHARE_ALL}
+                            data-componentid={`${componentId}-share-with-all-checkbox`}
                         />
                         <Hint inline popup>
-                            { t(
-                                "console:manage.features.organizations.shareApplicationInfo"
-                            ) }
+                            {t("console:manage.features.organizations.shareApplicationInfo")}
                         </Hint>
                         <Divider hidden />
                         <PrimaryButton
-                            data-componentid={ `${ componentId }-update-button` }
-                            onClick={ handleShareApplication }
+                            data-componentid={`${componentId}-update-button`}
+                            onClick={handleShareApplication}
                         >
-                            { t("common:update") }
+                            {t("common:update")}
                         </PrimaryButton>
                     </Grid.Column>
                 </Grid.Row>

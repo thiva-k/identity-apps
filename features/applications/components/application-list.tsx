@@ -75,9 +75,11 @@ import { ApplicationTemplateManagementUtils } from "../utils/application-templat
  *
  * Proptypes for the applications list component.
  */
-interface ApplicationListPropsInterface extends SBACInterface<FeatureConfigInterface>, LoadableComponentInterface,
-    TestableComponentInterface, IdentifiableComponentInterface {
-
+interface ApplicationListPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        LoadableComponentInterface,
+        TestableComponentInterface,
+        IdentifiableComponentInterface {
     /**
      * Advanced Search component.
      */
@@ -134,7 +136,6 @@ interface ApplicationListPropsInterface extends SBACInterface<FeatureConfigInter
 export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> = (
     props: ApplicationListPropsInterface
 ): ReactElement => {
-
     const {
         advancedSearch,
         featureConfig,
@@ -149,8 +150,8 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
         showListItemActions,
         isSetStrongerAuth,
         isRenderedOnPortal,
-        [ "data-testid" ]: testId,
-        [ "data-componentid" ]: componentId
+        ["data-testid"]: testId,
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
@@ -158,24 +159,23 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
     const dispatch: Dispatch<any> = useDispatch();
 
     const applicationTemplates: ApplicationTemplateListItemInterface[] = useSelector(
-        (state: AppState) => state.application.templates);
+        (state: AppState) => state.application.templates
+    );
     const groupedApplicationTemplates: ApplicationTemplateListItemInterface[] = useSelector(
-        (state: AppState) => state?.application?.groupedTemplates);
+        (state: AppState) => state?.application?.groupedTemplates
+    );
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const UIConfig: UIConfigInterface = useSelector((state: AppState) => state?.config?.ui);
     const tenantDomain: string = useSelector((state: AppState) => state?.auth?.tenantDomain);
 
     const { organizationType } = useGetCurrentOrganizationType();
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingApplication, setDeletingApplication ] = useState<ApplicationListItemInterface>(undefined);
-    const [ loading, setLoading ] = useState(false);
-    const [
-        isApplicationTemplateRequestLoading,
-        setApplicationTemplateRequestLoadingStatus
-    ] = useState<boolean>(false);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingApplication, setDeletingApplication] = useState<ApplicationListItemInterface>(undefined);
+    const [loading, setLoading] = useState(false);
+    const [isApplicationTemplateRequestLoading, setApplicationTemplateRequestLoadingStatus] = useState<boolean>(false);
 
-    const [ alert, setAlert, alertComponent ] = useConfirmationModalAlert();
+    const [alert, setAlert, alertComponent] = useConfirmationModalAlert();
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -189,11 +189,10 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
 
         setApplicationTemplateRequestLoadingStatus(true);
 
-        ApplicationTemplateManagementUtils.getApplicationTemplates()
-            .finally(() => {
-                setApplicationTemplateRequestLoadingStatus(false);
-            });
-    }, [ applicationTemplates, groupedApplicationTemplates ]);
+        ApplicationTemplateManagementUtils.getApplicationTemplates().finally(() => {
+            setApplicationTemplateRequestLoadingStatus(false);
+        });
+    }, [applicationTemplates, groupedApplicationTemplates]);
 
     /**
      * Redirects to the applications edit page when the edit button is clicked.
@@ -206,14 +205,16 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
             if (!UIConfig?.legacyMode?.applicationListSystemApps) {
                 if (appName === ApplicationManagementConstants.CONSOLE_APP_NAME) {
                     history.push({
-                        hash: `tab=${ ConsoleSettingsModes.LOGIN_FLOW }`,
+                        hash: `tab=${ConsoleSettingsModes.LOGIN_FLOW}`,
                         pathname: AppConstants.getPaths().get("CONSOLE_SETTINGS")
                     });
 
                     return;
                 } else if (appName === ApplicationManagementConstants.MY_ACCOUNT_APP_NAME) {
                     history.push({
-                        pathname: AppConstants.getPaths().get("APPLICATION_EDIT").replace(":id", appId),
+                        pathname: AppConstants.getPaths()
+                            .get("APPLICATION_EDIT")
+                            .replace(":id", appId),
                         search: `#tab=${
                             organizationType === OrganizationType.SUBORGANIZATION
                                 ? ApplicationManagementConstants.SUB_ORG_MY_ACCOUNT_LOGIN_FLOW_TAB
@@ -226,16 +227,20 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
             }
 
             history.push({
-                pathname: AppConstants.getPaths().get("APPLICATION_EDIT").replace(":id", appId),
-                search: `?${ ApplicationManagementConstants.APP_STATE_STRONG_AUTH_PARAM_KEY }=${
-                    ApplicationManagementConstants.APP_STATE_STRONG_AUTH_PARAM_VALUE }`
+                pathname: AppConstants.getPaths()
+                    .get("APPLICATION_EDIT")
+                    .replace(":id", appId),
+                search: `?${ApplicationManagementConstants.APP_STATE_STRONG_AUTH_PARAM_KEY}=${ApplicationManagementConstants.APP_STATE_STRONG_AUTH_PARAM_VALUE}`
             });
         } else {
             history.push({
-                pathname: AppConstants.getPaths().get("APPLICATION_EDIT").replace(":id", appId),
-                search: access === ApplicationAccessTypes.READ
-                    ? `?${ ApplicationManagementConstants.APP_READ_ONLY_STATE_URL_SEARCH_PARAM_KEY }=true`
-                    : ""
+                pathname: AppConstants.getPaths()
+                    .get("APPLICATION_EDIT")
+                    .replace(":id", appId),
+                search:
+                    access === ApplicationAccessTypes.READ
+                        ? `?${ApplicationManagementConstants.APP_READ_ONLY_STATE_URL_SEARCH_PARAM_KEY}=true`
+                        : ""
             });
         }
     };
@@ -246,39 +251,54 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
      * @param appId - Application id.
      */
     const handleApplicationDelete = (appId: string): void => {
-
         setLoading(true);
         deleteApplication(appId)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.deleteApplication.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.notifications.deleteApplication.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.deleteApplication.success" +
+                                ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.applications.notifications.deleteApplication.success.message"
+                        )
+                    })
+                );
 
                 setShowDeleteConfirmationModal(false);
                 onApplicationDelete();
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(setAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.deleteApplication.error" +
-                            ".message")
-                    }));
+                    dispatch(
+                        setAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.deleteApplication.error" +
+                                    ".message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(setAlert({
-                    description: t("console:develop.features.applications.notifications.deleteApplication" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.deleteApplication.genericError" +
-                        ".message")
-                }));
+                dispatch(
+                    setAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.deleteApplication" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.deleteApplication.genericError" +
+                                ".message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setLoading(false);
@@ -298,7 +318,6 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
                 id: "name",
                 key: "name",
                 render: (app: ApplicationListItemInterface): ReactNode => {
-
                     /**
                      * Note: the templateId for Standard-Based Applications in applicationTemplates is
                      * 'custom-application'(only 1 template is available).
@@ -316,108 +335,93 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
 
                     // Checking whether the templateId from backend, is for a custom application.
                     if (customApplicationIds.has(app.templateId)) {
-                        templateDisplayName = applicationTemplates
-                            && applicationTemplates instanceof Array
-                            && applicationTemplates.length > 0
-                            && applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
+                        templateDisplayName =
+                            applicationTemplates &&
+                            applicationTemplates instanceof Array &&
+                            applicationTemplates.length > 0 &&
+                            applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
                                 return template.id === ApplicationManagementConstants.CUSTOM_APPLICATION;
                             }).name;
                     } else {
                         const relevantApplicationTemplate: ApplicationTemplateListItemInterface | undefined =
-                            applicationTemplates
-                            && applicationTemplates instanceof Array
-                            && applicationTemplates.length > 0
-                            && applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
+                            applicationTemplates &&
+                            applicationTemplates instanceof Array &&
+                            applicationTemplates.length > 0 &&
+                            applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
                                 return template.id === app.templateId;
                             });
 
                         if (relevantApplicationTemplate?.templateGroup) {
                             const templateGroupId: string = relevantApplicationTemplate.templateGroup;
 
-                            templateDisplayName = groupedApplicationTemplates
-                                && groupedApplicationTemplates instanceof Array
-                                && groupedApplicationTemplates.length > 0
-                                && groupedApplicationTemplates.find((group: ApplicationTemplateListItemInterface) => {
-                                    return (group.id === templateGroupId || group.templateGroup === templateGroupId);
+                            templateDisplayName =
+                                groupedApplicationTemplates &&
+                                groupedApplicationTemplates instanceof Array &&
+                                groupedApplicationTemplates.length > 0 &&
+                                groupedApplicationTemplates.find((group: ApplicationTemplateListItemInterface) => {
+                                    return group.id === templateGroupId || group.templateGroup === templateGroupId;
                                 }).name;
                         } else {
-                            templateDisplayName = applicationTemplates
-                            && applicationTemplates instanceof Array
-                            && applicationTemplates?.length > 0
-                            && applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
-                                return template?.id === app?.templateId;
-                            })?.name;
+                            templateDisplayName =
+                                applicationTemplates &&
+                                applicationTemplates instanceof Array &&
+                                applicationTemplates?.length > 0 &&
+                                applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
+                                    return template?.id === app?.templateId;
+                                })?.name;
                         }
                     }
 
                     return (
-                        <Header
-                            image
-                            as="h6"
-                            className="header-with-icon"
-                            data-testid={ `${ testId }-item-heading` }
-                        >
-                            {
-                                app.image
-                                    ? (
-                                        <AppAvatar
+                        <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
+                            {app.image ? (
+                                <AppAvatar
+                                    size="mini"
+                                    name={app.name}
+                                    image={app.image}
+                                    spaced="right"
+                                    data-testid={`${testId}-item-image`}
+                                />
+                            ) : (
+                                <AppAvatar
+                                    image={
+                                        <AnimatedAvatar
+                                            name={app.name}
                                             size="mini"
-                                            name={ app.name }
-                                            image={ app.image }
-                                            spaced="right"
-                                            data-testid={ `${ testId }-item-image` }
+                                            data-testid={`${testId}-item-image-inner`}
                                         />
-                                    )
-                                    : (
-                                        <AppAvatar
-                                            image={ (
-                                                <AnimatedAvatar
-                                                    name={ app.name }
-                                                    size="mini"
-                                                    data-testid={ `${ testId }-item-image-inner` }
-                                                />
-                                            ) }
-                                            size="mini"
-                                            spaced="right"
-                                            data-testid={ `${ testId }-item-image` }
-                                        />
-                                    )
-                            }
+                                    }
+                                    size="mini"
+                                    spaced="right"
+                                    data-testid={`${testId}-item-image`}
+                                />
+                            )}
                             <Header.Content>
-                                { app.name }
-                                {
-                                    app.advancedConfigurations?.fragment && (
-                                        <Label size="mini">
-                                            { t("console:develop.features.applications.list.labels.fragment") }
-                                        </Label>
-                                    )
-                                }
-                                <Grid container spacing={ 1 }>
+                                {app.name}
+                                {app.advancedConfigurations?.fragment && (
+                                    <Label size="mini">
+                                        {t("console:develop.features.applications.list.labels.fragment")}
+                                    </Label>
+                                )}
+                                <Grid container spacing={1}>
                                     <Grid alignItems="flex-end">
                                         <div>
-                                            { templateDisplayName && (
-                                                <Label
-                                                    className="no-margin-left"
-                                                    size="mini"
-                                                >
-                                                    { templateDisplayName }
+                                            {templateDisplayName && (
+                                                <Label className="no-margin-left" size="mini">
+                                                    {templateDisplayName}
                                                 </Label>
-                                            ) }
+                                            )}
                                         </div>
                                     </Grid>
-                                    {
-                                        ApplicationManagementUtils.isChoreoApplication(app)
-                                            && (<Grid>
-                                                <div>
-                                                    <Label
-                                                        size="mini"
-                                                        className="choreo-label no-margin-left"
-                                                    >
-                                                        { t("extensions:develop.apiResource.managedByChoreoText") }
-                                                    </Label>
-                                                </div>
-                                            </Grid>)
-                                    }
+                                    {ApplicationManagementUtils.isChoreoApplication(app) && (
+                                        <Grid>
+                                            <div>
+                                                <Label size="mini" className="choreo-label no-margin-left">
+                                                    {t("extensions:develop.apiResource.managedByChoreoText")}
+                                                </Label>
+                                            </div>
+                                        </Grid>
+                                    )}
                                 </Grid>
                             </Header.Content>
                         </Header>
@@ -450,21 +454,15 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
                     }
 
                     return (
-                        <Header as="h6" data-testid={ `${ testId }-col-2-item-heading` }>
+                        <Header as="h6" data-testid={`${testId}-col-2-item-heading`}>
                             <Header.Content>
-                                <Header.Subheader data-testid={ `${ testId }-col-2-item-sub-heading` }>
-                                    { inboundAuthKey }
-                                    {
-                                        inboundAuthType && (
-                                            <Label
-                                                pointing="left"
-                                                size="mini"
-                                                className={ inboundAuthTypeLabelClass }
-                                            >
-                                                { inboundAuthType }
-                                            </Label>
-                                        )
-                                    }
+                                <Header.Subheader data-testid={`${testId}-col-2-item-sub-heading`}>
+                                    {inboundAuthKey}
+                                    {inboundAuthType && (
+                                        <Label pointing="left" size="mini" className={inboundAuthTypeLabelClass}>
+                                            {inboundAuthType}
+                                        </Label>
+                                    )}
                                 </Header.Subheader>
                             </Header.Content>
                         </Header>
@@ -495,41 +493,55 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
 
         return [
             {
-                "data-testid": `${ testId }-item-edit-button`,
-                hidden: (): boolean => !isFeatureEnabled(featureConfig?.applications,
-                    ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT")),
+                "data-testid": `${testId}-item-edit-button`,
+                hidden: (): boolean =>
+                    !isFeatureEnabled(
+                        featureConfig?.applications,
+                        ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT")
+                    ),
                 icon: (app: ApplicationListItemInterface): SemanticICONS => {
-                    return app?.access === ApplicationAccessTypes.READ
-                        || !hasRequiredScopes(featureConfig?.applications,
-                            featureConfig?.applications?.scopes?.update, allowedScopes)
+                    return app?.access === ApplicationAccessTypes.READ ||
+                        !hasRequiredScopes(
+                            featureConfig?.applications,
+                            featureConfig?.applications?.scopes?.update,
+                            allowedScopes
+                        )
                         ? "eye"
                         : "pencil alternate";
                 },
                 onClick: (e: SyntheticEvent, app: ApplicationListItemInterface): void =>
                     handleApplicationEdit(app.id, app.access, app.name),
                 popupText: (app: ApplicationListItemInterface): string => {
-                    return app?.access === ApplicationAccessTypes.READ
-                        || !hasRequiredScopes(featureConfig?.applications,
-                            featureConfig?.applications?.scopes?.update, allowedScopes)
+                    return app?.access === ApplicationAccessTypes.READ ||
+                        !hasRequiredScopes(
+                            featureConfig?.applications,
+                            featureConfig?.applications?.scopes?.update,
+                            allowedScopes
+                        )
                         ? t("common:view")
                         : t("common:edit");
                 },
                 renderer: "semantic-icon"
             },
             {
-                "data-testid": `${ testId }-item-delete-button`,
+                "data-testid": `${testId}-item-delete-button`,
                 hidden: (app: ApplicationListItemInterface) => {
-                    const hasScopes: boolean = !hasRequiredScopes(featureConfig?.applications,
-                        featureConfig?.applications?.scopes?.delete, allowedScopes);
-                    const isSuperTenant: boolean = (tenantDomain === AppConstants.getSuperTenant());
-                    const isSystemApp: boolean = isSuperTenant && (UIConfig.systemAppsIdentifiers.includes(app?.name));
+                    const hasScopes: boolean = !hasRequiredScopes(
+                        featureConfig?.applications,
+                        featureConfig?.applications?.scopes?.delete,
+                        allowedScopes
+                    );
+                    const isSuperTenant: boolean = tenantDomain === AppConstants.getSuperTenant();
+                    const isSystemApp: boolean = isSuperTenant && UIConfig.systemAppsIdentifiers.includes(app?.name);
                     const isFragmentApp: boolean = app.advancedConfigurations?.fragment || false;
 
-                    return hasScopes ||
+                    return (
+                        hasScopes ||
                         isSystemApp ||
-                        (app?.access === ApplicationAccessTypes.READ) ||
+                        app?.access === ApplicationAccessTypes.READ ||
                         !applicationConfig.editApplication.showDeleteButton(app) ||
-                        isFragmentApp;
+                        isFragmentApp
+                    );
                 },
                 icon: (): SemanticICONS => "trash alternate",
                 onClick: (e: SyntheticEvent, app: ApplicationListItemInterface): void => {
@@ -552,19 +564,19 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
         if (searchQuery && list?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:develop.placeholders.emptySearchResult.action") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:develop.placeholders.emptySearchResult.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:develop.placeholders.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("console:develop.placeholders.emptySearchResult.title")}
+                    subtitle={[
                         t("console:develop.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                         t("console:develop.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder-icon` }
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder-icon`}
                 />
             );
         }
@@ -572,28 +584,27 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
         if (list?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    className={ !isRenderedOnPortal ? "list-placeholder mr-0" : "" }
-                    action={ (onEmptyListPlaceholderActionClick
-                        && organizationType !== OrganizationType.SUBORGANIZATION)
-                        && (
-                            <Show when={ AccessControlConstants.APPLICATION_WRITE }>
+                    className={!isRenderedOnPortal ? "list-placeholder mr-0" : ""}
+                    action={
+                        onEmptyListPlaceholderActionClick &&
+                        organizationType !== OrganizationType.SUBORGANIZATION && (
+                            <Show when={AccessControlConstants.APPLICATION_WRITE}>
                                 <PrimaryButton
-                                    onClick={ () => {
+                                    onClick={() => {
                                         eventPublisher.publish(componentId + "-click-new-application-button");
                                         onEmptyListPlaceholderActionClick();
-                                    } }>
+                                    }}
+                                >
                                     <Icon name="add" />
-                                    { t("console:develop.features.applications.placeholders.emptyList.action") }
+                                    {t("console:develop.features.applications.placeholders.emptyList.action")}
                                 </PrimaryButton>
                             </Show>
                         )
                     }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    subtitle={ [
-                        t("console:develop.features.applications.placeholders.emptyList.subtitles.0")
-                    ] }
-                    data-testid={ `${ testId }-empty-placeholder` }
+                    subtitle={[t("console:develop.features.applications.placeholders.emptyList.subtitles.0")]}
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             );
         }
@@ -605,102 +616,97 @@ export const ApplicationList: FunctionComponent<ApplicationListPropsInterface> =
         <>
             <DataTable<ApplicationListItemInterface>
                 className="applications-table"
-                externalSearch={ advancedSearch }
-                isLoading={ isLoading || isApplicationTemplateRequestLoading }
-                actions={ !isSetStrongerAuth && resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ list?.applications }
-                onRowClick={ (e: SyntheticEvent, app: ApplicationListItemInterface): void => {
+                externalSearch={advancedSearch}
+                isLoading={isLoading || isApplicationTemplateRequestLoading}
+                actions={!isSetStrongerAuth && resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={list?.applications}
+                onRowClick={(e: SyntheticEvent, app: ApplicationListItemInterface): void => {
                     handleApplicationEdit(app.id, app.access, app.name);
                     onListItemClick && onListItemClick(e, app);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ applicationListConfig.enableTableHeaders }
-                transparent={ !(isLoading || isApplicationTemplateRequestLoading) && (showPlaceholders() !== null) }
-                data-testid={ testId }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={applicationListConfig.enableTableHeaders}
+                transparent={!(isLoading || isApplicationTemplateRequestLoading) && showPlaceholders() !== null}
+                data-testid={testId}
             />
-            {
-                deletingApplication && (
-                    <ConfirmationModal
-                        primaryActionLoading={ loading }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertionHint={ t("console:develop.features.applications.confirmations.deleteApplication." +
-                            "assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => {
-                            setShowDeleteConfirmationModal(false);
-                            setAlert(null);
-                        } }
-                        onPrimaryActionClick={ (): void => handleApplicationDelete(deletingApplication.id) }
-                        data-testid={ `${ testId }-delete-confirmation-modal` }
-                        closeOnDimmerClick={ false }
-                    >
-                        {
-                            ApplicationManagementUtils.isChoreoApplication(deletingApplication)
-                                ? (
-                                    <>
-                                        <ConfirmationModal.Header
-                                            data-testid={ `${ testId }-delete-confirmation-modal-header` }
-                                        >
-                                            { t("console:develop.features.applications.confirmations." +
-                                                "deleteChoreoApplication.header") }
-                                        </ConfirmationModal.Header>
-                                        <ConfirmationModal.Message
-                                            attached
-                                            negative
-                                            data-testid={ `${ testId }-delete-confirmation-modal-message` }
-                                        >
-                                            { t("console:develop.features.applications.confirmations." +
-                                                "deleteChoreoApplication.message") }
-                                        </ConfirmationModal.Message>
-                                        <ConfirmationModal.Content
-                                            data-testid={ `${ testId }-delete-confirmation-modal-content` }
-                                        >
-                                            <div className="modal-alert-wrapper"> { alert && alertComponent }</div>
-                                            <Trans
-                                                i18nKey= { "console:develop.features.applications.confirmations." +
-                                                "deleteChoreoApplication.content" }>
-                                                Deleting this application will break the authentication flows and cause
-                                                the associated Choreo application to be unusable with its credentials.
-                                                <b>Proceed at your own risk.</b>
-                                            </Trans>
-                                        </ConfirmationModal.Content>
-                                    </>
-                                )
-                                : (
-                                    <>
-                                        <ConfirmationModal.Header
-                                            data-testid={ `${ testId }-delete-confirmation-modal-header` }
-                                        >
-                                            { t("console:develop.features.applications.confirmations." +
-                                                "deleteApplication.header") }
-                                        </ConfirmationModal.Header>
-                                        <ConfirmationModal.Message
-                                            attached
-                                            negative
-                                            data-testid={ `${ testId }-delete-confirmation-modal-message` }
-                                        >
-                                            { t("console:develop.features.applications.confirmations." +
-                                                "deleteApplication.message") }
-                                        </ConfirmationModal.Message>
-                                        <ConfirmationModal.Content
-                                            data-testid={ `${ testId }-delete-confirmation-modal-content` }
-                                        >
-                                            <div className="modal-alert-wrapper"> { alert && alertComponent }</div>
-                                            { t("console:develop.features.applications.confirmations." +
-                                                "deleteApplication.content") }
-                                        </ConfirmationModal.Content>
-                                    </>
-                                )
-                        }
-                    </ConfirmationModal>
-                )
-            }
+            {deletingApplication && (
+                <ConfirmationModal
+                    primaryActionLoading={loading}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertionHint={t(
+                        "console:develop.features.applications.confirmations.deleteApplication." + "assertionHint"
+                    )}
+                    assertionType="checkbox"
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => {
+                        setShowDeleteConfirmationModal(false);
+                        setAlert(null);
+                    }}
+                    onPrimaryActionClick={(): void => handleApplicationDelete(deletingApplication.id)}
+                    data-testid={`${testId}-delete-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    {ApplicationManagementUtils.isChoreoApplication(deletingApplication) ? (
+                        <>
+                            <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                                {t(
+                                    "console:develop.features.applications.confirmations." +
+                                        "deleteChoreoApplication.header"
+                                )}
+                            </ConfirmationModal.Header>
+                            <ConfirmationModal.Message
+                                attached
+                                negative
+                                data-testid={`${testId}-delete-confirmation-modal-message`}
+                            >
+                                {t(
+                                    "console:develop.features.applications.confirmations." +
+                                        "deleteChoreoApplication.message"
+                                )}
+                            </ConfirmationModal.Message>
+                            <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                                <div className="modal-alert-wrapper"> {alert && alertComponent}</div>
+                                <Trans
+                                    i18nKey={
+                                        "console:develop.features.applications.confirmations." +
+                                        "deleteChoreoApplication.content"
+                                    }
+                                >
+                                    Deleting this application will break the authentication flows and cause the
+                                    associated Choreo application to be unusable with its credentials.
+                                    <b>Proceed at your own risk.</b>
+                                </Trans>
+                            </ConfirmationModal.Content>
+                        </>
+                    ) : (
+                        <>
+                            <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                                {t("console:develop.features.applications.confirmations." + "deleteApplication.header")}
+                            </ConfirmationModal.Header>
+                            <ConfirmationModal.Message
+                                attached
+                                negative
+                                data-testid={`${testId}-delete-confirmation-modal-message`}
+                            >
+                                {t(
+                                    "console:develop.features.applications.confirmations." + "deleteApplication.message"
+                                )}
+                            </ConfirmationModal.Message>
+                            <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                                <div className="modal-alert-wrapper"> {alert && alertComponent}</div>
+                                {t(
+                                    "console:develop.features.applications.confirmations." + "deleteApplication.content"
+                                )}
+                            </ConfirmationModal.Content>
+                        </>
+                    )}
+                </ConfirmationModal>
+            )}
         </>
     );
 };
