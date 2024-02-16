@@ -19,13 +19,14 @@
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { EmphasizedSegment } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { AppState, FeatureConfigInterface } from "../../../core";
 import { updateApplicationConfigurations } from "../../api";
 import { AdvancedConfigurationsInterface, ApplicationTemplateListItemInterface } from "../../models";
 import { AdvancedConfigurationsForm } from "../forms";
@@ -66,7 +67,6 @@ interface AdvancedSettingsPropsInterface extends SBACInterface<FeatureConfigInte
 export const AdvancedSettings: FunctionComponent<AdvancedSettingsPropsInterface> = (
     props: AdvancedSettingsPropsInterface
 ): ReactElement => {
-
     const {
         appId,
         advancedConfigurations,
@@ -74,16 +74,16 @@ export const AdvancedSettings: FunctionComponent<AdvancedSettingsPropsInterface>
         onUpdate,
         readOnly,
         template,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
-    const dispatch: Dispatch  = useDispatch();
+    const dispatch: Dispatch = useDispatch();
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     /**
      * Dispatches the alert object to the redux store.
@@ -93,7 +93,7 @@ export const AdvancedSettings: FunctionComponent<AdvancedSettingsPropsInterface>
     const handleAlerts = (alert: AlertInterface) => {
         dispatch(addAlert<AlertInterface>(alert));
     };
-    
+
     /**
      * Handles the advanced config form submit action.
      *
@@ -104,34 +104,50 @@ export const AdvancedSettings: FunctionComponent<AdvancedSettingsPropsInterface>
 
         updateApplicationConfigurations(appId, values)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.updateAdvancedConfig" +
-                        ".success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.notifications.updateAdvancedConfig" +
-                        ".success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.updateAdvancedConfig" +
+                                ".success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.applications.notifications.updateAdvancedConfig" +
+                                ".success.message"
+                        )
+                    })
+                );
 
                 onUpdate(appId);
             })
             .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.updateAdvancedConfig.error" +
-                            ".message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.updateAdvancedConfig.error" +
+                                    ".message"
+                            )
+                        })
+                    );
 
                     return;
                 }
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.updateAdvancedConfig" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.updateAdvancedConfig" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.updateAdvancedConfig" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.updateAdvancedConfig" +
+                                ".genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsSubmitting(false);
@@ -141,18 +157,20 @@ export const AdvancedSettings: FunctionComponent<AdvancedSettingsPropsInterface>
     return (
         <EmphasizedSegment className="advanced-configuration-section" padded="very">
             <AdvancedConfigurationsForm
-                config={ advancedConfigurations }
-                onSubmit={ handleAdvancedConfigFormSubmit }
+                config={advancedConfigurations}
+                onSubmit={handleAdvancedConfigFormSubmit}
                 readOnly={
-                    readOnly
-                    || !hasRequiredScopes(featureConfig?.applications,
+                    readOnly ||
+                    !hasRequiredScopes(
+                        featureConfig?.applications,
                         featureConfig?.applications?.scopes?.update,
-                        allowedScopes)
+                        allowedScopes
+                    )
                 }
-                template={ template }
-                onAlertFired={ handleAlerts }
-                data-testid={ `${ componentId }-form` }
-                isSubmitting={ isSubmitting }
+                template={template}
+                onAlertFired={handleAlerts}
+                data-testid={`${componentId}-form`}
+                isSubmitting={isSubmitting}
             />
         </EmphasizedSegment>
     );

@@ -25,6 +25,10 @@ import {
 } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import isLegacyAuthzRuntime from "../../authorization/utils/get-legacy-authz-runtime";
+import { store } from "../../core";
+import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
 import {
     AddOrganizationInterface,
     BreadcrumbList,
@@ -34,11 +38,7 @@ import {
     OrganizationResponseInterface,
     ShareApplicationRequestInterface,
     UpdateOrganizationInterface
-} from "@wso2is/feature-organizations.common/models";
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import isLegacyAuthzRuntime from "../../authorization/utils/get-legacy-authz-runtime";
-import { store } from "../../core";
-import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
+} from "../models";
 
 /**
  * Get an axios instance.

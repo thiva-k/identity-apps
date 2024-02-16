@@ -22,6 +22,17 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getCORSOrigins } from "@wso2is/feature-apis.common";
+import { ModalWithSidePanel, TierLimitReachErrorModal } from "@wso2is/feature-components.common";
+import { getTechnologyLogos } from "@wso2is/feature-configs.common";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { CORSOriginsListInterface, FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { OrganizationType } from "@wso2is/feature-organizations.common/constants";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { RoleAudienceTypes, RoleConstants } from "@wso2is/feature-roles.common/constants/role-constants";
+import { AppState, store } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import { Field, FormValue, Forms, Validation, useTrigger } from "@wso2is/forms";
 import {
     ContentLoader,
@@ -59,24 +70,9 @@ import { OauthProtocolSettingsWizardForm } from "./oauth-protocol-settings-wizar
 import { PassiveStsProtocolSettingsWizardForm } from "./passive-sts-protocol-settings-wizard-form";
 import { SAMLProtocolAllSettingsWizardForm } from "./saml-protocol-settings-all-option-wizard-form";
 import { applicationConfig } from "../../../../extensions";
-import { AccessControlConstants } from "../../../feature-access-control/constants/access-control";
+import { AccessControlConstants } from "../../../access-control/constants/access-control";
 import useAuthorization from "../../../authorization/hooks/use-authorization";
-import {
-    AppConstants,
-    AppState,
-    CORSOriginsListInterface,
-    EventPublisher,
-    FeatureConfigInterface,
-    ModalWithSidePanel,
-    getCORSOrigins,
-    getTechnologyLogos,
-    history,
-    store
-} from "../../../core";
-import { TierLimitReachErrorModal } from "../../../core/components/tier-limit-reach-error-modal";
-import { OrganizationType } from "../../../organizations/constants";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
-import { RoleAudienceTypes, RoleConstants } from "../../../roles/constants/role-constants";
+
 import { createApplication, getApplicationList, getApplicationTemplateData } from "../../api";
 import { getInboundProtocolLogos } from "../../configs/ui";
 import { ApplicationManagementConstants } from "../../constants";

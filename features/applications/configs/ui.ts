@@ -23,9 +23,7 @@ import FIDOLogo from "../../../themes/default/assets/images/authenticators/fido-
 import { ReactComponent as SMSOTPIcon } from "../../../themes/default/assets/images/authenticators/sms-otp.svg";
 import TOTPIcon from "../../../themes/default/assets/images/authenticators/totp.png";
 import { ReactComponent as AuthorizeIcon } from "../../../themes/default/assets/images/icons/authorize.svg";
-import {
-    ReactComponent as CertificateColoredIcon
-} from "../../../themes/default/assets/images/icons/certificate-colored-icon.svg";
+import { ReactComponent as CertificateColoredIcon } from "../../../themes/default/assets/images/icons/certificate-colored-icon.svg";
 import { ReactComponent as ClockColoredIcon } from "../../../themes/default/assets/images/icons/clock-colored-icon.svg";
 import { ReactComponent as CodeIcon } from "../../../themes/default/assets/images/icons/code-icon.svg";
 import { ReactComponent as CogWheelIcon } from "../../../themes/default/assets/images/icons/cog-wheel-icon.svg";
@@ -34,34 +32,23 @@ import { ReactComponent as DestinationIcon } from "../../../themes/default/asset
 import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
 import { ReactComponent as DoneButtonIcon } from "../../../themes/default/assets/images/icons/done-button.svg";
 import { ReactComponent as GearsIcon } from "../../../themes/default/assets/images/icons/gears-icon.svg";
-import {
-    ReactComponent as IDPCertificateIcon
-} from "../../../themes/default/assets/images/icons/idp-certificate.svg";
+import { ReactComponent as IDPCertificateIcon } from "../../../themes/default/assets/images/icons/idp-certificate.svg";
 import { ReactComponent as IntrospectIcon } from "../../../themes/default/assets/images/icons/introspect.svg";
 import { ReactComponent as IssuerIcon } from "../../../themes/default/assets/images/icons/issuer.svg";
 import { ReactComponent as JWKSIcon } from "../../../themes/default/assets/images/icons/jwks.svg";
 import { ReactComponent as LockShieldIcon } from "../../../themes/default/assets/images/icons/lock-shield.svg";
 import { ReactComponent as LogoutIcon } from "../../../themes/default/assets/images/icons/logout-icon.svg";
 import { ReactComponent as MagicLinkLogo } from "../../../themes/default/assets/images/icons/magic-link-icon.svg";
-import {
-    ReactComponent as MagnifierColoredIcon
-} from "../../../themes/default/assets/images/icons/magnifier-colored-icon.svg";
+import { ReactComponent as MagnifierColoredIcon } from "../../../themes/default/assets/images/icons/magnifier-colored-icon.svg";
 import { ReactComponent as IDPMetadataIcon } from "../../../themes/default/assets/images/icons/metadata.svg";
 import { ReactComponent as OpenBookIcon } from "../../../themes/default/assets/images/icons/open-book-icon.svg";
-import  {
-    ReactComponent as AddCircleOutlineIcon
-} from "../../../themes/default/assets/images/icons/outline-icons/add-circle-outline.svg";
-import { ReactComponent as WellKnownIcon
-} from "../../../themes/default/assets/images/icons/outline-icons/discovery-endpoint.svg";
-import {
-    ReactComponent as RevokeTokenIcon
-} from "../../../themes/default/assets/images/icons/outline-icons/revoke-outline.svg";
+import { ReactComponent as AddCircleOutlineIcon } from "../../../themes/default/assets/images/icons/outline-icons/add-circle-outline.svg";
+import { ReactComponent as WellKnownIcon } from "../../../themes/default/assets/images/icons/outline-icons/discovery-endpoint.svg";
+import { ReactComponent as RevokeTokenIcon } from "../../../themes/default/assets/images/icons/outline-icons/revoke-outline.svg";
 import { ReactComponent as ParIcon } from "../../../themes/default/assets/images/icons/par-icon.svg";
 import PlusIcon from "../../../themes/default/assets/images/icons/plus-icon.svg";
 import { ReactComponent as ReportIcon } from "../../../themes/default/assets/images/icons/report-icon.svg";
-import {
-    ReactComponent as SessionIframeIcon
-} from "../../../themes/default/assets/images/icons/session-iframe-icon.svg";
+import { ReactComponent as SessionIframeIcon } from "../../../themes/default/assets/images/icons/session-iframe-icon.svg";
 import { ReactComponent as ShuttleIcon } from "../../../themes/default/assets/images/icons/shuttle-icon.svg";
 import { ReactComponent as SLOIcon } from "../../../themes/default/assets/images/icons/slo.svg";
 import { ReactComponent as SpinWheelIcon } from "../../../themes/default/assets/images/icons/spin-wheel-icon.svg";
@@ -71,78 +58,32 @@ import { ReactComponent as TokenIcon } from "../../../themes/default/assets/imag
 import { ReactComponent as UserInfoIcon } from "../../../themes/default/assets/images/icons/userInfo.svg";
 import { ReactComponent as WarningIcon } from "../../../themes/default/assets/images/icons/warning-icon.svg";
 import { ReactComponent as WebFingerIcon } from "../../../themes/default/assets/images/icons/webfinger-icon.svg";
-import {
-    ReactComponent as FacebookLogo
-} from "../../../themes/default/assets/images/identity-providers/facebook-idp-illustration.svg";
+import { ReactComponent as FacebookLogo } from "../../../themes/default/assets/images/identity-providers/facebook-idp-illustration.svg";
 import GithubIdPIcon from "../../../themes/default/assets/images/identity-providers/github-idp-illustration.svg";
-import {
-    ReactComponent as GoogleLogo
-} from "../../../themes/default/assets/images/identity-providers/google-idp-illustration.svg";
-import {
-    ReactComponent as Office365Logo
-} from "../../../themes/default/assets/images/identity-providers/office-365.svg";
+import { ReactComponent as GoogleLogo } from "../../../themes/default/assets/images/identity-providers/google-idp-illustration.svg";
+import { ReactComponent as Office365Logo } from "../../../themes/default/assets/images/identity-providers/office-365.svg";
 import { ReactComponent as TwitterLogo } from "../../../themes/default/assets/images/identity-providers/twitter.svg";
 import { ReactComponent as YahooLogo } from "../../../themes/default/assets/images/identity-providers/yahoo.svg";
-import {
-    ReactComponent as ProtocolPredefined
-} from "../../../themes/default/assets/images/illustrations/application-predefined.svg";
-import {
-    ReactComponent as ProtocolIllustration
-} from "../../../themes/default/assets/images/illustrations/application-protocols-illustration.svg";
-import {
-    ReactComponent as BasicAuthIllustration
-} from "../../../themes/default/assets/images/illustrations/basic-auth-illustration.svg";
-import {
-    ReactComponent as BoxTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/box-template-illustration.svg";
-import {
-    ReactComponent as codeFileIllustration
-} from "../../../themes/default/assets/images/illustrations/code-file.svg";
-import {
-    ReactComponent as CustomApplicationTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/custom-app-illustration.svg";
-import {
-    ReactComponent as CustomProtocolApplicationTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/custom-protocol-app-illustration.svg";
-import {
-    ReactComponent as globalIllustration
-} from "../../../themes/default/assets/images/illustrations/global.svg";
-import {
-    ReactComponent as M2MTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/m2m-app-illustration.svg";
-import {
-    ReactComponent as OIDCMobileTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/oidc-mobile-template-illustration.svg";
-import {
-    ReactComponent as OIDCWebAppTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/oidc-web-app-template-illustration.svg";
-import {
-    ReactComponent as PassiveSTSTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/passive-sts-template-illustration.svg";
-import {
-    ReactComponent as SAMLWebAppTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/saml-web-app-template-illustration.svg";
-import {
-    ReactComponent as settingsIllustration
-} from "../../../themes/default/assets/images/illustrations/setting.svg";
-import {
-    ReactComponent as SlackTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/slack-template-illustration.svg";
-import {
-    ReactComponent as SPATemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/spa-template-illustration.svg";
-import {
-    ReactComponent as WindowsTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/windows-template-illustration.svg";
-import {
-    ReactComponent as WorkdayTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/workday-template-illustration.svg";
-import {
-    ReactComponent as WSTrustTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/ws-trust-template-illustration.svg";
-import {
-    ReactComponent as ZoomTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/zoom-template-illustration.svg";
+import { ReactComponent as ProtocolPredefined } from "../../../themes/default/assets/images/illustrations/application-predefined.svg";
+import { ReactComponent as ProtocolIllustration } from "../../../themes/default/assets/images/illustrations/application-protocols-illustration.svg";
+import { ReactComponent as BasicAuthIllustration } from "../../../themes/default/assets/images/illustrations/basic-auth-illustration.svg";
+import { ReactComponent as BoxTemplateIllustration } from "../../../themes/default/assets/images/illustrations/box-template-illustration.svg";
+import { ReactComponent as codeFileIllustration } from "../../../themes/default/assets/images/illustrations/code-file.svg";
+import { ReactComponent as CustomApplicationTemplateIllustration } from "../../../themes/default/assets/images/illustrations/custom-app-illustration.svg";
+import { ReactComponent as CustomProtocolApplicationTemplateIllustration } from "../../../themes/default/assets/images/illustrations/custom-protocol-app-illustration.svg";
+import { ReactComponent as globalIllustration } from "../../../themes/default/assets/images/illustrations/global.svg";
+import { ReactComponent as M2MTemplateIllustration } from "../../../themes/default/assets/images/illustrations/m2m-app-illustration.svg";
+import { ReactComponent as OIDCMobileTemplateIllustration } from "../../../themes/default/assets/images/illustrations/oidc-mobile-template-illustration.svg";
+import { ReactComponent as OIDCWebAppTemplateIllustration } from "../../../themes/default/assets/images/illustrations/oidc-web-app-template-illustration.svg";
+import { ReactComponent as PassiveSTSTemplateIllustration } from "../../../themes/default/assets/images/illustrations/passive-sts-template-illustration.svg";
+import { ReactComponent as SAMLWebAppTemplateIllustration } from "../../../themes/default/assets/images/illustrations/saml-web-app-template-illustration.svg";
+import { ReactComponent as settingsIllustration } from "../../../themes/default/assets/images/illustrations/setting.svg";
+import { ReactComponent as SlackTemplateIllustration } from "../../../themes/default/assets/images/illustrations/slack-template-illustration.svg";
+import { ReactComponent as SPATemplateIllustration } from "../../../themes/default/assets/images/illustrations/spa-template-illustration.svg";
+import { ReactComponent as WindowsTemplateIllustration } from "../../../themes/default/assets/images/illustrations/windows-template-illustration.svg";
+import { ReactComponent as WorkdayTemplateIllustration } from "../../../themes/default/assets/images/illustrations/workday-template-illustration.svg";
+import { ReactComponent as WSTrustTemplateIllustration } from "../../../themes/default/assets/images/illustrations/ws-trust-template-illustration.svg";
+import { ReactComponent as ZoomTemplateIllustration } from "../../../themes/default/assets/images/illustrations/zoom-template-illustration.svg";
 import OAuth2OpenIDLogo from "../../../themes/default/assets/images/protocols/oauth2-oidc.png";
 import OAuth2Logo from "../../../themes/default/assets/images/protocols/oauth2.png";
 import OpenIDLogo from "../../../themes/default/assets/images/protocols/openid.png";
@@ -160,20 +101,19 @@ export const getInboundProtocolLogos = (): {
     oidc: string;
     openid: string;
     "passive-sts": string;
-    [ SupportedAuthProtocolTypes.OAUTH2_OIDC ]: string;
+    [SupportedAuthProtocolTypes.OAUTH2_OIDC]: string;
     saml: string;
     "ws-trust": string;
     wsFed: string;
     wsTrust: string;
 } => {
-
     return {
         general: ProtocolIllustration,
         oauth2: OAuth2Logo,
         oidc: OpenIDLogo,
         openid: OpenIDLogo,
         "passive-sts": WSFedLogo,
-        [ SupportedAuthProtocolTypes.OAUTH2_OIDC ]: OAuth2OpenIDLogo,
+        [SupportedAuthProtocolTypes.OAUTH2_OIDC]: OAuth2OpenIDLogo,
         saml: SamlLogo,
         "ws-trust": WSTrustLogo,
         wsFed: WSFedLogo,
@@ -197,7 +137,6 @@ export const getApplicationTemplateIllustrations = (): {
     wsTrust: FunctionComponent<SVGProps<SVGSVGElement>>;
     zoom: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         box: BoxTemplateIllustration,
         customApp: CustomApplicationTemplateIllustration,
@@ -222,7 +161,6 @@ export const getApplicationWizardStepIcons = (): {
     protocolSelection: FunctionComponent<SVGProps<SVGSVGElement>>;
     summary: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         general: DocumentIcon,
         protocolConfig: GearsIcon,
@@ -252,7 +190,6 @@ export const getAuthenticatorIcons = (): {
     x509: FunctionComponent<SVGProps<SVGSVGElement>>;
     yahoo: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         apple: AppleLogo,
         basic: BasicAuthIcon,
@@ -295,16 +232,15 @@ export const getHelpPanelIcons = (): {
         userInfo: FunctionComponent<SVGProps<SVGSVGElement>>;
         webFinger: FunctionComponent<SVGProps<SVGSVGElement>>;
         wellKnown: FunctionComponent<SVGProps<SVGSVGElement>>;
-    },
+    };
     tabs: {
         docs: FunctionComponent<SVGProps<SVGSVGElement>>;
         guide: FunctionComponent<SVGProps<SVGSVGElement>>;
         samples: FunctionComponent<SVGProps<SVGSVGElement>>;
         sdks: FunctionComponent<SVGProps<SVGSVGElement>>;
         whatsNext: FunctionComponent<SVGProps<SVGSVGElement>>;
-    }
+    };
 } => {
-
     return {
         endpoints: {
             authorize: AuthorizeIcon,
@@ -341,7 +277,6 @@ export const getGeneralIcons = (): {
     predefined: FunctionComponent<SVGProps<SVGSVGElement>>;
     warning: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         addCircleOutline: AddCircleOutlineIcon,
         plusIcon: PlusIcon,
@@ -353,7 +288,6 @@ export const getGeneralIcons = (): {
 export const getSignInMethodIllustrations = (): {
     basicAuth: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         basicAuth: BasicAuthIllustration
     };
@@ -364,7 +298,6 @@ export const getSignInFlowIcons = (): {
     startButton: FunctionComponent<SVGProps<SVGSVGElement>>;
     doneButton: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         addButton: AddCircleOutlineIcon,
         doneButton: DoneButtonIcon,
@@ -377,7 +310,6 @@ export const getSAMLModeIcons = (): {
     fileBased: FunctionComponent<SVGProps<SVGSVGElement>>;
     URLBased: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         URLBased: globalIllustration,
         fileBased: codeFileIllustration,

@@ -52,19 +52,11 @@ const FORM_ID: string = "application-provisioning-configuration-form";
 export const ProvisioningConfigurationsForm: FunctionComponent<ProvisioningConfigurationFormPropsInterface> = (
     props: ProvisioningConfigurationFormPropsInterface
 ): ReactElement => {
-
-    const {
-        config,
-        onSubmit,
-        readOnly,
-        useStoreList,
-        isSubmitting,
-        [ "data-testid" ]: testId
-    } = props;
+    const { config, onSubmit, readOnly, useStoreList, isSubmitting, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ isProxyModeOn, setIsProxyModeOn ] = useState<boolean>(false);
+    const [isProxyModeOn, setIsProxyModeOn] = useState<boolean>(false);
 
     /**
      * Prepare form values for submitting.
@@ -109,78 +101,80 @@ export const ProvisioningConfigurationsForm: FunctionComponent<ProvisioningConfi
         if (config?.inboundProvisioning?.proxyMode) {
             setIsProxyModeOn(config?.inboundProvisioning?.proxyMode);
         }
-    }, [ config ]);
+    }, [config]);
 
     return (
         <Form
-            id={ FORM_ID }
-            uncontrolledForm={ false }
-            onSubmit={ (values: InboundProvisioningFormValuesInterface) => {
+            id={FORM_ID}
+            uncontrolledForm={false}
+            onSubmit={(values: InboundProvisioningFormValuesInterface) => {
                 updateConfiguration(values);
-            } }
+            }}
         >
             <Field.CheckboxLegacy
                 ariaLabel="Proxy mode"
                 name="proxyMode"
-                label={ t("console:develop.features.applications.forms.provisioningConfig.fields.proxyMode.label") }
-                required={ false }
-                value={ config?.inboundProvisioning?.proxyMode ? [ "modeOn" ] : [] }
-                listen={ (value: boolean) => setIsProxyModeOn(value) }
-                readOnly={ readOnly }
-                data-testid={ `${ testId }-proxy-mode-checkbox` }
-                hint={ t("console:develop.features.applications.forms.provisioningConfig.fields.proxyMode.hint") }
+                label={t("console:develop.features.applications.forms.provisioningConfig.fields.proxyMode.label")}
+                required={false}
+                value={config?.inboundProvisioning?.proxyMode ? ["modeOn"] : []}
+                listen={(value: boolean) => setIsProxyModeOn(value)}
+                readOnly={readOnly}
+                data-testid={`${testId}-proxy-mode-checkbox`}
+                hint={t("console:develop.features.applications.forms.provisioningConfig.fields.proxyMode.hint")}
             />
-            {
-                readOnly ? (
-                    <Field.Input
-                        ariaLabel="Provisioning userstore domain"
-                        name="provisioningUserstoreDomain"
-                        inputType="text"
-                        minLength={ null }
-                        maxLength={ null }
-                        label={
-                            t("console:develop.features.applications.forms.provisioningConfig.fields" +
-                                ".userstoreDomain.label")
-                        }
-                        required={ false }
-                        value={ config?.inboundProvisioning?.provisioningUserstoreDomain }
-                        disabled={ isProxyModeOn }
-                        readOnly={ readOnly }
-                        data-testid={ `${ testId }-provisioning-userstore-domain-input` }
-                        hint={ t("console:develop.features.applications.forms.provisioningConfig.fields." +
-                            "userstoreDomain.hint") }
-                    />
-                ) : (
-                    <Field.Dropdown
-                        ariaLabel="Provisioning userstore domain"
-                        name="provisioningUserstoreDomain"
-                        label={
-                            t("console:develop.features.applications.forms.provisioningConfig.fields" +
-                                ".userstoreDomain.label")
-                        }
-                        required={ false }
-                        default={ useStoreList && useStoreList.length > 0 && useStoreList[0].name }
-                        value={ config?.inboundProvisioning?.provisioningUserstoreDomain }
-                        children={ getUserStoreOption() }
-                        disabled={ isProxyModeOn }
-                        readOnly={ readOnly }
-                        data-testid={ `${ testId }-provisioning-userstore-domain-dropdown` }
-                        hint={ t("console:develop.features.applications.forms.provisioningConfig.fields." +
-                            "userstoreDomain.hint") }
-                    />
-                )
-            }
+            {readOnly ? (
+                <Field.Input
+                    ariaLabel="Provisioning userstore domain"
+                    name="provisioningUserstoreDomain"
+                    inputType="text"
+                    minLength={null}
+                    maxLength={null}
+                    label={t(
+                        "console:develop.features.applications.forms.provisioningConfig.fields" +
+                            ".userstoreDomain.label"
+                    )}
+                    required={false}
+                    value={config?.inboundProvisioning?.provisioningUserstoreDomain}
+                    disabled={isProxyModeOn}
+                    readOnly={readOnly}
+                    data-testid={`${testId}-provisioning-userstore-domain-input`}
+                    hint={t(
+                        "console:develop.features.applications.forms.provisioningConfig.fields." +
+                            "userstoreDomain.hint"
+                    )}
+                />
+            ) : (
+                <Field.Dropdown
+                    ariaLabel="Provisioning userstore domain"
+                    name="provisioningUserstoreDomain"
+                    label={t(
+                        "console:develop.features.applications.forms.provisioningConfig.fields" +
+                            ".userstoreDomain.label"
+                    )}
+                    required={false}
+                    default={useStoreList && useStoreList.length > 0 && useStoreList[0].name}
+                    value={config?.inboundProvisioning?.provisioningUserstoreDomain}
+                    children={getUserStoreOption()}
+                    disabled={isProxyModeOn}
+                    readOnly={readOnly}
+                    data-testid={`${testId}-provisioning-userstore-domain-dropdown`}
+                    hint={t(
+                        "console:develop.features.applications.forms.provisioningConfig.fields." +
+                            "userstoreDomain.hint"
+                    )}
+                />
+            )}
             <Field.Button
-                form={ FORM_ID }
+                form={FORM_ID}
                 size="small"
                 buttonType="primary_btn"
                 ariaLabel="Update button"
                 name="update-button"
-                data-testid={ `${ testId }-submit-button` }
-                disabled={ isSubmitting }
-                loading={ isSubmitting }
-                label={ t("common:update") }
-                hidden={ readOnly }
+                data-testid={`${testId}-submit-button`}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                label={t("common:update")}
+                hidden={readOnly}
             />
         </Form>
     );

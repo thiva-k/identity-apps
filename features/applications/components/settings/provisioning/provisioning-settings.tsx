@@ -18,20 +18,21 @@
 
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
 import { InboundProvisioningConfigurations } from "./inbound-provisioning-configuration";
 import { OutboundProvisioningConfiguration } from "./outbound-provisioning-configuration";
-import { AppState, FeatureConfigInterface } from "../../../../core";
 import { ApplicationInterface, ProvisioningConfigurationInterface } from "../../../models";
 
 /**
  * Proptypes for the provision settings component.
  */
-interface ProvisioningSettingsPropsInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
-
+interface ProvisioningSettingsPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Editing application.
      */
@@ -60,49 +61,52 @@ interface ProvisioningSettingsPropsInterface extends SBACInterface<FeatureConfig
 export const ProvisioningSettings: FunctionComponent<ProvisioningSettingsPropsInterface> = (
     props: ProvisioningSettingsPropsInterface
 ): ReactElement => {
-
     const {
         application,
         featureConfig,
         provisioningConfigurations,
         onUpdate,
         readOnly,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
     return (
         <Grid>
-            <Grid.Row columns={ 1 }>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
+            <Grid.Row columns={1}>
+                <Grid.Column mobile={16} tablet={16} computer={12}>
                     <InboundProvisioningConfigurations
-                        appId={ application.id }
-                        provisioningConfigurations={ provisioningConfigurations }
-                        onUpdate={ onUpdate }
+                        appId={application.id}
+                        provisioningConfigurations={provisioningConfigurations}
+                        onUpdate={onUpdate}
                         readOnly={
-                            readOnly
-                            || !hasRequiredScopes(featureConfig?.applications,
+                            readOnly ||
+                            !hasRequiredScopes(
+                                featureConfig?.applications,
                                 featureConfig?.applications?.scopes?.update,
-                                allowedScopes)
+                                allowedScopes
+                            )
                         }
-                        data-testid={ `${ componentId }-inbound-configuration` }
+                        data-testid={`${componentId}-inbound-configuration`}
                     />
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
+                <Grid.Column mobile={16} tablet={16} computer={12}>
                     <OutboundProvisioningConfiguration
-                        application={ application }
-                        provisioningConfigurations={ provisioningConfigurations }
-                        onUpdate={ onUpdate }
+                        application={application}
+                        provisioningConfigurations={provisioningConfigurations}
+                        onUpdate={onUpdate}
                         readOnly={
-                            readOnly
-                            || !hasRequiredScopes(featureConfig?.applications,
+                            readOnly ||
+                            !hasRequiredScopes(
+                                featureConfig?.applications,
                                 featureConfig?.applications?.scopes?.update,
-                                allowedScopes)
+                                allowedScopes
+                            )
                         }
-                        data-testid={ `${ componentId }-outbound-configuration` }
+                        data-testid={`${componentId}-outbound-configuration`}
                     />
                 </Grid.Column>
             </Grid.Row>

@@ -17,3 +17,4 @@
  */
 
 export * from "./organization-role";
+export * from "./organization";

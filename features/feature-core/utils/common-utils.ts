@@ -21,21 +21,20 @@ import cloneDeep from "lodash-es/cloneDeep";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
 import set from "lodash-es/set";
-import { AppUtils } from "./app-utils";
+import { AppUtils } from "../../feature-utils.common/app-utils";
 import { CommonConstants } from "../constants";
 
 /**
  * Utility class for common util operations.
  */
 export class CommonUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Retrieve the set of seen announcements persisted in the storage.
@@ -43,7 +42,6 @@ export class CommonUtils {
      * @returns - Seen announcements.
      */
     public static getSeenAnnouncements(): string[] {
-
         const userPreferences: StorageIdentityAppsSettingsInterface = AppUtils.getUserPreferences();
 
         if (isEmpty(userPreferences)) {
@@ -59,7 +57,6 @@ export class CommonUtils {
      * @param id - Id of the seen announcement.
      */
     public static setSeenAnnouncements(id: string): void {
-
         const userPreferences: StorageIdentityAppsSettingsInterface = AppUtils.getUserPreferences();
 
         if (isEmpty(userPreferences)) {
@@ -69,17 +66,18 @@ export class CommonUtils {
         const newPref: StorageIdentityAppsSettingsInterface = cloneDeep(userPreferences);
         const seen: any = get(userPreferences, CommonConstants.SEEN_ANNOUNCEMENTS_KEY, []);
 
-        set(newPref, CommonConstants.SEEN_ANNOUNCEMENTS_KEY, [ ...seen, id ]);
+        set(newPref, CommonConstants.SEEN_ANNOUNCEMENTS_KEY, [...seen, id]);
 
         AppUtils.setUserPreferences(newPref);
     }
 
-    public static async buildBillingURLs (tenantDomain?: string, associatedTenants?: any[]):
-        Promise<{
-            billingPortalURL: string;
-            upgradeButtonURL: string;
-        }> {
-
+    public static async buildBillingURLs(
+        tenantDomain?: string,
+        associatedTenants?: any[]
+    ): Promise<{
+        billingPortalURL: string;
+        upgradeButtonURL: string;
+    }> {
         if (!tenantDomain || !Array.isArray(associatedTenants)) {
             return {
                 billingPortalURL: "",
@@ -87,9 +85,7 @@ export class CommonUtils {
             };
         }
 
-        const user: Record<string, unknown> = associatedTenants.find(
-            (tenant: any) => tenant.domain == tenantDomain
-        );
+        const user: Record<string, unknown> = associatedTenants.find((tenant: any) => tenant.domain == tenantDomain);
 
         if (user?.associationType !== "MEMBER") {
             return {
@@ -99,9 +95,11 @@ export class CommonUtils {
         }
 
         return {
-            billingPortalURL: window[ "AppUtils" ].getConfig()
+            billingPortalURL: window["AppUtils"]
+                .getConfig()
                 .extensions?.billingPortalUrl?.replace("${tenantId}", user.id),
-            upgradeButtonURL: window[ "AppUtils" ].getConfig()
+            upgradeButtonURL: window["AppUtils"]
+                .getConfig()
                 .extensions?.upgradeButtonUrl?.replace("${tenantId}", user.id)
         };
     }

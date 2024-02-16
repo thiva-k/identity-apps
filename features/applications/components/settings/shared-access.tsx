@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -17,9 +18,9 @@
  */
 
 import { IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { EmphasizedSegment } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
-import { FeatureConfigInterface } from "../../../core";
 import { ApplicationInterface } from "../../models";
 import { ApplicationShareForm } from "../forms";
 
@@ -51,15 +52,14 @@ interface SharedAccessPropsInterface extends SBACInterface<FeatureConfigInterfac
 export const SharedAccess: FunctionComponent<SharedAccessPropsInterface> = (
     props: SharedAccessPropsInterface
 ): ReactElement => {
-
     const { application, onUpdate, readOnly } = props;
 
     return (
         <EmphasizedSegment className="advanced-configuration-section" padded="very">
-            <ApplicationShareForm 
-                application={ application } 
-                onApplicationSharingCompleted={ () => onUpdate(application?.id) }
-                readOnly={ readOnly }
+            <ApplicationShareForm
+                application={application}
+                onApplicationSharingCompleted={() => onUpdate(application?.id)}
+                readOnly={readOnly}
             />
         </EmphasizedSegment>
     );

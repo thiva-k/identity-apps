@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -56,7 +57,6 @@ interface AttributeSelectionWizardPropsInterface extends TestableComponentInterf
 export const AttributeSelectionWizard: FunctionComponent<AttributeSelectionWizardPropsInterface> = (
     props: AttributeSelectionWizardPropsInterface
 ): ReactElement => {
-
     const {
         selectedClaims,
         showAddModal,
@@ -65,34 +65,36 @@ export const AttributeSelectionWizard: FunctionComponent<AttributeSelectionWizar
         setAvailableClaims,
         setInitialSelectedClaims,
         updateMappings,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ tempAvailableClaims, setTempAvailableClaims ] = useState<ExtendedClaimInterface[]>([]);
-    const [ tempSelectedClaims, setTempSelectedClaims ] = useState<ExtendedClaimInterface[]>([]);
-    const [ filterTempAvailableClaims, setFilterTempAvailableClaims ] = useState<ExtendedClaimInterface[]>([]);
-    const [ isSelectAssignedAllClaimsChecked, setIsSelectAssignedAllClaimsChecked ] = useState(false);
+    const [tempAvailableClaims, setTempAvailableClaims] = useState<ExtendedClaimInterface[]>([]);
+    const [tempSelectedClaims, setTempSelectedClaims] = useState<ExtendedClaimInterface[]>([]);
+    const [filterTempAvailableClaims, setFilterTempAvailableClaims] = useState<ExtendedClaimInterface[]>([]);
+    const [isSelectAssignedAllClaimsChecked, setIsSelectAssignedAllClaimsChecked] = useState(false);
 
     const handleAttributeModal = () => {
         setShowAddModal(false);
     };
 
     // search operation for available claims.
-    const searchTempAvailable = (event) => {
+    const searchTempAvailable = event => {
         const changeValue = event.target.value;
 
         if (changeValue.length > 0) {
-            const displayNameFilterClaims = tempAvailableClaims.filter((item) =>
-                item.displayName.toLowerCase().indexOf(changeValue.toLowerCase()) !== -1);
-            const uriFilterClaims = tempAvailableClaims.filter((item) =>
-                item.claimURI.toLowerCase().indexOf(changeValue.toLowerCase()) !== -1);
+            const displayNameFilterClaims = tempAvailableClaims.filter(
+                item => item.displayName.toLowerCase().indexOf(changeValue.toLowerCase()) !== -1
+            );
+            const uriFilterClaims = tempAvailableClaims.filter(
+                item => item.claimURI.toLowerCase().indexOf(changeValue.toLowerCase()) !== -1
+            );
 
             setFilterTempAvailableClaims(sortBy(union(displayNameFilterClaims, uriFilterClaims), "displayName"));
         } else {
             if (selectedClaims.length > 0) {
-                setFilterTempAvailableClaims(sortBy(union(selectedClaims, availableClaims ), "displayName"));
+                setFilterTempAvailableClaims(sortBy(union(selectedClaims, availableClaims), "displayName"));
             } else {
                 setFilterTempAvailableClaims(sortBy(tempAvailableClaims, "displayName"));
             }
@@ -103,8 +105,8 @@ export const AttributeSelectionWizard: FunctionComponent<AttributeSelectionWizar
      * The following method handles the onChange event of the
      * checkbox field of an unassigned item.
      */
-    const handleUnassignedItemCheckboxChange = (claim) => {
-        const checkedRoles = [ ...tempSelectedClaims ];
+    const handleUnassignedItemCheckboxChange = claim => {
+        const checkedRoles = [...tempSelectedClaims];
 
         if (checkedRoles?.includes(claim)) {
             checkedRoles.splice(checkedRoles.indexOf(claim), 1);
@@ -132,7 +134,7 @@ export const AttributeSelectionWizard: FunctionComponent<AttributeSelectionWizar
         } else {
             setTempSelectedClaims([]);
         }
-    }, [ isSelectAssignedAllClaimsChecked ]);
+    }, [isSelectAssignedAllClaimsChecked]);
 
     /**
      *  Set initial values for modal.
@@ -140,7 +142,7 @@ export const AttributeSelectionWizard: FunctionComponent<AttributeSelectionWizar
     useEffect(() => {
         if (showAddModal) {
             if (selectedClaims.length > 0) {
-                const sortedClaims = sortBy(union(selectedClaims, availableClaims ), "displayName");
+                const sortedClaims = sortBy(union(selectedClaims, availableClaims), "displayName");
 
                 setTempAvailableClaims(sortedClaims);
                 setFilterTempAvailableClaims(sortedClaims);
@@ -156,87 +158,83 @@ export const AttributeSelectionWizard: FunctionComponent<AttributeSelectionWizar
             setFilterTempAvailableClaims([]);
             setTempSelectedClaims([]);
         }
-    }, [ showAddModal ]);
+    }, [showAddModal]);
 
     /**
      *  Save the selected claims
      */
-    const updateSelectedClaims = (() => {
-        const selectedClaimsValues = [ ...tempSelectedClaims ];
-        const removedClaims = selectedClaims.filter((claim) => !selectedClaimsValues?.includes(claim));
-        const addedClaims = selectedClaimsValues.filter((claim) => !selectedClaims?.includes(claim));
+    const updateSelectedClaims = () => {
+        const selectedClaimsValues = [...tempSelectedClaims];
+        const removedClaims = selectedClaims.filter(claim => !selectedClaimsValues?.includes(claim));
+        const addedClaims = selectedClaimsValues.filter(claim => !selectedClaims?.includes(claim));
 
         updateMappings(addedClaims, removedClaims);
         setInitialSelectedClaims(selectedClaimsValues);
-        setAvailableClaims([ ...tempAvailableClaims ]);
+        setAvailableClaims([...tempAvailableClaims]);
         setShowAddModal(false);
-    });
-
+    };
 
     return (
-        <Modal open={ showAddModal } size="large" className="user-roles attribute-modal" data-testid={ testId }>
+        <Modal open={showAddModal} size="large" className="user-roles attribute-modal" data-testid={testId}>
             <Modal.Header>
-                { t("console:develop.features.applications.edit.sections.attributes.selection.addWizard.header") }
+                {t("console:develop.features.applications.edit.sections.attributes.selection.addWizard.header")}
                 <Heading subHeading ellipsis as="h6">
-                    { t("console:develop.features.applications.edit.sections.attributes.selection.addWizard." +
-                        "subHeading") }
+                    {t(
+                        "console:develop.features.applications.edit.sections.attributes.selection.addWizard." +
+                            "subHeading"
+                    )}
                 </Heading>
             </Modal.Header>
             <Modal.Content image>
                 <TransferComponent
                     selectionComponent
-                    searchPlaceholder={
-                        t("console:develop.features.applications.edit.sections.attributes.selection.addWizard.steps" +
-                            ".select.transfer.searchPlaceholders.attribute")
-                    }
-                    handleHeaderCheckboxChange={ selectAllUnAssignedList }
-                    isHeaderCheckboxChecked={ isSelectAssignedAllClaimsChecked }
-                    handleUnelectedListSearch={ searchTempAvailable }
-                    data-testid={ `${ testId }-transfer-component` }
+                    searchPlaceholder={t(
+                        "console:develop.features.applications.edit.sections.attributes.selection.addWizard.steps" +
+                            ".select.transfer.searchPlaceholders.attribute"
+                    )}
+                    handleHeaderCheckboxChange={selectAllUnAssignedList}
+                    isHeaderCheckboxChecked={isSelectAssignedAllClaimsChecked}
+                    handleUnelectedListSearch={searchTempAvailable}
+                    data-testid={`${testId}-transfer-component`}
                 >
                     <TransferList
                         selectionComponent
-                        isListEmpty={ !(filterTempAvailableClaims.length > 0) }
+                        isListEmpty={!(filterTempAvailableClaims.length > 0)}
                         listType="unselected"
-                        data-testid={ `${ testId }-unselected-transfer-list` }
-                        emptyPlaceholderDefaultContent={ t("console:manage.features.transferList.list."
-                            + "emptyPlaceholders.default") }
+                        data-testid={`${testId}-unselected-transfer-list`}
+                        emptyPlaceholderDefaultContent={t(
+                            "console:manage.features.transferList.list." + "emptyPlaceholders.default"
+                        )}
                     >
-                        {
-                            filterTempAvailableClaims?.map((claim, index) => {
-                                return (
-                                    <TransferListItem
-                                        handleItemChange={ () => handleUnassignedItemCheckboxChange(claim) }
-                                        key={ claim.claimURI }
-                                        listItem={ claim.displayName }
-                                        listItemId={ claim.id }
-                                        listItemIndex={ claim.claimURI }
-                                        isItemChecked={ tempSelectedClaims.includes(claim) }
-                                        showSecondaryActions={ false }
-                                        showListSubItem={ true }
-                                        listSubItem={ (
-                                            <Code compact withBackground={ false }>{ claim.claimURI }</Code>
-                                        ) }
-                                        data-testid={ `${ testId }-unselected-transfer-list-item-${ index }` }
-                                    />
-                                );
-                            })
-                        }
+                        {filterTempAvailableClaims?.map((claim, index) => {
+                            return (
+                                <TransferListItem
+                                    handleItemChange={() => handleUnassignedItemCheckboxChange(claim)}
+                                    key={claim.claimURI}
+                                    listItem={claim.displayName}
+                                    listItemId={claim.id}
+                                    listItemIndex={claim.claimURI}
+                                    isItemChecked={tempSelectedClaims.includes(claim)}
+                                    showSecondaryActions={false}
+                                    showListSubItem={true}
+                                    listSubItem={
+                                        <Code compact withBackground={false}>
+                                            {claim.claimURI}
+                                        </Code>
+                                    }
+                                    data-testid={`${testId}-unselected-transfer-list-item-${index}`}
+                                />
+                            );
+                        })}
                     </TransferList>
                 </TransferComponent>
             </Modal.Content>
             <Modal.Actions>
-                <LinkButton
-                    onClick={ handleAttributeModal }
-                    data-testid={ `${ testId }-cancel-button` }
-                >
-                    { t("common:cancel") }
+                <LinkButton onClick={handleAttributeModal} data-testid={`${testId}-cancel-button`}>
+                    {t("common:cancel")}
                 </LinkButton>
-                <PrimaryButton
-                    onClick={ updateSelectedClaims }
-                    data-testid={ `${ testId }-save-button` }
-                >
-                    { t("common:save") }
+                <PrimaryButton onClick={updateSelectedClaims} data-testid={`${testId}-save-button`}>
+                    {t("common:save")}
                 </PrimaryButton>
             </Modal.Actions>
         </Modal>

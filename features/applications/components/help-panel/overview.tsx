@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -16,6 +17,7 @@
  * under the License.
  */
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import { Heading, Hint } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -23,7 +25,6 @@ import { useSelector } from "react-redux";
 import { Divider, Grid } from "semantic-ui-react";
 import { OIDCConfigurations } from "./oidc-configurations";
 import { SAMLConfigurations } from "./saml-configurations";
-import { AppState } from "../../../core";
 import {
     InboundProtocolListItemInterface,
     OIDCApplicationConfigurationInterface,
@@ -51,18 +52,19 @@ interface HelpPanelOverviewPropsInterface extends TestableComponentInterface {
 export const HelpPanelOverview: FunctionComponent<HelpPanelOverviewPropsInterface> = (
     props: HelpPanelOverviewPropsInterface
 ): ReactElement => {
-
     const oidcConfigurations: OIDCApplicationConfigurationInterface = useSelector(
-        (state: AppState) => state.application.oidcConfigurations);
+        (state: AppState) => state.application.oidcConfigurations
+    );
     const samlConfigurations: SAMLApplicationConfigurationInterface = useSelector(
-        (state: AppState) => state.application.samlConfigurations);
+        (state: AppState) => state.application.samlConfigurations
+    );
     const { t } = useTranslation();
 
     const { inboundProtocols, handleMetadataLoading } = props;
 
-    const [ isOIDC, setIsOIDC ] = useState<boolean>(false);
-    const [ isSAML, setIsSAML ] = useState<boolean>(false);
-    const [ isOIDCConfigsLoading, setOIDCConfigsLoading ] = useState<boolean>(false);
+    const [isOIDC, setIsOIDC] = useState<boolean>(false);
+    const [isSAML, setIsSAML] = useState<boolean>(false);
+    const [isOIDCConfigsLoading, setOIDCConfigsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         if (inboundProtocols == undefined) {
@@ -78,8 +80,7 @@ export const HelpPanelOverview: FunctionComponent<HelpPanelOverviewPropsInterfac
                 }
             });
         }
-
-    }, [ inboundProtocols ]);
+    }, [inboundProtocols]);
 
     useEffect(() => {
         if (oidcConfigurations !== undefined) {
@@ -90,20 +91,17 @@ export const HelpPanelOverview: FunctionComponent<HelpPanelOverviewPropsInterfac
         handleMetadataLoading(true);
         setOIDCConfigsLoading(true);
 
-        ApplicationManagementUtils.getOIDCApplicationMeta()
-            .finally(() => {
-                setOIDCConfigsLoading(false);
-                handleMetadataLoading(false);
-            });
-    }, [ oidcConfigurations ]);
+        ApplicationManagementUtils.getOIDCApplicationMeta().finally(() => {
+            setOIDCConfigsLoading(false);
+            handleMetadataLoading(false);
+        });
+    }, [oidcConfigurations]);
 
     return (
         <>
-            {
-                !isOIDCConfigsLoading ? (
-                    <Grid>
-                        { 
-                            /* 
+            {!isOIDCConfigsLoading ? (
+                <Grid>
+                    {/* 
                                 TODO : Check and remove the following if unnecssary
                                 applicationType && applicationType == ApplicationManagementConstants.SPA
                                     ? (
@@ -147,46 +145,37 @@ export const HelpPanelOverview: FunctionComponent<HelpPanelOverviewPropsInterfac
                                         </Grid.Row>
                                     )
                                     : null
-                            */ 
-                        }
-                        <Grid.Row>
-                            <Grid.Column>
-                                <Heading ellipsis as="h5">
-                                    <strong>
-                                        { t("console:develop.features.applications.helpPanel.tabs.start.content" +
-                                            ".endpoints.title") }
-                                    </strong>
-                                </Heading>
-                                <Hint>
-                                    { t("console:develop.features.applications.helpPanel.tabs.start.content" +
-                                        ".endpoints.subTitle") }
-                                </Hint>
-                                <Divider hidden/>
-                                {
-                                    isOIDC && (
-                                        <OIDCConfigurations oidcConfigurations={ oidcConfigurations }/>
-                                    )
-                                }
-                                {
-                                    isOIDC && isSAML
-                                        ? (
-                                            <>
-                                                <Divider hidden />
-                                                <Divider/>
-                                                <Divider hidden />
-                                            </>
-                                        ) : null
-                                }
-                                {
-                                    isSAML && (
-                                        <SAMLConfigurations samlConfigurations={ samlConfigurations }/>
-                                    )
-                                }
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                ) : null
-            }
+                            */}
+                    <Grid.Row>
+                        <Grid.Column>
+                            <Heading ellipsis as="h5">
+                                <strong>
+                                    {t(
+                                        "console:develop.features.applications.helpPanel.tabs.start.content" +
+                                            ".endpoints.title"
+                                    )}
+                                </strong>
+                            </Heading>
+                            <Hint>
+                                {t(
+                                    "console:develop.features.applications.helpPanel.tabs.start.content" +
+                                        ".endpoints.subTitle"
+                                )}
+                            </Hint>
+                            <Divider hidden />
+                            {isOIDC && <OIDCConfigurations oidcConfigurations={oidcConfigurations} />}
+                            {isOIDC && isSAML ? (
+                                <>
+                                    <Divider hidden />
+                                    <Divider />
+                                    <Divider hidden />
+                                </>
+                            ) : null}
+                            {isSAML && <SAMLConfigurations samlConfigurations={samlConfigurations} />}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            ) : null}
         </>
     );
 };

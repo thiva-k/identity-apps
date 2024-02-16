@@ -18,3 +18,4 @@
 
 export * from "./user-store-utils";
 export * from "./event-publisher";
+export * from "./app-utils";

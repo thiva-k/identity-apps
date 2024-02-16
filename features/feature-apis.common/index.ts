@@ -19,3 +19,4 @@
 export * from "./users";
 export * from "./bulk-operations";
 export * from "./user-store";
+export * from "./cors-configurations";

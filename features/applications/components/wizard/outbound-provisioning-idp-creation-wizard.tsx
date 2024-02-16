@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -51,265 +52,283 @@ interface OutboundProvisioningIdpCreateWizardPropsInterface extends TestableComp
  * @param props - Props injected to the component.
  * @returns Outbound provisioning IDP create wizard component.
  */
-export const OutboundProvisioningIdpCreateWizard: FunctionComponent<
-    OutboundProvisioningIdpCreateWizardPropsInterface
-    > = (props: OutboundProvisioningIdpCreateWizardPropsInterface): ReactElement => {
+export const OutboundProvisioningIdpCreateWizard: FunctionComponent<OutboundProvisioningIdpCreateWizardPropsInterface> = (
+    props: OutboundProvisioningIdpCreateWizardPropsInterface
+): ReactElement => {
+    const { application, closeWizard, currentStep, onUpdate, ["data-testid"]: testId } = props;
 
-        const {
-            application,
-            closeWizard,
-            currentStep,
-            onUpdate,
-            [ "data-testid" ]: testId
-        } = props;
+    const { t } = useTranslation();
 
-        const { t } = useTranslation();
+    const dispatch: Dispatch = useDispatch();
 
-        const dispatch: Dispatch = useDispatch();
+    const [finishSubmit, setFinishSubmit] = useTrigger();
 
-        const [ finishSubmit, setFinishSubmit ] = useTrigger();
+    const [partiallyCompletedStep, setPartiallyCompletedStep] = useState<number>(undefined);
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(currentStep);
+    const [idpList, setIdpList] = useState<IdentityProviderInterface[]>(undefined);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-        const [ partiallyCompletedStep, setPartiallyCompletedStep ] = useState<number>(undefined);
-        const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(currentStep);
-        const [ idpList, setIdpList ] = useState<IdentityProviderInterface[]>(undefined);
-        const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-
-
-        /**
+    /**
      * Sets the current wizard step to the previous on every `partiallyCompletedStep`
      * value change , and resets the partially completed step value.
      */
-        useEffect(() => {
-            if (partiallyCompletedStep === undefined) {
-                return;
-            }
+    useEffect(() => {
+        if (partiallyCompletedStep === undefined) {
+            return;
+        }
 
-            setCurrentWizardStep(currentWizardStep - 1);
-            setPartiallyCompletedStep(undefined);
-        }, [ partiallyCompletedStep ]);
+        setCurrentWizardStep(currentWizardStep - 1);
+        setPartiallyCompletedStep(undefined);
+    }, [partiallyCompletedStep]);
 
-        /**
+    /**
      * Fetch the IDP list.
      */
-        useEffect(() => {
-            if (idpList) {
-                return;
-            }
+    useEffect(() => {
+        if (idpList) {
+            return;
+        }
 
-            getIdentityProviderList()
-                .then((response: IdentityProviderListResponseInterface) => {
-                    setIdpList(response.identityProviders);
-                });
-        }, []);
+        getIdentityProviderList().then((response: IdentityProviderListResponseInterface) => {
+            setIdpList(response.identityProviders);
+        });
+    }, []);
 
-        const navigateToNext = () => {
-            switch (currentWizardStep) {
-                case 0:
-                    setFinishSubmit();
-            }
-        };
+    const navigateToNext = () => {
+        switch (currentWizardStep) {
+            case 0:
+                setFinishSubmit();
+        }
+    };
 
-        const navigateToPrevious = () => {
-            setPartiallyCompletedStep(currentWizardStep);
-        };
+    const navigateToPrevious = () => {
+        setPartiallyCompletedStep(currentWizardStep);
+    };
 
-        const addIdentityProvider = (id: string, values: any) => {
-            setIsSubmitting(true);
-            updateApplicationConfigurations(id, values)
-                .then(() => {
-                    dispatch(addAlert({
-                        description: t("console:develop.features.applications.notifications.updateApplication" +
-                        ".success.description"),
+    const addIdentityProvider = (id: string, values: any) => {
+        setIsSubmitting(true);
+        updateApplicationConfigurations(id, values)
+            .then(() => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.updateApplication" +
+                                ".success.description"
+                        ),
                         level: AlertLevels.SUCCESS,
-                        message: t("console:develop.features.applications.notifications" +
-                            ".updateApplication.success.message")
-                    }));
+                        message: t(
+                            "console:develop.features.applications.notifications" + ".updateApplication.success.message"
+                        )
+                    })
+                );
 
-                    onUpdate(application.id);
-                })
-                .catch((error: AxiosError) => {
-                    if (error.response && error.response.data && error.response.data.description) {
-                        dispatch(addAlert({
+                onUpdate(application.id);
+            })
+            .catch((error: AxiosError) => {
+                if (error.response && error.response.data && error.response.data.description) {
+                    dispatch(
+                        addAlert({
                             description: error.response.data.description,
                             level: AlertLevels.ERROR,
                             message: t(
-                                "console:develop.features.applications.notifications.updateApplication.error.message")
-                        }));
+                                "console:develop.features.applications.notifications.updateApplication.error.message"
+                            )
+                        })
+                    );
 
-                        return;
-                    }
+                    return;
+                }
 
-                    dispatch(addAlert({
-                        description: t("console:develop.features.applications.notifications.updateApplication" +
-                        ".genericError.description"),
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.updateApplication" +
+                                ".genericError.description"
+                        ),
                         level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications" +
-                            ".updateApplication.genericError.message")
-                    }));
-                })
-                .finally(() => {
-                    setIsSubmitting(false);
-                    closeWizard();
-                });
-        };
+                        message: t(
+                            "console:develop.features.applications.notifications" +
+                                ".updateApplication.genericError.message"
+                        )
+                    })
+                );
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+                closeWizard();
+            });
+    };
 
-        const updateConfiguration = (values: any) => {
-            const outboundConfigs: OutboundProvisioningConfigurationInterface[] =
+    const updateConfiguration = (values: any) => {
+        const outboundConfigs: OutboundProvisioningConfigurationInterface[] =
             application?.provisioningConfigurations?.outboundProvisioningIdps;
 
-            outboundConfigs.push(values);
+        outboundConfigs.push(values);
 
-            return {
-                provisioningConfigurations: {
-                    outboundProvisioningIdps: outboundConfigs
-                }
-            };
+        return {
+            provisioningConfigurations: {
+                outboundProvisioningIdps: outboundConfigs
+            }
         };
+    };
 
-        /**
+    /**
      * Handles the final wizard submission.
      */
-        const handleWizardFormFinish = (values: any): void => {
+    const handleWizardFormFinish = (values: any): void => {
         // Validate whether an IDP with the same connector already exists.
-            if (application?.provisioningConfigurations?.outboundProvisioningIdps.find(
+        if (
+            application?.provisioningConfigurations?.outboundProvisioningIdps.find(
                 (idp: OutboundProvisioningConfigurationInterface) =>
-                    (idp.connector === values.connector) && (idp.idp === values.idp))
-            ) {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.updateOutboundProvisioning" +
-                    ".genericError.description"),
+                    idp.connector === values.connector && idp.idp === values.idp
+            )
+        ) {
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.notifications.updateOutboundProvisioning" +
+                            ".genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.updateOutboundProvisioning" +
-                    ".genericError.message")
-                }));
-                closeWizard();
+                    message: t(
+                        "console:develop.features.applications.notifications.updateOutboundProvisioning" +
+                            ".genericError.message"
+                    )
+                })
+            );
+            closeWizard();
 
-                return;
-            }
+            return;
+        }
 
-            addIdentityProvider(application.id, updateConfiguration(values));
-        };
+        addIdentityProvider(application.id, updateConfiguration(values));
+    };
 
-        const STEPS: {
-            content: JSX.Element;
-            icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-            title: string;
-        }[] = [
-            {
-                content: (
-                    <OutboundProvisioningWizardIdpForm
-                        initialValues={ null }
-                        triggerSubmit={ finishSubmit }
-                        //TODO: [Type fix] Define the type of `values` in form component.
-                        onSubmit={ (values: any): void => {
-                            handleWizardFormFinish(values);
-                        } }
-                        idpList={ idpList }
-                        data-testid={ `${ testId }-form` }
-                        isSubmitting={ isSubmitting }
-                    />
-                ),
-                icon: getApplicationWizardStepIcons().general,
-                title: t("console:develop.features.applications.edit.sections.provisioning.outbound.addIdpWizard" +
-                ".steps.details")
-            }
-        ];
+    const STEPS: {
+        content: JSX.Element;
+        icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+        title: string;
+    }[] = [
+        {
+            content: (
+                <OutboundProvisioningWizardIdpForm
+                    initialValues={null}
+                    triggerSubmit={finishSubmit}
+                    //TODO: [Type fix] Define the type of `values` in form component.
+                    onSubmit={(values: any): void => {
+                        handleWizardFormFinish(values);
+                    }}
+                    idpList={idpList}
+                    data-testid={`${testId}-form`}
+                    isSubmitting={isSubmitting}
+                />
+            ),
+            icon: getApplicationWizardStepIcons().general,
+            title: t(
+                "console:develop.features.applications.edit.sections.provisioning.outbound.addIdpWizard" +
+                    ".steps.details"
+            )
+        }
+    ];
 
-        return (
-            <Modal
-                open={ true }
-                className="wizard application-create-wizard"
-                dimmer="blurring"
-                size="small"
-                onClose={ closeWizard }
-                data-testid={ testId }
-                closeOnDimmerClick={ false }
-                closeOnEscape
-            >
-                <Modal.Header className="wizard-header">
-                    { t("console:develop.features.applications.edit.sections.provisioning.outbound.addIdpWizard" +
-                    ".heading") }
-                    <Heading as="h6">
-                        { t("console:develop.features.applications.edit.sections.provisioning.outbound.addIdpWizard" +
-                        ".subHeading") }
-                    </Heading>
-                </Modal.Header>
-                <Modal.Content className="steps-container">
-                    <Steps.Group
-                        current={ currentWizardStep }
-                        data-testid={ `${ testId }-steps` }
-                    >
-                        { STEPS.map((
+    return (
+        <Modal
+            open={true}
+            className="wizard application-create-wizard"
+            dimmer="blurring"
+            size="small"
+            onClose={closeWizard}
+            data-testid={testId}
+            closeOnDimmerClick={false}
+            closeOnEscape
+        >
+            <Modal.Header className="wizard-header">
+                {t(
+                    "console:develop.features.applications.edit.sections.provisioning.outbound.addIdpWizard" +
+                        ".heading"
+                )}
+                <Heading as="h6">
+                    {t(
+                        "console:develop.features.applications.edit.sections.provisioning.outbound.addIdpWizard" +
+                            ".subHeading"
+                    )}
+                </Heading>
+            </Modal.Header>
+            <Modal.Content className="steps-container">
+                <Steps.Group current={currentWizardStep} data-testid={`${testId}-steps`}>
+                    {STEPS.map(
+                        (
                             step: {
                                 content: JSX.Element;
                                 icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
                                 title: string;
-                            }, 
+                            },
                             index: number
                         ) => (
                             <Steps.Step
-                                key={ index }
-                                icon={ step.icon }
-                                title={ step.title }
-                                data-testid={ `${ testId }-step-${ index }` }
+                                key={index}
+                                icon={step.icon}
+                                title={step.title}
+                                data-testid={`${testId}-step-${index}`}
                             />
-                        )) }
-                    </Steps.Group>
-                </Modal.Content>
-                <Modal.Content className="content-container" scrolling>
-                    { STEPS[ currentWizardStep ].content }
-                </Modal.Content>
-                <Modal.Actions>
-                    <Grid>
-                        <Grid.Row column={ 1 }>
-                            <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                <LinkButton
-                                    floated="left"
-                                    onClick={ () => closeWizard() }
-                                    data-testid={ `${ testId }-cancel-button` }
+                        )
+                    )}
+                </Steps.Group>
+            </Modal.Content>
+            <Modal.Content className="content-container" scrolling>
+                {STEPS[currentWizardStep].content}
+            </Modal.Content>
+            <Modal.Actions>
+                <Grid>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            <LinkButton
+                                floated="left"
+                                onClick={() => closeWizard()}
+                                data-testid={`${testId}-cancel-button`}
+                            >
+                                {t("common:cancel")}
+                            </LinkButton>
+                        </Grid.Column>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            {currentWizardStep < STEPS.length - 1 && (
+                                <PrimaryButton
+                                    floated="right"
+                                    onClick={navigateToNext}
+                                    data-testid={`${testId}-next-button`}
                                 >
-                                    { t("common:cancel") }
+                                    {t("common:next")}
+                                    <Icon name="arrow right" />
+                                </PrimaryButton>
+                            )}
+                            {currentWizardStep === STEPS.length - 1 && (
+                                <PrimaryButton
+                                    floated="right"
+                                    onClick={navigateToNext}
+                                    data-testid={`${testId}-finish-button`}
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
+                                >
+                                    {t("common:finish")}
+                                </PrimaryButton>
+                            )}
+                            {currentWizardStep > 0 && (
+                                <LinkButton
+                                    floated="right"
+                                    onClick={navigateToPrevious}
+                                    data-testid={`${testId}-previous-button`}
+                                >
+                                    <Icon name="arrow left" />
+                                    {t("common:previous")}
                                 </LinkButton>
-                            </Grid.Column>
-                            <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                { currentWizardStep < STEPS.length - 1 && (
-                                    <PrimaryButton
-                                        floated="right"
-                                        onClick={ navigateToNext }
-                                        data-testid={ `${ testId }-next-button` }
-                                    >
-                                        { t("common:next") }
-                                        <Icon name="arrow right"/>
-                                    </PrimaryButton>
-                                ) }
-                                { currentWizardStep === STEPS.length - 1 && (
-                                    <PrimaryButton
-                                        floated="right"
-                                        onClick={ navigateToNext }
-                                        data-testid={ `${ testId }-finish-button` }
-                                        loading={ isSubmitting }
-                                        disabled={ isSubmitting }
-                                    >
-                                        { t("common:finish") }
-                                    </PrimaryButton>
-                                ) }
-                                { currentWizardStep > 0 && (
-                                    <LinkButton
-                                        floated="right"
-                                        onClick={ navigateToPrevious }
-                                        data-testid={ `${ testId }-previous-button` }
-                                    >
-                                        <Icon name="arrow left"/>
-                                        { t("common:previous") }
-                                    </LinkButton>
-                                ) }
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </Modal.Actions>
-            </Modal>
-        );
-    };
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Modal.Actions>
+        </Modal>
+    );
+};
 
 /**
  * Default props for the outbound provisioning IDP create wizard.

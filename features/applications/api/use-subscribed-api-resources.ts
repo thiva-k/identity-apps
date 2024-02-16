@@ -17,14 +17,13 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
+import { store } from "@wso2is/feature-store.common";
 import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "apps/console/src/features/core/hooks/use-request";
 import { AxiosRequestConfig } from "axios";
-import { store } from "../../core/store";
 import { AuthorizedAPIListItemInterface } from "../models/api-authorization";
-
 
 /**
  * Hook to get subscribed API resources.
@@ -36,14 +35,13 @@ import { AuthorizedAPIListItemInterface } from "../models/api-authorization";
 const useSubscribedAPIResources = <Data = AuthorizedAPIListItemInterface[], Error = RequestErrorInterface>(
     appId: string
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.applications }/${ appId }/authorized-apis`
+        url: `${store.getState().config.endpoints.applications}/${appId}/authorized-apis`
     };
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);

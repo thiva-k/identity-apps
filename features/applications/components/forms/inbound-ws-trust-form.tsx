@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -69,25 +70,16 @@ interface InboundWSTrustFormPropsInterface extends TestableComponentInterface {
 export const InboundWSTrustForm: FunctionComponent<InboundWSTrustFormPropsInterface> = (
     props: InboundWSTrustFormPropsInterface
 ): ReactElement => {
-
-    const {
-        certificate,
-        metadata,
-        initialValues,
-        onSubmit,
-        readOnly,
-        isLoading,
-        [ "data-testid" ]: testId
-    } = props;
+    const { certificate, metadata, initialValues, onSubmit, readOnly, isLoading, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
 
-    const [ isPEMSelected, setPEMSelected ] = useState<boolean>(false);
-    const [ showCertificateModal, setShowCertificateModal ] = useState<boolean>(false);
-    const [ PEMValue, setPEMValue ] = useState<string>(undefined);
-    const [ certificateDisplay, setCertificateDisplay ] = useState<DisplayCertificate>(null);
+    const [isPEMSelected, setPEMSelected] = useState<boolean>(false);
+    const [showCertificateModal, setShowCertificateModal] = useState<boolean>(false);
+    const [PEMValue, setPEMValue] = useState<string>(undefined);
+    const [certificateDisplay, setCertificateDisplay] = useState<DisplayCertificate>(null);
 
     /**
      * Set initial PEM values.
@@ -99,7 +91,7 @@ export const InboundWSTrustForm: FunctionComponent<InboundWSTrustFormPropsInterf
                 setPEMValue(certificate.value);
             }
         }
-    }, [ certificate ]);
+    }, [certificate]);
 
     /**
      * Create drop down options.
@@ -109,7 +101,7 @@ export const InboundWSTrustForm: FunctionComponent<InboundWSTrustFormPropsInterf
         const allowedOptions = [];
 
         if (metadataProp) {
-            metadataProp.options.map((ele) => {
+            metadataProp.options.map(ele => {
                 allowedOptions.push({ key: metadataProp.options.indexOf(ele), text: ele, value: ele });
             });
         }
@@ -124,7 +116,6 @@ export const InboundWSTrustForm: FunctionComponent<InboundWSTrustFormPropsInterf
      * @return {any} Sanitized form values.
      */
     const updateConfiguration = (values: any): any => {
-
         return {
             general: {
                 advancedConfigurations: {
@@ -146,7 +137,6 @@ export const InboundWSTrustForm: FunctionComponent<InboundWSTrustFormPropsInterf
      */
     const viewCertificate = () => {
         if (isPEMSelected && PEMValue) {
-
             let displayCertificate: DisplayCertificate;
 
             if (CertificateManagementUtils.canSafelyParseCertificate(PEMValue)) {
@@ -159,259 +149,238 @@ export const InboundWSTrustForm: FunctionComponent<InboundWSTrustFormPropsInterf
                 setCertificateDisplay(displayCertificate);
                 setShowCertificateModal(true);
             } else {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:common.notifications.invalidPEMFile.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:common.notifications.invalidPEMFile.genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t("console:common.notifications.invalidPEMFile.genericError.description"),
+                        level: AlertLevels.ERROR,
+                        message: t("console:common.notifications.invalidPEMFile.genericError.message")
+                    })
+                );
             }
         }
     };
 
-    return (
-        metadata ?
-            (
-                <Forms
-                    onSubmit={ (values) => {
-                        onSubmit(updateConfiguration(values));
-                    } }
-                >
-                    <Grid>
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                <Field
-                                    name="audience"
-                                    label={
-                                        t("console:develop.features.applications.forms.inboundWSTrust.fields" +
-                                            ".audience.label")
-                                    }
-                                    required={ true }
-                                    requiredErrorMessage={
-                                        t("console:develop.features.applications.forms.inboundWSTrust" +
-                                            ".fields.audience.validations.empty")
-                                    }
-                                    placeholder={
-                                        t("console:develop.features.applications.forms.inboundWSTrust.fields" +
-                                            ".audience.placeholder")
-                                    }
-                                    type="text"
-                                    value={ initialValues?.audience }
-                                    readOnly={ readOnly || !(isEmpty(initialValues?.audience)) }
-                                    data-testid={ `${ testId }-audience-input` }
-                                />
+    return metadata ? (
+        <Forms
+            onSubmit={values => {
+                onSubmit(updateConfiguration(values));
+            }}
+        >
+            <Grid>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        <Field
+                            name="audience"
+                            label={t(
+                                "console:develop.features.applications.forms.inboundWSTrust.fields" + ".audience.label"
+                            )}
+                            required={true}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundWSTrust" +
+                                    ".fields.audience.validations.empty"
+                            )}
+                            placeholder={t(
+                                "console:develop.features.applications.forms.inboundWSTrust.fields" +
+                                    ".audience.placeholder"
+                            )}
+                            type="text"
+                            value={initialValues?.audience}
+                            readOnly={readOnly || !isEmpty(initialValues?.audience)}
+                            data-testid={`${testId}-audience-input`}
+                        />
 
-                                <Hint disabled={ !(isEmpty(initialValues?.audience)) }>
-                                    { t("console:develop.features.applications.forms.inboundWSTrust.fields" +
-                                        ".audience.hint") }
-                                </Hint>
-                            </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
+                        <Hint disabled={!isEmpty(initialValues?.audience)}>
+                            {t("console:develop.features.applications.forms.inboundWSTrust.fields" + ".audience.hint")}
+                        </Hint>
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        <Field
+                            label={t(
+                                "console:develop.features.applications.forms.inboundWSTrust.fields" +
+                                    ".certificateAlias.label"
+                            )}
+                            name="certificateAlias"
+                            type="dropdown"
+                            required={true}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundWSTrust.fields" +
+                                    ".certificateAlias.validations.empty"
+                            )}
+                            default={metadata?.certificateAlias.defaultValue}
+                            value={initialValues?.certificateAlias}
+                            children={getCertificateOptions(metadata?.certificateAlias)}
+                            readOnly={readOnly}
+                            data-testid={`${testId}-certificate-alias-dropdown`}
+                        />
+                        <Hint>
+                            {t(
+                                "console:develop.features.applications.forms.inboundWSTrust.fields" +
+                                    ".certificateAlias.hint"
+                            )}
+                        </Hint>
+                    </Grid.Column>
+                </Grid.Row>
+
+                {/* Certificates */}
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={10}>
+                        <Divider />
+                    </Grid.Column>
+                    <Grid.Column mobile={16} tablet={16} computer={10}>
+                        <Heading as="h5">
+                            {t(
+                                "console:develop.features.applications.forms." +
+                                    "advancedConfig.sections.certificate.heading"
+                            )}
+                        </Heading>
+                        <Field
+                            label={t(
+                                "console:develop.features.applications.forms." +
+                                    "advancedConfig.sections.certificate.fields.type.label"
+                            )}
+                            name="type"
+                            default={CertificateTypeInterface.JWKS}
+                            listen={values => {
+                                setPEMSelected(values.get("type") === "PEM");
+                            }}
+                            type="radio"
+                            value={certificate?.type}
+                            children={[
+                                {
+                                    label: t(
+                                        "console:develop.features.applications.forms." +
+                                            "advancedConfig.sections.certificate.fields.type.children.jwks.label"
+                                    ),
+                                    value: CertificateTypeInterface.JWKS
+                                },
+                                {
+                                    label: t(
+                                        "console:develop.features.applications.forms." +
+                                            "advancedConfig.sections.certificate.fields.type.children.pem.label"
+                                    ),
+                                    value: CertificateTypeInterface.PEM
+                                }
+                            ]}
+                            readOnly={readOnly}
+                            data-testid={`${testId}-certificate-type-radio-group`}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                        {isPEMSelected ? (
+                            <>
                                 <Field
-                                    label={
-                                        t("console:develop.features.applications.forms.inboundWSTrust.fields" +
-                                            ".certificateAlias.label")
-                                    }
-                                    name="certificateAlias"
-                                    type="dropdown"
-                                    required={ true }
-                                    requiredErrorMessage={
-                                        t("console:develop.features.applications.forms.inboundWSTrust.fields" +
-                                            ".certificateAlias.validations.empty")
-                                    }
-                                    default={ metadata?.certificateAlias.defaultValue }
-                                    value={
-                                        initialValues?.certificateAlias
-                                    }
-                                    children={ getCertificateOptions(metadata?.certificateAlias) }
-                                    readOnly={ readOnly }
-                                    data-testid={ `${ testId }-certificate-alias-dropdown` }
+                                    name="certificateValue"
+                                    label={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.pemValue.label"
+                                    )}
+                                    required={false}
+                                    requiredErrorMessage={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.pemValue.validations.empty"
+                                    )}
+                                    placeholder={ApplicationManagementConstants.PEM_CERTIFICATE_PLACEHOLDER}
+                                    type="textarea"
+                                    value={CertificateTypeInterface.PEM === certificate?.type && certificate?.value}
+                                    listen={values => {
+                                        setPEMValue(values.get("certificateValue") as string);
+                                    }}
+                                    readOnly={readOnly}
+                                    data-testid={`${testId}-certificate-textarea`}
                                 />
                                 <Hint>
-                                    { t("console:develop.features.applications.forms.inboundWSTrust.fields" +
-                                        ".certificateAlias.hint") }
+                                    {t(
+                                        "console:develop.features.applications.forms." +
+                                            "advancedConfig.sections.certificate.fields.pemValue.hint"
+                                    )}
                                 </Hint>
-                            </Grid.Column>
-                        </Grid.Row>
-
-                        { /* Certificates */ }
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                <Divider/>
-                            </Grid.Column>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                <Heading as="h5">
-                                    {
-                                        t("console:develop.features.applications.forms." +
-                                            "advancedConfig.sections.certificate.heading") }
-                                </Heading>
+                                <LinkButton
+                                    className="certificate-info-link-button"
+                                    onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                                        e.preventDefault();
+                                        viewCertificate();
+                                    }}
+                                    disabled={isEmpty(PEMValue)}
+                                    data-testid={`${testId}-certificate-info-button`}
+                                >
+                                    {t(
+                                        "console:develop.features.applications.forms." +
+                                            "advancedConfig.sections.certificate.fields.pemValue." +
+                                            "actions.view"
+                                    )}
+                                </LinkButton>
+                            </>
+                        ) : (
+                            <>
                                 <Field
-                                    label={
-                                        t("console:develop.features.applications.forms." +
-                                            "advancedConfig.sections.certificate.fields.type.label")
-                                    }
-                                    name="type"
-                                    default={ CertificateTypeInterface.JWKS }
-                                    listen={
-                                        (values) => {
-                                            setPEMSelected(values.get("type") === "PEM");
+                                    name="jwksValue"
+                                    label={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.jwksValue.label"
+                                    )}
+                                    required={false}
+                                    requiredErrorMessage={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.jwksValue.validations.empty"
+                                    )}
+                                    placeholder={t(
+                                        "console:develop.features.applications.forms.advancedConfig" +
+                                            ".sections.certificate.fields.jwksValue.placeholder"
+                                    )}
+                                    type="text"
+                                    validation={(value: string, validation: Validation) => {
+                                        if (!FormValidation.url(value)) {
+                                            validation.isValid = false;
+                                            validation.errorMessages.push(
+                                                t(
+                                                    "console:develop.features.applications.forms" +
+                                                        ".advancedConfig.sections.certificate.fields." +
+                                                        "jwksValue.validations.invalid"
+                                                )
+                                            );
                                         }
-                                    }
-                                    type="radio"
-                                    value={ certificate?.type }
-                                    children={ [
-                                        {
-                                            label: t("console:develop.features.applications.forms." +
-                                                "advancedConfig.sections.certificate.fields.type.children.jwks.label"),
-                                            value: CertificateTypeInterface.JWKS
-                                        },
-                                        {
-                                            label: t("console:develop.features.applications.forms." +
-                                                "advancedConfig.sections.certificate.fields.type.children.pem.label"),
-                                            value: CertificateTypeInterface.PEM
-                                        }
-                                    ] }
-                                    readOnly={ readOnly }
-                                    data-testid={ `${ testId }-certificate-type-radio-group` }
+                                    }}
+                                    value={CertificateTypeInterface.JWKS === certificate?.type && certificate?.value}
+                                    readOnly={readOnly}
+                                    data-testid={`${testId}-jwks-input`}
                                 />
-                            </Grid.Column>
-                        </Grid.Row>
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                {
-                                    isPEMSelected
-                                        ?
-                                        (
-                                            <>
-                                                <Field
-                                                    name="certificateValue"
-                                                    label={
-                                                        t("console:develop.features.applications.forms.advancedConfig" +
-                                                            ".sections.certificate.fields.pemValue.label")
-                                                    }
-                                                    required={ false }
-                                                    requiredErrorMessage={
-                                                        t("console:develop.features.applications.forms.advancedConfig" +
-                                                            ".sections.certificate.fields.pemValue.validations.empty")
-                                                    }
-                                                    placeholder={
-                                                        ApplicationManagementConstants.PEM_CERTIFICATE_PLACEHOLDER
-                                                    }
-                                                    type="textarea"
-                                                    value={
-                                                        (CertificateTypeInterface.PEM === certificate?.type)
-                                                        && certificate?.value
-                                                    }
-                                                    listen={
-                                                        (values) => {
-                                                            setPEMValue(
-                                                                values.get("certificateValue") as string
-                                                            );
-                                                        }
-                                                    }
-                                                    readOnly={ readOnly }
-                                                    data-testid={ `${ testId }-certificate-textarea` }
-                                                />
-                                                < Hint>
-                                                    {
-                                                        t("console:develop.features.applications.forms." +
-                                                            "advancedConfig.sections.certificate.fields.pemValue.hint")
-                                                    }
-                                                </Hint>
-                                                <LinkButton
-                                                    className="certificate-info-link-button"
-                                                    onClick={ (e: MouseEvent<HTMLButtonElement>) => {
-                                                        e.preventDefault();
-                                                        viewCertificate();
-                                                    } }
-                                                    disabled={ isEmpty(PEMValue) }
-                                                    data-testid={ `${ testId }-certificate-info-button` }
-                                                >
-                                                    {
-                                                        t("console:develop.features.applications.forms." +
-                                                            "advancedConfig.sections.certificate.fields.pemValue." +
-                                                            "actions.view")
-                                                    }
-                                                </LinkButton>
-                                            </>
-                                        )
-                                        : (
-                                            <>
-                                                <Field
-                                                    name="jwksValue"
-                                                    label={
-                                                        t("console:develop.features.applications.forms.advancedConfig" +
-                                                            ".sections.certificate.fields.jwksValue.label")
-                                                    }
-                                                    required={ false }
-                                                    requiredErrorMessage={
-                                                        t("console:develop.features.applications.forms.advancedConfig" +
-                                                            ".sections.certificate.fields.jwksValue.validations.empty")
-                                                    }
-                                                    placeholder={
-                                                        t("console:develop.features.applications.forms.advancedConfig" +
-                                                            ".sections.certificate.fields.jwksValue.placeholder") }
-                                                    type="text"
-                                                    validation={ (value: string, validation: Validation) => {
-                                                        if (!FormValidation.url(value)) {
-                                                            validation.isValid = false;
-                                                            validation.errorMessages.push(
-                                                                t(
-                                                                    "console:develop.features.applications.forms" +
-                                                                    ".advancedConfig.sections.certificate.fields." +
-                                                                    "jwksValue.validations.invalid"
-                                                                )
-                                                            );
-                                                        }
-                                                    } }
-                                                    value={
-                                                        (CertificateTypeInterface.JWKS === certificate?.type)
-                                                        && certificate?.value
-                                                    }
-                                                    readOnly={ readOnly }
-                                                    data-testid={ `${ testId }-jwks-input` }
-                                                />
-                                            </>
-                                        )
-                                }
-                            </Grid.Column>
-                        </Grid.Row>
-                        {
-                            showCertificateModal && (
-                                <CertificateFormFieldModal
-                                    open={ showCertificateModal }
-                                    certificate={ certificateDisplay }
-                                    onClose={ () => {
-                                        setShowCertificateModal(false);
-                                    } }
-                                />
-                            )
-                        }
-                        {
-                            !readOnly && (
-                                <Grid.Row columns={ 1 }>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                        <Button
-                                            primary
-                                            type="submit"
-                                            size="small"
-                                            className="form-button"
-                                            data-testid={ `${ testId }-submit-button` }
-                                            loading={ isLoading }
-                                            disabled={ isLoading }
-                                        >
-                                            { t("common:update") }
-                                        </Button>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            )
-                        }
-                    </Grid>
-                </Forms>
-            )
-            : null
-    );
+                            </>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+                {showCertificateModal && (
+                    <CertificateFormFieldModal
+                        open={showCertificateModal}
+                        certificate={certificateDisplay}
+                        onClose={() => {
+                            setShowCertificateModal(false);
+                        }}
+                    />
+                )}
+                {!readOnly && (
+                    <Grid.Row columns={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={16}>
+                            <Button
+                                primary
+                                type="submit"
+                                size="small"
+                                className="form-button"
+                                data-testid={`${testId}-submit-button`}
+                                loading={isLoading}
+                                disabled={isLoading}
+                            >
+                                {t("common:update")}
+                            </Button>
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
+            </Grid>
+        </Forms>
+    ) : null;
 };
 
 /**

@@ -28,6 +28,9 @@ import {
     SBACInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import { ConfirmationModal, ContentLoader, EmphasizedSegment } from "@wso2is/react-components";
 import { useOIDCScopesList } from "apps/console/src/features/oidc-scopes/api/oidc-scopes";
 import {
@@ -47,9 +50,9 @@ import { AttributeSelection } from "./attribute-selection";
 import { AttributeSelectionOIDC } from "./attribute-selection-oidc";
 import { RoleMapping } from "./role-mapping";
 import { applicationConfig } from "../../../../../extensions";
-import { AccessControlConstants } from "../../../../feature-access-control/constants/access-control";
+// import { AccessControlConstants } from "../../../../feature-access-control/constants/access-control";
+import { AccessControlConstants } from "../../../../access-control/constants/access-control";
 import { getAllExternalClaims, getAllLocalClaims, getDialects } from "../../../../claims/api";
-import { AppState, EventPublisher, FeatureConfigInterface } from "../../../../core";
 import { SubjectAttributeListItem } from "../../../../identity-providers/components/settings";
 import { updateAuthProtocolConfig, updateClaimConfiguration } from "../../../api/";
 import {

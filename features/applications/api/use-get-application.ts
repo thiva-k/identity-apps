@@ -16,10 +16,10 @@
  * under the License.
  */
 
+import useRequest, { RequestErrorInterface, RequestResultInterface } from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
 import { AxiosRequestConfig } from "axios";
 import { HttpMethods } from "modules/core/src/models";
-import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
 import { ApplicationInterface } from "../models/application";
 
 /**
@@ -33,14 +33,13 @@ export const useGetApplication = <Data = ApplicationInterface, Error = RequestEr
     id: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.applications }/${ id }`
+        url: `${store.getState().config.endpoints.applications}/${id}`
     };
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);

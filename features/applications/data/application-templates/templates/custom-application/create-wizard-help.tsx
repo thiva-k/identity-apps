@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -24,7 +25,7 @@ import { useTranslation } from "react-i18next";
 /**
  * Prop types of the component.
  */
-type CustomApplicationCreateWizardHelpPropsInterface = TestableComponentInterface
+type CustomApplicationCreateWizardHelpPropsInterface = TestableComponentInterface;
 
 /**
  * Help content for the custom application template creation wizard.
@@ -35,26 +36,29 @@ type CustomApplicationCreateWizardHelpPropsInterface = TestableComponentInterfac
 const CustomApplicationCreateWizardHelp: FunctionComponent<CustomApplicationCreateWizardHelpPropsInterface> = (
     props: CustomApplicationCreateWizardHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     return (
-        <div data-testid={ testId }>
+        <div data-testid={testId}>
             <Heading as="h5">
-                { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                    ".heading.title") }
+                {t(
+                    "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                        ".heading.title"
+                )}
             </Heading>
             <p>
-                { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                    ".heading.subTitle") }
+                {t(
+                    "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                        ".heading.subTitle"
+                )}
             </p>
             <p>
-                { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                    ".heading.example") }
+                {t(
+                    "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                        ".heading.example"
+                )}
             </p>
         </div>
     );

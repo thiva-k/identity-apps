@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2021, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -20,6 +21,8 @@ import { CertificateManagementConstants } from "@wso2is/core/constants";
 import { AlertLevels, CertificateValidity, DisplayCertificate, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { CertificateManagementUtils } from "@wso2is/core/utils";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
 import { Forms } from "@wso2is/forms";
 import {
     ConfirmationModal,
@@ -36,7 +39,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Divider, Grid, Icon, Segment, SemanticCOLORS, SemanticICONS } from "semantic-ui-react";
 import { AddApplicationCertificateWizard } from "./add-certificate-wizard";
-import { UIConstants, getEmptyPlaceholderIllustrations } from "../../../../core";
 import { updateApplicationDetails } from "../../../api";
 import { ApplicationInterface, CertificateTypeInterface } from "../../../models";
 import { CertificateFormFieldModal } from "../../modals";
@@ -72,7 +74,6 @@ interface ApplicationCertificatesPropsListInterface extends TestableComponentInt
 export const ApplicationCertificatesListComponent: FunctionComponent<ApplicationCertificatesPropsListInterface> = (
     props: ApplicationCertificatesPropsListInterface
 ): ReactElement => {
-
     const {
         deleteAllowed,
         reasonInsideTooltipWhyDeleteIsNotAllowed,
@@ -80,18 +81,18 @@ export const ApplicationCertificatesListComponent: FunctionComponent<Application
         application,
         applicationCertificate,
         updatePEMValue,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
-    const [ certificates, setCertificates ] = useState<DisplayCertificate[]>(null);
-    const [ certificateModal, setCertificateModal ] = useState<boolean>(false);
-    const [ certificateDisplay, setCertificateDisplay ] = useState<DisplayCertificate>(null);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ showCertificateDeleteConfirmation, setShowCertificateDeleteConfirmation ] = useState<boolean>(false);
-    const [ ongoingDeleteRequest, setOngoingDeleteRequest ] = useState<boolean>(false);
+    const [certificates, setCertificates] = useState<DisplayCertificate[]>(null);
+    const [certificateModal, setCertificateModal] = useState<boolean>(false);
+    const [certificateDisplay, setCertificateDisplay] = useState<DisplayCertificate>(null);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [showCertificateDeleteConfirmation, setShowCertificateDeleteConfirmation] = useState<boolean>(false);
+    const [ongoingDeleteRequest, setOngoingDeleteRequest] = useState<boolean>(false);
 
     useEffect(() => {
         if (applicationCertificate) {
@@ -104,20 +105,20 @@ export const ApplicationCertificatesListComponent: FunctionComponent<Application
             }
             setCertificates(certificatesList);
         }
-    }, [ applicationCertificate ]);
+    }, [applicationCertificate]);
 
     useEffect(() => {
         if (!certificateDisplay) {
             return;
         }
         setCertificateModal(true);
-    }, [ certificateDisplay ]);
+    }, [certificateDisplay]);
 
     useEffect(() => {
         if (!certificateModal) {
             setCertificateDisplay(null);
         }
-    }, [ certificateModal ]);
+    }, [certificateModal]);
 
     /**
      * Show the certificate details.
@@ -128,7 +129,6 @@ export const ApplicationCertificatesListComponent: FunctionComponent<Application
     };
 
     const deleteCertificate = async (): Promise<void> => {
-
         const EMPTY_STRING = "";
 
         setOngoingDeleteRequest(true);
@@ -149,62 +149,70 @@ export const ApplicationCertificatesListComponent: FunctionComponent<Application
 
             await updateApplicationDetails({
                 id: application?.id,
-                ...(patchObject.general)
+                ...patchObject.general
             });
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.notifications" +
-                    ".deleteCertificateSuccess.description"),
-                level: AlertLevels.SUCCESS,
-                message: t("console:develop.features.applications.notifications" +
-                    ".deleteCertificateSuccess.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.notifications" + ".deleteCertificateSuccess.description"
+                    ),
+                    level: AlertLevels.SUCCESS,
+                    message: t(
+                        "console:develop.features.applications.notifications" + ".deleteCertificateSuccess.message"
+                    )
+                })
+            );
         } catch (error) {
             if (error.response && error.response.data && error.response.data.description) {
-                dispatch(addAlert({
-                    description: error.response.data.description,
-                    level: AlertLevels.ERROR,
-                    message: error.response.data.message
-                }));
+                dispatch(
+                    addAlert({
+                        description: error.response.data.description,
+                        level: AlertLevels.ERROR,
+                        message: error.response.data.message
+                    })
+                );
 
                 return;
             }
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.notifications" +
-                    ".deleteCertificateGenericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.notifications." +
-                    "deleteCertificateGenericError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.notifications" +
+                            ".deleteCertificateGenericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "console:develop.features.applications.notifications." + "deleteCertificateGenericError.message"
+                    )
+                })
+            );
         } finally {
             setShowCertificateDeleteConfirmation(false);
             setOngoingDeleteRequest(false);
             onUpdate(application.id);
         }
-
     };
 
     const DeleteCertConfirmationModal: ReactElement = (
         <ConfirmationModal
-            onClose={ (): void => setShowCertificateDeleteConfirmation(false) }
-            onSecondaryActionClick={ (): void => setShowCertificateDeleteConfirmation(false) }
-            primaryActionLoading={ ongoingDeleteRequest }
-            onPrimaryActionClick={ deleteCertificate }
-            open={ showCertificateDeleteConfirmation }
+            onClose={(): void => setShowCertificateDeleteConfirmation(false)}
+            onSecondaryActionClick={(): void => setShowCertificateDeleteConfirmation(false)}
+            primaryActionLoading={ongoingDeleteRequest}
+            onPrimaryActionClick={deleteCertificate}
+            open={showCertificateDeleteConfirmation}
             type="negative"
-            primaryAction={ t("console:develop.features.applications.confirmations.certificateDelete.primaryAction") }
-            secondaryAction={ t("console:develop.features.applications.confirmations" +
-                ".certificateDelete.secondaryAction") }
-            data-testid={ `${ testId }-delete-confirmation-modal` }
-            closeOnDimmerClick={ false }>
-            <ConfirmationModal.Header
-                data-testid={ `${ testId }-delete-confirmation-modal-header` }>
-                { t("console:develop.features.applications.confirmations.certificateDelete.header") }
+            primaryAction={t("console:develop.features.applications.confirmations.certificateDelete.primaryAction")}
+            secondaryAction={t(
+                "console:develop.features.applications.confirmations" + ".certificateDelete.secondaryAction"
+            )}
+            data-testid={`${testId}-delete-confirmation-modal`}
+            closeOnDimmerClick={false}
+        >
+            <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                {t("console:develop.features.applications.confirmations.certificateDelete.header")}
             </ConfirmationModal.Header>
-            <ConfirmationModal.Message
-                attached
-                negative
-                data-testid={ `${ testId }-delete-confirmation-modal-message` }>
-                { t("console:develop.features.applications.confirmations.certificateDelete.message") }
+            <ConfirmationModal.Message attached negative data-testid={`${testId}-delete-confirmation-modal-message`}>
+                {t("console:develop.features.applications.confirmations.certificateDelete.message")}
             </ConfirmationModal.Message>
         </ConfirmationModal>
     );
@@ -217,17 +225,15 @@ export const ApplicationCertificatesListComponent: FunctionComponent<Application
      * @param issuer - Issuer.
      */
     const createValidityLabel = (validFrom: Date, validTill: Date, issuer: string): ReactElement => {
-
         let icon: SemanticICONS;
         let iconColor: SemanticCOLORS;
 
         const expiryDate = moment(validTill);
 
-        const validity: CertificateValidity = CertificateManagementUtils
-            .determineCertificateValidityState({
-                from: validFrom,
-                to: validTill
-            });
+        const validity: CertificateValidity = CertificateManagementUtils.determineCertificateValidityState({
+            from: validFrom,
+            to: validTill
+        });
 
         switch (validity) {
             case CertificateValidity.VALID: {
@@ -250,17 +256,16 @@ export const ApplicationCertificatesListComponent: FunctionComponent<Application
 
         return (
             <React.Fragment>
-                { issuer + CertificateManagementConstants.SPACE_CHARACTER }
+                {issuer + CertificateManagementConstants.SPACE_CHARACTER}
                 <Popup
-                    trigger={ <Icon name={ icon } color={ iconColor }/> }
-                    content={ "Expiry date: " + expiryDate.format("DD/MM/YYYY") }
+                    trigger={<Icon name={icon} color={iconColor} />}
+                    content={"Expiry date: " + expiryDate.format("DD/MM/YYYY")}
                     inverted
                     position="top left"
                     size="mini"
                 />
             </React.Fragment>
         );
-
     };
 
     /**
@@ -292,14 +297,10 @@ export const ApplicationCertificatesListComponent: FunctionComponent<Application
             <span className="with-muted-list-item-header">
                 Unable to visualize the certificate details&nbsp;
                 <Popup
-                    trigger={ (
-                        <Icon
-                            onClick={ () => handleViewCertificate(certificate) }
-                            name={ "info circle" }
-                            color={ "grey" }
-                        />
-                    ) }
-                    content={ "Click for more info" }
+                    trigger={
+                        <Icon onClick={() => handleViewCertificate(certificate)} name={"info circle"} color={"grey"} />
+                    }
+                    content={"Click for more info"}
                     inverted
                     position="top left"
                     size="mini"
@@ -310,139 +311,142 @@ export const ApplicationCertificatesListComponent: FunctionComponent<Application
 
     return (
         <Forms>
-            {
-                certificates ? (
-                    <Grid>
-                        <Grid.Row>
-                            <Grid.Column width={ 16 }>
-                                <Divider hidden/>
-                                <ResourceList
-                                    fill
-                                    relaxed={ false }
-                                    className="application-list"
-                                    loadingStateOptions={ {
-                                        count: UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
-                                        imageType: "circular"
-                                    } }
-                                >
-                                    {
-                                        certificates?.map((certificate, index) => (
-                                            <ResourceListItem
-                                                key={ index }
-                                                actionsColumnWidth={ 3 }
-                                                descriptionColumnWidth={ 9 }
-                                                actions={ [
-                                                    {
-                                                        "data-testid": `${ testId }-edit-cert-${ index }-button`,
-                                                        icon: "pencil",
-                                                        onClick: () => setShowWizard(true),
-                                                        popupText: "Change certificate",
-                                                        type: "button"
-                                                    },
-                                                    {
-                                                        "data-testid": `${ testId }-edit-cert-${ index }-button`,
-                                                        disabled: certificate?.infoUnavailable,
-                                                        hidden: certificate?.infoUnavailable,
-                                                        icon: "eye",
-                                                        onClick: () => handleViewCertificate(certificate),
-                                                        popupText: "View certificate",
-                                                        type: "button"
-                                                    },
-                                                    {
-                                                        "data-testid": `${ testId }-delete-cert-${ index }-button`,
-                                                        disabled: !deleteAllowed,
-                                                        icon: "trash alternate",
-                                                        onClick: () => setShowCertificateDeleteConfirmation(true),
-                                                        popupText: deleteAllowed
-                                                            ? t("console:manage.features.users.usersList.list." +
-                                                                "iconPopups.delete")
-                                                            : reasonInsideTooltipWhyDeleteIsNotAllowed,
-                                                        type: "button"
-                                                    }
-                                                ] }
-                                                actionsFloated="right"
-                                                avatar={ createCertificateResourceAvatar(certificate) }
-                                                itemHeader={
-                                                    certificate?.infoUnavailable
-                                                        ? createDummyValidityLabel(certificate)
-                                                        : createValidityLabel(
-                                                            certificate.validFrom,
-                                                            certificate.validTill,
-                                                            CertificateManagementUtils.searchIssuerDNAlias(
-                                                                certificate?.issuerDN
-                                                            ))
-
-                                                }
-                                                itemDescription={
-                                                    certificate?.infoUnavailable
-                                                        ? null
-                                                        : CertificateManagementUtils
-                                                            .getValidityPeriodInHumanReadableFormat(
-                                                                certificate.validFrom,
-                                                                certificate.validTill
-                                                            )
-                                                }
-                                            />
-                                        ))
-                                    }
-                                </ResourceList>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                ) : (
-                    <Grid>
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column width={ 16 }>
-                                <Divider hidden/>
-                                <Segment>
-                                    <EmptyPlaceholder
-                                        title={ t("console:develop.features.applications.wizards." +
-                                            "applicationCertificateWizard.emptyPlaceHolder.title") }
-                                        image={ getEmptyPlaceholderIllustrations().emptyList }
-                                        subtitle={ [
-                                            t("console:develop.features.applications.wizards." +
-                                                "applicationCertificateWizard.emptyPlaceHolder.description1"),
-                                            t("console:develop.features.applications.wizards." +
-                                                "applicationCertificateWizard.emptyPlaceHolder.description2")
-                                        ] }
-                                        imageSize="tiny"
-                                        action={ (
-                                            <PrimaryButton
-                                                onClick={ () => setShowWizard(true) }
-                                                data-testid={ `${testId}-emptyPlaceholder-add-certificate-button` }
-                                                type="button"
-                                            >
-                                                <Icon name="add"/>
-                                                { t("console:develop.features.authenticationProvider" +
-                                                    ".buttons.addCertificate") }
-                                            </PrimaryButton>
-                                        ) }
-                                        data-testid={ `${testId}-empty-placeholder` }
+            {certificates ? (
+                <Grid>
+                    <Grid.Row>
+                        <Grid.Column width={16}>
+                            <Divider hidden />
+                            <ResourceList
+                                fill
+                                relaxed={false}
+                                className="application-list"
+                                loadingStateOptions={{
+                                    count: UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
+                                    imageType: "circular"
+                                }}
+                            >
+                                {certificates?.map((certificate, index) => (
+                                    <ResourceListItem
+                                        key={index}
+                                        actionsColumnWidth={3}
+                                        descriptionColumnWidth={9}
+                                        actions={[
+                                            {
+                                                "data-testid": `${testId}-edit-cert-${index}-button`,
+                                                icon: "pencil",
+                                                onClick: () => setShowWizard(true),
+                                                popupText: "Change certificate",
+                                                type: "button"
+                                            },
+                                            {
+                                                "data-testid": `${testId}-edit-cert-${index}-button`,
+                                                disabled: certificate?.infoUnavailable,
+                                                hidden: certificate?.infoUnavailable,
+                                                icon: "eye",
+                                                onClick: () => handleViewCertificate(certificate),
+                                                popupText: "View certificate",
+                                                type: "button"
+                                            },
+                                            {
+                                                "data-testid": `${testId}-delete-cert-${index}-button`,
+                                                disabled: !deleteAllowed,
+                                                icon: "trash alternate",
+                                                onClick: () => setShowCertificateDeleteConfirmation(true),
+                                                popupText: deleteAllowed
+                                                    ? t(
+                                                          "console:manage.features.users.usersList.list." +
+                                                              "iconPopups.delete"
+                                                      )
+                                                    : reasonInsideTooltipWhyDeleteIsNotAllowed,
+                                                type: "button"
+                                            }
+                                        ]}
+                                        actionsFloated="right"
+                                        avatar={createCertificateResourceAvatar(certificate)}
+                                        itemHeader={
+                                            certificate?.infoUnavailable
+                                                ? createDummyValidityLabel(certificate)
+                                                : createValidityLabel(
+                                                      certificate.validFrom,
+                                                      certificate.validTill,
+                                                      CertificateManagementUtils.searchIssuerDNAlias(
+                                                          certificate?.issuerDN
+                                                      )
+                                                  )
+                                        }
+                                        itemDescription={
+                                            certificate?.infoUnavailable
+                                                ? null
+                                                : CertificateManagementUtils.getValidityPeriodInHumanReadableFormat(
+                                                      certificate.validFrom,
+                                                      certificate.validTill
+                                                  )
+                                        }
                                     />
-                                </Segment>
-                                <Divider hidden/>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                )
-            }
-            {
-                showWizard && (
-                    <AddApplicationCertificateWizard
-                        closeWizard={ () => setShowWizard(false) }
-                        updatePEMValue={ updatePEMValue }
-                        data-testid={ `${ testId }-add-certificate-wizard` }
-                    />
-                )
-            }
-            { DeleteCertConfirmationModal }
-            { certificateModal && (
-                <CertificateFormFieldModal
-                    open={ certificateModal }
-                    certificate={ certificateDisplay }
-                    onClose={ () => setCertificateModal(false) }
+                                ))}
+                            </ResourceList>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            ) : (
+                <Grid>
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={16}>
+                            <Divider hidden />
+                            <Segment>
+                                <EmptyPlaceholder
+                                    title={t(
+                                        "console:develop.features.applications.wizards." +
+                                            "applicationCertificateWizard.emptyPlaceHolder.title"
+                                    )}
+                                    image={getEmptyPlaceholderIllustrations().emptyList}
+                                    subtitle={[
+                                        t(
+                                            "console:develop.features.applications.wizards." +
+                                                "applicationCertificateWizard.emptyPlaceHolder.description1"
+                                        ),
+                                        t(
+                                            "console:develop.features.applications.wizards." +
+                                                "applicationCertificateWizard.emptyPlaceHolder.description2"
+                                        )
+                                    ]}
+                                    imageSize="tiny"
+                                    action={
+                                        <PrimaryButton
+                                            onClick={() => setShowWizard(true)}
+                                            data-testid={`${testId}-emptyPlaceholder-add-certificate-button`}
+                                            type="button"
+                                        >
+                                            <Icon name="add" />
+                                            {t(
+                                                "console:develop.features.authenticationProvider" +
+                                                    ".buttons.addCertificate"
+                                            )}
+                                        </PrimaryButton>
+                                    }
+                                    data-testid={`${testId}-empty-placeholder`}
+                                />
+                            </Segment>
+                            <Divider hidden />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            )}
+            {showWizard && (
+                <AddApplicationCertificateWizard
+                    closeWizard={() => setShowWizard(false)}
+                    updatePEMValue={updatePEMValue}
+                    data-testid={`${testId}-add-certificate-wizard`}
                 />
-            ) }
+            )}
+            {DeleteCertConfirmationModal}
+            {certificateModal && (
+                <CertificateFormFieldModal
+                    open={certificateModal}
+                    certificate={certificateDisplay}
+                    onClose={() => setCertificateModal(false)}
+                />
+            )}
         </Forms>
     );
 };

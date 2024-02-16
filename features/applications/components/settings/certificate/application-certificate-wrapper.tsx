@@ -91,7 +91,6 @@ interface ApplicationWrapperCertificatesPropsInterface extends TestableComponent
 export const ApplicationCertificateWrapper: FunctionComponent<ApplicationWrapperCertificatesPropsInterface> = (
     props: ApplicationWrapperCertificatesPropsInterface
 ): ReactElement => {
-
     const {
         protocol,
         deleteAllowed,
@@ -112,23 +111,22 @@ export const ApplicationCertificateWrapper: FunctionComponent<ApplicationWrapper
     const { t } = useTranslation();
     const dispatch: Dispatch<any> = useDispatch();
 
-    const [ certEmpty, setCertEmpty ] = useState(false);
-    const [ selectedCertType, setSelectedCertType ] = useState<CertificateTypeInterface>(CertificateTypeInterface.NONE);
-    const [ PEMValue, setPEMValue ] = useState<string>(undefined);
-    const [ JWKSValue, setJWKSValue ] = useState<string>(undefined);
-    const [ showInvalidOperationModal, setShowInvalidOperationModal ] = useState<boolean>(false);
-    const [ showCertificateRemovalWarning, setShowCertificateRemovalWarning ] = useState<boolean>(false);
-    const [ isM2MApplication, setM2MApplication ] = useState<boolean>(false);
+    const [certEmpty, setCertEmpty] = useState(false);
+    const [selectedCertType, setSelectedCertType] = useState<CertificateTypeInterface>(CertificateTypeInterface.NONE);
+    const [PEMValue, setPEMValue] = useState<string>(undefined);
+    const [JWKSValue, setJWKSValue] = useState<string>(undefined);
+    const [showInvalidOperationModal, setShowInvalidOperationModal] = useState<boolean>(false);
+    const [showCertificateRemovalWarning, setShowCertificateRemovalWarning] = useState<boolean>(false);
+    const [isM2MApplication, setM2MApplication] = useState<boolean>(false);
 
     /**
      * Set the certificate type
      */
-    useEffect(()=> {
-        if (certificate?.type){
+    useEffect(() => {
+        if (certificate?.type) {
             setSelectedCertType(certificate?.type);
         }
-
-    }, [ certificate ]);
+    }, [certificate]);
 
     /**
      * Set PEM value.
@@ -142,7 +140,7 @@ export const ApplicationCertificateWrapper: FunctionComponent<ApplicationWrapper
         } else if (CertificateTypeInterface.JWKS === selectedCertType) {
             updateCertFinalValue(JWKSValue);
         }
-    }, [ PEMValue, JWKSValue ]);
+    }, [PEMValue, JWKSValue]);
 
     /**
      * Set initial PEM values.
@@ -157,7 +155,7 @@ export const ApplicationCertificateWrapper: FunctionComponent<ApplicationWrapper
                 setJWKSValue(certificate.value);
             }
         }
-    }, [ certificate ]);
+    }, [certificate]);
 
     /**
      * Change related to cert type changne.
@@ -169,18 +167,16 @@ export const ApplicationCertificateWrapper: FunctionComponent<ApplicationWrapper
         } else if (CertificateTypeInterface.JWKS === selectedCertType) {
             setPEMValue("");
         }
-    }, [ selectedCertType ]);
+    }, [selectedCertType]);
 
     /**
      * Set Is M2M Application
      */
-    useEffect(()=> {
-
+    useEffect(() => {
         if (application?.templateId === ApplicationTemplateIdTypes.M2M_APPLICATION) {
             setM2MApplication(true);
         }
-
-    }, [ application ]);
+    }, [application]);
 
     /**
      * The following function handle the certificate type change.
@@ -189,20 +185,31 @@ export const ApplicationCertificateWrapper: FunctionComponent<ApplicationWrapper
      */
     const handleCertificateTypeChange = (certType: CertificateTypeInterface): void => {
         if (certType === CertificateTypeInterface.PEM && !isEmpty(JWKSValue)) {
-            dispatch(addAlert({
-                description: t("console:develop.features.authenticationProvider.notifications." +
-                    "changeCertType.pem.description"),
-                level: AlertLevels.WARNING,
-                message: t("console:develop.features.authenticationProvider.notifications." +
-                    "changeCertType.pem.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.authenticationProvider.notifications." +
+                            "changeCertType.pem.description"
+                    ),
+                    level: AlertLevels.WARNING,
+                    message: t(
+                        "console:develop.features.authenticationProvider.notifications." + "changeCertType.pem.message"
+                    )
+                })
+            );
         } else if (certType === CertificateTypeInterface.JWKS && !isEmpty(PEMValue)) {
-            dispatch(addAlert({
-                description: t("console:develop.features.authenticationProvider.notifications.changeCertType.jwks" +
-                    ".description"),
-                level: AlertLevels.WARNING,
-                message: t("console:develop.features.authenticationProvider.notifications.changeCertType.jwks.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.authenticationProvider.notifications.changeCertType.jwks" +
+                            ".description"
+                    ),
+                    level: AlertLevels.WARNING,
+                    message: t(
+                        "console:develop.features.authenticationProvider.notifications.changeCertType.jwks.message"
+                    )
+                })
+            );
         }
 
         // Open up a warning message to inform the user that, by changing certificate type to NONE
@@ -228,18 +235,25 @@ export const ApplicationCertificateWrapper: FunctionComponent<ApplicationWrapper
             case SupportedAuthProtocolTypes.OIDC:
                 return (
                     <Trans
-                        i18nKey={ "console:develop.features.applications.forms." +
-                        "advancedConfig.sections.certificate.hint.customOidc" }>
+                        i18nKey={
+                            "console:develop.features.applications.forms." +
+                            "advancedConfig.sections.certificate.hint.customOidc"
+                        }
+                    >
                         This certificate is used to encrypt the <Code>id_token</Code>
                         returned after the authentication.
                     </Trans>
                 );
             case SupportedAuthProtocolTypes.SAML:
-                return t("console:develop.features.applications.forms.advancedConfig" +
-                    ".sections.certificate.hint.customSaml");
+                return t(
+                    "console:develop.features.applications.forms.advancedConfig" +
+                        ".sections.certificate.hint.customSaml"
+                );
             case SupportedAuthProtocolTypes.WS_FEDERATION:
-                return t("console:develop.features.applications.forms.advancedConfig" +
-                    ".sections.certificate.hint.customPassiveSTS");
+                return t(
+                    "console:develop.features.applications.forms.advancedConfig" +
+                        ".sections.certificate.hint.customPassiveSTS"
+                );
             default:
                 return null;
         }
@@ -251,252 +265,245 @@ export const ApplicationCertificateWrapper: FunctionComponent<ApplicationWrapper
      */
     const renderInvalidOperationModal = (): ReactElement => (
         <ConfirmationModal
-            onClose={ (): void => setShowInvalidOperationModal(false) }
+            onClose={(): void => setShowInvalidOperationModal(false)}
             type="negative"
-            open={ showInvalidOperationModal }
-            primaryAction={ t("common:okay") }
-            onPrimaryActionClick={ (): void => {
+            open={showInvalidOperationModal}
+            primaryAction={t("common:okay")}
+            onPrimaryActionClick={(): void => {
                 setShowInvalidOperationModal(false);
-            } }
-            closeOnDimmerClick={ false }
+            }}
+            closeOnDimmerClick={false}
         >
-            <ConfirmationModal.Header
-                data-testid={ `${ testId }-invalid-operation-modal-header` }
-            >
-                {
-                    t("console:develop.features.applications.forms." +
-            "advancedConfig.sections.certificate.invalidOperationModal.header") }
+            <ConfirmationModal.Header data-testid={`${testId}-invalid-operation-modal-header`}>
+                {t(
+                    "console:develop.features.applications.forms." +
+                        "advancedConfig.sections.certificate.invalidOperationModal.header"
+                )}
             </ConfirmationModal.Header>
-            <ConfirmationModal.Content
-                data-testid={ `${ testId }-invalid-operation-modal-content` }
-            >
-                { t("console:develop.features.applications.forms." +
-            "advancedConfig.sections.certificate.invalidOperationModal.message") }
+            <ConfirmationModal.Content data-testid={`${testId}-invalid-operation-modal-content`}>
+                {t(
+                    "console:develop.features.applications.forms." +
+                        "advancedConfig.sections.certificate.invalidOperationModal.message"
+                )}
             </ConfirmationModal.Content>
         </ConfirmationModal>
     );
 
-    return (
-        !hidden
-            ? (
-                <Forms
-                    onSubmit={ () => {
-                        handleCertificateTypeChange(selectedCertType);
-                        if (selectedCertType === CertificateTypeInterface.PEM && isEmpty(PEMValue)) {
-                            setCertEmpty(true);
+    return !hidden ? (
+        <Forms
+            onSubmit={() => {
+                handleCertificateTypeChange(selectedCertType);
+                if (selectedCertType === CertificateTypeInterface.PEM && isEmpty(PEMValue)) {
+                    setCertEmpty(true);
+                }
+            }}
+            submitState={triggerSubmit}
+        >
+            <Grid.Row columns={1}>
+                <Grid.Column mobile={16} tablet={16} computer={16}>
+                    <Divider />
+                </Grid.Column>
+                <Grid.Column mobile={16} tablet={16} computer={16}>
+                    <Heading as="h4">
+                        {t(
+                            "console:develop.features.applications.forms." +
+                                "advancedConfig.sections.certificate.heading"
+                        )}
+                    </Heading>
+                    <Field
+                        label={t(
+                            "console:develop.features.applications.forms." +
+                                "advancedConfig.sections.certificate.fields.type.label"
+                        )}
+                        name="certificateType"
+                        default={selectedCertType}
+                        listen={(values: Map<string, FormValue>) => {
+                            setSelectedCertType(values.get("certificateType") as CertificateTypeInterface);
+                            handleCertificateTypeChange(values.get("certificateType") as CertificateTypeInterface);
+                        }}
+                        onBefore={(event: React.SyntheticEvent, value: string) => {
+                            const certType: CertificateTypeInterface = value as CertificateTypeInterface;
+
+                            if (
+                                CertificateTypeInterface.NONE === certType &&
+                                canDiscardCertificate && !canDiscardCertificate()
+                            ) {
+                                setShowInvalidOperationModal(true);
+
+                                return false;
+                            }
+
+                            return true;
+                        }}
+                        type="radio"
+                        value={certificate?.type}
+                        children={
+                            !hideJWKS
+                                ? [
+                                      {
+                                          label: "None",
+                                          value: CertificateTypeInterface.NONE
+                                      },
+                                      {
+                                          hint: {
+                                              content: t(
+                                                  "console:develop.features.applications.forms." +
+                                                      "advancedConfig.sections.certificate.fields.jwksValue.description"
+                                              ),
+                                              header: t(
+                                                  "console:develop.features.applications.forms." +
+                                                      "advancedConfig.sections.certificate.fields.type.children." +
+                                                      "jwks.label"
+                                              )
+                                          },
+                                          label: t(
+                                              "console:develop.features.applications.forms." +
+                                                  "advancedConfig.sections.certificate.fields.type.children.jwks.label"
+                                          ),
+                                          value: CertificateTypeInterface.JWKS
+                                      },
+                                      {
+                                          hint: {
+                                              content: t(
+                                                  "console:develop.features.applications.forms." +
+                                                      "advancedConfig.sections.certificate.fields.pemValue.description"
+                                              ),
+                                              header: t(
+                                                  "console:develop.features.applications.forms." +
+                                                      "advancedConfig.sections.certificate.fields.type.children." +
+                                                      "pem.label"
+                                              )
+                                          },
+                                          label: t(
+                                              "console:develop.features.applications.forms." +
+                                                  "advancedConfig.sections.certificate.fields.type.children.pem.label"
+                                          ),
+                                          value: CertificateTypeInterface.PEM
+                                      }
+                                  ]
+                                : [
+                                      {
+                                          label: "None",
+                                          value: CertificateTypeInterface.NONE
+                                      },
+                                      {
+                                          hint: {
+                                              content: t(
+                                                  "console:develop.features.applications.forms." +
+                                                      "advancedConfig.sections.certificate.fields.pemValue.description"
+                                              ),
+                                              header: t(
+                                                  "console:develop.features.applications.forms." +
+                                                      "advancedConfig.sections.certificate.fields.type.children." +
+                                                      "pem.label"
+                                              )
+                                          },
+                                          label: t(
+                                              "console:develop.features.applications.forms." +
+                                                  "advancedConfig.sections.certificate.fields.type.children.pem.label"
+                                          ),
+                                          value: CertificateTypeInterface.PEM
+                                      }
+                                  ]
                         }
-                    } }
-                    submitState={ triggerSubmit }
-                >
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                            <Divider/>
-                        </Grid.Column>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                            <Heading as="h4">
-                                {
-                                    t("console:develop.features.applications.forms." +
-                                "advancedConfig.sections.certificate.heading") }
-                            </Heading>
-                            <Field
-                                label={
-                                    t("console:develop.features.applications.forms." +
-                                "advancedConfig.sections.certificate.fields.type.label")
-                                }
-                                name="certificateType"
-                                default={ selectedCertType }
-                                listen={
-                                    (values: Map<string, FormValue>) => {
-                                        setSelectedCertType(
-                                    values.get("certificateType") as CertificateTypeInterface
-                                        );
-                                        handleCertificateTypeChange(
-                                            values.get("certificateType") as CertificateTypeInterface
-                                        );
-                                    }
-                                }
-                                onBefore={
-                                    (event: React.SyntheticEvent, value: string) => {
-                                        const certType: CertificateTypeInterface = value as CertificateTypeInterface;
+                        readOnly={readOnly}
+                        data-testid={`${testId}-certificate-type-radio-group`}
+                    />
 
-                                        if(CertificateTypeInterface.NONE === certType &&
-                                            (canDiscardCertificate && !canDiscardCertificate())){
-                                            setShowInvalidOperationModal(true);
-
-                                            return false;
-                                        }
-
-                                        return true;
-                                    }
+                    {showCertificateRemovalWarning && (
+                        <Message
+                            data-componentid="application-certificate-removal-warning-message"
+                            type="warning"
+                            // Semantic hides warning messages inside <form> by default
+                            // Overriding the behaviour here to make sure it renders properly.
+                            header="Warning"
+                            content={
+                                <>
+                                    {t(
+                                        "console:develop.features.applications.forms" +
+                                            ".inboundSAML.sections.certificates" +
+                                            ".certificateRemoveConfirmation.content"
+                                    )}
+                                </>
+                            }
+                        />
+                    )}
+                </Grid.Column>
+            </Grid.Row>
+            <Grid.Row columns={1}>
+                <Grid.Column mobile={16} tablet={16} computer={16}>
+                    {selectedCertType === CertificateTypeInterface.PEM && (
+                        <ApplicationCertificatesListComponent
+                            deleteAllowed={deleteAllowed}
+                            reasonInsideTooltipWhyDeleteIsNotAllowed={reasonInsideTooltipWhyDeleteIsNotAllowed}
+                            onUpdate={onUpdate}
+                            application={application}
+                            updatePEMValue={(val: string) => {
+                                setPEMValue(val);
+                            }}
+                            applicationCertificate={PEMValue}
+                        />
+                    )}
+                    {selectedCertType === CertificateTypeInterface.JWKS && !hideJWKS && (
+                        <Field
+                            name="jwksValue"
+                            displayErrorOn="blur"
+                            label={t(
+                                "console:develop.features.applications.forms.advancedConfig" +
+                                    ".sections.certificate.fields.jwksValue.label"
+                            )}
+                            required={CertificateTypeInterface.JWKS === selectedCertType}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.advancedConfig" +
+                                    ".sections.certificate.fields.jwksValue.validations.empty"
+                            )}
+                            placeholder={t(
+                                "console:develop.features.applications.forms.advancedConfig" +
+                                    ".sections.certificate.fields.jwksValue.placeholder"
+                            )}
+                            type="text"
+                            validation={(value: string, validation: Validation) => {
+                                if (!FormValidation.url(value)) {
+                                    validation.isValid = false;
+                                    validation.errorMessages.push(
+                                        t(
+                                            "console:develop.features.applications.forms" +
+                                                ".advancedConfig.sections.certificate.fields" +
+                                                ".jwksValue.validations.invalid"
+                                        )
+                                    );
                                 }
-                                type="radio"
-                                value={ certificate?.type }
-                                children={ !hideJWKS ? [
-                                    {
-                                        label: "None",
-                                        value: CertificateTypeInterface.NONE
-                                    },
-                                    {
-                                        hint: {
-                                            content: t("console:develop.features.applications.forms." +
-                                            "advancedConfig.sections.certificate.fields.jwksValue.description"),
-                                            header: t("console:develop.features.applications.forms." +
-                                            "advancedConfig.sections.certificate.fields.type.children." +
-                                            "jwks.label")
-                                        },
-                                        label: t("console:develop.features.applications.forms." +
-                                        "advancedConfig.sections.certificate.fields.type.children.jwks.label"),
-                                        value: CertificateTypeInterface.JWKS
-                                    },
-                                    {
-                                        hint: {
-                                            content: t("console:develop.features.applications.forms." +
-                                            "advancedConfig.sections.certificate.fields.pemValue.description"),
-                                            header: t("console:develop.features.applications.forms." +
-                                            "advancedConfig.sections.certificate.fields.type.children." +
-                                            "pem.label")
-                                        },
-                                        label: t("console:develop.features.applications.forms." +
-                                        "advancedConfig.sections.certificate.fields.type.children.pem.label"),
-                                        value: CertificateTypeInterface.PEM
-                                    }
-                                ]
-                                    : [
-                                        {
-                                            label: "None",
-                                            value: CertificateTypeInterface.NONE
-                                        },
-                                        {
-                                            hint: {
-                                                content: t("console:develop.features.applications.forms." +
-                                            "advancedConfig.sections.certificate.fields.pemValue.description"),
-                                                header: t("console:develop.features.applications.forms." +
-                                            "advancedConfig.sections.certificate.fields.type.children." +
-                                            "pem.label")
-                                            },
-                                            label: t("console:develop.features.applications.forms." +
-                                        "advancedConfig.sections.certificate.fields.type.children.pem.label"),
-                                            value: CertificateTypeInterface.PEM
-                                        }
-                                    ]
+                                if (commonConfig?.blockLoopBackCalls && URLUtils.isLoopBackCall(value)) {
+                                    validation.isValid = false;
+                                    validation.errorMessages.push(
+                                        t(
+                                            "console:develop.features.idp.forms.common." +
+                                                "internetResolvableErrorMessage"
+                                        )
+                                    );
                                 }
-                                readOnly={ readOnly }
-                                data-testid={ `${testId}-certificate-type-radio-group` }
-                            />
-
-                            {
-                                showCertificateRemovalWarning && (
-                                    <Message
-                                        data-componentid="application-certificate-removal-warning-message"
-                                        type="warning"
-                                        // Semantic hides warning messages inside <form> by default
-                                        // Overriding the behaviour here to make sure it renders properly.
-                                        header="Warning"
-                                        content={
-                                            (
-                                                <>
-                                                    {
-                                                        t("console:develop.features.applications.forms" +
-                                                            ".inboundSAML.sections.certificates" +
-                                                            ".certificateRemoveConfirmation.content")
-                                                    }
-                                                </>
-                                            )
-                                        }
-                                    />
-                                )
-                            }
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                            {
-                                selectedCertType === CertificateTypeInterface.PEM && (
-                                    <ApplicationCertificatesListComponent
-                                        deleteAllowed={ deleteAllowed }
-                                        reasonInsideTooltipWhyDeleteIsNotAllowed={
-                                            reasonInsideTooltipWhyDeleteIsNotAllowed
-                                        }
-                                        onUpdate={ onUpdate }
-                                        application={ application }
-                                        updatePEMValue={ (val: string) => {
-                                            setPEMValue(val);
-                                        } }
-                                        applicationCertificate={ PEMValue }
-                                    />
-                                )
-                            }
-                            {
-                                selectedCertType === CertificateTypeInterface.JWKS && !hideJWKS && (
-                                    <Field
-                                        name="jwksValue"
-                                        displayErrorOn="blur"
-                                        label={
-                                            t("console:develop.features.applications.forms.advancedConfig" +
-                                                ".sections.certificate.fields.jwksValue.label")
-                                        }
-                                        required={ CertificateTypeInterface.JWKS === selectedCertType }
-                                        requiredErrorMessage={
-                                            t("console:develop.features.applications.forms.advancedConfig" +
-                                                ".sections.certificate.fields.jwksValue.validations.empty")
-                                        }
-                                        placeholder={
-                                            t("console:develop.features.applications.forms.advancedConfig" +
-                                                ".sections.certificate.fields.jwksValue.placeholder") }
-                                        type="text"
-                                        validation={ (value: string, validation: Validation) => {
-                                            if (!FormValidation.url(value)) {
-                                                validation.isValid = false;
-                                                validation.errorMessages.push(
-                                                    t(
-                                                        "console:develop.features.applications.forms" +
-                                                        ".advancedConfig.sections.certificate.fields" +
-                                                        ".jwksValue.validations.invalid"
-                                                    )
-                                                );
-                                            }
-                                            if (commonConfig?.blockLoopBackCalls && URLUtils.isLoopBackCall(value)) {
-                                                validation.isValid = false;
-                                                validation.errorMessages.push(
-                                                    t("console:develop.features.idp.forms.common." +
-                                                        "internetResolvableErrorMessage")
-                                                );
-                                            }
-                                        } }
-                                        listen={
-                                            (values: Map<string, FormValue>) => {
-                                                setJWKSValue(values.get("jwksValue") as string);
-                                            }
-                                        }
-                                        value={
-                                            (CertificateTypeInterface.JWKS === certificate?.type)
-                                            && (certificate?.value)
-                                        }
-                                        readOnly={ readOnly }
-                                        data-testid={ `${ testId }-jwks-input` }
-                                    />
-                                )
-                            }
-                            {
-                                certEmpty
-                                && isEmpty(PEMValue)
-                                && (CertificateTypeInterface.PEM === selectedCertType)
-                                && (
-                                    <Message
-                                        type="error"
-                                        data-testid={ `${ testId }-error-message` }
-                                        content={ t("console:manage.features.certificates.keystore.errorEmpty") }
-                                    />
-                                )
-                            }
-                            { protocol && !isM2MApplication && <Hint>{ resolveHintContent(protocol) }</Hint> }
-                        </Grid.Column>
-                    </Grid.Row>
-                    { showInvalidOperationModal && renderInvalidOperationModal() }
-                </Forms>
-            )
-            : null
-    );
+                            }}
+                            listen={(values: Map<string, FormValue>) => {
+                                setJWKSValue(values.get("jwksValue") as string);
+                            }}
+                            value={CertificateTypeInterface.JWKS === certificate?.type && certificate?.value}
+                            readOnly={readOnly}
+                            data-testid={`${testId}-jwks-input`}
+                        />
+                    )}
+                    {certEmpty && isEmpty(PEMValue) && CertificateTypeInterface.PEM === selectedCertType && (
+                        <Message
+                            type="error"
+                            data-testid={`${testId}-error-message`}
+                            content={t("console:manage.features.certificates.keystore.errorEmpty")}
+                        />
+                    )}
+                    {protocol && !isM2MApplication && <Hint>{resolveHintContent(protocol)}</Hint>}
+                </Grid.Column>
+            </Grid.Row>
+            {showInvalidOperationModal && renderInvalidOperationModal()}
+        </Forms>
+    ) : null;
 };
 
 /**

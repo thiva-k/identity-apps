@@ -17,6 +17,7 @@
  */
 
 import { LinkInterface } from "@wso2is/core/models";
+import { AssociatedRolesInterface } from "@wso2is/feature-roles.common/models";
 import {
     OIDCDataInterface,
     PassiveStsConfigurationInterface,
@@ -24,7 +25,6 @@ import {
     WSTrustConfigurationInterface
 } from "./application-inbound";
 import { GenericAuthenticatorInterface } from "../../identity-providers/models/identity-provider";
-import { AssociatedRolesInterface } from "../../roles/models";
 import { TemplateContentInterface } from "../data/application-templates";
 
 /**
@@ -115,7 +115,7 @@ export interface InboundProtocolsInterface {
 /**
  *  Application interface for Post request.
  */
-export interface MainApplicationInterface  extends ApplicationInterface {
+export interface MainApplicationInterface extends ApplicationInterface {
     inboundProtocolConfiguration?: InboundProtocolsInterface;
 }
 
@@ -209,7 +209,7 @@ export interface ClaimConfigurationInterface {
  *  Acceptable certificate types.
  */
 export enum CertificateTypeInterface {
-    NONE ="None",
+    NONE = "None",
     JWKS = "JWKS",
     PEM = "PEM"
 }
@@ -294,7 +294,7 @@ export interface AuthenticationStepInterface {
 /**
  * Authentication Sequence model.
  */
-export interface AuthenticationSequenceInterface  {
+export interface AuthenticationSequenceInterface {
     type?: AuthenticationSequenceType | string;
     steps?: AuthenticationStepInterface[];
     requestPathAuthenticators?: string[];
@@ -324,7 +324,7 @@ export interface ApplicationTemplateListItemInterface {
     /**
      * Template identifier.
      * ex: "single-page-application"
-    */
+     */
     templateId?: string;
     types?: any[];
     category?: string;
@@ -375,7 +375,7 @@ export interface ApplicationTemplateGroupInterface {
     /**
      * Template group identifier.
      * ex: "traditional-web-application"
-    */
+     */
     templateId?: string;
 }
 
@@ -483,7 +483,7 @@ export enum ApplicationTemplateCategories {
      * Vendor templates.
      * ex: Zoom, Salesforce etc.
      */
-    VENDOR = "VENDOR",
+    VENDOR = "VENDOR"
 }
 
 /**
@@ -526,7 +526,7 @@ export interface AdaptiveAuthTemplatesListInterface {
  * Category name will be the key.
  */
 export interface AdaptiveAuthTemplateCategoryListItemInterface {
-    [ key: string ]: AdaptiveAuthTemplateCategoryInterface;
+    [key: string]: AdaptiveAuthTemplateCategoryInterface;
 }
 
 /**
@@ -560,21 +560,21 @@ export interface AdaptiveAuthTemplateInterface {
  * Adaptive auth template parameters description interface.
  */
 interface AdaptiveAuthTemplateParametersDescriptionInterface {
-    [ key: string ]: string;
+    [key: string]: string;
 }
 
 /**
  * Adaptive auth template default steps description interface.
  */
 interface AdaptiveAuthTemplateDefaultStepsDescriptionInterface {
-    [ key: string ]: string;
+    [key: string]: string;
 }
 
 /**
  * Adaptive auth template default authenticators list interface.
  */
 interface AdaptiveAuthTemplateDefaultAuthenticatorsListInterface {
-    [ key: string ]: AdaptiveAuthTemplateDefaultAuthenticatorInterface;
+    [key: string]: AdaptiveAuthTemplateDefaultAuthenticatorInterface;
 }
 
 /**
@@ -708,7 +708,6 @@ export interface MyAccountPortalStatusInterface {
  * Advanced attribute settings page errors interface.
  */
 export interface AdvanceAttributeSettingsErrorValidationInterface {
-
     /**
      * Sector identifier URI validation error message.
      */
@@ -839,7 +838,7 @@ export enum LoginFlowTypes {
  */
 export enum URLFragmentTypes {
     TAB_INDEX = "tab=",
-    VIEW = "view=",
+    VIEW = "view="
 }
 
 /**
@@ -847,7 +846,7 @@ export enum URLFragmentTypes {
  */
 export enum ApplicationTabTypes {
     GENERAL = "General",
-    PROTOCOL ="protocol",
+    PROTOCOL = "protocol",
     USER_ATTRIBUTES = "user-attributes",
     SIGN_IN_METHOD = "sign-in-method",
     ROLES = "roles",

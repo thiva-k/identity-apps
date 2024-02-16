@@ -16,7 +16,6 @@
  * under the License.
  */
 
-export * from "./app-utils";
 export * from "./common-utils";
 export * from "./filter-list";
 export * from "./help-panel-utils";

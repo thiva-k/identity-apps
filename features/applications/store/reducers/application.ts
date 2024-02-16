@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -42,9 +43,10 @@ const initialState: ApplicationReducerStateInterface = {
  * @param action - Action type.
  * @returns The new state
  */
-export const applicationReducer = (state: ApplicationReducerStateInterface = initialState,
-    action: ApplicationActions): ApplicationReducerStateInterface => {
-
+export const applicationReducer = (
+    state: ApplicationReducerStateInterface = initialState,
+    action: ApplicationActions
+): ApplicationReducerStateInterface => {
     switch (action.type) {
         case ApplicationActionTypes.SET_AVAILABLE_INBOUND_AUTH_PROTOCOL_META:
             return {

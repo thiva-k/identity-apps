@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -18,8 +19,10 @@
 
 import {
     ApplicationTemplateListItemInterface,
-    AuthProtocolMetaListItemInterface, OIDCApplicationConfigurationInterface,
-    OIDCMetadataInterface, SAMLApplicationConfigurationInterface
+    AuthProtocolMetaListItemInterface,
+    OIDCApplicationConfigurationInterface,
+    OIDCMetadataInterface,
+    SAMLApplicationConfigurationInterface
 } from "../../../models";
 
 /**
@@ -68,7 +71,6 @@ export enum ApplicationActionTypes {
      *
      */
     SET_SAML_APPLICATION_CONFIGURATIONS = "SET_SAML_APPLICATION_CONFIGURATIONS"
-
 }
 
 /**
@@ -138,7 +140,8 @@ export interface SetSAMLApplicationConfigurationsActionInterface extends Applica
 /**
  * Export action interfaces.
  */
-export type ApplicationActions = CheckAvailableCustomInboundProtocolsMetaInterface
+export type ApplicationActions =
+    | CheckAvailableCustomInboundProtocolsMetaInterface
     | SetAvailableInboundProtocolsMetaInterface
     | SetAuthProtocolMetaInterface
     | SetApplicationTemplatesActionInterface

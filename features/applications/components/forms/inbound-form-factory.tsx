@@ -104,7 +104,6 @@ interface InboundFormFactoryInterface extends TestableComponentInterface {
 export const InboundFormFactory: FunctionComponent<InboundFormFactoryInterface> = (
     props: InboundFormFactoryInterface
 ): ReactElement => {
-
     const {
         onUpdate,
         application,
@@ -126,117 +125,117 @@ export const InboundFormFactory: FunctionComponent<InboundFormFactoryInterface> 
         containerRef,
         isDefaultApplication,
         isSystemApplication,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     switch (type) {
         case SupportedAuthProtocolTypes.OIDC:
             return (
                 <InboundOIDCForm
-                    onUpdate={ onUpdate }
-                    application={ application }
-                    isLoading={ isLoading }
-                    setIsLoading={ setIsLoading }
-                    certificate={ certificate }
-                    tenantDomain={ tenantDomain }
-                    allowedOriginList={ allowedOrigins }
-                    initialValues={ initialValues }
-                    metadata={ metadata }
-                    onSubmit={ onSubmit }
-                    onApplicationRegenerate={ onApplicationRegenerate }
-                    onApplicationRevoke={ onApplicationRevoke }
-                    readOnly={ readOnly }
-                    template={ template }
-                    data-testid={ testId }
-                    containerRef={ containerRef }
-                    isDefaultApplication={ isDefaultApplication }
-                    isSystemApplication={ isSystemApplication }
+                    onUpdate={onUpdate}
+                    application={application}
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
+                    certificate={certificate}
+                    tenantDomain={tenantDomain}
+                    allowedOriginList={allowedOrigins}
+                    initialValues={initialValues}
+                    metadata={metadata}
+                    onSubmit={onSubmit}
+                    onApplicationRegenerate={onApplicationRegenerate}
+                    onApplicationRevoke={onApplicationRevoke}
+                    readOnly={readOnly}
+                    template={template}
+                    data-testid={testId}
+                    containerRef={containerRef}
+                    isDefaultApplication={isDefaultApplication}
+                    isSystemApplication={isSystemApplication}
                 />
             );
         case SupportedAuthProtocolTypes.OAUTH2_OIDC:
             return (
                 <InboundOIDCForm
-                    onUpdate={ onUpdate }
-                    application={ application }
-                    isLoading={ isLoading }
-                    setIsLoading={ setIsLoading }
-                    certificate={ certificate }
-                    tenantDomain={ tenantDomain }
-                    allowedOriginList={ allowedOrigins }
-                    initialValues={ initialValues }
-                    metadata={ metadata }
-                    onSubmit={ onSubmit }
-                    onApplicationRegenerate={ onApplicationRegenerate }
-                    onApplicationRevoke={ onApplicationRevoke }
-                    readOnly={ readOnly }
-                    template={ template }
-                    data-testid={ testId }
-                    containerRef={ containerRef }
-                    isDefaultApplication={ isDefaultApplication }
-                    isSystemApplication={ isSystemApplication }
+                    onUpdate={onUpdate}
+                    application={application}
+                    isLoading={isLoading}
+                    setIsLoading={setIsLoading}
+                    certificate={certificate}
+                    tenantDomain={tenantDomain}
+                    allowedOriginList={allowedOrigins}
+                    initialValues={initialValues}
+                    metadata={metadata}
+                    onSubmit={onSubmit}
+                    onApplicationRegenerate={onApplicationRegenerate}
+                    onApplicationRevoke={onApplicationRevoke}
+                    readOnly={readOnly}
+                    template={template}
+                    data-testid={testId}
+                    containerRef={containerRef}
+                    isDefaultApplication={isDefaultApplication}
+                    isSystemApplication={isSystemApplication}
                 />
             );
         case SupportedAuthProtocolTypes.SAML:
             if (showSAMLCreation && SAMLCreationOption && SAMLCreationOption !== SAMLConfigModes.MANUAL) {
                 return (
                     <InboundSAMLCreationForm
-                        isLoading={ isLoading }
-                        initialValues={ initialValues }
-                        creationOption={ SAMLCreationOption ? SAMLCreationOption : SAMLConfigModes.META_URL  }
-                        onSubmit={ onSubmit }
-                        data-testid={ testId }
+                        isLoading={isLoading}
+                        initialValues={initialValues}
+                        creationOption={SAMLCreationOption ? SAMLCreationOption : SAMLConfigModes.META_URL}
+                        onSubmit={onSubmit}
+                        data-testid={testId}
                     />
                 );
             }
 
             return (
                 <InboundSAMLForm
-                    onUpdate={ onUpdate }
-                    application={ application }
-                    isLoading={ isLoading }
-                    certificate={ certificate }
-                    initialValues={ initialValues }
-                    metadata={ metadata }
-                    onSubmit={ onSubmit }
-                    readOnly={ readOnly }
-                    data-testid={ testId }
-                    containerRef={ containerRef }
+                    onUpdate={onUpdate}
+                    application={application}
+                    isLoading={isLoading}
+                    certificate={certificate}
+                    initialValues={initialValues}
+                    metadata={metadata}
+                    onSubmit={onSubmit}
+                    readOnly={readOnly}
+                    data-testid={testId}
+                    containerRef={containerRef}
                 />
             );
         case SupportedAuthProtocolTypes.WS_TRUST:
             return (
                 <InboundWSTrustForm
-                    isLoading={ isLoading }
-                    certificate={ certificate }
-                    initialValues={ initialValues }
-                    metadata={ metadata }
-                    onSubmit={ onSubmit }
-                    readOnly={ readOnly }
-                    data-testid={ testId }
+                    isLoading={isLoading}
+                    certificate={certificate}
+                    initialValues={initialValues}
+                    metadata={metadata}
+                    onSubmit={onSubmit}
+                    readOnly={readOnly}
+                    data-testid={testId}
                 />
             );
         case SupportedAuthProtocolTypes.WS_FEDERATION:
             return (
                 <InboundPassiveStsForm
-                    onUpdate={ onUpdate }
-                    application={ application }
-                    isLoading={ isLoading }
-                    certificate={ certificate }
-                    initialValues={ initialValues }
-                    onSubmit={ onSubmit }
-                    readOnly={ readOnly }
-                    data-testid={ testId }
+                    onUpdate={onUpdate}
+                    application={application}
+                    isLoading={isLoading}
+                    certificate={certificate}
+                    initialValues={initialValues}
+                    onSubmit={onSubmit}
+                    readOnly={readOnly}
+                    data-testid={testId}
                 />
             );
         case SupportedAuthProtocolTypes.CUSTOM:
             return (
                 <InboundCustomProtocolForm
-                    isLoading={ isLoading }
-                    certificate={ certificate }
-                    metadata={ metadata }
-                    initialValues={ initialValues }
-                    onSubmit={ onSubmit }
-                    data-testid={ testId }
+                    isLoading={isLoading}
+                    certificate={certificate}
+                    metadata={metadata}
+                    initialValues={initialValues}
+                    onSubmit={onSubmit}
+                    data-testid={testId}
                 />
             );
         default:

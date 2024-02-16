@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -79,10 +80,11 @@ export const checkAvailableCustomInboundAuthProtocolMeta = (
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const setAuthProtocolMeta = (
-    protocol: SupportedAuthProtocolMetaTypes, meta: OIDCMetadataInterface | any
+    protocol: SupportedAuthProtocolMetaTypes,
+    meta: OIDCMetadataInterface | any
 ): SetAuthProtocolMetaInterface => ({
     payload: {
-        [ protocol ]: meta
+        [protocol]: meta
     },
     type: ApplicationActionTypes.SET_AUTH_PROTOCOL_META
 });

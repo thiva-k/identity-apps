@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -51,145 +52,139 @@ interface InboundCustomProtocolWizardFormPropsInterface extends TestableComponen
 export const InboundCustomProtocolWizardForm: FunctionComponent<InboundCustomProtocolWizardFormPropsInterface> = (
     props: InboundCustomProtocolWizardFormPropsInterface
 ): ReactElement => {
-
-    const {
-        metadata,
-        initialValues,
-        onSubmit,
-        protocolName,
-        triggerSubmit,
-        [ "data-testid" ]: testId
-    } = props;
+    const { metadata, initialValues, onSubmit, protocolName, triggerSubmit, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     const createInputComponent = (
-        (config: CustomInboundProtocolPropertyInterface, initialValue?: PropertyModelInterface) => {
-            if (config?.availableValues?.length > 0) {
-                return (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
-                            <Field
-                                label={ config?.displayName }
-                                name={ config?.name }
-                                type="dropdown"
-                                value={ initialValue?.value }
-                                required={ config?.required }
-                                requiredErrorMessage={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.dropdown" +
-                                        ".validations.empty", { name: config?.displayName })
+        config: CustomInboundProtocolPropertyInterface,
+        initialValue?: PropertyModelInterface
+    ) => {
+        if (config?.availableValues?.length > 0) {
+            return (
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={8}>
+                        <Field
+                            label={config?.displayName}
+                            name={config?.name}
+                            type="dropdown"
+                            value={initialValue?.value}
+                            required={config?.required}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.dropdown" +
+                                    ".validations.empty",
+                                { name: config?.displayName }
+                            )}
+                            default={config?.defaultValue}
+                            children={createDropDownOption(config?.availableValues)}
+                            data-testid={`${testId}-${config?.name}-select`}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            );
+        } else if (config?.isConfidential) {
+            return (
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={8}>
+                        <Field
+                            label={config?.displayName}
+                            name={config?.name}
+                            hidePassword={t("common:hide") + " " + config?.displayName}
+                            showPassword={t("common:show") + " " + config?.displayName}
+                            value={initialValue?.value}
+                            required={config?.required}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.password" +
+                                    ".validations.empty",
+                                { name: config?.displayName }
+                            )}
+                            placeholder={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.password" +
+                                    ".placeholder",
+                                { name: config?.displayName }
+                            )}
+                            type="password"
+                            default={config?.defaultValue}
+                            data-testid={`${testId}-${config?.name}-password-input`}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            );
+        } else if (config?.type === CustomTypeEnum.BOOLEAN) {
+            return (
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={8}>
+                        <Field
+                            name={config?.name}
+                            label=""
+                            required={config?.required}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.checkbox" +
+                                    ".validations.empty",
+                                { user: config?.displayName }
+                            )}
+                            value={initialValue?.value ? [config.name] : []}
+                            type="checkbox"
+                            children={[
+                                {
+                                    label: config.displayName,
+                                    value: config.name
                                 }
-                                default={ config?.defaultValue }
-                                children={ createDropDownOption(config?.availableValues) }
-                                data-testid={ `${ testId }-${ config?.name }-select` }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                );
-            } else if (config?.isConfidential) {
-                return (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
-                            <Field
-                                label={ config?.displayName }
-                                name={ config?.name }
-                                hidePassword={ t("common:hide") + " " + config?.displayName }
-                                showPassword={ t("common:show") + " " + config?.displayName }
-                                value={ initialValue?.value }
-                                required={ config?.required }
-                                requiredErrorMessage={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.password" +
-                                        ".validations.empty",
-                                    { name: config?.displayName })
-                                }
-                                placeholder={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.password" +
-                                        ".placeholder",
-                                    { name: config?.displayName })
-                                }
-                                type="password"
-                                default={ config?.defaultValue }
-                                data-testid={ `${ testId }-${ config?.name }-password-input` }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                );
-            } else if (config?.type === CustomTypeEnum.BOOLEAN) {
-                return (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
-                            <Field
-                                name={ config?.name }
-                                label=""
-                                required={ config?.required }
-                                requiredErrorMessage={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.checkbox" +
-                                        ".validations.empty",
-                                    { user: config?.displayName })
-                                }
-                                value={ initialValue?.value ? [ config.name ] : [] }
-                                type="checkbox"
-                                children={ [
-                                    {
-                                        label: config.displayName,
-                                        value: config.name
-                                    }
-                                ] }
-                                data-testid={ `${ testId }-${ config?.name }-checkbox` }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                );
-            } else {
-                return (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
-                            <Field
-                                label={ config?.displayName }
-                                name={ config?.name }
-                                required={ config?.required }
-                                value={ initialValue?.value }
-                                requiredErrorMessage={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.generic" +
-                                        ".validations.empty",
-                                    { name: config?.displayName })
-                                }
-                                placeholder={
-                                    t("console:develop.features.applications.forms.inboundCustom.fields.generic" +
-                                        ".placeholder",
-                                    { name: config?.displayName })
-                                }
-                                type={ (config?.type === CustomTypeEnum.INTEGER) ? "number" : "text" }
-                                data-testid={ `${ testId }-${ config?.name }-input` }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                );
-            }
-        });
+                            ]}
+                            data-testid={`${testId}-${config?.name}-checkbox`}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            );
+        } else {
+            return (
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={8}>
+                        <Field
+                            label={config?.displayName}
+                            name={config?.name}
+                            required={config?.required}
+                            value={initialValue?.value}
+                            requiredErrorMessage={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.generic" +
+                                    ".validations.empty",
+                                { name: config?.displayName }
+                            )}
+                            placeholder={t(
+                                "console:develop.features.applications.forms.inboundCustom.fields.generic" +
+                                    ".placeholder",
+                                { name: config?.displayName }
+                            )}
+                            type={config?.type === CustomTypeEnum.INTEGER ? "number" : "text"}
+                            data-testid={`${testId}-${config?.name}-input`}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            );
+        }
+    };
 
-    const generateFormElements = (() => {
+    const generateFormElements = () => {
         if (metadata) {
             const configs: CustomInboundProtocolPropertyInterface[] = metadata?.properties;
 
             if (configs.length > 0) {
-                configs.sort(
-                    (a, b) => (a.displayOrder > b.displayOrder) ? 1 : -1);
+                configs.sort((a, b) => (a.displayOrder > b.displayOrder ? 1 : -1));
             }
 
-            return configs.map((config) => {
+            return configs.map(config => {
                 const initialValue: PropertyModelInterface = initialValues?.properties.find(
-                    (prop) => prop.key === config.name
+                    prop => prop.key === config.name
                 );
 
                 if (initialValue) {
                     return createInputComponent(config, initialValue);
                 } else {
-                    return (createInputComponent(config));
+                    return createInputComponent(config);
                 }
             });
         }
-    });
+    };
 
     /**
      * Create drop down options.
@@ -199,7 +194,7 @@ export const InboundCustomProtocolWizardForm: FunctionComponent<InboundCustomPro
         const allowedOptions = [];
 
         if (options) {
-            options.map((ele) => {
+            options.map(ele => {
                 allowedOptions.push({ key: options.indexOf(ele), text: ele, value: ele });
             });
         }
@@ -217,7 +212,7 @@ export const InboundCustomProtocolWizardForm: FunctionComponent<InboundCustomPro
         const valueProperties: SubmitFormCustomPropertiesInterface[] = [];
 
         //Iterate over map entries
-        for (const [ key, value ] of values) {
+        for (const [key, value] of values) {
             let property: SubmitFormCustomPropertiesInterface = undefined;
 
             if (value instanceof Array) {
@@ -239,9 +234,7 @@ export const InboundCustomProtocolWizardForm: FunctionComponent<InboundCustomPro
                 [protocolName]: {
                     configName: protocolName,
                     name: protocolName,
-                    properties: [
-                        ...valueProperties
-                    ]
+                    properties: [...valueProperties]
                 }
             }
         };
@@ -251,23 +244,19 @@ export const InboundCustomProtocolWizardForm: FunctionComponent<InboundCustomPro
         if (metadata) {
             generateFormElements();
         }
-    }, [ metadata ]);
+    }, [metadata]);
 
-    return (
-        metadata
-            ? (
-                <Forms
-                    onSubmit={ (values) => {
-                        onSubmit(updateConfiguration(values));
-                    } }
-                    submitState={ triggerSubmit }
-                >
-                    <Grid>
-                        { generateFormElements() }
-                    </Grid>
-                </Forms>
-            )
-            : <ContentLoader/>
+    return metadata ? (
+        <Forms
+            onSubmit={values => {
+                onSubmit(updateConfiguration(values));
+            }}
+            submitState={triggerSubmit}
+        >
+            <Grid>{generateFormElements()}</Grid>
+        </Forms>
+    ) : (
+        <ContentLoader />
     );
 };
 

@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -25,7 +26,7 @@ import { Divider } from "semantic-ui-react";
 /**
  * Prop types of the component.
  */
-type OIDCWebApplicationCreateWizardHelpPropsInterface = TestableComponentInterface
+type OIDCWebApplicationCreateWizardHelpPropsInterface = TestableComponentInterface;
 
 /**
  * Help content for the OIDC web application template creation wizard.
@@ -36,36 +37,43 @@ type OIDCWebApplicationCreateWizardHelpPropsInterface = TestableComponentInterfa
 const OIDCWebApplicationCreateWizardHelp: FunctionComponent<OIDCWebApplicationCreateWizardHelpPropsInterface> = (
     props: OIDCWebApplicationCreateWizardHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     return (
-        <div data-testid={ testId }>
+        <div data-testid={testId}>
             <Heading as="h5">
-                { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                    ".heading.title") }
+                {t(
+                    "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                        ".heading.title"
+                )}
             </Heading>
             <p>
-                { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                    ".heading.subTitle") }
+                {t(
+                    "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                        ".heading.subTitle"
+                )}
             </p>
             <p>
-                { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                    ".heading.example") }
+                {t(
+                    "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                        ".heading.example"
+                )}
             </p>
             <>
-                <Divider/>
+                <Divider />
                 <Heading as="h5">
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".protocol.title") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".protocol.title"
+                    )}
                 </Heading>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".protocol.subTitle") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".protocol.subTitle"
+                    )}
                 </p>
             </>
 
@@ -73,16 +81,22 @@ const OIDCWebApplicationCreateWizardHelp: FunctionComponent<OIDCWebApplicationCr
 
             <React.Fragment>
                 <Heading as="h5">
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".authorizedRedirectURLs.title") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".authorizedRedirectURLs.title"
+                    )}
                 </Heading>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".authorizedRedirectURLs.subTitle") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".authorizedRedirectURLs.subTitle"
+                    )}
                 </p>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".authorizedRedirectURLs.example") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".authorizedRedirectURLs.example"
+                    )}
                 </p>
             </React.Fragment>
         </div>

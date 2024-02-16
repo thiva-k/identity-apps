@@ -25,7 +25,7 @@ import { Divider } from "semantic-ui-react";
 /**
  * Prop types of the component.
  */
-type SAMLWebApplicationCreateWizardHelpPropsInterface = TestableComponentInterface
+type SAMLWebApplicationCreateWizardHelpPropsInterface = TestableComponentInterface;
 
 /**
  * Help content for the SAML web application template creation wizard.
@@ -36,36 +36,43 @@ type SAMLWebApplicationCreateWizardHelpPropsInterface = TestableComponentInterfa
 const SAMLWebApplicationCreateWizardHelp: FunctionComponent<SAMLWebApplicationCreateWizardHelpPropsInterface> = (
     props: SAMLWebApplicationCreateWizardHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     return (
-        <div data-testid={ testId }>
+        <div data-testid={testId}>
             <Heading as="h5">
-                { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                    ".heading.title") }
+                {t(
+                    "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                        ".heading.title"
+                )}
             </Heading>
             <p>
-                { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                    ".heading.subTitle") }
+                {t(
+                    "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                        ".heading.subTitle"
+                )}
             </p>
             <p>
-                { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                    ".heading.example") }
+                {t(
+                    "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                        ".heading.example"
+                )}
             </p>
             <>
-                <Divider/>
+                <Divider />
                 <Heading as="h5">
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".protocol.title") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".protocol.title"
+                    )}
                 </Heading>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
-                        ".protocol.subTitle") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.common" +
+                            ".protocol.subTitle"
+                    )}
                 </p>
             </>
 
@@ -73,8 +80,10 @@ const SAMLWebApplicationCreateWizardHelp: FunctionComponent<SAMLWebApplicationCr
 
             <>
                 <Heading as="h5">
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
-                        ".issuer.title") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
+                            ".issuer.title"
+                    )}
                 </Heading>
                 <p>
                     <Trans
@@ -84,32 +93,40 @@ const SAMLWebApplicationCreateWizardHelp: FunctionComponent<SAMLWebApplicationCr
                         }
                     >
                         The <strong>saml:Issuer</strong> element that contains the unique identifier of the application.
-                        The value added here should be specified in the SAML authentication request sent from the
-                        client application.
+                        The value added here should be specified in the SAML authentication request sent from the client
+                        application.
                     </Trans>
                 </p>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
-                    ".issuer.example") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
+                            ".issuer.example"
+                    )}
                 </p>
 
-                <Divider/>
+                <Divider />
 
                 <Heading as="h5">
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
-                        ".assertionResponseURLs.title") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
+                            ".assertionResponseURLs.title"
+                    )}
                 </Heading>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
-                        ".assertionResponseURLs.subTitle") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
+                            ".assertionResponseURLs.subTitle"
+                    )}
                 </p>
                 <p>
-                    { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
-                        ".assertionResponseURLs.example") }
+                    {t(
+                        "console:develop.features.applications.wizards.minimalAppCreationWizard.help.template.samlWeb" +
+                            ".assertionResponseURLs.example"
+                    )}
                 </p>
             </>
 
-            <Divider hidden/>
+            <Divider hidden />
         </div>
     );
 };
