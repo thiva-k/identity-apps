@@ -21,7 +21,7 @@ import { UserRoleInterface } from "@wso2is/feature-models.common";
 import { GroupsInterface, GroupsMemberInterface } from "@wso2is/feature-scim.common/models/groups";
 import React, { ReactElement } from "react";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
-//import { BulkImportResponseOperationTypes, BulkUserImportStatus } from "../constants";
+import { BulkImportResponseOperationTypes, BulkUserImportStatus } from "../constants";
 
 /**
  * Captures meta details of the user.

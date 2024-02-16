@@ -20,13 +20,13 @@ import { AlertLevels } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { I18n } from "@wso2is/i18n";
 import isEmpty from "lodash-es/isEmpty";
-import { getUserStoreList } from "../../userstores/api";
-import { UserStoreListItem, UserStoreProperty } from "../../userstores/models";
-import { ValidationFormInterface } from "../../validation/models";
-import { getAUserStore, getPrimaryUserStore } from "../api";
-import { SharedUserStoreConstants } from "../constants";
-import { UserStoreDetails } from "../models";
-import { store } from "../store";
+import { getUserStoreList } from "../userstores/api";
+import { UserStoreListItem, UserStoreProperty } from "../userstores/models";
+import { ValidationFormInterface } from "../validation/models";
+import { getAUserStore, getPrimaryUserStore } from "../feature-apis.common";
+import { SharedUserStoreConstants } from "../feature-constants.common";
+import { UserStoreDetails } from "../feature-models.common";
+import { store } from "../feature-store.common";
 
 /**
  * Utility class for common user store operations.

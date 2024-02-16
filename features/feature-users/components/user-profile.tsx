@@ -40,7 +40,7 @@ import {
     ScimOperationsInterface,
     SearchRoleInterface
 } from "@wso2is/feature-roles.common/models/roles";
-import { AppState } from "@wso2is/feature-store.common/store";
+import { AppState } from "@wso2is/feature-store.common";
 import { getUserDetails, updateUserInfo } from "@wso2is/feature-users.common/api";
 import { AdminAccountTypes, UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import {

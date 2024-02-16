@@ -4019,6 +4019,9 @@ importers:
       '@wso2is/dynamic-forms':
         specifier: ^2.0.29
         version: link:../../modules/dynamic-forms
+      '@wso2is/feature-configs.common':
+        specifier: '*'
+        version: link:../feature-configs.common
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form
@@ -9840,6 +9843,9 @@ importers:
       '@wso2is/dynamic-forms':
         specifier: ^2.0.29
         version: link:../../modules/dynamic-forms
+      '@wso2is/feature-userstores':
+        specifier: '*'
+        version: link:../userstores
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form
