@@ -46,14 +46,12 @@ import { handleIDPDeleteError } from "./utils";
 import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "../../../extensions/configs";
 import { getApplicationDetails } from "../../applications/api";
 import { ApplicationBasicInterface } from "../../applications/models";
-import {
-    AppConstants,
-    AppState,
-    EventPublisher,
-    FeatureConfigInterface,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { history } from "@wso2is/feature-helpers.common";
 import { deleteIdentityProvider, getIDPConnectedApps } from "../api";
 import { IdentityProviderManagementConstants } from "../constants";
 import { AuthenticatorMeta } from "../meta";

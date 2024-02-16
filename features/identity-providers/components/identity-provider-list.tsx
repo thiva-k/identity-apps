@@ -39,14 +39,11 @@ import { Divider, Header, Icon, Label, List, SemanticICONS } from "semantic-ui-r
 import { handleIDPDeleteError } from "./utils";
 import { getApplicationDetails } from "../../applications/api";
 import { ApplicationBasicInterface } from "../../applications/models";
-import {
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
+import { AppConstants,UIConstants } from "@wso2is/feature-constants.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { deleteIdentityProvider, getIDPConnectedApps } from "../api";
 import { IdentityProviderManagementConstants } from "../constants";
 import {

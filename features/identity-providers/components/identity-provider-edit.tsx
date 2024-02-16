@@ -17,6 +17,8 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import {
     ContentLoader,
     EmphasizedSegment,
@@ -43,12 +45,10 @@ import {
 import { JITProvisioningSettings } from "./settings/jit-provisioning-settings";
 import { identityProviderConfig } from "../../../extensions";
 import { ConnectionTabTypes } from "../../connections";
-import { AppState, FeatureConfigInterface } from "../../core";
 import { IdentityProviderConstants, IdentityProviderManagementConstants } from "../constants";
 import {
     IdentityProviderAdvanceInterface,
     IdentityProviderInterface,
-    IdentityProviderTabTypes,
     IdentityProviderTemplateInterface
 } from "../models";
 

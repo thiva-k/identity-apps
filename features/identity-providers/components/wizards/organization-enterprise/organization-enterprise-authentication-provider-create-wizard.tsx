@@ -33,11 +33,8 @@ import {
     OrganizationEnterpriseAuthenticationProviderCreateWizardContent
 } from "./organization-enterprise-authentication-provider-create-wizard-content";
 import { identityProviderConfig } from "../../../../../extensions/configs";
-import {
-    EventPublisher,
-    ModalWithSidePanel,
-    TierLimitReachErrorModal
-} from "../../../../core";
+import { EventPublisher } from "@wso2is/feature-utils.common";
+import { ModalWithSidePanel,TierLimitReachErrorModal } from "features/feature-components.common";
 import { createIdentityProvider } from "../../../api";
 import { getIdPIcons } from "../../../configs/ui";
 import { IdentityProviderManagementConstants } from "../../../constants";

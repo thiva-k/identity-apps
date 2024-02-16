@@ -29,7 +29,8 @@ import React, { FunctionComponent, ReactElement } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Icon } from "semantic-ui-react";
-import { AppState, ConfigReducerStateInterface } from "../../../../../core";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 
 type Props = TestableComponentInterface;
 

@@ -19,6 +19,9 @@
 import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, IdentifiableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import {
     ContentLoader,
     DocumentationLink,
@@ -30,6 +33,7 @@ import {
     useWizardAlert
 } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
+import { ModalWithSidePanel,TierLimitReachErrorModal } from "features/feature-components.common";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
@@ -42,13 +46,6 @@ import {
     GoogleAuthenticationProviderCreateWizardFormValuesInterface
 } from "./google-authentication-provider-create-wizard-content";
 import { identityProviderConfig } from "../../../../../extensions/configs";
-import {
-    AppState,
-    ConfigReducerStateInterface,
-    EventPublisher,
-    ModalWithSidePanel
-} from "../../../../../features/core";
-import { TierLimitReachErrorModal } from "../../../../core/components/tier-limit-reach-error-modal";
 import {
     createIdentityProvider,
     getFederatedAuthenticatorMetadata

@@ -22,7 +22,8 @@ import React, { FunctionComponent, PropsWithChildren, ReactElement, useEffect, u
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Grid, SemanticWIDTHS } from "semantic-ui-react";
-import { AppState, ConfigReducerStateInterface } from "../../../../core";
+import { AppState } from "@wso2is/feature-store.common";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
 import {
     AuthenticatorSettingsFormModes,
     CommonAuthenticatorFormInitialValuesInterface,

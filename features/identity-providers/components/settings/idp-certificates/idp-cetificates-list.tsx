@@ -42,7 +42,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Icon, SemanticCOLORS, SemanticICONS } from "semantic-ui-react";
 import { ShowCertificateModal } from "./show-certificate-modal";
-import { AppState, ConfigReducerStateInterface } from "../../../../core";
+import { AppState } from "@wso2is/feature-store.common";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
 import { updateIDPCertificate } from "../../../api";
 import { CertificatePatchRequestInterface, IdentityProviderInterface } from "../../../models";
 

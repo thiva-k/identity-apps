@@ -16,6 +16,8 @@
  * under the License.
  */
 
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { store } from "@wso2is/feature-store.common";
 import keyBy from "lodash-es/keyBy";
 import merge from "lodash-es/merge";
 import values from "lodash-es/values";
@@ -41,7 +43,6 @@ import { ExtensionsManager, identityProviderConfig } from "../../../../extension
 import {
     EnterpriseIdentityProviderTemplateExtension
 } from "../../../../extensions/configs/identity-providers-templates";
-import { AppConstants, store } from "../../../core";
 import { IdentityProviderTemplateCategoryInterface, IdentityProviderTemplateGroupInterface } from "../../models";
 
 /**

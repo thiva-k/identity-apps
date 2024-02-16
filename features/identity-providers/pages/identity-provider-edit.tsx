@@ -19,6 +19,10 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface, ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import {
     AnimatedAvatar,
     AppAvatar,
@@ -43,13 +47,6 @@ import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Label } from "semantic-ui-react";
 import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "../../../extensions/configs";
-import {
-    AppConstants,
-    AppState,
-    ConfigReducerStateInterface,
-    FeatureConfigInterface,
-    history
-} from "../../core";
 import { getIdentityProviderDetail, getLocalAuthenticator, getMultiFactorAuthenticatorDetails } from "../api";
 import { EditMultiFactorAuthenticator } from "../components/edit-multi-factor-authenticator";
 import { EditIdentityProvider } from "../components/identity-provider-edit";

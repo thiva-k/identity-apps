@@ -38,14 +38,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { identityProviderConfig } from "../../../extensions/configs";
-import {
-    AppConstants,
-    AppState,
-    ConfigReducerStateInterface,
-    EventPublisher,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { AuthenticatorCreateWizardFactory } from "../components/wizards/authenticator-create-wizard-factory";
 import { getIdPIcons } from "../configs/ui";
 import { IdentityProviderManagementConstants, ORG_ENTERPRISE_IDP_ID } from "../constants";

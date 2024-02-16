@@ -20,12 +20,13 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertLevels } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { ImageUtils, URLUtils } from "@wso2is/core/utils";
+import { Config } from "@wso2is/feature-configs.common"
+import { DocPanelUICardInterface } from "@wso2is/feature-models.common/help-panel copy";
+import { store } from "@wso2is/feature-store.common";
 import { I18n } from "@wso2is/i18n";
 import axios, { AxiosError } from "axios";
 import camelCase from "lodash-es/camelCase";
 import isEmpty from "lodash-es/isEmpty";
-import { DocPanelUICardInterface, store } from "../../core";
-import { Config } from "../../core/configs";
 import { getFederatedAuthenticatorsList, getIdentityProviderList, getLocalAuthenticators } from "../api";
 import { IdentityProviderManagementConstants } from "../constants";
 import { AuthenticatorMeta } from "../meta";

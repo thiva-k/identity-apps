@@ -22,9 +22,13 @@ import {
     TestableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AppState } from "@wso2is/feature-store.common";
+import { store } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import { GenericIcon, LinkButton, PrimaryButton, useWizardAlert } from "@wso2is/react-components";
 import { ContentLoader } from "@wso2is/react-components/src/components/loader/content-loader";
 import { AxiosError, AxiosResponse } from "axios";
+import { ModalWithSidePanel } from "features/feature-components.common";
 import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -32,12 +36,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Header } from "semantic-ui-react";
 import { OidcAuthenticationWizardFrom } from "./oidc-authentication-wizard-page";
-import {
-    AppState,
-    EventPublisher,
-    ModalWithSidePanel,
-    store
-} from "../../../../features/core";
 import {
     createIdentityProvider,
     getFederatedAuthenticatorMetadata

@@ -17,12 +17,14 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import useRequest, {
+import  {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+} from "@wso2is/feature-hooks.common";
+import useRequest from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
+
 import { IdentityProviderGroupInterface } from "../models/identity-provider";
 
 /**

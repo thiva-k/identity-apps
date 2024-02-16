@@ -22,7 +22,7 @@ import { Forms } from "@wso2is/forms";
 import * as forge from "node-forge";
 import React, { ReactElement, useEffect, useState } from "react";
 import { Grid } from "semantic-ui-react";
-import { UploadCertificate } from "../../../../../core";
+import { UploadCertificate } from "@wso2is/feature-components.common";
 
 /**
  * Proptypes for the add IDP certificate form component.

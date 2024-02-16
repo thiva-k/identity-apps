@@ -17,6 +17,8 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { AxiosError } from "axios";
 import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
@@ -36,7 +38,6 @@ import {
 } from "./organization-enterprise/organization-enterprise-authentication-provider-create-wizard";
 import { TrustedTokenIssuerCreateWizard } from "./trusted-token-issuer/trusted-token-issuer-create-wizard";
 import { identityProviderConfig } from "../../../../extensions/configs/identity-provider";
-import { AppState, ConfigReducerStateInterface } from "../../../core";
 import { getIdentityProviderList, getIdentityProviderTemplate } from "../../api";
 import { IdentityProviderManagementConstants } from "../../constants";
 import {

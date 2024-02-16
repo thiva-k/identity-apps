@@ -19,6 +19,7 @@
 import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, IdentifiableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import {
     DocumentationLink,
     GenericIcon,
@@ -29,6 +30,7 @@ import {
     useWizardAlert
 } from "@wso2is/react-components";
 import { ContentLoader } from "@wso2is/react-components/src/components/loader/content-loader";
+import { ModalWithSidePanel,TierLimitReachErrorModal } from "features/feature-components.common";
 import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -39,11 +41,6 @@ import {
     HyprAuthenticationProviderCreateWizardContent
 } from "./hypr-authentication-provider-create-wizard-content";
 import { identityProviderConfig } from "../../../../../extensions/configs";
-import {
-    EventPublisher,
-    ModalWithSidePanel
-} from "../../../../../features/core";
-import { TierLimitReachErrorModal } from "../../../../core/components/tier-limit-reach-error-modal";
 import { createIdentityProvider } from "../../../api";
 import { getIdPIcons } from "../../../configs/ui";
 import { IdentityProviderManagementConstants } from "../../../constants";

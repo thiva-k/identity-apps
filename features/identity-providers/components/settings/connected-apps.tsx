@@ -59,14 +59,12 @@ import {
     ApplicationTemplateListItemInterface 
 } from "../../../applications/models";
 import { ApplicationTemplateManagementUtils } from "../../../applications/utils/application-template-management-utils";
-import {  
-    AppConstants,
-    AppState, 
-    FeatureConfigInterface,   
-    UIConstants, 
-    getEmptyPlaceholderIllustrations, 
-    history
-} from "../../../core";
+import { AppConstants,UIConstants } from "@wso2is/feature-constants.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+
 import { getIDPConnectedApps } from "../../api";
 import { 
     ConnectedAppInterface,

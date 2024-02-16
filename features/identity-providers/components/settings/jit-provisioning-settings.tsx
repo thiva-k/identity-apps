@@ -23,13 +23,11 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { SimpleUserStoreListItemInterface } from "../../../applications/models";
-import { store } from "../../../core";
-import { OrganizationUtils } from "../../../organizations/utils";
 import { getUserStoreList } from "../../../userstores/api";
 import { updateJITProvisioningConfigs } from "../../api";
 import { JITProvisioningResponseInterface } from "../../models";
 import { JITProvisioningConfigurationsForm } from "../forms";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 
 /**
  * Proptypes for the identity provider general details component.

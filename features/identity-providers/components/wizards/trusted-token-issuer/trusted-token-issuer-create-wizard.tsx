@@ -22,6 +22,12 @@ import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { URLUtils } from "@wso2is/core/utils";
+import {
+    getCertificateIllustrations
+} from "@wso2is/feature-configs.common";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import { Field, Wizard2, WizardPage } from "@wso2is/form";
 import {
     CertFileStrategy,
@@ -42,6 +48,7 @@ import {
 } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
 import { AxiosError, AxiosResponse } from "axios";
+import { TierLimitReachErrorModal } from "features/feature-components.common";
 import isEmpty from "lodash-es/isEmpty";
 import React, {
     FC,
@@ -58,13 +65,6 @@ import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Icon, Modal } from "semantic-ui-react";
 import { commonConfig, identityProviderConfig } from "../../../../../extensions";
-import {
-    AppState,
-    ConfigReducerStateInterface,
-    EventPublisher,
-    TierLimitReachErrorModal,
-    getCertificateIllustrations
-} from "../../../../core";
 import { createIdentityProvider, useIdentityProviderList } from "../../../api";
 import { getIdPIcons, getIdentityProviderWizardStepIcons } from "../../../configs/ui";
 import { IdentityProviderConstants, IdentityProviderManagementConstants } from "../../../constants";

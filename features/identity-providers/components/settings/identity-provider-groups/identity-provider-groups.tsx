@@ -34,7 +34,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Form, Grid } from "semantic-ui-react";
 import { IdentityProviderGroupsList } from "./identity-provider-groups-list";
-import { AppState, FeatureConfigInterface, store } from "../../../../core";
+import { AppState } from "@wso2is/feature-store.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { store } from "@wso2is/feature-store.common";
 import {
     IdentityProviderClaimMappingInterface,
     IdentityProviderClaimsInterface,

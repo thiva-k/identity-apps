@@ -25,7 +25,8 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Grid } from "semantic-ui-react";
 import { identityProviderConfig } from "../../../../extensions";
-import { AppState, ConfigReducerStateInterface } from "../../../core";
+import { AppState } from "@wso2is/feature-store.common";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
 import { IdentityProviderConstants, IdentityProviderManagementConstants } from "../../constants";
 import {
     GeneralDetailsFormValuesInterface,

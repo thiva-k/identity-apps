@@ -21,3 +21,5 @@ export * from "./roles";
 export * from "./tier-limit-reach-error-modal";
 export * from "./advanced-search-with-basic-filters";
 export * from "./groups";
+export * from "./authenticator-accordion"
+export * from "./upload-certificate"

@@ -24,7 +24,8 @@ import React, { FunctionComponent, ReactElement, ReactNode, useEffect, useState 
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Icon, SemanticICONS } from "semantic-ui-react";
-import { AppConstants, AppState } from "../../../../core";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { IdentityProviderManagementConstants } from "../../../constants";
 import {
     AuthenticatorSettingsFormModes,

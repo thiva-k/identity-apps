@@ -26,7 +26,7 @@ import isEmpty from "lodash-es/isEmpty";
 import { Dispatch, SetStateAction } from "react";
 import { handleUpdateIDPRoleMappingsError } from "./common-utils";
 import { getAllLocalClaims } from "../../../claims/api";
-import { store } from "../../../core";
+import { store } from "@wso2is/feature-store.common";
 import { updateClaimsConfigs, updateIDPRoleMappings } from "../../api";
 import {
     IdentityProviderClaimInterface,

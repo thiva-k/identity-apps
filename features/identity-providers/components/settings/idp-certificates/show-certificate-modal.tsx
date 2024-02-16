@@ -22,7 +22,7 @@ import { Certificate as CertificateDisplay, Code, GenericIcon } from "@wso2is/re
 import React, { FC, PropsWithChildren, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { Modal, Segment } from "semantic-ui-react";
-import { getCertificateIllustrations } from "../../../../core";
+import { getCertificateIllustrations } from "@wso2is/feature-configs.common";
 import { CertificateManagementConstants } from "@wso2is/core/constants";
 
 /**

@@ -23,7 +23,9 @@ import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider } from "semantic-ui-react";
 import { identityProviderConfig } from "../../../../../../extensions/configs";
-import { AppState, ConfigReducerStateInterface } from "../../../../../core";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+
 
 /**
  * Prop types of the component.

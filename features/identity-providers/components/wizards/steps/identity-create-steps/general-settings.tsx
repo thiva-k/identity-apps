@@ -23,7 +23,6 @@ import { FormValidation } from "@wso2is/validation";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid } from "semantic-ui-react";
-import { store } from "../../../../../core";
 import { getIdentityProviderList } from "../../../../api";
 import { getIdPIcons, getIdPTemplateDocsIcons } from "../../../../configs/ui";
 import {
@@ -33,7 +32,7 @@ import {
     IdentityProviderTemplateInterface
 } from "../../../../models";
 import { handleGetIDPListCallError } from "../../../utils";
-
+import { store } from "@wso2is/feature-store.common";
 /**
  * Proptypes for the general settings wizard form component.
  */

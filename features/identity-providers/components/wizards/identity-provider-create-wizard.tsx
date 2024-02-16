@@ -31,7 +31,8 @@ import { Dispatch } from "redux";
 import { Grid, Icon } from "semantic-ui-react";
 import { AuthenticatorSettings, GeneralSettings, OutboundProvisioningSettings, WizardSummary } from "./steps";
 import { identityProviderConfig } from "../../../../extensions/configs";
-import { AppState, ModalWithSidePanel } from "../../../core";
+import { AppState } from "@wso2is/feature-store.common";
+import { ModalWithSidePanel } from "features/feature-components.common";
 import {
     createIdentityProvider,
     getFederatedAuthenticatorMetadata

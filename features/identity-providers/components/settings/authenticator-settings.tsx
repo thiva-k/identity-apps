@@ -34,8 +34,11 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { AccordionTitleProps, CheckboxProps, Grid, Icon } from "semantic-ui-react";
 import { identityProviderConfig } from "../../../../extensions/configs/identity-provider";
-import { AppState, ConfigReducerStateInterface, getEmptyPlaceholderIllustrations } from "../../../core";
-import { AuthenticatorAccordion } from "../../../core/components";
+import { AppState } from "@wso2is/feature-store.common";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { AuthenticatorAccordion } from "@wso2is/feature-components.common";
+
 import {
     getFederatedAuthenticatorDetails,
     getFederatedAuthenticatorMeta,

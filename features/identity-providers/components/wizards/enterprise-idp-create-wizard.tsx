@@ -20,6 +20,12 @@ import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, IdentifiableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { URLUtils } from "@wso2is/core/utils";
+import {
+    getCertificateIllustrations
+} from "@wso2is/feature-configs.common";
+import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import { Field, Wizard2, WizardPage } from "@wso2is/form";
 import {
     CertFileStrategy,
@@ -42,6 +48,7 @@ import {
 } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
 import { AxiosError, AxiosResponse } from "axios";
+import { ModalWithSidePanel } from "features/feature-components.common";
 import cloneDeep from "lodash-es/cloneDeep";
 import isEmpty from "lodash-es/isEmpty";
 import kebabCase from "lodash-es/kebabCase";
@@ -64,13 +71,6 @@ import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Card, Dimmer, Divider, Grid, Icon } from "semantic-ui-react";
 import { commonConfig, identityProviderConfig } from "../../../../extensions";
-import {
-    AppState,
-    ConfigReducerStateInterface,
-    EventPublisher,
-    ModalWithSidePanel,
-    getCertificateIllustrations
-} from "../../../core";
 import { createIdentityProvider, getIdentityProviderList } from "../../api";
 import { getIdPIcons, getIdentityProviderWizardStepIcons } from "../../configs/ui";
 import { IdentityProviderManagementConstants } from "../../constants";

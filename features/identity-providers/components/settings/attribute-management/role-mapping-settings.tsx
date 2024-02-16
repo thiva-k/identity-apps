@@ -16,6 +16,14 @@
  * under the License.
  */
 import { RoleListInterface, RolesInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api";
+import {
+    OrganizationResponseInterface,
+    OrganizationRoleListItemInterface,
+    OrganizationRoleListResponseInterface
+} from "@wso2is/feature-organizations.common/models";
+import { getRolesList } from "@wso2is/feature-roles.common/api/roles";
+import { AppState } from "@wso2is/feature-store.common";
 import { DynamicField, KeyValue } from "@wso2is/forms";
 import { Heading, Hint } from "@wso2is/react-components";
 import { useGetCurrentOrganizationType } from "apps/console/src/features/organizations/hooks/use-get-organization-type";
@@ -24,14 +32,6 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
-import { AppState } from "../../../../core";
-import { getOrganizationRoles } from "../../../../organizations/api";
-import {
-    OrganizationResponseInterface,
-    OrganizationRoleListItemInterface,
-    OrganizationRoleListResponseInterface
-} from "../../../../organizations/models";
-import { getRolesList } from "../../../../roles/api/roles";
 import { IdentityProviderConstants } from "../../../constants";
 import { IdentityProviderRoleMappingInterface } from "../../../models";
 import { handleGetRoleListError } from "../../utils";
