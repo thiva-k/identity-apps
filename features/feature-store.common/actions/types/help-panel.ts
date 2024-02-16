@@ -16,7 +16,11 @@
  * under the License.
  */
 
+<<<<<<< Updated upstream
 import { PortalDocumentationStructureInterface } from "../../../feature-models.common/help-panel";
+=======
+import { PortalDocumentationStructureInterface } from "../../../models";
+>>>>>>> Stashed changes
 
 /**
  * Enum for help panel action types.
@@ -93,8 +97,12 @@ export interface SetHelpPanelActiveTabIndexActionInterface extends HelpPanelBase
 /**
  * Export action interfaces.
  */
+<<<<<<< Updated upstream
 export type HelpPanelActions =
     | SetHelpPanelDocsContentURLActionInterface
+=======
+export type HelpPanelActions = SetHelpPanelDocsContentURLActionInterface
+>>>>>>> Stashed changes
     | SetHelpPanelDocStructureActionInterface
     | ToggleHelpPanelVisibilityActionInterface
     | SetHelpPanelActiveTabIndexActionInterface;

@@ -16,8 +16,13 @@
  * under the License.
  */
 
+<<<<<<< Updated upstream
 import { OrganizationType } from "../../../feature-organizations.common/constants";
 import { OrganizationResponseInterface } from "../../../feature-organizations.common/models";
+=======
+import { OrganizationType } from "../../../../organizations/constants";
+import { OrganizationResponseInterface } from "../../../../organizations/models";
+>>>>>>> Stashed changes
 
 export enum OrganizationActionTypes {
     SET_SUPER_ADMIN = "SET_SUPER_ADMIN",

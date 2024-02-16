@@ -16,7 +16,11 @@
  * under the License.
  */
 
+<<<<<<< Updated upstream
 import { AppViewTypes } from "../../../feature-models.common/ui";
+=======
+import { AppViewTypes } from "../../../models";
+>>>>>>> Stashed changes
 
 /**
  * Enum for Global action types.
