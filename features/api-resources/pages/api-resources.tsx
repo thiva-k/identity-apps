@@ -21,6 +21,11 @@ import Grid from "@oxygen-ui/react/Grid";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface, LinkInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import {
     DocumentationLink,
     EmphasizedSegment,
@@ -36,13 +41,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Icon, List, PaginationProps } from "semantic-ui-react";
-import {
-    AdvancedSearchWithBasicFilters,
-    AppState,
-    FeatureConfigInterface,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
 import { useAPIResources } from "../api";
 import { APIResourcesList } from "../components";
 import { AddAPIResource } from "../components/wizard";
@@ -64,26 +62,23 @@ type APIResourcesPageInterface = IdentifiableComponentInterface;
 const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
     props: APIResourcesPageInterface
 ): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
     const { getLink } = useDocumentation();
 
-    const [ activePage, setActivePage ] = useState<number>(1);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ isListUpdated, setListUpdated ] = useState<boolean>(false);
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ apiResourcesList, setAPIResourcesList ] = useState<APIResourceInterface[]>([]);
-    const [ after, setAfter ] = useState<string>(undefined);
-    const [ before, setBefore ] = useState<string>(undefined);
-    const [ nextAfter, setNextAfter ] = useState<string>(undefined);
-    const [ nextBefore, setNextBefore ] = useState<string>(undefined);
-    const [ filter, setFilter ] = useState<string>(`type eq ${ APIResourcesConstants.BUSINESS }`);
+    const [activePage, setActivePage] = useState<number>(1);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [isListUpdated, setListUpdated] = useState<boolean>(false);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [apiResourcesList, setAPIResourcesList] = useState<APIResourceInterface[]>([]);
+    const [after, setAfter] = useState<string>(undefined);
+    const [before, setBefore] = useState<string>(undefined);
+    const [nextAfter, setNextAfter] = useState<string>(undefined);
+    const [nextBefore, setNextBefore] = useState<string>(undefined);
+    const [filter, setFilter] = useState<string>(`type eq ${APIResourcesConstants.BUSINESS}`);
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
@@ -100,20 +95,23 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
      */
     useEffect(() => {
         if (apiResourcesListData instanceof IdentityAppsApiException) {
-            dispatch(addAlert<AlertInterface>({
-                description: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.message")
-            }));
+            dispatch(
+                addAlert<AlertInterface>({
+                    description: t(
+                        "extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t("extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.message")
+                })
+            );
 
             return;
         }
 
         if (apiResourcesListData) {
             const apiResourceList: APIResourceInterface[] = apiResourcesListData.apiResources.map(
-                (apiResource: APIResourceInterface) => apiResource);
+                (apiResource: APIResourceInterface) => apiResource
+            );
 
             setNextAfter(undefined);
             setNextBefore(undefined);
@@ -138,22 +136,24 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
 
             setAPIResourcesList(apiResourceList);
         }
-    }, [ apiResourcesListData ]);
+    }, [apiResourcesListData]);
 
     /**
      * The following useEffect is used to handle if any error occurs while fetching the API resources list
      */
     useEffect(() => {
         if (apiResourcesFetchRequestError) {
-            dispatch(addAlert<AlertInterface>({
-                description: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.message")
-            }));
+            dispatch(
+                addAlert<AlertInterface>({
+                    description: t(
+                        "extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t("extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.message")
+                })
+            );
         }
-    }, [ apiResourcesFetchRequestError ]);
+    }, [apiResourcesFetchRequestError]);
 
     /**
      * The following useEffect is used to update the API resources list once a mutate function is called.
@@ -163,20 +163,20 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
             mutateAPIResourcesFetchRequest();
             setListUpdated(false);
         }
-    }, [ isListUpdated ]);
+    }, [isListUpdated]);
 
     /**
      * The following useEffect is used to update the filter value
      */
     useEffect(() => {
-        const typeFilter: string = `type eq ${ APIResourcesConstants.BUSINESS }`;
+        const typeFilter: string = `type eq ${APIResourcesConstants.BUSINESS}`;
 
         if (searchQuery) {
-            setFilter(`${ searchQuery } and ${ typeFilter }`);
+            setFilter(`${searchQuery} and ${typeFilter}`);
         } else {
             setFilter(typeFilter);
         }
-    }, [ searchQuery ]);
+    }, [searchQuery]);
 
     /**
      * edit the API resources list once a API resource is deleted
@@ -237,69 +237,67 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
     return (
         <PageLayout
             action={
-                APIResourceUtils.isAPIResourceCreateAllowed(featureConfig, allowedScopes)
-                    && apiResourcesList?.length > 0
-                    && (
-                        <PrimaryButton
-                            data-testid={ `${componentId}-add-api-resources-button` }
-                            onClick={ () => setShowWizard(true) }
-                        >
-                            <Icon name="add" />
-                            { t("extensions:develop.apiResource.addApiResourceButton") }
-                        </PrimaryButton>
-                    )
-            }
-            pageTitle={ t("extensions:develop.apiResource.pageHeader.title") }
-            title={ t("extensions:develop.apiResource.pageHeader.title") }
-            description={ (
-                <>
-                    { t("extensions:develop.apiResource.pageHeader.description") }
-                    <DocumentationLink
-                        link={ getLink("develop.apiResources.learnMore") }
+                APIResourceUtils.isAPIResourceCreateAllowed(featureConfig, allowedScopes) &&
+                apiResourcesList?.length > 0 && (
+                    <PrimaryButton
+                        data-testid={`${componentId}-add-api-resources-button`}
+                        onClick={() => setShowWizard(true)}
                     >
-                        { t("extensions:common.learnMore") }
+                        <Icon name="add" />
+                        {t("extensions:develop.apiResource.addApiResourceButton")}
+                    </PrimaryButton>
+                )
+            }
+            pageTitle={t("extensions:develop.apiResource.pageHeader.title")}
+            title={t("extensions:develop.apiResource.pageHeader.title")}
+            description={
+                <>
+                    {t("extensions:develop.apiResource.pageHeader.description")}
+                    <DocumentationLink link={getLink("develop.apiResources.learnMore")}>
+                        {t("extensions:common.learnMore")}
                     </DocumentationLink>
                 </>
-            ) }
-            data-componentid={ `${ componentId }-page-layout` }
-            data-testid={ `${ componentId }-page-layout` }
+            }
+            data-componentid={`${componentId}-page-layout`}
+            data-testid={`${componentId}-page-layout`}
             headingColumnWidth="11"
             actionColumnWidth="5"
         >
             <EmphasizedSegment
-                onClick={ () => {
-                    history.push(APIResourcesConstants.getPaths().get("API_RESOURCES_CATEGORY")
-                        .replace(":categoryId", APIResourceType.MANAGEMENT));
-                } }
+                onClick={() => {
+                    history.push(
+                        APIResourcesConstants.getPaths()
+                            .get("API_RESOURCES_CATEGORY")
+                            .replace(":categoryId", APIResourceType.MANAGEMENT)
+                    );
+                }}
                 className="clickable"
-                data-componentid={ `${ componentId }-management-api-container` }
+                data-componentid={`${componentId}-management-api-container`}
             >
                 <List>
                     <List.Item>
-                        <Grid container direction="row" xs={ 12 } alignItems="center">
-                            <Grid xs={ 10 } alignContent="center">
+                        <Grid container direction="row" xs={12} alignItems="center">
+                            <Grid xs={10} alignContent="center">
                                 <GenericIcon
                                     verticalAlign="middle"
                                     fill="primary"
                                     transparent
-                                    icon={ <BuildingGearIcon size="medium" /> }
+                                    icon={<BuildingGearIcon size="medium" />}
                                     spaced="right"
                                     floated="left"
                                     className="mt-1"
                                 />
-                                <List.Header>
-                                    { t("extensions:develop.apiResource.managementAPI.header") }
-                                </List.Header>
+                                <List.Header>{t("extensions:develop.apiResource.managementAPI.header")}</List.Header>
                                 <List.Description>
-                                    { t("extensions:develop.apiResource.managementAPI.description") }
+                                    {t("extensions:develop.apiResource.managementAPI.description")}
                                 </List.Description>
                             </Grid>
-                            <Grid xs={ 2 }>
+                            <Grid xs={2}>
                                 <GenericIcon
                                     verticalAlign="middle"
                                     fill="primary"
                                     transparent
-                                    icon={ <ChevronRightIcon /> }
+                                    icon={<ChevronRightIcon />}
                                     spaced="right"
                                     floated="right"
                                 />
@@ -309,39 +307,40 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
                 </List>
             </EmphasizedSegment>
             <EmphasizedSegment
-                onClick={ () => {
-                    history.push(APIResourcesConstants.getPaths().get("API_RESOURCES_CATEGORY")
-                        .replace(":categoryId", APIResourceType.ORGANIZATION));
-                } }
+                onClick={() => {
+                    history.push(
+                        APIResourcesConstants.getPaths()
+                            .get("API_RESOURCES_CATEGORY")
+                            .replace(":categoryId", APIResourceType.ORGANIZATION)
+                    );
+                }}
                 className="clickable"
-                data-componentid={ `${ componentId }-organization-api-container` }
+                data-componentid={`${componentId}-organization-api-container`}
             >
                 <List>
                     <List.Item>
-                        <Grid container direction="row" xs={ 12 } alignItems="center">
-                            <Grid xs={ 10 } alignContent="center">
+                        <Grid container direction="row" xs={12} alignItems="center">
+                            <Grid xs={10} alignContent="center">
                                 <GenericIcon
                                     verticalAlign="middle"
                                     fill="primary"
                                     transparent
-                                    icon={ <HierarchyIcon size="medium" /> }
+                                    icon={<HierarchyIcon size="medium" />}
                                     spaced="right"
                                     floated="left"
                                     className="mt-1"
                                 />
-                                <List.Header>
-                                    { t("extensions:develop.apiResource.organizationAPI.header") }
-                                </List.Header>
+                                <List.Header>{t("extensions:develop.apiResource.organizationAPI.header")}</List.Header>
                                 <List.Description>
-                                    { t("extensions:develop.apiResource.organizationAPI.description") }
+                                    {t("extensions:develop.apiResource.organizationAPI.description")}
                                 </List.Description>
                             </Grid>
-                            <Grid xs={ 2 }>
+                            <Grid xs={2}>
                                 <GenericIcon
                                     verticalAlign="middle"
                                     fill="primary"
                                     transparent
-                                    icon={ <ChevronRightIcon /> }
+                                    icon={<ChevronRightIcon />}
                                     spaced="right"
                                     floated="right"
                                 />
@@ -350,83 +349,82 @@ const APIResourcesPage: FunctionComponent<APIResourcesPageInterface> = (
                     </List.Item>
                 </List>
             </EmphasizedSegment>
-            <Divider hidden/>
+            <Divider hidden />
             <ListLayout
-                advancedSearch={ (
+                advancedSearch={
                     <AdvancedSearchWithBasicFilters
-                        onFilter={ handleApiFilter }
-                        filterAttributeOptions={ [
+                        onFilter={handleApiFilter}
+                        filterAttributeOptions={[
                             {
                                 key: 0,
                                 text: t("common:name"),
                                 value: "name"
                             }
-                        ] }
-                        filterAttributePlaceholder={
-                            t("console:develop.features.applications.advancedSearch.form" +
-                                ".inputs.filterAttribute.placeholder")
-                        }
-                        filterConditionsPlaceholder={
-                            t("console:develop.features.applications.advancedSearch.form" +
-                                ".inputs.filterCondition.placeholder")
-                        }
-                        filterValuePlaceholder={
-                            t("console:develop.features.applications.advancedSearch.form.inputs.filterValue" +
-                                ".placeholder")
-                        }
-                        placeholder={ "Search APIs by name" }
-                        style={ { minWidth: "425px" } }
+                        ]}
+                        filterAttributePlaceholder={t(
+                            "console:develop.features.applications.advancedSearch.form" +
+                                ".inputs.filterAttribute.placeholder"
+                        )}
+                        filterConditionsPlaceholder={t(
+                            "console:develop.features.applications.advancedSearch.form" +
+                                ".inputs.filterCondition.placeholder"
+                        )}
+                        filterValuePlaceholder={t(
+                            "console:develop.features.applications.advancedSearch.form.inputs.filterValue" +
+                                ".placeholder"
+                        )}
+                        placeholder={"Search APIs by name"}
+                        style={{ minWidth: "425px" }}
                         defaultSearchAttribute="name"
                         defaultSearchOperator="co"
-                        triggerClearQuery={ triggerClearQuery }
-                        data-componentid={ `${ componentId }-list-advanced-search` }
+                        triggerClearQuery={triggerClearQuery}
+                        data-componentid={`${componentId}-list-advanced-search`}
                     />
-                ) }
-                showTopActionPanel={ (!!searchQuery || apiResourcesList?.length > 0) }
-                data-componentid={ `${ componentId }-api-resources-list-layout` }
-                data-testid={ `${ componentId }-api-resources-list-layout` }
-                onPageChange={ handlePaginationChange }
-                showPagination={ true }
-                totalPages={ APIResourcesConstants.DEFAULT_TOTAL_PAGES }
-                totalListSize={ apiResourcesList?.length }
-                showPaginationPageLimit={ false }
-                isLoading={ isAPIResourcesListLoading }
-                activePage={ activePage }
-                paginationOptions={ {
+                }
+                showTopActionPanel={!!searchQuery || apiResourcesList?.length > 0}
+                data-componentid={`${componentId}-api-resources-list-layout`}
+                data-testid={`${componentId}-api-resources-list-layout`}
+                onPageChange={handlePaginationChange}
+                showPagination={true}
+                totalPages={APIResourcesConstants.DEFAULT_TOTAL_PAGES}
+                totalListSize={apiResourcesList?.length}
+                showPaginationPageLimit={false}
+                isLoading={isAPIResourcesListLoading}
+                activePage={activePage}
+                paginationOptions={{
                     disableNextButton: !nextAfter,
                     disablePreviousButton: !nextBefore
-                } }
+                }}
             >
-                {
-                    apiResourcesFetchRequestError
-                        ? (<EmptyPlaceholder
-                            subtitle={ [ t("extensions:develop.apiResource.apiResourceError.subtitles.0"),
-                                t("extensions:develop.apiResource.apiResourceError.subtitles.1") ] }
-                            title={ t("extensions:develop.apiResource.apiResourceError.title") }
-                            image={ getEmptyPlaceholderIllustrations().genericError }
-                            imageSize="tiny"
-                        />)
-                        : (<APIResourcesList
-                            apiResourcesList={ apiResourcesList }
-                            isAPIResourcesListLoading={ isAPIResourcesListLoading }
-                            featureConfig={ featureConfig }
-                            onAPIResourceDelete={ onAPIResourceDelete }
-                            onSearchQueryClear={ handleSearchQueryClear }
-                            searchQuery={ searchQuery }
-                            categoryId="custom"
-                            onEmptyListPlaceholderActionClicked={ () => setShowWizard(true) }
-                        />)
-
-                }
-            </ListLayout>
-            {
-                showWizard && (
-                    <AddAPIResource
-                        data-testid= { `${componentId}-add-api-resource-wizard-modal` }
-                        closeWizard={ () => setShowWizard(false) }
+                {apiResourcesFetchRequestError ? (
+                    <EmptyPlaceholder
+                        subtitle={[
+                            t("extensions:develop.apiResource.apiResourceError.subtitles.0"),
+                            t("extensions:develop.apiResource.apiResourceError.subtitles.1")
+                        ]}
+                        title={t("extensions:develop.apiResource.apiResourceError.title")}
+                        image={getEmptyPlaceholderIllustrations().genericError}
+                        imageSize="tiny"
                     />
-                )
-            }
+                ) : (
+                    <APIResourcesList
+                        apiResourcesList={apiResourcesList}
+                        isAPIResourcesListLoading={isAPIResourcesListLoading}
+                        featureConfig={featureConfig}
+                        onAPIResourceDelete={onAPIResourceDelete}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        searchQuery={searchQuery}
+                        categoryId="custom"
+                        onEmptyListPlaceholderActionClicked={() => setShowWizard(true)}
+                    />
+                )}
+            </ListLayout>
+            {showWizard && (
+                <AddAPIResource
+                    data-testid={`${componentId}-add-api-resource-wizard-modal`}
+                    closeWizard={() => setShowWizard(false)}
+                />
+            )}
         </PageLayout>
     );
 };

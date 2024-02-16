@@ -18,6 +18,8 @@
 
 import Grid from "@oxygen-ui/react/Grid";
 import { IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { useTrigger } from "@wso2is/forms";
 import {
     ConfirmationModal,
@@ -31,7 +33,6 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { Icon, Input } from "semantic-ui-react";
 import { PermissionListAPIResource } from "./permission-list-api-resource";
-import { FeatureConfigInterface, getEmptyPlaceholderIllustrations } from "../../../core";
 import { APIResourcePanesCommonPropsInterface, APIResourcePermissionInterface } from "../../models";
 import { AddAPIResourcePermission } from "../wizard";
 
@@ -39,7 +40,8 @@ import { AddAPIResourcePermission } from "../wizard";
  * Prop-types for the API resources page component.
  */
 type PermissionAPIResourceInterface = SBACInterface<FeatureConfigInterface> &
-    IdentifiableComponentInterface & APIResourcePanesCommonPropsInterface;
+    IdentifiableComponentInterface &
+    APIResourcePanesCommonPropsInterface;
 
 /**
  * API Resources listing page.
@@ -50,7 +52,6 @@ type PermissionAPIResourceInterface = SBACInterface<FeatureConfigInterface> &
 export const PermissionAPIResource: FunctionComponent<PermissionAPIResourceInterface> = (
     props: PermissionAPIResourceInterface
 ): ReactElement => {
-
     const {
         apiResourceData,
         isAPIResourceDataLoading,
@@ -63,12 +64,13 @@ export const PermissionAPIResource: FunctionComponent<PermissionAPIResourceInter
 
     const { t } = useTranslation();
 
-    const [ permissionList, setPermissionList ] = useState<APIResourcePermissionInterface[]>([]);
-    const [ serachedPermissionList, setSearchedPermissionList ] = useState<APIResourcePermissionInterface[]>([]);
-    const [ deletingAPIResourcePermission, setDeletingAPIResourcePermission ]
-        = useState<APIResourcePermissionInterface>(null);
-    const [ triggerAddAPIResourcePermissionModal, setTriggerAddAPIResourcePermissionModal ] = useTrigger();
-    const [ permissionSearchQuery, setPermissionSearchQuery ] = useState<string>("");
+    const [permissionList, setPermissionList] = useState<APIResourcePermissionInterface[]>([]);
+    const [serachedPermissionList, setSearchedPermissionList] = useState<APIResourcePermissionInterface[]>([]);
+    const [deletingAPIResourcePermission, setDeletingAPIResourcePermission] = useState<APIResourcePermissionInterface>(
+        null
+    );
+    const [triggerAddAPIResourcePermissionModal, setTriggerAddAPIResourcePermissionModal] = useTrigger();
+    const [permissionSearchQuery, setPermissionSearchQuery] = useState<string>("");
 
     /**
      * Set the permission list.
@@ -78,11 +80,11 @@ export const PermissionAPIResource: FunctionComponent<PermissionAPIResourceInter
             setPermissionList(apiResourceData.scopes);
             setSearchedPermissionList(apiResourceData.scopes);
         }
-    }, [ apiResourceData, deletingAPIResourcePermission ]);
+    }, [apiResourceData, deletingAPIResourcePermission]);
 
     /**
      * Handles the search query change.
-     * 
+     *
      * @param event - Change event
      */
     const searchPermission = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,13 +94,11 @@ export const PermissionAPIResource: FunctionComponent<PermissionAPIResourceInter
         if (changeValue.length > 0) {
             // Filter the permission list using the `displayName`
             setSearchedPermissionList(
-                permissionList.filter(
-                    (permission: APIResourcePermissionInterface) => {
-                        const displayName: string = permission.displayName;
+                permissionList.filter((permission: APIResourcePermissionInterface) => {
+                    const displayName: string = permission.displayName;
 
-                        return displayName.toLowerCase().includes(changeValue.toLowerCase());
-                    }
-                )
+                    return displayName.toLowerCase().includes(changeValue.toLowerCase());
+                })
             );
         } else {
             setSearchedPermissionList(permissionList);
@@ -117,138 +117,120 @@ export const PermissionAPIResource: FunctionComponent<PermissionAPIResourceInter
      * Handles the API resource permission delete action.
      */
     const deletePermission = (): void => {
-        handleDeleteAPIScope(
-            deletingAPIResourcePermission.name,
-            (): void => setDeletingAPIResourcePermission(null)
-        );
+        handleDeleteAPIScope(deletingAPIResourcePermission.name, (): void => setDeletingAPIResourcePermission(null));
     };
 
     return (
         <>
-            <EmphasizedSegment className="padded" loading={ isAPIResourceDataLoading }>
+            <EmphasizedSegment className="padded" loading={isAPIResourceDataLoading}>
                 <Grid container className="mb-1">
-                    <Grid xs={ 8 }>
+                    <Grid xs={8}>
                         <Heading as="h4" compact>
-                            { t("console:apiResources.tabs.scopes.title") }
+                            {t("console:apiResources.tabs.scopes.title")}
                         </Heading>
                         <Heading as="h6" color="grey" subHeading className="mb-5">
-                            { t("console:apiResources.tabs.scopes.subTitle") }
+                            {t("console:apiResources.tabs.scopes.subTitle")}
                         </Heading>
                     </Grid>
-                    <Grid xs={ 4 } alignItems="flex-end">
-                        {
-                            permissionList?.length !== 0 && !isReadOnly
-                                && (<PrimaryButton
-                                    data-componentid={ `${componentId}-add-permission-button` }
-                                    size="medium"
-                                    floated="right"
-                                    onClick={ () => setTriggerAddAPIResourcePermissionModal() }
-                                >
-                                    <Icon name="add" />
-                                    { t("console:apiResources.tabs.scopes.button") }
-                                </PrimaryButton>)
-                        }
+                    <Grid xs={4} alignItems="flex-end">
+                        {permissionList?.length !== 0 && !isReadOnly && (
+                            <PrimaryButton
+                                data-componentid={`${componentId}-add-permission-button`}
+                                size="medium"
+                                floated="right"
+                                onClick={() => setTriggerAddAPIResourcePermissionModal()}
+                            >
+                                <Icon name="add" />
+                                {t("console:apiResources.tabs.scopes.button")}
+                            </PrimaryButton>
+                        )}
                     </Grid>
                 </Grid>
                 <ListLayout
-                    showTopActionPanel={ !isAPIResourceDataLoading && permissionList?.length > 0 }
-                    showPagination={ false }
-                    onPageChange={ () => null }
-                    totalPages={ 100 }
-                    data-testid={ `${componentId}-list-layout` }
-                    totalListSize={ permissionList?.length }
+                    showTopActionPanel={!isAPIResourceDataLoading && permissionList?.length > 0}
+                    showPagination={false}
+                    onPageChange={() => null}
+                    totalPages={100}
+                    data-testid={`${componentId}-list-layout`}
+                    totalListSize={permissionList?.length}
                     leftActionPanel={
-                        (<div className="advanced-search-wrapper aligned-left fill-default">
+                        <div className="advanced-search-wrapper aligned-left fill-default">
                             <Input
                                 className="advanced-search with-add-on"
-                                data-testid={ `${componentId}-list-search-input` }
+                                data-testid={`${componentId}-list-search-input`}
                                 icon="search"
                                 iconPosition="left"
-                                onChange={ searchPermission }
-                                placeholder={ t("console:apiResources.tabs.scopes.search") }
+                                onChange={searchPermission}
+                                placeholder={t("console:apiResources.tabs.scopes.search")}
                                 floated="right"
                                 size="small"
-                                value={ permissionSearchQuery }
+                                value={permissionSearchQuery}
                             />
-                        </div>)
+                        </div>
                     }
                 >
-                    {
-                        !permissionList
-                            ? (
-                                <EmptyPlaceholder
-                                    subtitle={ [ t("extensions:develop.apiResource.apiResourceError." +
-                                                    "subtitles.0"),
-                                    t("extensions:develop.apiResource.apiResourceError.subtitles.1") ] }
-                                    title={ t("extensions:develop.apiResource.apiResourceError.title") }
-                                    image={ getEmptyPlaceholderIllustrations().genericError }
-                                    imageSize="tiny"
-                                />
-                            )
-                            : (
-                                <PermissionListAPIResource
-                                    isAPIResourceDataLoading={ isAPIResourceDataLoading }
-                                    isReadOnly={ isReadOnly }
-                                    permissionList={ permissionList }
-                                    serachedPermissionList={ serachedPermissionList }
-                                    isSubmitting={ isSubmitting }
-                                    clearSearchPermission={ clearSearchPermission }
-                                    setRemovePermission={ setDeletingAPIResourcePermission }
-                                    setTriggerAddAPIResourcePermissionModal
-                                        ={ setTriggerAddAPIResourcePermissionModal }
-                                />
-                            )
-                    }
+                    {!permissionList ? (
+                        <EmptyPlaceholder
+                            subtitle={[
+                                t("extensions:develop.apiResource.apiResourceError." + "subtitles.0"),
+                                t("extensions:develop.apiResource.apiResourceError.subtitles.1")
+                            ]}
+                            title={t("extensions:develop.apiResource.apiResourceError.title")}
+                            image={getEmptyPlaceholderIllustrations().genericError}
+                            imageSize="tiny"
+                        />
+                    ) : (
+                        <PermissionListAPIResource
+                            isAPIResourceDataLoading={isAPIResourceDataLoading}
+                            isReadOnly={isReadOnly}
+                            permissionList={permissionList}
+                            serachedPermissionList={serachedPermissionList}
+                            isSubmitting={isSubmitting}
+                            clearSearchPermission={clearSearchPermission}
+                            setRemovePermission={setDeletingAPIResourcePermission}
+                            setTriggerAddAPIResourcePermissionModal={setTriggerAddAPIResourcePermissionModal}
+                        />
+                    )}
                 </ListLayout>
             </EmphasizedSegment>
-            {
-                triggerAddAPIResourcePermissionModal && (
-                    <AddAPIResourcePermission 
-                        closeWizard={ () => setTriggerAddAPIResourcePermissionModal() } 
-                        handleUpdateAPIResource={ handleUpdateAPIResource }
-                    />
-                )
-            }
-            {
-                deletingAPIResourcePermission && (
-                    <ConfirmationModal
-                        primaryActionLoading={ isSubmitting }
-                        open={ deletingAPIResourcePermission !== null }
-                        onClose={ (): void => setDeletingAPIResourcePermission(null) }
-                        type="negative"
-                        assertionHint={ t("console:apiResources.confirmations." +
-                                    "deleteAPIResourcePermission.assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setDeletingAPIResourcePermission(null) }
-                        onPrimaryActionClick={ (): void => deletePermission() }
-                        data-testid={ `${componentId}-delete-confirmation-modal` }
-                        closeOnDimmerClick={ false }
+            {triggerAddAPIResourcePermissionModal && (
+                <AddAPIResourcePermission
+                    closeWizard={() => setTriggerAddAPIResourcePermissionModal()}
+                    handleUpdateAPIResource={handleUpdateAPIResource}
+                />
+            )}
+            {deletingAPIResourcePermission && (
+                <ConfirmationModal
+                    primaryActionLoading={isSubmitting}
+                    open={deletingAPIResourcePermission !== null}
+                    onClose={(): void => setDeletingAPIResourcePermission(null)}
+                    type="negative"
+                    assertionHint={t(
+                        "console:apiResources.confirmations." + "deleteAPIResourcePermission.assertionHint"
+                    )}
+                    assertionType="checkbox"
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => setDeletingAPIResourcePermission(null)}
+                    onPrimaryActionClick={(): void => deletePermission()}
+                    data-testid={`${componentId}-delete-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${componentId}-delete-confirmation-modal-header`}>
+                        {t("console:apiResources.confirmations.deleteAPIResourcePermission." + "header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        attached
+                        negative
+                        data-testid={`${componentId}-delete-confirmation-modal-message`}
                     >
-                        <ConfirmationModal.Header
-                            data-testid={ `${componentId}-delete-confirmation-modal-header` }
-                        >
-                            { t("console:apiResources.confirmations.deleteAPIResourcePermission." +
-                                        "header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${componentId}-delete-confirmation-modal-message` }
-                        >
-                            { t("console:apiResources.confirmations.deleteAPIResourcePermission." +
-                                        "message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content
-                            data-testid={ `${componentId}-delete-confirmation-modal-content` }
-                        >
-                            { t("console:apiResources.confirmations.deleteAPIResourcePermission." +
-                                        "content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+                        {t("console:apiResources.confirmations.deleteAPIResourcePermission." + "message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${componentId}-delete-confirmation-modal-content`}>
+                        {t("console:apiResources.confirmations.deleteAPIResourcePermission." + "content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

@@ -17,16 +17,15 @@
  */
 
 import { hasRequiredScopes } from "@wso2is/core/helpers";
-import { FeatureConfigInterface } from "../../core";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { APIResourceCategories, APIResourcesConstants } from "../constants/api-resources-constants";
 
 export class APIResourceUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      */
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Check whether the API resource read is allowed.
@@ -35,11 +34,8 @@ export class APIResourceUtils {
      * @param allowedScopes - Allowed scopes.
      * @returns True if the API resource read is allowed.
      */
-    public static isAPIResourceReadAllowed(featureConfig: FeatureConfigInterface,
-        allowedScopes: string): boolean {
-
-        return hasRequiredScopes(featureConfig?.apiResources,
-            featureConfig?.apiResources?.scopes?.read, allowedScopes);
+    public static isAPIResourceReadAllowed(featureConfig: FeatureConfigInterface, allowedScopes: string): boolean {
+        return hasRequiredScopes(featureConfig?.apiResources, featureConfig?.apiResources?.scopes?.read, allowedScopes);
     }
 
     /**
@@ -49,11 +45,12 @@ export class APIResourceUtils {
      * @param allowedScopes - Allowed scopes.
      * @returns True if the API resource update is allowed.
      */
-    public static isAPIResourceUpdateAllowed(featureConfig: FeatureConfigInterface,
-        allowedScopes: string): boolean {
-
-        return hasRequiredScopes(featureConfig?.apiResources,
-            featureConfig?.apiResources?.scopes?.update, allowedScopes);
+    public static isAPIResourceUpdateAllowed(featureConfig: FeatureConfigInterface, allowedScopes: string): boolean {
+        return hasRequiredScopes(
+            featureConfig?.apiResources,
+            featureConfig?.apiResources?.scopes?.update,
+            allowedScopes
+        );
     }
 
     /**
@@ -63,11 +60,12 @@ export class APIResourceUtils {
      * @param allowedScopes - Allowed scopes.
      * @returns True if the API resource create is allowed.
      */
-    public static isAPIResourceCreateAllowed(featureConfig: FeatureConfigInterface,
-        allowedScopes: string): boolean {
-
-        return hasRequiredScopes(featureConfig?.apiResources,
-            featureConfig?.apiResources?.scopes?.create, allowedScopes);
+    public static isAPIResourceCreateAllowed(featureConfig: FeatureConfigInterface, allowedScopes: string): boolean {
+        return hasRequiredScopes(
+            featureConfig?.apiResources,
+            featureConfig?.apiResources?.scopes?.create,
+            allowedScopes
+        );
     }
 
     /**
@@ -77,11 +75,12 @@ export class APIResourceUtils {
      * @param allowedScopes - Allowed scopes.
      * @returns True if the API resource delete is allowed.
      */
-    public static isAPIResourceDeleteAllowed(featureConfig: FeatureConfigInterface,
-        allowedScopes: string): boolean {
-
-        return hasRequiredScopes(featureConfig?.apiResources,
-            featureConfig?.apiResources?.scopes?.delete, allowedScopes);
+    public static isAPIResourceDeleteAllowed(featureConfig: FeatureConfigInterface, allowedScopes: string): boolean {
+        return hasRequiredScopes(
+            featureConfig?.apiResources,
+            featureConfig?.apiResources?.scopes?.delete,
+            allowedScopes
+        );
     }
 
     /**
@@ -91,7 +90,6 @@ export class APIResourceUtils {
      * @returns True if the API resource is a system API.
      */
     public static isSystemAPI(type: string): boolean {
-
         return type !== APIResourcesConstants.BUSINESS;
     }
 

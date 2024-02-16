@@ -19,6 +19,8 @@
 import { Show } from "@wso2is/access-control";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { Field, Form } from "@wso2is/form";
 import {
     ConfirmationModal,
@@ -34,7 +36,6 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider } from "semantic-ui-react";
 import { AccessControlConstants } from "../../../access-control/constants/access-control";
-import { FeatureConfigInterface, history } from "../../../core";
 import { deleteAPIResource } from "../../api/api-resources";
 import { APIResourcesConstants } from "../../constants/api-resources-constants";
 import {
@@ -48,7 +49,8 @@ import {
  * Prop-types for the API resources page component.
  */
 type GeneralAPIResourceInterface = SBACInterface<FeatureConfigInterface> &
-    IdentifiableComponentInterface & APIResourcePanesCommonPropsInterface;
+    IdentifiableComponentInterface &
+    APIResourcePanesCommonPropsInterface;
 
 const FORM_ID: string = "apiResource-general-details";
 
@@ -61,7 +63,6 @@ const FORM_ID: string = "apiResource-general-details";
 export const GeneralAPIResource: FunctionComponent<GeneralAPIResourceInterface> = (
     props: GeneralAPIResourceInterface
 ): ReactElement => {
-
     const {
         isReadOnly,
         isSubmitting,
@@ -74,10 +75,10 @@ export const GeneralAPIResource: FunctionComponent<GeneralAPIResourceInterface> 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ isFormValidationError, setIsFormValidationError ] = useState<boolean>(true);
-    const [ deleteAPIResourceLoading, setDeleteAPIResourceLoading ] = useState<boolean>(false);
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingAPIResource, setDeletingAPIResource ] = useState<APIResourceInterface>(undefined);
+    const [isFormValidationError, setIsFormValidationError] = useState<boolean>(true);
+    const [deleteAPIResourceLoading, setDeleteAPIResourceLoading] = useState<boolean>(false);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingAPIResource, setDeletingAPIResource] = useState<APIResourceInterface>(undefined);
 
     /**
      * Deletes an API resource when the delete API resource button is clicked.
@@ -85,28 +86,35 @@ export const GeneralAPIResource: FunctionComponent<GeneralAPIResourceInterface> 
      * @param apiResourceId - API resource ID.
      */
     const handleAPIResourceDelete = (apiResourceId: string): void => {
-
         setDeleteAPIResourceLoading(true);
         deleteAPIResource(apiResourceId)
             .then(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.apiResource.notifications.deleteAPIResource.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("extensions:develop.apiResource.notifications.deleteAPIResource.success.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.apiResource.notifications.deleteAPIResource.success" + ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t("extensions:develop.apiResource.notifications.deleteAPIResource.success.message")
+                    })
+                );
 
                 setShowDeleteConfirmationModal(false);
                 history.push(APIResourcesConstants.getPaths().get("API_RESOURCES"));
             })
             .catch(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.apiResource.notifications.deleteAPIResource" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:develop.apiResource.notifications.deleteAPIResource" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.apiResource.notifications.deleteAPIResource" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "extensions:develop.apiResource.notifications.deleteAPIResource" + ".genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setDeleteAPIResourceLoading(false);
@@ -122,34 +130,34 @@ export const GeneralAPIResource: FunctionComponent<GeneralAPIResourceInterface> 
     const resolveDangerActions = (): ReactElement => {
         return (
             <>
-                { !isReadOnly &&
-                    (
-                        <Show
-                            when={ AccessControlConstants.API_RESOURCES_DELETE }
+                {!isReadOnly && (
+                    <Show when={AccessControlConstants.API_RESOURCES_DELETE}>
+                        <DangerZoneGroup
+                            sectionHeader={t("extensions:develop.apiResource.tabs.general.dangerZoneGroup.header")}
                         >
-                            <DangerZoneGroup
-                                sectionHeader={
-                                    t("extensions:develop.apiResource.tabs.general.dangerZoneGroup.header") }
-                            >
-                                <DangerZone
-                                    data-testid={ `${componentId}-danger-zone` }
-                                    actionTitle={ t("extensions:develop.apiResource.tabs.general.dangerZoneGroup" +
-                                        ".deleteApiResource.button") }
-                                    header={ t("extensions:develop.apiResource.tabs.general.dangerZoneGroup" +
-                                        ".deleteApiResource.header") }
-                                    subheader={ t("extensions:develop.apiResource.tabs.general.dangerZoneGroup" +
-                                        ".deleteApiResource.subHeading")
-                                    }
-                                    onActionClick={ (): void => {
-                                        setShowDeleteConfirmationModal(true);
-                                        setDeletingAPIResource(apiResourceData);
-                                    } }
-                                    isButtonDisabled={ false }
-                                />
-                            </DangerZoneGroup>
-                        </Show>
-                    )
-                }
+                            <DangerZone
+                                data-testid={`${componentId}-danger-zone`}
+                                actionTitle={t(
+                                    "extensions:develop.apiResource.tabs.general.dangerZoneGroup" +
+                                        ".deleteApiResource.button"
+                                )}
+                                header={t(
+                                    "extensions:develop.apiResource.tabs.general.dangerZoneGroup" +
+                                        ".deleteApiResource.header"
+                                )}
+                                subheader={t(
+                                    "extensions:develop.apiResource.tabs.general.dangerZoneGroup" +
+                                        ".deleteApiResource.subHeading"
+                                )}
+                                onActionClick={(): void => {
+                                    setShowDeleteConfirmationModal(true);
+                                    setDeletingAPIResource(apiResourceData);
+                                }}
+                                isButtonDisabled={false}
+                            />
+                        </DangerZoneGroup>
+                    </Show>
+                )}
             </>
         );
     };
@@ -172,137 +180,119 @@ export const GeneralAPIResource: FunctionComponent<GeneralAPIResourceInterface> 
      * @param values - Form Values.
      * @returns Form validation.
      */
-    const validateForm = (values: GeneralUpdateAPIResourceInterface): GeneralErrorAPIResourceInterface=> {
-
+    const validateForm = (values: GeneralUpdateAPIResourceInterface): GeneralErrorAPIResourceInterface => {
         const errors: GeneralErrorAPIResourceInterface = {
             displayName: undefined
         };
 
         if (!values.displayName?.toString().trim()) {
-            errors.displayName = t("extensions:develop.apiResource.tabs.general.form" +
-            ".fields.name.emptyValidate");
+            errors.displayName = t("extensions:develop.apiResource.tabs.general.form" + ".fields.name.emptyValidate");
 
             setIsFormValidationError(true);
         } else {
-
             setIsFormValidationError(false);
         }
 
         return errors;
     };
 
-    return (
-        !isAPIResourceDataLoading
-            ? (
-                <>
-                    <EmphasizedSegment padded="very">
-                        <Form
-                            data-testid={ `${componentId}-form` }
-                            onSubmit={ updateConfigurations }
-                            id={ FORM_ID }
-                            validate={ validateForm }
-                            uncontrolledForm={ false }
+    return !isAPIResourceDataLoading ? (
+        <>
+            <EmphasizedSegment padded="very">
+                <Form
+                    data-testid={`${componentId}-form`}
+                    onSubmit={updateConfigurations}
+                    id={FORM_ID}
+                    validate={validateForm}
+                    uncontrolledForm={false}
+                >
+                    {apiResourceData.name && (
+                        <Field.Input
+                            ariaLabel="Site title input field"
+                            inputType="name"
+                            name="displayName"
+                            label={t("extensions:develop.apiResource.tabs.general.form" + ".fields.name.label")}
+                            placeholder={t(
+                                "extensions:develop.apiResource.tabs." + "general.form.fields.name.placeholder"
+                            )}
+                            readOnly={isReadOnly}
+                            required
+                            initialValue={apiResourceData.name}
+                            maxLength={100}
+                            minLength={0}
+                            width={16}
+                            data-componentid={`${componentId}-general-form-displayName`}
+                        />
+                    )}
+                    {apiResourceData.identifier && (
+                        <Field.Input
+                            ariaLabel="Site title input field"
+                            inputType="url"
+                            name="identifier"
+                            label={t("extensions:develop.apiResource.tabs.general.form" + ".fields.identifier.label")}
+                            readOnly
+                            required
+                            maxLength={100}
+                            minLength={0}
+                            width={16}
+                            data-componentid={`${componentId}-general-form-identifier`}
                         >
-                            {
-                                apiResourceData.name && (
-                                    <Field.Input
-                                        ariaLabel="Site title input field"
-                                        inputType="name"
-                                        name="displayName"
-                                        label={ t("extensions:develop.apiResource.tabs.general.form" +
-                                                ".fields.name.label") }
-                                        placeholder={ t("extensions:develop.apiResource.tabs." +
-                                                "general.form.fields.name.placeholder") }
-                                        readOnly={ isReadOnly }
-                                        required
-                                        initialValue={ apiResourceData.name }
-                                        maxLength={ 100 }
-                                        minLength={ 0 }
-                                        width={ 16 }
-                                        data-componentid={ `${componentId}-general-form-displayName` }
-                                    />
-                                )
-                            }
-                            {
-                                apiResourceData.identifier && (
-                                    <Field.Input
-                                        ariaLabel="Site title input field"
-                                        inputType="url"
-                                        name="identifier"
-                                        label={ t("extensions:develop.apiResource.tabs.general.form" +
-                                                ".fields.identifier.label") }
-                                        readOnly
-                                        required
-                                        maxLength={ 100 }
-                                        minLength={ 0 }
-                                        width={ 16 }
-                                        data-componentid={ `${componentId}-general-form-identifier` }
-                                    >
-                                        <CopyInputField
-                                            value={ apiResourceData.identifier }
-                                        />
-                                    </Field.Input>
-                                )
-                            }
-                            <Field.Button
-                                form={ FORM_ID }
-                                size="small"
-                                buttonType="primary_btn"
-                                ariaLabel="Update button"
-                                name="update-button"
-                                hidden={ isReadOnly }
-                                disabled={ isSubmitting || isFormValidationError }
-                                loading={ isSubmitting }
-                                data-componentid={ `${componentId}-submit-button` }
-                                label={ t("extensions:develop.apiResource.tabs.general.form" +
-                                        ".updateButton") }
-                            />
-                        </Form>
-                    </EmphasizedSegment>
-                    <Divider hidden />
-                    { resolveDangerActions() }
-                    {
-                        deletingAPIResource && (
-                            <ConfirmationModal
-                                primaryActionLoading={ deleteAPIResourceLoading }
-                                onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                                type="negative"
-                                open={ showDeleteConfirmationModal }
-                                assertionHint={ t("extensions:develop.apiResource.confirmations.deleteAPIResource." +
-                                    "assertionHint") }
-                                assertionType="checkbox"
-                                primaryAction={ t("common:confirm") }
-                                secondaryAction={ t("common:cancel") }
-                                onSecondaryActionClick={ (): void => {
-                                    setShowDeleteConfirmationModal(false);
-                                } }
-                                onPrimaryActionClick={ (): void => handleAPIResourceDelete(deletingAPIResource.id) }
-                                data-testid={ `${componentId}-delete-confirmation-modal` }
-                                closeOnDimmerClick={ false }
-                            >
-                                <ConfirmationModal.Header
-                                    data-testid={ `${componentId}-delete-confirmation-modal-header` }
-                                >
-                                    { t("extensions:develop.apiResource.confirmations.deleteAPIResource.header") }
-                                </ConfirmationModal.Header>
-                                <ConfirmationModal.Message
-                                    attached
-                                    negative
-                                    data-testid={ `${componentId}-delete-confirmation-modal-message` }
-                                >
-                                    { t("extensions:develop.apiResource.confirmations.deleteAPIResource.message") }
-                                </ConfirmationModal.Message>
-                                <ConfirmationModal.Content
-                                    data-testid={ `${componentId}-delete-confirmation-modal-content` }
-                                >
-                                    { t("extensions:develop.apiResource.confirmations.deleteAPIResource.content") }
-                                </ConfirmationModal.Content>
-                            </ConfirmationModal>
-                        )
-                    }
-                </>
-            )
-            : <ContentLoader dimmer />
+                            <CopyInputField value={apiResourceData.identifier} />
+                        </Field.Input>
+                    )}
+                    <Field.Button
+                        form={FORM_ID}
+                        size="small"
+                        buttonType="primary_btn"
+                        ariaLabel="Update button"
+                        name="update-button"
+                        hidden={isReadOnly}
+                        disabled={isSubmitting || isFormValidationError}
+                        loading={isSubmitting}
+                        data-componentid={`${componentId}-submit-button`}
+                        label={t("extensions:develop.apiResource.tabs.general.form" + ".updateButton")}
+                    />
+                </Form>
+            </EmphasizedSegment>
+            <Divider hidden />
+            {resolveDangerActions()}
+            {deletingAPIResource && (
+                <ConfirmationModal
+                    primaryActionLoading={deleteAPIResourceLoading}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertionHint={t(
+                        "extensions:develop.apiResource.confirmations.deleteAPIResource." + "assertionHint"
+                    )}
+                    assertionType="checkbox"
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => {
+                        setShowDeleteConfirmationModal(false);
+                    }}
+                    onPrimaryActionClick={(): void => handleAPIResourceDelete(deletingAPIResource.id)}
+                    data-testid={`${componentId}-delete-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${componentId}-delete-confirmation-modal-header`}>
+                        {t("extensions:develop.apiResource.confirmations.deleteAPIResource.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        attached
+                        negative
+                        data-testid={`${componentId}-delete-confirmation-modal-message`}
+                    >
+                        {t("extensions:develop.apiResource.confirmations.deleteAPIResource.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${componentId}-delete-confirmation-modal-content`}>
+                        {t("extensions:develop.apiResource.confirmations.deleteAPIResource.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
+        </>
+    ) : (
+        <ContentLoader dimmer />
     );
 };
 

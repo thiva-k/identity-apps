@@ -17,9 +17,9 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import useRequest, { RequestConfigInterface, RequestErrorInterface, RequestResultInterface }
-    from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { RequestConfigInterface, RequestErrorInterface, RequestResultInterface } from "@wso2is/feature-hooks.common";
+import useRequest from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
 import { AuthorizedAPIListItemInterface } from "../models/api-resources";
 
 /**
@@ -34,7 +34,7 @@ export const useGetAuthorizedAPIList = <Data = AuthorizedAPIListItemInterface[],
 ): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.applications }/${ applicationId }/authorized-apis`
+        url: `${store.getState().config.endpoints.applications}/${applicationId}/authorized-apis`
     };
 
     /**
@@ -50,4 +50,3 @@ export const useGetAuthorizedAPIList = <Data = AuthorizedAPIListItemInterface[],
         mutate
     };
 };
-

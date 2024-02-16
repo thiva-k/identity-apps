@@ -17,20 +17,19 @@
  */
 
 import { IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
-import {
-    DataTable, EmptyPlaceholder, TableActionsInterface, TableColumnInterface
-} from "@wso2is/react-components";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { DataTable, EmptyPlaceholder, TableActionsInterface, TableColumnInterface } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Divider, Header, Label, SemanticICONS } from "semantic-ui-react";
-import { FeatureConfigInterface } from "../../../../core";
 import { APIResourcePermissionInterface, PermissionMappingInterface } from "../../../models";
 
 /**
  * Prop-types for the API resources page component.
  */
 type PermissionMappingListInterface = SBACInterface<FeatureConfigInterface> &
-    IdentifiableComponentInterface & PermissionMappingInterface;
+    IdentifiableComponentInterface &
+    PermissionMappingInterface;
 
 /**
  * API Resources listing page.
@@ -41,23 +40,18 @@ type PermissionMappingListInterface = SBACInterface<FeatureConfigInterface> &
 export const PermissionMappingList: FunctionComponent<PermissionMappingListInterface> = (
     props: PermissionMappingListInterface
 ): ReactElement => {
-
-    const {
-        addedPermissions,
-        updatePermissions,
-        ["data-componentid"]: componentId
-    } = props;
+    const { addedPermissions, updatePermissions, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
-    const [ permissionsList, setPermissionsList ] = useState<APIResourcePermissionInterface[]>(null);
+    const [permissionsList, setPermissionsList] = useState<APIResourcePermissionInterface[]>(null);
 
     /**
      * Set the added permissions to the state.
      */
     useEffect(() => {
-        setPermissionsList([ ...addedPermissions.values() ].reverse());
-    }, [ addedPermissions ]);
+        setPermissionsList([...addedPermissions.values()].reverse());
+    }, [addedPermissions]);
 
     /**
      * Resolves data table actions.
@@ -93,12 +87,12 @@ export const PermissionMappingList: FunctionComponent<PermissionMappingListInter
                 id: "displayName",
                 key: "displayName",
                 render: (permission: APIResourcePermissionInterface): ReactNode => (
-                    <Header as="h6" data-testid={ `${componentId}-permission-display-name` }>
+                    <Header as="h6" data-testid={`${componentId}-permission-display-name`}>
                         <Header.Content>
-                            { permission.displayName }
+                            {permission.displayName}
                             <Header.Subheader>
                                 <Label size="medium" className="ml-0 mt-2">
-                                    { permission.name }
+                                    {permission.name}
                                 </Label>
                             </Header.Subheader>
                         </Header.Content>
@@ -112,11 +106,9 @@ export const PermissionMappingList: FunctionComponent<PermissionMappingListInter
                 id: "description",
                 key: "description",
                 render: (permission: APIResourcePermissionInterface): ReactNode => (
-                    <Header as="h6" data-testid={ `${componentId}-description` }>
+                    <Header as="h6" data-testid={`${componentId}-description`}>
                         <Header.Content>
-                            <Header.Subheader>
-                                { permission.description }
-                            </Header.Subheader>
+                            <Header.Subheader>{permission.description}</Header.Subheader>
                         </Header.Content>
                     </Header>
                 ),
@@ -144,9 +136,7 @@ export const PermissionMappingList: FunctionComponent<PermissionMappingListInter
             return (
                 <>
                     <Divider className="mb-1" hidden />
-                    <EmptyPlaceholder
-                        subtitle={ [ t("console:apiResources.tabs.scopes.empty.title") ] }
-                    />
+                    <EmptyPlaceholder subtitle={[t("console:apiResources.tabs.scopes.empty.title")]} />
                     <Divider className="mt-1" hidden />
                 </>
             );
@@ -167,19 +157,19 @@ export const PermissionMappingList: FunctionComponent<PermissionMappingListInter
     return (
         <DataTable<APIResourcePermissionInterface>
             className="oidc-scopes-table"
-            columnCount={ 3 }
-            loadingStateOptions={ {
+            columnCount={3}
+            loadingStateOptions={{
                 count: 10,
                 imageType: "square"
-            } }
-            onRowClick={ ()=>null }
-            showHeader={ false }
-            placeholders={ showPlaceholders() }
-            transparent={ permissionsList?.length === 0 }
-            data-testid={ componentId }
-            actions={ resolveTableActions() }
-            columns={ resolveTableColumns() }
-            data={ permissionsList }
+            }}
+            onRowClick={() => null}
+            showHeader={false}
+            placeholders={showPlaceholders()}
+            transparent={permissionsList?.length === 0}
+            data-testid={componentId}
+            actions={resolveTableActions()}
+            columns={resolveTableColumns()}
+            data={permissionsList}
         />
     );
 };

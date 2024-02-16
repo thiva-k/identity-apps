@@ -17,6 +17,7 @@
  */
 
 import { IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { FormValue } from "@wso2is/forms";
 import { EmphasizedSegment } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
@@ -24,14 +25,14 @@ import { useTranslation } from "react-i18next";
 import { Grid, Header } from "semantic-ui-react";
 import { PermissionMappingList } from "./permission-mapping-list";
 import { PermissionMappingListItem } from "./permission-mapping-list-item";
-import { FeatureConfigInterface } from "../../../../core";
 import { APIResourcePermissionInterface } from "../../../models";
 
 /**
  * Prop-types for the API resources page component.
  */
-interface AddAPIResourcePermissionsInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
+interface AddAPIResourcePermissionsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Initial permission list.
      */
@@ -51,7 +52,7 @@ interface AddAPIResourcePermissionsInterface extends SBACInterface<FeatureConfig
     /**
      * Set the permission list.
      */
-    setPermissionsList : (permissions: Map<string, APIResourcePermissionInterface>) => void;
+    setPermissionsList: (permissions: Map<string, APIResourcePermissionInterface>) => void;
     /**
      * Set the latest permission form values.
      */
@@ -71,7 +72,6 @@ interface AddAPIResourcePermissionsInterface extends SBACInterface<FeatureConfig
 export const AddAPIResourcePermissions: FunctionComponent<AddAPIResourcePermissionsInterface> = (
     props: AddAPIResourcePermissionsInterface
 ): ReactElement => {
-
     const {
         initialPermissions,
         triggerAddPermission,
@@ -84,23 +84,24 @@ export const AddAPIResourcePermissions: FunctionComponent<AddAPIResourcePermissi
 
     const { t } = useTranslation();
 
-    const [ addedPermissions, setAddedPermissions ] 
-        = useState<Map<string, APIResourcePermissionInterface>>(initialPermissions ? initialPermissions : new Map());
+    const [addedPermissions, setAddedPermissions] = useState<Map<string, APIResourcePermissionInterface>>(
+        initialPermissions ? initialPermissions : new Map()
+    );
 
     /**
      * Update the permission list when the added permissions map is updated.
      */
     useEffect(() => {
         setPermissionsList(addedPermissions);
-    }, [ addedPermissions ]);
-    
+    }, [addedPermissions]);
+
     /**
      * Update the permission map when a new permission is added or deleted.
-     * 
+     *
      * @param permission - The permission to be added or deleted.  `APIResourcePermissionInterface`
      * @param action - The action to be performed. `set` or `delete`
      */
-    const updatePermissions = (permission: APIResourcePermissionInterface, action : "set" | "delete"): void => {
+    const updatePermissions = (permission: APIResourcePermissionInterface, action: "set" | "delete"): void => {
         const updatedPermissions: Map<string, APIResourcePermissionInterface> = new Map(addedPermissions);
 
         switch (action) {
@@ -108,12 +109,12 @@ export const AddAPIResourcePermissions: FunctionComponent<AddAPIResourcePermissi
                 updatedPermissions.set(permission.name, permission);
 
                 break;
-            
+
             case "delete":
                 updatedPermissions.delete(permission.name);
 
                 break;
-        
+
             default:
                 break;
         }
@@ -122,32 +123,33 @@ export const AddAPIResourcePermissions: FunctionComponent<AddAPIResourcePermissi
 
     return (
         <Grid>
-            <Grid.Row columns={ 1 }>
-                <Grid.Column width={ 16 }>
+            <Grid.Row columns={1}>
+                <Grid.Column width={16}>
                     <EmphasizedSegment className="mb-4">
                         <PermissionMappingListItem
-                            addedPermissions={ addedPermissions }
-                            updatePermissions={ updatePermissions }
-                            triggerAddPermission={ triggerAddPermission }
-                            setAddPermission={ setAddPermission }
-                            setLatestPermissionFormValues={ setLatestPermissionFormValues }
-                            isPermissionValidationLoading={ isPermissionValidationLoading }
-                            setPermissionValidationLoading={ setPermissionValidationLoading } />
+                            addedPermissions={addedPermissions}
+                            updatePermissions={updatePermissions}
+                            triggerAddPermission={triggerAddPermission}
+                            setAddPermission={setAddPermission}
+                            setLatestPermissionFormValues={setLatestPermissionFormValues}
+                            isPermissionValidationLoading={isPermissionValidationLoading}
+                            setPermissionValidationLoading={setPermissionValidationLoading}
+                        />
                     </EmphasizedSegment>
                 </Grid.Column>
-                <Grid.Column width={ 16 }>
+                <Grid.Column width={16}>
                     <React.Fragment>
-                        <Header
-                            as="h5"
-                            className="bold-text mb-2"
-                        >
-                            { t("console:apiResources.wizard.addApiResource.steps.scopes.form." +
-                                "fields.permissionList.label") }
+                        <Header as="h5" className="bold-text mb-2">
+                            {t(
+                                "console:apiResources.wizard.addApiResource.steps.scopes.form." +
+                                    "fields.permissionList.label"
+                            )}
                         </Header>
                         <EmphasizedSegment className="mt-0">
-                            <PermissionMappingList 
-                                addedPermissions={ addedPermissions }
-                                updatePermissions={ updatePermissions } />
+                            <PermissionMappingList
+                                addedPermissions={addedPermissions}
+                                updatePermissions={updatePermissions}
+                            />
                         </EmphasizedSegment>
                     </React.Fragment>
                 </Grid.Column>
