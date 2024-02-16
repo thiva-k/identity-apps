@@ -18,6 +18,9 @@
 
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import kebabCase from "lodash-es/kebabCase";
 import React, { FunctionComponent, ReactElement, useMemo } from "react";
 import { useSelector } from "react-redux";
@@ -29,7 +32,6 @@ import { MultiAttributeLoginForm } from "./multi-attribute-login";
 import { PasswordRecoveryConfigurationForm } from "./password-recovery-form";
 import { SelfRegistrationForm } from "./self-registration-form";
 import { UsernameRecoveryConfigurationForm } from "./username-recovery-form";
-import { AppState, FeatureConfigInterface, history } from "../../core";
 import DynamicConnectorForm from "../components/governance-connectors/dynamic-connector-form";
 import { ServerConfigurationsConstants } from "../constants/server-configurations-constants";
 import { ConnectorPropertyInterface, GovernanceConnectorInterface } from "../models/governance-connectors";

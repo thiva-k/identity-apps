@@ -28,16 +28,13 @@ import { Dispatch } from "redux";
 import { DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
 import { userstoresConfig } from "../../../extensions/configs/userstores";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
-import {
-    AdvancedSearchWithBasicFilters,
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    filterList,
-    history,
-    sortList
-} from "../../core";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { AppConstants, UIConstants } from "@wso2is/feature-constants.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { filterList , sortList} from "@wso2is/feature-utils.common";
+import { history } from "@wso2is/feature-helpers.common";
+
 import { getUserStores } from "../api";
 import { UserStoresList } from "../components";
 import { QueryParams, UserStoreListItem } from "../models";

@@ -10532,18 +10532,33 @@ importers:
       '@wso2is/dynamic-forms':
         specifier: ^2.0.29
         version: link:../../modules/dynamic-forms
-      '@wso2is/feature-groups.common':
+      '@wso2is/feature-apis.common':
         specifier: '*'
-        version: link:../feature-groups.common
-      '@wso2is/feature-organizations.common':
+        version: link:../feature-apis.common
+      '@wso2is/feature-components.common':
         specifier: '*'
-        version: link:../feature-organizations.common
-      '@wso2is/feature-roles.common':
+        version: link:../feature-components.common
+      '@wso2is/feature-configs.common':
         specifier: '*'
-        version: link:../feature-roles.common
-      '@wso2is/feature-users.common':
+        version: link:../feature-configs.common
+      '@wso2is/feature-constants.common':
         specifier: '*'
-        version: link:../feature-users.common
+        version: link:../feature-constants.common
+      '@wso2is/feature-helpers.common':
+        specifier: '*'
+        version: link:../feature-helpers.common
+      '@wso2is/feature-hooks.common':
+        specifier: '*'
+        version: link:../feature-hooks.common
+      '@wso2is/feature-models.common':
+        specifier: '*'
+        version: link:../feature-models.common
+      '@wso2is/feature-store.common':
+        specifier: '*'
+        version: link:../feature-store.common
+      '@wso2is/feature-utils.common':
+        specifier: '*'
+        version: link:../feature-utils.common
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form
@@ -10893,18 +10908,36 @@ importers:
       '@wso2is/dynamic-forms':
         specifier: ^2.0.29
         version: link:../../modules/dynamic-forms
-      '@wso2is/feature-groups.common':
+      '@wso2is/feature-apis.common':
         specifier: '*'
-        version: link:../feature-groups.common
-      '@wso2is/feature-organizations.common':
+        version: link:../feature-apis.common
+      '@wso2is/feature-components.common':
         specifier: '*'
-        version: link:../feature-organizations.common
-      '@wso2is/feature-roles.common':
+        version: link:../feature-components.common
+      '@wso2is/feature-configs.common':
         specifier: '*'
-        version: link:../feature-roles.common
+        version: link:../feature-configs.common
+      '@wso2is/feature-constants.common':
+        specifier: '*'
+        version: link:../feature-constants.common
+      '@wso2is/feature-helpers.common':
+        specifier: '*'
+        version: link:../feature-helpers.common
+      '@wso2is/feature-hooks.common':
+        specifier: '*'
+        version: link:../feature-hooks.common
+      '@wso2is/feature-models.common':
+        specifier: '*'
+        version: link:../feature-models.common
+      '@wso2is/feature-store.common':
+        specifier: '*'
+        version: link:../feature-store.common
       '@wso2is/feature-users.common':
         specifier: '*'
         version: link:../feature-users.common
+      '@wso2is/feature-utils.common':
+        specifier: '*'
+        version: link:../feature-utils.common
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form
@@ -11254,18 +11287,36 @@ importers:
       '@wso2is/dynamic-forms':
         specifier: ^2.0.29
         version: link:../../modules/dynamic-forms
-      '@wso2is/feature-groups.common':
+      '@wso2is/feature-apis.common':
         specifier: '*'
-        version: link:../feature-groups.common
-      '@wso2is/feature-organizations.common':
+        version: link:../feature-apis.common
+      '@wso2is/feature-components.common':
         specifier: '*'
-        version: link:../feature-organizations.common
-      '@wso2is/feature-roles.common':
+        version: link:../feature-components.common
+      '@wso2is/feature-configs.common':
         specifier: '*'
-        version: link:../feature-roles.common
+        version: link:../feature-configs.common
+      '@wso2is/feature-constants.common':
+        specifier: '*'
+        version: link:../feature-constants.common
+      '@wso2is/feature-helpers.common':
+        specifier: '*'
+        version: link:../feature-helpers.common
+      '@wso2is/feature-hooks.common':
+        specifier: '*'
+        version: link:../feature-hooks.common
+      '@wso2is/feature-models.common':
+        specifier: '*'
+        version: link:../feature-models.common
+      '@wso2is/feature-store.common':
+        specifier: '*'
+        version: link:../feature-store.common
       '@wso2is/feature-users.common':
         specifier: '*'
         version: link:../feature-users.common
+      '@wso2is/feature-utils.common':
+        specifier: '*'
+        version: link:../feature-utils.common
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form
@@ -13453,7 +13504,7 @@ packages:
     dependencies:
       '@babel/core': 7.23.9
       '@babel/helper-create-class-features-plugin': 7.18.13(@babel/core@7.23.9)
-      '@babel/helper-plugin-utils': 7.22.5
+      '@babel/helper-plugin-utils': 7.18.9
 
   /@babel/plugin-proposal-class-static-block@7.18.6(@babel/core@7.18.13):
     resolution: {integrity: sha512-+I3oIiNxrCpup3Gi8n5IGMwj0gOCAjcJUSQEcotNnCCPMEnixawOQ+KeJPlgfjzx+FKQ1QSyZOWe7wmoJp7vhw==}

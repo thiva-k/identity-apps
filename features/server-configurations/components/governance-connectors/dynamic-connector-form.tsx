@@ -17,6 +17,8 @@
  */
 
 import { hasRequiredScopes } from "@wso2is/core/helpers";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { I18n } from "@wso2is/i18n";
 import {
     Hint,
@@ -38,10 +40,6 @@ import {
     Grid
 } from "semantic-ui-react";
 import { serverConfigurationConfig } from "../../../../extensions";
-import {
-    AppState,
-    FeatureConfigInterface
-} from "../../../core";
 import { ServerConfigurationsConstants } from "../../constants";
 import {
     ConnectorPropertyInterface,

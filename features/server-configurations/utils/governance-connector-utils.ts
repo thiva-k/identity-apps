@@ -19,9 +19,10 @@
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertLevels } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { store } from "@wso2is/feature-store.common";
 import { I18n } from "@wso2is/i18n";
 import camelCase from "lodash-es/camelCase";
-import { AppConstants, store } from "../../core";
 import { getConnectorCategories } from "../api";
 import { ServerConfigurationsConstants } from "../constants";
 import {

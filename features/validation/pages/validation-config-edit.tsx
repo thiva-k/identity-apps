@@ -22,6 +22,11 @@ import {
     IdentifiableComponentInterface
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { getConfiguration } from "@wso2is/feature-users.common/utils/generate-password.utils";
 import { Field, Form } from "@wso2is/form";
 import {
     ContentLoader,
@@ -46,7 +51,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid, Ref } from "semantic-ui-react";
 import { serverConfigurationConfig } from "../../../extensions";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
 import {
     ConnectorPropertyInterface,
     GovernanceConnectorInterface,
@@ -54,7 +58,6 @@ import {
     ServerConfigurationsConstants,
     getConnectorDetails
 } from "../../server-configurations";
-import { getConfiguration } from "../../users/utils/generate-password.utils";
 import { updateValidationConfigData, useValidationConfigData } from "../api";
 import { ValidationConfigConstants } from "../constants/validation-config-constants";
 import { ValidationDataInterface, ValidationFormInterface } from "../models";

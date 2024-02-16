@@ -18,6 +18,9 @@
 
 import { AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
 import { EmptyPlaceholder, PageLayout, TemplateGrid } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
@@ -25,7 +28,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { userstoresConfig } from "../../../extensions";
-import { AppConstants, getEmptyPlaceholderIllustrations, history } from "../../core";
 import { getAType, getUserstoreTypes } from "../api";
 import { AddUserStore } from "../components";
 import { getUserstoreTemplateIllustrations } from "../configs";

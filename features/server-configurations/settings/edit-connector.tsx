@@ -17,11 +17,12 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SettingsSection } from "./settings-section";
 import { serverConfigurationConfig } from "../../../extensions/configs";
-import { AppConstants, history } from "../../core";
 import { getSettingsSectionIcons } from "../configs";
 import { ServerConfigurationsConstants } from "../constants/server-configurations-constants";
 import { ConnectorPropertyInterface, GovernanceConnectorInterface } from "../models/governance-connectors";

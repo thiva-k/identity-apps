@@ -19,13 +19,14 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import useRequest, {
+import  {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../../features/core/hooks/use-request";
-import { store } from "../../core";
+} from "@wso2is/feature-hooks.common";
+import useRequest from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { ValidationManagementConstants } from "../constants/validation-config-constants";
 import { ValidationConfInterface, ValidationDataInterface, ValidationFormInterface } from "../models";
 

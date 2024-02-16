@@ -42,11 +42,11 @@ import {
 import { useDispatch } from "react-redux";
 import { Icon } from "semantic-ui-react";
 import DynamicConnectorForm from "./dynamic-connector-form";
+import { serverConfigurationConfig } from "../../../../extensions";
 import { 
     IdentityAppsApiException 
-} from "../../../../../../../modules/core/dist/types/exceptions/identity-apps-api-exception";
-import { AddAlertAction } from "../../../../../../../modules/core/dist/types/store/actions/types/global";
-import { serverConfigurationConfig } from "../../../../extensions";
+} from "../../../../modules/core/dist/types/exceptions/identity-apps-api-exception";
+import { AddAlertAction } from "../../../../modules/core/dist/types/store/actions/types/global";
 import { updateGovernanceConnector } from "../../api";
 import { ServerConfigurationsConstants } from "../../constants";
 import { 

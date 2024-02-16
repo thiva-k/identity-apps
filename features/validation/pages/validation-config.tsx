@@ -17,9 +17,10 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import {AppConstants} from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
-import { AppConstants, history } from "../../core";
 import { getSettingsSectionIcons } from "../../server-configurations";
 import { SettingsSection } from "../../server-configurations/settings/settings-section";
 

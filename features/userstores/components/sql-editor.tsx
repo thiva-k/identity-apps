@@ -17,11 +17,11 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { getOperationIcons } from "@wso2is/feature-configs.common";
 import { CodeEditor, GenericIcon, Heading, LinkButton, Popup, PrimaryButton, Tooltip } from "@wso2is/react-components";
 import React, { FunctionComponent, MutableRefObject, ReactElement, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Accordion, Icon, Menu, Segment, Sidebar } from "semantic-ui-react";
-import { getOperationIcons } from "../../core/configs";
 import { RequiredBinary, TypeProperty } from "../models";
 
 interface SqlEditorPropsInterface extends TestableComponentInterface {
