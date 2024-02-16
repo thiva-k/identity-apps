@@ -17,6 +17,7 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { FormValue } from "@wso2is/forms";
 import { EmptyPlaceholder } from "@wso2is/react-components";
 import differenceWith from "lodash-es/differenceWith";
@@ -25,7 +26,6 @@ import React, { FunctionComponent, MutableRefObject, ReactElement, useEffect, us
 import { useTranslation } from "react-i18next";
 import { Divider, Grid } from "semantic-ui-react";
 import { ClaimEventClickItem, ClaimsList, ListType } from "../..";
-import { getEmptyPlaceholderIllustrations } from "../../../../core";
 import { ClaimManagementConstants } from "../../../constants";
 import { AddExternalClaim } from "../../../models";
 import { resolveType } from "../../../utils";
@@ -96,7 +96,6 @@ interface ExternalClaimsPropsInterface extends TestableComponentInterface {
 export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
     props: ExternalClaimsPropsInterface
 ): ReactElement => {
-
     const {
         onSubmit,
         submitState,
@@ -109,12 +108,12 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
         dialectId,
         mappedLocalClaims,
         onClaimListChange,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
-    const [ claims, setClaims ] = useState<AddExternalClaim[]>([]);
-    const [ initialList, setInitialList ] = useState<AddExternalClaim[]>([]);
-    const [ tempMappedLocalClaims, setTempMappedLocalClaims ] = useState<string[]>([]);
+    const [claims, setClaims] = useState<AddExternalClaim[]>([]);
+    const [initialList, setInitialList] = useState<AddExternalClaim[]>([]);
+    const [tempMappedLocalClaims, setTempMappedLocalClaims] = useState<string[]>([]);
 
     const ref: MutableRefObject<boolean> = useRef(true);
     const firstTimeValueChanges: MutableRefObject<boolean> = useRef(true);
@@ -123,7 +122,7 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
 
     useEffect(() => {
         setTempMappedLocalClaims(mappedLocalClaims);
-    }, [ mappedLocalClaims ]);
+    }, [mappedLocalClaims]);
 
     useEffect(() => {
         if (ref.current) {
@@ -131,7 +130,7 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
         } else {
             onSubmit(getAttributesList());
         }
-    }, [ submitState ]);
+    }, [submitState]);
 
     useEffect(() => {
         if (values) {
@@ -141,13 +140,12 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
                 firstTimeValueChanges.current = false;
             }
         }
-    }, [ values ]);
+    }, [values]);
 
     /**
      * Change button disable state when claims are added.
      */
     useEffect(() => {
-
         if (typeof onClaimListChange === "function") {
             if (claims.length === initialList.length) {
                 onClaimListChange(true);
@@ -155,7 +153,7 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
                 onClaimListChange(false);
             }
         }
-    }, [ claims ]);
+    }, [claims]);
 
     /**
      * Create the externam claim uri according to the claim dialect type.
@@ -163,7 +161,7 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
      * @param attributeType - Claim dialect type.
      * @param claimDialectURI - Dialect URI.
      * @param claimURIValue - Claim URI value.
-     * 
+     *
      * @returns Complete claim URI.
      */
     const createClaimURI = (attributeType: string, claimDialectURI: string, claimURIValue: string): string => {
@@ -192,11 +190,9 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
             claimURI: createClaimURI(attributeType, claimDialectUri, values.get("claimURI").toString()),
             mappedLocalClaimURI: values.get("localClaim").toString()
         };
-        const newState: AddExternalClaim[] = [ ...claims, newClaim ];
+        const newState: AddExternalClaim[] = [...claims, newClaim];
 
-        setTempMappedLocalClaims((prevLocalClaims: string[]) => 
-            [ ...prevLocalClaims, newClaim.mappedLocalClaimURI
-            ]);
+        setTempMappedLocalClaims((prevLocalClaims: string[]) => [...prevLocalClaims, newClaim.mappedLocalClaimURI]);
         setClaims(newState);
         onExternalClaimsChanged && onExternalClaimsChanged(newState);
     };
@@ -220,8 +216,8 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
         );
 
         setClaims(filteredClaims);
-        setTempMappedLocalClaims(tempMappedLocalClaims.filter(
-            (claim: string) => claim !== deletedClaim.mappedLocalClaimURI)
+        setTempMappedLocalClaims(
+            tempMappedLocalClaims.filter((claim: string) => claim !== deletedClaim.mappedLocalClaimURI)
         );
         onExternalClaimsChanged && onExternalClaimsChanged(filteredClaims);
     };
@@ -235,14 +231,14 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
      * @param values - claimURI, localClaim.
      */
     const onExternalClaimEdit = (editingClaim: ClaimEventClickItem, values: Map<string, FormValue>): void => {
-        const existingClaims: AddExternalClaim[] = [ ...claims ];
+        const existingClaims: AddExternalClaim[] = [...claims];
 
         for (const claim of existingClaims) {
             // If its not the claim then continue
             if (!isEqual(editingClaim, claim)) continue;
             // `ClaimDialect` interface doesn't have `claimURI` key which results
             // in TS error due to the usage of union type.
-            if (!( ClaimManagementConstants.CLAIM_URI_ATTRIBUTE_KEY in editingClaim )) continue;
+            if (!(ClaimManagementConstants.CLAIM_URI_ATTRIBUTE_KEY in editingClaim)) continue;
             claim.claimURI = values.get("claimURI").toString();
             claim.mappedLocalClaimURI = values.get("localClaim").toString();
         }
@@ -263,45 +259,47 @@ export const ExternalClaims: FunctionComponent<ExternalClaimsPropsInterface> = (
 
     return (
         <Grid>
-            <Grid.Row columns={ 2 }>
-                <Grid.Column width={ 16 }>
+            <Grid.Row columns={2}>
+                <Grid.Column width={16}>
                     <AddExternalClaims
-                        wizard={ true }
-                        onSubmit={ onExternalClaimAdd }
-                        externalClaims={ claims }
-                        data-testid={ `${ testId }-add-external-claims` }
-                        attributeType={ attributeType }
-                        claimDialectUri={ claimDialectUri }
-                        dialectId={ dialectId }
-                        mappedLocalClaims={ tempMappedLocalClaims }
+                        wizard={true}
+                        onSubmit={onExternalClaimAdd}
+                        externalClaims={claims}
+                        data-testid={`${testId}-add-external-claims`}
+                        attributeType={attributeType}
+                        claimDialectUri={claimDialectUri}
+                        dialectId={dialectId}
+                        mappedLocalClaims={tempMappedLocalClaims}
                     />
                     <Divider hidden />
-                    {
-                        getAttributesList().length>0
-                            ? (
-                                <ClaimsList
-                                    isLoading={ false }
-                                    list={ getAttributesList() }
-                                    localClaim={ ListType.ADD_EXTERNAL }
-                                    onEdit={ onExternalClaimEdit }
-                                    onDelete={ onExternalClaimDelete }
-                                    data-testid={ `${ testId }-list` }
-                                    attributeType={ attributeType }
-                                    isEditable={ false }
-                                />
-                            )
-                            : wizard && (
-                                <EmptyPlaceholder
-                                    title={ t("console:manage.features.claims.external.placeholders.empty.title",
-                                        { type: resolveType(attributeType, true) }) }
-                                    subtitle={ [ t("console:manage.features.claims.external." +
-                                        "placeholders.empty.subtitle", { type: resolveType(attributeType) }) ] }
-                                    image={ getEmptyPlaceholderIllustrations().emptyList }
-                                    imageSize="tiny"
-                                    data-testid={ `${ testId }-empty-placeholder` }
-                                />
-                            )
-                    }
+                    {getAttributesList().length > 0 ? (
+                        <ClaimsList
+                            isLoading={false}
+                            list={getAttributesList()}
+                            localClaim={ListType.ADD_EXTERNAL}
+                            onEdit={onExternalClaimEdit}
+                            onDelete={onExternalClaimDelete}
+                            data-testid={`${testId}-list`}
+                            attributeType={attributeType}
+                            isEditable={false}
+                        />
+                    ) : (
+                        wizard && (
+                            <EmptyPlaceholder
+                                title={t("console:manage.features.claims.external.placeholders.empty.title", {
+                                    type: resolveType(attributeType, true)
+                                })}
+                                subtitle={[
+                                    t("console:manage.features.claims.external." + "placeholders.empty.subtitle", {
+                                        type: resolveType(attributeType)
+                                    })
+                                ]}
+                                image={getEmptyPlaceholderIllustrations().emptyList}
+                                imageSize="tiny"
+                                data-testid={`${testId}-empty-placeholder`}
+                            />
+                        )
+                    )}
                 </Grid.Column>
             </Grid.Row>
         </Grid>

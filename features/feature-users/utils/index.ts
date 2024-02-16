@@ -16,5 +16,4 @@
  * under the License.
  */
 
-export * from "./user-management-utils";
 export * from "./generate-password.utils";

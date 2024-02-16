@@ -18,6 +18,10 @@
 
 import { AlertLevels, ClaimDialect, ExternalClaim, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getTechnologyLogos } from "@wso2is/feature-configs.common";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { AppState } from "@wso2is/feature-store.common";
 import {
     AnimatedAvatar,
     DocumentationLink,
@@ -37,8 +41,7 @@ import { Image, StrictTabProps } from "semantic-ui-react";
 import ExternalDialectEditPage from "./external-dialect-edit";
 import { SCIMConfigs, attributeConfig } from "../../../extensions";
 import { getAllExternalClaims, getDialects } from "../../claims/api";
-import { AppConstants, AppState, getTechnologyLogos, history } from "../../core";
-import { } from "../components";
+import {} from "../components";
 import { ClaimManagementConstants } from "../constants";
 import { resolveType } from "../utils";
 
@@ -57,67 +60,69 @@ interface AttributeMappingsPathParams {
 
 export const AttributeMappings: FunctionComponent<RouteChildrenProps<AttributeMappingsPathParams> &
     EditAttributeMappingsPropsInterface> = (
-        props: RouteChildrenProps<AttributeMappingsPathParams> & EditAttributeMappingsPropsInterface
-    ): ReactElement => {
-        const {
-            [ "data-testid" ]: testId,
-            match: {
-                params: { type, customAttributeMappingID }
-            }
-        } = props;
+    props: RouteChildrenProps<AttributeMappingsPathParams> & EditAttributeMappingsPropsInterface
+): ReactElement => {
+    const {
+        ["data-testid"]: testId,
+        match: {
+            params: { type, customAttributeMappingID }
+        }
+    } = props;
 
-        const dispatch: Dispatch = useDispatch();
-        const listAllAttributeDialects: boolean = useSelector(
-            (state: AppState) => state.config.ui.listAllAttributeDialects
-        );
-        const { t } = useTranslation();
-        const { getLink } = useDocumentation();
+    const dispatch: Dispatch = useDispatch();
+    const listAllAttributeDialects: boolean = useSelector(
+        (state: AppState) => state.config.ui.listAllAttributeDialects
+    );
+    const { t } = useTranslation();
+    const { getLink } = useDocumentation();
 
-        const [ isLoading, setIsLoading ] = useState(true);
-        const [ dialects, setDialects ] = useState<ClaimDialect[]>(null);
-        const [ mappedLocalclaims, setMappedLocalClaims ] = useState<string[]>([]);
-        const [ triggerFetchMappedClaims, setTriggerFetchMappedClaims ] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState(true);
+    const [dialects, setDialects] = useState<ClaimDialect[]>(null);
+    const [mappedLocalclaims, setMappedLocalClaims] = useState<string[]>([]);
+    const [triggerFetchMappedClaims, setTriggerFetchMappedClaims] = useState<boolean>(true);
 
-        useEffect(() => {
-            getDialect();
-        }, []);
+    useEffect(() => {
+        getDialect();
+    }, []);
 
-        useEffect(() => {
-            if ( dialects && dialects.length > 0 && triggerFetchMappedClaims ) {
-                generateMappedLocalClaimList(dialects.map((dialect: ClaimDialect) => dialect.id));
-                setTriggerFetchMappedClaims(false);
-            }
-        }, [ dialects, triggerFetchMappedClaims ]);
+    useEffect(() => {
+        if (dialects && dialects.length > 0 && triggerFetchMappedClaims) {
+            generateMappedLocalClaimList(dialects.map((dialect: ClaimDialect) => dialect.id));
+            setTriggerFetchMappedClaims(false);
+        }
+    }, [dialects, triggerFetchMappedClaims]);
 
-        /**
-         * This will fetch external claims for each dialect 
-         * and create a list of already mapped local claims 
-         * for filteration purpose.
-         * 
-         * TODO : This is not the ideal way to fetch and 
-         *        identify the already mapped claims. Need
-         *        API support for this.
-         */
-        const generateMappedLocalClaimList = (dialectIdList: string[], 
-            limit?: number, 
-            offset?: number, 
-            sort?: string, 
-            filter?: string) => {
+    /**
+     * This will fetch external claims for each dialect
+     * and create a list of already mapped local claims
+     * for filteration purpose.
+     *
+     * TODO : This is not the ideal way to fetch and
+     *        identify the already mapped claims. Need
+     *        API support for this.
+     */
+    const generateMappedLocalClaimList = (
+        dialectIdList: string[],
+        limit?: number,
+        offset?: number,
+        sort?: string,
+        filter?: string
+    ) => {
+        const mappedLocalClaimPromises: Promise<ExternalClaim[]>[] = [];
 
-            const mappedLocalClaimPromises: Promise<ExternalClaim[]>[] = [];
+        dialectIdList.forEach((id: string) => {
+            mappedLocalClaimPromises.push(
+                getAllExternalClaims(id, {
+                    filter,
+                    limit,
+                    offset,
+                    sort
+                })
+            );
+        });
 
-            dialectIdList.forEach((id: string) => {
-                mappedLocalClaimPromises.push(
-                    getAllExternalClaims(id, {
-                        filter,
-                        limit,
-                        offset,
-                        sort
-                    })
-                );
-            });
-
-            Axios.all(mappedLocalClaimPromises).then((response: ExternalClaim[][]) => {
+        Axios.all(mappedLocalClaimPromises)
+            .then((response: ExternalClaim[][]) => {
                 const mappedClaims: string[] = [];
 
                 response.forEach((claim: ExternalClaim[]) => {
@@ -130,14 +135,15 @@ export const AttributeMappings: FunctionComponent<RouteChildrenProps<AttributeMa
                     mappedClaims.push(...claims.map((claim: ExternalClaim) => claim.mappedLocalClaimURI));
                 });
                 setMappedLocalClaims(mappedClaims);
-            }).catch((error: IdentityAppsApiException) => {
+            })
+            .catch((error: IdentityAppsApiException) => {
                 dispatch(
                     addAlert({
                         description:
                             error[0]?.response?.data?.description ||
                             t(
                                 "console:manage.features.claims.dialects.notifications." +
-                                "fetchExternalClaims.genericError.description",
+                                    "fetchExternalClaims.genericError.description",
                                 { type: resolveType(type) }
                             ),
                         level: AlertLevels.ERROR,
@@ -145,382 +151,374 @@ export const AttributeMappings: FunctionComponent<RouteChildrenProps<AttributeMa
                             error[0]?.response?.data?.message ||
                             t(
                                 "console:manage.features.claims.dialects.notifications." +
-                                "fetchExternalClaims.genericError.message"
+                                    "fetchExternalClaims.genericError.message"
                             )
                     })
                 );
-            }).finally(() => setIsLoading(false));
-        };
-
-        /**
-         * Resolves page heading based on the `type`.
-         *
-         * @returns The page heading.
-         */
-        const resolvePageHeading = (): string => {
-            switch (type) {
-                case ClaimManagementConstants.OIDC:
-                    return t(
-                        "console:manage.features.claims.attributeMappings.oidc.heading"
-                    );
-                case ClaimManagementConstants.SCIM:
-                    return t(
-                        "console:manage.features.claims.attributeMappings.scim.heading"
-                    );
-                case ClaimManagementConstants.AXSCHEMA:
-                    return t(
-                        "console:manage.features.claims.attributeMappings.axschema.heading"
-                    );
-                case ClaimManagementConstants.EIDAS:
-                    return t(
-                        "console:manage.features.claims.attributeMappings.eidas.heading"
-                    );
-                case ClaimManagementConstants.OTHERS:
-                    return dialects && dialects[0]?.dialectURI;
-                default:
-                    return t(
-                        "console:manage.features.claims.attributeMappings.custom.heading"
-                    );
-            }
-        };
-
-        /**
-         * Resolves page description based on the `type`.
-         *
-         * @returns The page description.
-         */
-        const resolvePageDescription = (): ReactElement => {
-            switch (type) {
-                case ClaimManagementConstants.OIDC:
-                    return (
-                        <>
-                            { t("console:manage.features.claims.attributeMappings.oidc.description") }
-                            <DocumentationLink
-                                link={ getLink("manage.attributes.oidcAttributes.learnMore") }
-                            >
-                                { t("common:learnMore") }
-                            </DocumentationLink>
-                        </>
-                    );
-                case ClaimManagementConstants.SCIM:
-                    return (
-                        <>
-                            { t("console:manage.features.claims.attributeMappings.scim.description") }
-                            <DocumentationLink
-                                link={ getLink("manage.attributes.scimAttributes.learnMore") }
-                            >
-                                { t("common:learnMore") }
-                            </DocumentationLink>
-                        </>
-                    );
-                case ClaimManagementConstants.AXSCHEMA:
-                    return t("console:manage.features.claims.attributeMappings.axschema.description");
-                case ClaimManagementConstants.EIDAS:
-                    return t("console:manage.features.claims.attributeMappings.eidas.description");
-                default:
-                    return t(
-                        "console:manage.features.claims.attributeMappings.custom.description"
-                    );
-            }
-        };
-
-        /**
-         * Resolves page header image based on `type`.
-         *
-         * @returns Image element.
-         */
-        const resolvePageHeaderImage = (): ReactElement => {
-            switch (type) {
-                case ClaimManagementConstants.OIDC:
-                    return (
-                        <GenericIcon
-                            verticalAlign="middle"
-                            rounded
-                            icon={ getTechnologyLogos().oidc }
-                            spaced="right"
-                            size="tiny"
-                            floated="left"
-                            transparent
-                        />
-                    );
-                case ClaimManagementConstants.SCIM:
-                    return (
-                        <GenericIcon
-                            verticalAlign="middle"
-                            rounded
-                            icon={ getTechnologyLogos().scim }
-                            spaced="right"
-                            size="tiny"
-                            floated="left"
-                        />
-                    );
-                case ClaimManagementConstants.AXSCHEMA:
-                    return (
-                        <GenericIcon
-                            verticalAlign="middle"
-                            rounded
-                            icon={ getTechnologyLogos().axschema }
-                            spaced="right"
-                            size="tiny"
-                            floated="left"
-                        />
-                    );
-                case ClaimManagementConstants.EIDAS:
-                    return (
-                        <GenericIcon
-                            verticalAlign="middle"
-                            rounded
-                            icon={ getTechnologyLogos().eidas }
-                            spaced="right"
-                            size="tiny"
-                            floated="left"
-                        />
-                    );
-                case ClaimManagementConstants.OTHERS:
-                    return (
-                        <Image floated="left" verticalAlign="middle" rounded centered size="tiny">
-                            <AnimatedAvatar />
-                            <span className="claims-letter">
-                                {
-                                    dialects &&
-                                    dialects[0]?.dialectURI
-                                        .charAt(0)
-                                        .toUpperCase()
-                                }
-                            </span>
-                        </Image>
-                    );
-                default:
-                    return (
-                        <Image floated="left" verticalAlign="middle" rounded centered size="tiny">
-                            <AnimatedAvatar />
-                            <span className="claims-letter">C</span>
-                        </Image>
-                    );
-            }
-        };
-
-        /**
-         * Fetches all the dialects.
-         *
-         * @param limit - Item count.
-         * @param offset - Starting point to get the items.
-         * @param sort - Sort order.
-         * @param filter - Filtering keyword.
-         */
-        const getDialect = (limit?: number, offset?: number, sort?: string, filter?: string): void => {
-            setIsLoading(true);
-            getDialects({
-                filter,
-                limit,
-                offset,
-                sort
             })
-                .then((response: ClaimDialect[]) => {
-                    const filteredDialect: ClaimDialect[] = response.filter((claim: ClaimDialect) => {
-                        if (!listAllAttributeDialects) {
-                            return (
-                                claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("LOCAL") &&
-                                claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("AXSCHEMA") &&
-                                claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("EIDAS_LEGAL") &&
-                                claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("EIDAS_NATURAL") &&
-                                claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("OPENID_NET") &&
-                                claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("XML_SOAP") &&
-                                (attributeConfig.attributeMappings.showSCIMCore1
-                                || claim.dialectURI !== "urn:scim:schemas:core:1.0")
-                            );
-                        }
+            .finally(() => setIsLoading(false));
+    };
 
-                        return claim.id !== "local" && 
-                            claim.id !== ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("XML_SOAP") &&
-                            claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("OPENID_NET");
-                    });
+    /**
+     * Resolves page heading based on the `type`.
+     *
+     * @returns The page heading.
+     */
+    const resolvePageHeading = (): string => {
+        switch (type) {
+            case ClaimManagementConstants.OIDC:
+                return t("console:manage.features.claims.attributeMappings.oidc.heading");
+            case ClaimManagementConstants.SCIM:
+                return t("console:manage.features.claims.attributeMappings.scim.heading");
+            case ClaimManagementConstants.AXSCHEMA:
+                return t("console:manage.features.claims.attributeMappings.axschema.heading");
+            case ClaimManagementConstants.EIDAS:
+                return t("console:manage.features.claims.attributeMappings.eidas.heading");
+            case ClaimManagementConstants.OTHERS:
+                return dialects && dialects[0]?.dialectURI;
+            default:
+                return t("console:manage.features.claims.attributeMappings.custom.heading");
+        }
+    };
 
-                    const attributeMappings: ClaimDialect[] = [];
+    /**
+     * Resolves page description based on the `type`.
+     *
+     * @returns The page description.
+     */
+    const resolvePageDescription = (): ReactElement => {
+        switch (type) {
+            case ClaimManagementConstants.OIDC:
+                return (
+                    <>
+                        {t("console:manage.features.claims.attributeMappings.oidc.description")}
+                        <DocumentationLink link={getLink("manage.attributes.oidcAttributes.learnMore")}>
+                            {t("common:learnMore")}
+                        </DocumentationLink>
+                    </>
+                );
+            case ClaimManagementConstants.SCIM:
+                return (
+                    <>
+                        {t("console:manage.features.claims.attributeMappings.scim.description")}
+                        <DocumentationLink link={getLink("manage.attributes.scimAttributes.learnMore")}>
+                            {t("common:learnMore")}
+                        </DocumentationLink>
+                    </>
+                );
+            case ClaimManagementConstants.AXSCHEMA:
+                return t("console:manage.features.claims.attributeMappings.axschema.description");
+            case ClaimManagementConstants.EIDAS:
+                return t("console:manage.features.claims.attributeMappings.eidas.description");
+            default:
+                return t("console:manage.features.claims.attributeMappings.custom.description");
+        }
+    };
 
-                    filteredDialect.forEach((attributeMapping: ClaimDialect) => {
-                        if (ClaimManagementConstants.OIDC_MAPPING.includes(attributeMapping.dialectURI)) {
-                            type === ClaimManagementConstants.OIDC && attributeMappings.push(attributeMapping);
-                        } else if (Object.values(ClaimManagementConstants.SCIM_TABS).map(
-                            (tab: { name: string; uri: string }) => tab.uri).includes(attributeMapping.dialectURI)) {
-                            type === ClaimManagementConstants.SCIM && attributeMappings.push(attributeMapping);
-                        } else if (ClaimManagementConstants.AXSCHEMA_MAPPING === attributeMapping.dialectURI) {
-                            type === ClaimManagementConstants.AXSCHEMA && attributeMappings.push(attributeMapping);
-                        } else if (Object.values(ClaimManagementConstants.EIDAS_TABS).map(
-                            (tab: { name: string; uri: string }) => tab.uri).includes(attributeMapping.dialectURI)) {
-                            type === ClaimManagementConstants.EIDAS && attributeMappings.push(attributeMapping);
-                        } else if (type === ClaimManagementConstants.OTHERS) {
-                            if (customAttributeMappingID === attributeMapping.id) {
-                                attributeMappings.push(attributeMapping);
-                            }
-                        }
-                    });
+    /**
+     * Resolves page header image based on `type`.
+     *
+     * @returns Image element.
+     */
+    const resolvePageHeaderImage = (): ReactElement => {
+        switch (type) {
+            case ClaimManagementConstants.OIDC:
+                return (
+                    <GenericIcon
+                        verticalAlign="middle"
+                        rounded
+                        icon={getTechnologyLogos().oidc}
+                        spaced="right"
+                        size="tiny"
+                        floated="left"
+                        transparent
+                    />
+                );
+            case ClaimManagementConstants.SCIM:
+                return (
+                    <GenericIcon
+                        verticalAlign="middle"
+                        rounded
+                        icon={getTechnologyLogos().scim}
+                        spaced="right"
+                        size="tiny"
+                        floated="left"
+                    />
+                );
+            case ClaimManagementConstants.AXSCHEMA:
+                return (
+                    <GenericIcon
+                        verticalAlign="middle"
+                        rounded
+                        icon={getTechnologyLogos().axschema}
+                        spaced="right"
+                        size="tiny"
+                        floated="left"
+                    />
+                );
+            case ClaimManagementConstants.EIDAS:
+                return (
+                    <GenericIcon
+                        verticalAlign="middle"
+                        rounded
+                        icon={getTechnologyLogos().eidas}
+                        spaced="right"
+                        size="tiny"
+                        floated="left"
+                    />
+                );
+            case ClaimManagementConstants.OTHERS:
+                return (
+                    <Image floated="left" verticalAlign="middle" rounded centered size="tiny">
+                        <AnimatedAvatar />
+                        <span className="claims-letter">
+                            {dialects && dialects[0]?.dialectURI.charAt(0).toUpperCase()}
+                        </span>
+                    </Image>
+                );
+            default:
+                return (
+                    <Image floated="left" verticalAlign="middle" rounded centered size="tiny">
+                        <AnimatedAvatar />
+                        <span className="claims-letter">C</span>
+                    </Image>
+                );
+        }
+    };
 
-                    if (type === ClaimManagementConstants.SCIM) {
-                        if (attributeConfig.showCustomDialectInSCIM 
-                            && filteredDialect.filter((e: ClaimDialect) => e.dialectURI 
-                                === attributeConfig.localAttributes.customDialectURI).length > 0  ) {
-                            attributeMappings.push(filteredDialect.filter((e: ClaimDialect) => e.dialectURI 
-                                === attributeConfig.localAttributes.customDialectURI)[0]);
-                        }
-                    }
-
-                    setDialects(attributeMappings);
-                })
-                .catch((error: IdentityAppsApiException) => {
-                    dispatch(
-                        addAlert({
-                            description:
-                                error?.response?.data?.description ||
-                                t(
-                                    "console:manage.features.claims.dialects.notifications.fetchDialects" +
-                                    ".genericError.description"
-                                ),
-                            level: AlertLevels.ERROR,
-                            message:
-                                error?.response?.data?.message ||
-                                t(
-                                    "console:manage.features.claims.dialects.notifications.fetchDialects" +
-                                    ".genericError.message"
-                                )
-                        })
-                    );
-                })
-                .finally(() => {
-                    setIsLoading(false);
-                });
-        };
-
-        const generatePanes = (): StrictTabProps[ "panes" ] => {
-            if (type === ClaimManagementConstants.SCIM) {
-                const panes: StrictTabProps[ "panes" ] = [];
-
-                ClaimManagementConstants.SCIM_TABS.forEach((tab: { name: string; uri: string }) => {
-                    if (!SCIMConfigs.hideCore1Schema || SCIMConfigs.scim.core1Schema !== tab.uri) {
-                        const dialect: ClaimDialect = dialects?.find(
-                            (dialect: ClaimDialect) => dialect.dialectURI === tab.uri
+    /**
+     * Fetches all the dialects.
+     *
+     * @param limit - Item count.
+     * @param offset - Starting point to get the items.
+     * @param sort - Sort order.
+     * @param filter - Filtering keyword.
+     */
+    const getDialect = (limit?: number, offset?: number, sort?: string, filter?: string): void => {
+        setIsLoading(true);
+        getDialects({
+            filter,
+            limit,
+            offset,
+            sort
+        })
+            .then((response: ClaimDialect[]) => {
+                const filteredDialect: ClaimDialect[] = response.filter((claim: ClaimDialect) => {
+                    if (!listAllAttributeDialects) {
+                        return (
+                            claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("LOCAL") &&
+                            claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("AXSCHEMA") &&
+                            claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("EIDAS_LEGAL") &&
+                            claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("EIDAS_NATURAL") &&
+                            claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("OPENID_NET") &&
+                            claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("XML_SOAP") &&
+                            (attributeConfig.attributeMappings.showSCIMCore1 ||
+                                claim.dialectURI !== "urn:scim:schemas:core:1.0")
                         );
+                    }
 
-                        dialect &&
-                            panes.push({
-                                menuItem: tab.name,
-                                render: () => (
-                                    <ResourceTab.Pane controlledSegmentation attached={ false }>
-                                        <ExternalDialectEditPage 
-                                            id={ dialect.id } 
-                                            attributeUri={ tab.uri } 
-                                            attributeType={ type }
-                                            mappedLocalClaims={ mappedLocalclaims }
-                                            updateMappedClaims={ setTriggerFetchMappedClaims } 
-                                        />
-                                    </ResourceTab.Pane>
-                                )
-                            });
+                    return (
+                        claim.id !== "local" &&
+                        claim.id !== ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("XML_SOAP") &&
+                        claim.id != ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("OPENID_NET")
+                    );
+                });
+
+                const attributeMappings: ClaimDialect[] = [];
+
+                filteredDialect.forEach((attributeMapping: ClaimDialect) => {
+                    if (ClaimManagementConstants.OIDC_MAPPING.includes(attributeMapping.dialectURI)) {
+                        type === ClaimManagementConstants.OIDC && attributeMappings.push(attributeMapping);
+                    } else if (
+                        Object.values(ClaimManagementConstants.SCIM_TABS)
+                            .map((tab: { name: string; uri: string }) => tab.uri)
+                            .includes(attributeMapping.dialectURI)
+                    ) {
+                        type === ClaimManagementConstants.SCIM && attributeMappings.push(attributeMapping);
+                    } else if (ClaimManagementConstants.AXSCHEMA_MAPPING === attributeMapping.dialectURI) {
+                        type === ClaimManagementConstants.AXSCHEMA && attributeMappings.push(attributeMapping);
+                    } else if (
+                        Object.values(ClaimManagementConstants.EIDAS_TABS)
+                            .map((tab: { name: string; uri: string }) => tab.uri)
+                            .includes(attributeMapping.dialectURI)
+                    ) {
+                        type === ClaimManagementConstants.EIDAS && attributeMappings.push(attributeMapping);
+                    } else if (type === ClaimManagementConstants.OTHERS) {
+                        if (customAttributeMappingID === attributeMapping.id) {
+                            attributeMappings.push(attributeMapping);
+                        }
                     }
                 });
 
-                if (attributeConfig.showCustomDialectInSCIM) {
-                    const dialect: ClaimDialect = dialects?.find((dialect: ClaimDialect) => 
-                        dialect.dialectURI === attributeConfig.localAttributes.customDialectURI
-                    );
-
-                    if (dialect) {
-                        panes.push({
-                            menuItem: "Custom Schema",
-                            render: () => (
-                                <ResourceTab.Pane controlledSegmentation attached={ false }>
-                                    <ExternalDialectEditPage 
-                                        id={ dialect.id } 
-                                        attributeType={ type }
-                                        attributeUri={ dialect.dialectURI } 
-                                        mappedLocalClaims={ mappedLocalclaims }
-                                        updateMappedClaims={ setTriggerFetchMappedClaims } 
-                                    />
-                                </ResourceTab.Pane>
-                            )
-                        });
+                if (type === ClaimManagementConstants.SCIM) {
+                    if (
+                        attributeConfig.showCustomDialectInSCIM &&
+                        filteredDialect.filter(
+                            (e: ClaimDialect) => e.dialectURI === attributeConfig.localAttributes.customDialectURI
+                        ).length > 0
+                    ) {
+                        attributeMappings.push(
+                            filteredDialect.filter(
+                                (e: ClaimDialect) => e.dialectURI === attributeConfig.localAttributes.customDialectURI
+                            )[0]
+                        );
                     }
                 }
 
-                return panes;
-            }
+                setDialects(attributeMappings);
+            })
+            .catch((error: IdentityAppsApiException) => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.response?.data?.description ||
+                            t(
+                                "console:manage.features.claims.dialects.notifications.fetchDialects" +
+                                    ".genericError.description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.response?.data?.message ||
+                            t(
+                                "console:manage.features.claims.dialects.notifications.fetchDialects" +
+                                    ".genericError.message"
+                            )
+                    })
+                );
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
 
-            if (type === ClaimManagementConstants.EIDAS) {
-                const panes: StrictTabProps[ "panes" ] = [];
+    const generatePanes = (): StrictTabProps["panes"] => {
+        if (type === ClaimManagementConstants.SCIM) {
+            const panes: StrictTabProps["panes"] = [];
 
-                ClaimManagementConstants.EIDAS_TABS.forEach((tab: { name: string; uri: string }) => {
+            ClaimManagementConstants.SCIM_TABS.forEach((tab: { name: string; uri: string }) => {
+                if (!SCIMConfigs.hideCore1Schema || SCIMConfigs.scim.core1Schema !== tab.uri) {
                     const dialect: ClaimDialect = dialects?.find(
                         (dialect: ClaimDialect) => dialect.dialectURI === tab.uri
                     );
 
-                    if (dialect) {
+                    dialect &&
                         panes.push({
                             menuItem: tab.name,
                             render: () => (
-                                <ResourceTab.Pane controlledSegmentation attached={ false }>
-                                    <ExternalDialectEditPage 
-                                        id={ dialect.id } 
-                                        attributeUri={ tab.uri } 
-                                        attributeType={ type }
-                                        mappedLocalClaims={ mappedLocalclaims }
-                                        updateMappedClaims={ setTriggerFetchMappedClaims } 
+                                <ResourceTab.Pane controlledSegmentation attached={false}>
+                                    <ExternalDialectEditPage
+                                        id={dialect.id}
+                                        attributeUri={tab.uri}
+                                        attributeType={type}
+                                        mappedLocalClaims={mappedLocalclaims}
+                                        updateMappedClaims={setTriggerFetchMappedClaims}
                                     />
                                 </ResourceTab.Pane>
                             )
                         });
-                    }
-                });
+                }
+            });
 
-                return panes;
+            if (attributeConfig.showCustomDialectInSCIM) {
+                const dialect: ClaimDialect = dialects?.find(
+                    (dialect: ClaimDialect) => dialect.dialectURI === attributeConfig.localAttributes.customDialectURI
+                );
+
+                if (dialect) {
+                    panes.push({
+                        menuItem: "Custom Schema",
+                        render: () => (
+                            <ResourceTab.Pane controlledSegmentation attached={false}>
+                                <ExternalDialectEditPage
+                                    id={dialect.id}
+                                    attributeType={type}
+                                    attributeUri={dialect.dialectURI}
+                                    mappedLocalClaims={mappedLocalclaims}
+                                    updateMappedClaims={setTriggerFetchMappedClaims}
+                                />
+                            </ResourceTab.Pane>
+                        )
+                    });
+                }
             }
 
-            return dialects?.map((dialect: ClaimDialect) => {
-                return {
-                    menuItem: dialect.dialectURI,
-                    render: () => (
-                        <ResourceTab.Pane controlledSegmentation attached={ false }>
-                            <ExternalDialectEditPage 
-                                id={ dialect.id  }
-                                attributeType={ type } 
-                                attributeUri={ dialect.dialectURI } 
-                                mappedLocalClaims={ mappedLocalclaims }
-                                updateMappedClaims={ setTriggerFetchMappedClaims } 
-                            />
-                        </ResourceTab.Pane>
-                    )
-                };
-            });
-        };
+            return panes;
+        }
 
-        return (
-            <PageLayout
-                isLoading={ isLoading }
-                title={ resolvePageHeading() }
-                pageTitle={ resolvePageHeading() }
-                description={ resolvePageDescription() }
-                data-testid={ `${ testId }-page-layout` }
-                image={ resolvePageHeaderImage() }
-                backButton={ {
-                    onClick: () => {
-                        history.push(AppConstants.getPaths().get("CLAIM_DIALECTS"));
-                    },
-                    text: t("console:manage.features.claims.local.pageLayout.local.back")
-                } }
-            >
-                { dialects?.length > 1 ? (
-                    <ResourceTab panes={ generatePanes() } data-testid={ `${ testId }-tabs` } />
-                ) : (
-                    <ExternalDialectEditPage 
-                        id={ dialects && dialects[ 0 ]?.id } 
-                        attributeType={ type } 
-                        attributeUri={ dialects &&  dialects[ 0 ]?.dialectURI } 
-                        mappedLocalClaims={ mappedLocalclaims }
-                        updateMappedClaims={ setTriggerFetchMappedClaims } 
-                    />
-                ) }
-            </PageLayout>
-        );
+        if (type === ClaimManagementConstants.EIDAS) {
+            const panes: StrictTabProps["panes"] = [];
+
+            ClaimManagementConstants.EIDAS_TABS.forEach((tab: { name: string; uri: string }) => {
+                const dialect: ClaimDialect = dialects?.find((dialect: ClaimDialect) => dialect.dialectURI === tab.uri);
+
+                if (dialect) {
+                    panes.push({
+                        menuItem: tab.name,
+                        render: () => (
+                            <ResourceTab.Pane controlledSegmentation attached={false}>
+                                <ExternalDialectEditPage
+                                    id={dialect.id}
+                                    attributeUri={tab.uri}
+                                    attributeType={type}
+                                    mappedLocalClaims={mappedLocalclaims}
+                                    updateMappedClaims={setTriggerFetchMappedClaims}
+                                />
+                            </ResourceTab.Pane>
+                        )
+                    });
+                }
+            });
+
+            return panes;
+        }
+
+        return dialects?.map((dialect: ClaimDialect) => {
+            return {
+                menuItem: dialect.dialectURI,
+                render: () => (
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
+                        <ExternalDialectEditPage
+                            id={dialect.id}
+                            attributeType={type}
+                            attributeUri={dialect.dialectURI}
+                            mappedLocalClaims={mappedLocalclaims}
+                            updateMappedClaims={setTriggerFetchMappedClaims}
+                        />
+                    </ResourceTab.Pane>
+                )
+            };
+        });
     };
+
+    return (
+        <PageLayout
+            isLoading={isLoading}
+            title={resolvePageHeading()}
+            pageTitle={resolvePageHeading()}
+            description={resolvePageDescription()}
+            data-testid={`${testId}-page-layout`}
+            image={resolvePageHeaderImage()}
+            backButton={{
+                onClick: () => {
+                    history.push(AppConstants.getPaths().get("CLAIM_DIALECTS"));
+                },
+                text: t("console:manage.features.claims.local.pageLayout.local.back")
+            }}
+        >
+            {dialects?.length > 1 ? (
+                <ResourceTab panes={generatePanes()} data-testid={`${testId}-tabs`} />
+            ) : (
+                <ExternalDialectEditPage
+                    id={dialects && dialects[0]?.id}
+                    attributeType={type}
+                    attributeUri={dialects && dialects[0]?.dialectURI}
+                    mappedLocalClaims={mappedLocalclaims}
+                    updateMappedClaims={setTriggerFetchMappedClaims}
+                />
+            )}
+        </PageLayout>
+    );
+};
 
 /**
  * Default props for the component.

@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -19,6 +20,8 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, AttributeMapping, Claim, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { Field, FormValue, Forms, useTrigger } from "@wso2is/forms";
 import { EmphasizedSegment, PrimaryButton } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
@@ -27,7 +30,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid } from "semantic-ui-react";
-import { AppState, FeatureConfigInterface } from "../../../../core";
 import { getUserStoreList } from "../../../../userstores/api";
 import { UserStoreListItem } from "../../../../userstores/models/user-stores";
 import { updateAClaim } from "../../../api";
@@ -57,19 +59,14 @@ interface EditMappedAttributesLocalClaimsPropsInterface extends TestableComponen
 export const EditMappedAttributesLocalClaims: FunctionComponent<EditMappedAttributesLocalClaimsPropsInterface> = (
     props: EditMappedAttributesLocalClaimsPropsInterface
 ): ReactElement => {
-
-    const {
-        claim,
-        update,
-        [ "data-testid" ]: testId
-    } = props;
+    const { claim, update, ["data-testid"]: testId } = props;
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ userStore, setUserStore ] = useState<UserStoreListItem[]>([]);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [userStore, setUserStore] = useState<UserStoreListItem[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const [ submit, setSubmit ] = useTrigger();
+    const [submit, setSubmit] = useTrigger();
 
     const { t } = useTranslation();
 
@@ -96,23 +93,26 @@ export const EditMappedAttributesLocalClaims: FunctionComponent<EditMappedAttrib
             });
     }, []);
 
-    const isReadOnly: boolean = useMemo(() => (
-        !hasRequiredScopes(
-            featureConfig?.attributeDialects, featureConfig?.attributeDialects?.scopes?.update, allowedScopes)
-    ), [ featureConfig, allowedScopes ]);
+    const isReadOnly: boolean = useMemo(
+        () =>
+            !hasRequiredScopes(
+                featureConfig?.attributeDialects,
+                featureConfig?.attributeDialects?.scopes?.update,
+                allowedScopes
+            ),
+        [featureConfig, allowedScopes]
+    );
 
     return (
         <EmphasizedSegment padded="very">
-            <Grid data-testid={ testId }>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column tablet={ 16 } computer={ 12 } largeScreen={ 9 } widescreen={ 6 } mobile={ 16 }>
-                        <p>
-                            { t("console:manage.features.claims.local.mappedAttributes.hint") }
-                        </p>
+            <Grid data-testid={testId}>
+                <Grid.Row columns={1}>
+                    <Grid.Column tablet={16} computer={12} largeScreen={9} widescreen={6} mobile={16}>
+                        <p>{t("console:manage.features.claims.local.mappedAttributes.hint")}</p>
                         <Divider hidden />
                         <Forms
-                            submitState={ submit }
-                            onSubmit={ (values: Map<string, FormValue>) => {
+                            submitState={submit}
+                            onSubmit={(values: Map<string, FormValue>) => {
                                 const claimData: Claim = { ...claim };
 
                                 delete claimData.id;
@@ -121,94 +121,108 @@ export const EditMappedAttributesLocalClaims: FunctionComponent<EditMappedAttrib
                                 const submitData: Claim = {
                                     ...claimData,
                                     attributeMapping: Array.from(values).map(
-                                        ([ userstore, attribute ]: [ string, FormValue ]) => {
+                                        ([userstore, attribute]: [string, FormValue]) => {
                                             return {
                                                 mappedAttribute: attribute.toString(),
                                                 userstore: userstore.toString()
                                             };
-                                        })
+                                        }
+                                    )
                                 };
 
                                 setIsSubmitting(true);
 
                                 updateAClaim(claim.id, submitData)
                                     .then(() => {
-                                        dispatch(addAlert(
-                                            {
-                                                description: t("console:manage.features.claims.local.notifications." +
-                                                "updateClaim.success.description"),
+                                        dispatch(
+                                            addAlert({
+                                                description: t(
+                                                    "console:manage.features.claims.local.notifications." +
+                                                        "updateClaim.success.description"
+                                                ),
                                                 level: AlertLevels.SUCCESS,
-                                                message: t("console:manage.features.claims.local.notifications." +
-                                                "updateClaim.success.message")
-                                            }
-                                        ));
+                                                message: t(
+                                                    "console:manage.features.claims.local.notifications." +
+                                                        "updateClaim.success.message"
+                                                )
+                                            })
+                                        );
                                         update();
                                     })
                                     //TODO: [Type Fix] Fix the type of the `error` object
                                     .catch((error: any) => {
-                                        dispatch(addAlert(
-                                            {
-                                                description: error?.description
-                                                || t("console:manage.features.claims.local.notifications." +
-                                                    "updateClaim.genericError.description"),
+                                        dispatch(
+                                            addAlert({
+                                                description:
+                                                    error?.description ||
+                                                    t(
+                                                        "console:manage.features.claims.local.notifications." +
+                                                            "updateClaim.genericError.description"
+                                                    ),
                                                 level: AlertLevels.ERROR,
-                                                message: error?.message
-                                                || t("console:manage.features.claims.local.notifications." +
-                                                    "updateClaim.genericError.message")
-                                            }
-                                        ));
-                                    }).finally(() => {
+                                                message:
+                                                    error?.message ||
+                                                    t(
+                                                        "console:manage.features.claims.local.notifications." +
+                                                            "updateClaim.genericError.message"
+                                                    )
+                                            })
+                                        );
+                                    })
+                                    .finally(() => {
                                         setIsSubmitting(false);
                                     });
-                            } }
+                            }}
                         >
                             <Grid>
-                                { userStore.map((store: UserStoreListItem, index: number) => {
+                                {userStore.map((store: UserStoreListItem, index: number) => {
                                     return (
-                                        <Grid.Row columns={ 2 } key={ index }>
-                                            <Grid.Column width={ 4 }>
-                                                { store.name }
-                                            </Grid.Column>
-                                            <Grid.Column width={ 12 }>
+                                        <Grid.Row columns={2} key={index}>
+                                            <Grid.Column width={4}>{store.name}</Grid.Column>
+                                            <Grid.Column width={12}>
                                                 <Field
                                                     type="text"
-                                                    name={ store.name }
-                                                    placeholder={ t("console:manage.features.claims.local.forms." +
-                                                        "attribute.placeholder") }
-                                                    required={ true }
-                                                    requiredErrorMessage={
-                                                        t("console:manage.features.claims.local.forms." +
-                                                        "attribute.requiredErrorMessage")
+                                                    name={store.name}
+                                                    placeholder={t(
+                                                        "console:manage.features.claims.local.forms." +
+                                                            "attribute.placeholder"
+                                                    )}
+                                                    required={true}
+                                                    requiredErrorMessage={t(
+                                                        "console:manage.features.claims.local.forms." +
+                                                            "attribute.requiredErrorMessage"
+                                                    )}
+                                                    value={
+                                                        claim?.attributeMapping?.find((attribute: AttributeMapping) => {
+                                                            return (
+                                                                attribute.userstore.toLowerCase() ===
+                                                                store.name.toLowerCase()
+                                                            );
+                                                        })?.mappedAttribute
                                                     }
-                                                    value={ claim?.attributeMapping?.find(
-                                                        (attribute: AttributeMapping) => {
-                                                            return attribute.userstore
-                                                                .toLowerCase() === store.name.toLowerCase();
-                                                        })?.mappedAttribute }
-                                                    data-testid={ `${ testId }-form-store-name-input` }
-                                                    readOnly={ isReadOnly }
+                                                    data-testid={`${testId}-form-store-name-input`}
+                                                    readOnly={isReadOnly}
                                                 />
                                             </Grid.Column>
                                         </Grid.Row>
                                     );
-                                }) }
+                                })}
                             </Grid>
                         </Forms>
-
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column width={ 8 }>
-                        <Show when={ AccessControlConstants.ATTRIBUTE_EDIT }>
+                <Grid.Row columns={1}>
+                    <Grid.Column width={8}>
+                        <Show when={AccessControlConstants.ATTRIBUTE_EDIT}>
                             <PrimaryButton
-                                onClick={ () => {
+                                onClick={() => {
                                     setSubmit();
-                                } }
-                                data-testid={ `${ testId }-form-submit-button` }
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
+                                }}
+                                data-testid={`${testId}-form-submit-button`}
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
                             >
-                                { t("common:update") }
+                                {t("common:update")}
                             </PrimaryButton>
                         </Show>
                     </Grid.Column>

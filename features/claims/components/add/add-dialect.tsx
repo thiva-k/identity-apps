@@ -18,6 +18,7 @@
 
 import { AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { WizardStepInterface } from "@wso2is/feature-users.common/models";
 import { FormValue, useTrigger } from "@wso2is/forms";
 import { LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useState } from "react";
@@ -25,7 +26,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Icon, Modal } from "semantic-ui-react";
-import { WizardStepInterface } from "../../../users/models";
 import { addDialect, addExternalClaim } from "../../api";
 import { getAddDialectWizardStepIcons } from "../../configs";
 import { ClaimManagementConstants } from "../../constants";
@@ -65,26 +65,19 @@ interface AddDialectPropsInterface extends TestableComponentInterface {
 export const AddDialect: FunctionComponent<AddDialectPropsInterface> = (
     props: AddDialectPropsInterface
 ): ReactElement => {
+    const { open, onClose, update, attributeType, ["data-testid"]: testId } = props;
 
-    const {
-        open,
-        onClose,
-        update,
-        attributeType,
-        [ "data-testid" ]: testId
-    } = props;
+    const [currentWizardStep, setCurrentWizardStep] = useState(0);
+    const [dialectDetailsData, setDialectDetailsData] = useState<Map<string, FormValue>>(null);
+    const [externalClaims, setExternalClaims] = useState<AddExternalClaim[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const [ currentWizardStep, setCurrentWizardStep ] = useState(0);
-    const [ dialectDetailsData, setDialectDetailsData ] = useState<Map<string, FormValue>>(null);
-    const [ externalClaims, setExternalClaims ] = useState<AddExternalClaim[]>([]);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-
-    const [ firstStep, setFirstStep ] = useTrigger();
-    const [ secondStep, setSecondStep ] = useTrigger();
+    const [firstStep, setFirstStep] = useTrigger();
+    const [secondStep, setSecondStep] = useTrigger();
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     /**
      * Submit handler that sends the API request to add the local claim.
@@ -94,9 +87,9 @@ export const AddDialect: FunctionComponent<AddDialectPropsInterface> = (
 
         addDialect(dialectDetailsData?.get("dialectURI").toString())
             .then(() => {
-
-                const dialectID: string = 
-                    window.btoa(dialectDetailsData?.get("dialectURI").toString()).replace(/=/g, "");
+                const dialectID: string = window
+                    .btoa(dialectDetailsData?.get("dialectURI").toString())
+                    .replace(/=/g, "");
                 const externalClaimPromises: Promise<any>[] = [];
 
                 externalClaims.forEach((claim: AddExternalClaim) => {
@@ -105,38 +98,54 @@ export const AddDialect: FunctionComponent<AddDialectPropsInterface> = (
 
                 Promise.all(externalClaimPromises)
                     .then(() => {
-                        dispatch(addAlert({
-                            description: t("console:manage.features.claims.dialects.notifications." +
-                                "addDialect.success.description"),
-                            level: AlertLevels.SUCCESS,
-                            message: t("console:manage.features.claims.dialects.notifications.addDialect" +
-                                ".success.message")
-                        }));
-                    }).catch(() => {
-                        dispatch(addAlert({
-                            description: t("console:manage.features.claims.dialects.notifications." +
-                                "addDialect.genericError.description"),
-                            level: AlertLevels.WARNING,
-                            message: t("console:manage.features.claims.dialects.notifications." +
-                                "addDialect.genericError.message")
-                        }));
-                    }).finally(() => {
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.claims.dialects.notifications." +
+                                        "addDialect.success.description"
+                                ),
+                                level: AlertLevels.SUCCESS,
+                                message: t(
+                                    "console:manage.features.claims.dialects.notifications.addDialect" +
+                                        ".success.message"
+                                )
+                            })
+                        );
+                    })
+                    .catch(() => {
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.claims.dialects.notifications." +
+                                        "addDialect.genericError.description"
+                                ),
+                                level: AlertLevels.WARNING,
+                                message: t(
+                                    "console:manage.features.claims.dialects.notifications." +
+                                        "addDialect.genericError.message"
+                                )
+                            })
+                        );
+                    })
+                    .finally(() => {
                         // `onClose()` closes the modal and `update()` re-fetches the list.
                         // Check `ClaimDialectsPage` component for the respective callback actions.
                         onClose();
                         update();
                     });
-            }).catch((error: any) => {
-
+            })
+            .catch((error: any) => {
                 setAlert({
-                    description: error?.description
-                        || t("console:manage.features.claims.dialects.notifications." +
-                            "addDialect.error.description"),
+                    description:
+                        error?.description ||
+                        t("console:manage.features.claims.dialects.notifications." + "addDialect.error.description"),
                     level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.claims.dialects.notifications.addDialect.error.message")
+                    message:
+                        error?.message ||
+                        t("console:manage.features.claims.dialects.notifications.addDialect.error.message")
                 });
-            }).finally(() => {
+            })
+            .finally(() => {
                 setIsSubmitting(false);
             });
     };
@@ -175,7 +184,7 @@ export const AddDialect: FunctionComponent<AddDialectPropsInterface> = (
      * @param claims - Claim Values.
      */
     const onExternalClaimsChanged = (claims: AddExternalClaim[]) => {
-        setExternalClaims([ ...claims ]);
+        setExternalClaims([...claims]);
     };
 
     /**
@@ -185,10 +194,10 @@ export const AddDialect: FunctionComponent<AddDialectPropsInterface> = (
         {
             content: (
                 <DialectDetails
-                    submitState={ firstStep }
-                    onSubmit={ onSubmitDialectDetails }
-                    values={ dialectDetailsData }
-                    data-testid={ `${ testId }-dialect-details` }
+                    submitState={firstStep}
+                    onSubmit={onSubmitDialectDetails}
+                    values={dialectDetailsData}
+                    data-testid={`${testId}-dialect-details`}
                 />
             ),
             icon: getAddDialectWizardStepIcons().general,
@@ -197,32 +206,30 @@ export const AddDialect: FunctionComponent<AddDialectPropsInterface> = (
         {
             content: (
                 <ExternalClaims
-                    submitState={ secondStep }
-                    onSubmit={ onSubmitExternalClaims }
-                    values={ externalClaims }
-                    onExternalClaimsChanged={ onExternalClaimsChanged }
-                    data-testid={ `${ testId }-external-claims` }
-                    attributeType={ attributeType }
+                    submitState={secondStep}
+                    onSubmit={onSubmitExternalClaims}
+                    values={externalClaims}
+                    onExternalClaimsChanged={onExternalClaimsChanged}
+                    data-testid={`${testId}-external-claims`}
+                    attributeType={attributeType}
                 />
             ),
             icon: getAddDialectWizardStepIcons().general,
-            title: t(
-                "console:manage.features.claims.dialects.wizard.steps.externalAttribute",
-                { type: resolveType(attributeType, true) }
-            )
+            title: t("console:manage.features.claims.dialects.wizard.steps.externalAttribute", {
+                type: resolveType(attributeType, true)
+            })
         },
         {
             content: (
                 <SummaryAddDialect
-                    dialectURI={ dialectDetailsData?.get("dialectURI").toString() }
-                    claims={ externalClaims }
-                    data-testid={ `${ testId }-summary` }
-                    attributeType={ attributeType }
+                    dialectURI={dialectDetailsData?.get("dialectURI").toString()}
+                    claims={externalClaims}
+                    data-testid={`${testId}-summary`}
+                    attributeType={attributeType}
                 />
             ),
             icon: getAddDialectWizardStepIcons().general,
             title: t("console:manage.features.claims.dialects.wizard.steps.summary")
-
         }
     ];
 
@@ -258,83 +265,76 @@ export const AddDialect: FunctionComponent<AddDialectPropsInterface> = (
             dimmer="blurring"
             size="small"
             className="wizard application-create-wizard"
-            open={ open }
-            onClose={ onClose }
-            data-testid={ testId }
-            closeOnDimmerClick={ false }
+            open={open}
+            onClose={onClose}
+            data-testid={testId}
+            closeOnDimmerClick={false}
         >
             <Modal.Header className="wizard-header">
-                { t("console:manage.features.claims.dialects.wizard.header") }
-                {
-                    dialectDetailsData && dialectDetailsData.get("dialectURI")
-                        ? " - " + dialectDetailsData.get("dialectURI")
-                        : ""
-                }
+                {t("console:manage.features.claims.dialects.wizard.header")}
+                {dialectDetailsData && dialectDetailsData.get("dialectURI")
+                    ? " - " + dialectDetailsData.get("dialectURI")
+                    : ""}
             </Modal.Header>
-            <Modal.Content className="steps-container" data-testid={ `${ testId }-steps` }>
-                <Steps.Group
-                    current={ currentWizardStep }
-                >
-                    { STEPS.map((step: WizardStepInterface, index: number) => (
+            <Modal.Content className="steps-container" data-testid={`${testId}-steps`}>
+                <Steps.Group current={currentWizardStep}>
+                    {STEPS.map((step: WizardStepInterface, index: number) => (
                         <Steps.Step
-                            key={ index }
-                            icon={ step.icon }
-                            title={ step.title }
-                            data-testid={ `${ testId }-step-${ index }` }
+                            key={index}
+                            icon={step.icon}
+                            title={step.title}
+                            data-testid={`${testId}-step-${index}`}
                         />
-                    )) }
+                    ))}
                 </Steps.Group>
-            </Modal.Content >
+            </Modal.Content>
             <Modal.Content className="content-container" scrolling>
-                { alert && alertComponent }
-                { STEPS[ currentWizardStep ].content }
+                {alert && alertComponent}
+                {STEPS[currentWizardStep].content}
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
                                 floated="left"
-                                onClick={ () => onClose() }
-                                data-testid={ `${ testId }-cancel-button` }
+                                onClick={() => onClose()}
+                                data-testid={`${testId}-cancel-button`}
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                            { currentWizardStep < STEPS.length - 1 && (
-                                <PrimaryButton
-                                    floated="right"
-                                    onClick={ next }
-                                    data-testid={ `${ testId }-next-button` }
-                                >
-                                    { t("common:next") } <Icon name="arrow right" />
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            {currentWizardStep < STEPS.length - 1 && (
+                                <PrimaryButton floated="right" onClick={next} data-testid={`${testId}-next-button`}>
+                                    {t("common:next")} <Icon name="arrow right" />
                                 </PrimaryButton>
-                            ) }
-                            { currentWizardStep === STEPS.length - 1 && (
+                            )}
+                            {currentWizardStep === STEPS.length - 1 && (
                                 <PrimaryButton
                                     floated="right"
-                                    onClick={ next }
-                                    data-testid={ `${ testId }-finish-button` }
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
+                                    onClick={next}
+                                    data-testid={`${testId}-finish-button`}
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
                                 >
-                                    { t("common:finish") }</PrimaryButton>
-                            ) }
-                            { currentWizardStep > 0 && (
+                                    {t("common:finish")}
+                                </PrimaryButton>
+                            )}
+                            {currentWizardStep > 0 && (
                                 <LinkButton
                                     floated="right"
-                                    onClick={ previous }
-                                    data-testid={ `${ testId }-previous-button` }
+                                    onClick={previous}
+                                    data-testid={`${testId}-previous-button`}
                                 >
-                                    <Icon name="arrow left" /> { t("common:previous") }
+                                    <Icon name="arrow left" /> {t("common:previous")}
                                 </LinkButton>
-                            ) }
+                            )}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Modal.Actions>
-        </Modal >
+        </Modal>
     );
 };
 

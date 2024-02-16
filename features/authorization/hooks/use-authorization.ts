@@ -31,7 +31,6 @@ export interface UseAuthorizationInterface {
  * @returns `AuthorizationInterface` Authorization details.
  */
 const useAuthorization = (): UseAuthorizationInterface => {
-
     const legacyAuthzRuntime: boolean = isLegacyAuthzRuntime();
 
     return { legacyAuthzRuntime: legacyAuthzRuntime };

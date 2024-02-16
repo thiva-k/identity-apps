@@ -21,14 +21,15 @@ import { IdentityAppsError } from "@wso2is/core/errors";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, Claim, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { DynamicField , KeyValue, useTrigger } from "@wso2is/forms";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { DynamicField, KeyValue, useTrigger } from "@wso2is/forms";
 import { EmphasizedSegment, PrimaryButton } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid } from "semantic-ui-react";
-import { AppState, FeatureConfigInterface } from "../../../../core";
 import { updateAClaim } from "../../../api";
 
 /**
@@ -52,130 +53,128 @@ interface EditAdditionalPropertiesLocalClaimsPropsInterface extends TestableComp
  *
  * @returns EditAdditionalPropertiesLocalClaims.
  */
-export const EditAdditionalPropertiesLocalClaims:
-    FunctionComponent<EditAdditionalPropertiesLocalClaimsPropsInterface> = (
-        props: EditAdditionalPropertiesLocalClaimsPropsInterface
-    ): ReactElement => {
-        const { claim, update, [ "data-testid" ]: testId } = props;
+export const EditAdditionalPropertiesLocalClaims: FunctionComponent<EditAdditionalPropertiesLocalClaimsPropsInterface> = (
+    props: EditAdditionalPropertiesLocalClaimsPropsInterface
+): ReactElement => {
+    const { claim, update, ["data-testid"]: testId } = props;
 
-        const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-        const [ submit, setSubmit ] = useTrigger();
+    const [submit, setSubmit] = useTrigger();
 
-        const dispatch: Dispatch = useDispatch();
+    const dispatch: Dispatch = useDispatch();
 
-        const { t } = useTranslation();
+    const { t } = useTranslation();
 
-        const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
-        const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
+    const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
+    const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-        const isReadOnly: boolean = useMemo(
-            () =>
-                !hasRequiredScopes(
-                    featureConfig?.attributeDialects,
-                    featureConfig?.attributeDialects?.scopes?.update,
-                    allowedScopes
-                ),
-            [ featureConfig, allowedScopes ]
-        );
+    const isReadOnly: boolean = useMemo(
+        () =>
+            !hasRequiredScopes(
+                featureConfig?.attributeDialects,
+                featureConfig?.attributeDialects?.scopes?.update,
+                allowedScopes
+            ),
+        [featureConfig, allowedScopes]
+    );
 
-        return (
-            <EmphasizedSegment>
-                <Grid>
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column tablet={ 16 } computer={ 12 } largeScreen={ 9 } widescreen={ 6 } mobile={ 16 }>
-                            <p>{ t("console:manage.features.claims.local.additionalProperties.hint") }</p>
-                            <DynamicField
-                                data={ claim.properties }
-                                keyType="text"
-                                keyName={ t("console:manage.features.claims.local.additionalProperties.key") }
-                                valueName={ t("console:manage.features.claims.local.additionalProperties.value") }
-                                submit={ submit }
-                                keyRequiredMessage={ t(
-                                    "console:manage.features.claims.local.additionalProperties." +
-                                    "keyRequiredErrorMessage"
-                                ) }
-                                valueRequiredErrorMessage={ t(
-                                    "console:manage.features.claims.local.additionalProperties." +
-                                "valueRequiredErrorMessage"
-                                ) }
-                                requiredField={ true }
-                                update={ (data: KeyValue[]) => {
-                                    const claimData: Claim = { ...claim };
+    return (
+        <EmphasizedSegment>
+            <Grid>
+                <Grid.Row columns={1}>
+                    <Grid.Column tablet={16} computer={12} largeScreen={9} widescreen={6} mobile={16}>
+                        <p>{t("console:manage.features.claims.local.additionalProperties.hint")}</p>
+                        <DynamicField
+                            data={claim.properties}
+                            keyType="text"
+                            keyName={t("console:manage.features.claims.local.additionalProperties.key")}
+                            valueName={t("console:manage.features.claims.local.additionalProperties.value")}
+                            submit={submit}
+                            keyRequiredMessage={t(
+                                "console:manage.features.claims.local.additionalProperties." + "keyRequiredErrorMessage"
+                            )}
+                            valueRequiredErrorMessage={t(
+                                "console:manage.features.claims.local.additionalProperties." +
+                                    "valueRequiredErrorMessage"
+                            )}
+                            requiredField={true}
+                            update={(data: KeyValue[]) => {
+                                const claimData: Claim = { ...claim };
 
-                                    delete claimData.id;
-                                    delete claimData.dialectURI;
-                                    const submitData: Claim = {
-                                        ...claimData,
-                                        properties: [ ...data ]
-                                    };
+                                delete claimData.id;
+                                delete claimData.dialectURI;
+                                const submitData: Claim = {
+                                    ...claimData,
+                                    properties: [...data]
+                                };
 
-                                    setIsSubmitting(true);
-                                    updateAClaim(claim.id, submitData)
-                                        .then(() => {
-                                            dispatch(
-                                                addAlert({
-                                                    description: t(
-                                                        "console:manage.features.claims.local.notifications." +
-                                                    "updateClaim.success.description"
-                                                    ),
-                                                    level: AlertLevels.SUCCESS,
-                                                    message: t(
-                                                        "console:manage.features.claims.local.notifications." +
-                                                    "updateClaim.success.message"
-                                                    )
-                                                })
-                                            );
-                                            update();
-                                        })
-                                        .catch((error: IdentityAppsError) => {
-                                            dispatch(
-                                                addAlert({
-                                                    description:
+                                setIsSubmitting(true);
+                                updateAClaim(claim.id, submitData)
+                                    .then(() => {
+                                        dispatch(
+                                            addAlert({
+                                                description: t(
+                                                    "console:manage.features.claims.local.notifications." +
+                                                        "updateClaim.success.description"
+                                                ),
+                                                level: AlertLevels.SUCCESS,
+                                                message: t(
+                                                    "console:manage.features.claims.local.notifications." +
+                                                        "updateClaim.success.message"
+                                                )
+                                            })
+                                        );
+                                        update();
+                                    })
+                                    .catch((error: IdentityAppsError) => {
+                                        dispatch(
+                                            addAlert({
+                                                description:
                                                     error?.description ||
                                                     t(
                                                         "console:manage.features.claims.local.notifications." +
-                                                        "updateClaim.genericError.description"
+                                                            "updateClaim.genericError.description"
                                                     ),
-                                                    level: AlertLevels.ERROR,
-                                                    message:
+                                                level: AlertLevels.ERROR,
+                                                message:
                                                     error?.message ||
                                                     t(
                                                         "console:manage.features.claims.local.notifications." +
-                                                        "updateClaim.genericError.message"
+                                                            "updateClaim.genericError.message"
                                                     )
-                                                })
-                                            );
-                                        })
-                                        .finally(() => {
-                                            setIsSubmitting(false);
-                                        });
-                                } }
-                                data-testid={ `${ testId }-form-properties-dynamic-field` }
-                                readOnly={ isReadOnly }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 6 }>
-                            <Show when={ AccessControlConstants.ATTRIBUTE_EDIT }>
-                                <PrimaryButton
-                                    onClick={ () => {
-                                        setSubmit();
-                                    } }
-                                    data-testid={ `${ testId }-submit-button` }
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
-                                >
-                                    { t("common:update") }
-                                </PrimaryButton>
-                            </Show>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </EmphasizedSegment>
-        );
-    };
+                                            })
+                                        );
+                                    })
+                                    .finally(() => {
+                                        setIsSubmitting(false);
+                                    });
+                            }}
+                            data-testid={`${testId}-form-properties-dynamic-field`}
+                            readOnly={isReadOnly}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row columns={1}>
+                    <Grid.Column width={6}>
+                        <Show when={AccessControlConstants.ATTRIBUTE_EDIT}>
+                            <PrimaryButton
+                                onClick={() => {
+                                    setSubmit();
+                                }}
+                                data-testid={`${testId}-submit-button`}
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
+                            >
+                                {t("common:update")}
+                            </PrimaryButton>
+                        </Show>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </EmphasizedSegment>
+    );
+};
 
 /**
  * Default props for the component.

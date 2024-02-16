@@ -19,6 +19,8 @@
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertLevels, Claim, ClaimsGetParams, ExternalClaim, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AppState } from "@wso2is/feature-store.common";
+import { sortList } from "@wso2is/feature-utils.common";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import { Code } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
@@ -27,7 +29,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid } from "semantic-ui-react";
 import { getAllLocalClaims } from "../../../../claims/api";
-import { AppState, sortList } from "../../../../core";
 import { getAnExternalClaim, updateAnExternalClaim } from "../../../api";
 import { ClaimManagementConstants } from "../../../constants";
 import { AddExternalClaim } from "../../../models";
@@ -89,7 +90,6 @@ interface EditExternalClaimsPropsInterface extends TestableComponentInterface {
 export const EditExternalClaim: FunctionComponent<EditExternalClaimsPropsInterface> = (
     props: EditExternalClaimsPropsInterface
 ): ReactElement => {
-
     const {
         claimID,
         update,
@@ -101,18 +101,17 @@ export const EditExternalClaim: FunctionComponent<EditExternalClaimsPropsInterfa
         addedClaim,
         externalClaims,
         attributeType,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
-    const [ localClaims, setLocalClaims ] = useState<Claim[]>();
-    const [ claim, setClaim ] = useState<ExternalClaim>(null);
-    const [ filteredLocalClaims, setFilteredLocalClaims ] = useState<Claim[]>();
-    const [ isClaimsLoading, setIsClaimsLoading ] = useState<boolean>(false);
+    const [localClaims, setLocalClaims] = useState<Claim[]>();
+    const [claim, setClaim] = useState<ExternalClaim>(null);
+    const [filteredLocalClaims, setFilteredLocalClaims] = useState<Claim[]>();
+    const [isClaimsLoading, setIsClaimsLoading] = useState<boolean>(false);
 
     const dispatch: Dispatch = useDispatch();
 
-    const enableIdentityClaims: boolean = useSelector(
-        (state: AppState) => state?.config?.ui?.enableIdentityClaims);
+    const enableIdentityClaims: boolean = useSelector((state: AppState) => state?.config?.ui?.enableIdentityClaims);
 
     const { t } = useTranslation();
 
@@ -126,37 +125,50 @@ export const EditExternalClaim: FunctionComponent<EditExternalClaimsPropsInterfa
             sort: null
         };
 
-        getAllLocalClaims(params).then((response: Claim[]) => {
-            setIsClaimsLoading(false);
-            setLocalClaims(sortList(response, "displayName", true));
-        }).catch((error: IdentityAppsApiException) => {
-            dispatch(addAlert(
-                {
-                    description: error?.response?.data?.description
-                        || t("console:manage.features.claims.local.notifications.getClaims.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.response?.data?.message
-                        || t("console:manage.features.claims.local.notifications.getClaims.genericError.message")
-                }
-            ));
-        });
+        getAllLocalClaims(params)
+            .then((response: Claim[]) => {
+                setIsClaimsLoading(false);
+                setLocalClaims(sortList(response, "displayName", true));
+            })
+            .catch((error: IdentityAppsApiException) => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.response?.data?.description ||
+                            t("console:manage.features.claims.local.notifications.getClaims.genericError.description"),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.response?.data?.message ||
+                            t("console:manage.features.claims.local.notifications.getClaims.genericError.message")
+                    })
+                );
+            });
 
         if (!wizard) {
-            getAnExternalClaim(dialectID, claimID).then((response: ExternalClaim) => {
-                setClaim(response);
-            }).catch((error: IdentityAppsApiException) => {
-                dispatch(addAlert(
-                    {
-                        description: error?.response?.data?.description
-                            || t("console:manage.features.claims.external.notifications." +
-                                "getExternalAttribute.genericError.description", { type: resolveType(attributeType) }),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message
-                            || t("console:manage.features.claims.external.notifications." +
-                                "getExternalAttribute.genericError.message")
-                    }
-                ));
-            });
+            getAnExternalClaim(dialectID, claimID)
+                .then((response: ExternalClaim) => {
+                    setClaim(response);
+                })
+                .catch((error: IdentityAppsApiException) => {
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ||
+                                t(
+                                    "console:manage.features.claims.external.notifications." +
+                                        "getExternalAttribute.genericError.description",
+                                    { type: resolveType(attributeType) }
+                                ),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ||
+                                t(
+                                    "console:manage.features.claims.external.notifications." +
+                                        "getExternalAttribute.genericError.message"
+                                )
+                        })
+                    );
+                });
         }
     }, []);
 
@@ -165,15 +177,15 @@ export const EditExternalClaim: FunctionComponent<EditExternalClaimsPropsInterfa
      */
     useEffect(() => {
         if (externalClaims && localClaims && (claim || addedClaim)) {
-            let tempLocalClaims: Claim[] = [ ...localClaims ];
+            let tempLocalClaims: Claim[] = [...localClaims];
 
             externalClaims.forEach((externalClaim: ExternalClaim) => {
-                tempLocalClaims = [ ...removeMappedLocalClaim(externalClaim.mappedLocalClaimURI, tempLocalClaims) ];
+                tempLocalClaims = [...removeMappedLocalClaim(externalClaim.mappedLocalClaimURI, tempLocalClaims)];
             });
             tempLocalClaims.unshift(getLocalClaimMappedToSelectedExternalClaim());
             setFilteredLocalClaims(tempLocalClaims);
         }
-    }, [ externalClaims, localClaims, claim, addedClaim ]);
+    }, [externalClaims, localClaims, claim, addedClaim]);
 
     /**
      * Get the attribute name.
@@ -197,8 +209,10 @@ export const EditExternalClaim: FunctionComponent<EditExternalClaimsPropsInterfa
         const parts: string[] = addedClaim.claimURI.split(":");
 
         if (parts.length > 1) {
-            const claimURI: string = parts.filter((part: string, idx: number) => idx < parts.length - 1).join(":") +
-                ":" + values.get("claimURI");
+            const claimURI: string =
+                parts.filter((part: string, idx: number) => idx < parts.length - 1).join(":") +
+                ":" +
+                values.get("claimURI");
 
             values.set("claimURI", claimURI);
         }
@@ -237,113 +251,126 @@ export const EditExternalClaim: FunctionComponent<EditExternalClaimsPropsInterfa
 
     return (
         <Forms
-            onSubmit={ (values: Map<string, FormValue>) => {
+            onSubmit={(values: Map<string, FormValue>) => {
                 if (!wizard) {
                     updateAnExternalClaim(dialectID, claimID, {
                         claimURI: claimURI,
                         mappedLocalClaimURI: values.get("localClaim").toString()
-                    }).then(() => {
-                        dispatch(addAlert(
-                            {
-                                description: t("console:manage.features.claims.external.notifications." +
-                                    "updateExternalAttribute.success.description",
-                                { type: resolveType(attributeType) }),
-                                level: AlertLevels.SUCCESS,
-                                message: t("console:manage.features.claims.external.notifications." +
-                                    "updateExternalAttribute.success.message", { type: resolveType(attributeType) })
-                            }
-                        ));
-                        update();
-                    }).catch((error: IdentityAppsApiException) => {
-                        dispatch(addAlert(
-                            {
-                                description: error?.response?.data?.description
-                                    || t("console:manage.features.claims.external.notifications." +
-                                        "updateExternalAttribute.genericError.description",
-                                    { type: resolveType(attributeType) }),
-                                level: AlertLevels.ERROR,
-                                message: error?.response?.data?.message
-                                    || t("console:manage.features.claims.external.notifications." +
-                                        "updateExternalAttribute.genericError.message")
-                            }
-                        ));
-                    });
+                    })
+                        .then(() => {
+                            dispatch(
+                                addAlert({
+                                    description: t(
+                                        "console:manage.features.claims.external.notifications." +
+                                            "updateExternalAttribute.success.description",
+                                        { type: resolveType(attributeType) }
+                                    ),
+                                    level: AlertLevels.SUCCESS,
+                                    message: t(
+                                        "console:manage.features.claims.external.notifications." +
+                                            "updateExternalAttribute.success.message",
+                                        { type: resolveType(attributeType) }
+                                    )
+                                })
+                            );
+                            update();
+                        })
+                        .catch((error: IdentityAppsApiException) => {
+                            dispatch(
+                                addAlert({
+                                    description:
+                                        error?.response?.data?.description ||
+                                        t(
+                                            "console:manage.features.claims.external.notifications." +
+                                                "updateExternalAttribute.genericError.description",
+                                            { type: resolveType(attributeType) }
+                                        ),
+                                    level: AlertLevels.ERROR,
+                                    message:
+                                        error?.response?.data?.message ||
+                                        t(
+                                            "console:manage.features.claims.external.notifications." +
+                                                "updateExternalAttribute.genericError.message"
+                                        )
+                                })
+                            );
+                        });
                 } else {
                     onSubmit(resolveClaimURI(values));
                     update();
                 }
-            } }
-            submitState={ submit }
+            }}
+            submitState={submit}
         >
             <Grid>
-                <Grid.Row columns={ wizard ? 2 : 1 }>
-                    {
-                        wizard &&
-                        (
-                            <Grid.Column width={ 8 }>
-                                <Field
-                                    name="claimURI"
-                                    label={ t("console:manage.features.claims.external.forms.attributeURI.label",
-                                        { type: resolveType(attributeType, true) }) }
-                                    required={ true }
-                                    requiredErrorMessage={ t("console:manage.features.claims.external.forms." +
-                                        "attributeURI.label", { type: resolveType(attributeType, true) }) }
-                                    placeholder={
-                                        t("console:manage.features.claims.external.forms.attributeURI.label",
-                                            { type: resolveType(attributeType) })
-                                    }
-                                    type="text"
-                                    value={ resolveClaimURIName() }
-                                    data-testid={ `${ testId }-form-claim-uri-input` }
-                                    validation={ (value: string, validation: Validation) => {
-                                        for (const claim of externalClaims) {
-                                            if (claim.claimURI === value) {
-                                                validation.isValid = false;
-                                                validation.errorMessages.push(t("console:manage.features.claims." +
-                                                    "external.forms.attributeURI.validationErrorMessages.duplicateName",
-                                                { type: resolveType(attributeType) }));
+                <Grid.Row columns={wizard ? 2 : 1}>
+                    {wizard && (
+                        <Grid.Column width={8}>
+                            <Field
+                                name="claimURI"
+                                label={t("console:manage.features.claims.external.forms.attributeURI.label", {
+                                    type: resolveType(attributeType, true)
+                                })}
+                                required={true}
+                                requiredErrorMessage={t(
+                                    "console:manage.features.claims.external.forms." + "attributeURI.label",
+                                    { type: resolveType(attributeType, true) }
+                                )}
+                                placeholder={t("console:manage.features.claims.external.forms.attributeURI.label", {
+                                    type: resolveType(attributeType)
+                                })}
+                                type="text"
+                                value={resolveClaimURIName()}
+                                data-testid={`${testId}-form-claim-uri-input`}
+                                validation={(value: string, validation: Validation) => {
+                                    for (const claim of externalClaims) {
+                                        if (claim.claimURI === value) {
+                                            validation.isValid = false;
+                                            validation.errorMessages.push(
+                                                t(
+                                                    "console:manage.features.claims." +
+                                                        "external.forms.attributeURI.validationErrorMessages.duplicateName",
+                                                    { type: resolveType(attributeType) }
+                                                )
+                                            );
 
-                                                break;
-                                            }
+                                            break;
                                         }
-                                    } }
-                                />
-                            </Grid.Column>
-                        )
-                    }
-                    <Grid.Column width={ 8 }>
+                                    }
+                                }}
+                            />
+                        </Grid.Column>
+                    )}
+                    <Grid.Column width={8}>
                         <Field
                             type="dropdown"
                             name="localClaim"
-                            label={ t("console:manage.features.claims.external.forms.localAttribute.label") }
-                            required={ true }
-                            requiredErrorMessage={ t("console:manage.features.claims.external.forms." +
-                                "localAttribute.requiredErrorMessage") }
-                            placeholder={ t("console:manage.features.claims.external.forms.attributeURI.placeholder") }
+                            label={t("console:manage.features.claims.external.forms.localAttribute.label")}
+                            required={true}
+                            requiredErrorMessage={t(
+                                "console:manage.features.claims.external.forms." + "localAttribute.requiredErrorMessage"
+                            )}
+                            placeholder={t("console:manage.features.claims.external.forms.attributeURI.placeholder")}
                             search
-                            loading={ isClaimsLoading }
-                            value={ wizard ? addedClaim.mappedLocalClaimURI : claim?.mappedLocalClaimURI }
+                            loading={isClaimsLoading}
+                            value={wizard ? addedClaim.mappedLocalClaimURI : claim?.mappedLocalClaimURI}
                             children={
                                 filteredLocalClaims?.map((claim: Claim, index: number) => {
                                     return {
                                         key: index,
                                         text: (
                                             <div className="multiline">
-                                                { claim?.displayName }
-                                                <Code
-                                                    className="description"
-                                                    compact
-                                                    withBackground={ false }>
-                                                    { claim?.claimURI }
+                                                {claim?.displayName}
+                                                <Code className="description" compact withBackground={false}>
+                                                    {claim?.claimURI}
                                                 </Code>
                                             </div>
                                         ),
                                         value: claim?.claimURI
                                     };
-                                })
-                                ?? []
+                                }) ?? []
                             }
-                            data-testid={ `${ testId }-local-claim-dropdown` }
+                            data-testid={`${testId}-local-claim-dropdown`}
                         />
                     </Grid.Column>
                 </Grid.Row>

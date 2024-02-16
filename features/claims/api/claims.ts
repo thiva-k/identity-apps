@@ -27,8 +27,8 @@ import {
     ExternalClaim,
     HttpMethods
 } from "@wso2is/core/models";
+import { store } from "@wso2is/feature-store.common";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core";
 import { ClaimManagementConstants } from "../constants";
 import { AddExternalClaim, ServerSupportedClaimsInterface } from "../models";
 
@@ -36,8 +36,9 @@ import { AddExternalClaim, ServerSupportedClaimsInterface } from "../models";
  * Get an axios instance.
  *
  */
-const httpClient: HttpClientInstance =
-    AsgardeoSPAClient.getInstance().httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Add a local claim.
@@ -67,7 +68,8 @@ export const addLocalClaim = (data: Claim): Promise<AxiosResponse> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
@@ -177,13 +179,12 @@ export const deleteAClaim = (id: string): Promise<any> => {
             { Hardcoded solution : Refactor error response by replacing "claim" with "attribute" }
              */
             if (error?.response?.data?.code === "CMT-50031") {
-                const hardCodedResponse: { code: string, description: string, message: string, traceId: string } =
-                    {
-                        code: error?.response?.data?.code,
-                        description: "Unable to remove local attribute while having associations with external claims.",
-                        message: "Unable to remove local attribute.",
-                        traceId: error?.response?.data?.traceId
-                    };
+                const hardCodedResponse: { code: string; description: string; message: string; traceId: string } = {
+                    code: error?.response?.data?.code,
+                    description: "Unable to remove local attribute while having associations with external claims.",
+                    message: "Unable to remove local attribute.",
+                    traceId: error?.response?.data?.traceId
+                };
 
                 return Promise.reject(hardCodedResponse);
             }
@@ -199,7 +200,6 @@ export const deleteAClaim = (id: string): Promise<any> => {
  * @returns response.
  */
 export const addDialect = (dialectURI: string): Promise<AxiosResponse> => {
-
     const requestConfig: AxiosRequestConfig = {
         data: {
             dialectURI
@@ -222,7 +222,8 @@ export const addDialect = (dialectURI: string): Promise<AxiosResponse> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
@@ -390,7 +391,8 @@ export const getAnExternalClaim = (dialectID: string, claimID: string): Promise<
                     response?.status,
                     response?.request,
                     response,
-                    response?.config);
+                    response?.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -402,7 +404,8 @@ export const getAnExternalClaim = (dialectID: string, claimID: string): Promise<
                 error?.code,
                 error?.request,
                 error?.response,
-                error?.config);
+                error?.config
+            );
         });
 };
 
@@ -433,7 +436,8 @@ export const getExternalClaims = (dialectID: string): Promise<any> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -445,7 +449,8 @@ export const getExternalClaims = (dialectID: string): Promise<any> => {
                 error.response.status,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -479,18 +484,21 @@ export const updateAnExternalClaim = (dialectID: string, claimID: string, data: 
                     response?.status,
                     response?.request,
                     response,
-                    response?.config);
+                    response?.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ClaimManagementConstants.EXTERNAL_CLAIM_UPDATE_REQUEST_ERROR,
                 error?.stack,
                 error?.response?.status,
                 error?.request,
                 error?.response,
-                error?.config);
+                error?.config
+            );
         });
 };
 
@@ -566,7 +574,6 @@ export const getServerSupportedClaimsForSchema = (id: string): Promise<ServerSup
  * @throws IdentityAppsApiException
  */
 export const getAllLocalClaims = (params: ClaimsGetParams): Promise<Claim[]> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
             Accept: "application/json",
@@ -586,7 +593,8 @@ export const getAllLocalClaims = (params: ClaimsGetParams): Promise<Claim[]> => 
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -598,7 +606,8 @@ export const getAllLocalClaims = (params: ClaimsGetParams): Promise<Claim[]> => 
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -610,7 +619,6 @@ export const getAllLocalClaims = (params: ClaimsGetParams): Promise<Claim[]> => 
  * @throws IdentityAppsApiException
  */
 export const getDialects = (params: ClaimDialectsGetParams): Promise<ClaimDialect[]> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
             Accept: "application/json",
@@ -630,7 +638,8 @@ export const getDialects = (params: ClaimDialectsGetParams): Promise<ClaimDialec
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -642,7 +651,8 @@ export const getDialects = (params: ClaimDialectsGetParams): Promise<ClaimDialec
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -656,7 +666,6 @@ export const getDialects = (params: ClaimDialectsGetParams): Promise<ClaimDialec
  * @throws IdentityAppsApiException
  */
 export const getAllExternalClaims = (dialectID: string, params: ClaimsGetParams): Promise<ExternalClaim[]> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
             Accept: "application/json",
@@ -676,7 +685,8 @@ export const getAllExternalClaims = (dialectID: string, params: ClaimsGetParams)
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -689,7 +699,8 @@ export const getAllExternalClaims = (dialectID: string, params: ClaimsGetParams)
                     error.code,
                     error.request,
                     error.response,
-                    error.config);
+                    error.config
+                );
             }
 
             return Promise.resolve([]);
@@ -702,7 +713,6 @@ export const getAllExternalClaims = (dialectID: string, params: ClaimsGetParams)
  * @returns response.
  */
 export const getSCIMResourceTypes = (): Promise<any> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
             Accept: "application/json",
@@ -721,7 +731,8 @@ export const getSCIMResourceTypes = (): Promise<any> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -733,6 +744,7 @@ export const getSCIMResourceTypes = (): Promise<any> => {
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
