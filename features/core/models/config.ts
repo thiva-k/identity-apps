@@ -34,7 +34,7 @@ import { ClaimResourceEndpointsInterface } from "../../claims/models/endpoints";
 import { ConsoleSettingsResourceEndpointsInterface } from "../../console-settings/models/endpoints";
 import { GroupsResourceEndpointsInterface } from "../../groups";
 import { IDPResourceEndpointsInterface } from "../../identity-providers/models/endpoints";
-import { IdentityProviderTemplateLoadingStrategies } from "../identity-providers/models/identity-provider";
+import { IdentityProviderTemplateLoadingStrategies } from "../../identity-providers/models/identity-provider";
 import { ScopesResourceEndpointsInterface } from "../../oidc-scopes";
 import { OrganizationResourceEndpointsInterface } from "../../organizations/models";
 import { JWTAuthenticationServiceEndpointsInterface } from "../../private-key-jwt/models";

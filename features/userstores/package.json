@@ -1,41 +1,6 @@
 {
-    "private": true,
-    "name": "@wso2is/console",
+    "name": "@wso2is/feature-userstores",
     "version": "2.12.0",
-    "description": "WSO2 Identity Server Console",
-    "author": "WSO2",
-    "license": "Apache-2.0",
-    "main": "index.js",
-    "scripts": {
-        "build": "pnpm build:prod",
-        "build:prod": "pnpm nx run console:build",
-        "clean": "pnpm clean:build && pnpm clean:lock-files && pnpm clean:maven-folders && pnpm clean:themes:src && pnpm clean:node-modules",
-        "clean:build": "pnpm rimraf build",
-        "clean:lock-files": "pnpm rimraf package-lock.json && pnpm rimraf pnpm-lock.yaml && pnpm rimraf yarn.lock",
-        "clean:maven-folders": "pnpm rimraf target",
-        "clean:node-modules": "pnpm rimraf node_modules",
-        "clean:themes:src": "pnpm rimraf src/themes",
-        "compile": "pnpm tsc -p tsconfig.json --incremental",
-        "compile:i18n": "pnpm tsc -p src/extensions/i18n",
-        "clean:i18n:dist": "rimraf src/extensions/i18n/dist",
-        "copy:themes:src": "node scripts/copy-themes-to-source.js",
-        "copy:branding:i18n:defaults": "node scripts/populate-branding-i18n-defaults.js",
-        "lint": "pnpm run lint:all",
-        "lint:all": "pnpm run lint:targeted -- .",
-        "lint:autofix": "pnpm run lint:all -- --fix",
-        "lint:targeted": "eslint --ext .js,.jsx,.ts,.tsx --quiet --resolve-plugins-relative-to .",
-        "postinstall": "node scripts/post-install.js",
-        "prestart": "pnpm run prebuild",
-        "prebuild": "node scripts/pre-build.js",
-        "postbuild": "node scripts/post-build.js",
-        "poststart": "pnpm run postbuild",
-        "start": "pnpm prestart && pnpm nx run console:serve && pnpm poststart",
-        "test": "pnpm jest --passWithNoTests",
-        "test:watch": "pnpm run test --watchAll",
-        "start:profile": "pnpm run start -- --env ENABLE_BUILD_PROFILER=true",
-        "start:verbose": "pnpm run start -- --env LOG_LEVEL=verbose",
-        "typecheck": "pnpm run compile"
-    },
     "dependencies": {
         "@asgardeo/auth-react": "^4.0.1",
         "@emotion/react": "^11.11.0",
@@ -61,7 +26,10 @@
         "@wso2is/validation": "^2.0.3",
         "@wso2is/common": "^2.0.31",
         "@wso2is/dynamic-forms": "^2.0.29",
-        "@wso2is/feature-users": "*",
+        "@wso2is/feature-users.common": "*",
+        "@wso2is/feature-groups.common": "*",
+        "@wso2is/feature-roles.common": "*",
+        "@wso2is/feature-organizations.common": "*",
         "axios": "^0.19.2",
         "codemirror": "^5.52.0",
         "country-language": "^0.1.7",
@@ -155,8 +123,5 @@
         "ts-jest": "^26.4.0",
         "ts-node": "^10.8.1",
         "typescript": "^4.6.4"
-    },
-    "browserslist": [
-        "> 0.2%"
-    ]
+    }
 }
