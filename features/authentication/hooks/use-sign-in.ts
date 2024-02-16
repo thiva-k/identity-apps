@@ -25,26 +25,18 @@ import {
 } from "@asgardeo/auth-react";
 import useDeploymentConfig from "@wso2is/common/src/hooks/use-deployment-configs";
 import useResourceEndpoints from "@wso2is/common/src/hooks/use-resource-endpoints";
-import {
-    AppConstants as CommonAppConstants,
-    CommonConstants as CommonConstantsCore
-} from "@wso2is/core/constants";
+import { AppConstants as CommonAppConstants, CommonConstants as CommonConstantsCore } from "@wso2is/core/constants";
 import { TenantListInterface } from "@wso2is/core/models";
 import { setDeploymentConfigs, setServiceResourceEndpoints, setSignIn } from "@wso2is/core/store";
+import { AuthenticateUtils as CommonAuthenticateUtils, ContextUtils } from "@wso2is/core/utils";
+import { Config } from "@wso2is/feature-configs.common";
+import { AppConstants, CommonConstants } from "@wso2is/feature-constants.common";
+import { DeploymentConfigInterface } from "@wso2is/feature-models.common";
+import { OrganizationType } from "@wso2is/feature-organizations.common/constants";
+import useOrganizationSwitch from "@wso2is/feature-organizations.common/hooks/use-organization-switch";
+import useOrganizations from "@wso2is/feature-organizations.common/hooks/use-organizations";
 import {
-    AuthenticateUtils as CommonAuthenticateUtils,
-    ContextUtils
-} from "@wso2is/core/utils";
-import axios, { AxiosResponse } from "axios";
-import { useDispatch } from "react-redux";
-import { AnyAction } from "redux";
-import { ThunkDispatch } from "redux-thunk";
-import useAuthorization from "../../authorization/hooks/use-authorization";
-import { Config } from "../../core/configs/app";
-import { AppConstants, CommonConstants } from "../../core/constants";
-import { DeploymentConfigInterface } from "../../core/models/config";
-import { AppState } from "../../core/store";
-import {
+    AppState,
     getServerConfigurations,
     setCurrentOrganization,
     setGetOrganizationLoading,
@@ -52,10 +44,12 @@ import {
     setOrganization,
     setOrganizationType,
     setUserOrganizationId
-} from "../../core/store/actions/organization";
-import { OrganizationType } from "../../organizations/constants";
-import useOrganizationSwitch from "../../organizations/hooks/use-organization-switch";
-import useOrganizations from "../../organizations/hooks/use-organizations";
+} from "@wso2is/feature-store.common";
+import axios, { AxiosResponse } from "axios";
+import { useDispatch } from "react-redux";
+import { AnyAction } from "redux";
+import { ThunkDispatch } from "redux-thunk";
+import useAuthorization from "../../authorization/hooks/use-authorization";
 import { getProfileInformation } from "../store/actions";
 import { AuthenticateUtils } from "../utils/authenticate-utils";
 
@@ -72,7 +66,7 @@ export type UseSignInInterface = {
         response: BasicUserInfo,
         onTenantResolve: (tenantDomain: string) => void,
         onSignInSuccessRedirect: (idToken: DecodedIDTokenPayload) => void,
-        onAppReady: () => void,
+        onAppReady: () => void
     ) => Promise<void>;
 };
 
@@ -92,7 +86,7 @@ const useSignIn = (): UseSignInInterface => {
 
     const { setDeploymentConfig } = useDeploymentConfig();
 
-    const { legacyAuthzRuntime }  = useAuthorization();
+    const { legacyAuthzRuntime } = useAuthorization();
 
     const {
         transformTenantDomain,
@@ -145,7 +139,8 @@ const useSignIn = (): UseSignInInterface => {
             let customServerHost: string = Config?.getDeploymentConfig()?.serverHost;
 
             const isSuperTenant: boolean = window["AppUtils"]?.isSuperTenant();
-            const isSubOrganization: boolean = orgType === OrganizationType.SUBORGANIZATION &&
+            const isSubOrganization: boolean =
+                orgType === OrganizationType.SUBORGANIZATION &&
                 window["AppUtils"]?.getConfig()?.organizationName.length > 0;
 
             if (!window["AppUtils"]?.getConfig()?.requireSuperTenantInUrls && isSuperTenant) {
@@ -159,8 +154,8 @@ const useSignIn = (): UseSignInInterface => {
 
             if (isSubOrganization) {
                 customServerHost = `${Config?.getDeploymentConfig()?.serverOrigin}/${
-                    window["AppUtils"]?.getConfig()?.organizationPrefix}/${
-                    window["AppUtils"]?.getConfig()?.organizationName}`;
+                    window["AppUtils"]?.getConfig()?.organizationPrefix
+                }/${window["AppUtils"]?.getConfig()?.organizationName}`;
             }
 
             window["AppUtils"]?.updateCustomServerHost(customServerHost);
@@ -187,9 +182,7 @@ const useSignIn = (): UseSignInInterface => {
 
         const idToken: DecodedIDTokenPayload = await getDecodedIDToken();
         const isPrivilegedUser: boolean =
-            idToken?.amr?.length > 0
-                ? idToken?.amr[0] === "EnterpriseIDPAuthenticator"
-                : false;
+            idToken?.amr?.length > 0 ? idToken?.amr[0] === "EnterpriseIDPAuthenticator" : false;
         const event: Event = new Event(CommonConstantsCore.AUTHENTICATION_SUCCESSFUL_EVENT);
 
         dispatchEvent(event);
@@ -197,12 +190,11 @@ const useSignIn = (): UseSignInInterface => {
         const orgIdIdToken: string = idToken.org_id;
         const orgName: string = idToken.org_name;
         const userOrganizationId: string = idToken.user_org;
-        const tenantDomainFromSubject: string = CommonAuthenticateUtils.deriveTenantDomainFromSubject(
-            response.sub
-        );
-        const isFirstLevelOrg: boolean = !idToken.user_org
-            || idToken.org_name === tenantDomainFromSubject
-            || ((idToken.user_org === idToken.org_id) && idToken.org_name === tenantDomainFromSubject);
+        const tenantDomainFromSubject: string = CommonAuthenticateUtils.deriveTenantDomainFromSubject(response.sub);
+        const isFirstLevelOrg: boolean =
+            !idToken.user_org ||
+            idToken.org_name === tenantDomainFromSubject ||
+            (idToken.user_org === idToken.org_id && idToken.org_name === tenantDomainFromSubject);
 
         let tenantDomain: string = transformTenantDomain(orgName);
 
@@ -213,15 +205,14 @@ const useSignIn = (): UseSignInInterface => {
         await dispatch(
             setSignIn<AuthenticatedUserInfo & TenantListInterface>(
                 Object.assign(
-                    CommonAuthenticateUtils.getSignInState(
-                        response,
-                        transformTenantDomain(response.orgName)
-                    ), {
+                    CommonAuthenticateUtils.getSignInState(response, transformTenantDomain(response.orgName)),
+                    {
                         associatedTenants: isPrivilegedUser ? tenantDomain : idToken?.associated_tenants,
                         defaultTenant: isPrivilegedUser ? tenantDomain : idToken?.default_tenant,
                         fullName: fullName,
                         isPrivilegedUser: isPrivilegedUser
-                    })
+                    }
+                )
             )
         );
 
@@ -238,7 +229,7 @@ const useSignIn = (): UseSignInInterface => {
             window["AppUtils"].updateOrganizationName(orgIdIdToken);
         } else {
             // Update the app base name with the newly resolved tenant.
-            window[ "AppUtils" ].updateTenantQualifiedBaseName(tenantDomain);
+            window["AppUtils"].updateTenantQualifiedBaseName(tenantDomain);
         }
 
         if (isFirstLevelOrg && tenantDomain === AppConstants.getSuperTenant()) {
@@ -329,49 +320,41 @@ const useSignIn = (): UseSignInInterface => {
         ContextUtils.setRuntimeConfig(Config.getDeploymentConfig());
 
         // TODO: Test This properly.
-        logoutUrl = window[ "AppUtils" ].getConfig().idpConfigs?.logoutEndpointURL;
+        logoutUrl = window["AppUtils"].getConfig().idpConfigs?.logoutEndpointURL;
 
         if (legacyAuthzRuntime) {
             // Update post_logout_redirect_uri of logout_url with tenant qualified url
             if (sessionStorage.getItem(LOGOUT_URL)) {
                 logoutUrl = sessionStorage.getItem(LOGOUT_URL);
 
-                if (
-                    !window[ "AppUtils" ].getConfig().accountApp
-                        .commonPostLogoutUrl
-                ) {
+                if (!window["AppUtils"].getConfig().accountApp.commonPostLogoutUrl) {
                     // If there is a base name, replace the `post_logout_redirect_uri` with the tenanted base name.
-                    if (window[ "AppUtils" ].getConfig().appBase) {
+                    if (window["AppUtils"].getConfig().appBase) {
                         logoutUrl = logoutUrl.replace(
-                            window[ "AppUtils" ].getAppBase(),
-                            window[ "AppUtils" ].getAppBaseWithTenant()
+                            window["AppUtils"].getAppBase(),
+                            window["AppUtils"].getAppBaseWithTenant()
                         );
-                        logoutRedirectUrl = window[ "AppUtils" ]
+                        logoutRedirectUrl = window["AppUtils"]
                             .getConfig()
                             .logoutCallbackURL.replace(
-                                window[ "AppUtils" ].getAppBase(),
-                                window[ "AppUtils" ].getAppBaseWithTenant()
+                                window["AppUtils"].getAppBase(),
+                                window["AppUtils"].getAppBaseWithTenant()
                             );
                     } else {
                         logoutUrl = logoutUrl.replace(
-                            window[ "AppUtils" ].getConfig().logoutCallbackURL,
-                            window[ "AppUtils" ].getConfig().clientOrigin +
-                            window[ "AppUtils" ].getConfig().routes.login
+                            window["AppUtils"].getConfig().logoutCallbackURL,
+                            window["AppUtils"].getConfig().clientOrigin + window["AppUtils"].getConfig().routes.login
                         );
                         logoutRedirectUrl =
-                            window[ "AppUtils" ].getConfig().clientOrigin +
-                            window[ "AppUtils" ].getConfig().routes.login;
+                            window["AppUtils"].getConfig().clientOrigin + window["AppUtils"].getConfig().routes.login;
                     }
                 }
 
                 // If an override URL is defined in config, use that instead.
-                if (
-                    window[ "AppUtils" ].getConfig().idpConfigs?.logoutEndpointURL
-                ) {
+                if (window["AppUtils"].getConfig().idpConfigs?.logoutEndpointURL) {
                     logoutUrl = AuthenticateUtils.resolveIdpURLSAfterTenantResolves(
                         logoutUrl,
-                        window[ "AppUtils" ].getConfig().idpConfigs
-                            .logoutEndpointURL
+                        window["AppUtils"].getConfig().idpConfigs.logoutEndpointURL
                     );
                 }
 
@@ -495,9 +478,7 @@ const useSignIn = (): UseSignInInterface => {
             const isSwitchedFromRootOrg: boolean = getUserOrgInLocalStorage() === "undefined";
 
             if (!isSwitchedFromRootOrg) {
-                logoutRedirectUrl = window["AppUtils"]?.getConfig()?.clientOriginWithTenant?.replace(
-                    orgId, userOrg
-                );
+                logoutRedirectUrl = window["AppUtils"]?.getConfig()?.clientOriginWithTenant?.replace(orgId, userOrg);
             }
         }
 

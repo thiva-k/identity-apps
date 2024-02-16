@@ -19,4 +19,3 @@
 export * from "./footer";
 export * from "./header";
 export * from "./protected-route";
-export * from "./pre-loader";

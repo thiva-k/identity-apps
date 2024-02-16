@@ -17,5 +17,3 @@
  */
 
 export * from "./invite";
-export * from "./profile";
-

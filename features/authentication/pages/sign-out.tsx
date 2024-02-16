@@ -20,11 +20,13 @@ import { Hooks, useAuthContext } from "@asgardeo/auth-react";
 import { AppConstants } from "@wso2is/core/constants";
 import { setSignOut } from "@wso2is/core/store";
 import { AuthenticateUtils } from "@wso2is/core/utils";
+import { PreLoader } from "@wso2is/feature-components.common";
+import { history } from "@wso2is/feature-helpers.common";
+import useOrganizations from "@wso2is/feature-organizations.common/hooks/use-organizations";
+import { AppState } from "@wso2is/feature-store.common";
 import React, { FunctionComponent, ReactElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { AppState, PreLoader, history } from "../../core";
-import useOrganizations from "../../organizations/hooks/use-organizations";
 
 /**
  * Virtual component used to handle Sign in action.
@@ -36,10 +38,7 @@ const SignOut: FunctionComponent<Record<string, unknown>> = (): ReactElement => 
 
     const { signOut, on } = useAuthContext();
 
-    const {
-        removeOrgIdInLocalStorage,
-        removeUserOrgInLocalStorage
-    } = useOrganizations();
+    const { removeOrgIdInLocalStorage, removeUserOrgInLocalStorage } = useOrganizations();
 
     const logoutInit: boolean = useSelector((state: AppState) => state.auth.logoutInit);
 
@@ -55,12 +54,11 @@ const SignOut: FunctionComponent<Record<string, unknown>> = (): ReactElement => 
             removeOrgIdInLocalStorage();
             removeUserOrgInLocalStorage();
 
-            signOut()
-                .catch(() => {
-                    history.push(window[ "AppUtils" ].getConfig().routes.home);
-                });
+            signOut().catch(() => {
+                history.push(window["AppUtils"].getConfig().routes.home);
+            });
         }
-    }, [ logoutInit ]);
+    }, [logoutInit]);
 
     return <PreLoader />;
 };

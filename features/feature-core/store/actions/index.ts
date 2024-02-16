@@ -18,5 +18,4 @@
 
 export * from "./global";
 export * from "./acess-control";
-export * from "./organization";
 export * from "./routes";

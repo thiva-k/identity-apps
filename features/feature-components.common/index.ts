@@ -25,3 +25,4 @@ export * from "./attribute-select-list";
 export * from "./upload-certificate";
 export * from "./protocol-card";
 export * from "./authenticator-accordion";
+export * from "./pre-loader";

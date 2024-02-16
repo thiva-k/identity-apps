@@ -43,18 +43,18 @@ export class AuthenticateUtils {
         let baseUrl: string = window["AppUtils"]?.getConfig()?.serverOriginWithTenant;
 
         if (isLegacyAuthzRuntime()) {
-            baseUrl = window[ "AppUtils" ]?.getConfig()?.idpConfigs?.serverOrigin;
+            baseUrl = window["AppUtils"]?.getConfig()?.idpConfigs?.serverOrigin;
         }
 
         return {
             baseUrl,
-            checkSessionInterval: window[ "AppUtils" ]?.getConfig()?.session?.checkSessionInterval,
+            checkSessionInterval: window["AppUtils"]?.getConfig()?.session?.checkSessionInterval,
             clientHost: window["AppUtils"]?.getConfig()?.clientOriginWithTenant,
             clientID: window["AppUtils"]?.getConfig()?.clientID,
-            clockTolerance: window[ "AppUtils" ]?.getConfig().idpConfigs?.clockTolerance,
+            clockTolerance: window["AppUtils"]?.getConfig().idpConfigs?.clockTolerance,
             disableTrySignInSilently: new URL(location.href).searchParams.get("disable_silent_sign_in") === "true",
-            enableOIDCSessionManagement: window["AppUtils"]?.getConfig().idpConfigs?.enableOIDCSessionManagement
-                ?? true,
+            enableOIDCSessionManagement:
+                window["AppUtils"]?.getConfig().idpConfigs?.enableOIDCSessionManagement ?? true,
             enablePKCE: window["AppUtils"]?.getConfig()?.idpConfigs?.enablePKCE ?? true,
             endpoints: {
                 authorizationEndpoint: window["AppUtils"]?.getConfig()?.idpConfigs?.authorizeEndpointURL,
@@ -68,9 +68,9 @@ export class AuthenticateUtils {
             periodicTokenRefresh: window["AppUtils"]?.getConfig()?.idpConfigs?.periodicTokenRefresh,
             resourceServerURLs: AuthenticateUtils.resolveBaseUrls(),
             responseMode: window["AppUtils"]?.getConfig()?.idpConfigs?.responseMode ?? responseModeFallback,
-            scope: window["AppUtils"]?.getConfig()?.idpConfigs?.scope ?? [ TokenConstants.SYSTEM_SCOPE ],
+            scope: window["AppUtils"]?.getConfig()?.idpConfigs?.scope ?? [TokenConstants.SYSTEM_SCOPE],
             sendCookiesInRequests: true,
-            sessionRefreshInterval: window[ "AppUtils" ]?.getConfig()?.session?.sessionRefreshTimeOut,
+            sessionRefreshInterval: window["AppUtils"]?.getConfig()?.session?.sessionRefreshTimeOut,
             signInRedirectURL: window["AppUtils"]?.getConfig()?.loginCallbackURL,
             signOutRedirectURL: window["AppUtils"]?.getConfig()?.loginCallbackURL,
             storage: AuthenticateUtils.resolveStorage() as Storage.WebWorker,
@@ -85,7 +85,6 @@ export class AuthenticateUtils {
      * @returns Storage
      */
     public static resolveStorage(): Storage {
-
         const storageFallback: Storage =
             new UAParser().getBrowser().name === "IE" ? Storage.SessionStorage : Storage.WebWorker;
 
@@ -117,13 +116,13 @@ export class AuthenticateUtils {
         if (baseUrls) {
             // If the server origin is not specified in the overridden config, append it.
             if (!baseUrls.includes(serverOrigin)) {
-                baseUrls = [ ...baseUrls, serverOrigin ];
+                baseUrls = [...baseUrls, serverOrigin];
             }
 
             return baseUrls;
         }
 
-        return [ serverOrigin ];
+        return [serverOrigin];
     }
 
     /**
@@ -139,7 +138,7 @@ export class AuthenticateUtils {
 
         // If the override URL & original URL has search params, try to moderate the URL.
         if (parsedOverrideURL.search && parsedOriginalURL.search) {
-            for (const [ key, value ] of parsedOriginalURL.searchParams.entries()) {
+            for (const [key, value] of parsedOriginalURL.searchParams.entries()) {
                 if (!parsedOverrideURL.searchParams.has(key)) {
                     parsedOverrideURL.searchParams.append(key, value);
                 }
