@@ -93,7 +93,8 @@ export interface SetHelpPanelActiveTabIndexActionInterface extends HelpPanelBase
 /**
  * Export action interfaces.
  */
-export type HelpPanelActions = SetHelpPanelDocsContentURLActionInterface
+export type HelpPanelActions =
+    | SetHelpPanelDocsContentURLActionInterface
     | SetHelpPanelDocStructureActionInterface
     | ToggleHelpPanelVisibilityActionInterface
     | SetHelpPanelActiveTabIndexActionInterface;
