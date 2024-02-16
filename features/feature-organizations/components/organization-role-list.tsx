@@ -44,14 +44,11 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, SemanticICONS } from "semantic-ui-react";
-import {
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
+import { AppConstants,UIConstants } from "@wso2is/feature-constants.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { deleteOrganizationRole } from "@wso2is/feature-organizations.common/api/organization-role";
 import { OrganizationRoleManagementConstants } from "@wso2is/feature-organizations.common/constants";
 import { OrganizationRoleListItemInterface } from "@wso2is/feature-organizations.common/models";

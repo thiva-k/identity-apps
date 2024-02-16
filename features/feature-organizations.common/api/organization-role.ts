@@ -27,7 +27,7 @@ import { HttpMethods } from "@wso2is/core/models";
 import { CreateRoleInterface } from "@wso2is/feature-roles.common/models/roles";
 import { OrganizationRoleListResponseInterface, PatchOrganizationRoleDataInterface } from "../models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/feature-store.common";
 
 /**
  * Get an axios instance.

@@ -29,7 +29,9 @@ import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid, GridColumn, GridRow } from "semantic-ui-react";
-import { AppState, SharedUserStoreConstants, SharedUserStoreUtils } from "../../../core";
+import { AppState } from "@wso2is/feature-store.common";
+import { SharedUserStoreConstants } from "@wso2is/feature-constants.common";
+import { SharedUserStoreUtils} from "@wso2is/feature-utils.common";
 
 /**
  * Interface to capture role basics props.

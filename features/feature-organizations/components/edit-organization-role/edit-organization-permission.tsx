@@ -25,7 +25,7 @@ import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { OrganizationPermissionList } from "./organization-role-permission";
-import { AppState } from "../../../core";
+import { AppState } from "@wso2is/feature-store.common";
 import { TreeNode } from "../../models";
 /**
  * Interface to capture permission edit props.

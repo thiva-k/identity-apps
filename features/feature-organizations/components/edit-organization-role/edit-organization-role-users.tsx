@@ -27,7 +27,7 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { AppState } from "../../../core";
+import { AppState } from "@wso2is/feature-store.common";
 
 interface RoleUserDetailsProps {
     roleObject: RolesInterface;

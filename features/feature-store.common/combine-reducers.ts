@@ -41,16 +41,16 @@ import {
     organizationReducer
 } from "./reducers";
 import { routeReducer } from "./reducers/routes";
-import { applicationReducer } from "../../applications/store";
-import { commonAuthenticateReducerInitialState } from "../../authentication/store";
-import { identityProviderReducer } from "../../identity-providers/store";
+import { applicationReducer } from "../applications/store";
+import { commonAuthenticateReducerInitialState } from "../authentication/store";
+import { identityProviderReducer } from "../identity-providers/store";
 import {
     AuthReducerStateInterface,
     DeploymentConfigInterface,
     FeatureConfigInterface,
     ServiceResourceEndpointsInterface,
     UIConfigInterface
-} from "../models";
+} from "../feature-models.common";
 
 /**
  * Combines all the reducers.

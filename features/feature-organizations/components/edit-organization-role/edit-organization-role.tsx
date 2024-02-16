@@ -28,7 +28,10 @@ import { RoleGroupsList } from "./edit-organization-groups";
 import { RolePermissionDetails } from "./edit-organization-permission";
 import { BasicRoleDetails } from "./edit-organization-role-basic";
 import { RoleUserDetails } from "./edit-organization-role-users";
-import { AppState, FeatureConfigInterface, history } from "../../../core";
+import { AppState } from "@wso2is/feature-store.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { history } from "@wso2is/feature-helpers.common";
+
 
 /**
  * Captures props needed for edit role component

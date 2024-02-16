@@ -25,10 +25,14 @@ import {
 } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
+import  {
+    RequestErrorInterface,
+    RequestResultInterface
+} from "@wso2is/feature-hooks.common";
+import useRequest from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import isLegacyAuthzRuntime from "../../authorization/utils/get-legacy-authz-runtime";
-import { store } from "../../core";
-import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
 import {
     AddOrganizationInterface,
     BreadcrumbList,

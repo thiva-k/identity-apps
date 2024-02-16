@@ -38,8 +38,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Modal } from "semantic-ui-react";
-import { AppState, EventPublisher, TierLimitReachErrorModal } from "../../core";
-import { addOrganization } from "../api";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
+import { TierLimitReachErrorModal } from "@wso2is/feature-components.common/tier-limit-reach-error-modal";
+import { addOrganization } from "@wso2is/feature-organizations.common/api";
 
 interface OrganizationAddFormProps {
     name: string;

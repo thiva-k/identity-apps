@@ -17,13 +17,14 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models/organizations";
-import useRequest, {
+import  {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+} from "@wso2is/feature-hooks.common";
+import useRequest from "@wso2is/feature-hooks.common/use-request";
+import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models/organizations";
+import { store } from "@wso2is/feature-store.common";
 
 /**
  * Hook to get details of a specific organization.

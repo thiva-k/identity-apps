@@ -23,7 +23,7 @@ import React, { FunctionComponent } from "react";
 import { useTranslation } from "react-i18next";
 import { OrganizationAttributes } from "./organization-attributes";
 import { OrganizationOverview } from "./organization-overview";
-import { FeatureConfigInterface } from "../../../core";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 
 interface EditOrganizationPropsInterface extends SBACInterface<FeatureConfigInterface> {
     /**

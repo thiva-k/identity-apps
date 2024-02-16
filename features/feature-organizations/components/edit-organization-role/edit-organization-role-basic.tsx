@@ -36,7 +36,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Form, Grid, InputOnChangeData } from "semantic-ui-react";
-import { AppConstants, AppState, SharedUserStoreUtils, history } from "../../../core";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { SharedUserStoreUtils} from "@wso2is/feature-utils.common"
 import { PRIMARY_USERSTORE_PROPERTY_VALUES } from "../../../userstores/constants/user-store-constants";
 
 /**

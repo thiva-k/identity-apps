@@ -18,6 +18,7 @@
 
 import { AlertLevels, RoleGroupsInterface, RolesInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { GroupListInterface, GroupsInterface } from "@wso2is/feature-groups.common";
 import { getGroupList } from "@wso2is/feature-groups.common/api";
 import { patchOrganizationRoleDetails } from "@wso2is/feature-organizations.common/api";
@@ -27,6 +28,7 @@ import {
     OrganizationRoleInterface,
     PatchOrganizationRoleDataInterface
 } from "@wso2is/feature-organizations.common/models";
+import { AppState } from "@wso2is/feature-store.common";
 import {
     ContentLoader,
     EmphasizedSegment,
@@ -50,7 +52,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Grid, Icon, Input, Label, Modal, Table } from "semantic-ui-react";
-import { AppState, getEmptyPlaceholderIllustrations } from "../../../core";
+
 
 interface RoleGroupsPropsInterface extends TestableComponentInterface {
     /**

@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { store } from "../../core/store";
+import { store } from "@wso2is/feature-store.common";
 import { OrganizationManagementConstants, OrganizationType } from "../constants";
 import { GenericOrganization } from "../models";
 

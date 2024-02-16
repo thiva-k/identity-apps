@@ -42,8 +42,8 @@ import { Button, Dropdown, Grid, Input, Item, Loader, Segment } from "semantic-u
 import OrganizationListItem from "./organization-list-item";
 import OrganizationSwitcherList from "./organization-switch-list";
 import { ReactComponent as CrossIcon } from "../../../../themes/default/assets/images/icons/cross-icon.svg";
-import { AppState } from "../../../core";
-import { getOrganizations } from "../../api";
+import { AppState } from "@wso2is/feature-store.common";
+import { getOrganizations } from "@wso2is/feature-organizations.common/api";
 import { AddOrganizationModal } from "../add-organization-modal";
 
 /**

@@ -22,7 +22,7 @@ import { AssignGroupsUsers } from "@wso2is/feature-roles.common/components/wizar
 import { getRolesWizardStepIcons } from "@wso2is/feature-roles.common/configs/ui";
 import { TreeNode } from "@wso2is/feature-roles.common/models/permission";
 import { CreateRoleInterface, CreateRoleMemberInterface } from "@wso2is/feature-roles.common/models/roles";
-import { UserBasicInterface } from "@wso2is/feature.users.common/models/user";
+import { UserBasicInterface } from "@wso2is/feature-users.common/models/user";
 import { useTrigger } from "@wso2is/forms";
 import { Heading, LinkButton, PrimaryButton, Steps } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";

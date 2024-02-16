@@ -21,9 +21,13 @@ import { OrganizationType } from "@wso2is/common";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { SessionStorageUtils } from "@wso2is/core/utils";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { useGetOrganizationBreadCrumb } from "@wso2is/feature-organizations.common/api";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { BreadcrumbItem, BreadcrumbList, GenericOrganization } from "@wso2is/feature-organizations.common/models";
 import { OrganizationUtils } from "@wso2is/feature-organizations.common/utils";
+import { AppState } from "@wso2is/feature-store.common";
 import { Action, Location } from "history";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -34,10 +38,7 @@ import OrganizationSwitchDropdown from "./organization-switch-dropdown";
 import { organizationConfigs } from "../../../../extensions";
 import useSignIn from "../../../authentication/hooks/use-sign-in";
 import useAuthorization from "../../../authorization/hooks/use-authorization";
-import { AppConstants, AppState } from "../../../core";
-import { history } from "../../../core/helpers/history";
 import TenantDropdown from "../../../tenants/components/dropdown/tenant-dropdown";
-import { useGetOrganizationBreadCrumb } from "../../api";
 import useOrganizationSwitch from "../../hooks/use-organization-switch";
 
 /**

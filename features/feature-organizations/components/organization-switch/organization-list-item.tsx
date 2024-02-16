@@ -25,7 +25,9 @@ import React, { ReactElement, SyntheticEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Icon, Placeholder } from "semantic-ui-react";
 import { organizationConfigs } from "../../../../extensions";
-import { AppConstants, getMiscellaneousIcons, history } from "../../../core";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { getMiscellaneousIcons } from "@wso2is/feature-configs.common/ui";
 
 interface OrganizationListItemPropsTypesInterface extends IdentifiableComponentInterface {
     organization: GenericOrganization;

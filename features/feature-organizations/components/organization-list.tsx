@@ -21,12 +21,19 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface, LoadableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { AppConstants, UIConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { deleteOrganization, useGetOrganizationBreadCrumb } from "@wso2is/feature-organizations.common/api";
 import { OrganizationManagementConstants } from "@wso2is/feature-organizations.common/constants";
 import {
     GenericOrganization,
     OrganizationInterface,
     OrganizationListInterface
 } from "@wso2is/feature-organizations.common/models";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import {
     ConfirmationModal,
     DataTable,
@@ -48,9 +55,6 @@ import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
 import { organizationConfigs } from "../../../extensions";
 import useSignIn from "../../authentication/hooks/use-sign-in";
 import useAuthorization from "../../authorization/hooks/use-authorization";
-import { AppConstants, AppState, EventPublisher, FeatureConfigInterface, UIConstants, history } from "../../core";
-import { getEmptyPlaceholderIllustrations } from "../../core/configs/ui";
-import { deleteOrganization, useGetOrganizationBreadCrumb } from "../api";
 import { OrganizationIcon } from "../configs";
 import useOrganizationSwitch from "../hooks/use-organization-switch";
 
