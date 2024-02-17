@@ -26,6 +26,9 @@ import {
     RoleListInterface,
     RolesInterface
 } from "@wso2is/core/models";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/ui";
+import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants/role-constants";
+import { AppState } from "@wso2is/feature-store.common/index";
 import {
     AnimatedAvatar,
     AppAvatar,
@@ -41,9 +44,6 @@ import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useS
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
-import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/ui";
-import { AppState } from "@wso2is/feature-store.common/index";
-import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants/role-constants";
 
 /**
  * Props interface of {@link ConsoleRolesTable}
@@ -85,9 +85,7 @@ export interface ConsoleRolesTableProps extends LoadableComponentInterface, Iden
  * @param props - Props injected to the component.
  * @returns Console roles table component.
  */
-const ConsoleRolesTable: FunctionComponent<ConsoleRolesTableProps> = (
-    props: ConsoleRolesTableProps
-): ReactElement => {
+const ConsoleRolesTable: FunctionComponent<ConsoleRolesTableProps> = (props: ConsoleRolesTableProps): ReactElement => {
     const {
         onRoleDelete,
         onRoleEdit,
@@ -96,19 +94,21 @@ const ConsoleRolesTable: FunctionComponent<ConsoleRolesTableProps> = (
         onSearchQueryClear,
         roleList,
         searchQuery,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const featureConfig: FeatureAccessConfigInterface = useSelector(
-        (state: AppState) => state?.config?.ui?.features?.userRoles);
+        (state: AppState) => state?.config?.ui?.features?.userRoles
+    );
     const administratorRoleDisplayName: string = useSelector(
-        (state: AppState) => state?.config?.ui?.administratorRoleDisplayName);
+        (state: AppState) => state?.config?.ui?.administratorRoleDisplayName
+    );
 
-    const [ showRoleDeleteConfirmation, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ currentDeletedRole, setCurrentDeletedRole ] = useState<RolesInterface>();
+    const [showRoleDeleteConfirmation, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [currentDeletedRole, setCurrentDeletedRole] = useState<RolesInterface>();
 
     /**
      * Shows list placeholders.
@@ -118,23 +118,24 @@ const ConsoleRolesTable: FunctionComponent<ConsoleRolesTableProps> = (
         if (searchQuery && roleList?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    data-componentid={ `${ componentId }-search-empty-placeholder` }
-                    action={ (
+                    data-componentid={`${componentId}-search-empty-placeholder`}
+                    action={
                         <LinkButton
-                            data-componentid={ `${ componentId }-search-empty-placeholder-clear-button` }
-                            onClick={ onSearchQueryClear }
+                            data-componentid={`${componentId}-search-empty-placeholder-clear-button`}
+                            onClick={onSearchQueryClear}
                         >
-                            { t("console:manage.features.roles.list.emptyPlaceholders.search.action") }
+                            {t("console:manage.features.roles.list.emptyPlaceholders.search.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.roles.list.emptyPlaceholders.search.title") }
-                    subtitle={ [
-                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0",
-                            { searchQuery: searchQuery }),
+                    title={t("console:manage.features.roles.list.emptyPlaceholders.search.title")}
+                    subtitle={[
+                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0", {
+                            searchQuery: searchQuery
+                        }),
                         t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -142,36 +143,46 @@ const ConsoleRolesTable: FunctionComponent<ConsoleRolesTableProps> = (
         if (roleList?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    data-componentid={ `${ componentId }-empty-list-empty-placeholder` }
-                    action={ !isSubOrg && (
-                        <Show when={ AccessControlConstants.ROLE_WRITE }>
-                            <PrimaryButton
-                                data-componentid={ `${ componentId }-empty-list-empty-placeholder-add-button` }
-                                onClick={ onEmptyListPlaceholderActionClick }
-                            >
-                                <Icon name="add"/>
-                                { t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.action",
-                                    { type: "Role" }) }
-                            </PrimaryButton>
-                        </Show>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    data-componentid={`${componentId}-empty-list-empty-placeholder`}
+                    action={
+                        !isSubOrg && (
+                            <Show when={AccessControlConstants.ROLE_WRITE}>
+                                <PrimaryButton
+                                    data-componentid={`${componentId}-empty-list-empty-placeholder-add-button`}
+                                    onClick={onEmptyListPlaceholderActionClick}
+                                >
+                                    <Icon name="add" />
+                                    {t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.action", {
+                                        type: "Role"
+                                    })}
+                                </PrimaryButton>
+                            </Show>
+                        )
+                    }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    title={ !isSubOrg && t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.title",
-                        { type: "role" }) }
-                    subtitle={ isSubOrg
-                        ? [
-                            t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0",
-                                { type: "roles" })
-                        ]
-                        : [
-                            t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0",
-                                { type: "roles" }),
-                            t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.1",
-                                { type: "role" }),
-                            t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.2",
-                                { type: "role" })
-                        ]
+                    title={
+                        !isSubOrg &&
+                        t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.title", { type: "role" })
+                    }
+                    subtitle={
+                        isSubOrg
+                            ? [
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0", {
+                                      type: "roles"
+                                  })
+                              ]
+                            : [
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0", {
+                                      type: "roles"
+                                  }),
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.1", {
+                                      type: "role"
+                                  }),
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.2", {
+                                      type: "role"
+                                  })
+                              ]
                     }
                 />
             );
@@ -191,27 +202,20 @@ const ConsoleRolesTable: FunctionComponent<ConsoleRolesTableProps> = (
                 id: "name",
                 key: "name",
                 render: (role: RolesInterface): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-componentid={ `${ componentId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-componentid={`${componentId}-item-heading`}>
                         <AppAvatar
-                            image={ (
+                            image={
                                 <AnimatedAvatar
-                                    name={ role?.displayName[ 0 ] }
+                                    name={role?.displayName[0]}
                                     size="mini"
-                                    data-componentid={ `${ componentId }-item-image-inner` }
+                                    data-componentid={`${componentId}-item-image-inner`}
                                 />
-                            ) }
+                            }
                             size="mini"
                             spaced="right"
-                            data-componentid={ `${ componentId }-item-image` }
+                            data-componentid={`${componentId}-item-image`}
                         />
-                        <Header.Content>
-                            { role?.displayName }
-                        </Header.Content>
+                        <Header.Content>{role?.displayName}</Header.Content>
                     </Header>
                 ),
                 title: t("console:manage.features.roles.list.columns.name")
@@ -222,29 +226,20 @@ const ConsoleRolesTable: FunctionComponent<ConsoleRolesTableProps> = (
                 id: "audience",
                 key: "audience",
                 render: (role: RolesInterface) => (
-                    <Header as="h6" data-componentid={ `${ componentId }-col-2-item-heading` }>
+                    <Header as="h6" data-componentid={`${componentId}-col-2-item-heading`}>
                         <Header.Content>
-                            <Header.Subheader data-componentid={ `${ componentId }-col-2-item-sub-heading` }>
-                                { role?.audience?.type.charAt(0).toUpperCase() + role?.audience?.type.slice(1) }
-                                {
-                                    RoleAudienceTypes.APPLICATION === role?.audience?.type.toUpperCase() && (
-                                        <Label
-                                            size="mini"
-                                            className="client-id-label"
-                                        >
-                                            { role?.audience?.display }
-                                        </Label>
-                                    )
-                                }
+                            <Header.Subheader data-componentid={`${componentId}-col-2-item-sub-heading`}>
+                                {role?.audience?.type.charAt(0).toUpperCase() + role?.audience?.type.slice(1)}
+                                {RoleAudienceTypes.APPLICATION === role?.audience?.type.toUpperCase() && (
+                                    <Label size="mini" className="client-id-label">
+                                        {role?.audience?.display}
+                                    </Label>
+                                )}
                             </Header.Subheader>
                         </Header.Content>
                     </Header>
                 ),
-                title: (
-                    <div className="pl-3">
-                        { t("console:manage.features.roles.list.columns.audience") }
-                    </div>
-                )
+                title: <div className="pl-3">{t("console:manage.features.roles.list.columns.audience")}</div>
             },
             {
                 allowToggleVisibility: false,
@@ -268,27 +263,26 @@ const ConsoleRolesTable: FunctionComponent<ConsoleRolesTableProps> = (
                         ? "pencil alternate"
                         : "eye",
                 onClick: (e: SyntheticEvent, role: RolesInterface): void =>
-                    hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes)
-                        && onRoleEdit(role),
+                    hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes) && onRoleEdit(role),
                 popupText: (): string =>
                     hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes)
-                        ? t("console:manage.features.roles.list.popups.edit",
-                            { type: "Role" })
+                        ? t("console:manage.features.roles.list.popups.edit", { type: "Role" })
                         : t("common:view"),
                 renderer: "semantic-icon"
             },
             {
-                hidden: (role: RolesInterface) => isSubOrg || (role?.displayName === RoleConstants.ADMIN_ROLE ||
+                hidden: (role: RolesInterface) =>
+                    isSubOrg ||
+                    role?.displayName === RoleConstants.ADMIN_ROLE ||
                     role?.displayName === RoleConstants.ADMIN_GROUP ||
-                    role?.displayName === administratorRoleDisplayName)
-                    || !hasRequiredScopes(featureConfig, featureConfig?.scopes?.delete, allowedScopes),
+                    role?.displayName === administratorRoleDisplayName ||
+                    !hasRequiredScopes(featureConfig, featureConfig?.scopes?.delete, allowedScopes),
                 icon: (): SemanticICONS => "trash alternate",
                 onClick: (e: SyntheticEvent, role: RolesInterface): void => {
                     setCurrentDeletedRole(role);
                     setShowDeleteConfirmationModal(!showRoleDeleteConfirmation);
                 },
-                popupText: (): string => t("console:manage.features.roles.list.popups.delete",
-                    { type: "Role" }),
+                popupText: (): string => t("console:manage.features.roles.list.popups.delete", { type: "Role" }),
                 renderer: "semantic-icon"
             }
         ];
@@ -297,48 +291,44 @@ const ConsoleRolesTable: FunctionComponent<ConsoleRolesTableProps> = (
     return (
         <>
             <DataTable<RolesInterface>
-                loadingStateOptions={ { imageType: "square" } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ roleList?.Resources }
-                onRowClick={ (_: SyntheticEvent, role: RolesInterface): void => {
+                loadingStateOptions={{ imageType: "square" }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={roleList?.Resources}
+                onRowClick={(_: SyntheticEvent, role: RolesInterface): void => {
                     onRoleEdit(role);
-                } }
-                placeholders={ showPlaceholders() }
-                data-componentid={ componentId }
+                }}
+                placeholders={showPlaceholders()}
+                data-componentid={componentId}
             />
-            {
-                showRoleDeleteConfirmation && (
-                    <ConfirmationModal
-                        data-componentid={ `${ componentId }-delete-item-confirmation-modal` }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showRoleDeleteConfirmation }
-                        assertionHint={ t("console:manage.features.roles.list.confirmations.deleteItem.assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                        onPrimaryActionClick={ (): void => {
-                            onRoleDelete(currentDeletedRole);
-                            setShowDeleteConfirmationModal(false);
-                        } }
-                        closeOnDimmerClick={ false }
-                    >
-                        <ConfirmationModal.Header>
-                            { t("console:manage.features.roles.list.confirmations.deleteItem.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message attached negative>
-                            { t("console:manage.features.roles.list.confirmations.deleteItem.message",
-                                { type: "role" }) }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content>
-                            { t("console:manage.features.roles.list.confirmations.deleteItem.content",
-                                { type: "role" }) }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+            {showRoleDeleteConfirmation && (
+                <ConfirmationModal
+                    data-componentid={`${componentId}-delete-item-confirmation-modal`}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showRoleDeleteConfirmation}
+                    assertionHint={t("console:manage.features.roles.list.confirmations.deleteItem.assertionHint")}
+                    assertionType="checkbox"
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => {
+                        onRoleDelete(currentDeletedRole);
+                        setShowDeleteConfirmationModal(false);
+                    }}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header>
+                        {t("console:manage.features.roles.list.confirmations.deleteItem.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message attached negative>
+                        {t("console:manage.features.roles.list.confirmations.deleteItem.message", { type: "role" })}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content>
+                        {t("console:manage.features.roles.list.confirmations.deleteItem.content", { type: "role" })}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

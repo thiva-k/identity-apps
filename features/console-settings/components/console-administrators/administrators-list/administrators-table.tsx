@@ -29,6 +29,7 @@ import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.commo
 import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { UIConstants } from "@wso2is/feature-constants.common";
 import { UserRoleInterface } from "@wso2is/feature-models.common";
+// eslint-disable-next-line no-duplicate-imports
 import { FeatureConfigInterface, UserBasicInterface } from "@wso2is/feature-models.common";
 import { AppState } from "@wso2is/feature-store.common";
 import {

@@ -20,10 +20,6 @@ import { OrganizationType } from "@wso2is/common";
 import { RoleConstants } from "@wso2is/core/constants";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { FeatureAccessConfigInterface, IdentifiableComponentInterface, RolesInterface } from "@wso2is/core/models";
-import { ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
-import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { BasicRoleDetails } from "@wso2is/feature-roles.common/components/edit-role/edit-role-basic";
 import { RoleConnectedApps } from "@wso2is/feature-roles.common/components/edit-role/edit-role-connected-apps";
@@ -32,6 +28,10 @@ import { UpdatedRolePermissionDetails } from "@wso2is/feature-roles.common/compo
 import { RoleUsersList } from "@wso2is/feature-roles.common/components/edit-role/edit-role-users";
 import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants/role-constants";
 import { AppState } from "@wso2is/feature-store.common";
+import { ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
+import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 
 /**
  * Captures props needed for edit role component
