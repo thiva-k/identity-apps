@@ -4,3 +4,4 @@ packages:
   - "identity-apps-core"
   - "tests"
   - "features/*"
+  - "extensions"
