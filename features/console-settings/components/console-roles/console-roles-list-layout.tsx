@@ -19,21 +19,20 @@
 import { Show } from "@wso2is/access-control";
 import { AlertLevels, IdentifiableComponentInterface, RoleListInterface, RolesInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { AppConstants } from "@wso2is/feature-constants.common/app-constants";
+import { history } from "@wso2is/feature-helpers.common";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { deleteRoleById } from "@wso2is/feature-roles.common/api/roles";
 import { ListLayout, PrimaryButton } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import { Dropdown, DropdownItemProps, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
+import { DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
 import ConsoleRolesTable from "./console-role-table";
 import { AccessControlConstants } from "../../../access-control/constants/access-control";
-import { AdvancedSearchWithBasicFilters } from "../../../core/components";
-import { AppConstants } from "../../../core/constants/app-constants";
-import { history } from "../../../core/helpers/history";
-import { deleteRoleById } from "../../../roles/api/roles";
-import { RoleConstants } from "../../../roles/constants/role-constants";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
 
 /**
  * Props interface of {@link ConsoleRolesListLayout}
