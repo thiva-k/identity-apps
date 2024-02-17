@@ -19,6 +19,9 @@
 import Typography from "@oxygen-ui/react/Typography";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { createRole } from "@wso2is/feature-roles.common/api/roles";
+import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants/role-constants";
+import { CreateRoleInterface, CreateRolePermissionInterface } from "@wso2is/feature-roles.common/models/roles";
 import { FinalForm, FormRenderProps, FormSpy } from "@wso2is/form";
 import { Heading, LinkButton, PrimaryButton, useWizardAlert } from "@wso2is/react-components";
 import { AxiosResponse } from "axios";
@@ -30,9 +33,6 @@ import { Dispatch } from "redux";
 import { Grid, Modal, ModalProps } from "semantic-ui-react";
 import CreateConsoleRoleWizardBasicInfoForm from "./create-console-role-wizard-basic-info-form";
 import CreateConsoleRoleWizardPermissionsForm from "./create-console-role-wizard-permissions-form";
-import { createRole } from "../../../../roles/api/roles";
-import { RoleAudienceTypes } from "../../../../roles/constants/role-constants";
-import { CreateRoleInterface, CreateRolePermissionInterface } from "../../../../roles/models/roles";
 import { ConsoleRolesOnboardingConstants } from "../../../constants/console-roles-onboarding-constants";
 import useConsoleSettings from "../../../hooks/use-console-settings";
 
@@ -48,21 +48,17 @@ export type CreateConsoleRoleWizardFormValuesInterface = Partial<CreateRoleInter
 const CreateConsoleRoleWizard: FunctionComponent<CreateConsoleRoleWizardPropsInterface> = (
     props: CreateConsoleRoleWizardPropsInterface
 ): ReactElement => {
-    const {
-        onClose,
-        ["data-componentid"]: componentId,
-        ...rest
-    } = props;
+    const { onClose, ["data-componentid"]: componentId, ...rest } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     const { consoleId, consoleDisplayName } = useConsoleSettings();
 
-    const [ permissions, setPermissions ] = useState<CreateRolePermissionInterface[]>([]);
+    const [permissions, setPermissions] = useState<CreateRolePermissionInterface[]>([]);
 
     /**
      * Handles the API resource creation.
@@ -104,11 +100,11 @@ const CreateConsoleRoleWizard: FunctionComponent<CreateConsoleRoleWizardPropsInt
 
     return (
         <Modal
-            data-testid={ componentId }
-            open={ true }
+            data-testid={componentId}
+            open={true}
             className="wizard api-resource-create-wizard"
-            onClose={ onClose }
-            { ...rest }
+            onClose={onClose}
+            {...rest}
         >
             <Modal.Header className="wizard-header">
                 <Typography variant="inherit">Add Role</Typography>
@@ -117,54 +113,52 @@ const CreateConsoleRoleWizard: FunctionComponent<CreateConsoleRoleWizardPropsInt
                 </Heading>
             </Modal.Header>
             <FinalForm
-                initialValues={ {} }
-                keepDirtyOnReinitialize={ true }
-                onSubmit={ handleConsoleRoleCreation }
-                render={ ({ handleSubmit }: FormRenderProps) => {
+                initialValues={{}}
+                keepDirtyOnReinitialize={true}
+                onSubmit={handleConsoleRoleCreation}
+                render={({ handleSubmit }: FormRenderProps) => {
                     return (
                         <>
                             <Modal.Content className="content-container" scrolling>
-                                { alert && alertComponent }
-                                <form
-                                    id={ ConsoleRolesOnboardingConstants.ADD_NEW_ROLE_FORM_ID }
-                                    onSubmit={ handleSubmit }
-                                >
+                                {alert && alertComponent}
+                                <form id={ConsoleRolesOnboardingConstants.ADD_NEW_ROLE_FORM_ID} onSubmit={handleSubmit}>
                                     <CreateConsoleRoleWizardBasicInfoForm />
-                                    <CreateConsoleRoleWizardPermissionsForm onPermissionsChange={ setPermissions } />
+                                    <CreateConsoleRoleWizardPermissionsForm onPermissionsChange={setPermissions} />
                                 </form>
                             </Modal.Content>
                             <Modal.Actions>
                                 <Grid>
-                                    <Grid.Row column={ 1 }>
-                                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                                    <Grid.Row column={1}>
+                                        <Grid.Column mobile={8} tablet={8} computer={8}>
                                             <LinkButton
-                                                tabIndex={ 6 }
-                                                data-componentid={ `${componentId}-cancel-button` }
+                                                tabIndex={6}
+                                                data-componentid={`${componentId}-cancel-button`}
                                                 floated="left"
-                                                onClick={ (e: MouseEvent<HTMLElement, globalThis.MouseEvent>) =>
-                                                    onClose(e, null) }
+                                                onClick={(e: MouseEvent<HTMLElement, globalThis.MouseEvent>) =>
+                                                    onClose(e, null)
+                                                }
                                             >
                                                 <Typography variant="inherit">
-                                                    { t(
+                                                    {t(
                                                         "extensions:develop.apiResource.wizard.addApiResource" +
-                                                        ".cancelButton"
-                                                    ) }
+                                                            ".cancelButton"
+                                                    )}
                                                 </Typography>
                                             </LinkButton>
                                         </Grid.Column>
-                                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                            <FormSpy subscription={ { values: true } }>
-                                                { ({
+                                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                                            <FormSpy subscription={{ values: true }}>
+                                                {({
                                                     values
                                                 }: {
                                                     values: CreateConsoleRoleWizardFormValuesInterface;
                                                 }) => (
                                                     <PrimaryButton
-                                                        tabIndex={ 8 }
-                                                        data-componentid={ `${componentId}-submit-button` }
+                                                        tabIndex={8}
+                                                        data-componentid={`${componentId}-submit-button`}
                                                         floated="right"
-                                                        disabled={ !values.displayName || isEmpty(permissions) }
-                                                        onClick={ () => {
+                                                        disabled={!values.displayName || isEmpty(permissions)}
+                                                        onClick={() => {
                                                             document
                                                                 .getElementById(
                                                                     ConsoleRolesOnboardingConstants.ADD_NEW_ROLE_FORM_ID
@@ -175,11 +169,11 @@ const CreateConsoleRoleWizard: FunctionComponent<CreateConsoleRoleWizardPropsInt
                                                                         cancelable: true
                                                                     })
                                                                 );
-                                                        } }
+                                                        }}
                                                     >
                                                         <Typography variant="inherit">Add</Typography>
                                                     </PrimaryButton>
-                                                ) }
+                                                )}
                                             </FormSpy>
                                         </Grid.Column>
                                     </Grid.Row>
@@ -187,7 +181,7 @@ const CreateConsoleRoleWizard: FunctionComponent<CreateConsoleRoleWizardPropsInt
                             </Modal.Actions>
                         </>
                     );
-                } }
+                }}
             />
         </Modal>
     );

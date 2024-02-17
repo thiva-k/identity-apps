@@ -16,19 +16,19 @@
  * under the License.
  */
 
-import Autocomplete, {  
-    AutocompleteRenderGetTagProps, 
-    AutocompleteRenderInputParams 
+import Autocomplete, {
+    AutocompleteRenderGetTagProps,
+    AutocompleteRenderInputParams
 } from "@oxygen-ui/react/Autocomplete";
 import TextField from "@oxygen-ui/react/TextField";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import { APIResourceInterface, ScopeInterface } from "@wso2is/feature-roles.common/models/apiResources";
 import React, { FunctionComponent, HTMLAttributes, ReactElement, SyntheticEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { AutoCompleteRenderOption } from "../../../edit-role/edit-role-common/auto-complete-render-option";
-import { RenderChip } from "../../../edit-role/edit-role-common/render-chip";
+import { AutoCompleteRenderOption } from "@wso2is/feature-roles.common/components/edit-role/edit-role-common/auto-complete-render-option";
+import { RenderChip } from "@wso2is/feature-roles.common/components/edit-role/edit-role-common/render-chip";
 
-interface PermissionsListPropsInterface extends  IdentifiableComponentInterface {
+interface PermissionsListPropsInterface extends IdentifiableComponentInterface {
     /**
      * API resource.
      */
@@ -43,73 +43,68 @@ interface PermissionsListPropsInterface extends  IdentifiableComponentInterface 
     onChangeScopes: (apiResource: APIResourceInterface, scopes: ScopeInterface[]) => void;
 }
 
-export const PermissionsList: FunctionComponent<PermissionsListPropsInterface> = 
-    (props: PermissionsListPropsInterface): ReactElement => {
+export const PermissionsList: FunctionComponent<PermissionsListPropsInterface> = (
+    props: PermissionsListPropsInterface
+): ReactElement => {
+    const { apiResource, selectedPermissions, onChangeScopes, ["data-componentid"]: componentId } = props;
 
-        const {
-            apiResource,
-            selectedPermissions,
-            onChangeScopes,
-            [ "data-componentid" ]: componentId
-        } = props;
+    const { t } = useTranslation();
 
-        const { t } = useTranslation();
+    // Active option.
+    const [activeOption, setActiveOption] = React.useState<ScopeInterface>(undefined);
 
-        // Active option.
-        const [ activeOption, setActiveOption ] = React.useState<ScopeInterface>(undefined);
-        
-        /**
-         * Handles the select scope action.
-         */
-        const handleScopeSelection = (event: SyntheticEvent, scopes: ScopeInterface[]) => {
-            onChangeScopes(apiResource, scopes);
-        };
-
-        return (
-            <Autocomplete
-                multiple
-                disableCloseOnSelect
-                options={ apiResource?.scopes ? apiResource?.scopes : [] }
-                value={ selectedPermissions ? selectedPermissions : [] }
-                getOptionLabel={ (scope: ScopeInterface) => scope.displayName }
-                renderInput={ (params: AutocompleteRenderInputParams) => (
-                    <TextField
-                        { ...params }
-                        data-componentid={ `${componentId}-textfield` }
-                        placeholder= { t("console:manage.features.roles.addRoleWizard.forms.rolePermission." +
-                            "permissions.placeholder") }
-                    />
-                ) }
-                onChange={ handleScopeSelection }
-                renderTags={ (
-                    value: ScopeInterface[], 
-                    getTagProps: AutocompleteRenderGetTagProps
-                ) => value.map((option: ScopeInterface, index: number) => (
-                    <RenderChip 
-                        { ...getTagProps({ index }) }
-                        key={ index }
-                        primaryText={ option.displayName }
-                        secondaryText={ option.name }
-                        option={ option }
-                        activeOption={ activeOption }
-                        setActiveOption={ setActiveOption }
-                    />
-                )) }
-                renderOption={ (
-                    props: HTMLAttributes<HTMLLIElement>,
-                    option: ScopeInterface,
-                    { selected }: { selected: boolean }
-                ) => (
-                    <AutoCompleteRenderOption
-                        selected={ selected }
-                        subTitle={ option.name }
-                        displayName={ option.displayName }
-                        renderOptionProps={ props }
-                    />
-                ) }
-            />
-        );
+    /**
+     * Handles the select scope action.
+     */
+    const handleScopeSelection = (event: SyntheticEvent, scopes: ScopeInterface[]) => {
+        onChangeScopes(apiResource, scopes);
     };
+
+    return (
+        <Autocomplete
+            multiple
+            disableCloseOnSelect
+            options={apiResource?.scopes ? apiResource?.scopes : []}
+            value={selectedPermissions ? selectedPermissions : []}
+            getOptionLabel={(scope: ScopeInterface) => scope.displayName}
+            renderInput={(params: AutocompleteRenderInputParams) => (
+                <TextField
+                    {...params}
+                    data-componentid={`${componentId}-textfield`}
+                    placeholder={t(
+                        "console:manage.features.roles.addRoleWizard.forms.rolePermission." + "permissions.placeholder"
+                    )}
+                />
+            )}
+            onChange={handleScopeSelection}
+            renderTags={(value: ScopeInterface[], getTagProps: AutocompleteRenderGetTagProps) =>
+                value.map((option: ScopeInterface, index: number) => (
+                    <RenderChip
+                        {...getTagProps({ index })}
+                        key={index}
+                        primaryText={option.displayName}
+                        secondaryText={option.name}
+                        option={option}
+                        activeOption={activeOption}
+                        setActiveOption={setActiveOption}
+                    />
+                ))
+            }
+            renderOption={(
+                props: HTMLAttributes<HTMLLIElement>,
+                option: ScopeInterface,
+                { selected }: { selected: boolean }
+            ) => (
+                <AutoCompleteRenderOption
+                    selected={selected}
+                    subTitle={option.name}
+                    displayName={option.displayName}
+                    renderOptionProps={props}
+                />
+            )}
+        />
+    );
+};
 
 /**
  * Default props for the component.

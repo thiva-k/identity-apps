@@ -29,7 +29,7 @@ import {
     ParentOrgUserInvitationResult,
     ParentOrgUserInviteErrorCode,
     ParentOrgUserInviteResultStatus
-} from "../components/guests/models/invite";
+} from "@wso2is/feature-users.common/components/guests/models/invite";
 
 interface ParentInviteResponseListProps {
     response: ParentOrgUserInvitationResult[];

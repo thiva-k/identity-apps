@@ -18,11 +18,14 @@
 
 import { UserstoreConstants } from "@wso2is/core/constants";
 import { getUserNameWithoutDomain, hasRequiredScopes, isFeatureEnabled } from "@wso2is/core/helpers";
-import {
-    FeatureAccessConfigInterface,
-    IdentifiableComponentInterface,
-    SBACInterface
-} from "@wso2is/core/models";
+import { FeatureAccessConfigInterface, IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { UserInviteInterface } from "@wso2is/feature-users.common/components/guests/models/invite";
+import { UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import {
     ConfirmationModal,
     DataTable,
@@ -38,22 +41,14 @@ import React, { ReactElement, ReactNode, SyntheticEvent, useState } from "react"
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Header, ListItemProps, SemanticICONS } from "semantic-ui-react";
-import {
-    AdvancedSearchWithBasicFilters,
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    getEmptyPlaceholderIllustrations
-} from "../../../../core";
 import { useServerConfigs } from "../../../../server-configurations";
-import { UserInviteInterface } from "../../../../users/components/guests/models/invite";
-import { UserManagementConstants } from "../../../../users/constants";
 
 /**
  * Props interface of {@link InvitedAdministratorsTable}
  */
-interface InvitedAdministratorsTablePropsInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
+interface InvitedAdministratorsTablePropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Admin list.
      */
@@ -128,8 +123,8 @@ interface InvitedAdministratorsTablePropsInterface extends SBACInterface<Feature
  * @returns Admins table component.
  */
 const InvitedAdministratorsTable: React.FunctionComponent<InvitedAdministratorsTablePropsInterface> = (
-    props: InvitedAdministratorsTablePropsInterface): ReactElement => {
-
+    props: InvitedAdministratorsTablePropsInterface
+): ReactElement => {
     const {
         triggerClearQuery,
         administrators,
@@ -144,16 +139,16 @@ const InvitedAdministratorsTable: React.FunctionComponent<InvitedAdministratorsT
         selection,
         showListItemActions,
         searchQuery,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
     const { data: serverConfigs } = useServerConfigs();
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingUser, setDeletingUser ] = useState<UserInviteInterface>(undefined);
-    const [ alert, setAlert, alertComponent ] = useConfirmationModalAlert();
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingUser, setDeletingUser] = useState<UserInviteInterface>(undefined);
+    const [alert, setAlert, alertComponent] = useConfirmationModalAlert();
 
     const featureConfig: FeatureAccessConfigInterface = useSelector((state: AppState) => {
         return state?.config?.ui?.features?.users;
@@ -183,28 +178,26 @@ const InvitedAdministratorsTable: React.FunctionComponent<InvitedAdministratorsT
                             image
                             as="h6"
                             className="header-with-icon"
-                            data-componentid={ `${ componentId }-item-heading` }
+                            data-componentid={`${componentId}-item-heading`}
                         >
                             <UserAvatar
                                 data-componentid="users-list-item-image"
                                 name={
                                     user.username.split("/")?.length > 1
-                                        ? user.username.split("/")[ 1 ]
-                                        : user.username.split("/")[ 0 ]
+                                        ? user.username.split("/")[1]
+                                        : user.username.split("/")[0]
                                 }
                                 size="mini"
                                 spaced="right"
                                 data-suppress=""
                             />
                             <Header.Content>
-                                { header }
-                                { subHeader && (
-                                    <Header.Subheader
-                                        data-componentid={ `${ componentId }-item-sub-heading` }
-                                    >
-                                        { subHeader }
+                                {header}
+                                {subHeader && (
+                                    <Header.Subheader data-componentid={`${componentId}-item-sub-heading`}>
+                                        {subHeader}
                                     </Header.Subheader>
-                                ) }
+                                )}
                             </Header.Content>
                         </Header>
                     );
@@ -217,7 +210,7 @@ const InvitedAdministratorsTable: React.FunctionComponent<InvitedAdministratorsT
                 id: "status",
                 key: "status",
                 render: (user: UserInviteInterface): ReactNode => {
-                    return <span>{ user?.status }</span>;
+                    return <span>{user?.status}</span>;
                 },
                 title: "Last Modified"
             },
@@ -246,17 +239,22 @@ const InvitedAdministratorsTable: React.FunctionComponent<InvitedAdministratorsT
             {
                 "data-componentid": "administrators-list-item-delete-button",
                 hidden: (user: UserInviteInterface): boolean => {
-                    const userStore: string = user?.username?.split("/").length > 1
-                        ? user?.username?.split("/")[0]
-                        : UserstoreConstants.PRIMARY_USER_STORE;
+                    const userStore: string =
+                        user?.username?.split("/").length > 1
+                            ? user?.username?.split("/")[0]
+                            : UserstoreConstants.PRIMARY_USER_STORE;
 
-                    return !isFeatureEnabled(featureConfig,
-                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_DELETE"))
-                        || isPrivilegedUser
-                        || !hasRequiredScopes(featureConfig, featureConfig?.scopes?.delete, allowedScopes)
-                        || readOnlyUserStores?.includes(userStore.toString())
-                        || ((getUserNameWithoutDomain(user?.username) === serverConfigs?.realmConfig?.adminUser
-                        || authenticatedUser?.includes(getUserNameWithoutDomain(user?.username))));
+                    return (
+                        !isFeatureEnabled(
+                            featureConfig,
+                            UserManagementConstants.FEATURE_DICTIONARY.get("USER_DELETE")
+                        ) ||
+                        isPrivilegedUser ||
+                        !hasRequiredScopes(featureConfig, featureConfig?.scopes?.delete, allowedScopes) ||
+                        readOnlyUserStores?.includes(userStore.toString()) ||
+                        getUserNameWithoutDomain(user?.username) === serverConfigs?.realmConfig?.adminUser ||
+                        authenticatedUser?.includes(getUserNameWithoutDomain(user?.username))
+                    );
                 },
                 icon: (): SemanticICONS => "trash alternate",
                 onClick: (e: SyntheticEvent, user: UserInviteInterface): void => {
@@ -279,19 +277,20 @@ const InvitedAdministratorsTable: React.FunctionComponent<InvitedAdministratorsT
         if (searchQuery && isEmpty(administrators)) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title") }
-                    subtitle={ [
-                        t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0",
-                            { query: searchQuery }),
+                    title={t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title")}
+                    subtitle={[
+                        t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0", {
+                            query: searchQuery
+                        }),
                         t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -299,10 +298,10 @@ const InvitedAdministratorsTable: React.FunctionComponent<InvitedAdministratorsT
         if (isEmpty(administrators)) {
             return (
                 <EmptyPlaceholder
-                    data-componentid={ `${ componentId }-empty-placeholder` }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    data-componentid={`${componentId}-empty-placeholder`}
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    subtitle={ [ "There are no collaborator users associated with your organization at the moment." ] }
+                    subtitle={["There are no collaborator users associated with your organization at the moment."]}
                 />
             );
         }
@@ -313,104 +312,101 @@ const InvitedAdministratorsTable: React.FunctionComponent<InvitedAdministratorsT
     return (
         <>
             <DataTable<UserInviteInterface>
-                externalSearch={ (
+                externalSearch={
                     <AdvancedSearchWithBasicFilters
-                        onFilter={ () => null }
-                        filterAttributeOptions={ [
+                        onFilter={() => null}
+                        filterAttributeOptions={[
                             {
                                 key: 0,
-                                text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                                "filterAttributeOptions.username"),
+                                text: t(
+                                    "console:manage.features.users.advancedSearch.form.dropdown." +
+                                        "filterAttributeOptions.username"
+                                ),
                                 value: "userName"
                             },
                             {
                                 key: 1,
-                                text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                                "filterAttributeOptions.email"),
+                                text: t(
+                                    "console:manage.features.users.advancedSearch.form.dropdown." +
+                                        "filterAttributeOptions.email"
+                                ),
                                 value: "emails"
                             }
-                        ] }
-                        filterAttributePlaceholder={
-                            t("console:manage.features.users.advancedSearch.form.inputs" +
-                                            ".filterAttribute.placeholder")
-                        }
-                        filterConditionsPlaceholder={
-                            t("console:manage.features.users.advancedSearch.form.inputs" +
-                                            ".filterCondition.placeholder")
-                        }
-                        filterValuePlaceholder={
-                            t("console:manage.features.users.advancedSearch.form.inputs.filterValue" +
-                                            ".placeholder")
-                        }
-                        placeholder={ t("console:manage.features.users.advancedSearch.placeholder") }
+                        ]}
+                        filterAttributePlaceholder={t(
+                            "console:manage.features.users.advancedSearch.form.inputs" + ".filterAttribute.placeholder"
+                        )}
+                        filterConditionsPlaceholder={t(
+                            "console:manage.features.users.advancedSearch.form.inputs" + ".filterCondition.placeholder"
+                        )}
+                        filterValuePlaceholder={t(
+                            "console:manage.features.users.advancedSearch.form.inputs.filterValue" + ".placeholder"
+                        )}
+                        placeholder={t("console:manage.features.users.advancedSearch.placeholder")}
                         defaultSearchAttribute="userName"
                         defaultSearchOperator="co"
-                        triggerClearQuery={ triggerClearQuery }
+                        triggerClearQuery={triggerClearQuery}
                     />
-                ) }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                }
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "circular"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ administrators }
-                onColumnSelectionChange={ onColumnSelectionChange }
-                onRowClick={ (e: SyntheticEvent, user: UserInviteInterface): void => {
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={administrators}
+                onColumnSelectionChange={onColumnSelectionChange}
+                onRowClick={(e: SyntheticEvent, user: UserInviteInterface): void => {
                     onListItemClick && onListItemClick(e, user);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ true }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-componentid={ componentId }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={true}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-componentid={componentId}
             />
-            {
-                deletingUser && (
-                    <ConfirmationModal
-                        primaryActionLoading={ isLoading }
-                        data-componentid={ `${componentId}-confirmation-modal` }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertionHint={
-                            t("console:manage.features.invite.confirmationModal.deleteInvite.assertionHint")
-                        }
-                        assertionType="checkbox"
-                        primaryAction="Confirm"
-                        secondaryAction="Cancel"
-                        onSecondaryActionClick={ (): void => {
+            {deletingUser && (
+                <ConfirmationModal
+                    primaryActionLoading={isLoading}
+                    data-componentid={`${componentId}-confirmation-modal`}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertionHint={t("console:manage.features.invite.confirmationModal.deleteInvite.assertionHint")}
+                    assertionType="checkbox"
+                    primaryAction="Confirm"
+                    secondaryAction="Cancel"
+                    onSecondaryActionClick={(): void => {
+                        setShowDeleteConfirmationModal(false);
+                        setAlert(null);
+                    }}
+                    onPrimaryActionClick={(): void => {
+                        onIsLoading(true);
+                        onUserDelete(deletingUser, () => {
                             setShowDeleteConfirmationModal(false);
-                            setAlert(null);
-                        } }
-                        onPrimaryActionClick={ (): void => {
-                            onIsLoading(true);
-                            onUserDelete(deletingUser, () => {
-                                setShowDeleteConfirmationModal(false);
-                                setDeletingUser(undefined);
-                                onIsLoading(false);
-                            });
-                        } }
-                        closeOnDimmerClick={ false }
+                            setDeletingUser(undefined);
+                            onIsLoading(false);
+                        });
+                    }}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-componentid={`${componentId}-confirmation-modal-header`}>
+                        {t("console:manage.features.invite.confirmationModal.deleteInvite.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        data-componentid={`${componentId}-confirmation-modal-message`}
+                        attached
+                        negative
                     >
-                        <ConfirmationModal.Header data-componentid={ `${componentId}-confirmation-modal-header` }>
-                            { t("console:manage.features.invite.confirmationModal.deleteInvite.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            data-componentid={ `${componentId}-confirmation-modal-message` }
-                            attached
-                            negative
-                        >
-                            { t("console:manage.features.invite.confirmationModal.deleteInvite.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-componentid={ `${componentId}-confirmation-modal-content` }>
-                            { t("console:manage.features.invite.confirmationModal.deleteInvite.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
-            { alert && alertComponent }
+                        {t("console:manage.features.invite.confirmationModal.deleteInvite.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-componentid={`${componentId}-confirmation-modal-content`}>
+                        {t("console:manage.features.invite.confirmationModal.deleteInvite.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
+            {alert && alertComponent}
         </>
     );
 };

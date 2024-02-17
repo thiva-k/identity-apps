@@ -18,14 +18,14 @@
 
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { UIConstants } from "@wso2is/feature-constants.common/ui-constants";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import ConsoleRolesListLayout from "./console-roles-list-layout";
 import CreateConsoleRoleWizard from "./create-console-role-wizard/create-console-role-wizard";
-import { UIConstants } from "../../../core/constants/ui-constants";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
 import useConsoleRoles from "../../hooks/use-console-roles";
 
 /**
@@ -48,10 +48,10 @@ const ConsoleRolesList: FunctionComponent<ConsoleRolesListInterface> = (
 
     const { t } = useTranslation();
 
-    const [ showCreateConsoleRoleWizard, setShowCreateConsoleRoleWizard ] = useState<boolean>(false);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ searchQuery, setSearchQuery ] = useState<string>(undefined);
+    const [showCreateConsoleRoleWizard, setShowCreateConsoleRoleWizard] = useState<boolean>(false);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [searchQuery, setSearchQuery] = useState<string>(undefined);
 
     const {
         consoleRoles,
@@ -75,7 +75,7 @@ const ConsoleRolesList: FunctionComponent<ConsoleRolesListInterface> = (
                 })
             );
         }
-    }, [ consoleRolesFetchRequestError ]);
+    }, [consoleRolesFetchRequestError]);
 
     const handleCreateRole = () => {
         setShowCreateConsoleRoleWizard(true);
@@ -84,26 +84,26 @@ const ConsoleRolesList: FunctionComponent<ConsoleRolesListInterface> = (
     return (
         <>
             <ConsoleRolesListLayout
-                data-componentid={ `${ componentId }-layout` }
-                isSubOrg={ isSubOrganization() }
-                rolesList={ consoleRoles }
-                onMutateRolesList={ mutateConsoleRolesFetchRequest }
-                isRolesListLoading={ isConsoleRolesFetchRequestLoading }
-                listItemLimit={ listItemLimit }
-                searchQuery={ searchQuery }
-                onListOffsetChange={ setListOffset }
-                onListItemLimitChange={ setListItemLimit }
-                onSearchQueryChange={ setSearchQuery }
-                onRoleCreate={ handleCreateRole }
+                data-componentid={`${componentId}-layout`}
+                isSubOrg={isSubOrganization()}
+                rolesList={consoleRoles}
+                onMutateRolesList={mutateConsoleRolesFetchRequest}
+                isRolesListLoading={isConsoleRolesFetchRequestLoading}
+                listItemLimit={listItemLimit}
+                searchQuery={searchQuery}
+                onListOffsetChange={setListOffset}
+                onListItemLimitChange={setListItemLimit}
+                onSearchQueryChange={setSearchQuery}
+                onRoleCreate={handleCreateRole}
             />
-            { showCreateConsoleRoleWizard && (
+            {showCreateConsoleRoleWizard && (
                 <CreateConsoleRoleWizard
-                    onClose={ () => {
+                    onClose={() => {
                         setShowCreateConsoleRoleWizard(false);
                         mutateConsoleRolesFetchRequest();
-                    } }
+                    }}
                 />
-            ) }
+            )}
         </>
     );
 };

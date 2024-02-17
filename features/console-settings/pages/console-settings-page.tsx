@@ -22,14 +22,11 @@ import TextField from "@oxygen-ui/react/TextField";
 import Tooltip from "@oxygen-ui/react/Tooltip";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import { CommonUtils } from "@wso2is/core/utils";
+import { AppState } from "@wso2is/feature-store.common";
 import { PageLayout } from "@wso2is/react-components";
-import React, {
-    FunctionComponent,
-    ReactElement
-} from "react";
+import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppState } from "../../core/store";
 import ConsoleSettingsTabs from "../components/console-settings-tabs";
 import ConsoleSettingsProvider from "../providers/console-settings-provider";
 import "./console-settings-page.scss";
@@ -48,7 +45,7 @@ type ConsoleSettingsPageInterface = IdentifiableComponentInterface;
 const ConsoleSettingsPage: FunctionComponent<ConsoleSettingsPageInterface> = (
     props: ConsoleSettingsPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
@@ -57,39 +54,37 @@ const ConsoleSettingsPage: FunctionComponent<ConsoleSettingsPageInterface> = (
     return (
         <ConsoleSettingsProvider>
             <PageLayout
-                pageTitle={ "Console Settings" }
-                title={ "Console Settings" }
-                description={ "Configure settings related to your Console" }
-                data-componentid={ `${ componentId }-page-layout` }
-                action={ (
+                pageTitle={"Console Settings"}
+                title={"Console Settings"}
+                description={"Configure settings related to your Console"}
+                data-componentid={`${componentId}-page-layout`}
+                action={
                     <TextField
                         label="Console URL"
                         id="filled-start-adornment"
-                        InputProps={ {
+                        InputProps={{
                             endAdornment: (
-                                <Tooltip
-                                    title="Copy"
-                                >
+                                <Tooltip title="Copy">
                                     <div>
                                         <IconButton
                                             aria-label="Reset field to default"
                                             className="reset-field-to-default-adornment"
-                                            onClick={ async () => {
+                                            onClick={async () => {
                                                 await CommonUtils.copyTextToClipboard(consoleUrl);
-                                            } }
+                                            }}
                                             edge="end"
                                         >
-                                            <CopyIcon size={ 12 } />
+                                            <CopyIcon size={12} />
                                         </IconButton>
                                     </div>
                                 </Tooltip>
                             ),
                             readOnly: true
-                        } }
-                        value={ consoleUrl }
+                        }}
+                        value={consoleUrl}
                         className="console-url-copy-field"
                     />
-                ) }
+                }
             >
                 <ConsoleSettingsTabs />
             </PageLayout>

@@ -17,16 +17,16 @@
  */
 
 import { MultiValueAttributeInterface, RolesInterface } from "@wso2is/core/models";
+import { UserBasicInterface, UserListInterface, UserRoleInterface } from "@wso2is/feature-models.common/users";
+import { AppState } from "@wso2is/feature-store.common";
+import { useUsersList } from "@wso2is/feature-users.common/api/users";
+import { UserAccountTypes } from "@wso2is/feature-users.common/constants/user-management-constants";
+import { UserManagementUtils } from "@wso2is/feature-users.common/utils/user-management-utils";
 import cloneDeep from "lodash-es/cloneDeep";
 import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import useConsoleRoles from "./use-console-roles";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
-import { UserBasicInterface, UserListInterface, UserRoleInterface } from "../../core/models/users";
-import { AppState } from "../../core/store";
-import { useUsersList } from "../../users/api/users";
-import { UserAccountTypes } from "../../users/constants/user-management-constants";
-import { UserManagementUtils } from "../../users/utils/user-management-utils";
 
 /**
  * Props interface of {@link UseAdministrators}
@@ -75,14 +75,11 @@ const useProspectiveAdministrators = (
 ): UseProspectiveAdministratorsInterface => {
     const authenticatedUser: string = useSelector((state: AppState) => state?.auth?.username);
 
-    const [ isNextPageAvailable, setIsNextPageAvailable ] = useState<boolean>(false);
+    const [isNextPageAvailable, setIsNextPageAvailable] = useState<boolean>(false);
 
     const modifiedLimit: number = !count ? null : count + TEMP_RESOURCE_LIST_ITEM_LIMIT_OFFSET;
 
-    const {
-        data: originalAdminUserList,
-        isLoading: isAdministratorsListFetchRequestLoading
-    } = useUsersList(
+    const { data: originalAdminUserList, isLoading: isAdministratorsListFetchRequestLoading } = useUsersList(
         modifiedLimit,
         startIndex + 1,
         filter === "" ? null : filter,
@@ -158,7 +155,7 @@ const useProspectiveAdministrators = (
                 }
             }
 
-            resource.emails = [ email ];
+            resource.emails = [email];
 
             return resource;
         });
@@ -204,7 +201,7 @@ const useProspectiveAdministrators = (
 
     const prospectiveAdministrators: UserListInterface = useMemo(() => {
         return transformUserList(originalAdminUserList);
-    }, [ originalAdminUserList ]);
+    }, [originalAdminUserList]);
 
     return {
         isAdministratorsListFetchRequestLoading,

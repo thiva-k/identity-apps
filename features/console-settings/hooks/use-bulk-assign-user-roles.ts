@@ -17,11 +17,11 @@
  */
 
 import { RolesInterface } from "@wso2is/core/models";
+import { UserBasicInterface, UserRoleInterface } from "@wso2is/feature-models.common/users";
+import { updateRoleDetails } from "@wso2is/feature-roles.common/api/roles";
+import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models/roles";
+import { PayloadInterface } from "@wso2is/feature-users.common/models/user";
 import { AxiosError } from "axios";
-import { UserBasicInterface, UserRoleInterface } from "../../core/models/users";
-import { updateRoleDetails } from "../../roles/api/roles";
-import { PatchRoleDataInterface } from "../../roles/models/roles";
-import { PayloadInterface } from "../../users/models/user";
 
 /**
  * Props interface of {@link useBulkAssignAdministratorRoles}
@@ -91,7 +91,7 @@ const useBulkAssignAdministratorRoles = (): UseBulkAssignAdministratorRolesInter
                     }
                 }
             ],
-            schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
 
         const roleIds: string[] = roles.map((role: RolesInterface) => role.id);
@@ -130,7 +130,7 @@ const useBulkAssignAdministratorRoles = (): UseBulkAssignAdministratorRolesInter
                     value: {}
                 }
             ],
-            schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
 
         const roleIds: string[] = user.roles.map((role: UserRoleInterface) => role.value);

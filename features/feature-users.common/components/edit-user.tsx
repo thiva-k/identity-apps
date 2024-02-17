@@ -33,15 +33,15 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { TabProps } from "semantic-ui-react";
-import { UserGroupsList } from "./user-groups-edit";
-import { UserProfile } from "./user-profile";
-import { UserRolesList } from "./user-roles-list";
-import { UserRolesV1List } from "./user-roles-v1-list";
-import { UserSessions } from "./user-sessions";
+import { UserGroupsList } from "../../feature-users/components/user-groups-edit";
+import { UserProfile } from "../../feature-users/components/user-profile";
+import { UserRolesList } from "../../feature-users/components/user-roles-list";
+import { UserRolesV1List } from "../../feature-users/components/user-roles-v1-list";
+import { UserSessions } from "../../feature-users/components/user-sessions";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
-import { ServerConfigurationsInterface, getServerConfigs } from "../../../features/server-configurations";
+import { ServerConfigurationsInterface, getServerConfigs } from "../../server-configurations";
 import { ConnectorPropertyInterface } from "../../server-configurations/models";
-import useUserManagement from "../hooks/use-user-management";
+import useUserManagement from "../../feature-users/hooks/use-user-management";
 
 interface EditUserPropsInterface extends SBACInterface<FeatureConfigInterface> {
     /**

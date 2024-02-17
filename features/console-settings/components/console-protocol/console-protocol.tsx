@@ -18,12 +18,12 @@
 
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { FeatureAccessConfigInterface, IdentifiableComponentInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import React, { FunctionComponent, ReactElement, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { AccessConfiguration } from "../../../applications/components/settings/access-configuration";
 import { ApplicationManagementConstants } from "../../../applications/constants/application-management";
 import { SupportedAuthProtocolTypes } from "../../../applications/models/application-inbound";
-import { AppState } from "../../../core/store";
 import useConsoleSettings from "../../hooks/use-console-settings";
 
 /**
@@ -56,35 +56,33 @@ const ConsoleProtocol: FunctionComponent<ConsoleProtocolInterface> = (
 
     const isReadOnly: boolean = useMemo(() => {
         return !hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes);
-    }, [ featureConfig ]);
+    }, [featureConfig]);
 
     return (
-        <div className="console-login-flow" data-componentid={ componentId }>
+        <div className="console-login-flow" data-componentid={componentId}>
             <AccessConfiguration
                 isSystemApplication
-                application={ consoleConfigurations }
-                appId={ consoleConfigurations?.id }
-                appName={ consoleConfigurations?.name }
-                applicationTemplateId={ consoleConfigurations?.templateId }
-                isLoading={ isConsoleApplicationInboundConfigsFetchRequestLoading }
-                setIsLoading={ () => null }
-                readOnly={ isReadOnly }
-                data-componentid={ `${componentId}-protocol-settings` }
-                certificate={ undefined }
-                extendedAccessConfig={ false }
-                inboundProtocolConfig={ {
+                application={consoleConfigurations}
+                appId={consoleConfigurations?.id}
+                appName={consoleConfigurations?.name}
+                applicationTemplateId={consoleConfigurations?.templateId}
+                isLoading={isConsoleApplicationInboundConfigsFetchRequestLoading}
+                setIsLoading={() => null}
+                readOnly={isReadOnly}
+                data-componentid={`${componentId}-protocol-settings`}
+                certificate={undefined}
+                extendedAccessConfig={false}
+                inboundProtocolConfig={{
                     oidc: consoleInboundConfigurations
-                } }
-                inboundProtocols={ [
-                    SupportedAuthProtocolTypes.OIDC
-                ] }
-                onUpdate={ () => mutateConsoleApplicationInboundConfigs() }
-                isInboundProtocolConfigRequestLoading={ false }
-                template={ {
+                }}
+                inboundProtocols={[SupportedAuthProtocolTypes.OIDC]}
+                onUpdate={() => mutateConsoleApplicationInboundConfigs()}
+                isInboundProtocolConfigRequestLoading={false}
+                template={{
                     id: ApplicationManagementConstants.CUSTOM_APPLICATION_OIDC,
                     name: "Custom",
                     templateId: ApplicationManagementConstants.CUSTOM_APPLICATION_OIDC
-                } }
+                }}
             />
         </div>
     );

@@ -19,10 +19,10 @@
 import useUIConfig from "@wso2is/common/src/hooks/use-ui-configs";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { FeatureAccessConfigInterface, IdentifiableComponentInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import React, { FunctionComponent, ReactElement, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { SignOnMethods } from "../../../applications/components/settings/sign-on-methods/sign-on-methods";
-import { AppState } from "../../../core/store";
 import { IdentityProviderManagementConstants } from "../../../identity-providers/constants";
 import useConsoleSettings from "../../hooks/use-console-settings";
 import "./console-login-flow.scss";
@@ -63,23 +63,23 @@ const ConsoleLoginFlow: FunctionComponent<ConsoleLoginFlowPropsInterface> = (
 
     const isReadOnly: boolean = useMemo(() => {
         return !hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes);
-    }, [ featureConfig ]);
+    }, [featureConfig]);
 
     return (
-        <div className="console-login-flow" data-componentid={ componentId }>
+        <div className="console-login-flow" data-componentid={componentId}>
             <SignOnMethods
-                application={ consoleConfigurations }
-                appId={ consoleConfigurations?.id }
-                authenticationSequence={ consoleConfigurations?.authenticationSequence }
-                clientId={ consoleConfigurations?.clientId }
-                isLoading={ isConsoleConfigurationsFetchRequestLoading }
-                onUpdate={ () => {
+                application={consoleConfigurations}
+                appId={consoleConfigurations?.id}
+                authenticationSequence={consoleConfigurations?.authenticationSequence}
+                clientId={consoleConfigurations?.clientId}
+                isLoading={isConsoleConfigurationsFetchRequestLoading}
+                onUpdate={() => {
                     mutateConsoleConfigurations();
-                } }
-                readOnly={ isReadOnly }
-                isSystemApplication={ true }
-                hiddenAuthenticators={ hiddenAuthenticators }
-                data-componentid={ `${componentId}-sign-on-methods` }
+                }}
+                readOnly={isReadOnly}
+                isSystemApplication={true}
+                hiddenAuthenticators={hiddenAuthenticators}
+                data-componentid={`${componentId}-sign-on-methods`}
             />
         </div>
     );

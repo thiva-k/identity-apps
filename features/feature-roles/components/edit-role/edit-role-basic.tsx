@@ -34,7 +34,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider } from "semantic-ui-react";
 
-import { RoleDeleteErrorConfirmation } from "../wizard/role-delete-error-confirmation";
+import { RoleDeleteErrorConfirmation } from "../../../feature-roles/components/wizard/role-delete-error-confirmation";
 
 /**
  * Interface to contain props needed for component

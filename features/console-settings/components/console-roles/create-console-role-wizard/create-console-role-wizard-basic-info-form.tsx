@@ -18,10 +18,10 @@
 
 import Code from "@oxygen-ui/react/Code";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { RoleConstants } from "@wso2is/feature-roles.common/constants";
 import { Field, TextFieldAdapter } from "@wso2is/form";
 import { Hint } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
-import { RoleConstants } from "../../../../roles/constants";
 
 /**
  * Prop types for the text customization fields component.
@@ -42,27 +42,26 @@ const CreateConsoleRoleWizardBasicInfoForm: FunctionComponent<CreateConsoleRoleW
     return (
         <Field.Input
             fullWidth
-            FormControlProps={ {
+            FormControlProps={{
                 margin: "dense"
-            } }
+            }}
             ariaLabel="Role name field"
-            required={ true }
-            data-componentid={ `${componentId}-form-role-name-field` }
+            required={true}
+            data-componentid={`${componentId}-form-role-name-field`}
             name="displayName"
             inputType="roleName"
-            label={ "Role Name" }
-            helperText={ (
+            label={"Role Name"}
+            helperText={
                 <Hint>
-                    Provide a distinctive and meaningful display name for the role. This name should clearly
-                    represent the purpose or responsibilities associated with this role within the Console
-                    application. <br/>E.g.{ " " }
-                    <Code>application read</Code>
+                    Provide a distinctive and meaningful display name for the role. This name should clearly represent
+                    the purpose or responsibilities associated with this role within the Console application. <br />
+                    E.g. <Code>application read</Code>
                 </Hint>
-            ) }
+            }
             placeholder="Enter Role name"
-            component={ TextFieldAdapter }
-            maxLength={ RoleConstants.ROLE_NAME_MAX_LENGTH }
-            minLength={ RoleConstants.ROLE_NAME_MIN_LENGTH }
+            component={TextFieldAdapter}
+            maxLength={RoleConstants.ROLE_NAME_MAX_LENGTH}
+            minLength={RoleConstants.ROLE_NAME_MIN_LENGTH}
         />
     );
 };

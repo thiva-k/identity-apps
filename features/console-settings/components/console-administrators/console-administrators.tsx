@@ -20,18 +20,13 @@ import FormControlLabel from "@oxygen-ui/react/FormControlLabel";
 import Radio from "@oxygen-ui/react/Radio";
 import RadioGroup from "@oxygen-ui/react/RadioGroup";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
-import React, {
-    ChangeEvent,
-    FunctionComponent,
-    ReactElement,
-    useEffect,
-    useState
-} from "react";
+import { getAUserStore } from "@wso2is/feature-apis.common";
+import { UserStoreProperty } from "@wso2is/feature-models.common";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import React, { ChangeEvent, FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AdministratorsList from "./administrators-list/administrators-list";
 import InvitedAdministratorsList from "./invited-administrators/invited-administrators-list";
-import { UserStoreProperty, getAUserStore } from "../../../core";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
 import { useUserStores } from "../../../userstores/api";
 import { CONSUMER_USERSTORE } from "../../../userstores/constants";
 import { UserStoreDropdownItem, UserStoreListItem, UserStorePostData } from "../../../userstores/models";
@@ -50,19 +45,16 @@ type ConsoleAdministratorsInterface = IdentifiableComponentInterface;
 const ConsoleAdministrators: FunctionComponent<ConsoleAdministratorsInterface> = (
     props: ConsoleAdministratorsInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { isSubOrganization } = useGetCurrentOrganizationType();
 
-    const [ activeAdministratorGroup, setActiveAdministratorGroup ] = useState("activeUsers");
-    const [ availableUserStores, setAvailableUserStores ] = useState<UserStoreDropdownItem[]>([]);
+    const [activeAdministratorGroup, setActiveAdministratorGroup] = useState("activeUsers");
+    const [availableUserStores, setAvailableUserStores] = useState<UserStoreDropdownItem[]>([]);
 
     const { t } = useTranslation();
 
-    const {
-        data: userStoreList,
-        isLoading: isUserStoreListFetchRequestLoading
-    } = useUserStores(null);
+    const { data: userStoreList, isLoading: isUserStoreListFetchRequestLoading } = useUserStores(null);
 
     useEffect(() => {
         if (userStoreList && !isUserStoreListFetchRequestLoading) {
@@ -83,8 +75,9 @@ const ConsoleAdministrators: FunctionComponent<ConsoleAdministratorsInterface> =
             userStoreList?.forEach((store: UserStoreListItem, index: number) => {
                 if (store.name !== CONSUMER_USERSTORE) {
                     getAUserStore(store.id).then((response: UserStorePostData) => {
-                        const isDisabled: boolean = response.properties.find(
-                            (property: UserStoreProperty) => property.name === "Disabled")?.value === "true";
+                        const isDisabled: boolean =
+                            response.properties.find((property: UserStoreProperty) => property.name === "Disabled")
+                                ?.value === "true";
 
                         if (!isDisabled) {
                             storeOption = {
@@ -100,22 +93,14 @@ const ConsoleAdministrators: FunctionComponent<ConsoleAdministratorsInterface> =
 
             setAvailableUserStores(storeOptions);
         }
-    }, [ userStoreList, isUserStoreListFetchRequestLoading ]);
+    }, [userStoreList, isUserStoreListFetchRequestLoading]);
 
     const renderSelectedAdministratorGroup = (): ReactElement => {
         switch (activeAdministratorGroup) {
             case "activeUsers":
-                return (
-                    <AdministratorsList
-                        availableUserStores={ availableUserStores }
-                    />
-                );
+                return <AdministratorsList availableUserStores={availableUserStores} />;
             case "pendingInvitations":
-                return (
-                    <InvitedAdministratorsList
-                        availableUserStores={ availableUserStores }
-                    />
-                );
+                return <InvitedAdministratorsList availableUserStores={availableUserStores} />;
             default:
                 return null;
         }
@@ -133,19 +118,19 @@ const ConsoleAdministrators: FunctionComponent<ConsoleAdministratorsInterface> =
                 className="multi-option-radio-group"
                 defaultValue="login"
                 name="console-administrators-radio-group"
-                value={ activeAdministratorGroup }
-                onChange={ (_: ChangeEvent<HTMLInputElement>, value: string) => setActiveAdministratorGroup(value) }
+                value={activeAdministratorGroup}
+                onChange={(_: ChangeEvent<HTMLInputElement>, value: string) => setActiveAdministratorGroup(value)}
             >
-                <FormControlLabel value="activeUsers" control={ <Radio /> } label="Active Members" />
-                <FormControlLabel value="pendingInvitations" control={ <Radio /> } label="Pending Invitations" />
+                <FormControlLabel value="activeUsers" control={<Radio />} label="Active Members" />
+                <FormControlLabel value="pendingInvitations" control={<Radio />} label="Pending Invitations" />
             </RadioGroup>
         );
     };
 
     return (
-        <div className="console-administrators" data-componentid={ componentId }>
-            { renderActiveAdministratorGroups() }
-            { renderSelectedAdministratorGroup() }
+        <div className="console-administrators" data-componentid={componentId}>
+            {renderActiveAdministratorGroups()}
+            {renderSelectedAdministratorGroup()}
         </div>
     );
 };

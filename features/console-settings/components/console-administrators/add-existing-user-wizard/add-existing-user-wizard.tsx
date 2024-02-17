@@ -20,6 +20,7 @@ import { AutocompleteRenderGetTagProps } from "@oxygen-ui/react/Autocomplete";
 import Chip from "@oxygen-ui/react/Chip";
 import Typography from "@oxygen-ui/react/Typography";
 import { AlertLevels, IdentifiableComponentInterface, RolesInterface } from "@wso2is/core/models";
+import { UserBasicInterface } from "@wso2is/feature-models.common/users";
 import { AutocompleteFieldAdapter, FinalForm, FinalFormField, FormRenderProps } from "@wso2is/form";
 import { Heading, Hint, LinkButton, PrimaryButton, useWizardAlert } from "@wso2is/react-components";
 import { AxiosError } from "axios";
@@ -30,7 +31,6 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Modal, ModalProps } from "semantic-ui-react";
 import { UsersConstants } from "../../../../../extensions/components/users/constants/users";
-import { UserBasicInterface } from "../../../../core/models/users";
 import { ConsoleAdministratorOnboardingConstants } from "../../../constants/console-administrator-onboarding-constants";
 import useBulkAssignAdministratorRoles from "../../../hooks/use-bulk-assign-user-roles";
 import useConsoleRoles from "../../../hooks/use-console-roles";
@@ -71,18 +71,13 @@ interface AddExistingUserWizardFormErrorsInterface {
 const AddExistingUserWizard: FunctionComponent<AddExistingUserWizardPropsInterface> = (
     props: AddExistingUserWizardPropsInterface
 ): ReactElement => {
-    const {
-        onClose,
-        onSuccess,
-        ["data-componentid"]: componentId,
-        ...rest
-    } = props;
+    const { onClose, onSuccess, ["data-componentid"]: componentId, ...rest } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     const { consoleRoles } = useConsoleRoles(null, null);
 
@@ -110,7 +105,7 @@ const AddExistingUserWizard: FunctionComponent<AddExistingUserWizardPropsInterfa
                 user
             };
         });
-    }, [ prospectiveAdministrators ]);
+    }, [prospectiveAdministrators]);
 
     const rolesAutocompleteOptions: AddExistingUserWizardFormValuesInterface["roles"] = useMemo(() => {
         if (isEmpty(consoleRoles?.Resources)) {
@@ -124,7 +119,7 @@ const AddExistingUserWizard: FunctionComponent<AddExistingUserWizardPropsInterfa
                 role
             };
         });
-    }, [ consoleRoles ]);
+    }, [consoleRoles]);
 
     const handleAddExitingUser = (values: AddExistingUserWizardFormValuesInterface): void => {
         assignAdministratorRoles(
@@ -173,11 +168,11 @@ const AddExistingUserWizard: FunctionComponent<AddExistingUserWizardPropsInterfa
 
     return (
         <Modal
-            data-componentid={ componentId }
-            open={ true }
+            data-componentid={componentId}
+            open={true}
             className="wizard add-existing-user-wizard"
-            onClose={ onClose }
-            { ...rest }
+            onClose={onClose}
+            {...rest}
         >
             <Modal.Header className="wizard-header">
                 <Typography variant="inherit">Add Administrator</Typography>
@@ -188,37 +183,37 @@ const AddExistingUserWizard: FunctionComponent<AddExistingUserWizardPropsInterfa
                 </Heading>
             </Modal.Header>
             <Modal.Content className="content-container" scrolling>
-                { alert && alertComponent }
+                {alert && alertComponent}
                 <FinalForm
-                    initialValues={ {} }
-                    keepDirtyOnReinitialize={ true }
-                    onSubmit={ handleAddExitingUser }
-                    validate={ validateAddExistingUserForm }
-                    render={ ({ handleSubmit }: FormRenderProps) => {
+                    initialValues={{}}
+                    keepDirtyOnReinitialize={true}
+                    onSubmit={handleAddExitingUser}
+                    validate={validateAddExistingUserForm}
+                    render={({ handleSubmit }: FormRenderProps) => {
                         return (
                             <form
-                                id={ ConsoleAdministratorOnboardingConstants.ADD_EXISTING_USER_FORM_ID }
-                                onSubmit={ handleSubmit }
+                                id={ConsoleAdministratorOnboardingConstants.ADD_EXISTING_USER_FORM_ID}
+                                onSubmit={handleSubmit}
                                 className="add-existing-user-wizard-form"
                             >
                                 <FinalFormField
                                     fullWidth
                                     required
                                     ariaLabel="Username field"
-                                    data-componentid={ `${componentId}-form-username-field` }
+                                    data-componentid={`${componentId}-form-username-field`}
                                     name="username"
-                                    label={ "Username" }
+                                    label={"Username"}
                                     helperText={
-                                        (<Hint>
+                                        <Hint>
                                             <Typography variant="inherit">
                                                 Enter a username or use the search to filter a user from the available
                                                 list.
                                             </Typography>
-                                        </Hint>)
+                                        </Hint>
                                     }
                                     placeholder="Select a user"
-                                    component={ AutocompleteFieldAdapter }
-                                    options={ usernameAutocompleteOptions }
+                                    component={AutocompleteFieldAdapter}
+                                    options={usernameAutocompleteOptions}
                                 />
                                 <FinalFormField
                                     fullWidth
@@ -226,63 +221,63 @@ const AddExistingUserWizard: FunctionComponent<AddExistingUserWizardPropsInterfa
                                     freeSolo
                                     multipleValues
                                     ariaLabel="Roles field"
-                                    data-componentid={ `${componentId}-form-roles-field` }
+                                    data-componentid={`${componentId}-form-roles-field`}
                                     name="roles"
-                                    label={ "Roles" }
+                                    label={"Roles"}
                                     helperText={
-                                        (<Hint>
+                                        <Hint>
                                             <Typography variant="inherit">
                                                 Assign one or more console roles that can be used to maintain the
                                                 console application.
                                             </Typography>
-                                        </Hint>)
+                                        </Hint>
                                     }
                                     placeholder="Select roles"
-                                    component={ AutocompleteFieldAdapter }
-                                    options={ rolesAutocompleteOptions }
-                                    renderTags={ (value: readonly any[], getTagProps: AutocompleteRenderGetTagProps) => {
+                                    component={AutocompleteFieldAdapter}
+                                    options={rolesAutocompleteOptions}
+                                    renderTags={(value: readonly any[], getTagProps: AutocompleteRenderGetTagProps) => {
                                         return value.map((option: any, index: number) => (
                                             <Chip
-                                                key={ index }
+                                                key={index}
                                                 size="medium"
-                                                label={ option.label }
-                                                { ...getTagProps({ index }) }
+                                                label={option.label}
+                                                {...getTagProps({ index })}
                                             />
                                         ));
-                                    } }
+                                    }}
                                 />
                             </form>
                         );
-                    } }
+                    }}
                 />
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
-                                tabIndex={ 6 }
-                                data-componentid={ `${componentId}-cancel-button` }
+                                tabIndex={6}
+                                data-componentid={`${componentId}-cancel-button`}
                                 floated="left"
-                                onClick={ e => onClose(e, null) }
+                                onClick={e => onClose(e, null)}
                             >
                                 <Typography variant="inherit">
-                                    { t("extensions:develop.apiResource.wizard.addApiResource.cancelButton") }
+                                    {t("extensions:develop.apiResource.wizard.addApiResource.cancelButton")}
                                 </Typography>
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <PrimaryButton
-                                tabIndex={ 8 }
-                                data-componentid={ `${componentId}-submit-button` }
+                                tabIndex={8}
+                                data-componentid={`${componentId}-submit-button`}
                                 floated="right"
-                                onClick={ () => {
+                                onClick={() => {
                                     document
                                         .getElementById(
                                             ConsoleAdministratorOnboardingConstants.ADD_EXISTING_USER_FORM_ID
                                         )
                                         .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-                                } }
+                                }}
                             >
                                 <Typography variant="inherit">Add</Typography>
                             </PrimaryButton>

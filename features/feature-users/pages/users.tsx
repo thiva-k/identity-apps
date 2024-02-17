@@ -74,9 +74,9 @@ import {
 import { getUserStoreList } from "../../userstores/api";
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../userstores/constants/user-store-constants";
 import { UserStoreListItem, UserStorePostData, UserStoreProperty } from "../../userstores/models/user-stores";
-import { useGetParentOrgUserInvites } from "../components/guests/api/use-get-parent-org-user-invites";
-import { UserInviteInterface } from "../components/guests/models/invite";
-import { GuestUsersList } from "../components/guests/pages/guest-users-list";
+import { useGetParentOrgUserInvites } from "@wso2is/feature-users.common/components/guests/api/use-get-parent-org-user-invites";
+import { UserInviteInterface } from "@wso2is/feature-users.common/components/guests/models/invite";
+import { GuestUsersList } from "@wso2is/feature-users.common/components/guests/pages/guest-users-list";
 import { UsersList } from "../components/users-list";
 import { AddUserWizard } from "../components/wizard/add-user-wizard";
 import { BulkImportUserWizard } from "../components/wizard/bulk-import-user-wizard";

@@ -63,7 +63,6 @@ export interface ConsoleRolesListLayoutPropsInterface extends IdentifiableCompon
 const ConsoleRolesListLayout: FunctionComponent<ConsoleRolesListLayoutPropsInterface> = (
     props: ConsoleRolesListLayoutPropsInterface
 ): ReactElement => {
-
     const {
         isSubOrg,
         rolesList,
@@ -75,7 +74,7 @@ const ConsoleRolesListLayout: FunctionComponent<ConsoleRolesListLayoutPropsInter
         onListItemLimitChange,
         onSearchQueryChange,
         onRoleCreate,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const dispatch: Dispatch = useDispatch();
@@ -84,10 +83,10 @@ const ConsoleRolesListLayout: FunctionComponent<ConsoleRolesListLayoutPropsInter
 
     const { isSubOrganization } = useGetCurrentOrganizationType();
 
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
 
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        const offsetValue: number = (data.activePage as number - 1) * listItemLimit;
+        const offsetValue: number = ((data.activePage as number) - 1) * listItemLimit;
 
         onListOffsetChange(offsetValue);
     };
@@ -105,29 +104,38 @@ const ConsoleRolesListLayout: FunctionComponent<ConsoleRolesListLayoutPropsInter
     const handleOnDelete = (role: RolesInterface): void => {
         deleteRoleById(role.id)
             .then(() => {
-                dispatch(addAlert(({
-                    description: t("console:manage.features.roles.notifications.deleteRole.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.roles.notifications.deleteRole.success.message")
-                })));
+                dispatch(
+                    addAlert({
+                        description: t("console:manage.features.roles.notifications.deleteRole.success.description"),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:manage.features.roles.notifications.deleteRole.success.message")
+                    })
+                );
 
                 onMutateRolesList();
-            }).catch((error: AxiosError) => {
+            })
+            .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.detail) {
-                    dispatch(addAlert(({
-                        description: error.response.data.detail,
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.roles.notifications.deleteRole.error.message")
-                    })));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.detail,
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.roles.notifications.deleteRole.error.message")
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert(({
-                    description: t("console:manage.features.roles.notifications.deleteRole.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.roles.notifications.deleteRole.genericError.message")
-                })));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.roles.notifications.deleteRole.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.roles.notifications.deleteRole.genericError.message")
+                    })
+                );
             });
     };
 
@@ -156,73 +164,70 @@ const ConsoleRolesListLayout: FunctionComponent<ConsoleRolesListLayoutPropsInter
     };
 
     const handleRoleEdit = (role: RolesInterface) => {
-        history.push(AppConstants.getPaths().get("CONSOLE_ROLES_EDIT").replace(":id", role?.id));
+        history.push(
+            AppConstants.getPaths()
+                .get("CONSOLE_ROLES_EDIT")
+                .replace(":id", role?.id)
+        );
     };
 
     return (
         <ListLayout
-            advancedSearch={ (
+            advancedSearch={
                 <AdvancedSearchWithBasicFilters
-                    data-componentid={ `${componentId}-list-advanced-search` }
-                    onFilter={ handleRolesFilter  }
-                    filterAttributeOptions={ [
+                    data-componentid={`${componentId}-list-advanced-search`}
+                    onFilter={handleRolesFilter}
+                    filterAttributeOptions={[
                         {
                             key: 0,
                             text: t("console:manage.features.roles.list.filterAttirbutes.name"),
                             value: "displayName"
                         }
-                    ] }
-                    filterAttributePlaceholder={
-                        t("console:manage.features.roles.advancedSearch.form.inputs.filterAttribute." +
-                            "placeholder")
-                    }
-                    filterConditionsPlaceholder={
-                        t("console:manage.features.roles.advancedSearch.form.inputs.filterCondition" +
-                            ".placeholder")
-                    }
-                    filterValuePlaceholder={
-                        t("console:manage.features.roles.advancedSearch.form.inputs.filterValue" +
-                            ".placeholder")
-                    }
-                    placeholder={ t("console:manage.features.roles.advancedSearch.placeholder") }
+                    ]}
+                    filterAttributePlaceholder={t(
+                        "console:manage.features.roles.advancedSearch.form.inputs.filterAttribute." + "placeholder"
+                    )}
+                    filterConditionsPlaceholder={t(
+                        "console:manage.features.roles.advancedSearch.form.inputs.filterCondition" + ".placeholder"
+                    )}
+                    filterValuePlaceholder={t(
+                        "console:manage.features.roles.advancedSearch.form.inputs.filterValue" + ".placeholder"
+                    )}
+                    placeholder={t("console:manage.features.roles.advancedSearch.placeholder")}
                     defaultSearchAttribute="displayName"
                     defaultSearchOperator="co"
-                    triggerClearQuery={ triggerClearQuery }
+                    triggerClearQuery={triggerClearQuery}
                 />
-            ) }
-            currentListSize={ rolesList?.itemsPerPage }
-            listItemLimit={ listItemLimit }
-            onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-            onPageChange={ handlePaginationChange }
-            showTopActionPanel={ (rolesList?.totalResults > 0 || searchQuery?.length !== 0) }
-            topActionPanelExtension={ !isSubOrganization() && (
-                <Show when={ AccessControlConstants.ROLE_WRITE }>
-                    <PrimaryButton
-                        data-componentid={ `${componentId}-add-button` }
-                        onClick={ () => onRoleCreate() }
-                    >
-                        <Icon
-                            data-componentid={ `${componentId}-add-button-icon` }
-                            name="add"
-                        />
-                        { t("console:manage.features.roles.list.buttons.addButton", { type: "Role" }) }
-                    </PrimaryButton>
-                </Show>
-            ) }
-            showPagination={ true }
-            totalPages={ Math.ceil(rolesList?.totalResults / listItemLimit) }
-            totalListSize={ rolesList?.totalResults }
-            isLoading={ isRolesListLoading }
+            }
+            currentListSize={rolesList?.itemsPerPage}
+            listItemLimit={listItemLimit}
+            onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+            onPageChange={handlePaginationChange}
+            showTopActionPanel={rolesList?.totalResults > 0 || searchQuery?.length !== 0}
+            topActionPanelExtension={
+                !isSubOrganization() && (
+                    <Show when={AccessControlConstants.ROLE_WRITE}>
+                        <PrimaryButton data-componentid={`${componentId}-add-button`} onClick={() => onRoleCreate()}>
+                            <Icon data-componentid={`${componentId}-add-button-icon`} name="add" />
+                            {t("console:manage.features.roles.list.buttons.addButton", { type: "Role" })}
+                        </PrimaryButton>
+                    </Show>
+                )
+            }
+            showPagination={true}
+            totalPages={Math.ceil(rolesList?.totalResults / listItemLimit)}
+            totalListSize={rolesList?.totalResults}
+            isLoading={isRolesListLoading}
             className="console-roles-list-layout"
         >
             <ConsoleRolesTable
-                onRoleDelete={ handleOnDelete }
-                onRoleEdit={ handleRoleEdit }
-                onEmptyListPlaceholderActionClick={ () => onRoleCreate() }
-                onSearchQueryClear={ handleSearchQueryClear }
-                roleList={ rolesList }
-                searchQuery={ searchQuery }
-                isSubOrg={ isSubOrg }
+                onRoleDelete={handleOnDelete}
+                onRoleEdit={handleRoleEdit}
+                onEmptyListPlaceholderActionClick={() => onRoleCreate()}
+                onSearchQueryClear={handleSearchQueryClear}
+                roleList={rolesList}
+                searchQuery={searchQuery}
+                isSubOrg={isSubOrg}
             />
         </ListLayout>
     );

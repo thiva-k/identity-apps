@@ -20,13 +20,13 @@ import Tab from "@oxygen-ui/react/Tab";
 import TabPanel from "@oxygen-ui/react/TabPanel";
 import Tabs from "@oxygen-ui/react/Tabs";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ConsoleAdministrators from "./console-administrators/console-administrators";
 import ConsoleLoginFlow from "./console-login-flow/console-login-flow";
 import ConsoleProtocol from "./console-protocol/console-protocol";
 import ConsoleRolesList from "./console-roles/console-roles-list";
-import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
 import { ConsoleSettingsModes, ConsoleSettingsTabIDs } from "../models/ui";
 import "./console-settings-tabs.scss";
 
@@ -138,7 +138,7 @@ const ConsoleSettingsTabs: FunctionComponent<ConsoleSettingsTabsInterface> = (
         return activeTabFromUrl ? activeTabFromUrl.value : consoleTabs[0].value;
     };
 
-    const [ activeTab, setActiveTab ] = useState<number>(getActiveTabFromUrl());
+    const [activeTab, setActiveTab] = useState<number>(getActiveTabFromUrl());
 
     /**
      * Register a hash change listener to update the active tab.
@@ -169,29 +169,26 @@ const ConsoleSettingsTabs: FunctionComponent<ConsoleSettingsTabsInterface> = (
 
     return (
         <div className="console-settings-tabs">
-            <Tabs
-                value={ activeTab }
-                onChange={ onTabChange }
-            >
-                { consoleTabs.map((tab: ConsoleSettingsTabInterface) => {
+            <Tabs value={activeTab} onChange={onTabChange}>
+                {consoleTabs.map((tab: ConsoleSettingsTabInterface) => {
                     if (tab.hidden) {
                         return null;
                     }
 
-                    return <Tab key={ tab.value } label={ tab.label } />;
-                }) }
+                    return <Tab key={tab.value} label={tab.label} />;
+                })}
             </Tabs>
-            { consoleTabs.map((tab: ConsoleSettingsTabInterface, index: number) => (
+            {consoleTabs.map((tab: ConsoleSettingsTabInterface, index: number) => (
                 <TabPanel
-                    key={ tab.value }
-                    value={ activeTab }
-                    index={ index }
-                    className={ tab.className }
-                    data-componentid={ tab["data-componentid"] }
+                    key={tab.value}
+                    value={activeTab}
+                    index={index}
+                    className={tab.className}
+                    data-componentid={tab["data-componentid"]}
                 >
-                    { tab.pane }
+                    {tab.pane}
                 </TabPanel>
-            )) }
+            ))}
         </div>
     );
 };

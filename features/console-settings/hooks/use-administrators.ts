@@ -17,6 +17,15 @@
  */
 
 import { MultiValueAttributeInterface, RolesInterface } from "@wso2is/core/models";
+import { UserBasicInterface, UserListInterface, UserRoleInterface } from "@wso2is/feature-models.common/users";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { AppState } from "@wso2is/feature-store.common";
+import { useUsersList } from "@wso2is/feature-users.common/api/users";
+// eslint-disable-next-line max-len
+import { useGetParentOrgUserInvites } from "@wso2is/feature-users.common/components/guests/api/use-get-parent-org-user-invites";
+import { InvitationsInterface } from "@wso2is/feature-users.common/components/guests/models/invite";
+import { UserAccountTypes } from "@wso2is/feature-users.common/constants/user-management-constants";
+import { UserManagementUtils } from "@wso2is/feature-users.common/utils/user-management-utils";
 import { AxiosError } from "axios";
 import cloneDeep from "lodash-es/cloneDeep";
 import isEmpty from "lodash-es/isEmpty";
@@ -24,14 +33,6 @@ import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import useConsoleRoles from "./use-console-roles";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
-import { UserBasicInterface, UserListInterface, UserRoleInterface } from "../../core/models/users";
-import { AppState } from "../../core/store";
-import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
-import { useUsersList } from "../../users/api/users";
-import { useGetParentOrgUserInvites } from "../../users/components/guests/api/use-get-parent-org-user-invites";
-import { InvitationsInterface } from "../../users/components/guests/models/invite";
-import { UserAccountTypes } from "../../users/constants/user-management-constants";
-import { UserManagementUtils } from "../../users/utils/user-management-utils";
 
 /**
  * Props interface of {@link UseAdministrators}
@@ -96,7 +97,7 @@ const useAdministrators = (
 ): UseAdministratorsInterface => {
     const authenticatedUser: string = useSelector((state: AppState) => state?.auth?.username);
 
-    const [ isNextPageAvailable, setIsNextPageAvailable ] = useState<boolean>(false);
+    const [isNextPageAvailable, setIsNextPageAvailable] = useState<boolean>(false);
 
     const modifiedLimit: number = count + TEMP_RESOURCE_LIST_ITEM_LIMIT_OFFSET;
 
@@ -188,7 +189,7 @@ const useAdministrators = (
                 }
             }
 
-            resource.emails = [ email ];
+            resource.emails = [email];
 
             return resource;
         });
@@ -238,7 +239,7 @@ const useAdministrators = (
         }
 
         return transformUserList(originalAdminUserList);
-    }, [ originalAdminUserList, consoleRoles ]);
+    }, [originalAdminUserList, consoleRoles]);
 
     return {
         adminUserListFetchError,

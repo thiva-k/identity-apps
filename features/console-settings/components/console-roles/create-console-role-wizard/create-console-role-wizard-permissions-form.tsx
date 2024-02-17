@@ -31,6 +31,8 @@ import Checkbox from "@oxygen-ui/react/Checkbox";
 import Paper from "@oxygen-ui/react/Paper";
 import Typography from "@oxygen-ui/react/Typography";
 import { IdentifiableComponentInterface, LegacyModeInterface } from "@wso2is/core/models";
+import { CreateRolePermissionInterface } from "@wso2is/feature-roles.common/models/roles";
+import { AppState } from "@wso2is/feature-store.common";
 import cloneDeep from "lodash-es/cloneDeep";
 import get from "lodash-es/get";
 import React, {
@@ -44,8 +46,6 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppState } from "../../../../core/store";
-import { CreateRolePermissionInterface } from "../../../../roles/models/roles";
 import useGetAPIResourceCollections from "../../../api/use-get-api-resource-collections";
 import { ConsoleRolesOnboardingConstants } from "../../../constants/console-roles-onboarding-constants";
 import {
@@ -107,61 +107,61 @@ const CreateConsoleRoleWizardPermissionsForm: FunctionComponent<CreateConsoleRol
     );
 
     const filteredTenantAPIResourceCollections: APIResourceCollectionResponseInterface = useMemo(() => {
-
         if (!tenantAPIResourceCollections) {
             return null;
         }
 
-        const clonedTenantAPIResourceCollections: APIResourceCollectionResponseInterface =
-            cloneDeep(tenantAPIResourceCollections);
+        const clonedTenantAPIResourceCollections: APIResourceCollectionResponseInterface = cloneDeep(
+            tenantAPIResourceCollections
+        );
         const filteringAPIResourceCollectionNames: string[] = [];
 
         if (legacyMode?.rolesV1) {
             filteringAPIResourceCollectionNames.push(
-                ConsoleRolesOnboardingConstants.ROLE_API_RESOURCES_COLLECTION_NAME);
+                ConsoleRolesOnboardingConstants.ROLE_API_RESOURCES_COLLECTION_NAME
+            );
         } else {
             filteringAPIResourceCollectionNames.push(
-                ConsoleRolesOnboardingConstants.ROLE_V1_API_RESOURCES_COLLECTION_NAME);
+                ConsoleRolesOnboardingConstants.ROLE_V1_API_RESOURCES_COLLECTION_NAME
+            );
         }
 
-        clonedTenantAPIResourceCollections.apiResourceCollections =
-                clonedTenantAPIResourceCollections?.apiResourceCollections?.filter(
-                    (item: APIResourceCollectionInterface) =>
-                        !filteringAPIResourceCollectionNames.includes(item?.name)
-                );
+        clonedTenantAPIResourceCollections.apiResourceCollections = clonedTenantAPIResourceCollections?.apiResourceCollections?.filter(
+            (item: APIResourceCollectionInterface) => !filteringAPIResourceCollectionNames.includes(item?.name)
+        );
 
         return clonedTenantAPIResourceCollections;
-    }, [ tenantAPIResourceCollections ]);
+    }, [tenantAPIResourceCollections]);
 
     const filteredOrganizationAPIResourceCollections: APIResourceCollectionResponseInterface = useMemo(() => {
-
         if (!organizationAPIResourceCollections) {
             return null;
         }
 
-        const clonedOrganizationAPIResourceCollections: APIResourceCollectionResponseInterface =
-            cloneDeep(organizationAPIResourceCollections);
+        const clonedOrganizationAPIResourceCollections: APIResourceCollectionResponseInterface = cloneDeep(
+            organizationAPIResourceCollections
+        );
         const filteringAPIResourceCollectionNames: string[] = [];
 
         if (legacyMode?.rolesV1) {
             filteringAPIResourceCollectionNames.push(
-                ConsoleRolesOnboardingConstants.ORG_ROLE_API_RESOURCES_COLLECTION_NAME);
+                ConsoleRolesOnboardingConstants.ORG_ROLE_API_RESOURCES_COLLECTION_NAME
+            );
         } else {
             filteringAPIResourceCollectionNames.push(
-                ConsoleRolesOnboardingConstants.ORG_ROLE_V1_API_RESOURCES_COLLECTION_NAME);
+                ConsoleRolesOnboardingConstants.ORG_ROLE_V1_API_RESOURCES_COLLECTION_NAME
+            );
         }
 
-        clonedOrganizationAPIResourceCollections.apiResourceCollections =
-                clonedOrganizationAPIResourceCollections?.apiResourceCollections?.filter(
-                    (item: APIResourceCollectionInterface) =>
-                        !filteringAPIResourceCollectionNames.includes(item?.name)
-                );
+        clonedOrganizationAPIResourceCollections.apiResourceCollections = clonedOrganizationAPIResourceCollections?.apiResourceCollections?.filter(
+            (item: APIResourceCollectionInterface) => !filteringAPIResourceCollectionNames.includes(item?.name)
+        );
 
         return clonedOrganizationAPIResourceCollections;
-    }, [ organizationAPIResourceCollections ]);
+    }, [organizationAPIResourceCollections]);
 
-    const [ expanded, setExpanded ] = useState<string | false>(false);
-    const [ selectedPermissions, setSelectedPermissions ] = useState<SelectedPermissionsInterface>({
+    const [expanded, setExpanded] = useState<string | false>(false);
+    const [selectedPermissions, setSelectedPermissions] = useState<SelectedPermissionsInterface>({
         organization: {},
         tenant: {}
     });
@@ -307,16 +307,16 @@ const CreateConsoleRoleWizardPermissionsForm: FunctionComponent<CreateConsoleRol
     };
 
     return (
-        <div className="create-console-role-wizard-permissions-form" data-componentid={ componentId }>
+        <div className="create-console-role-wizard-permissions-form" data-componentid={componentId}>
             <div>
                 <Accordion
-                    elevation={ 0 }
-                    expanded={ expanded === "tenant-permissions" }
-                    onChange={ handleChange("tenant-permissions") }
+                    elevation={0}
+                    expanded={expanded === "tenant-permissions"}
+                    onChange={handleChange("tenant-permissions")}
                     className="tenant-permissions-accordion"
                 >
                     <AccordionSummary
-                        expandIcon={ <ChevronDownIcon /> }
+                        expandIcon={<ChevronDownIcon />}
                         aria-controls="tenant-permissions-content"
                         id="tenant-permissions-header"
                     >
@@ -326,47 +326,47 @@ const CreateConsoleRoleWizardPermissionsForm: FunctionComponent<CreateConsoleRol
                                 Object.keys(selectedPermissions.tenant).length ===
                                 filteredTenantAPIResourceCollections?.apiResourceCollections?.length
                             }
-                            onChange={ (e: ChangeEvent<HTMLInputElement>) => {
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 handleSelectAll(e, APIResourceCollectionTypes.TENANT);
-                            } }
-                            inputProps={ {
+                            }}
+                            inputProps={{
                                 "aria-label": "Select all tenant permissions"
-                            } }
+                            }}
                         />
                         <Typography className="permissions-accordion-label">
-                            { t("console:consoleSettings.roles.add.tenantPermissions.label") }
+                            {t("console:consoleSettings.roles.add.tenantPermissions.label")}
                         </Typography>
                         <Typography variant="body2">
-                            { filteredTenantAPIResourceCollections?.apiResourceCollections?.length } Permissions
+                            {filteredTenantAPIResourceCollections?.apiResourceCollections?.length} Permissions
                         </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <TableContainer component={ Paper } elevation={ 0 }>
+                        <TableContainer component={Paper} elevation={0}>
                             <Table className="permissions-table" size="small" aria-label="tenant permissions table">
                                 <TableBody>
-                                    { filteredTenantAPIResourceCollections?.apiResourceCollections?.map(
+                                    {filteredTenantAPIResourceCollections?.apiResourceCollections?.map(
                                         (collection: APIResourceCollectionInterface) => (
-                                            <TableRow key={ collection.id } className="permissions-table-data-row">
+                                            <TableRow key={collection.id} className="permissions-table-data-row">
                                                 <TableCell padding="checkbox">
                                                     <Checkbox
                                                         color="primary"
-                                                        checked={ Object.keys(selectedPermissions.tenant).includes(
+                                                        checked={Object.keys(selectedPermissions.tenant).includes(
                                                             collection.id
-                                                        ) }
-                                                        onChange={ (e: ChangeEvent<HTMLInputElement>) =>
+                                                        )}
+                                                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
                                                             handleSelect(
                                                                 e,
                                                                 collection,
                                                                 APIResourceCollectionTypes.TENANT
                                                             )
                                                         }
-                                                        inputProps={ {
+                                                        inputProps={{
                                                             "aria-label": `Select ${collection.displayName} permission`
-                                                        } }
+                                                        }}
                                                     />
                                                 </TableCell>
                                                 <TableCell component="th" scope="row">
-                                                    { collection.displayName }
+                                                    {collection.displayName}
                                                 </TableCell>
                                                 <TableCell align="right">
                                                     <ToggleButtonGroup
@@ -380,7 +380,7 @@ const CreateConsoleRoleWizardPermissionsForm: FunctionComponent<CreateConsoleRol
                                                                 : null
                                                         }
                                                         exclusive
-                                                        onChange={ (e: MouseEvent<HTMLElement>, value: string) => {
+                                                        onChange={(e: MouseEvent<HTMLElement>, value: string) => {
                                                             // If no value is selected and exclusive is true
                                                             // the value is null. Purpose of this if block is
                                                             // to prevent the submit in the case of null value.
@@ -394,21 +394,21 @@ const CreateConsoleRoleWizardPermissionsForm: FunctionComponent<CreateConsoleRol
                                                                 value,
                                                                 APIResourceCollectionTypes.TENANT
                                                             );
-                                                        } }
+                                                        }}
                                                         aria-label="text alignment"
                                                         size="small"
                                                     >
                                                         <ToggleButton value="read" aria-label="left aligned">
-                                                            { t("console:consoleSettings.roles.permissionLevels.view") }
+                                                            {t("console:consoleSettings.roles.permissionLevels.view")}
                                                         </ToggleButton>
                                                         <ToggleButton value="write" aria-label="right aligned">
-                                                            { t("console:consoleSettings.roles.permissionLevels.edit") }
+                                                            {t("console:consoleSettings.roles.permissionLevels.edit")}
                                                         </ToggleButton>
                                                     </ToggleButtonGroup>
                                                 </TableCell>
                                             </TableRow>
                                         )
-                                    ) }
+                                    )}
                                 </TableBody>
                             </Table>
                         </TableContainer>
@@ -417,66 +417,64 @@ const CreateConsoleRoleWizardPermissionsForm: FunctionComponent<CreateConsoleRol
             </div>
             <div>
                 <Accordion
-                    elevation={ 0 }
-                    expanded={ expanded === "organization-permissions" }
-                    onChange={ handleChange("organization-permissions") }
+                    elevation={0}
+                    expanded={expanded === "organization-permissions"}
+                    onChange={handleChange("organization-permissions")}
                     className="organization-permissions-accordion"
                 >
                     <AccordionSummary
-                        expandIcon={ <ChevronDownIcon /> }
+                        expandIcon={<ChevronDownIcon />}
                         aria-controls="panel1bh-content"
                         id="panel1bh-header"
                     >
                         <Checkbox
                             color="primary"
-                            defaultChecked={ false }
-                            onChange={ (e: ChangeEvent<HTMLInputElement>) => {
+                            defaultChecked={false}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => {
                                 handleSelectAll(e, APIResourceCollectionTypes.ORGANIZATION);
-                            } }
-                            inputProps={ {
+                            }}
+                            inputProps={{
                                 "aria-label": "Select all organization permissions"
-                            } }
+                            }}
                         />
                         <Typography className="permissions-accordion-label">
-                            { t("console:consoleSettings.roles.add.organizationPermissions.label") }
+                            {t("console:consoleSettings.roles.add.organizationPermissions.label")}
                         </Typography>
                         <Typography variant="body2">
-                            { filteredOrganizationAPIResourceCollections?.apiResourceCollections?.length } Permissions
+                            {filteredOrganizationAPIResourceCollections?.apiResourceCollections?.length} Permissions
                         </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <TableContainer component={ Paper } elevation={ 0 }>
+                        <TableContainer component={Paper} elevation={0}>
                             <Table
                                 className="permissions-table"
                                 size="small"
                                 aria-label="organization permissions table"
                             >
                                 <TableBody>
-                                    { filteredOrganizationAPIResourceCollections?.apiResourceCollections?.map(
+                                    {filteredOrganizationAPIResourceCollections?.apiResourceCollections?.map(
                                         (collection: APIResourceCollectionInterface) => (
-                                            <TableRow key={ collection.id } className="permissions-table-data-row">
+                                            <TableRow key={collection.id} className="permissions-table-data-row">
                                                 <TableCell padding="checkbox">
                                                     <Checkbox
                                                         color="primary"
-                                                        checked={
-                                                            Object
-                                                                .keys(selectedPermissions.organization)
-                                                                .includes(collection.id)
-                                                        }
-                                                        onChange={ (e: ChangeEvent<HTMLInputElement>) =>
+                                                        checked={Object.keys(selectedPermissions.organization).includes(
+                                                            collection.id
+                                                        )}
+                                                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
                                                             handleSelect(
                                                                 e,
                                                                 collection,
                                                                 APIResourceCollectionTypes.ORGANIZATION
                                                             )
                                                         }
-                                                        inputProps={ {
+                                                        inputProps={{
                                                             "aria-label": `Select ${collection.displayName} permission`
-                                                        } }
+                                                        }}
                                                     />
                                                 </TableCell>
                                                 <TableCell component="th" scope="row">
-                                                    { collection.displayName }
+                                                    {collection.displayName}
                                                 </TableCell>
                                                 <TableCell align="right">
                                                     <ToggleButtonGroup
@@ -484,36 +482,35 @@ const CreateConsoleRoleWizardPermissionsForm: FunctionComponent<CreateConsoleRol
                                                             Object.keys(selectedPermissions.organization).includes(
                                                                 collection.id
                                                             )
-                                                                ? get(
-                                                                    selectedPermissions.organization, collection.id
-                                                                )?.write
+                                                                ? get(selectedPermissions.organization, collection.id)
+                                                                      ?.write
                                                                     ? "write"
                                                                     : "read"
                                                                 : null
                                                         }
                                                         exclusive
-                                                        onChange={ (e: MouseEvent<HTMLElement>, value: string) => {
+                                                        onChange={(e: MouseEvent<HTMLElement>, value: string) => {
                                                             handlePermissionLevelChange(
                                                                 e,
                                                                 collection,
                                                                 value,
                                                                 APIResourceCollectionTypes.ORGANIZATION
                                                             );
-                                                        } }
+                                                        }}
                                                         aria-label="text alignment"
                                                         size="small"
                                                     >
                                                         <ToggleButton value="read" aria-label="left aligned">
-                                                            { t("console:consoleSettings.roles.permissionLevels.view") }
+                                                            {t("console:consoleSettings.roles.permissionLevels.view")}
                                                         </ToggleButton>
                                                         <ToggleButton value="write" aria-label="right aligned">
-                                                            { t("console:consoleSettings.roles.permissionLevels.edit") }
+                                                            {t("console:consoleSettings.roles.permissionLevels.edit")}
                                                         </ToggleButton>
                                                     </ToggleButtonGroup>
                                                 </TableCell>
                                             </TableRow>
                                         )
-                                    ) }
+                                    )}
                                 </TableBody>
                             </Table>
                         </TableContainer>

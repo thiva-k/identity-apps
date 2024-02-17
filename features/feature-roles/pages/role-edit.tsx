@@ -34,7 +34,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Label } from "semantic-ui-react";
-import { EditRole } from "../components/edit-role/edit-role";
+import { EditRole } from "@wso2is/feature-roles.common/components/edit-role/edit-role";
 
 type RoleEditPagePropsInterface = IdentifiableComponentInterface & RouteComponentProps;
 

@@ -42,7 +42,7 @@ const ConsoleSettingsProvider = (props: PropsWithChildren<ConsoleSettingsProvide
 
     const consoleId: string = useMemo(() => {
         return consoleApplicationFilter?.applications[0]?.id;
-    }, [ consoleApplicationFilter ]);
+    }, [consoleApplicationFilter]);
 
     const {
         data: consoleApplication,
@@ -71,7 +71,7 @@ const ConsoleSettingsProvider = (props: PropsWithChildren<ConsoleSettingsProvide
 
     return (
         <ConsoleSettingsContext.Provider
-            value={ {
+            value={{
                 consoleAuthenticationSequence: consoleApplication?.authenticationSequence,
                 consoleConfigurations: consoleApplication,
                 consoleDisplayName: consoleApplication?.name,
@@ -82,9 +82,9 @@ const ConsoleSettingsProvider = (props: PropsWithChildren<ConsoleSettingsProvide
                 mutateConsoleApplicationInboundConfigs,
                 mutateConsoleConfigurations: mutateConsoleApplication,
                 updateConsoleLoginFlow
-            } }
+            }}
         >
-            { children }
+            {children}
         </ConsoleSettingsContext.Provider>
     );
 };

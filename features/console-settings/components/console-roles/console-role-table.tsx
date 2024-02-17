@@ -41,9 +41,9 @@ import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useS
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
-import { getEmptyPlaceholderIllustrations } from "../../../core/configs/ui";
-import { AppState } from "../../../core/store/index";
-import { RoleAudienceTypes } from "../../../roles/constants/role-constants";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common/ui";
+import { AppState } from "@wso2is/feature-store.common/index";
+import { RoleAudienceTypes } from "@wso2is/feature-roles.common/constants/role-constants";
 
 /**
  * Props interface of {@link ConsoleRolesTable}

@@ -16,8 +16,8 @@
  * under the License.
  */
 
+import { useRolesList } from "@wso2is/feature-roles.common/api/roles";
 import useConsoleSettings from "./use-console-settings";
-import { useRolesList } from "../../roles/api/roles";
 
 /**
  * Props interface of {@link useConsoleRoles}
@@ -48,7 +48,7 @@ const useConsoleRoles = (
     } = useRolesList(
         count,
         startIndex,
-        `audience.value eq ${consoleId}${ filter ? ` and ${ filter }` : "" }`,
+        `audience.value eq ${consoleId}${filter ? ` and ${filter}` : ""}`,
         "users,groups,permissions,associatedApplications",
         !!consoleId || shouldFetch
     );

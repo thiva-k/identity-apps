@@ -25,6 +25,12 @@ import {
     RolesInterface,
     SBACInterface
 } from "@wso2is/core/models";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
+import { UserRoleInterface } from "@wso2is/feature-models.common";
+import { FeatureConfigInterface, UserBasicInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import {
     ConfirmationModal,
     DataTable,
@@ -41,26 +47,19 @@ import React, { ReactElement, ReactNode, SyntheticEvent, useState } from "react"
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Header, Label, ListItemProps, SemanticICONS } from "semantic-ui-react";
-import {
-    AdvancedSearchWithBasicFilters,
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    UserBasicInterface,
-    UserRoleInterface,
-    getEmptyPlaceholderIllustrations
-} from "../../../../core";
+
 import { useServerConfigs } from "../../../../server-configurations";
-import { UserManagementConstants } from "../../../../users/constants";
-import { UserListInterface } from "../../../../users/models";
+import { UserManagementConstants } from "@wso2is/feature-users.common/constants";
+import { UserListInterface } from "@wso2is/feature-users.common/models";
 import useConsoleRoles from "../../../hooks/use-console-roles";
 import "./administrators-table.scss";
 
 /**
  * Props interface of {@link AdministratorsTable}
  */
-interface AdministratorsTablePropsInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
+interface AdministratorsTablePropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Admin list.
      */
@@ -135,8 +134,8 @@ interface AdministratorsTablePropsInterface extends SBACInterface<FeatureConfigI
  * @returns Admins table component.
  */
 const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInterface> = (
-    props: AdministratorsTablePropsInterface): ReactElement => {
-
+    props: AdministratorsTablePropsInterface
+): ReactElement => {
     const {
         triggerClearQuery,
         administrators,
@@ -152,7 +151,7 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
         showListItemActions,
         onUserEdit,
         searchQuery,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
@@ -161,9 +160,9 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
 
     const { consoleRoles } = useConsoleRoles(null, null);
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingUser, setDeletingUser ] = useState<UserBasicInterface>(undefined);
-    const [ alert, setAlert, alertComponent ] = useConfirmationModalAlert();
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingUser, setDeletingUser] = useState<UserBasicInterface>(undefined);
+    const [alert, setAlert, alertComponent] = useConfirmationModalAlert();
 
     const featureConfig: FeatureAccessConfigInterface = useSelector((state: AppState) => {
         return state?.config?.ui?.features?.users;
@@ -187,38 +186,36 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
                 render: (user: UserBasicInterface): ReactNode => {
                     const header: string = getUserNameWithoutDomain(user?.userName);
                     const subHeader: string = UserManagementUtils.resolveUserListSubheader(user);
-                    const isNameAvailable: boolean = user.name?.familyName !== undefined ||
-                        user.name?.givenName !== undefined;
+                    const isNameAvailable: boolean =
+                        user.name?.familyName !== undefined || user.name?.givenName !== undefined;
 
                     return (
                         <Header
                             image
                             as="h6"
                             className="header-with-icon"
-                            data-componentid={ `${ componentId }-item-heading` }
+                            data-componentid={`${componentId}-item-heading`}
                         >
                             <UserAvatar
                                 data-componentid="users-list-item-image"
-                                name={ user.userName.split("/")?.length > 1
-                                    ? user.userName.split("/")[ 1 ]
-                                    : user.userName.split("/")[ 0 ]
+                                name={
+                                    user.userName.split("/")?.length > 1
+                                        ? user.userName.split("/")[1]
+                                        : user.userName.split("/")[0]
                                 }
                                 size="mini"
-                                image={ user.profileUrl }
+                                image={user.profileUrl}
                                 spaced="right"
                                 data-suppress=""
                             />
                             <Header.Content>
-                                { header }
-                                { resolveMyselfLabel(user) }
-                                {
-                                    (isNameAvailable) &&
-                                        (<Header.Subheader
-                                            data-componentid={ `${ componentId }-item-sub-heading` }
-                                        >
-                                            { subHeader }
-                                        </Header.Subheader>)
-                                }
+                                {header}
+                                {resolveMyselfLabel(user)}
+                                {isNameAvailable && (
+                                    <Header.Subheader data-componentid={`${componentId}-item-sub-heading`}>
+                                        {subHeader}
+                                    </Header.Subheader>
+                                )}
                             </Header.Content>
                         </Header>
                     );
@@ -241,8 +238,9 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
                             F: 300
                         };
 
-                        const hash: number = display.split("").reduce((acc: number, char: string) =>
-                            acc + char.charCodeAt(0), 0);
+                        const hash: number = display
+                            .split("")
+                            .reduce((acc: number, char: string) => acc + char.charCodeAt(0), 0);
                         const baseHue: number = hash % 360;
 
                         const firstChar: string = display[0].toUpperCase();
@@ -270,22 +268,22 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
 
                     return (
                         <div className="role-tag-list">
-                            { consoleRolesToShow.map((role: UserRoleInterface) => (
+                            {consoleRolesToShow.map((role: UserRoleInterface) => (
                                 <Chip
-                                    key={ role.value }
-                                    label={ role.display }
+                                    key={role.value}
+                                    label={role.display}
                                     size="small"
-                                    sx={ { backgroundColor: generateColor(role.display) } }
+                                    sx={{ backgroundColor: generateColor(role.display) }}
                                 />
-                            )) }
-                            { rolesToOmit.length > 0 && (
+                            ))}
+                            {rolesToOmit.length > 0 && (
                                 <Chip
                                     key="more-chip"
-                                    label={ `+ ${rolesToOmit.length} More` }
+                                    label={`+ ${rolesToOmit.length} More`}
                                     size="small"
-                                    sx={ { backgroundColor: "#ccc" } }
+                                    sx={{ backgroundColor: "#ccc" }}
                                 />
-                            ) }
+                            )}
                         </div>
                     );
                 },
@@ -331,35 +329,34 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
         const actions: TableActionsInterface[] = [
             {
                 "data-componentid": "administrators-list-item-edit-button",
-                hidden: (): boolean => !isFeatureEnabled(featureConfig,
-                    UserManagementConstants.FEATURE_DICTIONARY.get("USER_READ")),
+                hidden: (): boolean =>
+                    !isFeatureEnabled(featureConfig, UserManagementConstants.FEATURE_DICTIONARY.get("USER_READ")),
                 icon: (user: UserBasicInterface): SemanticICONS => {
-                    const userStore: string = user?.userName?.split("/").length > 1
-                        ? user?.userName?.split("/")[0]
-                        : "PRIMARY";
+                    const userStore: string =
+                        user?.userName?.split("/").length > 1 ? user?.userName?.split("/")[0] : "PRIMARY";
 
-                    return (
-                        !hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes)
-                    || !isFeatureEnabled(featureConfig,
-                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE"))
-                    || readOnlyUserStores?.includes(userStore.toString()))
+                    return !hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes) ||
+                        !isFeatureEnabled(
+                            featureConfig,
+                            UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")
+                        ) ||
+                        readOnlyUserStores?.includes(userStore.toString())
                         ? "eye"
                         : "pencil alternate";
-
                 },
                 onClick: (e: SyntheticEvent, user: UserBasicInterface): void => {
                     onUserEdit(user);
                 },
                 popupText: (user: UserBasicInterface): string => {
-                    const userStore: string = user?.userName?.split("/").length > 1
-                        ? user?.userName?.split("/")[0]
-                        : "PRIMARY";
+                    const userStore: string =
+                        user?.userName?.split("/").length > 1 ? user?.userName?.split("/")[0] : "PRIMARY";
 
-                    return (
-                        !hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes)
-                    || !isFeatureEnabled(featureConfig,
-                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE"))
-                    || readOnlyUserStores?.includes(userStore.toString()))
+                    return !hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes) ||
+                        !isFeatureEnabled(
+                            featureConfig,
+                            UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")
+                        ) ||
+                        readOnlyUserStores?.includes(userStore.toString())
                         ? t("common:view")
                         : t("common:edit");
                 },
@@ -370,17 +367,19 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
         actions.push({
             "data-componentid": "administrators-list-item-delete-button",
             hidden: (user: UserBasicInterface): boolean => {
-                const userStore: string = user?.userName?.split("/").length > 1
-                    ? user?.userName?.split("/")[0]
-                    : UserstoreConstants.PRIMARY_USER_STORE;
+                const userStore: string =
+                    user?.userName?.split("/").length > 1
+                        ? user?.userName?.split("/")[0]
+                        : UserstoreConstants.PRIMARY_USER_STORE;
 
-                return !isFeatureEnabled(featureConfig,
-                    UserManagementConstants.FEATURE_DICTIONARY.get("USER_DELETE"))
-                    || isPrivilegedUser
-                    || !hasRequiredScopes(featureConfig, featureConfig?.scopes?.delete, allowedScopes)
-                    || readOnlyUserStores?.includes(userStore.toString())
-                    || ((getUserNameWithoutDomain(user?.userName) === serverConfigs?.realmConfig?.adminUser
-                    || authenticatedUser?.includes(getUserNameWithoutDomain(user?.userName))));
+                return (
+                    !isFeatureEnabled(featureConfig, UserManagementConstants.FEATURE_DICTIONARY.get("USER_DELETE")) ||
+                    isPrivilegedUser ||
+                    !hasRequiredScopes(featureConfig, featureConfig?.scopes?.delete, allowedScopes) ||
+                    readOnlyUserStores?.includes(userStore.toString()) ||
+                    getUserNameWithoutDomain(user?.userName) === serverConfigs?.realmConfig?.adminUser ||
+                    authenticatedUser?.includes(getUserNameWithoutDomain(user?.userName))
+                );
             },
             icon: (): SemanticICONS => "trash alternate",
             onClick: (e: SyntheticEvent, user: UserBasicInterface): void => {
@@ -406,14 +405,13 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
         }
 
         // Extracting the current username from authenticatedUser.
-        const currentUsername: string = authenticatedUser?.split("@").slice(0, 2).join("@");
+        const currentUsername: string = authenticatedUser
+            ?.split("@")
+            .slice(0, 2)
+            .join("@");
 
         if (currentUsername === getUserNameWithoutDomain(user?.userName)) {
-            return (
-                <Label size="small">
-                    Me
-                </Label>
-            );
+            return <Label size="small">Me</Label>;
         }
 
         return null;
@@ -429,19 +427,20 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
         if (searchQuery && administrators?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title") }
-                    subtitle={ [
-                        t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0",
-                            { query: searchQuery }),
+                    title={t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title")}
+                    subtitle={[
+                        t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0", {
+                            query: searchQuery
+                        }),
                         t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -449,10 +448,10 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
         if (administrators?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    data-componentid={ `${ componentId }-empty-placeholder` }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    data-componentid={`${componentId}-empty-placeholder`}
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    subtitle={ [ "There are no collaborator users associated with your organization at the moment." ] }
+                    subtitle={["There are no collaborator users associated with your organization at the moment."]}
                 />
             );
         }
@@ -463,104 +462,103 @@ const AdministratorsTable: React.FunctionComponent<AdministratorsTablePropsInter
     return (
         <>
             <DataTable<UserBasicInterface>
-                externalSearch={ (
+                externalSearch={
                     <AdvancedSearchWithBasicFilters
-                        onFilter={ () => null }
-                        filterAttributeOptions={ [
+                        onFilter={() => null}
+                        filterAttributeOptions={[
                             {
                                 key: 0,
-                                text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                                "filterAttributeOptions.username"),
+                                text: t(
+                                    "console:manage.features.users.advancedSearch.form.dropdown." +
+                                        "filterAttributeOptions.username"
+                                ),
                                 value: "userName"
                             },
                             {
                                 key: 1,
-                                text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                                "filterAttributeOptions.email"),
+                                text: t(
+                                    "console:manage.features.users.advancedSearch.form.dropdown." +
+                                        "filterAttributeOptions.email"
+                                ),
                                 value: "emails"
                             }
-                        ] }
-                        filterAttributePlaceholder={
-                            t("console:manage.features.users.advancedSearch.form.inputs" +
-                                            ".filterAttribute.placeholder")
-                        }
-                        filterConditionsPlaceholder={
-                            t("console:manage.features.users.advancedSearch.form.inputs" +
-                                            ".filterCondition.placeholder")
-                        }
-                        filterValuePlaceholder={
-                            t("console:manage.features.users.advancedSearch.form.inputs.filterValue" +
-                                            ".placeholder")
-                        }
-                        placeholder={ t("console:manage.features.users.advancedSearch.placeholder") }
+                        ]}
+                        filterAttributePlaceholder={t(
+                            "console:manage.features.users.advancedSearch.form.inputs" + ".filterAttribute.placeholder"
+                        )}
+                        filterConditionsPlaceholder={t(
+                            "console:manage.features.users.advancedSearch.form.inputs" + ".filterCondition.placeholder"
+                        )}
+                        filterValuePlaceholder={t(
+                            "console:manage.features.users.advancedSearch.form.inputs.filterValue" + ".placeholder"
+                        )}
+                        placeholder={t("console:manage.features.users.advancedSearch.placeholder")}
                         defaultSearchAttribute="userName"
                         defaultSearchOperator="co"
-                        triggerClearQuery={ triggerClearQuery }
+                        triggerClearQuery={triggerClearQuery}
                     />
-                ) }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                }
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "circular"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ administrators?.Resources }
-                onColumnSelectionChange={ onColumnSelectionChange }
-                onRowClick={ (e: SyntheticEvent, user: UserBasicInterface): void => {
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={administrators?.Resources}
+                onColumnSelectionChange={onColumnSelectionChange}
+                onRowClick={(e: SyntheticEvent, user: UserBasicInterface): void => {
                     onUserEdit(user);
                     onListItemClick && onListItemClick(e, user);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ true }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={true}
+                transparent={!isLoading && showPlaceholders() !== null}
                 className="console-administrators-table"
-                data-componentid={ componentId }
+                data-componentid={componentId}
             />
-            {
-                deletingUser && (
-                    <ConfirmationModal
-                        primaryActionLoading={ isLoading }
-                        data-componentid={ `${ componentId }-confirmation-modal` }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertionHint={ t("console:manage.features.user.deleteUser.confirmationModal.assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction="Confirm"
-                        secondaryAction="Cancel"
-                        onSecondaryActionClick={ (): void => {
+            {deletingUser && (
+                <ConfirmationModal
+                    primaryActionLoading={isLoading}
+                    data-componentid={`${componentId}-confirmation-modal`}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertionHint={t("console:manage.features.user.deleteUser.confirmationModal.assertionHint")}
+                    assertionType="checkbox"
+                    primaryAction="Confirm"
+                    secondaryAction="Cancel"
+                    onSecondaryActionClick={(): void => {
+                        setShowDeleteConfirmationModal(false);
+                        setAlert(null);
+                    }}
+                    onPrimaryActionClick={(): void => {
+                        onIsLoading(true);
+                        onUserDelete(deletingUser, () => {
                             setShowDeleteConfirmationModal(false);
-                            setAlert(null);
-                        } }
-                        onPrimaryActionClick={ (): void => {
-                            onIsLoading(true);
-                            onUserDelete(deletingUser, () => {
-                                setShowDeleteConfirmationModal(false);
-                                setDeletingUser(undefined);
-                                onIsLoading(false);
-                            });
-                        } }
-                        closeOnDimmerClick={ false }
+                            setDeletingUser(undefined);
+                            onIsLoading(false);
+                        });
+                    }}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-componentid={`${componentId}-confirmation-modal-header`}>
+                        {t("console:manage.features.user.deleteUser.confirmationModal.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        data-componentid={`${componentId}-confirmation-modal-message`}
+                        attached
+                        negative
                     >
-                        <ConfirmationModal.Header data-componentid={ `${ componentId }-confirmation-modal-header` }>
-                            { t("console:manage.features.user.deleteUser.confirmationModal.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            data-componentid={ `${ componentId }-confirmation-modal-message` }
-                            attached
-                            negative
-                        >
-                            { t("extensions:manage.guest.deleteUser.confirmationModal.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-componentid={ `${ componentId }-confirmation-modal-content` }>
-                            <div className="modal-alert-wrapper"> { alert && alertComponent }</div>
-                            { t("extensions:manage.guest.deleteUser.confirmationModal.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+                        {t("extensions:manage.guest.deleteUser.confirmationModal.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-componentid={`${componentId}-confirmation-modal-content`}>
+                        <div className="modal-alert-wrapper"> {alert && alertComponent}</div>
+                        {t("extensions:manage.guest.deleteUser.confirmationModal.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };
