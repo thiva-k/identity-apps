@@ -25,7 +25,7 @@ import * as forge from "node-forge";
 import React, { FunctionComponent, ReactElement, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Divider, Form, Icon, Segment, Tab, TextArea } from "semantic-ui-react";
-import { getCertificateIllustrations } from "../feature-core/configs";
+import { getCertificateIllustrations } from "../feature-configs.common";
 
 // This is a polyfill to support `File.arrayBuffer()` in Safari and IE.
 if ("File" in self) {

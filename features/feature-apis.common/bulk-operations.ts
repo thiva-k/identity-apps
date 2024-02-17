@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient, HttpClientInstance, HttpError, HttpResponse } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosRequestConfig } from "axios";
-import { store } from "../store";
+import { store } from "../feature-store.common";
 
 /**
  * Proptypes for bulk data.
