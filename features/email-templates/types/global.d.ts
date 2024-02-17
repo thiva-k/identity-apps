@@ -1,4 +1,3 @@
-/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -17,5 +16,18 @@
  * under the License.
  */
 
-export * from "./endpoints";
-export * from "./ui";
+declare global {
+    interface Window {
+        themeHash: any;
+        publicPath: any;
+    }
+
+    const contextPathGlobal: string;
+    const serverOriginGlobal: string;
+    const superTenantGlobal: string;
+    const tenantPrefixGlobal: string;
+    const isAdaptiveAuthenticationAvailable: boolean;
+    const isOrganizationManagementEnabled: boolean;
+}
+
+export {};

@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *

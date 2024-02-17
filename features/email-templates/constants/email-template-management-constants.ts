@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2022, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -20,13 +21,12 @@
  * Class containing Email template related constants.
  */
 export class EmailTemplateManagementConstants {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      */
     /* eslint-disable @typescript-eslint/no-empty-function */
-    private constructor() { }
+    private constructor() {}
 
     /**
      * A Boilerplate template to start email template editing.
@@ -48,5 +48,5 @@ export class EmailTemplateManagementConstants {
         "UGFzc3dvcmRSZXNldA", // PasswordReset
         "QWNjb3VudElkUmVjb3Zlcnk", //AccountIdRecovery
         "QXNrUGFzc3dvcmQ" // AskPassword
-    ]
+    ];
 }

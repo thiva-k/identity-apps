@@ -1,4 +1,3 @@
-/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -17,5 +16,26 @@
  * under the License.
  */
 
-export * from "./endpoints";
-export * from "./ui";
+declare module "*.json" {
+    const value: any;
+
+    export default value;
+}
+
+declare module "*.svg" {
+    import React = require("react");
+
+    export const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+    const src: string;
+
+    export default src;
+}
+
+declare module "*.png" {
+    const content: string;
+
+    export default content;
+}
+
+declare module "*.md";
+

@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -45,7 +46,6 @@ interface EmailTemplateEditorPropsInterface extends TestableComponentInterface {
 export const EmailTemplateEditor: FunctionComponent<EmailTemplateEditorPropsInterface> = (
     props: EmailTemplateEditorPropsInterface
 ): ReactElement => {
-
     const {
         htmlContent,
         isReadOnly,
@@ -54,19 +54,19 @@ export const EmailTemplateEditor: FunctionComponent<EmailTemplateEditorPropsInte
         isPreviewOnly,
         isAddFlow,
         isSignature,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ content, setContent ] = useState<string>("");
+    const [content, setContent] = useState<string>("");
 
     const updatedContent = useRef<string>("");
     const iframe = useRef<HTMLIFrameElement>();
 
     useEffect(() => {
         writeToIframe();
-    }, [ updatedContent.current ]);
+    }, [updatedContent.current]);
 
     useEffect(() => {
         if (isAddFlow && isSignature) {
@@ -76,7 +76,7 @@ export const EmailTemplateEditor: FunctionComponent<EmailTemplateEditorPropsInte
             setContent(htmlContent);
             updatedContent.current = htmlContent;
         }
-    }, [ htmlContent ]);
+    }, [htmlContent]);
 
     /**
      * Write content to iFrame.
@@ -87,11 +87,11 @@ export const EmailTemplateEditor: FunctionComponent<EmailTemplateEditorPropsInte
             /*
              * Trigger a page load in order to update the content
              * to the iframe document. This is a generic issue with firefox
-             * which doesn't update content when the initial content is null in 
+             * which doesn't update content when the initial content is null in
              * an iframe.
-             * 
+             *
              * See also
-             * {@link 
+             * {@link
              * https://stackoverflow.com/questions/7828502/cannot-set-document-body-innerhtml-of-iframe-in-firefox}
              */
             iframeDoc.open();
@@ -101,88 +101,88 @@ export const EmailTemplateEditor: FunctionComponent<EmailTemplateEditorPropsInte
     };
 
     return (
-        <div className={ "email-code-editor " + customClass } data-testid={ testId }>
-            {
-                isPreviewOnly
-                    ? (
-                        <div className="render-view" data-testid={ `${ testId }-preview-only-render-view` }>
-                            <iframe
-                                id="iframe"
-                                ref={ (ref) => {
-                                    iframe.current = ref;
-                                    iframe.current && writeToIframe();
-                                } }>
-                                <p data-testid={ `${ testId }-iframe-unsupported-error` }>
-                                    { t("console:manage.features.emailTemplates.notifications.iframeUnsupported" +
-                                        ".genericError.description") }
-                                </p>
-                            </iframe>
-                        </div>)
-                    : (
-                        <ResourceTab
-                            onTabChange={ () => {
-                                if (updateHtmlContent) {
-                                    updateHtmlContent(updatedContent.current);
-                                }
-                            } }
-                            defaultActiveTab={ isAddFlow ? 1 : 0 }
-                            panes={ [
-                                {
-                                    menuItem: t("console:manage.features.emailTemplates.editor.tabs.preview.tabName"),
-                                    render: () => (
-                                        <ResourceTab.Pane
-                                            className="render-view"
-                                            attached={ false }
-                                            data-testid="preview-tab-pane"
-                                        >
-                                            <iframe
-                                                id="iframe"
-                                                ref={ (ref) => {
-                                                    iframe.current = ref;
-                                                    iframe.current && writeToIframe();
-                                                } }>
-                                                <p data-testid={ `${ testId }-iframe-unsupported-error` }>
-                                                    { t("console:manage.features.emailTemplates.notifications" +
-                                                        ".iframeUnsupported.genericError.description") }
-                                                </p>
-                                            </iframe>
-                                        </ResourceTab.Pane>
-                                    )
-                                },
-                                {
-                                    menuItem: t("console:manage.features.emailTemplates.editor.tabs.code.tabName"),
-                                    render: () => (
-                                        <ResourceTab.Pane
-                                            attached={ false }
-                                            data-testid="html-code-tab-pane"
-                                        >
-                                            <CodeEditor
-                                                lint
-                                                language="htmlmixed"
-                                                sourceCode={ content }
-                                                options={ {
-                                                    lineWrapping: true
-                                                } }
-                                                onChange={ (editor, data, value) => {
-                                                    updatedContent.current = value;
-                                                } }
-                                                onBlur={ () => {
-                                                    if (updateHtmlContent) {
-                                                        updateHtmlContent(updatedContent.current);
-                                                    }
-                                                } }
-                                                readOnly={ isReadOnly }
-                                                theme={ "dark" }
-                                                data-testid={ `${ testId }-code-editor` }
-                                            />
-                                        </ResourceTab.Pane>
-                                    )
-                                }
-                            ] }
-                            data-testid={ `${ testId }-tabs` }
-                        />
-                    )
-            }
+        <div className={"email-code-editor " + customClass} data-testid={testId}>
+            {isPreviewOnly ? (
+                <div className="render-view" data-testid={`${testId}-preview-only-render-view`}>
+                    <iframe
+                        id="iframe"
+                        ref={ref => {
+                            iframe.current = ref;
+                            iframe.current && writeToIframe();
+                        }}
+                    >
+                        <p data-testid={`${testId}-iframe-unsupported-error`}>
+                            {t(
+                                "console:manage.features.emailTemplates.notifications.iframeUnsupported" +
+                                    ".genericError.description"
+                            )}
+                        </p>
+                    </iframe>
+                </div>
+            ) : (
+                <ResourceTab
+                    onTabChange={() => {
+                        if (updateHtmlContent) {
+                            updateHtmlContent(updatedContent.current);
+                        }
+                    }}
+                    defaultActiveTab={isAddFlow ? 1 : 0}
+                    panes={[
+                        {
+                            menuItem: t("console:manage.features.emailTemplates.editor.tabs.preview.tabName"),
+                            render: () => (
+                                <ResourceTab.Pane
+                                    className="render-view"
+                                    attached={false}
+                                    data-testid="preview-tab-pane"
+                                >
+                                    <iframe
+                                        id="iframe"
+                                        ref={ref => {
+                                            iframe.current = ref;
+                                            iframe.current && writeToIframe();
+                                        }}
+                                    >
+                                        <p data-testid={`${testId}-iframe-unsupported-error`}>
+                                            {t(
+                                                "console:manage.features.emailTemplates.notifications" +
+                                                    ".iframeUnsupported.genericError.description"
+                                            )}
+                                        </p>
+                                    </iframe>
+                                </ResourceTab.Pane>
+                            )
+                        },
+                        {
+                            menuItem: t("console:manage.features.emailTemplates.editor.tabs.code.tabName"),
+                            render: () => (
+                                <ResourceTab.Pane attached={false} data-testid="html-code-tab-pane">
+                                    <CodeEditor
+                                        lint
+                                        language="htmlmixed"
+                                        sourceCode={content}
+                                        options={{
+                                            lineWrapping: true
+                                        }}
+                                        onChange={(editor, data, value) => {
+                                            updatedContent.current = value;
+                                        }}
+                                        onBlur={() => {
+                                            if (updateHtmlContent) {
+                                                updateHtmlContent(updatedContent.current);
+                                            }
+                                        }}
+                                        readOnly={isReadOnly}
+                                        theme={"dark"}
+                                        data-testid={`${testId}-code-editor`}
+                                    />
+                                </ResourceTab.Pane>
+                            )
+                        }
+                    ]}
+                    data-testid={`${testId}-tabs`}
+                />
+            )}
         </div>
     );
 };

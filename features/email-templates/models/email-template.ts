@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -16,10 +17,9 @@
  * under the License.
  */
 
-
 /**
-  * Interface to campture Email Template type
-  */
+ * Interface to campture Email Template type
+ */
 export interface EmailTemplateType {
     id: string;
     displayName?: string;

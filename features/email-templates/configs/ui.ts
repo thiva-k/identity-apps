@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -18,18 +19,17 @@
 
 import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
 
-export const getAddEmailTemplateTypeWizardStepIcons = (): { 
-    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;  
- } => {
+export const getAddEmailTemplateTypeWizardStepIcons = (): {
+    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+} => {
     return {
         general: DocumentIcon as any
     };
-    
 };
 
-export const getViewLocaleTemplateWizardStepIcons = (): { 
-    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;  
- } => {
+export const getViewLocaleTemplateWizardStepIcons = (): {
+    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+} => {
     return {
         general: DocumentIcon as any
     };

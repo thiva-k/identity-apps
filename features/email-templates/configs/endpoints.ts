@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -26,6 +27,6 @@ import { EmailTemplatesResourceEndpointsInterface } from "../models";
  */
 export const getEmailTemplatesResourceEndpoints = (serverHost: string): EmailTemplatesResourceEndpointsInterface => {
     return {
-        emailTemplateType: `${ serverHost }/api/server/v1/email/template-types`
+        emailTemplateType: `${serverHost}/api/server/v1/email/template-types`
     };
 };
