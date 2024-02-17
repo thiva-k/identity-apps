@@ -51,12 +51,12 @@ import { organizationConfigs } from "../../../../extensions";
 import { 
     FeatureGateConstants 
 } from "../../../../extensions/components/feature-gate/constants/feature-gate";
-import { getMiscellaneousIcons } from "../../../core/configs";
-import { AppConstants } from "../../../core/constants";
-import { history } from "../../../core/helpers/history";
-import { AppState } from "../../../core/store";
-import { OrganizationType } from "../../../organizations/constants";
-import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
+import { getMiscellaneousIcons } from "../../../feature-configs.common";
+import { AppConstants } from "../../../feature-constants.common";
+import { history } from "../../../feature-helpers.common";
+import { OrganizationType } from "../../../feature-organizations.common/constants";
+import { useGetCurrentOrganizationType } from "../../../feature-organizations.common/hooks/use-get-organization-type";
+import { AppState } from "../../../feature-store.common";
 import { getAssociatedTenants, makeTenantDefault } from "../../api";
 import { TenantInfo, TenantRequestResponse, TriggerPropTypesInterface } from "../../models";
 import { handleTenantSwitch } from "../../utils";
