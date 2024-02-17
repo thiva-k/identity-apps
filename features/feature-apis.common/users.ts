@@ -18,8 +18,8 @@
 
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
-import { UserListInterface } from "../models";
-import { store } from "../store";
+import { UserListInterface } from "../feature-models.common";
+import { store } from "../feature-store.common";
 
 /**
  * Initialize an axios Http client.

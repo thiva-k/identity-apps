@@ -17,7 +17,7 @@
  */
 
 import { useContext } from "react";
-import AppSettingsContext, { AppSettingsContextProps } from "../context/app-settings-context";
+import AppSettingsContext, { AppSettingsContextProps } from "../feature-context.common/app-settings-context";
 
 /**
  * Props interface of {@link UseAppSettings}

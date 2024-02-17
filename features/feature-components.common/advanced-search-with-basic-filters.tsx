@@ -29,8 +29,8 @@ import {
 import React, { CSSProperties, FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Divider, Form, Grid } from "semantic-ui-react";
-import { commonConfig } from "../../../extensions";
-import { getAdvancedSearchIcons } from "../feature-core/configs";
+import { commonConfig } from "../../extensions";
+import { getAdvancedSearchIcons } from "../feature-configs.common";
 
 /**
  * Filter attribute field identifier.

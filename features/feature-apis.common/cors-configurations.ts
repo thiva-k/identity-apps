@@ -18,8 +18,8 @@
 
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
-import { CORSOriginsListInterface } from "../feature-core/models";
-import { store } from "../feature-core/store";
+import { CORSOriginsListInterface } from "../feature-models.common";
+import { store } from "../feature-store.common";
 
 /**
  * Get an axios instance.
