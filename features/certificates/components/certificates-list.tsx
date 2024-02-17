@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -28,6 +29,10 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { CertificateManagementUtils } from "@wso2is/core/utils";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import {
     AnimatedAvatar,
     AppAvatar,
@@ -47,7 +52,6 @@ import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useE
 import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Header, Icon, Modal, SemanticICONS } from "semantic-ui-react";
-import { AppState, FeatureConfigInterface, UIConstants, getEmptyPlaceholderIllustrations } from "../../core";
 import {
     deleteKeystoreCertificate,
     retrieveCertificateAlias,
@@ -63,9 +67,10 @@ const TRUSTSTORE: string = "truststore";
 /**
  * Prop types of the `CertificatesList` component
  */
-interface CertificatesListPropsInterface extends SBACInterface<FeatureConfigInterface>, LoadableComponentInterface,
-    TestableComponentInterface {
-
+interface CertificatesListPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        LoadableComponentInterface,
+        TestableComponentInterface {
     /**
      * Advanced Search component.
      */
@@ -121,7 +126,6 @@ interface CertificatesListPropsInterface extends SBACInterface<FeatureConfigInte
 export const CertificatesList: FunctionComponent<CertificatesListPropsInterface> = (
     props: CertificatesListPropsInterface
 ): ReactElement => {
-
     const {
         advancedSearch,
         defaultListItemLimit,
@@ -136,25 +140,21 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
         showListItemActions,
         update,
         type,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ deleteConfirm, setDeleteConfirm ] = useState(false);
-    const [ deleteID, setDeleteID ] = useState<string>(null);
-    const [ certificateDisplay, setCertificateDisplay ] = useState<DisplayCertificate>(null);
-    const [ isSuper, setIsSuper ] = useState(true);
-    const [ certificateModal, setCertificateModal ] = useState(false);
-    const [ deleteCertificatePem, setDeleteCertificatePem ] = useState("");
-    const [ tenantCertificate, setTenantCertificate ] = useState("");
+    const [deleteConfirm, setDeleteConfirm] = useState(false);
+    const [deleteID, setDeleteID] = useState<string>(null);
+    const [certificateDisplay, setCertificateDisplay] = useState<DisplayCertificate>(null);
+    const [isSuper, setIsSuper] = useState(true);
+    const [certificateModal, setCertificateModal] = useState(false);
+    const [deleteCertificatePem, setDeleteCertificatePem] = useState("");
+    const [tenantCertificate, setTenantCertificate] = useState("");
 
-    const tenantDomain: string = useSelector<AppState, string>(
-        (state: AppState) => state.config.deployment.tenant
-    );
-    const authTenantDomain: string = useSelector<AppState, string>(
-        (state: AppState) => state.auth.tenantDomain
-    );
+    const tenantDomain: string = useSelector<AppState, string>((state: AppState) => state.config.deployment.tenant);
+    const authTenantDomain: string = useSelector<AppState, string>((state: AppState) => state.auth.tenantDomain);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
     const dispatch = useDispatch();
@@ -165,21 +165,31 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
      * @param certificate - Deleting certificate.
      */
     const initDelete = (certificate: Certificate): void => {
-        retrieveCertificateAlias(certificate.alias, true).then(response => {
-            setDeleteCertificatePem(response);
-            setDeleteID(certificate.alias);
-            setDeleteConfirm(true);
-        }).catch(error => {
-            dispatch(addAlert({
-                description: error?.description
-                    || t("console:manage.features.certificates.keystore.notifications." +
-                        "getAlias.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: error?.message
-                    || t("console:manage.features.certificates.keystore.notifications." +
-                        "getAlias.genericError.message")
-            }));
-        });
+        retrieveCertificateAlias(certificate.alias, true)
+            .then(response => {
+                setDeleteCertificatePem(response);
+                setDeleteID(certificate.alias);
+                setDeleteConfirm(true);
+            })
+            .catch(error => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.certificates.keystore.notifications." +
+                                    "getAlias.genericError.description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t(
+                                "console:manage.features.certificates.keystore.notifications." +
+                                    "getAlias.genericError.message"
+                            )
+                    })
+                );
+            });
     };
 
     /**
@@ -200,8 +210,7 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
         } else {
             setIsSuper(false);
         }
-    }, [ tenantDomain ]);
-
+    }, [tenantDomain]);
 
     /**
      * Opens the modal that displays the certificate details
@@ -211,22 +220,32 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
         if (certificateDisplay) {
             setCertificateModal(true);
         }
-    }, [ certificateDisplay ]);
+    }, [certificateDisplay]);
 
     useEffect(() => {
-        retrievePublicCertificate(true).then(response => {
-            setTenantCertificate(decodeCertificate(response).serialNumber);
-        }).catch(error => {
-            dispatch(addAlert({
-                description: error?.description
-                    ?? t("console:manage.features.certificates.keystore.notifications." +
-                        "getPublicCertificate.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: error?.message
-                    ?? t("console:manage.features.certificates.keystore.notifications." +
-                        "getPublicCertificate.genericError.description")
-            }));
-        });
+        retrievePublicCertificate(true)
+            .then(response => {
+                setTenantCertificate(decodeCertificate(response).serialNumber);
+            })
+            .catch(error => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ??
+                            t(
+                                "console:manage.features.certificates.keystore.notifications." +
+                                    "getPublicCertificate.genericError.description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ??
+                            t(
+                                "console:manage.features.certificates.keystore.notifications." +
+                                    "getPublicCertificate.genericError.description"
+                            )
+                    })
+                );
+            });
     }, []);
 
     /**
@@ -235,85 +254,93 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
      * @returns The delete confirmation modal.
      */
     const showDeleteConfirm = (): ReactElement => {
-        const isTenantCertificate: boolean = decodeCertificate(deleteCertificatePem)
-            .serialNumber === tenantCertificate;
+        const isTenantCertificate: boolean = decodeCertificate(deleteCertificatePem).serialNumber === tenantCertificate;
 
         return (
             <ConfirmationModal
-                onClose={ closeDeleteConfirm }
+                onClose={closeDeleteConfirm}
                 type="negative"
-                open={ deleteConfirm }
-                assertion={ isTenantCertificate ? deleteID : null }
+                open={deleteConfirm}
+                assertion={isTenantCertificate ? deleteID : null}
                 assertionHint={
-                    (<p>
+                    <p>
                         <Trans
                             i18nKey="console:manage.features.certificates.keystore.confirmation.hint"
-                            i18nOptions={ { id: deleteID } }
+                            i18nOptions={{ id: deleteID }}
                         >
-                           Please type <strong>{ deleteID }</strong> to confirm.
+                            Please type <strong>{deleteID}</strong> to confirm.
                         </Trans>
-                    </p>)
+                    </p>
                 }
-                assertionType={ isTenantCertificate ? "input" : null }
-                primaryAction={ t("console:manage.features.certificates.keystore.confirmation.primaryAction") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={ closeDeleteConfirm }
-                onPrimaryActionClick={ (): void => {
-                    deleteKeystoreCertificate(deleteID).then(() => {
-                        dispatch(addAlert({
-                            description: t("console:manage.features.certificates.keystore.notifications." +
-                                "deleteCertificate.success.description"),
-                            level: AlertLevels.SUCCESS,
-                            message: t("console:manage.features.certificates.keystore.notifications." +
-                                "deleteCertificate.success.message")
-                        }));
-                        update();
-                    }).catch((error) => {
-                        dispatch(addAlert({
-                            description: error?.description
-                                ?? t("console:manage.features.certificates.keystore.notifications." +
-                                    "deleteCertificate.genericError.description"),
-                            level: AlertLevels.ERROR,
-                            message: error?.message
-                                ?? t("console:manage.features.certificates.keystore.notifications." +
-                                    "deleteCertificate.genericError.message")
-                        }));
-                    }).finally(() => {
-                        closeDeleteConfirm();
-                    });
-                } }
-                data-testid={ `${ testId }-delete-confirmation-modal` }
-                closeOnDimmerClick={ false }
+                assertionType={isTenantCertificate ? "input" : null}
+                primaryAction={t("console:manage.features.certificates.keystore.confirmation.primaryAction")}
+                secondaryAction={t("common:cancel")}
+                onSecondaryActionClick={closeDeleteConfirm}
+                onPrimaryActionClick={(): void => {
+                    deleteKeystoreCertificate(deleteID)
+                        .then(() => {
+                            dispatch(
+                                addAlert({
+                                    description: t(
+                                        "console:manage.features.certificates.keystore.notifications." +
+                                            "deleteCertificate.success.description"
+                                    ),
+                                    level: AlertLevels.SUCCESS,
+                                    message: t(
+                                        "console:manage.features.certificates.keystore.notifications." +
+                                            "deleteCertificate.success.message"
+                                    )
+                                })
+                            );
+                            update();
+                        })
+                        .catch(error => {
+                            dispatch(
+                                addAlert({
+                                    description:
+                                        error?.description ??
+                                        t(
+                                            "console:manage.features.certificates.keystore.notifications." +
+                                                "deleteCertificate.genericError.description"
+                                        ),
+                                    level: AlertLevels.ERROR,
+                                    message:
+                                        error?.message ??
+                                        t(
+                                            "console:manage.features.certificates.keystore.notifications." +
+                                                "deleteCertificate.genericError.message"
+                                        )
+                                })
+                            );
+                        })
+                        .finally(() => {
+                            closeDeleteConfirm();
+                        });
+                }}
+                data-testid={`${testId}-delete-confirmation-modal`}
+                closeOnDimmerClick={false}
             >
-                <ConfirmationModal.Header
-                    data-testid={ `${ testId }-delete-confirmation-modal-header` }
-                >
-                    { t("console:manage.features.certificates.keystore.confirmation.header") }
+                <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                    {t("console:manage.features.certificates.keystore.confirmation.header")}
                 </ConfirmationModal.Header>
-                { isTenantCertificate
-                    ? (
-                        <>
-                            <ConfirmationModal.Message
-                                attached
-                                negative
-                                data-testid={ `${ testId }-delete-confirmation-modal-message` }
-                            >
-                                { t("console:manage.features.certificates.keystore.confirmation.message") }
-                            </ConfirmationModal.Message>
-                            < ConfirmationModal.Content
-                                data-testid={ `${ testId }-delete-confirmation-modal-content` }
-                            >
-                                { t("console:manage.features.certificates.keystore.confirmation.tenantContent") }
-                            </ConfirmationModal.Content>
-                        </>
-                    ) : (
-                        < ConfirmationModal.Content
-                            data-testid={ `${ testId }-delete-confirmation-modal-content` }
+                {isTenantCertificate ? (
+                    <>
+                        <ConfirmationModal.Message
+                            attached
+                            negative
+                            data-testid={`${testId}-delete-confirmation-modal-message`}
                         >
-                            { t("console:manage.features.certificates.keystore.confirmation.content") }
+                            {t("console:manage.features.certificates.keystore.confirmation.message")}
+                        </ConfirmationModal.Message>
+                        <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                            {t("console:manage.features.certificates.keystore.confirmation.tenantContent")}
                         </ConfirmationModal.Content>
-                    )
-                }
+                    </>
+                ) : (
+                    <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                        {t("console:manage.features.certificates.keystore.confirmation.content")}
+                    </ConfirmationModal.Content>
+                )}
             </ConfirmationModal>
         );
     };
@@ -332,20 +359,24 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
         const byteArray = new Uint8Array(hex.length / 2);
 
         for (let x = 0; x < byteArray.length; x++) {
-            byteArray[ x ] = parseInt(hex.substr(x * 2, 2), 16);
+            byteArray[x] = parseInt(hex.substr(x * 2, 2), 16);
         }
 
-        const blob = new Blob([ byteArray ], {
+        const blob = new Blob([byteArray], {
             type: "application/x-x509-ca-cert"
         });
 
         saveAs(blob, name + ".cer");
 
-        dispatch(addAlert({
-            description: t("console:manage.features.certificates.keystore.notifications.download.success.description"),
-            level: AlertLevels.SUCCESS,
-            message: t("console:manage.features.certificates.keystore.notifications.download.success.message")
-        }));
+        dispatch(
+            addAlert({
+                description: t(
+                    "console:manage.features.certificates.keystore.notifications.download.success.description"
+                ),
+                level: AlertLevels.SUCCESS,
+                message: t("console:manage.features.certificates.keystore.notifications.download.success.message")
+            })
+        );
     };
 
     /**
@@ -386,17 +417,23 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
 
         const displayCertificate: DisplayCertificate = {
             alias: certificate.alias,
-            issuerDN: cert.getIssuerString().split("/").slice(1)
+            issuerDN: cert
+                .getIssuerString()
+                .split("/")
+                .slice(1)
                 .map(attribute => {
                     return {
-                        [ attribute.split("=")[ 0 ] ]: attribute.split("=")[ 1 ]
+                        [attribute.split("=")[0]]: attribute.split("=")[1]
                     };
                 }),
             serialNumber: cert.getSerialNumberHex(),
-            subjectDN: cert.getSubjectString().split("/").slice(1)
+            subjectDN: cert
+                .getSubjectString()
+                .split("/")
+                .slice(1)
                 .map(attribute => {
                     return {
-                        [ attribute.split("=")[ 0 ] ]: attribute.split("=")[ 1 ]
+                        [attribute.split("=")[0]]: attribute.split("=")[1]
                     };
                 }),
             validFrom: new Date(zulutodate(cert.getNotBefore()).toUTCString()),
@@ -418,41 +455,37 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
                 className="certificate-display"
                 dimmer="blurring"
                 size="tiny"
-                open={ certificateModal }
-                onClose={ () => { setCertificateModal(false); } }
-                data-testid={ `${ testId }-certificate-display-modal` }
+                open={certificateModal}
+                onClose={() => {
+                    setCertificateModal(false);
+                }}
+                data-testid={`${testId}-certificate-display-modal`}
             >
                 <Modal.Header>
                     <div className="certificate-ribbon">
-                        <GenericIcon
-                            inline
-                            transparent
-                            size="auto"
-                            icon={ getCertificateIllustrations().ribbon }
-                        />
+                        <GenericIcon inline transparent size="auto" icon={getCertificateIllustrations().ribbon} />
                         <div className="certificate-alias">
-                            View Certificate - {
-                                certificateDisplay?.alias
-                                    ? certificateDisplay?.alias
-                                    : certificateDisplay?.issuerDN && (
-                                        CertificateManagementUtils.searchIssuerDNAlias(certificateDisplay?.issuerDN)
-                                    )
-                            }
-                        </div><br/>
-                        <div className="certificate-serial">Serial Number: { certificateDisplay?.serialNumber }</div>
+                            View Certificate -{" "}
+                            {certificateDisplay?.alias
+                                ? certificateDisplay?.alias
+                                : certificateDisplay?.issuerDN &&
+                                  CertificateManagementUtils.searchIssuerDNAlias(certificateDisplay?.issuerDN)}
+                        </div>
+                        <br />
+                        <div className="certificate-serial">Serial Number: {certificateDisplay?.serialNumber}</div>
                     </div>
                 </Modal.Header>
                 <Modal.Content className="certificate-content">
                     <CertificateDisplay
-                        data-testid={ `${ testId }-certificate` }
-                        certificate={ certificateDisplay }
-                        labels={ {
+                        data-testid={`${testId}-certificate`}
+                        certificate={certificateDisplay}
+                        labels={{
                             issuerDN: t("console:manage.features.certificates.keystore.summary.issuerDN"),
                             subjectDN: t("console:manage.features.certificates.keystore.summary.subjectDN"),
                             validFrom: t("console:manage.features.certificates.keystore.summary.validFrom"),
                             validTill: t("console:manage.features.certificates.keystore.summary.validTill"),
                             version: t("console:manage.features.certificates.keystore.summary.version")
-                        } }
+                        }}
                     />
                 </Modal.Content>
             </Modal>
@@ -469,19 +502,19 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
         if (searchQuery) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:manage.placeholders.emptySearchResult.action") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:manage.placeholders.emptySearchResult.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.placeholders.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("console:manage.placeholders.emptySearchResult.title")}
+                    subtitle={[
                         t("console:manage.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                         t("console:manage.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder` }
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder`}
                 />
             );
         }
@@ -489,19 +522,17 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
         if (list?.length === 0 && onEmptyListPlaceholderActionClick) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <PrimaryButton onClick={ onEmptyListPlaceholderActionClick }>
+                    action={
+                        <PrimaryButton onClick={onEmptyListPlaceholderActionClick}>
                             <Icon name="cloud upload" />
-                            { t("console:manage.features.certificates.keystore.placeholders.emptyList.action") }
+                            {t("console:manage.features.certificates.keystore.placeholders.emptyList.action")}
                         </PrimaryButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    title={ t("console:manage.features.certificates.keystore.placeholders.emptyList.title") }
-                    subtitle={ [
-                        t("console:manage.features.certificates.keystore.placeholders.emptyList.subtitle")
-                    ] }
-                    data-testid={ `${ testId }-empty-placeholder` }
+                    title={t("console:manage.features.certificates.keystore.placeholders.emptyList.title")}
+                    subtitle={[t("console:manage.features.certificates.keystore.placeholders.emptyList.subtitle")]}
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             );
         }
@@ -515,16 +546,17 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
      * @returns If permitted or not.
      */
     const hasRequiredPermissions = (): boolean => {
-        if (type === KEYSTORE
-            && hasRequiredScopes(
-                featureConfig?.certificates, featureConfig?.certificates?.scopes?.read, allowedScopes
-            )) {
-
+        if (
+            type === KEYSTORE &&
+            hasRequiredScopes(featureConfig?.certificates, featureConfig?.certificates?.scopes?.read, allowedScopes)
+        ) {
             return true;
         }
 
-        return type === TRUSTSTORE
-            && hasRequiredScopes(featureConfig?.certificates, featureConfig?.certificates?.scopes?.read, allowedScopes);
+        return (
+            type === TRUSTSTORE &&
+            hasRequiredScopes(featureConfig?.certificates, featureConfig?.certificates?.scopes?.read, allowedScopes)
+        );
     };
 
     /**
@@ -536,34 +568,52 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
             retrieveCertificateAlias(certificate.alias, true)
                 .then((response: string) => {
                     displayCertificate(certificate, response);
-                }).catch(error => {
-                    dispatch(addAlert({
-                        description: error?.description
-                            ?? t("console:manage.features.certificates.keystore.notifications.getAlias." +
-                                "genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.message
-                            ?? t("console:manage.features.certificates.keystore.notifications.getAlias." +
-                                "genericError.message")
-                    }));
+                })
+                .catch(error => {
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.description ??
+                                t(
+                                    "console:manage.features.certificates.keystore.notifications.getAlias." +
+                                        "genericError.description"
+                                ),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.message ??
+                                t(
+                                    "console:manage.features.certificates.keystore.notifications.getAlias." +
+                                        "genericError.message"
+                                )
+                        })
+                    );
                 });
 
             return;
         }
 
         retrieveClientCertificate(certificate.alias, true)
-            .then((response) => {
+            .then(response => {
                 displayCertificate(certificate, response);
-            }).catch(error => {
-                dispatch(addAlert({
-                    description: error?.description
-                        ?? t("console:manage.features.certificates.keystore.notifications.getCertificate." +
-                            "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        ?? t("console:manage.features.certificates.keystore.notifications.getCertificate." +
-                            "genericError.message")
-                }));
+            })
+            .catch(error => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ??
+                            t(
+                                "console:manage.features.certificates.keystore.notifications.getCertificate." +
+                                    "genericError.description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ??
+                            t(
+                                "console:manage.features.certificates.keystore.notifications.getCertificate." +
+                                    "genericError.message"
+                            )
+                    })
+                );
             });
     };
 
@@ -576,34 +626,52 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
             retrieveCertificateAlias(certificate.alias, true)
                 .then((response: string) => {
                     exportCertificate(certificate.alias, response);
-                }).catch(error => {
-                    dispatch(addAlert({
-                        description: error?.description
-                            ?? t("console:manage.features.certificates.keystore.notifications.getAlias." +
-                                "genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.message
-                            ?? t("console:manage.features.certificates.keystore.notifications.getAlias." +
-                                "genericError.message")
-                    }));
+                })
+                .catch(error => {
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.description ??
+                                t(
+                                    "console:manage.features.certificates.keystore.notifications.getAlias." +
+                                        "genericError.description"
+                                ),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.message ??
+                                t(
+                                    "console:manage.features.certificates.keystore.notifications.getAlias." +
+                                        "genericError.message"
+                                )
+                        })
+                    );
                 });
 
             return;
         }
 
         retrieveClientCertificate(certificate.alias, true)
-            .then((response) => {
+            .then(response => {
                 exportCertificate(certificate.alias, response);
-            }).catch(error => {
-                dispatch(addAlert({
-                    description: error?.description
-                        ?? t("console:manage.features.certificates.keystore.notifications.getCertificate." +
-                            "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        ?? t("console:manage.features.certificates.keystore.notifications.getCertificate." +
-                            "genericError.message")
-                }));
+            })
+            .catch(error => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ??
+                            t(
+                                "console:manage.features.certificates.keystore.notifications.getCertificate." +
+                                    "genericError.description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ??
+                            t(
+                                "console:manage.features.certificates.keystore.notifications.getCertificate." +
+                                    "genericError.message"
+                            )
+                    })
+                );
             });
     };
 
@@ -620,27 +688,20 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
                 id: "name",
                 key: "name",
                 render: (certificate: Certificate): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ testId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                         <AppAvatar
-                            image={ (
+                            image={
                                 <AnimatedAvatar
-                                    name={ certificate.alias }
+                                    name={certificate.alias}
                                     size="mini"
-                                    data-testid={ `${ testId }-item-image-inner` }
+                                    data-testid={`${testId}-item-image-inner`}
                                 />
-                            ) }
+                            }
                             size="mini"
                             spaced="right"
-                            data-testid={ `${ testId }-item-image` }
+                            data-testid={`${testId}-item-image`}
                         />
-                        <Header.Content>
-                            { certificate.alias }
-                        </Header.Content>
+                        <Header.Content>{certificate.alias}</Header.Content>
                     </Header>
                 ),
                 title: t("console:manage.features.certificates.keystore.list.columns.name")
@@ -702,30 +763,28 @@ export const CertificatesList: FunctionComponent<CertificatesListPropsInterface>
 
     return (
         <>
-            { deleteID && showDeleteConfirm() }
-            { certificateModal && renderCertificateModal() }
+            {deleteID && showDeleteConfirm()}
+            {certificateModal && renderCertificateModal()}
             <DataTable<Certificate>
                 className="certificates-list"
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ hasRequiredPermissions() && list }
-                externalSearch={ advancedSearch }
-                onRowClick={
-                    (e: SyntheticEvent, certificate: Certificate): void => {
-                        handleCertificateView(certificate);
-                        onListItemClick && onListItemClick(e, certificate);
-                    }
-                }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ false }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-testid={ testId }
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={hasRequiredPermissions() && list}
+                externalSearch={advancedSearch}
+                onRowClick={(e: SyntheticEvent, certificate: Certificate): void => {
+                    handleCertificateView(certificate);
+                    onListItemClick && onListItemClick(e, certificate);
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={false}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-testid={testId}
             />
         </>
     );

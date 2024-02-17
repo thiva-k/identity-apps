@@ -1,23 +1,25 @@
+/* eslint-disable header/header */
 /**
-* Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
-*
-* WSO2 LLC. licenses this file to you under the Apache License,
-* Version 2.0 (the 'License'); you may not use this file except
-* in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied. See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
+ * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ *
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the 'License'); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 import { AlertLevels, Certificate, DisplayCertificate, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { UploadCertificate } from "@wso2is/feature-components.common";
 import { useTrigger } from "@wso2is/forms";
 import { LinkButton, PrimaryButton, Steps, useWizardAlert } from "@wso2is/react-components";
 import { X509, zulutodate } from "jsrsasign";
@@ -26,7 +28,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Grid, Icon, Modal } from "semantic-ui-react";
 import { CertificateSummary } from "./wizard";
-import { UploadCertificate } from "../../core";
 import { createKeystoreCertificate } from "../api";
 import { getImportCertificateWizardStepIcons } from "../configs";
 
@@ -58,30 +59,24 @@ interface ImportCertificatePropsInterface extends TestableComponentInterface {
 export const ImportCertificate: FunctionComponent<ImportCertificatePropsInterface> = (
     props: ImportCertificatePropsInterface
 ): ReactElement => {
-
-    const {
-        open,
-        onClose,
-        update,
-        [ "data-testid" ]: testId
-    } = props;
+    const { open, onClose, update, ["data-testid"]: testId } = props;
 
     const dispatch = useDispatch();
 
     const { t } = useTranslation();
 
-    const [ data, setData ] = useState<Certificate>(null);
-    const [ currentWizardStep, setCurrentWizardStep ] = useState(0);
-    const [ certificateDisplay, setCertificateDisplay ] = useState<DisplayCertificate>(null);
-    const [ name, setName ] = useState("");
-    const [ fileDecoded, setFileDecoded ] = useState("");
-    const [ pem, setPem ] = useState("");
-    const [ file, setFile ] = useState<File>(null);
-    const [ certificate, setCertificate ] = useState<X509>(null);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [data, setData] = useState<Certificate>(null);
+    const [currentWizardStep, setCurrentWizardStep] = useState(0);
+    const [certificateDisplay, setCertificateDisplay] = useState<DisplayCertificate>(null);
+    const [name, setName] = useState("");
+    const [fileDecoded, setFileDecoded] = useState("");
+    const [pem, setPem] = useState("");
+    const [file, setFile] = useState<File>(null);
+    const [certificate, setCertificate] = useState<X509>(null);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const [ firstStep, setFirstStep ] = useTrigger();
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [firstStep, setFirstStep] = useTrigger();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     /**
      * Moves to the next step once the certificate display state is set.
@@ -90,36 +85,51 @@ export const ImportCertificate: FunctionComponent<ImportCertificatePropsInterfac
         if (certificateDisplay) {
             setCurrentWizardStep(1);
         }
-    }, [ certificateDisplay ]);
+    }, [certificateDisplay]);
 
     /**
      * Imports the certificate.
      */
     const handleSubmit = (): void => {
         setIsSubmitting(true);
-        createKeystoreCertificate(data).then(() => {
-            dispatch(addAlert({
-                description: t("console:manage.features.certificates.keystore.notifications." +
-                    "addCertificate.success.description"),
-                level: AlertLevels.SUCCESS,
-                message: t("console:manage.features.certificates.keystore.notifications." +
-                    "addCertificate.success.message")
-            }));
-            update();
-            onClose();
-        }).catch(error => {
-            setAlert({
-                description: error?.response?.data?.description
-                    || t("console:manage.features.certificates.keystore.notifications." +
-                        "addCertificate.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: error?.response?.data?.message
-                    || t("console:manage.features.certificates.keystore.notifications." +
-                        "addCertificate.genericError.message")
+        createKeystoreCertificate(data)
+            .then(() => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.certificates.keystore.notifications." +
+                                "addCertificate.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.certificates.keystore.notifications." +
+                                "addCertificate.success.message"
+                        )
+                    })
+                );
+                update();
+                onClose();
+            })
+            .catch(error => {
+                setAlert({
+                    description:
+                        error?.response?.data?.description ||
+                        t(
+                            "console:manage.features.certificates.keystore.notifications." +
+                                "addCertificate.genericError.description"
+                        ),
+                    level: AlertLevels.ERROR,
+                    message:
+                        error?.response?.data?.message ||
+                        t(
+                            "console:manage.features.certificates.keystore.notifications." +
+                                "addCertificate.genericError.message"
+                        )
+                });
+            })
+            .finally(() => {
+                setIsSubmitting(false);
             });
-        }).finally(() => {
-            setIsSubmitting(false);
-        });
     };
 
     /**
@@ -162,17 +172,23 @@ export const ImportCertificate: FunctionComponent<ImportCertificatePropsInterfac
     const decodeCertificate = (data: Certificate, cert: X509): void => {
         const displayCertificate: DisplayCertificate = {
             alias: data.alias,
-            issuerDN: cert.getIssuerString().split("/").slice(1)
+            issuerDN: cert
+                .getIssuerString()
+                .split("/")
+                .slice(1)
                 .map(attribute => {
                     return {
-                        [ attribute.split("=")[ 0 ] ]: attribute.split("=")[ 1 ]
+                        [attribute.split("=")[0]]: attribute.split("=")[1]
                     };
                 }),
             serialNumber: cert.getSerialNumberHex(),
-            subjectDN: cert.getSubjectString().split("/").slice(1)
+            subjectDN: cert
+                .getSubjectString()
+                .split("/")
+                .slice(1)
                 .map(attribute => {
                     return {
-                        [ attribute.split("=")[ 0 ] ]: attribute.split("=")[ 1 ]
+                        [attribute.split("=")[0]]: attribute.split("=")[1]
                     };
                 }),
             validFrom: new Date(zulutodate(cert.getNotBefore()).toUTCString()),
@@ -190,14 +206,14 @@ export const ImportCertificate: FunctionComponent<ImportCertificatePropsInterfac
         {
             content: (
                 <UploadCertificate
-                    submit={ onSubmitFirstStep }
-                    triggerSubmit={ firstStep }
-                    pemData={ pem }
-                    nameData={ name }
-                    fileDecodedData={ fileDecoded }
-                    fileData={ file }
-                    forgeCertificateData={ certificate }
-                    data-testid={ `${ testId }-upload` }
+                    submit={onSubmitFirstStep}
+                    triggerSubmit={firstStep}
+                    pemData={pem}
+                    nameData={name}
+                    fileDecodedData={fileDecoded}
+                    fileData={file}
+                    forgeCertificateData={certificate}
+                    data-testid={`${testId}-upload`}
                 />
             ),
             icon: getImportCertificateWizardStepIcons().general,
@@ -206,14 +222,13 @@ export const ImportCertificate: FunctionComponent<ImportCertificatePropsInterfac
         {
             content: (
                 <CertificateSummary
-                    name={ data?.alias }
-                    certificate={ certificateDisplay }
-                    data-testid={ `${ testId }-summary` }
+                    name={data?.alias}
+                    certificate={certificateDisplay}
+                    data-testid={`${testId}-summary`}
                 />
             ),
             icon: getImportCertificateWizardStepIcons().general,
             title: t("console:manage.features.certificates.keystore.wizard.steps.summary")
-
         }
     ];
 
@@ -241,73 +256,70 @@ export const ImportCertificate: FunctionComponent<ImportCertificatePropsInterfac
 
     return (
         <Modal
-            open={ open }
-            onClose={ onClose }
+            open={open}
+            onClose={onClose}
             dimmer="blurring"
             size="small"
             className="wizard application-create-wizard"
-            data-testid={ `${ testId }-modal` }
-            closeOnDimmerClick={ false }
+            data-testid={`${testId}-modal`}
+            closeOnDimmerClick={false}
         >
             <Modal.Header className="wizard-header">
-                { t("console:manage.features.certificates.keystore.wizard.header") }
+                {t("console:manage.features.certificates.keystore.wizard.header")}
             </Modal.Header>
-            <Modal.Content className="steps-container" data-testid={ `${ testId }-steps` }>
-                <Steps.Group
-                    header="Import certificate into keystore."
-                    current={ currentWizardStep }
-                >
-                    { STEPS.map((step, index) => (
+            <Modal.Content className="steps-container" data-testid={`${testId}-steps`}>
+                <Steps.Group header="Import certificate into keystore." current={currentWizardStep}>
+                    {STEPS.map((step, index) => (
                         <Steps.Step
-                            key={ index }
-                            icon={ step.icon }
-                            title={ step.title }
-                            data-testid={ `${ testId }-step-${ index }` }
+                            key={index}
+                            icon={step.icon}
+                            title={step.title}
+                            data-testid={`${testId}-step-${index}`}
                         />
-                    )) }
+                    ))}
                 </Steps.Group>
-            </Modal.Content >
-            <Modal.Content>
-                { alert && alertComponent }
             </Modal.Content>
+            <Modal.Content>{alert && alertComponent}</Modal.Content>
             <Modal.Content
-                className={ `content-container ${currentWizardStep === 1 ? "certificate-content summary" : ""}` }
+                className={`content-container ${currentWizardStep === 1 ? "certificate-content summary" : ""}`}
                 scrolling
             >
-                { STEPS[ currentWizardStep ].content }
+                {STEPS[currentWizardStep].content}
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                            <LinkButton floated="left" onClick={ () => onClose() }>{ t("common:cancel") }</LinkButton>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            <LinkButton floated="left" onClick={() => onClose()}>
+                                {t("common:cancel")}
+                            </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                            { currentWizardStep < STEPS.length - 1 && (
-                                <PrimaryButton floated="right" onClick={ next }>
-                                    { t("common:next") } <Icon name="arrow right" />
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            {currentWizardStep < STEPS.length - 1 && (
+                                <PrimaryButton floated="right" onClick={next}>
+                                    {t("common:next")} <Icon name="arrow right" />
                                 </PrimaryButton>
-                            ) }
-                            { currentWizardStep === STEPS.length - 1 && (
+                            )}
+                            {currentWizardStep === STEPS.length - 1 && (
                                 <PrimaryButton
                                     floated="right"
-                                    onClick={ next }
-                                    data-testid={ `${ testId }-import-button` }
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
+                                    onClick={next}
+                                    data-testid={`${testId}-import-button`}
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
                                 >
-                                    { t("common:import") }
+                                    {t("common:import")}
                                 </PrimaryButton>
-                            ) }
-                            { currentWizardStep > 0 && (
+                            )}
+                            {currentWizardStep > 0 && (
                                 <LinkButton
                                     floated="right"
-                                    onClick={ previous }
-                                    data-testid={ `${ testId }-previous-button` }
+                                    onClick={previous}
+                                    data-testid={`${testId}-previous-button`}
                                 >
-                                    <Icon name="arrow left" /> { t("common:previous") }
+                                    <Icon name="arrow left" /> {t("common:previous")}
                                 </LinkButton>
-                            ) }
+                            )}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

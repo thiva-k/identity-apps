@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -18,19 +19,21 @@
 
 import { AlertLevels, Certificate, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
+import { filterList, sortList } from "@wso2is/feature-utils.common";
 import { ListLayout, PageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { DropdownProps, PaginationProps } from "semantic-ui-react";
-import { AdvancedSearchWithBasicFilters, UIConstants, filterList, sortList } from "../../core";
 import { listClientCertificates } from "../api";
 import { CertificatesList } from "../components";
 
 /**
  * Props for the Certificates Truststore page.
  */
-type CertificatesTruststorePageInterface = TestableComponentInterface
+type CertificatesTruststorePageInterface = TestableComponentInterface;
 
 /**
  * This renders the Certificates Truststore page.
@@ -42,10 +45,7 @@ type CertificatesTruststorePageInterface = TestableComponentInterface
 const CertificatesTruststore: FunctionComponent<CertificatesTruststorePageInterface> = (
     props: CertificatesTruststorePageInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     /**
      * Sets the attributes by which the list can be sorted.
@@ -58,15 +58,15 @@ const CertificatesTruststore: FunctionComponent<CertificatesTruststorePageInterf
         }
     ];
 
-    const [ certificatesTruststore, setCertificatesTruststore ] = useState<Certificate[]>(null);
-    const [ offset, setOffset ] = useState(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ isLoading, setIsLoading ] = useState(true);
-    const [ filteredCertificatesTruststore, setFilteredCertificatesTruststore ] = useState<Certificate[]>(null);
-    const [ sortBy, setSortBy ] = useState(SORT_BY[ 0 ]);
-    const [ sortOrder, setSortOrder ] = useState(true);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
+    const [certificatesTruststore, setCertificatesTruststore] = useState<Certificate[]>(null);
+    const [offset, setOffset] = useState(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [isLoading, setIsLoading] = useState(true);
+    const [filteredCertificatesTruststore, setFilteredCertificatesTruststore] = useState<Certificate[]>(null);
+    const [sortBy, setSortBy] = useState(SORT_BY[0]);
+    const [sortOrder, setSortOrder] = useState(true);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
 
     const dispatch = useDispatch();
 
@@ -77,20 +77,22 @@ const CertificatesTruststore: FunctionComponent<CertificatesTruststorePageInterf
      */
     const fetchCertificatesTruststore = () => {
         setIsLoading(true);
-        listClientCertificates().then(response => {
-            setCertificatesTruststore(response);
-            setFilteredCertificatesTruststore(response);
-            setIsLoading(false);
-        }).catch(error => {
-            setIsLoading(false);
-            dispatch(addAlert(
-                {
-                    description: error?.description || "An error occurred while fetching certificates",
-                    level: AlertLevels.ERROR,
-                    message: error?.message || "Something went wrong"
-                }
-            ));
-        });
+        listClientCertificates()
+            .then(response => {
+                setCertificatesTruststore(response);
+                setFilteredCertificatesTruststore(response);
+                setIsLoading(false);
+            })
+            .catch(error => {
+                setIsLoading(false);
+                dispatch(
+                    addAlert({
+                        description: error?.description || "An error occurred while fetching certificates",
+                        level: AlertLevels.ERROR,
+                        message: error?.message || "Something went wrong"
+                    })
+                );
+            });
     };
 
     useEffect(() => {
@@ -98,8 +100,8 @@ const CertificatesTruststore: FunctionComponent<CertificatesTruststorePageInterf
     }, []);
 
     useEffect(() => {
-        setFilteredCertificatesTruststore((sortList(filteredCertificatesTruststore, sortBy.value, sortOrder)));
-    }, [ sortBy, sortOrder ]);
+        setFilteredCertificatesTruststore(sortList(filteredCertificatesTruststore, sortBy.value, sortOrder));
+    }, [sortBy, sortOrder]);
 
     /**
      * This slices and returns a portion of the list.
@@ -131,7 +133,7 @@ const CertificatesTruststore: FunctionComponent<CertificatesTruststorePageInterf
      * @param {PaginationProps} data.
      */
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setOffset((data.activePage as number - 1) * listItemLimit);
+        setOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     /**
@@ -150,7 +152,7 @@ const CertificatesTruststore: FunctionComponent<CertificatesTruststorePageInterf
      * @param {DropdownProps} data.
      */
     const handleSortStrategyChange = (event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
-        setSortBy(SORT_BY.filter(option => option.value === data.value)[ 0 ]);
+        setSortBy(SORT_BY.filter(option => option.value === data.value)[0]);
     };
 
     /**
@@ -179,91 +181,89 @@ const CertificatesTruststore: FunctionComponent<CertificatesTruststorePageInterf
             title="Certificates in the Truststore"
             pageTitle="Certificates in the Truststore"
             description="Create and manage certificates in the truststore"
-            data-testid={ `${ testId }-page-layout` }
+            data-testid={`${testId}-page-layout`}
         >
             <ListLayout
                 advancedSearch={
-                    (<AdvancedSearchWithBasicFilters
-                        onFilter={ handleTruststoreFilter }
-                        filterAttributeOptions={ [
+                    <AdvancedSearchWithBasicFilters
+                        onFilter={handleTruststoreFilter}
+                        filterAttributeOptions={[
                             {
                                 key: 0,
                                 text: "Alias",
                                 value: "alias"
                             }
-                        ] }
-                        filterAttributePlaceholder={
-                            t("console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
-                                ".filterAttribute.placeholder")
-                        }
-                        filterConditionsPlaceholder={
-                            t("console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
-                                ".filterCondition.placeholder")
-                        }
-                        filterValuePlaceholder={
-                            t("console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
-                                ".filterValue.placeholder")
-                        }
-                        placeholder={
-                            t("console:manage.features.certificates.truststore.advancedSearch.placeholder")
-                        }
+                        ]}
+                        filterAttributePlaceholder={t(
+                            "console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
+                                ".filterAttribute.placeholder"
+                        )}
+                        filterConditionsPlaceholder={t(
+                            "console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
+                                ".filterCondition.placeholder"
+                        )}
+                        filterValuePlaceholder={t(
+                            "console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
+                                ".filterValue.placeholder"
+                        )}
+                        placeholder={t("console:manage.features.certificates.truststore.advancedSearch.placeholder")}
                         defaultSearchAttribute="alias"
                         defaultSearchOperator="co"
-                        data-testid={ `${ testId }-advanced-search` }
-                    />)
+                        data-testid={`${testId}-advanced-search`}
+                    />
                 }
-                currentListSize={ listItemLimit }
-                listItemLimit={ listItemLimit }
-                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                onPageChange={ handlePaginationChange }
-                onSortStrategyChange={ handleSortStrategyChange }
-                onSortOrderChange={ handleSortOrderChange }
-                leftActionPanel={ null }
-                showPagination={ true }
-                sortOptions={ SORT_BY }
-                sortStrategy={ sortBy }
-                totalPages={ Math.ceil(filteredCertificatesTruststore?.length / listItemLimit) }
-                totalListSize={ filteredCertificatesTruststore?.length }
-                data-testid={ `${ testId }-list-layout` }
+                currentListSize={listItemLimit}
+                listItemLimit={listItemLimit}
+                onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                onPageChange={handlePaginationChange}
+                onSortStrategyChange={handleSortStrategyChange}
+                onSortOrderChange={handleSortOrderChange}
+                leftActionPanel={null}
+                showPagination={true}
+                sortOptions={SORT_BY}
+                sortStrategy={sortBy}
+                totalPages={Math.ceil(filteredCertificatesTruststore?.length / listItemLimit)}
+                totalListSize={filteredCertificatesTruststore?.length}
+                data-testid={`${testId}-list-layout`}
             >
                 <CertificatesList
                     advancedSearch={
-                        (<AdvancedSearchWithBasicFilters
-                            onFilter={ handleTruststoreFilter }
-                            filterAttributeOptions={ [
+                        <AdvancedSearchWithBasicFilters
+                            onFilter={handleTruststoreFilter}
+                            filterAttributeOptions={[
                                 {
                                     key: 0,
                                     text: "Alias",
                                     value: "alias"
                                 }
-                            ] }
-                            filterAttributePlaceholder={
-                                t("console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
-                                    ".filterAttribute.placeholder")
-                            }
-                            filterConditionsPlaceholder={
-                                t("console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
-                                    ".filterCondition.placeholder")
-                            }
-                            filterValuePlaceholder={
-                                t("console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
-                                    ".filterValue.placeholder")
-                            }
-                            placeholder={
-                                t("console:manage.features.certificates.truststore.advancedSearch.placeholder")
-                            }
+                            ]}
+                            filterAttributePlaceholder={t(
+                                "console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
+                                    ".filterAttribute.placeholder"
+                            )}
+                            filterConditionsPlaceholder={t(
+                                "console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
+                                    ".filterCondition.placeholder"
+                            )}
+                            filterValuePlaceholder={t(
+                                "console:manage.features.certificates.truststore.advancedSearch.form.inputs" +
+                                    ".filterValue.placeholder"
+                            )}
+                            placeholder={t(
+                                "console:manage.features.certificates.truststore.advancedSearch.placeholder"
+                            )}
                             defaultSearchAttribute="alias"
                             defaultSearchOperator="co"
-                            data-testid={ `${ testId }-advanced-search` }
-                        />)
+                            data-testid={`${testId}-advanced-search`}
+                        />
                     }
-                    isLoading={ isLoading }
-                    list={ paginate(filteredCertificatesTruststore, listItemLimit, offset) }
-                    update={ fetchCertificatesTruststore }
-                    onSearchQueryClear={ handleSearchQueryClear }
-                    searchQuery={ searchQuery }
+                    isLoading={isLoading}
+                    list={paginate(filteredCertificatesTruststore, listItemLimit, offset)}
+                    update={fetchCertificatesTruststore}
+                    onSearchQueryClear={handleSearchQueryClear}
+                    searchQuery={searchQuery}
                     type="truststore"
-                    data-testid={ `${ testId }-list` }
+                    data-testid={`${testId}-list`}
                 />
             </ListLayout>
         </PageLayout>

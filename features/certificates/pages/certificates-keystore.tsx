@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -20,6 +21,11 @@ import { Show } from "@wso2is/access-control";
 import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, Certificate, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { AdvancedSearchWithBasicFilters } from "@wso2is/feature-components.common";
+import { UIConstants } from "@wso2is/feature-constants.common";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
+import { filterList, sortList } from "@wso2is/feature-utils.common";
 import { useTrigger } from "@wso2is/forms";
 import { ListLayout, PageLayout, PrimaryButton } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
@@ -28,21 +34,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
-import {
-    AdvancedSearchWithBasicFilters,
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    filterList,
-    sortList
-} from "../../core";
 import { listCertificateAliases } from "../api";
 import { CertificatesList, ImportCertificate } from "../components";
 
 /**
  * Props for the Certificates Keystore page.
  */
-type CertificatesKeystorePageInterface = TestableComponentInterface
+type CertificatesKeystorePageInterface = TestableComponentInterface;
 
 /**
  * This renders the Certificates Keystore page.
@@ -54,10 +52,7 @@ type CertificatesKeystorePageInterface = TestableComponentInterface
 const CertificatesKeystore: FunctionComponent<CertificatesKeystorePageInterface> = (
     props: CertificatesKeystorePageInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
@@ -76,22 +71,22 @@ const CertificatesKeystore: FunctionComponent<CertificatesKeystorePageInterface>
         }
     ];
 
-    const [ certificatesKeystore, setCertificatesKeystore ] = useState<Certificate[]>([]);
-    const [ offset, setOffset ] = useState(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ openModal, setOpenModal ] = useState(false);
-    const [ isLoading, setIsLoading ] = useState(true);
-    const [ filteredCertificatesKeystore, setFilteredCertificatesKeystore ] = useState<Certificate[]>([]);
-    const [ sortBy, setSortBy ] = useState(SORT_BY[ 0 ]);
-    const [ sortOrder, setSortOrder ] = useState(true);
-    const [ isSuper, setIsSuper ] = useState(true);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
+    const [certificatesKeystore, setCertificatesKeystore] = useState<Certificate[]>([]);
+    const [offset, setOffset] = useState(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [openModal, setOpenModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [filteredCertificatesKeystore, setFilteredCertificatesKeystore] = useState<Certificate[]>([]);
+    const [sortBy, setSortBy] = useState(SORT_BY[0]);
+    const [sortOrder, setSortOrder] = useState(true);
+    const [isSuper, setIsSuper] = useState(true);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
 
     const tenantDomain: string = useSelector<AppState, string>((state: AppState) => state.config.deployment.tenant);
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ resetPagination, setResetPagination ] = useTrigger();
+    const [resetPagination, setResetPagination] = useTrigger();
 
     const dispatch: Dispatch = useDispatch();
 
@@ -101,7 +96,7 @@ const CertificatesKeystore: FunctionComponent<CertificatesKeystorePageInterface>
         } else {
             setIsSuper(false);
         }
-    }, [ tenantDomain ]);
+    }, [tenantDomain]);
 
     /**
      * Fetches all certificates.
@@ -113,19 +108,25 @@ const CertificatesKeystore: FunctionComponent<CertificatesKeystorePageInterface>
                 setCertificatesKeystore(response);
                 setFilteredCertificatesKeystore(response);
             })
-            .catch((error: IdentityAppsError)=> {
+            .catch((error: IdentityAppsError) => {
                 setIsLoading(false);
-                dispatch(addAlert(
-                    {
-                        description: error?.description
-                            || t("console:manage.features.certificates.keystore.notifications." +
-                                "getCertificates.genericError.description"),
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.certificates.keystore.notifications." +
+                                    "getCertificates.genericError.description"
+                            ),
                         level: AlertLevels.ERROR,
-                        message: error?.message
-                            || t("console:manage.features.certificates.keystore.notifications." +
-                                "getCertificates.genericError.message")
-                    }
-                ));
+                        message:
+                            error?.message ||
+                            t(
+                                "console:manage.features.certificates.keystore.notifications." +
+                                    "getCertificates.genericError.message"
+                            )
+                    })
+                );
             })
             .finally(() => {
                 setIsLoading(false);
@@ -137,8 +138,8 @@ const CertificatesKeystore: FunctionComponent<CertificatesKeystorePageInterface>
     }, []);
 
     useEffect(() => {
-        setFilteredCertificatesKeystore((sortList(filteredCertificatesKeystore, sortBy.value, sortOrder)));
-    }, [ sortBy, sortOrder ]);
+        setFilteredCertificatesKeystore(sortList(filteredCertificatesKeystore, sortBy.value, sortOrder));
+    }, [sortBy, sortOrder]);
 
     /**
      * This slices and returns a portion of the list.
@@ -170,7 +171,7 @@ const CertificatesKeystore: FunctionComponent<CertificatesKeystorePageInterface>
      * @param data - Pagination props.
      */
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setOffset((data.activePage as number - 1) * listItemLimit);
+        setOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     /**
@@ -189,7 +190,7 @@ const CertificatesKeystore: FunctionComponent<CertificatesKeystorePageInterface>
      * @param  data - Dropdown data.
      */
     const handleSortStrategyChange = (event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
-        setSortBy(SORT_BY.filter((option: DropdownProps) => option.value === data.value)[ 0 ]);
+        setSortBy(SORT_BY.filter((option: DropdownProps) => option.value === data.value)[0]);
     };
 
     /**
@@ -217,131 +218,124 @@ const CertificatesKeystore: FunctionComponent<CertificatesKeystorePageInterface>
 
     return (
         <>
-            {
-                openModal
-                && (
-                    <ImportCertificate
-                        open={ openModal }
-                        onClose={ () => setOpenModal(false) }
-                        update={ fetchCertificatesKeystore }
-                        data-testid={ `${ testId }-import-wizard` }
-                    />
-                )
-            }
+            {openModal && (
+                <ImportCertificate
+                    open={openModal}
+                    onClose={() => setOpenModal(false)}
+                    update={fetchCertificatesKeystore}
+                    data-testid={`${testId}-import-wizard`}
+                />
+            )}
             <PageLayout
                 action={
-                    (isLoading || !(!searchQuery && certificatesKeystore?.length <= 0))
-                    && !isSuper && (
-                        <Show
-                            when={ AccessControlConstants.CERTIFICATES_WRITE }
-                        >
+                    (isLoading || !(!searchQuery && certificatesKeystore?.length <= 0)) &&
+                    !isSuper && (
+                        <Show when={AccessControlConstants.CERTIFICATES_WRITE}>
                             <PrimaryButton
-                                onClick={ () => {
+                                onClick={() => {
                                     setOpenModal(true);
-                                } }
-                                data-testid={ `${ testId }-list-layout-upload-button` }
+                                }}
+                                data-testid={`${testId}-list-layout-upload-button`}
                             >
                                 <Icon name="cloud upload" />
-                                { t("console:manage.features.certificates.keystore.pageLayout.primaryAction") }
+                                {t("console:manage.features.certificates.keystore.pageLayout.primaryAction")}
                             </PrimaryButton>
                         </Show>
                     )
                 }
-                isLoading={ isLoading }
-                title={ t("console:manage.features.certificates.keystore.pageLayout.title") }
-                pageTitle={ t("console:manage.features.certificates.keystore.pageLayout.title") }
-                description={ t("console:manage.features.certificates.keystore.pageLayout.description") }
-                data-testid={ `${ testId }-page-layout` }
+                isLoading={isLoading}
+                title={t("console:manage.features.certificates.keystore.pageLayout.title")}
+                pageTitle={t("console:manage.features.certificates.keystore.pageLayout.title")}
+                description={t("console:manage.features.certificates.keystore.pageLayout.description")}
+                data-testid={`${testId}-page-layout`}
             >
                 <ListLayout
                     advancedSearch={
-                        (<AdvancedSearchWithBasicFilters
-                            onFilter={ handleKeystoreFilter }
-                            filterAttributeOptions={ [
+                        <AdvancedSearchWithBasicFilters
+                            onFilter={handleKeystoreFilter}
+                            filterAttributeOptions={[
                                 {
                                     key: 0,
                                     text: "Alias",
                                     value: "alias"
                                 }
-                            ] }
-                            filterAttributePlaceholder={
-                                t("console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
-                                    ".filterAttribute.placeholder")
-                            }
-                            filterConditionsPlaceholder={
-                                t("console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
-                                    ".filterCondition.placeholder")
-                            }
-                            filterValuePlaceholder={
-                                t("console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
-                                    ".filterValue.placeholder")
-                            }
-                            placeholder={
-                                t("console:manage.features.certificates.keystore.advancedSearch.placeholder")
-                            }
+                            ]}
+                            filterAttributePlaceholder={t(
+                                "console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
+                                    ".filterAttribute.placeholder"
+                            )}
+                            filterConditionsPlaceholder={t(
+                                "console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
+                                    ".filterCondition.placeholder"
+                            )}
+                            filterValuePlaceholder={t(
+                                "console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
+                                    ".filterValue.placeholder"
+                            )}
+                            placeholder={t("console:manage.features.certificates.keystore.advancedSearch.placeholder")}
                             defaultSearchAttribute="alias"
                             defaultSearchOperator="co"
-                            triggerClearQuery={ triggerClearQuery }
-                            data-testid={ `${ testId }-advanced-search` }
-                        />)
+                            triggerClearQuery={triggerClearQuery}
+                            data-testid={`${testId}-advanced-search`}
+                        />
                     }
-                    currentListSize={ listItemLimit }
-                    listItemLimit={ listItemLimit }
-                    onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                    onPageChange={ handlePaginationChange }
-                    onSortStrategyChange={ handleSortStrategyChange }
-                    onSortOrderChange={ handleSortOrderChange }
-                    resetPagination={ resetPagination }
-                    leftActionPanel={ null }
-                    showPagination={ true }
-                    sortOptions={ SORT_BY }
-                    sortStrategy={ sortBy }
-                    showTopActionPanel={ isLoading || !(!searchQuery && certificatesKeystore?.length <= 0) }
-                    totalPages={ Math.ceil(filteredCertificatesKeystore?.length / listItemLimit) }
-                    totalListSize={ filteredCertificatesKeystore?.length }
-                    data-testid={ `${ testId }-list-layout` }
+                    currentListSize={listItemLimit}
+                    listItemLimit={listItemLimit}
+                    onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                    onPageChange={handlePaginationChange}
+                    onSortStrategyChange={handleSortStrategyChange}
+                    onSortOrderChange={handleSortOrderChange}
+                    resetPagination={resetPagination}
+                    leftActionPanel={null}
+                    showPagination={true}
+                    sortOptions={SORT_BY}
+                    sortStrategy={sortBy}
+                    showTopActionPanel={isLoading || !(!searchQuery && certificatesKeystore?.length <= 0)}
+                    totalPages={Math.ceil(filteredCertificatesKeystore?.length / listItemLimit)}
+                    totalListSize={filteredCertificatesKeystore?.length}
+                    data-testid={`${testId}-list-layout`}
                 >
                     <CertificatesList
                         advancedSearch={
-                            (<AdvancedSearchWithBasicFilters
-                                onFilter={ handleKeystoreFilter }
-                                filterAttributeOptions={ [
+                            <AdvancedSearchWithBasicFilters
+                                onFilter={handleKeystoreFilter}
+                                filterAttributeOptions={[
                                     {
                                         key: 0,
                                         text: "Alias",
                                         value: "alias"
                                     }
-                                ] }
-                                filterAttributePlaceholder={
-                                    t("console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
-                                        ".filterAttribute.placeholder")
-                                }
-                                filterConditionsPlaceholder={
-                                    t("console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
-                                        ".filterCondition.placeholder")
-                                }
-                                filterValuePlaceholder={
-                                    t("console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
-                                        ".filterValue.placeholder")
-                                }
-                                placeholder={
-                                    t("console:manage.features.certificates.keystore.advancedSearch.placeholder")
-                                }
+                                ]}
+                                filterAttributePlaceholder={t(
+                                    "console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
+                                        ".filterAttribute.placeholder"
+                                )}
+                                filterConditionsPlaceholder={t(
+                                    "console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
+                                        ".filterCondition.placeholder"
+                                )}
+                                filterValuePlaceholder={t(
+                                    "console:manage.features.certificates.keystore.advancedSearch.form.inputs" +
+                                        ".filterValue.placeholder"
+                                )}
+                                placeholder={t(
+                                    "console:manage.features.certificates.keystore.advancedSearch.placeholder"
+                                )}
                                 defaultSearchAttribute="alias"
                                 defaultSearchOperator="co"
-                                triggerClearQuery={ triggerClearQuery }
-                                data-testid={ `${ testId }-advanced-search` }
-                            />)
+                                triggerClearQuery={triggerClearQuery}
+                                data-testid={`${testId}-advanced-search`}
+                            />
                         }
-                        isLoading={ isLoading }
-                        list={ paginate(filteredCertificatesKeystore, listItemLimit, offset) }
-                        onEmptyListPlaceholderActionClick={ () => setOpenModal(true) }
-                        onSearchQueryClear={ handleSearchQueryClear }
-                        searchQuery={ searchQuery }
-                        update={ fetchCertificatesKeystore }
+                        isLoading={isLoading}
+                        list={paginate(filteredCertificatesKeystore, listItemLimit, offset)}
+                        onEmptyListPlaceholderActionClick={() => setOpenModal(true)}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        searchQuery={searchQuery}
+                        update={fetchCertificatesKeystore}
                         type="keystore"
-                        featureConfig={ featureConfig }
-                        data-testid={ `${ testId }-list` }
+                        featureConfig={featureConfig}
+                        data-testid={`${testId}-list`}
                     />
                 </ListLayout>
             </PageLayout>
