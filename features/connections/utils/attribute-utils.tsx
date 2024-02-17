@@ -19,22 +19,22 @@
 import { addAlert } from "@wso2is/core/store";
 import { AlertLevels } from "@wso2is/core/models";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
+import { store } from "@wso2is/feature-store.common";
 import { I18n } from "@wso2is/i18n";
 import { AxiosError } from "axios";
 import find from "lodash-es/find";
 import isEmpty from "lodash-es/isEmpty";
 import { Dispatch, SetStateAction } from "react";
-import { 
+import {
     ConnectionClaimInterface,
     ConnectionClaimMappingInterface,
     ConnectionClaimsInterface,
-    ConnectionCommonClaimMappingInterface, 
-    ConnectionProvisioningClaimInterface, 
+    ConnectionCommonClaimMappingInterface,
+    ConnectionProvisioningClaimInterface,
     ConnectionRoleMappingInterface,
     ConnectionRolesInterface
 } from "../models/connection";
 import { updateClaimsConfigs, updateConnectionRoleMappings } from "../api/connections";
-import { store } from "../../core";
 import { handleUpdateIDPRoleMappingsError } from "./connection-utils";
 
 /**
@@ -49,102 +49,128 @@ export interface DropdownOptionsInterface {
 /**
  * Build the claim list for the attribute settings form.
  */
-export const buildProvisioningClaimList = (claimMappings: ConnectionCommonClaimMappingInterface[],
-    availableLocalClaims: ConnectionClaimInterface[]): ConnectionClaimInterface[] => {
-
+export const buildProvisioningClaimList = (
+    claimMappings: ConnectionCommonClaimMappingInterface[],
+    availableLocalClaims: ConnectionClaimInterface[]
+): ConnectionClaimInterface[] => {
     return isEmpty(claimMappings)
         ? availableLocalClaims
         : claimMappings?.map(
-            (claimMapping: ConnectionCommonClaimMappingInterface): ConnectionClaimInterface => {
-                if (claimMapping?.claim?.id && claimMapping?.mappedValue) {
-                    return {
-                        displayName: claimMapping.mappedValue,
-                        id: claimMapping.claim.id,
-                        uri: claimMapping.mappedValue
-                    } as ConnectionClaimInterface;
-                }
-            });
+              (claimMapping: ConnectionCommonClaimMappingInterface): ConnectionClaimInterface => {
+                  if (claimMapping?.claim?.id && claimMapping?.mappedValue) {
+                      return {
+                          displayName: claimMapping.mappedValue,
+                          id: claimMapping.claim.id,
+                          uri: claimMapping.mappedValue
+                      } as ConnectionClaimInterface;
+                  }
+              }
+          );
 };
 
 /**
  * Create dropdown options for the attribute settings form.
  */
-export const createDropdownOption = (selectedClaimsWithMapping: ConnectionCommonClaimMappingInterface[],
-    availableLocalClaims: ConnectionClaimInterface[]):
-    DropdownOptionsInterface[] => {
-    return isEmpty(selectedClaimsWithMapping) ?
-        availableLocalClaims.map((element: ConnectionClaimInterface): DropdownOptionsInterface => {
-            if (element?.uri) {
-                return {
-                    key: element.id,
-                    text: element.uri,
-                    value: element.uri
-                } as DropdownOptionsInterface;
-            }
-        })
+export const createDropdownOption = (
+    selectedClaimsWithMapping: ConnectionCommonClaimMappingInterface[],
+    availableLocalClaims: ConnectionClaimInterface[]
+): DropdownOptionsInterface[] => {
+    return isEmpty(selectedClaimsWithMapping)
+        ? availableLocalClaims.map(
+              (element: ConnectionClaimInterface): DropdownOptionsInterface => {
+                  if (element?.uri) {
+                      return {
+                          key: element.id,
+                          text: element.uri,
+                          value: element.uri
+                      } as DropdownOptionsInterface;
+                  }
+              }
+          )
         : selectedClaimsWithMapping.map(
-            (mapping: ConnectionCommonClaimMappingInterface): DropdownOptionsInterface => {
-                if (mapping?.mappedValue) {
-                    return {
-                        key: mapping?.claim?.id,
-                        text: mapping?.mappedValue,
-                        value: mapping?.mappedValue
-                    } as DropdownOptionsInterface;
-                }
-            }
-        );
+              (mapping: ConnectionCommonClaimMappingInterface): DropdownOptionsInterface => {
+                  if (mapping?.mappedValue) {
+                      return {
+                          key: mapping?.claim?.id,
+                          text: mapping?.mappedValue,
+                          value: mapping?.mappedValue
+                      } as DropdownOptionsInterface;
+                  }
+              }
+          );
 };
 
 /**
  * Handle attribute settings form submit.
  */
-export const handleAttributeSettingsFormSubmit = (connectionId: string, values: ConnectionClaimsInterface,
+export const handleAttributeSettingsFormSubmit = (
+    connectionId: string,
+    values: ConnectionClaimsInterface,
     roleMapping: ConnectionRoleMappingInterface[],
-    onUpdate: (connectionId: string) => void): Promise<void> => {
-
+    onUpdate: (connectionId: string) => void
+): Promise<void> => {
     return updateClaimsConfigs(connectionId, values)
         .then(() => {
             onUpdate(connectionId);
             // Update Connection Role Mappings on Successful Claim Config Update.
             updateConnectionRoleMappings(connectionId, {
                 mappings: roleMapping,
-                outboundProvisioningRoles: [ "" ]
-            } as ConnectionRolesInterface
-            ).then(() => {
-                onUpdate(connectionId);
-                // Show single alert message when both requests are successfully completed.
-                store.dispatch(addAlert({
-                    description: I18n.instance.t("console:develop.features.authenticationProvider." +
-                            "notifications.updateAttributes.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: I18n.instance.t("console:develop.features.authenticationProvider." +
-                            "notifications.updateAttributes." +
-                            "success.message")
-                }));
-            }).catch((error: AxiosError) => {
-                handleUpdateIDPRoleMappingsError(error);
-            });
+                outboundProvisioningRoles: [""]
+            } as ConnectionRolesInterface)
+                .then(() => {
+                    onUpdate(connectionId);
+                    // Show single alert message when both requests are successfully completed.
+                    store.dispatch(
+                        addAlert({
+                            description: I18n.instance.t(
+                                "console:develop.features.authenticationProvider." +
+                                    "notifications.updateAttributes.success.description"
+                            ),
+                            level: AlertLevels.SUCCESS,
+                            message: I18n.instance.t(
+                                "console:develop.features.authenticationProvider." +
+                                    "notifications.updateAttributes." +
+                                    "success.message"
+                            )
+                        })
+                    );
+                })
+                .catch((error: AxiosError) => {
+                    handleUpdateIDPRoleMappingsError(error);
+                });
         })
         .catch((error: IdentityAppsApiException) => {
             if (error.response && error.response.data && error.response.data.description) {
-                store.dispatch(addAlert({
-                    description: I18n.instance.t("console:develop.features.authenticationProvider.notifications." +
-                        "updateClaimsConfigs.error.description",
-                    { description: error.response.data.description }),
-                    level: AlertLevels.ERROR,
-                    message: I18n.instance.t("console:develop.features.authenticationProvider" +
-                        ".notifications.updateClaimsConfigs." +
-                        "error.message")
-                }));
+                store.dispatch(
+                    addAlert({
+                        description: I18n.instance.t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "updateClaimsConfigs.error.description",
+                            { description: error.response.data.description }
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: I18n.instance.t(
+                            "console:develop.features.authenticationProvider" +
+                                ".notifications.updateClaimsConfigs." +
+                                "error.message"
+                        )
+                    })
+                );
             }
 
-            store.dispatch(addAlert({
-                description: I18n.instance.t("console:develop.features.authenticationProvider.notifications." +
-                    "updateClaimsConfigs.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: I18n.instance.t("console:develop.features.authenticationProvider.notifications." +
-                    "updateClaimsConfigs.genericError.message")
-            }));
+            store.dispatch(
+                addAlert({
+                    description: I18n.instance.t(
+                        "console:develop.features.authenticationProvider.notifications." +
+                            "updateClaimsConfigs.genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: I18n.instance.t(
+                        "console:develop.features.authenticationProvider.notifications." +
+                            "updateClaimsConfigs.genericError.message"
+                    )
+                })
+            );
         });
 };
 
@@ -153,25 +179,36 @@ export const handleAttributeSettingsFormSubmit = (connectionId: string, values: 
  */
 export const handleGetAllLocalClaimsError = (error: IdentityAppsApiException): void => {
     if (error.response && error.response.data && error.response.data.description) {
-        store.dispatch(addAlert({
-            description: I18n.instance.t("console:develop.features.authenticationProvider" +
-                ".notifications.getAllLocalClaims." +
-                "error.description",
-            { description: error.response.data.description }),
-            level: AlertLevels.ERROR,
-            message: I18n.instance.t("console:develop.features.authenticationProvider" +
-                ".notifications.getAllLocalClaims.error.message")
-        }));
+        store.dispatch(
+            addAlert({
+                description: I18n.instance.t(
+                    "console:develop.features.authenticationProvider" +
+                        ".notifications.getAllLocalClaims." +
+                        "error.description",
+                    { description: error.response.data.description }
+                ),
+                level: AlertLevels.ERROR,
+                message: I18n.instance.t(
+                    "console:develop.features.authenticationProvider" + ".notifications.getAllLocalClaims.error.message"
+                )
+            })
+        );
     }
 
-    store.dispatch(addAlert({
-        description: I18n.instance.t("console:develop.features.authenticationProvider." +
-            "notifications.getAllLocalClaims." +
-            "genericError.description"),
-        level: AlertLevels.ERROR,
-        message: I18n.instance.t("console:develop.features.authenticationProvider.notifications." +
-            "getAllLocalClaims.genericError.message")
-    }));
+    store.dispatch(
+        addAlert({
+            description: I18n.instance.t(
+                "console:develop.features.authenticationProvider." +
+                    "notifications.getAllLocalClaims." +
+                    "genericError.description"
+            ),
+            level: AlertLevels.ERROR,
+            message: I18n.instance.t(
+                "console:develop.features.authenticationProvider.notifications." +
+                    "getAllLocalClaims.genericError.message"
+            )
+        })
+    );
 };
 
 /**
@@ -196,8 +233,7 @@ export const initSelectedClaimMappings = (
  */
 export const initSelectedProvisioningClaimsWithDefaultValues = (
     initialClaims: ConnectionClaimsInterface,
-    setSelectedProvisioningClaimsWithDefaultValue: 
-        Dispatch<SetStateAction<ConnectionCommonClaimMappingInterface[]>>
+    setSelectedProvisioningClaimsWithDefaultValue: Dispatch<SetStateAction<ConnectionCommonClaimMappingInterface[]>>
 ): void => {
     setSelectedProvisioningClaimsWithDefaultValue(
         initialClaims?.provisioningClaims?.map((element: ConnectionProvisioningClaimInterface) => {
@@ -228,12 +264,17 @@ export const initSubjectAndRoleURIs = (
 /**
  * Function to check if the claim exists in the selected claims with mapping.
  */
-export const isClaimExistsInConnectionClaims = (mapping: ConnectionCommonClaimMappingInterface,
-    selectedClaimsWithMapping: ConnectionCommonClaimMappingInterface[]): boolean => {
+export const isClaimExistsInConnectionClaims = (
+    mapping: ConnectionCommonClaimMappingInterface,
+    selectedClaimsWithMapping: ConnectionCommonClaimMappingInterface[]
+): boolean => {
     // Mapped value of the selectedClaim is non-other than IdP's claim uri.
-    return find(selectedClaimsWithMapping,
-        (element: ConnectionCommonClaimMappingInterface) =>
-            element.mappedValue === mapping.claim.uri) !== undefined;
+    return (
+        find(
+            selectedClaimsWithMapping,
+            (element: ConnectionCommonClaimMappingInterface) => element.mappedValue === mapping.claim.uri
+        ) !== undefined
+    );
 };
 
 /**

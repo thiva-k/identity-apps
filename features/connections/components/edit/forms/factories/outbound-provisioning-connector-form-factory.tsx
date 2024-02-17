@@ -18,13 +18,11 @@
 
 import { TestableComponentInterface } from "@wso2is/core/models";
 import React, { FunctionComponent, ReactElement } from "react";
+import { AuthenticatorSettingsFormModes } from "../../../../models/authenticators";
 import {
     OutboundProvisioningConnectorInterface,
     OutboundProvisioningConnectorMetaInterface
 } from "../../../../models/connection";
-import {
-    AuthenticatorSettingsFormModes
-} from "../../../../models/authenticators";
 import { CommonOutboundProvisioningConnectorForm } from "../outbound-provisioning-connectors";
 
 interface OutboundProvisioningConnectorFormFactoryInterface extends TestableComponentInterface {
@@ -49,12 +47,9 @@ interface OutboundProvisioningConnectorFormFactoryInterface extends TestableComp
  * @param {OutboundProvisioningConnectorFormFactoryInterface} props - Props injected to the component.
  * @return {ReactElement}
  */
-export const OutboundProvisioningConnectorFormFactory: FunctionComponent<
-    OutboundProvisioningConnectorFormFactoryInterface
-> = (
+export const OutboundProvisioningConnectorFormFactory: FunctionComponent<OutboundProvisioningConnectorFormFactoryInterface> = (
     props: OutboundProvisioningConnectorFormFactoryInterface
 ): ReactElement => {
-
     const {
         metadata,
         mode,
@@ -64,7 +59,7 @@ export const OutboundProvisioningConnectorFormFactory: FunctionComponent<
         triggerSubmit,
         enableSubmitButton,
         isReadOnly,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const generateConnector = (): ReactElement => {
@@ -72,24 +67,20 @@ export const OutboundProvisioningConnectorFormFactory: FunctionComponent<
             default:
                 return (
                     <CommonOutboundProvisioningConnectorForm
-                        mode={ mode }
-                        initialValues={ initialValues }
-                        metadata={ metadata }
-                        onSubmit={ onSubmit }
-                        triggerSubmit={ triggerSubmit }
-                        enableSubmitButton={ enableSubmitButton }
-                        data-testid={ testId }
-                        readOnly={ isReadOnly }
+                        mode={mode}
+                        initialValues={initialValues}
+                        metadata={metadata}
+                        onSubmit={onSubmit}
+                        triggerSubmit={triggerSubmit}
+                        enableSubmitButton={enableSubmitButton}
+                        data-testid={testId}
+                        readOnly={isReadOnly}
                     />
                 );
         }
     };
 
-    return (
-        <>
-            { generateConnector() }
-        </>
-    );
+    return <>{generateConnector()}</>;
 };
 
 OutboundProvisioningConnectorFormFactory.defaultProps = {

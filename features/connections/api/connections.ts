@@ -20,13 +20,13 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import useResourceEndpoints from "@wso2is/common/src/hooks/use-resource-endpoints";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
+} from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
+import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { AuthenticatorManagementConstants } from "../constants/autheticator-constants";
 import { ConnectionManagementConstants } from "../constants/connection-constants";
 import { NotificationSenderSMSInterface } from "../models/authenticators";
@@ -61,14 +61,11 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  *
  * @param connection - Connection settings data.
  */
-export const createConnection = (
-    connection: ConnectionInterface
-): Promise<AxiosResponse<ConnectionInterface>> => {
-
+export const createConnection = (connection: ConnectionInterface): Promise<AxiosResponse<ConnectionInterface>> => {
     const requestConfig: AxiosRequestConfig = {
         data: connection,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
@@ -77,12 +74,13 @@ export const createConnection = (
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
-            if ((response.status !== 201)) {
+            if (response.status !== 201) {
                 return Promise.reject(new Error("Failed to create the application."));
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -107,12 +105,11 @@ export const useGetConnections = <Data = ConnectionListResponseInterface, Error 
     shouldFetch: boolean = true,
     expectEmpty: boolean = false
 ): RequestResultInterface<Data, Error> => {
-
     const { resourceEndpoints } = useResourceEndpoints();
 
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -153,10 +150,9 @@ export const getConnections = (
     filter?: string,
     requiredAttributes?: string
 ): Promise<ConnectionListResponseInterface> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -178,18 +174,21 @@ export const getConnections = (
                     response?.status,
                     response?.request,
                     response,
-                    response?.config);
+                    response?.config
+                );
             }
 
             return Promise.resolve(response?.data as ConnectionListResponseInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ConnectionManagementConstants.CONNECTIONS_FETCH_ERROR,
                 error?.stack,
                 error?.response?.data?.code,
                 error?.request,
                 error?.response,
-                error?.config);
+                error?.config
+            );
         });
 };
 
@@ -203,12 +202,11 @@ export const getConnections = (
 export const useGetApplicationDetails = <Data = ApplicationBasicInterface, Error = RequestErrorInterface>(
     id?: string
 ): RequestResultInterface<Data, Error> => {
-
     const { resourceEndpoints } = useResourceEndpoints();
 
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -236,12 +234,11 @@ export const useGetApplicationDetails = <Data = ApplicationBasicInterface, Error
 export const useGetConnectionConnectedApps = <Data = ConnectedAppsInterface, Error = RequestErrorInterface>(
     idpId: string
 ): RequestResultInterface<Data, Error> => {
-
     const { resourceEndpoints } = useResourceEndpoints();
 
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -266,10 +263,9 @@ export const useGetConnectionConnectedApps = <Data = ConnectedAppsInterface, Err
  * @returns A promise containing the response.
  */
 export const deleteConnection = (id: string): Promise<any> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
@@ -283,7 +279,8 @@ export const deleteConnection = (id: string): Promise<any> => {
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -299,12 +296,11 @@ export const useGetConnectionTemplate = <Data = ConnectionTemplateInterface, Err
     templateId: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const { resourceEndpoints } = useResourceEndpoints();
 
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -336,12 +332,11 @@ export const useGetConnectionTemplates = <Data = any, Error = RequestErrorInterf
     offset?: number,
     filter?: string
 ): RequestResultInterface<Data, Error> => {
-
     const { resourceEndpoints } = useResourceEndpoints();
 
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -373,15 +368,10 @@ export const useGetConnectionTemplates = <Data = any, Error = RequestErrorInterf
  *
  * @returns Requested connections.
  */
-export const getConnectionTemplates = (
-    limit?: number,
-    offset?: number,
-    filter?: string
-): Promise<any> => {
-
+export const getConnectionTemplates = (limit?: number, offset?: number, filter?: string): Promise<any> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -400,7 +390,8 @@ export const getConnectionTemplates = (
             }
 
             return Promise.resolve(response.data as ConnectionTemplateInterface[]);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -416,12 +407,11 @@ export const useGetConnectionMetaData = <Data = any, Error = RequestErrorInterfa
     extensionId?: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const { resourceEndpoints } = useResourceEndpoints();
 
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -446,10 +436,9 @@ export const useGetConnectionMetaData = <Data = any, Error = RequestErrorInterfa
  * @returns A promise containing the response.
  */
 export const getConnectionMetaData = (id: string): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -463,7 +452,8 @@ export const getConnectionMetaData = (id: string): Promise<any> => {
             }
 
             return Promise.resolve(response.data as FederatedAuthenticatorMetaInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -475,10 +465,9 @@ export const getConnectionMetaData = (id: string): Promise<any> => {
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const getConnectionDetails = (id: string): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -492,7 +481,8 @@ export const getConnectionDetails = (id: string): Promise<any> => {
             }
 
             return Promise.resolve(response.data as any);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -504,15 +494,11 @@ export const getConnectionDetails = (id: string): Promise<any> => {
  * @param mappings - IDP role mappings.
  * @returns A promise containing the response.
  */
-export const updateConnectionRoleMappings = (
-    idpId: string,
-    mappings: ConnectionRolesInterface
-): Promise<any> => {
-
+export const updateConnectionRoleMappings = (idpId: string, mappings: ConnectionRolesInterface): Promise<any> => {
     const requestConfig: RequestConfigInterface = {
         data: mappings,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -526,7 +512,8 @@ export const updateConnectionRoleMappings = (
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -540,26 +527,29 @@ export const updateConnectionRoleMappings = (
 export const getOutboundProvisioningConnectorMetadata = (
     connectorId: string
 ): Promise<OutboundProvisioningConnectorMetaInterface> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: store.getState().config.endpoints.identityProviders + "/meta/outbound-provisioning-connectors/" +
+        url:
+            store.getState().config.endpoints.identityProviders +
+            "/meta/outbound-provisioning-connectors/" +
             connectorId
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             if (response.status !== 200) {
-                return Promise.reject(new Error("Failed to get outbound provisioning connector metadata for: "
-                    + connectorId));
+                return Promise.reject(
+                    new Error("Failed to get outbound provisioning connector metadata for: " + connectorId)
+                );
             }
 
             return Promise.resolve(response.data as OutboundProvisioningConnectorMetaInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -570,10 +560,9 @@ export const getOutboundProvisioningConnectorMetadata = (
  * @returns A promise containing the response.
  */
 export const getOutboundProvisioningConnectorsList = (): Promise<OutboundProvisioningConnectorListItemInterface[]> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -587,7 +576,8 @@ export const getOutboundProvisioningConnectorsList = (): Promise<OutboundProvisi
             }
 
             return Promise.resolve(response.data as OutboundProvisioningConnectorListItemInterface[]);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -603,18 +593,21 @@ export const updateOutboundProvisioningConnector = (
     idpId: string,
     connector: OutboundProvisioningConnectorInterface
 ): Promise<any> => {
-
     const { connectorId, ...rest } = connector;
 
     const requestConfig: RequestConfigInterface = {
         data: rest,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
-        url: store.getState().config.endpoints.identityProviders + "/" + idpId +
-            "/provisioning/outbound-connectors/" + connectorId
+        url:
+            store.getState().config.endpoints.identityProviders +
+            "/" +
+            idpId +
+            "/provisioning/outbound-connectors/" +
+            connectorId
     };
 
     return httpClient(requestConfig)
@@ -624,7 +617,8 @@ export const updateOutboundProvisioningConnector = (
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -637,26 +631,29 @@ export const updateOutboundProvisioningConnector = (
  * @returns A promise containing the response.
  */
 export const getOutboundProvisioningConnector = (idpId: string, connectorId: string): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: store.getState().config.endpoints.identityProviders + "/" + idpId + "/provisioning/outbound-connectors/"
-            + connectorId
+        url:
+            store.getState().config.endpoints.identityProviders +
+            "/" +
+            idpId +
+            "/provisioning/outbound-connectors/" +
+            connectorId
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             if (response.status !== 200) {
-                return Promise.reject(new Error("Failed to get outbound provisioning connector for: "
-                    + connectorId));
+                return Promise.reject(new Error("Failed to get outbound provisioning connector for: " + connectorId));
             }
 
             return Promise.resolve(response.data as OutboundProvisioningConnectorInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -668,15 +665,14 @@ export const getOutboundProvisioningConnector = (idpId: string, connectorId: str
  * @param idpId - ID of the Identity Provider.
  * @returns A promise containing the response.
  */
-export const updateOutboundProvisioningConnectors = <T = Record<string,unknown>>(
+export const updateOutboundProvisioningConnectors = <T = Record<string, unknown>>(
     connectorList: T,
     idpId: string
 ): Promise<OutboundProvisioningConnectorListItemInterface> => {
-
     const requestConfig: RequestConfigInterface = {
         data: connectorList,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -690,7 +686,8 @@ export const updateOutboundProvisioningConnectors = <T = Record<string,unknown>>
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -706,16 +703,14 @@ export const updateJITProvisioningConfigs = (
     idpId: string,
     configs: JITProvisioningResponseInterface
 ): Promise<ConnectionInterface> => {
-
     const requestConfig: RequestConfigInterface = {
         data: configs,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
-        url: store.getState().config.endpoints.identityProviders + "/" + idpId +
-            "/provisioning/jit"
+        url: store.getState().config.endpoints.identityProviders + "/" + idpId + "/provisioning/jit"
     };
 
     return httpClient(requestConfig)
@@ -725,7 +720,8 @@ export const updateJITProvisioningConfigs = (
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ConnectionManagementConstants.CONNECTION_JIT_PROVISIONING_UPDATE_ERROR,
                 error.stack,
@@ -744,10 +740,9 @@ export const updateJITProvisioningConfigs = (
  * @returns  A promise containing the response.
  */
 export const getConnectedApps = (idpId: string): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -757,13 +752,12 @@ export const getConnectedApps = (idpId: string): Promise<any> => {
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             if (response.status !== 200) {
-                return Promise.reject(
-                    new Error("Failed to get connected apps for the IDP: " + idpId)
-                );
+                return Promise.reject(new Error("Failed to get connected apps for the IDP: " + idpId));
             }
 
             return Promise.resolve(response.data as ConnectedAppsInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -775,16 +769,15 @@ export const getConnectedApps = (idpId: string): Promise<any> => {
  * @returns A promise containing the response.
  */
 export const updateIdentityProviderDetails = (connection: ConnectionInterface): Promise<any> => {
-
     const { id, ...rest } = connection;
     const replaceOps: any = [];
 
     for (const key in rest) {
-        if(rest[key] !== undefined) {
+        if (rest[key] !== undefined) {
             replaceOps.push({
-                "operation": "REPLACE",
-                "path": "/" + key,
-                "value": rest[key]
+                operation: "REPLACE",
+                path: "/" + key,
+                value: rest[key]
             });
         }
     }
@@ -792,7 +785,7 @@ export const updateIdentityProviderDetails = (connection: ConnectionInterface): 
     const requestConfig: RequestConfigInterface = {
         data: replaceOps,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PATCH,
@@ -806,7 +799,8 @@ export const updateIdentityProviderDetails = (connection: ConnectionInterface): 
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -819,15 +813,18 @@ export const updateIdentityProviderDetails = (connection: ConnectionInterface): 
  * @returns A promise containing the response.
  */
 export const getFederatedAuthenticatorDetails = (idpId: string, authenticatorId: string): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: store.getState().config.endpoints.identityProviders + "/" + idpId +
-            "/federated-authenticators/" + authenticatorId
+        url:
+            store.getState().config.endpoints.identityProviders +
+            "/" +
+            idpId +
+            "/federated-authenticators/" +
+            authenticatorId
     };
 
     return httpClient(requestConfig)
@@ -839,7 +836,8 @@ export const getFederatedAuthenticatorDetails = (idpId: string, authenticatorId:
             }
 
             return Promise.resolve(response.data as FederatedAuthenticatorListItemInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -851,10 +849,9 @@ export const getFederatedAuthenticatorDetails = (idpId: string, authenticatorId:
  * @returns A promise containing the response.
  */
 export const getFederatedAuthenticatorMeta = (id: string): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -868,7 +865,8 @@ export const getFederatedAuthenticatorMeta = (id: string): Promise<any> => {
             }
 
             return Promise.resolve(response.data as FederatedAuthenticatorMetaInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -884,11 +882,10 @@ export const updateFederatedAuthenticators = (
     authenticatorList: FederatedAuthenticatorListResponseInterface,
     idpId: string
 ): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         data: authenticatorList,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -902,7 +899,8 @@ export const updateFederatedAuthenticators = (
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -923,12 +921,16 @@ export const updateFederatedAuthenticator = (
     const requestConfig: RequestConfigInterface = {
         data: rest,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
-        url: store.getState().config.endpoints.identityProviders + "/" + idpId +
-            "/federated-authenticators/" + authenticatorId
+        url:
+            store.getState().config.endpoints.identityProviders +
+            "/" +
+            idpId +
+            "/federated-authenticators/" +
+            authenticatorId
     };
 
     return httpClient(requestConfig)
@@ -938,7 +940,8 @@ export const updateFederatedAuthenticator = (
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -951,26 +954,26 @@ export const updateFederatedAuthenticator = (
  * @returns A promise containing the response.
  */
 export const getFederatedAuthenticatorMetadata = (authenticatorId: string): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: store.getState().config.endpoints.identityProviders + "/meta/federated-authenticators/" +
-            authenticatorId
+        url: store.getState().config.endpoints.identityProviders + "/meta/federated-authenticators/" + authenticatorId
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             if (response.status !== 200) {
-                return Promise.reject(new Error("Failed to get federated authenticator metadata for: "
-                    + authenticatorId));
+                return Promise.reject(
+                    new Error("Failed to get federated authenticator metadata for: " + authenticatorId)
+                );
             }
 
             return Promise.resolve(response.data as FederatedAuthenticatorMetaInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -986,11 +989,10 @@ export const updateIDPCertificate = <T = Record<string, unknown>>(
     idpId: string,
     data: T
 ): Promise<ConnectionInterface> => {
-
     const requestConfig: RequestConfigInterface = {
         data,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PATCH,
@@ -1004,14 +1006,16 @@ export const updateIDPCertificate = <T = Record<string, unknown>>(
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ConnectionManagementConstants.CONNECTION_CERTIFICATE_UPDATE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -1026,11 +1030,10 @@ export const updateClaimsConfigs = (
     idpId: string,
     configs: ConnectionClaimsInterface
 ): Promise<ConnectionInterface> => {
-
     const requestConfig: RequestConfigInterface = {
         data: configs,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -1044,14 +1047,16 @@ export const updateClaimsConfigs = (
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ConnectionManagementConstants.CONNECTION_CLAIMS_UPDATE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -1066,11 +1071,10 @@ export const updateImplicitAssociationConfig = (
     idpId: string,
     configs: ImplicitAssociaionConfigInterface
 ): Promise<ConnectionInterface> => {
-
     const requestConfig: RequestConfigInterface = {
         data: configs,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -1080,19 +1084,22 @@ export const updateImplicitAssociationConfig = (
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             if (response.status !== 200) {
-                return Promise.reject(new Error("Failed to update implicit association" +
-                " configs for identity provider: " + idpId));
+                return Promise.reject(
+                    new Error("Failed to update implicit association" + " configs for identity provider: " + idpId)
+                );
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ConnectionManagementConstants.CONNECTION_IMPLICIT_ASSOCIATION_UPDATE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -1101,13 +1108,15 @@ export const updateImplicitAssociationConfig = (
  *
  * @returns  A promise containing the response.
  */
-export const useSMSNotificationSenders = <Data = NotificationSenderSMSInterface[], Error = RequestErrorInterface>():
-    RequestResultInterface<Data, Error> => {
+export const useSMSNotificationSenders = <
+    Data = NotificationSenderSMSInterface[],
+    Error = RequestErrorInterface
+>(): RequestResultInterface<Data, Error> => {
     const { resourceEndpoints } = useResourceEndpoints();
 
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -1148,7 +1157,7 @@ export const addSMSPublisher = (): Promise<NotificationSenderSMSInterface> => {
     const requestConfig: RequestConfigInterface = {
         data: smsProvider,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
@@ -1164,18 +1173,21 @@ export const addSMSPublisher = (): Promise<NotificationSenderSMSInterface> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as NotificationSenderSMSInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 AuthenticatorManagementConstants.ERROR_IN_CREATING_SMS_NOTIFICATION_SENDER,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -1185,10 +1197,9 @@ export const addSMSPublisher = (): Promise<NotificationSenderSMSInterface> => {
  * @returns  A promise containing the response.
  */
 export const deleteSMSPublisher = (): Promise<void> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
@@ -1204,22 +1215,29 @@ export const deleteSMSPublisher = (): Promise<void> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             let errorMessage: string = AuthenticatorManagementConstants.ERROR_IN_DELETING_SMS_NOTIFICATION_SENDER;
 
-            if (error.response?.data?.code ===
-                AuthenticatorManagementConstants.ErrorMessages
-                    .SMS_NOTIFICATION_SENDER_DELETION_ERROR_ACTIVE_SUBS.getErrorCode()) {
-                errorMessage = AuthenticatorManagementConstants.ErrorMessages
-                    .SMS_NOTIFICATION_SENDER_DELETION_ERROR_ACTIVE_SUBS.getErrorMessage();
+            if (
+                error.response?.data?.code ===
+                AuthenticatorManagementConstants.ErrorMessages.SMS_NOTIFICATION_SENDER_DELETION_ERROR_ACTIVE_SUBS.getErrorCode()
+            ) {
+                errorMessage = AuthenticatorManagementConstants.ErrorMessages.SMS_NOTIFICATION_SENDER_DELETION_ERROR_ACTIVE_SUBS.getErrorMessage();
             }
-            throw new IdentityAppsApiException(errorMessage, error.stack, error.response?.data?.code, error.request,
-                error.response, error.config);
-
+            throw new IdentityAppsApiException(
+                errorMessage,
+                error.stack,
+                error.response?.data?.code,
+                error.request,
+                error.response,
+                error.config
+            );
         });
 };
 
@@ -1228,12 +1246,12 @@ export const deleteSMSPublisher = (): Promise<void> => {
  *
  * @returns the groups list of the connection.
  */
-export const useConnectionGroups = <Data = ConnectionGroupInterface[], Error = RequestErrorInterface>
-    (idpId: string): RequestResultInterface<Data, Error> => {
-
+export const useConnectionGroups = <Data = ConnectionGroupInterface[], Error = RequestErrorInterface>(
+    idpId: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -1256,13 +1274,14 @@ export const useConnectionGroups = <Data = ConnectionGroupInterface[], Error = R
  *
  * @returns the updated connection groups.
  */
-export const updateConnectionGroup = (idpId: string, idpGroups: ConnectionGroupInterface[]):
-    Promise<ConnectionGroupInterface[]> => {
-
+export const updateConnectionGroup = (
+    idpId: string,
+    idpGroups: ConnectionGroupInterface[]
+): Promise<ConnectionGroupInterface[]> => {
     const requestConfig: RequestConfigInterface = {
         data: idpGroups,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -1276,7 +1295,8 @@ export const updateConnectionGroup = (idpId: string, idpGroups: ConnectionGroupI
             }
 
             return Promise.resolve(response.data as ConnectionGroupInterface[]);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -1286,12 +1306,12 @@ export const updateConnectionGroup = (idpId: string, idpGroups: ConnectionGroupI
  *
  * @returns the claim configurations of the connection.
  */
-export const useClaimConfigs = <Data = ConnectionClaimsInterface, Error = RequestErrorInterface>
-    (idpId: string): RequestResultInterface<Data, Error> => {
-
+export const useClaimConfigs = <Data = ConnectionClaimsInterface, Error = RequestErrorInterface>(
+    idpId: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,

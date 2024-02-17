@@ -39,27 +39,23 @@ export interface SubjectAttributeListItemPropInterface extends TestableComponent
 export const SubjectAttributeListItem: FunctionComponent<SubjectAttributeListItemPropInterface> = (
     props: SubjectAttributeListItemPropInterface
 ): ReactElement => {
-
-    const {
-        claimURI,
-        displayName,
-        localClaimDisplayName,
-        [ "data-testid" ]: testId
-    } = props;
+    const { claimURI, displayName, localClaimDisplayName, ["data-testid"]: testId } = props;
 
     return (
-        <Table.Row data-testid={ testId }>
+        <Table.Row data-testid={testId}>
             <Table.Cell>
-                <div>{ displayName ? displayName : localClaimDisplayName }</div>
+                <div>{displayName ? displayName : localClaimDisplayName}</div>
                 {
                     <Popup
-                        content={ claimURI }
+                        content={claimURI}
                         inverted
-                        trigger={ (
-                            <Code compact withBackground={ false }>{ claimURI }</Code>
-                        ) }
-                        position="bottom left">
-                    </Popup>
+                        trigger={
+                            <Code compact withBackground={false}>
+                                {claimURI}
+                            </Code>
+                        }
+                        position="bottom left"
+                    ></Popup>
                 }
             </Table.Cell>
         </Table.Row>

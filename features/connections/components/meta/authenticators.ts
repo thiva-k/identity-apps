@@ -94,16 +94,18 @@ const getKnownConnectorMetadata = (): FederatedAuthenticatorMetaDataInterface[] 
         },
         {
             authenticatorId: AuthenticatorManagementConstants.LEGACY_EMAIL_OTP_AUTHENTICATOR_ID,
-            description: AuthenticatorMeta
-                .getAuthenticatorDescription(AuthenticatorManagementConstants.LEGACY_EMAIL_OTP_AUTHENTICATOR_ID),
+            description: AuthenticatorMeta.getAuthenticatorDescription(
+                AuthenticatorManagementConstants.LEGACY_EMAIL_OTP_AUTHENTICATOR_ID
+            ),
             displayName: "Email OTP",
             icon: getConnectionIcons().emailOTP,
             name: AuthenticatorManagementConstants.LEGACY_EMAIL_OTP_AUTHENTICATOR_NAME
         },
         {
             authenticatorId: AuthenticatorManagementConstants.LEGACY_SMS_OTP_AUTHENTICATOR_ID,
-            description: AuthenticatorMeta
-                .getAuthenticatorDescription(AuthenticatorManagementConstants.LEGACY_SMS_OTP_AUTHENTICATOR_ID),
+            description: AuthenticatorMeta.getAuthenticatorDescription(
+                AuthenticatorManagementConstants.LEGACY_SMS_OTP_AUTHENTICATOR_ID
+            ),
             displayName: "SMS OTP",
             icon: getConnectionIcons().smsOTP,
             name: AuthenticatorManagementConstants.SMS_OTP_AUTHENTICATOR_NAME
@@ -148,7 +150,7 @@ const getKnownExternalConnectorMetadata = (): FederatedAuthenticatorMetaDataInte
  * @returns List of FederatedAuthenticatorMetaDataInterface.
  */
 const getExternalConnectorMetadataExtensions = (): FederatedAuthenticatorMetaDataInterface[] => {
-    return window[ "AppUtils" ]?.getConfig()?.extensions?.connectors ?? [];
+    return window["AppUtils"]?.getConfig()?.extensions?.connectors ?? [];
 };
 
 /**
@@ -157,7 +159,6 @@ const getExternalConnectorMetadataExtensions = (): FederatedAuthenticatorMetaDat
  * @returns List of FederatedAuthenticatorMetaDataInterface.
  */
 export const getConnectorMetadata = (): FederatedAuthenticatorMetaDataInterface[] => {
-
     return [
         ...getKnownConnectorMetadata(),
         ...getExternalConnectorMetadataExtensions(),

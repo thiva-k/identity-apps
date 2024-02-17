@@ -48,7 +48,9 @@ export const DEFAULT_NAME_ID_FORMAT: string = "urn:oasis:names:tc:SAML:1.1:namei
  */
 export const getAvailableNameIDFormats = (): Array<SamlIdPListItemOption> => {
     return supportedSchemes.map((scheme: string, index: number) => ({
-        key: index, text: scheme, value: scheme
+        key: index,
+        text: scheme,
+        value: scheme
     }));
 };
 
@@ -87,9 +89,9 @@ export const DEFAULT_PROTOCOL_BINDING: string = "redirect";
 export const getSignatureAlgorithmOptionsMapped = (
     metadata: FederatedAuthenticatorMetaInterface
 ): Array<SamlIdPListItemOption> => {
-
-    const property: CommonPluggableComponentMetaPropertyInterface = 
-        metadata.properties.find(({ key }: { key: string }) => key === "SignatureAlgorithm");
+    const property: CommonPluggableComponentMetaPropertyInterface = metadata.properties.find(
+        ({ key }: { key: string }) => key === "SignatureAlgorithm"
+    );
     const displayNameMapper = (algorithmPlainString: string): string => {
         switch (algorithmPlainString) {
             case "DSA with SHA1":
@@ -128,7 +130,6 @@ export const getSignatureAlgorithmOptionsMapped = (
     }
 
     return [];
-
 };
 
 /**
@@ -138,9 +139,9 @@ export const getSignatureAlgorithmOptionsMapped = (
 export const getDigestAlgorithmOptionsMapped = (
     metadata: FederatedAuthenticatorMetaInterface
 ): Array<SamlIdPListItemOption> => {
-
-    const property: CommonPluggableComponentMetaPropertyInterface = 
-        metadata.properties.find(({ key }: { key: string }) => key === "DigestAlgorithm");
+    const property: CommonPluggableComponentMetaPropertyInterface = metadata.properties.find(
+        ({ key }: { key: string }) => key === "DigestAlgorithm"
+    );
     const displayNameMapper = (algorithmPlainString: string): string => {
         switch (algorithmPlainString) {
             case "MD5":
@@ -159,24 +160,26 @@ export const getDigestAlgorithmOptionsMapped = (
     };
 
     if (property) {
-        return [ ...property.options.map((option: string, index: number) => {
-            return {
-                key: index,
-                text: displayNameMapper(option),
-                value: option
-            };
-        }), {
-            key: -1,
-            text: "",
-            value: ""
-        } ];
+        return [
+            ...property.options.map((option: string, index: number) => {
+                return {
+                    key: index,
+                    text: displayNameMapper(option),
+                    value: option
+                };
+            }),
+            {
+                key: -1,
+                text: "",
+                value: ""
+            }
+        ];
     }
 
     return [];
-
 };
 
-type FindPropValArgs<DefaultType> = { key: string; defaultValue: DefaultType; };
+type FindPropValArgs<DefaultType> = { key: string; defaultValue: DefaultType };
 type FindPropValFunction = <Type>(args: FindPropValArgs<Type>) => Type;
 
 type FindMetaArgs = { key: string };
@@ -200,20 +203,20 @@ type FindMetaFunction = (args: FindMetaArgs) => CommonPluggableComponentMetaProp
  */
 export const fastSearch = (
     authenticator: FederatedAuthenticatorWithMetaInterface
-): [ FindPropValFunction, FindMetaFunction ] => {
-
+): [FindPropValFunction, FindMetaFunction] => {
     const propertyMap: Map<string, any> = new Map<string, any>();
 
-    authenticator.data?.properties.forEach(({ key, value }: { 
-        key: string;
-        value: string;
-    }) => propertyMap.set(key, value));
+    authenticator.data?.properties.forEach(({ key, value }: { key: string; value: string }) =>
+        propertyMap.set(key, value)
+    );
 
-    const metadataMap: Map<string, CommonPluggableComponentMetaPropertyInterface> = 
-        new Map<string, CommonPluggableComponentMetaPropertyInterface>();
+    const metadataMap: Map<string, CommonPluggableComponentMetaPropertyInterface> = new Map<
+        string,
+        CommonPluggableComponentMetaPropertyInterface
+    >();
 
-    authenticator.meta?.properties.forEach(
-        (meta: CommonPluggableComponentMetaPropertyInterface) => metadataMap.set(meta.key, meta)
+    authenticator.meta?.properties.forEach((meta: CommonPluggableComponentMetaPropertyInterface) =>
+        metadataMap.set(meta.key, meta)
     );
 
     return [
@@ -227,16 +230,18 @@ export const fastSearch = (
          *
          * @param key - property key.
          * @param defaultValue - default value to return if the key is not found.
-         */<T>({ key, defaultValue }: FindPropValArgs<T>): T => {
+         */ <T>({ key, defaultValue }: FindPropValArgs<T>): T => {
             if (propertyMap.has(key)) {
                 const value: T = propertyMap.get(key);
 
-                if (metadataMap.get(key)?.type === "BOOLEAN" &&
-                    booleanSentAsAStringValue(value) && typeof value === "string") {
+                if (
+                    metadataMap.get(key)?.type === "BOOLEAN" &&
+                    booleanSentAsAStringValue(value) &&
+                    typeof value === "string"
+                ) {
                     return (castToBool(value) as unknown) as T;
                 }
-                if (!value)
-                    return defaultValue;
+                if (!value) return defaultValue;
 
                 return value;
             }
@@ -251,7 +256,6 @@ export const fastSearch = (
             return null;
         }
     ];
-
 };
 
 /**
@@ -281,7 +285,7 @@ export const booleanSentAsAStringValue = (value: any): boolean => {
 };
 
 export type MinMaxLength = { max: number; min: number };
-export type FormErrors = { [ key: string ]: string };
+export type FormErrors = { [key: string]: string };
 
 export const SERVICE_PROVIDER_ENTITY_ID_LENGTH: MinMaxLength = { max: 240, min: 3 };
 export const SSO_URL_LENGTH: MinMaxLength = { max: 2048, min: 10 };
@@ -300,14 +304,11 @@ export const IDENTITY_PROVIDER_AUTHORIZED_REDIRECT_URL_LENGTH: MinMaxLength = { 
  * @param errors - form errors object.
  */
 export const ifFieldsHave = (errors: FormErrors): boolean => {
-    return !Object.keys(errors).every((k: string) => !errors[ k ]);
+    return !Object.keys(errors).every((k: string) => !errors[k]);
 };
 
 export const composeValidators = (...validators: any[]) => (value: string): any => {
-    return validators.reduce(
-        (error: any, validator: any) => error || validator(value),
-        undefined
-    );
+    return validators.reduce((error: any, validator: any) => error || validator(value), undefined);
 };
 
 export const required = (value: string | any): string | undefined => {
@@ -323,17 +324,15 @@ export const hasLength = (minMax: MinMaxLength) => (value: string): string | und
         return "You cannot leave this blank";
     }
     if (value?.length > minMax.max) {
-        return `Cannot exceed more than ${ minMax.max } characters.`;
+        return `Cannot exceed more than ${minMax.max} characters.`;
     }
     if (value?.length < minMax.min) {
-        return `Should have at least ${ minMax.min } characters.`;
+        return `Should have at least ${minMax.min} characters.`;
     }
 
     return undefined;
 };
 
 export const isUrl = (value: string): string => {
-    return FormValidation.url(value)
-        ? undefined
-        : "This URL is invalid.";
+    return FormValidation.url(value) ? undefined : "This URL is invalid.";
 };

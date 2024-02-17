@@ -23,8 +23,7 @@ import { GenericIcon, Heading, PageHeader } from "@wso2is/react-components";
 import React, { FC, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid } from "semantic-ui-react";
-import ApplicationSelectionModal 
-    from "../../../../extensions/components/shared/application-selection-modal";
+import ApplicationSelectionModal from "../../../../extensions/components/shared/application-selection-modal";
 import { ConnectionInterface, ConnectionTemplateInterface } from "../../models/connection";
 import { ConnectionsManagementUtils } from "../../utils/connection-utils";
 
@@ -32,8 +31,8 @@ type ConnectionQuickStartStepType = {
     content?: string;
     image?: string;
     title?: string;
-    [ key: string ]: any;
-}
+    [key: string]: any;
+};
 
 interface QuickStartContentInterface {
     heading: string;
@@ -56,7 +55,7 @@ interface ConnectionQuickStartPropsInterface extends IdentifiableComponentInterf
     /**
      * Content of the quick start steps.
      */
-    quickStartContent:  QuickStartContentInterface;
+    quickStartContent: QuickStartContentInterface;
 }
 
 /**
@@ -68,96 +67,78 @@ interface ConnectionQuickStartPropsInterface extends IdentifiableComponentInterf
 const ConnectionQuickStart: FC<ConnectionQuickStartPropsInterface> = (
     props: ConnectionQuickStartPropsInterface
 ): ReactElement => {
-    
-    const {
-        quickStartContent,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { quickStartContent, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const { UIConfig } = useUIConfig();
 
     const connectionResourcesUrl: string = UIConfig?.connectionResourcesUrl;
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     const resolveQuickStartSteps = (): VerticalStepperStepInterface[] => {
-
         const quickstartSteps: VerticalStepperStepInterface[] = [];
 
         quickStartContent?.steps?.map((step: ConnectionQuickStartStepType, index: number) => {
-            quickstartSteps.push(
-                {
-                    stepContent: (
-                        <>
-                            <div
-                                key={ index } 
-                                dangerouslySetInnerHTML={ { __html: step.content } }
+            quickstartSteps.push({
+                stepContent: (
+                    <>
+                        <div key={index} dangerouslySetInnerHTML={{ __html: step.content }} />
+                        {step.image && (
+                            <GenericIcon
+                                inline
+                                transparent
+                                icon={ConnectionsManagementUtils.resolveConnectionResourcePath(
+                                    connectionResourcesUrl,
+                                    step.image
+                                )}
+                                size="huge"
                             />
-                            {
-                                step.image && (
-                                    <GenericIcon 
-                                        inline 
-                                        transparent 
-                                        icon={ 
-                                            ConnectionsManagementUtils
-                                                .resolveConnectionResourcePath(connectionResourcesUrl, step.image) 
-                                        } 
-                                        size="huge"
-                                    />
-                                )
-                            }
-                        </>
-                    ),
-                    stepTitle: step.title
-                }
-            );
+                        )}
+                    </>
+                ),
+                stepTitle: step.title
+            });
         });
 
         return quickstartSteps;
     };
 
-    return(
+    return (
         <>
-            <Grid data-componentid={ componentId } className="authenticator-quickstart-content">
+            <Grid data-componentid={componentId} className="authenticator-quickstart-content">
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
+                    <Grid.Column width={16}>
                         <PageHeader
                             className="mb-2"
-                            title={ quickStartContent?.heading }
-                            imageSpaced={ false }
-                            bottomMargin={ false }
+                            title={quickStartContent?.heading}
+                            imageSpaced={false}
+                            bottomMargin={false}
                         />
                         <Heading subHeading as="h6">
-                            { quickStartContent?.subHeading }
+                            {quickStartContent?.subHeading}
                         </Heading>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
+                    <Grid.Column width={16}>
                         <VerticalStepper
                             alwaysOpen
                             isSidePanelOpen
-                            stepContent={ resolveQuickStartSteps() }
-                            isNextEnabled={ true }
+                            stepContent={resolveQuickStartSteps()}
+                            isNextEnabled={true}
                         />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ componentId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={
-                            t("extensions:develop.identityProviders.apple.quickStart.addLoginModal.heading")
-                        }
-                        subHeading={
-                            t("extensions:develop.identityProviders.apple.quickStart.addLoginModal.subHeading")
-                        }
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${componentId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.apple.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.apple.quickStart.addLoginModal.subHeading")}
+                />
+            )}
         </>
     );
 };

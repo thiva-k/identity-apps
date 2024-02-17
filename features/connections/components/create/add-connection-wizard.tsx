@@ -26,6 +26,7 @@ import { AlertLevels, IdentifiableComponentInterface, LoadableComponentInterface
 import { addAlert } from "@wso2is/core/store";
 import { URLUtils } from "@wso2is/core/utils";
 import { DynamicWizard, DynamicWizardPage, renderFormFields } from "@wso2is/dynamic-forms";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import {
     ContentLoader,
     DocumentationLink,
@@ -46,7 +47,6 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid } from "semantic-ui-react";
 import CreateConnectionWizardHelp from "./create-wizard-help";
-import { EventPublisher } from "../../../core";
 import { createConnection, useGetConnectionMetaData } from "../../api/connections";
 import { ConnectionManagementConstants } from "../../constants/connection-constants";
 import {
@@ -60,13 +60,14 @@ import { ConnectionsManagementUtils, handleGetConnectionsMetaDataError } from ".
 /**
  * Proptypes for the connection creation wizard component.
  */
-interface CreateConnectionWizardPropsInterface extends LoadableComponentInterface,
-    GenericConnectionCreateWizardPropsInterface, IdentifiableComponentInterface {
-}
+interface CreateConnectionWizardPropsInterface
+    extends LoadableComponentInterface,
+        GenericConnectionCreateWizardPropsInterface,
+        IdentifiableComponentInterface {}
 
 export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = (
-    props: CreateConnectionWizardPropsInterface): ReactElement => {
-
+    props: CreateConnectionWizardPropsInterface
+): ReactElement => {
     const {
         currentStep,
         isLoading,
@@ -75,28 +76,28 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
         title,
         subTitle,
         template,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
     const { deploymentConfig } = useDeploymentConfig();
     const { UIConfig } = useUIConfig();
 
     // External connection resources URL from the UI config.
     const connectionResourcesUrl: string = UIConfig?.connectionResourcesUrl;
 
-    const [ openLimitReachedModal, setOpenLimitReachedModal ] = useState<boolean>(false);
-    const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(currentStep);
-    const [ wizStep, setWizStep ] = useState<number>(0);
-    const [ totalStep, setTotalStep ] = useState<number>(0);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ connectionMetaDetails, setConnectionMetaDetails ] = useState<any>(undefined);
+    const [openLimitReachedModal, setOpenLimitReachedModal] = useState<boolean>(false);
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(currentStep);
+    const [wizStep, setWizStep] = useState<number>(0);
+    const [totalStep, setTotalStep] = useState<number>(0);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [connectionMetaDetails, setConnectionMetaDetails] = useState<any>(undefined);
 
     const idpNameValidationCache: MutableRefObject<IdpNameValidationCache> = useRef(null);
-    const [ isUserInputIdpNameAlreadyTaken, setIsUserInputIdpNameAlreadyTaken ] = useState<boolean>(undefined);
+    const [isUserInputIdpNameAlreadyTaken, setIsUserInputIdpNameAlreadyTaken] = useState<boolean>(undefined);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -119,46 +120,44 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
 
         handleGetConnectionsMetaDataError(connectionMetaDataFetchRequestError);
         setConnectionMetaDetails({});
-    }, [ connectionMetaDataFetchRequestError ]);
+    }, [connectionMetaDataFetchRequestError]);
 
     /**
      * Track wizard steps from wizard component.
      */
     useEffect(() => {
-
         if (!connectionMetaData) {
             return;
         }
 
         setConnectionMetaDetails(connectionMetaData);
-    }, [ connectionMetaData ]);
+    }, [connectionMetaData]);
 
     /**
      * Track wizard steps from wizard component.
      */
     useEffect(() => {
         setConnectionMetaDetails(wizStep + 1);
-    }, [ wizStep ]);
+    }, [wizStep]);
 
     /**
      * Track wizard steps from wizard component.
      */
     useEffect(() => {
         setCurrentWizardStep(wizStep + 1);
-    }, [ wizStep ]);
+    }, [wizStep]);
 
     /**
-    * Track wizard steps from wizard component.
-    */
+     * Track wizard steps from wizard component.
+     */
     useEffect(() => {
         setCurrentWizardStep(wizStep + 1);
-    }, [ wizStep ]);
+    }, [wizStep]);
 
     /**
      * The following function handle the connection create API call.
      */
     const createNewConnection = (connection: ConnectionInterface): void => {
-
         setIsSubmitting(true);
 
         createConnection(connection)
@@ -167,13 +166,18 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
                     type: componentId
                 });
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                    "success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                    "success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.authenticationProvider.notifications.addIDP." +
+                                "success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.authenticationProvider.notifications.addIDP." + "success.message"
+                        )
+                    })
+                );
 
                 // The created resource's id is sent as a location header.
                 // If that's available, navigate to the edit page.
@@ -190,12 +194,12 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
                 onIDPCreate();
             })
             .catch((error: AxiosError) => {
-
                 const identityAppsError: IdentityAppsError = ConnectionManagementConstants.ERROR_CREATE_LIMIT_REACHED;
 
-                if (error?.response?.status === 403 &&
-                error?.response?.data?.code ===
-                identityAppsError.getErrorCode()) {
+                if (
+                    error?.response?.status === 403 &&
+                    error?.response?.data?.code === identityAppsError.getErrorCode()
+                ) {
                     setOpenLimitReachedModal(true);
 
                     return;
@@ -203,23 +207,29 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
 
                 if (error.response && error.response.data && error.response.data.description) {
                     setAlert({
-                        description: t("console:develop.features.authenticationProvider.notifications." +
-                        "addIDP.error.description",
-                        { description: error.response.data.description }),
+                        description: t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "addIDP.error.description",
+                            { description: error.response.data.description }
+                        ),
                         level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider.notifications." +
-                        "addIDP.error.message")
+                        message: t(
+                            "console:develop.features.authenticationProvider.notifications." + "addIDP.error.message"
+                        )
                     });
 
                     return;
                 }
 
                 setAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                    "genericError.description"),
+                    description: t(
+                        "console:develop.features.authenticationProvider.notifications.addIDP." +
+                            "genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                    "genericError.message")
+                    message: t(
+                        "console:develop.features.authenticationProvider.notifications.addIDP." + "genericError.message"
+                    )
                 });
             })
             .finally(() => {
@@ -248,38 +258,35 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
      *
      * @param value - User input for the IDP name.
      */
-    const isIdpNameAlreadyTaken: DebouncedFunc<(value: string) => void> = debounce(
-        async (value: string) => {
-            let idpExist: boolean;
+    const isIdpNameAlreadyTaken: DebouncedFunc<(value: string) => void> = debounce(async (value: string) => {
+        let idpExist: boolean;
 
-            if (idpNameValidationCache?.current?.value === value) {
-                idpExist = idpNameValidationCache?.current?.state;
+        if (idpNameValidationCache?.current?.value === value) {
+            idpExist = idpNameValidationCache?.current?.state;
+        }
+
+        if (idpExist === undefined) {
+            try {
+                idpExist = await ConnectionsManagementUtils.searchIdentityProviderName(value);
+            } catch (e) {
+                /**
+                 * Ignore the error, as a failed identity provider search
+                 * should not result in user blocking. However, if the
+                 * identity provider name already exists, it will undergo
+                 * validation from the backend, and any resulting errors
+                 * will be displayed in the user interface.
+                 */
+                idpExist = false;
             }
 
-            if (idpExist === undefined) {
-                try {
-                    idpExist = await ConnectionsManagementUtils.searchIdentityProviderName(value);
-                } catch (e) {
-                    /**
-                     * Ignore the error, as a failed identity provider search
-                     * should not result in user blocking. However, if the
-                     * identity provider name already exists, it will undergo
-                     * validation from the backend, and any resulting errors
-                     * will be displayed in the user interface.
-                     */
-                    idpExist = false;
-                }
+            idpNameValidationCache.current = {
+                state: idpExist,
+                value
+            };
+        }
 
-                idpNameValidationCache.current = {
-                    state: idpExist,
-                    value
-                };
-            }
-
-            setIsUserInputIdpNameAlreadyTaken(!!idpExist);
-        },
-        500
-    );
+        setIsUserInputIdpNameAlreadyTaken(!!idpExist);
+    }, 500);
 
     /**
      * Check whether IDP name is already exist or not.
@@ -288,12 +295,11 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
      * @returns error msg if name is already taken.
      */
     const connectionNameValidation = (_value: string): Promise<string> => {
-
         if (isUserInputIdpNameAlreadyTaken) {
             return t(
                 "console:develop.features." +
-                "authenticationProvider.forms.generalDetails.name." +
-                "validations.duplicate"
+                    "authenticationProvider.forms.generalDetails.name." +
+                    "validations.duplicate"
             );
         }
 
@@ -301,24 +307,21 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
     };
 
     /**
-        * Handles the final wizard submission.
-        *
-        * @param identityProvider - Identity provider data.
-        */
+     * Handles the final wizard submission.
+     *
+     * @param identityProvider - Identity provider data.
+     */
     const handleWizardFormFinish = (identityProvider: ConnectionInterface): void => {
-
         const connector: OutboundProvisioningConnectorInterface =
-        identityProvider?.provisioning?.outboundConnectors?.connectors[ 0 ];
+            identityProvider?.provisioning?.outboundConnectors?.connectors[0];
 
-        const isGoogleConnector: boolean = get(connector,
-            ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME) ===
+        const isGoogleConnector: boolean =
+            get(connector, ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME) ===
             ConnectionManagementConstants.PROVISIONING_CONNECTOR_GOOGLE;
 
         // If the outbound connector is Google, remove the displayName from the connector.
         if (connector && isGoogleConnector) {
-            delete connector[
-                ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME
-            ];
+            delete connector[ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME];
         }
 
         // Use description from template.
@@ -328,15 +331,12 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
     };
 
     const onSubmitWizard = (values: any): void => {
-
         // Update the template properties with the values from the wizard.
         const updatedProperties: { key: string; value: string }[] = connectionMetaDetails?.create?.properties?.map(
             (property: { key: string; value: string }) => {
-
                 const CALLBACK_URL_KEY: string = "callbackUrl";
 
-                const convertedKey: string = property?.key?.charAt(0)
-                    .toLowerCase() + property?.key?.slice(1);
+                const convertedKey: string = property?.key?.charAt(0).toLowerCase() + property?.key?.slice(1);
 
                 if (!isEmpty(values[convertedKey])) {
                     return { ...property, value: values[convertedKey] };
@@ -347,37 +347,38 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
                 }
 
                 return property;
-            });
+            }
+        );
 
         const connection: ConnectionInterface = template.idp;
 
         connection.name = values?.name.toString();
         connection.templateId = template.templateId;
 
-        if(connection?.templateId === "swe-idp") {
-            connection.federatedAuthenticators.authenticators[ 0 ].properties = connection.federatedAuthenticators
-                .authenticators[ 0 ].properties.concat(updatedProperties);
+        if (connection?.templateId === "swe-idp") {
+            connection.federatedAuthenticators.authenticators[0].properties = connection.federatedAuthenticators.authenticators[0].properties.concat(
+                updatedProperties
+            );
         } else {
-            connection.federatedAuthenticators.authenticators[ 0 ].properties = updatedProperties;
+            connection.federatedAuthenticators.authenticators[0].properties = updatedProperties;
         }
 
         // Allow to set empty client ID and client secret but make the authenticator disabled.
         if (values?.clientId) {
-            connection.federatedAuthenticators.authenticators[ 0 ]
-                .isEnabled = !(isEmpty(values?.clientId?.toString()));
+            connection.federatedAuthenticators.authenticators[0].isEnabled = !isEmpty(values?.clientId?.toString());
         }
 
         if (values?.clientSecret) {
-            connection.federatedAuthenticators.authenticators[ 0 ]
-                .isEnabled = !(isEmpty(values?.clientSecret?.toString()));
+            connection.federatedAuthenticators.authenticators[0].isEnabled = !isEmpty(values?.clientSecret?.toString());
         }
 
-        if (URLUtils.isHttpsUrl(connectionMetaData?.create?.image) ||
-            URLUtils.isHttpUrl(connectionMetaData?.create?.image)) {
+        if (
+            URLUtils.isHttpsUrl(connectionMetaData?.create?.image) ||
+            URLUtils.isHttpUrl(connectionMetaData?.create?.image)
+        ) {
             connection.image = connectionMetaData?.create?.image;
         } else {
             if (!isEmpty(connectionResourcesUrl)) {
-
                 // If the connection resource url is set, append the logo path to it.
                 connection.image = connectionResourcesUrl + connectionMetaData?.create?.image;
 
@@ -385,82 +386,70 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
             }
 
             connection.image = ConnectionsManagementUtils.resolveConnectionResourcePath(
-                connectionResourcesUrl, connectionMetaData?.create?.image
+                connectionResourcesUrl,
+                connectionMetaData?.create?.image
             );
         }
 
         handleWizardFormFinish(connection);
     };
 
-
     const resolveStepActions = (): ReactElement => {
-
         return (
             <Grid>
-                <Grid.Row column={ 1 }>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                <Grid.Row column={1}>
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
                         <LinkButton
                             floated="left"
-                            onClick={ handleWizardClose }
+                            onClick={handleWizardClose}
                             data-testid="add-connection-modal-cancel-button"
                             data-componentid="add-connection-modal-cancel-button"
                         >
-                            { t("common:cancel") }
+                            {t("common:cancel")}
                         </LinkButton>
                     </Grid.Column>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                        {
-                            (currentWizardStep !== totalStep)
-                                ? (
-                                    <PrimaryButton
-                                        floated="right"
-                                        onClick={ () => {
-                                            submitAdvanceForm();
-                                        } }
-                                        data-testid="add-connection-modal-next-button"
-                                        data-componentid="add-connection-modal-next-button"
-                                        loading={ isSubmitting }
-                                        disabled={ isSubmitting }
-                                    >
-                                        { t("console:develop.features.authenticationProvider." +
-                                            "wizards.buttons.next") }
-                                    </PrimaryButton>
-                                )
-                                : (
-                                    <PrimaryButton
-                                        floated="right"
-                                        onClick={ () => {
-                                            submitAdvanceForm();
-                                        } }
-                                        data-testid="add-connection-modal-finish-button"
-                                        data-componentid="add-connection-modal-finish-button"
-                                        loading={ isSubmitting }
-                                        disabled={ isSubmitting }
-                                    >
-                                        {
-                                            totalStep === 1
-                                                ? t("common:create")
-                                                : t("console:develop.features.authenticationProvider." +
-                                                    "wizards.buttons.finish")
-                                        }
-                                    </PrimaryButton>
-                                )
-                        }
-                        {
-                            currentWizardStep > 1 && (
-                                <LinkButton
-                                    floated="right"
-                                    onClick={ () => {
-                                        triggerPreviousForm();
-                                    } }
-                                    data-testid="add-connection-modal-previous-button"
-                                    data-componentid="add-connection-modal-previous-button"
-                                >
-                                    { t("console:develop.features.authenticationProvider." +
-                                        "wizards.buttons.previous") }
-                                </LinkButton>
-                            )
-                        }
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
+                        {currentWizardStep !== totalStep ? (
+                            <PrimaryButton
+                                floated="right"
+                                onClick={() => {
+                                    submitAdvanceForm();
+                                }}
+                                data-testid="add-connection-modal-next-button"
+                                data-componentid="add-connection-modal-next-button"
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
+                            >
+                                {t("console:develop.features.authenticationProvider." + "wizards.buttons.next")}
+                            </PrimaryButton>
+                        ) : (
+                            <PrimaryButton
+                                floated="right"
+                                onClick={() => {
+                                    submitAdvanceForm();
+                                }}
+                                data-testid="add-connection-modal-finish-button"
+                                data-componentid="add-connection-modal-finish-button"
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
+                            >
+                                {totalStep === 1
+                                    ? t("common:create")
+                                    : t("console:develop.features.authenticationProvider." + "wizards.buttons.finish")}
+                            </PrimaryButton>
+                        )}
+                        {currentWizardStep > 1 && (
+                            <LinkButton
+                                floated="right"
+                                onClick={() => {
+                                    triggerPreviousForm();
+                                }}
+                                data-testid="add-connection-modal-previous-button"
+                                data-componentid="add-connection-modal-previous-button"
+                            >
+                                {t("console:develop.features.authenticationProvider." + "wizards.buttons.previous")}
+                            </LinkButton>
+                        )}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -468,12 +457,11 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
     };
 
     /**
-    * Renders the help panel containing wizard help.
-    *
-    * @returns Help panel component.
-    */
+     * Renders the help panel containing wizard help.
+     *
+     * @returns Help panel component.
+     */
     const renderHelpPanel = (): ReactElement => {
-
         // Return null when `showHelpPanel` is false or `wizardHelp` is not defined in `selectedTemplate` object.
         if (!connectionMetaData?.create?.modal?.wizardHelp?.fields || currentWizardStep === 0) {
             return null;
@@ -483,21 +471,19 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
             <ModalWithSidePanel.SidePanel>
                 <ModalWithSidePanel.Header className="wizard-header help-panel-header muted">
                     <div className="help-panel-header-text">
-                        { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.heading") }
+                        {t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.heading")}
                     </div>
                 </ModalWithSidePanel.Header>
                 <ModalWithSidePanel.Content>
-                    <Suspense fallback={ <ContentLoader/> }>
-                        {
-                            isConnectionMetaDataFetchRequestLoading
-                                ? <ContentLoader/>
-                                : (
-                                    <CreateConnectionWizardHelp
-                                        wizardHelp={ connectionMetaData?.create?.modal?.wizardHelp }
-                                        data-testid={ `${ componentId }-modal-wizard-help-panel` }
-                                    />
-                                )
-                        }
+                    <Suspense fallback={<ContentLoader />}>
+                        {isConnectionMetaDataFetchRequestLoading ? (
+                            <ContentLoader />
+                        ) : (
+                            <CreateConnectionWizardHelp
+                                wizardHelp={connectionMetaData?.create?.modal?.wizardHelp}
+                                data-testid={`${componentId}-modal-wizard-help-panel`}
+                            />
+                        )}
                     </Suspense>
                 </ModalWithSidePanel.Content>
             </ModalWithSidePanel.SidePanel>
@@ -521,103 +507,95 @@ export const CreateConnectionWizard: FC<CreateConnectionWizardPropsInterface> = 
 
     return (
         <>
-            { openLimitReachedModal &&
-                (
-                    <TierLimitReachErrorModal
-                        actionLabel={ t(
-                            "console:develop.features.idp.notifications." +
-                        "tierLimitReachedError.emptyPlaceholder.action"
-                        ) }
-                        handleModalClose={ handleLimitReachedModalClose }
-                        header={ t(
-                            "console:develop.features.idp.notifications.tierLimitReachedError.heading"
-                        ) }
-                        description={ t(
-                            "console:develop.features.idp.notifications." +
-                        "tierLimitReachedError.emptyPlaceholder.subtitles"
-                        ) }
-                        message={ t(
-                            "console:develop.features.idp.notifications." +
-                        "tierLimitReachedError.emptyPlaceholder.title"
-                        ) }
-                        openModal={ openLimitReachedModal }
-                    />
-                )
-            }
+            {openLimitReachedModal && (
+                <TierLimitReachErrorModal
+                    actionLabel={t(
+                        "console:develop.features.idp.notifications." + "tierLimitReachedError.emptyPlaceholder.action"
+                    )}
+                    handleModalClose={handleLimitReachedModalClose}
+                    header={t("console:develop.features.idp.notifications.tierLimitReachedError.heading")}
+                    description={t(
+                        "console:develop.features.idp.notifications." +
+                            "tierLimitReachedError.emptyPlaceholder.subtitles"
+                    )}
+                    message={t(
+                        "console:develop.features.idp.notifications." + "tierLimitReachedError.emptyPlaceholder.title"
+                    )}
+                    openModal={openLimitReachedModal}
+                />
+            )}
             <HelpPanelModal
-                isLoading={ isLoading || isConnectionMetaDataFetchRequestLoading }
-                open={ !openLimitReachedModal }
+                isLoading={isLoading || isConnectionMetaDataFetchRequestLoading}
+                open={!openLimitReachedModal}
                 className="wizard identity-provider-create-wizard"
                 dimmer="blurring"
-                onClose={ handleWizardClose }
-                closeOnDimmerClick={ false }
+                onClose={handleWizardClose}
+                closeOnDimmerClick={false}
                 closeOnEscape
-                data-componentid={ `${ componentId }-modal` }
+                data-componentid={`${componentId}-modal`}
             >
                 <HelpPanelModal.MainPanel>
                     <HelpPanelModal.Header
                         className="wizard-header"
-                        data-componentid={ `${ componentId }-modal-header` }
-                        isLoading={ isConnectionMetaDataFetchRequestLoading }
+                        data-componentid={`${componentId}-modal-header`}
+                        isLoading={isConnectionMetaDataFetchRequestLoading}
                     >
                         <div className="display-flex">
                             <GenericIcon
-                                icon={
-                                    ConnectionsManagementUtils.resolveConnectionResourcePath(
-                                        "", connectionMetaData?.create?.image
-                                    )
-                                }
+                                icon={ConnectionsManagementUtils.resolveConnectionResourcePath(
+                                    "",
+                                    connectionMetaData?.create?.image
+                                )}
                                 size="mini"
                                 transparent
                                 spaced="right"
-                                data-componentid={ `${ componentId }-image` }
+                                data-componentid={`${componentId}-image`}
                             />
                             <div className="ml-1">
-                                { title }
-                                { subTitle &&
-                            (<Heading as="h6">
-                                { subTitle }
-                                <DocumentationLink
-                                    link={ getLink("develop.connections.newConnection.google.learnMore") }
-                                >
-                                    { t("common:learnMore") }
-                                </DocumentationLink>
-                            </Heading>)
-                                }
+                                {title}
+                                {subTitle && (
+                                    <Heading as="h6">
+                                        {subTitle}
+                                        <DocumentationLink
+                                            link={getLink("develop.connections.newConnection.google.learnMore")}
+                                        >
+                                            {t("common:learnMore")}
+                                        </DocumentationLink>
+                                    </Heading>
+                                )}
                             </div>
                         </div>
                     </HelpPanelModal.Header>
                     <HelpPanelModal.Content
                         className="content-container"
-                        data-componentid={ `${ componentId }-modal-content-2` }>
-                        { alert && alertComponent }
+                        data-componentid={`${componentId}-modal-content-2`}
+                    >
+                        {alert && alertComponent}
                         <DynamicWizard
-                            id={ template?.idp?.name }
-                            initialValues={ { name: template?.idp?.name } }
-                            onSubmit={
-                                (values: any) => onSubmitWizard(values)
-                            }
-                            triggerSubmit={ (submitFunction: () => void) => {
+                            id={template?.idp?.name}
+                            initialValues={{ name: template?.idp?.name }}
+                            onSubmit={(values: any) => onSubmitWizard(values)}
+                            triggerSubmit={(submitFunction: () => void) => {
                                 submitAdvanceForm = submitFunction;
-                            } }
-                            triggerPrevious={ (previousFunction: () => void) => {
+                            }}
+                            triggerPrevious={(previousFunction: () => void) => {
                                 triggerPreviousForm = previousFunction;
-                            } }
-                            changePage={ (step: number) => setWizStep(step) }
-                            setTotalPages={ (pageNumber: number) => setTotalStep(pageNumber) }
-                            data-componentid={ componentId }
-                            uncontrolledForm={ true }
+                            }}
+                            changePage={(step: number) => setWizStep(step)}
+                            setTotalPages={(pageNumber: number) => setTotalStep(pageNumber)}
+                            data-componentid={componentId}
+                            uncontrolledForm={true}
                         >
                             <DynamicWizardPage>
-                                { renderFormFields(modifyFormFields(connectionMetaData?.create?.modal?.form?.fields)) }
+                                {renderFormFields(modifyFormFields(connectionMetaData?.create?.modal?.form?.fields))}
                             </DynamicWizardPage>
                         </DynamicWizard>
                     </HelpPanelModal.Content>
-                    <HelpPanelModal.Actions data-componentid={ `${ componentId }-modal-actions` }>
-                        { resolveStepActions() }
+                    <HelpPanelModal.Actions data-componentid={`${componentId}-modal-actions`}>
+                        {resolveStepActions()}
                     </HelpPanelModal.Actions>
                 </HelpPanelModal.MainPanel>
-                { renderHelpPanel() }
+                {renderHelpPanel()}
             </HelpPanelModal>
         </>
     );

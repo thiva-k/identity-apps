@@ -29,9 +29,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Icon, Modal } from "semantic-ui-react";
-import {
-    OutboundProvisioningConnectors
-} from "./steps/outbound-provisioning-connectors";
+import { OutboundProvisioningConnectors } from "./steps/outbound-provisioning-connectors";
 import { OutboundProvisioningSettings } from "./steps/shared-steps/outbound-provisioning-settings";
 import { WizardSummary } from "./steps/shared-steps/wizard-summary";
 import {
@@ -41,7 +39,7 @@ import {
 } from "../../api/connections";
 import { getOutboundProvisioningConnectorWizardIcons } from "../../configs/ui";
 import {
-    ConnectionInterface, 
+    ConnectionInterface,
     OutboundProvisioningConnectorInterface,
     OutboundProvisioningConnectorListItemInterface,
     OutboundProvisioningConnectorMetaInterface
@@ -66,7 +64,7 @@ interface OutboundProvisioningConnectorCreateWizardPropsInterface extends Testab
  * Interface for the wizard state.
  */
 interface WizardStateInterface {
-    [ key: string ]: any;
+    [key: string]: any;
 }
 
 /**
@@ -79,413 +77,404 @@ enum WizardStepsFormTypes {
     SUMMARY = "summary"
 }
 
-export const OutboundProvisioningConnectorCreateWizard:
-    FunctionComponent<OutboundProvisioningConnectorCreateWizardPropsInterface> = (
-        props: OutboundProvisioningConnectorCreateWizardPropsInterface
-    ): ReactElement => {
+export const OutboundProvisioningConnectorCreateWizard: FunctionComponent<OutboundProvisioningConnectorCreateWizardPropsInterface> = (
+    props: OutboundProvisioningConnectorCreateWizardPropsInterface
+): ReactElement => {
+    const { identityProvider, closeWizard, currentStep, onUpdate, ["data-testid"]: testId } = props;
 
-        const {
-            identityProvider,
-            closeWizard,
-            currentStep,
-            onUpdate,
-            [ "data-testid" ]: testId
-        } = props;
+    const { t } = useTranslation();
+    const dispatch: Dispatch = useDispatch();
 
-        const { t } = useTranslation();
-        const dispatch: Dispatch = useDispatch();
+    const [submitConnectorSelection, setSubmitConnectorSelection] = useTrigger();
+    const [submitConnectorSettings, setSubmitConnectorSettings] = useTrigger();
+    const [finishSubmit, setFinishSubmit] = useTrigger();
 
-        const [ submitConnectorSelection, setSubmitConnectorSelection ] = useTrigger();
-        const [ submitConnectorSettings, setSubmitConnectorSettings ] = useTrigger();
-        const [ finishSubmit, setFinishSubmit ] = useTrigger();
+    const [partiallyCompletedStep, setPartiallyCompletedStep] = useState<number>(undefined);
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(currentStep);
+    const [wizardState, setWizardState] = useState<WizardStateInterface>(undefined);
 
-        const [ partiallyCompletedStep, setPartiallyCompletedStep ] = useState<number>(undefined);
-        const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(currentStep);
-        const [ wizardState, setWizardState ] = useState<WizardStateInterface>(undefined);
+    const [connectorList, setConnectorList] = useState<OutboundProvisioningConnectorListItemInterface[]>([]);
+    const [connectorMetaData, setConnectorMetaData] = useState<OutboundProvisioningConnectorMetaInterface>(undefined);
+    const [newConnector, setNewConnector] = useState(undefined);
+    const [isConnectorMetadataRequestLoading, setIsConnectorMetadataRequestLoading] = useState<boolean>(false);
+    const [defaultConnector, setDefaultConnector] = useState<OutboundProvisioningConnectorListItemInterface>(undefined);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-        const [ connectorList, setConnectorList ] = useState<OutboundProvisioningConnectorListItemInterface[]>([]);
-        const [ 
-            connectorMetaData, 
-            setConnectorMetaData 
-        ] = useState<OutboundProvisioningConnectorMetaInterface>(undefined);
-        const [ newConnector, setNewConnector ] = useState(undefined);
-        const [ isConnectorMetadataRequestLoading, setIsConnectorMetadataRequestLoading ] = useState<boolean>(false);
-        const [ defaultConnector, setDefaultConnector ] =
-        useState<OutboundProvisioningConnectorListItemInterface>(undefined);
-        const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
-        const [ alert, setAlert, alertComponent ] = useWizardAlert();
-
-        /**
+    /**
      * At the initial load, select the first item from the connector list so that the
      * metadata could be loaded.
      */
-        useEffect(() => {
-            if (!(connectorList && Array.isArray(connectorList) && connectorList.length > 0)) {
-                return;
+    useEffect(() => {
+        if (!(connectorList && Array.isArray(connectorList) && connectorList.length > 0)) {
+            return;
+        }
+
+        setWizardState({
+            [WizardStepsFormTypes.CONNECTOR_SELECTION]: {
+                connectorId: connectorList[0].connectorId
             }
+        });
+    }, [connectorList]);
 
-            setWizardState( {
-                [ WizardStepsFormTypes.CONNECTOR_SELECTION ]: {
-                    connectorId: connectorList[0].connectorId
-                }
-            });
-        }, [ connectorList ]);
-
-        /**
+    /**
      * Sets the current wizard step to the previous on every `partiallyCompletedStep`
      * value change , and resets the partially completed step value.
      */
-        useEffect(() => {
-            if (partiallyCompletedStep === undefined) {
-                return;
-            }
+    useEffect(() => {
+        if (partiallyCompletedStep === undefined) {
+            return;
+        }
 
-            setCurrentWizardStep(currentWizardStep - 1);
-            setPartiallyCompletedStep(undefined);
-        }, [ partiallyCompletedStep ]);
+        setCurrentWizardStep(currentWizardStep - 1);
+        setPartiallyCompletedStep(undefined);
+    }, [partiallyCompletedStep]);
 
-        useEffect(() => {
-            if (newConnector === undefined) {
-                return;
-            }
+    useEffect(() => {
+        if (newConnector === undefined) {
+            return;
+        }
 
-            let connector: OutboundProvisioningConnectorInterface = { ...newConnector };
+        let connector: OutboundProvisioningConnectorInterface = { ...newConnector };
 
-            connector = {
-                ...connector,
-                connectorId: wizardState[ WizardStepsFormTypes.CONNECTOR_SELECTION ]?.connectorId,
-                properties: wizardState[ WizardStepsFormTypes.CONNECTOR_DETAILS ]?.provisioning?.outboundConnectors?.
-                    connectors[0]?.properties
-            };
+        connector = {
+            ...connector,
+            connectorId: wizardState[WizardStepsFormTypes.CONNECTOR_SELECTION]?.connectorId,
+            properties:
+                wizardState[WizardStepsFormTypes.CONNECTOR_DETAILS]?.provisioning?.outboundConnectors?.connectors[0]
+                    ?.properties
+        };
 
-            delete connector["displayName"];
-            updateOutboundProvisioningConnector(identityProvider.id, connector)
-                .then(() => {
-                    dispatch(addAlert({
-                        description: t("console:develop.features.authenticationProvider.notifications." +
-                        "updateOutboundProvisioningConnector." +
-                        "success.description"),
+        delete connector["displayName"];
+        updateOutboundProvisioningConnector(identityProvider.id, connector)
+            .then(() => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "updateOutboundProvisioningConnector." +
+                                "success.description"
+                        ),
                         level: AlertLevels.SUCCESS,
-                        message: t("console:develop.features.authenticationProvider.notifications." +
-                        "updateOutboundProvisioningConnector." +
-                        "success.message")
-                    }));
+                        message: t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "updateOutboundProvisioningConnector." +
+                                "success.message"
+                        )
+                    })
+                );
 
-                    onUpdate(identityProvider.id);
-                })
-                .catch((error: AxiosError) => {
-                    handleUpdateOutboundProvisioningConnectorError(error);
-                });
-        }, [ newConnector ]);
+                onUpdate(identityProvider.id);
+            })
+            .catch((error: AxiosError) => {
+                handleUpdateOutboundProvisioningConnectorError(error);
+            });
+    }, [newConnector]);
 
-        /**
+    /**
      * Get the list of outbound provisioning connectors available.
      */
-        useEffect(() => {
-            getOutboundProvisioningConnectorsList()
-                .then((response: OutboundProvisioningConnectorListItemInterface[]) => {
-                    setConnectorList(response);
-                })
-                .catch((error: AxiosError) => {
-                    if (error.response && error.response.data && error.response.data.description) {
-                        setAlert({
-                            description: t("console:develop.features.authenticationProvider.notifications." +
-                            "getOutboundProvisioningConnectorsList.error.description",
-                            { description: error.response.data.description }
-                            ),
-                            level: AlertLevels.ERROR,
-                            message: t("console:develop.features.authenticationProvider.notifications." +
-                            "getOutboundProvisioningConnectorsList.error.message")
-                        });
-
-                        return;
-                    }
-
+    useEffect(() => {
+        getOutboundProvisioningConnectorsList()
+            .then((response: OutboundProvisioningConnectorListItemInterface[]) => {
+                setConnectorList(response);
+            })
+            .catch((error: AxiosError) => {
+                if (error.response && error.response.data && error.response.data.description) {
                     setAlert({
-                        description: t("console:develop.features.authenticationProvider.notifications." +
-                        "getOutboundProvisioningConnectorsList." +
-                        "genericError.description"),
+                        description: t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "getOutboundProvisioningConnectorsList.error.description",
+                            { description: error.response.data.description }
+                        ),
                         level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider.notifications." +
-                        "getOutboundProvisioningConnectorsList." +
-                        "genericError.message")
+                        message: t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "getOutboundProvisioningConnectorsList.error.message"
+                        )
                     });
+
+                    return;
+                }
+
+                setAlert({
+                    description: t(
+                        "console:develop.features.authenticationProvider.notifications." +
+                            "getOutboundProvisioningConnectorsList." +
+                            "genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "console:develop.features.authenticationProvider.notifications." +
+                            "getOutboundProvisioningConnectorsList." +
+                            "genericError.message"
+                    )
                 });
-        }, []);
+            });
+    }, []);
 
-        useEffect(() => {
-            if (!wizardState && !connectorMetaData) {
-                return;
-            }
+    useEffect(() => {
+        if (!wizardState && !connectorMetaData) {
+            return;
+        }
 
-            // Set the loading status.
-            setIsConnectorMetadataRequestLoading(true);
+        // Set the loading status.
+        setIsConnectorMetadataRequestLoading(true);
 
-            const selectedId: string = wizardState[ WizardStepsFormTypes.CONNECTOR_SELECTION ]?.connectorId;
-            let initialConnector: OutboundProvisioningConnectorListItemInterface =
-            connectorList.find((connector: OutboundProvisioningConnectorListItemInterface) => 
-                connector.connectorId === selectedId);
+        const selectedId: string = wizardState[WizardStepsFormTypes.CONNECTOR_SELECTION]?.connectorId;
+        let initialConnector: OutboundProvisioningConnectorListItemInterface = connectorList.find(
+            (connector: OutboundProvisioningConnectorListItemInterface) => connector.connectorId === selectedId
+        );
 
-            initialConnector = {
-                ...initialConnector,
-                isEnabled: true
+        initialConnector = {
+            ...initialConnector,
+            isEnabled: true
+        };
+
+        setDefaultConnector(initialConnector);
+
+        getOutboundProvisioningConnectorMetadata(selectedId)
+            .then((response: OutboundProvisioningConnectorMetaInterface) => {
+                setConnectorMetaData(response);
+            })
+            .catch((error: AxiosError) => {
+                handleGetOutboundProvisioningConnectorMetadataError(error);
+            })
+            .finally(() => {
+                setIsConnectorMetadataRequestLoading(false);
+            });
+    }, [wizardState && wizardState[WizardStepsFormTypes.CONNECTOR_SELECTION]?.connectorId]);
+
+    useEffect(() => {
+        if (!wizardState && !defaultConnector) {
+            return;
+        }
+
+        const selectedId: string = wizardState[WizardStepsFormTypes.CONNECTOR_SELECTION]?.connectorId;
+        let initialConnector: OutboundProvisioningConnectorListItemInterface = connectorList.find(
+            (connector: OutboundProvisioningConnectorListItemInterface) => connector.connectorId === selectedId
+        );
+
+        initialConnector = {
+            ...initialConnector,
+            isEnabled: true
+        };
+        setDefaultConnector(initialConnector);
+    }, [wizardState && wizardState[WizardStepsFormTypes.CONNECTOR_SELECTION]?.connectorId]);
+
+    const navigateToNext = () => {
+        switch (currentWizardStep) {
+            case 0:
+                setSubmitConnectorSelection();
+
+                break;
+            case 1:
+                setSubmitConnectorSettings();
+
+                break;
+            case 2:
+                setIsSubmitting(true);
+                setFinishSubmit();
+        }
+    };
+
+    const navigateToPrevious = () => {
+        setPartiallyCompletedStep(currentWizardStep);
+    };
+
+    /**
+     * Handles wizard step submit.
+     *
+     * @param values - Forms values to be stored in state.
+     * @param WizardStepsFormTypes - Type of the form.
+     */
+    const handleWizardFormSubmit = (values: any, formType: WizardStepsFormTypes) => {
+        setCurrentWizardStep(currentWizardStep + 1);
+        setWizardState({ ...wizardState, [formType]: values });
+    };
+
+    /**
+     * Generates a summary of the wizard.
+     *
+     */
+    const generateWizardSummary = () => {
+        if (!wizardState) {
+            return;
+        }
+
+        const wizardData: WizardStateInterface = { ...wizardState };
+        let summary: WizardStateInterface = {};
+
+        for (const value of Object.values(wizardData)) {
+            summary = {
+                ...summary,
+                ...value
             };
+        }
 
-            setDefaultConnector(initialConnector);
+        return merge(cloneDeep(summary));
+    };
 
-            getOutboundProvisioningConnectorMetadata(selectedId)
-                .then((response: OutboundProvisioningConnectorMetaInterface) => {
-                    setConnectorMetaData(response);
-                })
-                .catch((error: AxiosError) => {
-                    handleGetOutboundProvisioningConnectorMetadataError(error);
-                })
-                .finally(() => {
-                    setIsConnectorMetadataRequestLoading(false);
-                });
-        }, [ wizardState && wizardState[ WizardStepsFormTypes.CONNECTOR_SELECTION ]?.connectorId ]);
-
-        useEffect(() => {
-            if (!wizardState && !defaultConnector) {
-                return;
-            }
-
-            const selectedId: string = wizardState[ WizardStepsFormTypes.CONNECTOR_SELECTION ]?.connectorId;
-            let initialConnector: OutboundProvisioningConnectorListItemInterface =
-            connectorList.find((connector: OutboundProvisioningConnectorListItemInterface) => 
-                connector.connectorId === selectedId);
-
-            initialConnector = {
-                ...initialConnector,
-                isEnabled: true
-            };
-            setDefaultConnector(initialConnector);
-        }, [ wizardState && wizardState[ WizardStepsFormTypes.CONNECTOR_SELECTION ]?.connectorId ]);
-
-        const navigateToNext = () => {
-            switch (currentWizardStep) {
-                case 0:
-                    setSubmitConnectorSelection();
-
-                    break;
-                case 1:
-                    setSubmitConnectorSettings();
-
-                    break;
-                case 2:
-                    setIsSubmitting(true);
-                    setFinishSubmit();
-            }
-        };
-
-        const navigateToPrevious = () => {
-            setPartiallyCompletedStep(currentWizardStep);
-        };
-
-        /**
-         * Handles wizard step submit.
-         *
-         * @param values - Forms values to be stored in state.
-         * @param WizardStepsFormTypes - Type of the form.
-         */
-        const handleWizardFormSubmit = (values: any, formType: WizardStepsFormTypes) => {
-            setCurrentWizardStep(currentWizardStep + 1);
-            setWizardState({ ...wizardState, [ formType ]: values });
-        };
-
-        /**
-         * Generates a summary of the wizard.
-         *
-         */
-        const generateWizardSummary = () => {
-            if (!wizardState) {
-                return;
-            }
-
-            const wizardData: WizardStateInterface = { ...wizardState };
-            let summary: WizardStateInterface = {};
-
-            for (const value of Object.values(wizardData)) {
-                summary = {
-                    ...summary,
-                    ...value
-                };
-            }
-
-            return merge(cloneDeep(summary));
-        };
-
-        /**
+    /**
      * Handles the final wizard submission.
      */
-        const handleWizardFormFinish = (): void => {
-            getOutboundProvisioningConnectorMetadata(wizardState[ 
-                WizardStepsFormTypes.CONNECTOR_SELECTION ]?.connectorId)
-                .then((response: OutboundProvisioningConnectorMetaInterface) => {
-                    setNewConnector(response);
-                })
-                .finally(() => {
-                    setIsSubmitting(false);
-                    closeWizard();
-                });
-        };
-
-        const STEPS: { content: ReactElement, icon: any, title: string }[] = [
-            {
-                content: (
-                    <OutboundProvisioningConnectors
-                        initialSelection={
-                            wizardState && wizardState[ WizardStepsFormTypes.CONNECTOR_SELECTION ]?.connectorId
-                        }
-                        triggerSubmit={ submitConnectorSelection }
-                        onSubmit={ (values: Map<string, FormValue>): void => {
-                            handleWizardFormSubmit(values, WizardStepsFormTypes.CONNECTOR_SELECTION);
-                        } }
-                        connectorList={ connectorList }
-                        data-testid={ `${ testId }-connector-selection` }
-                    />
-                ),
-                icon: getOutboundProvisioningConnectorWizardIcons().connectorSelection,
-                title: t("console:develop.features.authenticationProvider" +
-                ".wizards.addProvisioningConnector.steps.connectorSelection.title")
-            },
-            {
-                content: (
-                    <OutboundProvisioningSettings
-                        metadata={ connectorMetaData }
-                        isLoading={ isConnectorMetadataRequestLoading }
-                        initialValues={
-                            (wizardState && wizardState[ WizardStepsFormTypes.CONNECTOR_DETAILS ]) ?? identityProvider }
-                        onSubmit={ (values: ConnectionInterface): void => handleWizardFormSubmit(
-                            values, WizardStepsFormTypes.CONNECTOR_DETAILS) }
-                        triggerSubmit={ submitConnectorSettings }
-                        defaultConnector={ defaultConnector }
-                        data-testid={ `${ testId }-provisioning-settings` }
-                    />
-                ),
-                icon: getOutboundProvisioningConnectorWizardIcons().connectorDetails,
-                title: t("console:develop.features.authenticationProvider." +
-                "wizards.addProvisioningConnector.steps.connectorConfiguration.title")
-            },
-            {
-                content: (
-                    <WizardSummary
-                        provisioningConnectorMetadata={ connectorMetaData }
-                        authenticatorMetadata={ undefined }
-                        triggerSubmit={ finishSubmit }
-                        identityProvider={ generateWizardSummary() }
-                        onSubmit={ handleWizardFormFinish }
-                        data-testid={ `${ testId }-summary` }
-                    />
-                ),
-                icon: getOutboundProvisioningConnectorWizardIcons().summary,
-                title: t("console:develop.features.authenticationProvider." +
-                "wizards.addProvisioningConnector.steps.summary.title")
-            }
-        ];
-
-        return (
-            <Modal
-                open={ true }
-                className="wizard application-create-wizard"
-                dimmer="blurring"
-                onClose={ closeWizard }
-                closeOnDimmerClick={ false }
-                closeOnEscape
-                data-testid={ `${ testId }-modal` }
-            >
-                <Modal.Header className="wizard-header" data-testid={ `${ testId }-modal-header` }>
-                    { t("console:develop.features.authenticationProvider.modals.addProvisioningConnector.title") }
-                    <Heading as="h6">
-                        { 
-                            t("console:develop.features.authenticationProvider" +
-                            ".modals.addProvisioningConnector.subTitle") 
-                        }
-                    </Heading>
-                </Modal.Header>
-                <Modal.Content className="steps-container" data-testid={ `${ testId }-modal-content-1` }>
-                    <Steps.Group
-                        header={ t("console:develop.features.authenticationProvider.wizards." +
-                        "addProvisioningConnector.header") }
-                        current={ currentWizardStep }
-                    >
-                        { 
-                            STEPS.map(
-                                (step: { 
-                                    content: ReactElement;
-                                    icon: any;
-                                    title: string;
-                                }, 
-                                index: number) => (
-                                    <Steps.Step
-                                        key={ index }
-                                        icon={ step.icon }
-                                        title={ step.title }
-                                    />
-                                )
-                            ) 
-                        }
-                    </Steps.Group>
-                </Modal.Content>
-                <Modal.Content className="content-container" scrolling data-testid={ `${ testId }-modal-content-2` }>
-                    { alert && alertComponent }
-                    { STEPS[ currentWizardStep ].content }
-                </Modal.Content>
-                <Modal.Actions data-testid={ `${ testId }-modal-actions` }>
-                    <Grid>
-                        <Grid.Row column={ 1 }>
-                            <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                <LinkButton
-                                    floated="left"
-                                    onClick={ () => closeWizard() }
-                                    data-testid={ `${ testId }-modal-cancel-button` }>
-                                    { t("common:cancel") }
-                                </LinkButton>
-                            </Grid.Column>
-                            <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                { currentWizardStep < STEPS.length - 1 && (
-                                    <PrimaryButton
-                                        floated="right"
-                                        onClick={ navigateToNext }
-                                        loading={ isConnectorMetadataRequestLoading }
-                                        disabled={ isConnectorMetadataRequestLoading }
-                                        data-testid={ `${ testId }-modal-next-button` }
-                                    >
-                                        { t("console:develop.features.authenticationProvider.wizards.buttons.next") }
-                                        <Icon name="arrow right"/>
-                                    </PrimaryButton>
-                                ) }
-                                { currentWizardStep === STEPS.length - 1 && (
-                                    <PrimaryButton
-                                        floated="right"
-                                        onClick={ navigateToNext }
-                                        loading={ isSubmitting }
-                                        disabled={ isSubmitting }
-                                        data-testid={ `${ testId }-modal-finish-button` }
-                                    >
-                                        { t("console:develop.features.authenticationProvider.wizards.buttons.finish") }
-                                    </PrimaryButton>
-                                ) }
-                                { currentWizardStep > 0 && (
-                                    <LinkButton
-                                        floated="right"
-                                        onClick={ navigateToPrevious }
-                                        data-testid={ `${ testId }-modal-previous-button` }>
-                                        <Icon name="arrow left"/>
-                                        { 
-                                            t("console:develop.features.authenticationProvider"
-                                                + ".wizards.buttons.previous") 
-                                        }
-                                    </LinkButton>
-                                ) }
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </Modal.Actions>
-            </Modal>
-        );
+    const handleWizardFormFinish = (): void => {
+        getOutboundProvisioningConnectorMetadata(wizardState[WizardStepsFormTypes.CONNECTOR_SELECTION]?.connectorId)
+            .then((response: OutboundProvisioningConnectorMetaInterface) => {
+                setNewConnector(response);
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+                closeWizard();
+            });
     };
+
+    const STEPS: { content: ReactElement; icon: any; title: string }[] = [
+        {
+            content: (
+                <OutboundProvisioningConnectors
+                    initialSelection={wizardState && wizardState[WizardStepsFormTypes.CONNECTOR_SELECTION]?.connectorId}
+                    triggerSubmit={submitConnectorSelection}
+                    onSubmit={(values: Map<string, FormValue>): void => {
+                        handleWizardFormSubmit(values, WizardStepsFormTypes.CONNECTOR_SELECTION);
+                    }}
+                    connectorList={connectorList}
+                    data-testid={`${testId}-connector-selection`}
+                />
+            ),
+            icon: getOutboundProvisioningConnectorWizardIcons().connectorSelection,
+            title: t(
+                "console:develop.features.authenticationProvider" +
+                    ".wizards.addProvisioningConnector.steps.connectorSelection.title"
+            )
+        },
+        {
+            content: (
+                <OutboundProvisioningSettings
+                    metadata={connectorMetaData}
+                    isLoading={isConnectorMetadataRequestLoading}
+                    initialValues={
+                        (wizardState && wizardState[WizardStepsFormTypes.CONNECTOR_DETAILS]) ?? identityProvider
+                    }
+                    onSubmit={(values: ConnectionInterface): void =>
+                        handleWizardFormSubmit(values, WizardStepsFormTypes.CONNECTOR_DETAILS)
+                    }
+                    triggerSubmit={submitConnectorSettings}
+                    defaultConnector={defaultConnector}
+                    data-testid={`${testId}-provisioning-settings`}
+                />
+            ),
+            icon: getOutboundProvisioningConnectorWizardIcons().connectorDetails,
+            title: t(
+                "console:develop.features.authenticationProvider." +
+                    "wizards.addProvisioningConnector.steps.connectorConfiguration.title"
+            )
+        },
+        {
+            content: (
+                <WizardSummary
+                    provisioningConnectorMetadata={connectorMetaData}
+                    authenticatorMetadata={undefined}
+                    triggerSubmit={finishSubmit}
+                    identityProvider={generateWizardSummary()}
+                    onSubmit={handleWizardFormFinish}
+                    data-testid={`${testId}-summary`}
+                />
+            ),
+            icon: getOutboundProvisioningConnectorWizardIcons().summary,
+            title: t(
+                "console:develop.features.authenticationProvider." +
+                    "wizards.addProvisioningConnector.steps.summary.title"
+            )
+        }
+    ];
+
+    return (
+        <Modal
+            open={true}
+            className="wizard application-create-wizard"
+            dimmer="blurring"
+            onClose={closeWizard}
+            closeOnDimmerClick={false}
+            closeOnEscape
+            data-testid={`${testId}-modal`}
+        >
+            <Modal.Header className="wizard-header" data-testid={`${testId}-modal-header`}>
+                {t("console:develop.features.authenticationProvider.modals.addProvisioningConnector.title")}
+                <Heading as="h6">
+                    {t("console:develop.features.authenticationProvider" + ".modals.addProvisioningConnector.subTitle")}
+                </Heading>
+            </Modal.Header>
+            <Modal.Content className="steps-container" data-testid={`${testId}-modal-content-1`}>
+                <Steps.Group
+                    header={t(
+                        "console:develop.features.authenticationProvider.wizards." + "addProvisioningConnector.header"
+                    )}
+                    current={currentWizardStep}
+                >
+                    {STEPS.map((step: { content: ReactElement; icon: any; title: string }, index: number) => (
+                        <Steps.Step key={index} icon={step.icon} title={step.title} />
+                    ))}
+                </Steps.Group>
+            </Modal.Content>
+            <Modal.Content className="content-container" scrolling data-testid={`${testId}-modal-content-2`}>
+                {alert && alertComponent}
+                {STEPS[currentWizardStep].content}
+            </Modal.Content>
+            <Modal.Actions data-testid={`${testId}-modal-actions`}>
+                <Grid>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            <LinkButton
+                                floated="left"
+                                onClick={() => closeWizard()}
+                                data-testid={`${testId}-modal-cancel-button`}
+                            >
+                                {t("common:cancel")}
+                            </LinkButton>
+                        </Grid.Column>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            {currentWizardStep < STEPS.length - 1 && (
+                                <PrimaryButton
+                                    floated="right"
+                                    onClick={navigateToNext}
+                                    loading={isConnectorMetadataRequestLoading}
+                                    disabled={isConnectorMetadataRequestLoading}
+                                    data-testid={`${testId}-modal-next-button`}
+                                >
+                                    {t("console:develop.features.authenticationProvider.wizards.buttons.next")}
+                                    <Icon name="arrow right" />
+                                </PrimaryButton>
+                            )}
+                            {currentWizardStep === STEPS.length - 1 && (
+                                <PrimaryButton
+                                    floated="right"
+                                    onClick={navigateToNext}
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
+                                    data-testid={`${testId}-modal-finish-button`}
+                                >
+                                    {t("console:develop.features.authenticationProvider.wizards.buttons.finish")}
+                                </PrimaryButton>
+                            )}
+                            {currentWizardStep > 0 && (
+                                <LinkButton
+                                    floated="right"
+                                    onClick={navigateToPrevious}
+                                    data-testid={`${testId}-modal-previous-button`}
+                                >
+                                    <Icon name="arrow left" />
+                                    {t("console:develop.features.authenticationProvider" + ".wizards.buttons.previous")}
+                                </LinkButton>
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Modal.Actions>
+        </Modal>
+    );
+};
 
 /**
  * Default props for the add user wizard.
