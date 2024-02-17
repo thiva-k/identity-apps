@@ -17,11 +17,11 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import { Code, ConfirmationModal, ConfirmationModalPropsInterface } from "@wso2is/react-components";
 import React, { FunctionComponent, MouseEvent } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppState } from "../../../core/store";
 import useBrandingPreference from "../../hooks/use-branding-preference";
 
 /**
@@ -50,37 +50,37 @@ const CustomTextRevertConfirmationModal: FunctionComponent<CustomTextRevertConfi
 
     return (
         <ConfirmationModal
-            onClose={ onClose }
+            onClose={onClose}
             type="negative"
-            primaryAction={ t("common:confirm") }
-            secondaryAction={ t("common:cancel") }
-            onSecondaryActionClick={ (event: MouseEvent<HTMLElement>): void => {
+            primaryAction={t("common:confirm")}
+            secondaryAction={t("common:cancel")}
+            onSecondaryActionClick={(event: MouseEvent<HTMLElement>): void => {
                 onClose(event, null);
-            } }
-            onPrimaryActionClick={ (event: MouseEvent<HTMLElement>): void => {
+            }}
+            onPrimaryActionClick={(event: MouseEvent<HTMLElement>): void => {
                 onClose(event, null);
-            } }
-            data-componentid={ componentId }
-            closeOnDimmerClick={ false }
-            { ...rest }
+            }}
+            data-componentid={componentId}
+            closeOnDimmerClick={false}
+            {...rest}
         >
-            <ConfirmationModal.Header data-componentid={ `${componentId}-header` }>
-                { t("console:brandingCustomText.revertScreenConfirmationModal.heading") }
+            <ConfirmationModal.Header data-componentid={`${componentId}-header`}>
+                {t("console:brandingCustomText.revertScreenConfirmationModal.heading")}
             </ConfirmationModal.Header>
-            <ConfirmationModal.Message attached negative data-componentid={ `${componentId}-message` }>
+            <ConfirmationModal.Message attached negative data-componentid={`${componentId}-message`}>
                 <Trans
-                    i18nKey={ "console:brandingCustomText.revertScreenConfirmationModal.message" }
-                    tOptions={ {
+                    i18nKey={"console:brandingCustomText.revertScreenConfirmationModal.message"}
+                    tOptions={{
                         locale: selectedLocale,
                         screen: selectedScreen
-                    } }
+                    }}
                 >
-                    Reverting <Code>{ selectedScreen }</Code> screen&apos;s customized text for the <Code>
-                        { selectedLocale }</Code> locale.
+                    Reverting <Code>{selectedScreen}</Code> screen&apos;s customized text for the{" "}
+                    <Code>{selectedLocale}</Code> locale.
                 </Trans>
             </ConfirmationModal.Message>
-            <ConfirmationModal.Content data-componentid={ `${componentId}-content` }>
-                { t("console:brandingCustomText.revertScreenConfirmationModal.content", { productName }) }
+            <ConfirmationModal.Content data-componentid={`${componentId}-content`}>
+                {t("console:brandingCustomText.revertScreenConfirmationModal.content", { productName })}
             </ConfirmationModal.Content>
         </ConfirmationModal>
     );

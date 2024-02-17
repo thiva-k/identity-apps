@@ -18,11 +18,11 @@
 
 import { resolveUserDisplayName } from "@wso2is/core/helpers";
 import { IdentifiableComponentInterface, ProfileInfoInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import parse from "html-react-parser";
 import Mustache from "mustache";
 import React, { FunctionComponent, ReactElement, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { AppState } from "../../../core/store";
 import { CustomTextPreferenceConstants } from "../../constants/custom-text-preference-constants";
 import useBrandingPreference from "../../hooks/use-branding-preference";
 import { BrandingPreferenceMeta } from "../../meta/branding-preference-meta";
@@ -50,22 +50,22 @@ export const MyAccountScreenSkeleton: FunctionComponent<MyAccountScreenSkeletonI
 ): ReactElement => {
     const { brandingPreference, content, ["data-componentid"]: componentId } = props;
 
-    const { i18n }= useBrandingPreference();
+    const { i18n } = useBrandingPreference();
 
     const systemTheme: string = useSelector((state: AppState) => state.config?.ui?.theme?.name);
     const profileInfo: ProfileInfoInterface = useSelector((state: AppState) => state.profile?.profileInfo);
 
-    const userDisplayName: string = useMemo(() => resolveUserDisplayName(profileInfo, null, "John"), [ profileInfo ]);
+    const userDisplayName: string = useMemo(() => resolveUserDisplayName(profileInfo, null, "John"), [profileInfo]);
 
     return (
-        <div className="my-account-screen-skeleton" data-testid={ componentId } style={ { pointerEvents: "none" } }>
-            { parse(
+        <div className="my-account-screen-skeleton" data-testid={componentId} style={{ pointerEvents: "none" }}>
+            {parse(
                 Mustache.render(content, {
                     avatarInitial: userDisplayName.charAt(0).toLocaleUpperCase(),
                     copyright: {
-                        text: i18n(
-                            CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.COPYRIGHT, ""
-                        ) ?? brandingPreference.organizationDetails.copyrightText
+                        text:
+                            i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.COPYRIGHT, "") ??
+                            brandingPreference.organizationDetails.copyrightText
                     },
                     logoImage:
                         brandingPreference.theme[brandingPreference.theme.activeTheme].images?.myAccountLogo?.imgURL ??
@@ -76,7 +76,7 @@ export const MyAccountScreenSkeleton: FunctionComponent<MyAccountScreenSkeletonI
                         brandingPreference.theme[brandingPreference.theme.activeTheme].images?.myAccountLogo?.title,
                     welcomeMessage: `Welcome, ${userDisplayName}`
                 })
-            ) }
+            )}
         </div>
     );
 };

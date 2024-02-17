@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { Config } from "../../../core/configs";
+import { Config } from "@wso2is/feature-configs.common";
 
 /**
  * Data set required to generate layout html code.
@@ -26,8 +26,7 @@ export const addCommonDataForTheLayout = (
     tenantDomain: string
 ): Record<string, string> => {
     data["BASE_URL"] = Config.getDeploymentConfig().extensions?.layoutStoreURL
-        ? (Config.getDeploymentConfig().extensions.layoutStoreURL as string)
-            .replace("${tenantDomain}", tenantDomain)
+        ? (Config.getDeploymentConfig().extensions.layoutStoreURL as string).replace("${tenantDomain}", tenantDomain)
         : "";
 
     return data;

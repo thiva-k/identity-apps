@@ -17,19 +17,16 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import { store } from "../../core";
-import { I18nConstants } from "../../core/constants/i18n-constants";
+import { I18nConstants } from "@wso2is/feature-constants.common";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
-import { OrganizationType } from "../../organizations/constants/organization-constants";
-import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
-import {
-    BrandingPreferenceAPIResponseInterface,
-    BrandingPreferenceTypes
-} from "../models/branding-preferences";
+} from "@wso2is/feature-hooks.common/use-request";
+import { OrganizationType } from "@wso2is/feature-organizations.common/constants/organization-constants";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { store } from "@wso2is/feature-store.common";
+import { BrandingPreferenceAPIResponseInterface, BrandingPreferenceTypes } from "../models/branding-preferences";
 
 /**
  * Hook to get the branding preference via Branding Preferences API.
@@ -39,21 +36,19 @@ import {
  * @param locale - Resource Locale.
  * @returns `RequestResultInterface<Data, Error>`
  */
-const useGetBrandingPreferenceResolve = <Data = BrandingPreferenceAPIResponseInterface,
-    Error = RequestErrorInterface>(
-        name: string,
-        type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG,
-        locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE
-    ): RequestResultInterface<Data, Error> => {
+const useGetBrandingPreferenceResolve = <Data = BrandingPreferenceAPIResponseInterface, Error = RequestErrorInterface>(
+    name: string,
+    type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG,
+    locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE
+): RequestResultInterface<Data, Error> => {
     const { organizationType } = useGetCurrentOrganizationType();
 
-    const tenantDomain: string = organizationType === OrganizationType.SUBORGANIZATION
-        ? store.getState()?.organization?.organization?.id
-        : name;
+    const tenantDomain: string =
+        organizationType === OrganizationType.SUBORGANIZATION ? store.getState()?.organization?.organization?.id : name;
 
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -62,17 +57,13 @@ const useGetBrandingPreferenceResolve = <Data = BrandingPreferenceAPIResponseInt
             name: tenantDomain,
             type
         },
-        url: organizationType === OrganizationType.SUBORGANIZATION
-            ? `${store.getState().config.endpoints.brandingPreferenceSubOrg}/resolve`
-            : `${store.getState().config.endpoints.brandingPreference}/resolve`
+        url:
+            organizationType === OrganizationType.SUBORGANIZATION
+                ? `${store.getState().config.endpoints.brandingPreferenceSubOrg}/resolve`
+                : `${store.getState().config.endpoints.brandingPreference}/resolve`
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate
-    } = useRequest<Data, Error>(requestConfig);
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
 
     return {
         data,

@@ -17,13 +17,13 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import { useEffect, useState } from "react";
-import { AppConstants } from "../../core/constants";
+import { AppConstants } from "@wso2is/feature-constants.common";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
+} from "@wso2is/feature-hooks.common/use-request";
+import { useEffect, useState } from "react";
 import { PreviewScreenType } from "../models/branding-preferences";
 
 /**
@@ -36,9 +36,7 @@ export const usePreviewContent = <Data = string, Error = RequestErrorInterface>(
     previewScreenType: PreviewScreenType
 ): RequestResultInterface<Data, Error> => {
     const basename: string = AppConstants.getAppBasename() ? `/${AppConstants.getAppBasename()}` : "";
-    const url: string = `https://${window.location.host}${
-        basename
-    }/resources/branding/preview-skeletons/${previewScreenType}/body.html`;
+    const url: string = `https://${window.location.host}${basename}/resources/branding/preview-skeletons/${previewScreenType}/body.html`;
 
     const requestConfig: RequestConfigInterface = {
         headers: {
@@ -54,7 +52,7 @@ export const usePreviewContent = <Data = string, Error = RequestErrorInterface>(
         attachToken: false,
         shouldRetryOnError: false
     });
-    const [ content, setContent ] = useState<string>("");
+    const [content, setContent] = useState<string>("");
 
     useEffect(() => {
         if (!data) {
@@ -62,12 +60,12 @@ export const usePreviewContent = <Data = string, Error = RequestErrorInterface>(
         }
 
         (async () => {
-            setContent(await (data as unknown as Blob).text());
+            setContent(await ((data as unknown) as Blob).text());
         })();
-    }, [ data ]);
+    }, [data]);
 
     return {
-        data: content as unknown as Data,
+        data: (content as unknown) as Data,
         error,
         isLoading: !error && !data,
         isValidating,
@@ -85,9 +83,7 @@ export const usePreviewStyle = <Data = string, Error = RequestErrorInterface>(
     previewScreenType: PreviewScreenType
 ): RequestResultInterface<Data, Error> => {
     const basename: string = AppConstants.getAppBasename() ? `/${AppConstants.getAppBasename()}` : "";
-    const url: string = `https://${window.location.host}${
-        basename
-    }/resources/branding/preview-skeletons/${previewScreenType}/styles.css`;
+    const url: string = `https://${window.location.host}${basename}/resources/branding/preview-skeletons/${previewScreenType}/styles.css`;
 
     const requestConfig: RequestConfigInterface = {
         headers: {
@@ -103,7 +99,7 @@ export const usePreviewStyle = <Data = string, Error = RequestErrorInterface>(
         attachToken: false,
         shouldRetryOnError: false
     });
-    const [ styles, setStyles ] = useState<string>("");
+    const [styles, setStyles] = useState<string>("");
 
     useEffect(() => {
         if (!data) {
@@ -111,12 +107,12 @@ export const usePreviewStyle = <Data = string, Error = RequestErrorInterface>(
         }
 
         (async () => {
-            setStyles(await (data as unknown as Blob).text());
+            setStyles(await ((data as unknown) as Blob).text());
         })();
-    }, [ data ]);
+    }, [data]);
 
     return {
-        data: styles as unknown as Data,
+        data: (styles as unknown) as Data,
         error,
         isLoading: !error && !data,
         isValidating,

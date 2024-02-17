@@ -17,6 +17,5 @@
  */
 
 export * from "./app-constants";
-export * from "./i18n-constants";
 export * from "./ui-constants";
 export * from "./user-store-constants";

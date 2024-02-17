@@ -16,20 +16,17 @@
  * under the License.
  */
 
-import { HttpMethods } from "modules/core/src/models";
-import { store } from "../../core";
-import { I18nConstants } from "../../core/constants/i18n-constants";
+import { HttpMethods } from "@wso2is/core/models";
+import { I18nConstants } from "@wso2is/feature-constants.common";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
-import { OrganizationType } from "../../organizations/constants/organization-constants";
-import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
-import {
-    BrandingPreferenceAPIResponseInterface,
-    BrandingPreferenceTypes
-} from "../models/branding-preferences";
+} from "@wso2is/feature-hooks.common/use-request";
+import { OrganizationType } from "@wso2is/feature-organizations.common/constants/organization-constants";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { store } from "@wso2is/feature-store.common";
+import { BrandingPreferenceAPIResponseInterface, BrandingPreferenceTypes } from "../models/branding-preferences";
 
 /**
  * Hook to get the branding preference from the API.
@@ -46,9 +43,8 @@ const useGetBrandingPreference = <Data = BrandingPreferenceAPIResponseInterface,
 ): RequestResultInterface<Data, Error> => {
     const { organizationType } = useGetCurrentOrganizationType();
 
-    const tenantDomain: string = organizationType === OrganizationType.SUBORGANIZATION
-        ? store.getState()?.organization?.organization?.id
-        : name;
+    const tenantDomain: string =
+        organizationType === OrganizationType.SUBORGANIZATION ? store.getState()?.organization?.organization?.id : name;
 
     const requestConfig: RequestConfigInterface = {
         headers: {

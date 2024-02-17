@@ -22,6 +22,7 @@ import InputAdornment from "@oxygen-ui/react/InputAdornment";
 import Skeleton from "@oxygen-ui/react/Skeleton";
 import Tooltip from "@oxygen-ui/react/Tooltip";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import { FinalForm, FinalFormField, FormRenderProps, FormSpy, FormState, TextFieldAdapter } from "@wso2is/form";
 import { Hint } from "@wso2is/react-components";
 import cloneDeep from "lodash-es/cloneDeep";
@@ -29,7 +30,6 @@ import orderBy from "lodash-es/orderBy";
 import React, { FunctionComponent, ReactElement, SVGAttributes, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppState } from "../../../core/store";
 import { CustomTextPreferenceConstants } from "../../constants/custom-text-preference-constants";
 import useBrandingPreference from "../../hooks/use-branding-preference";
 import { CustomTextInterface } from "../../models/custom-text-preference";
@@ -57,7 +57,7 @@ const ArrowRotateLeft = ({ ...rest }: SVGAttributes<SVGSVGElement>): ReactElemen
         height="1em"
         width="1em"
         xmlns="http://www.w3.org/2000/svg"
-        { ...rest }
+        {...rest}
     >
         <path
             fill="none"
@@ -75,12 +75,7 @@ const ArrowRotateLeft = ({ ...rest }: SVGAttributes<SVGSVGElement>): ReactElemen
  * @returns Text customization fields component.
  */
 const CustomTextFields: FunctionComponent<CustomTextFieldsProps> = (props: CustomTextFieldsProps): ReactElement => {
-    const {
-        fields,
-        onSubmit,
-        readOnly,
-        "data-componentid": componentId
-    } = props;
+    const { fields, onSubmit, readOnly, "data-componentid": componentId } = props;
 
     const { t, i18n } = useTranslation();
 
@@ -97,20 +92,20 @@ const CustomTextFields: FunctionComponent<CustomTextFieldsProps> = (props: Custo
 
     const transformedFields: CustomTextInterface = useMemo(
         () => replaceObjectKeySymbols(fields, ".", "_") as CustomTextInterface,
-        [ fields ]
+        [fields]
     );
 
     if (!fields) {
         return (
             <Box className="branding-preference-custom-text-fields">
-                { [ ...Array(2) ].map((key: number) => (
-                    <div key={ key } className="skeletons">
-                        <Skeleton variant="rectangular" height={ 7 } width="30%" />
-                        <Skeleton variant="rectangular" height={ 28 } />
-                        <Skeleton variant="rectangular" height={ 7 } width="90%" />
-                        <Skeleton variant="rectangular" height={ 7 } />
+                {[...Array(2)].map((key: number) => (
+                    <div key={key} className="skeletons">
+                        <Skeleton variant="rectangular" height={7} width="30%" />
+                        <Skeleton variant="rectangular" height={28} />
+                        <Skeleton variant="rectangular" height={7} width="90%" />
+                        <Skeleton variant="rectangular" height={7} />
                     </div>
-                )) }
+                ))}
             </Box>
         );
     }
@@ -126,25 +121,17 @@ const CustomTextFields: FunctionComponent<CustomTextFieldsProps> = (props: Custo
 
         return (
             <InputAdornment position="end">
-                <Tooltip
-                    title={
-                        t("console:brandingCustomText.form.genericFieldResetTooltip")
-                    }
-                >
+                <Tooltip title={t("console:brandingCustomText.form.genericFieldResetTooltip")}>
                     <div>
                         <IconButton
                             aria-label="Reset field to default"
                             className="reset-field-to-default-adornment"
-                            onClick={ () =>
-                                resetCustomTextField(
-                                    fieldName.replaceAll("_", "."),
-                                    selectedScreen,
-                                    selectedLocale
-                                )
+                            onClick={() =>
+                                resetCustomTextField(fieldName.replaceAll("_", "."), selectedScreen, selectedLocale)
                             }
                             edge="end"
                         >
-                            <ArrowRotateLeft height={ 12 } width={ 12 } />
+                            <ArrowRotateLeft height={12} width={12} />
                         </IconButton>
                     </div>
                 </Tooltip>
@@ -155,17 +142,17 @@ const CustomTextFields: FunctionComponent<CustomTextFieldsProps> = (props: Custo
     return (
         <div className="branding-preference-custom-text-fields">
             <FinalForm
-                initialValues={ transformedFields }
-                keepDirtyOnReinitialize={ true }
-                onSubmit={ (values: Record<string, unknown>) => {
+                initialValues={transformedFields}
+                keepDirtyOnReinitialize={true}
+                onSubmit={(values: Record<string, unknown>) => {
                     onSubmit(replaceObjectKeySymbols(values, "_", "."));
-                } }
-                render={ ({ handleSubmit }: FormRenderProps) => {
+                }}
+                render={({ handleSubmit }: FormRenderProps) => {
                     return (
-                        <form id={ CustomTextPreferenceConstants.FORM_ID } onSubmit={ handleSubmit }>
+                        <form id={CustomTextPreferenceConstants.FORM_ID} onSubmit={handleSubmit}>
                             <FormSpy
-                                subscription={ { dirty: true, values: true } }
-                                onChange={ ({
+                                subscription={{ dirty: true, values: true }}
+                                onChange={({
                                     ...subscription
                                 }: FormState<CustomTextInterface, CustomTextInterface>) => {
                                     const values: CustomTextInterface = replaceObjectKeySymbols(
@@ -178,58 +165,53 @@ const CustomTextFields: FunctionComponent<CustomTextFieldsProps> = (props: Custo
                                         ...subscription,
                                         values
                                     });
-                                } }
+                                }}
                             />
-                            { /* FormSpy subscriptions drop the property entirely when the text field is cleared. */ }
-                            { /* We are manually adding the missing properties in the provider. */ }
-                            { /* So `orderBy` is needed to stop the UI from glitching during rerenders.*/ }
-                            { transformedFields &&
-                                orderBy(Object.keys(transformedFields), [], [ "asc" ]).map((fieldName: string) => {
-                                    const hintKey: string = `console:brandingCustomText.form.fields.${
-                                        fieldName.replaceAll("_", ".")
-                                    }.hint`;
+                            {/* FormSpy subscriptions drop the property entirely when the text field is cleared. */}
+                            {/* We are manually adding the missing properties in the provider. */}
+                            {/* So `orderBy` is needed to stop the UI from glitching during rerenders.*/}
+                            {transformedFields &&
+                                orderBy(Object.keys(transformedFields), [], ["asc"]).map((fieldName: string) => {
+                                    const hintKey: string = `console:brandingCustomText.form.fields.${fieldName.replaceAll(
+                                        "_",
+                                        "."
+                                    )}.hint`;
 
                                     return (
                                         <FinalFormField
-                                            key={ fieldName }
+                                            key={fieldName}
                                             fullWidth
-                                            FormControlProps={ {
+                                            FormControlProps={{
                                                 margin: "dense"
-                                            } }
-                                            ariaLabel={ fieldName }
-                                            required={ false }
-                                            data-componentid={ `${componentId}-${fieldName}` }
-                                            name={ fieldName }
+                                            }}
+                                            ariaLabel={fieldName}
+                                            required={false}
+                                            data-componentid={`${componentId}-${fieldName}`}
+                                            name={fieldName}
                                             type="text"
-                                            label={ getFieldLabel(fieldName) }
-                                            placeholder={
-                                                t("console:brandingCustomText.form.genericFieldPlaceholder")
+                                            label={getFieldLabel(fieldName)}
+                                            placeholder={t("console:brandingCustomText.form.genericFieldPlaceholder")}
+                                            helperText={
+                                                i18n.exists(hintKey) && <Hint>{t(hintKey, { productName })}</Hint>
                                             }
-                                            helperText={ (
-                                                i18n.exists(hintKey) && (
-                                                    <Hint>{ t(hintKey, { productName }) }</Hint>
-                                                )
-                                            ) }
-                                            component={ TextFieldAdapter }
-                                            multiline={ customTextScreenMeta &&
-                                                customTextScreenMeta[fieldName.replaceAll("_", ".")].MULTI_LINE }
+                                            component={TextFieldAdapter}
+                                            multiline={
+                                                customTextScreenMeta &&
+                                                customTextScreenMeta[fieldName.replaceAll("_", ".")].MULTI_LINE
+                                            }
                                             size="small"
-                                            maxLength={
-                                                CustomTextPreferenceConstants.FORM_FIELD_CONSTRAINTS.MAX_LENGTH
-                                            }
-                                            minLength={
-                                                CustomTextPreferenceConstants.FORM_FIELD_CONSTRAINTS.MIN_LENGTH
-                                            }
-                                            InputProps={ {
+                                            maxLength={CustomTextPreferenceConstants.FORM_FIELD_CONSTRAINTS.MAX_LENGTH}
+                                            minLength={CustomTextPreferenceConstants.FORM_FIELD_CONSTRAINTS.MIN_LENGTH}
+                                            InputProps={{
                                                 endAdornment: renderInputAdornment(fieldName)
-                                            } }
-                                            readOnly={ readOnly }
+                                            }}
+                                            readOnly={readOnly}
                                         />
                                     );
-                                }) }
+                                })}
                         </form>
                     );
-                } }
+                }}
             />
         </div>
     );

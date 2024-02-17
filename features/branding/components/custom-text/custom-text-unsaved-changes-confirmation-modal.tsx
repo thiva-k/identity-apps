@@ -34,9 +34,7 @@ export interface CustomTextUnsavedChangesConfirmationModalPropsInterface
  * @param props - Props injected to the component.
  * @returns Custom text revert confirmation modal component.
  */
-const CustomTextUnsavedChangesConfirmationModal: FunctionComponent<
-    CustomTextUnsavedChangesConfirmationModalPropsInterface
-> = (
+const CustomTextUnsavedChangesConfirmationModal: FunctionComponent<CustomTextUnsavedChangesConfirmationModalPropsInterface> = (
     props: CustomTextUnsavedChangesConfirmationModalPropsInterface
 ) => {
     const { onClose, ["data-componentid"]: componentId, ...rest } = props;
@@ -45,38 +43,29 @@ const CustomTextUnsavedChangesConfirmationModal: FunctionComponent<
 
     return (
         <ConfirmationModal
-            onClose={ onClose }
+            onClose={onClose}
             type="negative"
-            primaryAction={ t("common:confirm") }
-            secondaryAction={ t("common:cancel") }
-            onSecondaryActionClick={ (event: MouseEvent<HTMLElement>): void => {
+            primaryAction={t("common:confirm")}
+            secondaryAction={t("common:cancel")}
+            onSecondaryActionClick={(event: MouseEvent<HTMLElement>): void => {
                 onClose(event, null);
-            } }
-            onPrimaryActionClick={ (event: MouseEvent<HTMLElement>): void => {
+            }}
+            onPrimaryActionClick={(event: MouseEvent<HTMLElement>): void => {
                 onClose(event, null);
-            } }
-            data-componentid={ componentId }
-            closeOnDimmerClick={ false }
-            { ...rest }
+            }}
+            data-componentid={componentId}
+            closeOnDimmerClick={false}
+            {...rest}
         >
-            <ConfirmationModal.Header data-componentid={ `${componentId}-header` }>
-                { t("console:brandingCustomText.revertUnsavedConfirmationModal.heading") }
+            <ConfirmationModal.Header data-componentid={`${componentId}-header`}>
+                {t("console:brandingCustomText.revertUnsavedConfirmationModal.heading")}
             </ConfirmationModal.Header>
-            <ConfirmationModal.Message
-                attached
-                negative
-                data-componentid={ `${componentId}-message` }
-            >
-                { t("console:brandingCustomText.revertUnsavedConfirmationModal.message") }
+            <ConfirmationModal.Message attached negative data-componentid={`${componentId}-message`}>
+                {t("console:brandingCustomText.revertUnsavedConfirmationModal.message")}
             </ConfirmationModal.Message>
-            <ConfirmationModal.Content data-componentid={ `${componentId}-content` }>
-                <Trans
-                    i18nKey={
-                        "console:brandingCustomText.revertUnsavedConfirmationModal.content"
-                    }
-                >
-                    If you switch the screen, your unsaved changes will be lost.
-                    Click <Code>Confirm</Code> to proceed.
+            <ConfirmationModal.Content data-componentid={`${componentId}-content`}>
+                <Trans i18nKey={"console:brandingCustomText.revertUnsavedConfirmationModal.content"}>
+                    If you switch the screen, your unsaved changes will be lost. Click <Code>Confirm</Code> to proceed.
                 </Trans>
             </ConfirmationModal.Content>
         </ConfirmationModal>

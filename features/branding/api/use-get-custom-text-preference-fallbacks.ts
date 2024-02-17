@@ -17,13 +17,13 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import { AppConstants } from "../../core/constants/app-constants";
-import { I18nConstants } from "../../core/constants/i18n-constants";
+import { I18nConstants } from "@wso2is/feature-constants.common";
+import { AppConstants } from "@wso2is/feature-constants.common/app-constants";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
+} from "@wso2is/feature-hooks.common/use-request";
 import { BrandingPreferenceTypes } from "../models/branding-preferences";
 import { CustomTextPreferenceAPIResponseInterface } from "../models/custom-text-preference";
 
@@ -41,16 +41,14 @@ const useGetCustomTextPreferenceFallbacks = <
     Data = CustomTextPreferenceAPIResponseInterface,
     Error = RequestErrorInterface
 >(
-        shouldFetch: boolean,
-        name: string,
-        screen: string,
-        locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE,
-        type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG
-    ): RequestResultInterface<Data, Error> => {
+    shouldFetch: boolean,
+    name: string,
+    screen: string,
+    locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE,
+    type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG
+): RequestResultInterface<Data, Error> => {
     const basename: string = AppConstants.getAppBasename() ? `/${AppConstants.getAppBasename()}` : "";
-    const url: string = `https://${
-        window.location.host
-    }${basename}/resources/branding/i18n/screens/${screen}/${locale}.json`;
+    const url: string = `https://${window.location.host}${basename}/resources/branding/i18n/screens/${screen}/${locale}.json`;
 
     const requestConfig: RequestConfigInterface = {
         headers: {

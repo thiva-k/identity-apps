@@ -17,13 +17,13 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import { Config } from "../../core/configs";
-import { AppConstants } from "../../core/constants";
+import { Config } from "@wso2is/feature-configs.common";
+import { AppConstants } from "@wso2is/feature-constants.common";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
+} from "@wso2is/feature-hooks.common/use-request";
 import { PredefinedLayouts } from "../meta";
 
 /**
@@ -39,13 +39,11 @@ export const useLayout = <Data = Blob, Error = RequestErrorInterface>(
     tenantDomain: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-    const basename: string = AppConstants.getAppBasename()
-        ? `/${AppConstants.getAppBasename()}`
-        : "";
+    const basename: string = AppConstants.getAppBasename() ? `/${AppConstants.getAppBasename()}` : "";
 
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "text/html",
+            Accept: "text/html",
             "Content-Type": "text/html"
         },
         method: HttpMethods.GET,
@@ -53,19 +51,19 @@ export const useLayout = <Data = Blob, Error = RequestErrorInterface>(
         url:
             layout === PredefinedLayouts.CUSTOM
                 ? `${
-                    Config.getDeploymentConfig().extensions?.layoutStoreURL
-                        ? (Config.getDeploymentConfig().extensions.layoutStoreURL as string)
-                            .replace("${tenantDomain}", tenantDomain)
-                        : `https://${window.location.host}${basename}/libs/login-portal-layouts`}/body.html`
+                      Config.getDeploymentConfig().extensions?.layoutStoreURL
+                          ? (Config.getDeploymentConfig().extensions.layoutStoreURL as string).replace(
+                                "${tenantDomain}",
+                                tenantDomain
+                            )
+                          : `https://${window.location.host}${basename}/libs/login-portal-layouts`
+                  }/body.html`
                 : `https://${window.location.host}${basename}/libs/login-portal-layouts/${layout}/body.html`
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate
-    } = useRequest<Data, Error>(shouldFetch ? requestConfig : null, { attachToken: false });
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig : null, {
+        attachToken: false
+    });
 
     return {
         data,
@@ -87,13 +85,11 @@ export const useLayoutStyle = <Data = Blob, Error = RequestErrorInterface>(
     layout: PredefinedLayouts,
     tenantDomain: string
 ): RequestResultInterface<Data, Error> => {
-    const basename: string = AppConstants.getAppBasename()
-        ? `/${AppConstants.getAppBasename()}`
-        : "";
+    const basename: string = AppConstants.getAppBasename() ? `/${AppConstants.getAppBasename()}` : "";
 
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "text/css",
+            Accept: "text/css",
             "Content-Type": "text/css"
         },
         method: HttpMethods.GET,
@@ -101,19 +97,17 @@ export const useLayoutStyle = <Data = Blob, Error = RequestErrorInterface>(
         url:
             layout === PredefinedLayouts.CUSTOM
                 ? `${
-                    Config.getDeploymentConfig().extensions?.layoutStoreURL
-                        ? (Config.getDeploymentConfig().extensions.layoutStoreURL as string)
-                            .replace("${tenantDomain}", tenantDomain)
-                        : `https://${window.location.host}${basename}/libs/login-portal-layouts`}/styles.css`
+                      Config.getDeploymentConfig().extensions?.layoutStoreURL
+                          ? (Config.getDeploymentConfig().extensions.layoutStoreURL as string).replace(
+                                "${tenantDomain}",
+                                tenantDomain
+                            )
+                          : `https://${window.location.host}${basename}/libs/login-portal-layouts`
+                  }/styles.css`
                 : `https://${window.location.host}${basename}/libs/login-portal-layouts/${layout}/styles.css`
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate
-    } = useRequest<Data, Error>(requestConfig, { attachToken: false });
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig, { attachToken: false });
 
     return {
         data,

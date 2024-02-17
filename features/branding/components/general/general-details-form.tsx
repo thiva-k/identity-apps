@@ -17,12 +17,12 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import { Field, Form, FormPropsInterface } from "@wso2is/form";
 import React, { FunctionComponent, MutableRefObject, ReactElement, Ref, forwardRef, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Placeholder } from "semantic-ui-react";
-import { AppState } from "../../../core/store";
 import { BrandingPreferencesConstants } from "../../constants";
 import { BrandingPreferenceInterface } from "../../models";
 
@@ -75,115 +75,101 @@ const FORM_ID: string = "branding-general-form";
  * @param props - Props injected to the component.
  * @returns Functional component.
  */
-export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPropsInterface> = forwardRef((
-    props: GeneralDetailsFormPropsInterface,
-    ref: MutableRefObject<FormPropsInterface>): ReactElement => {
+export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPropsInterface> = forwardRef(
+    (props: GeneralDetailsFormPropsInterface, ref: MutableRefObject<FormPropsInterface>): ReactElement => {
+        const {
+            broadcastValues,
+            initialValues,
+            isLoading,
+            onSubmit,
+            readOnly,
+            ["data-componentid"]: componentId
+        } = props;
 
-    const {
-        broadcastValues,
-        initialValues,
-        isLoading,
-        onSubmit,
-        readOnly,
-        ["data-componentid"]: componentId
-    } = props;
+        const { t } = useTranslation();
 
-    const { t } = useTranslation();
+        const productName: string = useSelector((state: AppState) => state.config.ui.productName);
 
-    const productName: string = useSelector((state: AppState) => state.config.ui.productName);
+        const [displayName, setDisplayName] = useState<string>(initialValues.organizationDetails.displayName);
+        const [supportEmail, setSupportEmail] = useState<string>(initialValues.organizationDetails.supportEmail);
 
-    const [ displayName, setDisplayName ] = useState<string>(initialValues.organizationDetails.displayName);
-    const [ supportEmail, setSupportEmail ] = useState<string>(initialValues.organizationDetails.supportEmail);
+        /**
+         * Broadcast values to the outside when internals change.
+         */
+        useEffect(() => {
+            broadcastValues({
+                ...initialValues,
+                organizationDetails: {
+                    ...initialValues.organizationDetails,
+                    displayName,
+                    supportEmail
+                }
+            });
+        }, [supportEmail, displayName]);
 
-    /**
-     * Broadcast values to the outside when internals change.
-     */
-    useEffect(() => {
-
-        broadcastValues({
-            ...initialValues,
-            organizationDetails: {
-                ...initialValues.organizationDetails,
-                displayName,
-                supportEmail
-            }
-        });
-    }, [ supportEmail, displayName ]);
-
-    if (isLoading) {
-        return (
-            <>
-                {
-                    [ ...Array(3) ].map((key: number) => {
+        if (isLoading) {
+            return (
+                <>
+                    {[...Array(3)].map((key: number) => {
                         return (
-                            <Placeholder key={ key }>
+                            <Placeholder key={key}>
                                 <Placeholder.Line length="very short" />
-                                <Placeholder.Image style={ { height: "38px" } } />
+                                <Placeholder.Image style={{ height: "38px" }} />
                                 <Placeholder.Line />
                                 <Placeholder.Line />
                             </Placeholder>
                         );
-                    })
-                }
-            </>
+                    })}
+                </>
+            );
+        }
+
+        return (
+            <Form id={FORM_ID} ref={ref} uncontrolledForm={false} onSubmit={onSubmit} initialValues={initialValues}>
+                <Field.Input
+                    ariaLabel="Display name input field"
+                    inputType="default"
+                    name="organizationDetails.displayName"
+                    label={t("extensions:develop.branding.forms.general.fields.displayName.label")}
+                    placeholder={t("extensions:develop.branding.forms.general.fields.displayName.placeholder")}
+                    hint={t("extensions:develop.branding.forms.general.fields.displayName.hint", { productName })}
+                    required={false}
+                    readOnly={readOnly}
+                    value={initialValues.organizationDetails.displayName}
+                    maxLength={
+                        BrandingPreferencesConstants.GENERAL_DETAILS_FORM_FIELD_CONSTRAINTS.DISPLAY_NAME_MAX_LENGTH
+                    }
+                    minLength={
+                        BrandingPreferencesConstants.GENERAL_DETAILS_FORM_FIELD_CONSTRAINTS.DISPLAY_NAME_MIN_LENGTH
+                    }
+                    width={16}
+                    listen={(value: string) => setDisplayName(value)}
+                    data-componentid={`${componentId}-organization-display-name`}
+                />
+                <Field.Input
+                    ariaLabel="Contact email input field"
+                    inputType="email"
+                    name="organizationDetails.supportEmail"
+                    label={t("extensions:develop.branding.forms.general.fields.supportEmail.label")}
+                    placeholder={t("extensions:develop.branding.forms.general.fields.supportEmail.placeholder")}
+                    hint={t("extensions:develop.branding.forms.general.fields.supportEmail.hint", { productName })}
+                    required={false}
+                    readOnly={readOnly}
+                    value={initialValues.organizationDetails.supportEmail}
+                    maxLength={
+                        BrandingPreferencesConstants.GENERAL_DETAILS_FORM_FIELD_CONSTRAINTS.SUPPORT_EMAIL_MAX_LENGTH
+                    }
+                    minLength={
+                        BrandingPreferencesConstants.GENERAL_DETAILS_FORM_FIELD_CONSTRAINTS.SUPPORT_EMAIL_MIN_LENGTH
+                    }
+                    width={16}
+                    listen={(value: string) => setSupportEmail(value)}
+                    data-componentid={`${componentId}-support-email`}
+                />
+            </Form>
         );
     }
-
-    return (
-        <Form
-            id={ FORM_ID }
-            ref={ ref }
-            uncontrolledForm={ false }
-            onSubmit={ onSubmit }
-            initialValues={ initialValues }
-        >
-            <Field.Input
-                ariaLabel="Display name input field"
-                inputType="default"
-                name="organizationDetails.displayName"
-                label={ t("extensions:develop.branding.forms.general.fields.displayName.label") }
-                placeholder={ t("extensions:develop.branding.forms.general.fields.displayName.placeholder") }
-                hint={
-                    t("extensions:develop.branding.forms.general.fields.displayName.hint", { productName })
-                }
-                required={ false }
-                readOnly={ readOnly }
-                value={ initialValues.organizationDetails.displayName }
-                maxLength={
-                    BrandingPreferencesConstants.GENERAL_DETAILS_FORM_FIELD_CONSTRAINTS.DISPLAY_NAME_MAX_LENGTH
-                }
-                minLength={
-                    BrandingPreferencesConstants.GENERAL_DETAILS_FORM_FIELD_CONSTRAINTS.DISPLAY_NAME_MIN_LENGTH
-                }
-                width={ 16 }
-                listen={ (value: string) => setDisplayName(value) }
-                data-componentid={ `${componentId}-organization-display-name` }
-            />
-            <Field.Input
-                ariaLabel="Contact email input field"
-                inputType="email"
-                name="organizationDetails.supportEmail"
-                label={ t("extensions:develop.branding.forms.general.fields.supportEmail.label") }
-                placeholder={ t("extensions:develop.branding.forms.general.fields.supportEmail.placeholder") }
-                hint={
-                    t("extensions:develop.branding.forms.general.fields.supportEmail.hint", { productName })
-                }
-                required={ false }
-                readOnly={ readOnly }
-                value={ initialValues.organizationDetails.supportEmail }
-                maxLength={
-                    BrandingPreferencesConstants.GENERAL_DETAILS_FORM_FIELD_CONSTRAINTS.SUPPORT_EMAIL_MAX_LENGTH
-                }
-                minLength={
-                    BrandingPreferencesConstants.GENERAL_DETAILS_FORM_FIELD_CONSTRAINTS.SUPPORT_EMAIL_MIN_LENGTH
-                }
-                width={ 16 }
-                listen={ (value: string) => setSupportEmail(value) }
-                data-componentid={ `${componentId}-support-email` }
-            />
-        </Form>
-    );
-});
+);
 
 /**
  * Default props for the component.

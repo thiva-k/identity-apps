@@ -23,6 +23,10 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
+import { AppState } from "@wso2is/feature-store.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import {
     ConfirmationModal,
     DangerZone,
@@ -43,10 +47,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { ExtendedFeatureConfigInterface } from "../../../extensions/configs/models";
-import { EventPublisher } from "../../core";
-import { AppState } from "../../core/store";
-import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
-import { OrganizationResponseInterface } from "../../organizations/models/organizations";
 import { deleteBrandingPreference, updateBrandingPreference } from "../api";
 import useGetBrandingPreferenceResolve from "../api/use-get-branding-preference-resolve";
 import { BrandingPreferenceTabs, DesignFormValuesInterface } from "../components";
@@ -79,13 +79,8 @@ const SHOW_ORGANIZATION_LOGO_IN_PAGE_TITLE: boolean = false;
  * @param props - Props injected to the component.
  * @returns Branding page component.
  */
-const BrandingPage: FunctionComponent<BrandingPageInterface> = (
-    props: BrandingPageInterface
-): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId
-    } = props;
+const BrandingPage: FunctionComponent<BrandingPageInterface> = (props: BrandingPageInterface): ReactElement => {
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
@@ -102,15 +97,13 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
         (state: AppState) => state?.organization?.organization
     );
 
-    const [ isBrandingConfigured, setIsBrandingConfigured ] = useState<boolean>(true);
-    const [
-        predefinedThemes,
-        setPredefinedThemes
-    ] = useState<BrandingPreferenceThemeInterface>(BrandingPreferencesConstants.DEFAULT_PREFERENCE.theme);
-    const [
-        predefinedLayouts,
-        setPredefinedLayouts
-    ] = useState<BrandingPreferenceLayoutInterface>(BrandingPreferencesConstants.DEFAULT_PREFERENCE.layout);
+    const [isBrandingConfigured, setIsBrandingConfigured] = useState<boolean>(true);
+    const [predefinedThemes, setPredefinedThemes] = useState<BrandingPreferenceThemeInterface>(
+        BrandingPreferencesConstants.DEFAULT_PREFERENCE.theme
+    );
+    const [predefinedLayouts, setPredefinedLayouts] = useState<BrandingPreferenceLayoutInterface>(
+        BrandingPreferencesConstants.DEFAULT_PREFERENCE.layout
+    );
 
     const DEFAULT_PREFERENCE: BrandingPreferenceInterface = useMemo(
         () =>
@@ -118,45 +111,35 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
                 layout: predefinedLayouts,
                 theme: predefinedThemes
             }),
-        [ predefinedThemes, predefinedLayouts ]
+        [predefinedThemes, predefinedLayouts]
     );
 
-    const [
-        brandingPreference,
-        setBrandingPreference
-    ] = useState<BrandingPreferenceInterface>(DEFAULT_PREFERENCE);
-    const [
-        isBrandingPreferenceUpdateRequestLoading,
-        setIsBrandingPreferenceUpdateRequestLoading
-    ] = useState<boolean>(undefined);
-    const [
-        isBrandingPreferenceDeleteRequestLoading,
-        setIsBrandingPreferenceDeleteRequestLoading
-    ] = useState<boolean>(undefined);
-    const [
-        isBrandingFeatureRequestLoading,
-        setIsBrandingFeatureRequestLoading
-    ] = useState<boolean>(undefined);
-    const [ showRevertConfirmationModal, setShowRevertConfirmationModal ] = useState<boolean>(false);
-    const [ preferenceTabsComponentKey, setPreferenceTabsComponentKey ] = useState(1);
-    const [
-        showBrandingPublishStatusConfirmationModal,
-        setShowBrandingPublishStatusConfirmationModal
-    ] = useState<boolean>(false);
-    const [ isBrandingPublished, setIsBrandingPublished ] = useState<boolean>(false);
-    const [ showSubOrgBrandingUpdateAlert, setShowSubOrgBrandingUpdateAlert ] = useState<boolean>(false);
-    const [ showSubOrgBrandingDeleteAlert, setShowSubOrgBrandingDeleteAlert ] = useState<boolean>(false);
-    const [ showResolutionDisclaimerMessage, setShowResolutionDisclaimerMessage ] = useState<boolean>(false);
-    const [ selectedLayout, setSelectedLayout ] = useState<PredefinedLayouts>(DEFAULT_PREFERENCE.layout.activeLayout);
-    const [ currentWidth, setCurrentWidth ] = useState<number>(0);
+    const [brandingPreference, setBrandingPreference] = useState<BrandingPreferenceInterface>(DEFAULT_PREFERENCE);
+    const [isBrandingPreferenceUpdateRequestLoading, setIsBrandingPreferenceUpdateRequestLoading] = useState<boolean>(
+        undefined
+    );
+    const [isBrandingPreferenceDeleteRequestLoading, setIsBrandingPreferenceDeleteRequestLoading] = useState<boolean>(
+        undefined
+    );
+    const [isBrandingFeatureRequestLoading, setIsBrandingFeatureRequestLoading] = useState<boolean>(undefined);
+    const [showRevertConfirmationModal, setShowRevertConfirmationModal] = useState<boolean>(false);
+    const [preferenceTabsComponentKey, setPreferenceTabsComponentKey] = useState(1);
+    const [showBrandingPublishStatusConfirmationModal, setShowBrandingPublishStatusConfirmationModal] = useState<
+        boolean
+    >(false);
+    const [isBrandingPublished, setIsBrandingPublished] = useState<boolean>(false);
+    const [showSubOrgBrandingUpdateAlert, setShowSubOrgBrandingUpdateAlert] = useState<boolean>(false);
+    const [showSubOrgBrandingDeleteAlert, setShowSubOrgBrandingDeleteAlert] = useState<boolean>(false);
+    const [showResolutionDisclaimerMessage, setShowResolutionDisclaimerMessage] = useState<boolean>(false);
+    const [selectedLayout, setSelectedLayout] = useState<PredefinedLayouts>(DEFAULT_PREFERENCE.layout.activeLayout);
+    const [currentWidth, setCurrentWidth] = useState<number>(0);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
-    const isReadOnly: boolean = useMemo(() => !hasRequiredScopes(
-        featureConfig?.branding,
-        featureConfig?.branding?.scopes?.update,
-        allowedScopes
-    ), [ featureConfig, allowedScopes ]);
+    const isReadOnly: boolean = useMemo(
+        () => !hasRequiredScopes(featureConfig?.branding, featureConfig?.branding?.scopes?.update, allowedScopes),
+        [featureConfig, allowedScopes]
+    );
 
     const {
         data: originalBrandingPreference,
@@ -169,8 +152,8 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
         () =>
             !tenantDomain ||
             isBrandingPreferenceFetchRequestLoading === undefined ||
-                isBrandingPreferenceFetchRequestLoading === true,
-        [ tenantDomain, isBrandingPreferenceFetchRequestLoading ]
+            isBrandingPreferenceFetchRequestLoading === true,
+        [tenantDomain, isBrandingPreferenceFetchRequestLoading]
     );
 
     /**
@@ -194,7 +177,7 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
         setShowResolutionDisclaimerMessage(
             BrandingPreferenceUtils.isLayoutPreviewTrimmed(selectedLayout, currentWidth)
         );
-    }, [ selectedLayout, currentWidth ]);
+    }, [selectedLayout, currentWidth]);
 
     /**
      * Moderates the Branding Peference response.
@@ -205,18 +188,23 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
         }
 
         if (originalBrandingPreference instanceof IdentityAppsApiException) {
-            dispatch(addAlert<AlertInterface>({
-                description: t("extensions:develop.branding.notifications.fetch.invalidStatus.description",
-                    { tenant: tenantDomain }),
-                level: AlertLevels.ERROR,
-                message: t("extensions:develop.branding.notifications.fetch.invalidStatus.message")
-            }));
+            dispatch(
+                addAlert<AlertInterface>({
+                    description: t("extensions:develop.branding.notifications.fetch.invalidStatus.description", {
+                        tenant: tenantDomain
+                    }),
+                    level: AlertLevels.ERROR,
+                    message: t("extensions:develop.branding.notifications.fetch.invalidStatus.message")
+                })
+            );
 
             return;
         }
 
-        if (organizationType === OrganizationType.SUBORGANIZATION
-            && originalBrandingPreference?.name !== currentOrganization?.id) {
+        if (
+            organizationType === OrganizationType.SUBORGANIZATION &&
+            originalBrandingPreference?.name !== currentOrganization?.id
+        ) {
             // This means the sub-org has no branding preference configured.
             // It gets the branding preference from the parent org.
             setIsBrandingConfigured(false);
@@ -224,19 +212,18 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
             setIsBrandingConfigured(true);
         }
 
-        setBrandingPreference(BrandingPreferenceUtils.migrateLayoutPreference(
-            BrandingPreferenceUtils.migrateThemePreference(
-                originalBrandingPreference.preference,
-                {
+        setBrandingPreference(
+            BrandingPreferenceUtils.migrateLayoutPreference(
+                BrandingPreferenceUtils.migrateThemePreference(originalBrandingPreference.preference, {
                     theme: predefinedThemes
+                }),
+                {
+                    layout: predefinedLayouts
                 }
-            ),
-            {
-                layout: predefinedLayouts
-            }
-        ));
+            )
+        );
         setSelectedLayout(originalBrandingPreference.preference.layout.activeLayout);
-    }, [ originalBrandingPreference ]);
+    }, [originalBrandingPreference]);
 
     /**
      * Handles the Branding Preference fetch request errors.
@@ -247,29 +234,33 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
         }
 
         // Check if Branding is not configured for the tenant. If so, silent the errors.
-        if (brandingPreferenceFetchRequestError.response?.data?.code
-            === BrandingPreferencesConstants.BRANDING_NOT_CONFIGURED_ERROR_CODE) {
+        if (
+            brandingPreferenceFetchRequestError.response?.data?.code ===
+            BrandingPreferencesConstants.BRANDING_NOT_CONFIGURED_ERROR_CODE
+        ) {
             setIsBrandingConfigured(false);
             setBrandingPreference(DEFAULT_PREFERENCE);
 
             return;
         }
 
-        dispatch(addAlert<AlertInterface>({
-            description: t("extensions:develop.branding.notifications.fetch.genericError.description",
-                { tenant: tenantDomain }),
-            level: AlertLevels.ERROR,
-            message: t("extensions:develop.branding.notifications.fetch.genericError.message")
-        }));
+        dispatch(
+            addAlert<AlertInterface>({
+                description: t("extensions:develop.branding.notifications.fetch.genericError.description", {
+                    tenant: tenantDomain
+                }),
+                level: AlertLevels.ERROR,
+                message: t("extensions:develop.branding.notifications.fetch.genericError.message")
+            })
+        );
 
         setBrandingPreference(DEFAULT_PREFERENCE);
-    }, [ brandingPreferenceFetchRequestError ]);
+    }, [brandingPreferenceFetchRequestError]);
 
     /**
      * Resolves the theme variables on component mount.
      */
     useEffect(() => {
-
         if (!theme) {
             return;
         }
@@ -285,7 +276,7 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
                 // Add debug logs here one a logger is added.
                 // Tracked here https://github.com/wso2/product-is/issues/11650.
             });
-    }, [ theme ]);
+    }, [theme]);
 
     /**
      * Handles preference form submit action.
@@ -297,53 +288,55 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
         values: Partial<BrandingPreferenceInterface>,
         shouldShowNotifications: boolean
     ): void => {
-
         eventPublisher.compute(() => {
             // If a site title is updated, publish an event.
-            if (isEmpty(brandingPreference.organizationDetails.siteTitle)
-                && !isEmpty(values.organizationDetails?.siteTitle)) {
+            if (
+                isEmpty(brandingPreference.organizationDetails.siteTitle) &&
+                !isEmpty(values.organizationDetails?.siteTitle)
+            ) {
                 eventPublisher.publish("organization-branding-configure-site-title");
             }
 
             // If a display name is updated, publish an event.
-            if (isEmpty(brandingPreference.organizationDetails.displayName)
-                && !isEmpty(values.organizationDetails?.displayName)) {
+            if (
+                isEmpty(brandingPreference.organizationDetails.displayName) &&
+                !isEmpty(values.organizationDetails?.displayName)
+            ) {
                 eventPublisher.publish("organization-branding-configure-display-name");
             }
 
             // When a theme is selected for the first time or switched, publish an event.
             if (isEmpty(brandingPreference.theme?.activeTheme)) {
-                eventPublisher.publish(`organization-branding-configure-${
-                    values.theme.activeTheme.toLocaleLowerCase() }-theme`);
+                eventPublisher.publish(
+                    `organization-branding-configure-${values.theme.activeTheme.toLocaleLowerCase()}-theme`
+                );
             } else if (brandingPreference.theme?.activeTheme && !isEmpty(values.theme?.activeTheme)) {
                 if (brandingPreference.theme.activeTheme !== values.theme.activeTheme) {
                     eventPublisher.publish(
-                        `organization-branding-switch-from-${
-                            brandingPreference.theme.activeTheme.toLocaleLowerCase()
-                        }-theme-to-${ values.theme.activeTheme }-theme`);
+                        `organization-branding-switch-from-${brandingPreference.theme.activeTheme.toLocaleLowerCase()}-theme-to-${
+                            values.theme.activeTheme
+                        }-theme`
+                    );
                 }
             }
 
             // When a privacy policy is configured, publish an event.
-            if (isEmpty(brandingPreference.urls?.privacyPolicyURL)
-                && !isEmpty(values.urls?.privacyPolicyURL)) {
+            if (isEmpty(brandingPreference.urls?.privacyPolicyURL) && !isEmpty(values.urls?.privacyPolicyURL)) {
                 eventPublisher.publish("organization-branding-configure-privacy-policy");
             }
 
             // When a cookie policy is configured, publish an event.
-            if (isEmpty(brandingPreference.urls?.cookiePolicyURL)
-                && !isEmpty(values.urls?.cookiePolicyURL)) {
+            if (isEmpty(brandingPreference.urls?.cookiePolicyURL) && !isEmpty(values.urls?.cookiePolicyURL)) {
                 eventPublisher.publish("organization-branding-configure-cookie-policy");
             }
 
             // When a tos is configured, publish an event.
-            if (isEmpty(brandingPreference.urls?.termsOfUseURL)
-                && !isEmpty(values.urls?.termsOfUseURL)) {
+            if (isEmpty(brandingPreference.urls?.termsOfUseURL) && !isEmpty(values.urls?.termsOfUseURL)) {
                 eventPublisher.publish("organization-branding-configure-tos");
             }
         });
 
-        const mergedBrandingPreference: BrandingPreferenceInterface =  merge(cloneDeep(brandingPreference), values);
+        const mergedBrandingPreference: BrandingPreferenceInterface = merge(cloneDeep(brandingPreference), values);
 
         // Filter the layout section and remove unrelated properties.
         const layoutSection: BrandingPreferenceLayoutInterface = { ...mergedBrandingPreference.layout };
@@ -355,7 +348,6 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
         mergedBrandingPreference.layout = filteredLayoutSection;
         mergedBrandingPreference.configs.isBrandingEnabled = true;
 
-
         _updateBrandingPreference(mergedBrandingPreference, isBrandingConfigured, true, shouldShowNotifications);
     };
 
@@ -364,11 +356,15 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
      */
     const handleBrandingPublishStatus = (): void => {
         setIsBrandingFeatureRequestLoading(true);
-        _updateBrandingPreference(merge(cloneDeep(brandingPreference), {
-            configs: {
-                isBrandingEnabled: isBrandingPublished
-            }
-        }), isBrandingConfigured, false);
+        _updateBrandingPreference(
+            merge(cloneDeep(brandingPreference), {
+                configs: {
+                    isBrandingEnabled: isBrandingPublished
+                }
+            }),
+            isBrandingConfigured,
+            false
+        );
     };
 
     /**
@@ -384,7 +380,6 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
         setRequestLoadingState: boolean = true,
         shouldShowNotifications: boolean = true
     ): void => {
-
         // Only set the request loading states if flag is set to true.
         // Needed to be false for the publish toggle, else the save button's loading state will be shown
         // when the publish toggle is triggered.
@@ -396,12 +391,16 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
             .then((response: BrandingPreferenceAPIResponseInterface) => {
                 if (response instanceof IdentityAppsApiException) {
                     if (shouldShowNotifications) {
-                        dispatch(addAlert<AlertInterface>({
-                            description: t("extensions:develop.branding.notifications.update.invalidStatus.description",
-                                { tenant: tenantDomain }),
-                            level: AlertLevels.ERROR,
-                            message: t("extensions:develop.branding.notifications.update.invalidStatus.message")
-                        }));
+                        dispatch(
+                            addAlert<AlertInterface>({
+                                description: t(
+                                    "extensions:develop.branding.notifications.update.invalidStatus.description",
+                                    { tenant: tenantDomain }
+                                ),
+                                level: AlertLevels.ERROR,
+                                message: t("extensions:develop.branding.notifications.update.invalidStatus.message")
+                            })
+                        );
                     }
 
                     return;
@@ -411,33 +410,36 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
                 // By defefault, when preference is saved, we set the enable to true.
                 setIsBrandingPublished(true);
                 setBrandingPreference(
-                    BrandingPreferenceUtils.migrateLayoutPreference(
-                        response.preference,
-                        {
-                            layout: predefinedLayouts
-                        }
-                    )
+                    BrandingPreferenceUtils.migrateLayoutPreference(response.preference, {
+                        layout: predefinedLayouts
+                    })
                 );
 
                 if (shouldShowNotifications) {
-                    if(organizationType !== OrganizationType.SUBORGANIZATION) {
-                        dispatch(addAlert<AlertInterface>({
-                            description: t("extensions:develop.branding.notifications.update.success.description",
-                                { tenant: tenantDomain }),
-                            level: AlertLevels.SUCCESS,
-                            message: t("extensions:develop.branding.notifications.update.success.message")
-                        }));
+                    if (organizationType !== OrganizationType.SUBORGANIZATION) {
+                        dispatch(
+                            addAlert<AlertInterface>({
+                                description: t("extensions:develop.branding.notifications.update.success.description", {
+                                    tenant: tenantDomain
+                                }),
+                                level: AlertLevels.SUCCESS,
+                                message: t("extensions:develop.branding.notifications.update.success.message")
+                            })
+                        );
                     } else {
-                        dispatch(addAlert<AlertInterface>({
-                            description: t("extensions:develop.branding.notifications.update.successWaiting."
-                                + "description", { tenant: tenantDomain }),
-                            level: AlertLevels.WARNING,
-                            message: t("extensions:develop.branding.notifications.update.successWaiting.message")
-                        }));
+                        dispatch(
+                            addAlert<AlertInterface>({
+                                description: t(
+                                    "extensions:develop.branding.notifications.update.successWaiting." + "description",
+                                    { tenant: tenantDomain }
+                                ),
+                                level: AlertLevels.WARNING,
+                                message: t("extensions:develop.branding.notifications.update.successWaiting.message")
+                            })
+                        );
 
                         handleSubOrgAlerts();
                     }
-
                 }
             })
             .catch((error: IdentityAppsApiException) => {
@@ -450,27 +452,29 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
                 }
 
                 if (shouldShowNotifications) {
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("extensions:develop.branding.notifications.update.genericError.description",
-                            { tenant: tenantDomain }),
-                        level: AlertLevels.ERROR,
-                        message: t("extensions:develop.branding.notifications.update.genericError.message")
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t(
+                                "extensions:develop.branding.notifications.update.genericError.description",
+                                { tenant: tenantDomain }
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t("extensions:develop.branding.notifications.update.genericError.message")
+                        })
+                    );
                 }
-                
-                if (originalBrandingPreference
-                    && !(originalBrandingPreference instanceof IdentityAppsApiException)) {                    
-                    setBrandingPreference(BrandingPreferenceUtils.migrateLayoutPreference(
-                        BrandingPreferenceUtils.migrateThemePreference(
-                            originalBrandingPreference.preference,
-                            {
+
+                if (originalBrandingPreference && !(originalBrandingPreference instanceof IdentityAppsApiException)) {
+                    setBrandingPreference(
+                        BrandingPreferenceUtils.migrateLayoutPreference(
+                            BrandingPreferenceUtils.migrateThemePreference(originalBrandingPreference.preference, {
                                 theme: predefinedThemes
+                            }),
+                            {
+                                layout: predefinedLayouts
                             }
-                        ),
-                        {
-                            layout: predefinedLayouts
-                        }
-                    ));
+                        )
+                    );
                 } else {
                     setBrandingPreference(DEFAULT_PREFERENCE);
                 }
@@ -509,18 +513,21 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
      * Handles the delete operation of branding preference via the API.
      */
     const handleBrandingPreferenceDelete = (): void => {
-
         setIsBrandingPreferenceDeleteRequestLoading(true);
 
         deleteBrandingPreference(tenantDomain)
             .then((response: null | IdentityAppsApiException) => {
                 if (response instanceof IdentityAppsApiException) {
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("extensions:develop.branding.notifications.delete.invalidStatus.description",
-                            { tenant: tenantDomain }),
-                        level: AlertLevels.ERROR,
-                        message: t("extensions:develop.branding.notifications.delete.invalidStatus.message")
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t(
+                                "extensions:develop.branding.notifications.delete.invalidStatus.description",
+                                { tenant: tenantDomain }
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t("extensions:develop.branding.notifications.delete.invalidStatus.message")
+                        })
+                    );
 
                     return;
                 }
@@ -531,42 +538,53 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
                 // Increment the tabs component key to remount the component on branding revert.
                 setPreferenceTabsComponentKey(preferenceTabsComponentKey + 1);
 
-                if(organizationType !== OrganizationType.SUBORGANIZATION) {
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("extensions:develop.branding.notifications.delete.success.description",
-                            { tenant: tenantDomain }),
-                        level: AlertLevels.SUCCESS,
-                        message: t("extensions:develop.branding.notifications.delete.success.message")
-                    }));
+                if (organizationType !== OrganizationType.SUBORGANIZATION) {
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t("extensions:develop.branding.notifications.delete.success.description", {
+                                tenant: tenantDomain
+                            }),
+                            level: AlertLevels.SUCCESS,
+                            message: t("extensions:develop.branding.notifications.delete.success.message")
+                        })
+                    );
                 } else {
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("extensions:develop.branding.notifications.delete.successWaiting.description",
-                            { tenant: tenantDomain }),
-                        level: AlertLevels.WARNING,
-                        message: t("extensions:develop.branding.notifications.delete.successWaiting.message")
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t(
+                                "extensions:develop.branding.notifications.delete.successWaiting.description",
+                                { tenant: tenantDomain }
+                            ),
+                            level: AlertLevels.WARNING,
+                            message: t("extensions:develop.branding.notifications.delete.successWaiting.message")
+                        })
+                    );
 
                     handleSubOrgAlerts();
                 }
             })
             .catch((error: IdentityAppsApiException) => {
-
-                let description: string = t("extensions:develop.branding.notifications.delete.genericError" +
-                    ".description", { tenant: tenantDomain });
+                let description: string = t(
+                    "extensions:develop.branding.notifications.delete.genericError" + ".description",
+                    { tenant: tenantDomain }
+                );
                 let message: string = t("extensions:develop.branding.notifications.delete.genericError.message");
 
                 // If branding is not configured, but user tried deleting anyway.
                 if (error.code === BrandingPreferencesConstants.BRANDING_NOT_CONFIGURED_ERROR_CODE) {
-                    description = t("extensions:develop.branding.notifications.delete.notConfigured" +
-                        ".description", { tenant: tenantDomain });
+                    description = t("extensions:develop.branding.notifications.delete.notConfigured" + ".description", {
+                        tenant: tenantDomain
+                    });
                     message = t("extensions:develop.branding.notifications.delete.notConfigured.message");
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: description,
-                    level: AlertLevels.ERROR,
-                    message: message
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: description,
+                        level: AlertLevels.ERROR,
+                        message: message
+                    })
+                );
             })
             .finally(() => {
                 setIsBrandingPreferenceDeleteRequestLoading(false);
@@ -578,229 +596,197 @@ const BrandingPage: FunctionComponent<BrandingPageInterface> = (
         <BrandingPreferenceProvider>
             <PageLayout
                 pageTitle="Branding"
-                bottomMargin={ false }
-                image={ SHOW_ORGANIZATION_LOGO_IN_PAGE_TITLE && (
-                    <GenericIcon
-                        square
-                        relaxed
-                        transparent
-                        bordered
-                        rounded
-                        icon={
-                            !isEmpty(
-                                brandingPreference.theme[ brandingPreference.theme.activeTheme ]?.images?.logo?.imgURL
-                            )
-                                ? brandingPreference.theme[ brandingPreference.theme.activeTheme ].images.logo.imgURL
-                                : BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(theme)
-                                    .theme[ brandingPreference.theme.activeTheme ].images.logo.imgURL
-                        }
-                        inverted={ brandingPreference.theme.activeTheme === PredefinedThemes.DARK }
-                        size="tiny"
-                        data-componentid={ `${ componentId }-organization-logo` }
-                    />
-                ) }
-                title={ (
+                bottomMargin={false}
+                image={
+                    SHOW_ORGANIZATION_LOGO_IN_PAGE_TITLE && (
+                        <GenericIcon
+                            square
+                            relaxed
+                            transparent
+                            bordered
+                            rounded
+                            icon={
+                                !isEmpty(
+                                    brandingPreference.theme[brandingPreference.theme.activeTheme]?.images?.logo?.imgURL
+                                )
+                                    ? brandingPreference.theme[brandingPreference.theme.activeTheme].images.logo.imgURL
+                                    : BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(theme).theme[
+                                          brandingPreference.theme.activeTheme
+                                      ].images.logo.imgURL
+                            }
+                            inverted={brandingPreference.theme.activeTheme === PredefinedThemes.DARK}
+                            size="tiny"
+                            data-componentid={`${componentId}-organization-logo`}
+                        />
+                    )
+                }
+                title={
                     <div className="title-container">
                         <div className="title-container-heading">
-                            { t("extensions:develop.branding.pageHeader.title") }
+                            {t("extensions:develop.branding.pageHeader.title")}
                         </div>
                     </div>
-                ) }
-                description={ (
+                }
+                description={
                     <div className="with-label">
-                        { t("extensions:develop.branding.pageHeader.description") }
-                        <DocumentationLink
-                            link={ getLink("develop.branding.learnMore") }
-                        >
-                            { t("common:learnMore") }
+                        {t("extensions:develop.branding.pageHeader.description")}
+                        <DocumentationLink link={getLink("develop.branding.learnMore")}>
+                            {t("common:learnMore")}
                         </DocumentationLink>
                     </div>
-                ) }
-                data-componentid={ `${ componentId }-layout` }
+                }
+                data-componentid={`${componentId}-layout`}
                 className="branding-page"
             >
-                {
-                    !isBrandingPageLoading && !brandingPreference.configs?.isBrandingEnabled && (
-                        <Message
-                            info
-                            floating
-                            attached="top"
-                            className="preview-disclaimer"
-                            content={
-                                (
-                                    <>
-                                        { t("extensions:develop.branding.publishToggle.hint") }
-                                    </>
-                                )
-                            }
-                            data-componentid="branding-preference-preview-disclaimer"
-                        />
-                    )
-                }
-                {
-                    showSubOrgBrandingUpdateAlert
-                        ? (
-                            <Alert onClose={ () => setShowSubOrgBrandingUpdateAlert(false) } severity="warning">
-                                { t("extensions:develop.branding.notifications.update.successWaitingAlert.description",
-                                    { tenant: tenantDomain }) }
-                            </Alert>
-                        ) : null
-                }
-                {
-                    showSubOrgBrandingDeleteAlert
-                        ? (
-                            <Alert onClose={ () => setShowSubOrgBrandingDeleteAlert(false) } severity="warning">
-                                { t("extensions:develop.branding.notifications.delete.successWaitingAlert.description",
-                                    { tenant: tenantDomain }) }
-                            </Alert>
-                        ) : null
-                }
-                {
-                    showResolutionDisclaimerMessage && (
-                        <Message
-                            info
-                            floating
-                            attached="top"
-                            className="preview-disclaimer"
-                            content={
-                                (
-                                    <>
-                                        { t("extensions:develop.branding.pageResolution.hint") }
-                                    </>
-                                )
-                            }
-                            data-componentid="branding-preference-resolution-disclaimer"
-                        />
-                    )
-                }
+                {!isBrandingPageLoading && !brandingPreference.configs?.isBrandingEnabled && (
+                    <Message
+                        info
+                        floating
+                        attached="top"
+                        className="preview-disclaimer"
+                        content={<>{t("extensions:develop.branding.publishToggle.hint")}</>}
+                        data-componentid="branding-preference-preview-disclaimer"
+                    />
+                )}
+                {showSubOrgBrandingUpdateAlert ? (
+                    <Alert onClose={() => setShowSubOrgBrandingUpdateAlert(false)} severity="warning">
+                        {t("extensions:develop.branding.notifications.update.successWaitingAlert.description", {
+                            tenant: tenantDomain
+                        })}
+                    </Alert>
+                ) : null}
+                {showSubOrgBrandingDeleteAlert ? (
+                    <Alert onClose={() => setShowSubOrgBrandingDeleteAlert(false)} severity="warning">
+                        {t("extensions:develop.branding.notifications.delete.successWaitingAlert.description", {
+                            tenant: tenantDomain
+                        })}
+                    </Alert>
+                ) : null}
+                {showResolutionDisclaimerMessage && (
+                    <Message
+                        info
+                        floating
+                        attached="top"
+                        className="preview-disclaimer"
+                        content={<>{t("extensions:develop.branding.pageResolution.hint")}</>}
+                        data-componentid="branding-preference-resolution-disclaimer"
+                    />
+                )}
                 <BrandingPreferenceTabs
-                    key={ preferenceTabsComponentKey }
-                    predefinedThemes={ predefinedThemes }
-                    brandingPreference={ brandingPreference }
-                    isLoading={ isBrandingPageLoading }
-                    isUpdating={ isBrandingPreferenceUpdateRequestLoading }
-                    onSubmit={ (values: Partial<BrandingPreferenceInterface>, shouldShowNotifications: boolean) => {
+                    key={preferenceTabsComponentKey}
+                    predefinedThemes={predefinedThemes}
+                    brandingPreference={brandingPreference}
+                    isLoading={isBrandingPageLoading}
+                    isUpdating={isBrandingPreferenceUpdateRequestLoading}
+                    onSubmit={(values: Partial<BrandingPreferenceInterface>, shouldShowNotifications: boolean) => {
                         handlePreferenceFormSubmit(values, shouldShowNotifications);
-                    } }
-                    isSplitView={ isGreaterThanComputerViewport }
-                    readOnly={ isReadOnly }
-                    onLayoutChange={ (values: DesignFormValuesInterface): void => {
+                    }}
+                    isSplitView={isGreaterThanComputerViewport}
+                    readOnly={isReadOnly}
+                    onLayoutChange={(values: DesignFormValuesInterface): void => {
                         setSelectedLayout(values.layout.activeLayout);
-                    } }
-                    onPreviewResize={ (width: number): void => {
+                    }}
+                    onPreviewResize={(width: number): void => {
                         setCurrentWidth(width);
-                    } }
+                    }}
                 />
                 <ConfirmationModal
-                    onClose={ (): void => setShowBrandingPublishStatusConfirmationModal(false) }
+                    onClose={(): void => setShowBrandingPublishStatusConfirmationModal(false)}
                     type="warning"
-                    open={ showBrandingPublishStatusConfirmationModal }
-                    assertionHint={
-                        t("extensions:develop.branding.confirmations.revertBranding.assertionHint")
-                    }
+                    open={showBrandingPublishStatusConfirmationModal}
+                    assertionHint={t("extensions:develop.branding.confirmations.revertBranding.assertionHint")}
                     assertionType="checkbox"
-                    primaryAction={ t("common:confirm") }
-                    secondaryAction={ t("common:cancel") }
-                    onSecondaryActionClick={ (): void => setShowBrandingPublishStatusConfirmationModal(false) }
-                    onPrimaryActionClick={ (): void => handleBrandingPublishStatus() }
-                    data-componentid={ `${ componentId }-branding-feature-confirmation-modal` }
-                    closeOnDimmerClick={ false }
-                    primaryActionLoading={ isBrandingFeatureRequestLoading }
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => setShowBrandingPublishStatusConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => handleBrandingPublishStatus()}
+                    data-componentid={`${componentId}-branding-feature-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                    primaryActionLoading={isBrandingFeatureRequestLoading}
                 >
                     <ConfirmationModal.Header
-                        data-componentid={ `${ componentId }-branding-feature-confirmation-modal-header` }
+                        data-componentid={`${componentId}-branding-feature-confirmation-modal-header`}
                     >
-                        { t("extensions:develop.branding.confirmations.unpublishBranding.header") }
+                        {t("extensions:develop.branding.confirmations.unpublishBranding.header")}
                     </ConfirmationModal.Header>
                     <ConfirmationModal.Message
                         attached
                         warning
-                        data-componentid={ `${ componentId }-branding-feature-confirmation-modal-message` }
+                        data-componentid={`${componentId}-branding-feature-confirmation-modal-message`}
                     >
-                        { brandingPreference.configs?.isBrandingEnabled ?
-                            t("extensions:develop.branding.confirmations.unpublishBranding.disableMessage",
-                                { productName: productName }) :
-                            t("extensions:develop.branding.confirmations.unpublishBranding.enableMessage")
-                        }
+                        {brandingPreference.configs?.isBrandingEnabled
+                            ? t("extensions:develop.branding.confirmations.unpublishBranding.disableMessage", {
+                                  productName: productName
+                              })
+                            : t("extensions:develop.branding.confirmations.unpublishBranding.enableMessage")}
                     </ConfirmationModal.Message>
                     <ConfirmationModal.Content
-                        data-componentid={ `${ componentId }-branding-feature-confirmation-modal-content` }
+                        data-componentid={`${componentId}-branding-feature-confirmation-modal-content`}
                     >
-                        { brandingPreference.configs?.isBrandingEnabled ?
-                            t("extensions:develop.branding.confirmations.unpublishBranding.disableContent") :
-                            t("extensions:develop.branding.confirmations.unpublishBranding.enableContent")
-                        }
+                        {brandingPreference.configs?.isBrandingEnabled
+                            ? t("extensions:develop.branding.confirmations.unpublishBranding.disableContent")
+                            : t("extensions:develop.branding.confirmations.unpublishBranding.enableContent")}
                     </ConfirmationModal.Content>
                 </ConfirmationModal>
-                <Show when={ AccessControlConstants.BRANDING_DELETE }>
-                    <DangerZoneGroup sectionHeader={ t("extensions:develop.branding.dangerZoneGroup.header") }>
-                        { brandingPreference.configs?.isBrandingEnabled && (
+                <Show when={AccessControlConstants.BRANDING_DELETE}>
+                    <DangerZoneGroup sectionHeader={t("extensions:develop.branding.dangerZoneGroup.header")}>
+                        {brandingPreference.configs?.isBrandingEnabled && (
                             <DangerZone
-                                actionTitle={
-                                    t("extensions:develop.branding.dangerZoneGroup.unpublishBranding.actionTitle")
-                                }
-                                header={
-                                    t("extensions:develop.branding.dangerZoneGroup.unpublishBranding.header")
-                                }
-                                subheader={
-                                    t("extensions:develop.branding.dangerZoneGroup.unpublishBranding.subheader",
-                                        { productName: productName })
-                                }
-                                onActionClick={ (): void => handleBrandingUnpublish() }
-                                data-componentid={ `${ componentId }-danger-zone-unpublish` }
+                                actionTitle={t(
+                                    "extensions:develop.branding.dangerZoneGroup.unpublishBranding.actionTitle"
+                                )}
+                                header={t("extensions:develop.branding.dangerZoneGroup.unpublishBranding.header")}
+                                subheader={t(
+                                    "extensions:develop.branding.dangerZoneGroup.unpublishBranding.subheader",
+                                    { productName: productName }
+                                )}
+                                onActionClick={(): void => handleBrandingUnpublish()}
+                                data-componentid={`${componentId}-danger-zone-unpublish`}
                             />
-                        ) }
+                        )}
                         <DangerZone
-                            actionTitle={
-                                t("extensions:develop.branding.dangerZoneGroup.revertBranding.actionTitle")
-                            }
-                            header={
-                                t("extensions:develop.branding.dangerZoneGroup.revertBranding.header")
-                            }
-                            subheader={
-                                t("extensions:develop.branding.dangerZoneGroup.revertBranding.subheader",
-                                    { productName: productName })
-                            }
-                            onActionClick={ (): void => setShowRevertConfirmationModal(true) }
-                            data-componentid={ `${ componentId }-danger-zone` }
+                            actionTitle={t("extensions:develop.branding.dangerZoneGroup.revertBranding.actionTitle")}
+                            header={t("extensions:develop.branding.dangerZoneGroup.revertBranding.header")}
+                            subheader={t("extensions:develop.branding.dangerZoneGroup.revertBranding.subheader", {
+                                productName: productName
+                            })}
+                            onActionClick={(): void => setShowRevertConfirmationModal(true)}
+                            data-componentid={`${componentId}-danger-zone`}
                         />
                     </DangerZoneGroup>
                 </Show>
                 <ConfirmationModal
-                    onClose={ (): void => setShowRevertConfirmationModal(false) }
+                    onClose={(): void => setShowRevertConfirmationModal(false)}
                     type="negative"
-                    open={ showRevertConfirmationModal }
-                    assertionHint={
-                        t("extensions:develop.branding.confirmations.revertBranding.assertionHint")
-                    }
+                    open={showRevertConfirmationModal}
+                    assertionHint={t("extensions:develop.branding.confirmations.revertBranding.assertionHint")}
                     assertionType="checkbox"
-                    primaryAction={ t("common:confirm") }
-                    secondaryAction={ t("common:cancel") }
-                    onSecondaryActionClick={ (): void => setShowRevertConfirmationModal(false) }
-                    onPrimaryActionClick={ (): void => handleBrandingPreferenceDelete() }
-                    data-componentid={ `${ componentId }-branding-preference-revert-confirmation-modal` }
-                    closeOnDimmerClick={ false }
-                    primaryActionLoading={ isBrandingPreferenceDeleteRequestLoading }
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => setShowRevertConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => handleBrandingPreferenceDelete()}
+                    data-componentid={`${componentId}-branding-preference-revert-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                    primaryActionLoading={isBrandingPreferenceDeleteRequestLoading}
                 >
                     <ConfirmationModal.Header
-                        data-componentid={ `${ componentId }-branding-preference-revert-confirmation-modal-header` }
+                        data-componentid={`${componentId}-branding-preference-revert-confirmation-modal-header`}
                     >
-                        { t("extensions:develop.branding.confirmations.revertBranding.header") }
+                        {t("extensions:develop.branding.confirmations.revertBranding.header")}
                     </ConfirmationModal.Header>
                     <ConfirmationModal.Message
                         attached
                         negative
-                        data-componentid={ `${ componentId }-branding-preference-revert-confirmation-modal-message` }
+                        data-componentid={`${componentId}-branding-preference-revert-confirmation-modal-message`}
                     >
-                        {
-                            t("extensions:develop.branding.confirmations.revertBranding.message",
-                                { productName: productName })
-                        }
+                        {t("extensions:develop.branding.confirmations.revertBranding.message", {
+                            productName: productName
+                        })}
                     </ConfirmationModal.Message>
                     <ConfirmationModal.Content
-                        data-componentid={ `${ componentId }-branding-preference-revert-confirmation-modal-content` }
+                        data-componentid={`${componentId}-branding-preference-revert-confirmation-modal-content`}
                     >
-                        { t("extensions:develop.branding.confirmations.revertBranding.content") }
+                        {t("extensions:develop.branding.confirmations.revertBranding.content")}
                     </ConfirmationModal.Content>
                 </ConfirmationModal>
             </PageLayout>

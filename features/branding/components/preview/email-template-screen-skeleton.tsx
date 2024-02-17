@@ -18,11 +18,11 @@
 
 import { resolveUserDisplayName } from "@wso2is/core/helpers";
 import { IdentifiableComponentInterface, ProfileInfoInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import parse from "html-react-parser";
 import Mustache from "mustache";
 import React, { FunctionComponent, ReactElement, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { AppState } from "../../../core/store";
 import { CustomTextPreferenceConstants } from "../../constants/custom-text-preference-constants";
 import useBrandingPreference from "../../hooks/use-branding-preference";
 import { BrandingPreferenceMeta } from "../../meta/branding-preference-meta";
@@ -48,13 +48,9 @@ interface EmailTemplateScreenSkeletonInterface extends IdentifiableComponentInte
 export const EmailTemplateScreenSkeleton: FunctionComponent<EmailTemplateScreenSkeletonInterface> = (
     props: EmailTemplateScreenSkeletonInterface
 ): ReactElement => {
-    const {
-        brandingPreference,
-        content,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { brandingPreference, content, ["data-componentid"]: componentId } = props;
 
-    const { i18n }= useBrandingPreference();
+    const { i18n } = useBrandingPreference();
 
     const tenantDomain: string = useSelector((state: AppState) => state.auth.tenantDomain);
     const systemTheme: string = useSelector((state: AppState) => state.config?.ui?.theme?.name);
@@ -63,90 +59,92 @@ export const EmailTemplateScreenSkeleton: FunctionComponent<EmailTemplateScreenS
         return state.config.deployment.extensions?.supportEmail as string;
     });
 
-    const userDisplayName: string = useMemo(() => resolveUserDisplayName(profileInfo, null, "John"), [ profileInfo ]);
+    const userDisplayName: string = useMemo(() => resolveUserDisplayName(profileInfo, null, "John"), [profileInfo]);
 
     return (
         <div
             className="email-template-screen-skeleton"
-            data-testid={ componentId }
-            style={ {
-                backgroundColor: brandingPreference.theme[
-                    brandingPreference.theme.activeTheme].colors?.background?.body?.main
-                    || brandingPreference.theme[brandingPreference.theme.activeTheme].page.background.backgroundColor,
+            data-testid={componentId}
+            style={{
+                backgroundColor:
+                    brandingPreference.theme[brandingPreference.theme.activeTheme].colors?.background?.body?.main ||
+                    brandingPreference.theme[brandingPreference.theme.activeTheme].page.background.backgroundColor,
                 display: "flex",
                 flexDirection: "column",
                 height: "100%",
                 justifyContent: "center",
                 pointerEvents: "none"
-            } }
+            }}
         >
-            { parse(
+            {parse(
                 Mustache.render(content, {
                     organization: {
                         button: {
                             font: {
-                                color: brandingPreference.theme[
-                                    brandingPreference.theme.activeTheme
-                                ].buttons.primary.base.font.color
+                                color:
+                                    brandingPreference.theme[brandingPreference.theme.activeTheme].buttons.primary.base
+                                        .font.color
                             }
                         },
                         color: {
-                            background: brandingPreference.theme[
-                                brandingPreference.theme.activeTheme].colors?.background?.body?.main
-                                || brandingPreference.theme[
-                                    brandingPreference.theme.activeTheme].page.background.backgroundColor,
-                            primary: brandingPreference.theme[
-                                brandingPreference.theme.activeTheme].colors?.primary?.main
-                                || brandingPreference.theme[brandingPreference.theme.activeTheme].colors.primary
+                            background:
+                                brandingPreference.theme[brandingPreference.theme.activeTheme].colors?.background?.body
+                                    ?.main ||
+                                brandingPreference.theme[brandingPreference.theme.activeTheme].page.background
+                                    .backgroundColor,
+                            primary:
+                                brandingPreference.theme[brandingPreference.theme.activeTheme].colors?.primary?.main ||
+                                brandingPreference.theme[brandingPreference.theme.activeTheme].colors.primary
                         },
                         copyright: {
-                            text: i18n(
-                                CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.COPYRIGHT, ""
-                            ) ?? brandingPreference.organizationDetails.copyrightText
+                            text:
+                                i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.COPYRIGHT, "") ??
+                                brandingPreference.organizationDetails.copyrightText
                         },
                         font: {
-                            color: brandingPreference.theme[brandingPreference.theme.activeTheme].colors?.text?.primary
-                                || brandingPreference.theme[brandingPreference.theme.activeTheme].page.font.color,
-                            fontFamily: brandingPreference.theme[
-                                brandingPreference.theme.activeTheme].typography.font.fontFamily
-
+                            color:
+                                brandingPreference.theme[brandingPreference.theme.activeTheme].colors?.text?.primary ||
+                                brandingPreference.theme[brandingPreference.theme.activeTheme].page.font.color,
+                            fontFamily:
+                                brandingPreference.theme[brandingPreference.theme.activeTheme].typography.font
+                                    .fontFamily
                         },
                         logo: {
                             altText: brandingPreference.theme[brandingPreference.theme.activeTheme].images.logo.altText,
-                            img: brandingPreference.theme[brandingPreference.theme.activeTheme].images.logo.imgURL ??
-                            BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(systemTheme).theme[
-                                brandingPreference.theme.activeTheme
-                            ].images.logo.imgURL
+                            img:
+                                brandingPreference.theme[brandingPreference.theme.activeTheme].images.logo.imgURL ??
+                                BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(systemTheme).theme[
+                                    brandingPreference.theme.activeTheme
+                                ].images.logo.imgURL
                         },
                         support: {
                             mail: brandingPreference.organizationDetails.supportEmail || supportEmail
                         },
                         theme: {
                             background: {
-                                color: brandingPreference.theme[
-                                    brandingPreference.theme.activeTheme].colors?.background?.surface?.main
-                                    || (
-                                        brandingPreference.theme.activeTheme === PredefinedThemes.DARK
-                                            ? "#111111"
-                                            : "#FFFFFF"
-                                    )
+                                color:
+                                    brandingPreference.theme[brandingPreference.theme.activeTheme].colors?.background
+                                        ?.surface?.main ||
+                                    (brandingPreference.theme.activeTheme === PredefinedThemes.DARK
+                                        ? "#111111"
+                                        : "#FFFFFF")
                             },
                             border: {
-                                color: brandingPreference.theme[
-                                    brandingPreference.theme.activeTheme].colors?.outlined?.default
-                                    || (
-                                        brandingPreference.theme.activeTheme === PredefinedThemes.DARK
-                                            ? "#333333"
-                                            : "transparent"
-                                    )
+                                color:
+                                    brandingPreference.theme[brandingPreference.theme.activeTheme].colors?.outlined
+                                        ?.default ||
+                                    (brandingPreference.theme.activeTheme === PredefinedThemes.DARK
+                                        ? "#333333"
+                                        : "transparent")
                             }
                         }
                     },
                     "organization-name": brandingPreference.organizationDetails.displayName
-                        ? brandingPreference.organizationDetails.displayName : tenantDomain,
+                        ? brandingPreference.organizationDetails.displayName
+                        : tenantDomain,
                     "user-name": userDisplayName
                 })
-            ) }
+            )}
         </div>
     );
 };

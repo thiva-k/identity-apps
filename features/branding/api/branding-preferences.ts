@@ -19,10 +19,10 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
+import { I18nConstants } from "@wso2is/feature-constants.common";
+import { OrganizationType } from "@wso2is/feature-organizations.common/constants/organization-constants";
+import { store } from "@wso2is/feature-store.common";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { I18nConstants } from "../../core/constants";
-import { store } from "../../core/store";
-import { OrganizationType } from "../../organizations/constants/organization-constants";
 import { BrandingPreferencesConstants } from "../constants";
 import {
     BrandingPreferenceAPIResponseInterface,
@@ -55,9 +55,10 @@ export const updateBrandingPreference = (
     type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG,
     locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE
 ): Promise<BrandingPreferenceAPIResponseInterface> => {
-    const tenantDomain: string = store.getState().organization.organizationType === OrganizationType.SUBORGANIZATION
-        ? store.getState()?.organization?.organization?.id
-        : name;
+    const tenantDomain: string =
+        store.getState().organization.organizationType === OrganizationType.SUBORGANIZATION
+            ? store.getState()?.organization?.organization?.id
+            : name;
 
     const requestConfig: AxiosRequestConfig = {
         data: {
@@ -67,7 +68,7 @@ export const updateBrandingPreference = (
             type
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: isBrandingAlreadyConfigured ? HttpMethods.PUT : HttpMethods.POST,
@@ -78,24 +79,26 @@ export const updateBrandingPreference = (
         .then((response: AxiosResponse) => {
             if (response.status !== 200 && response.status !== 201) {
                 throw new IdentityAppsApiException(
-                    BrandingPreferencesConstants.ErrorMessages.BRANDING_PREFERENCE_UPDATE_INVALID_STATUS_CODE_ERROR
-                        .getErrorMessage(),
+                    BrandingPreferencesConstants.ErrorMessages.BRANDING_PREFERENCE_UPDATE_INVALID_STATUS_CODE_ERROR.getErrorMessage(),
                     null,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as BrandingPreferenceAPIResponseInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 BrandingPreferencesConstants.ErrorMessages.BRANDING_PREFERENCE_UPDATE_ERROR.getErrorMessage(),
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -113,13 +116,14 @@ export const deleteBrandingPreference = (
     type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG,
     locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE
 ): Promise<null | IdentityAppsApiException> => {
-    const tenantDomain: string = store.getState().organization.organizationType === OrganizationType.SUBORGANIZATION
-        ? store.getState()?.organization?.organization?.id
-        : name;
+    const tenantDomain: string =
+        store.getState().organization.organizationType === OrganizationType.SUBORGANIZATION
+            ? store.getState()?.organization?.organization?.id
+            : name;
 
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
@@ -135,24 +139,26 @@ export const deleteBrandingPreference = (
         .then((response: AxiosResponse) => {
             if (response.status !== 204) {
                 throw new IdentityAppsApiException(
-                    BrandingPreferencesConstants.ErrorMessages.BRANDING_PREFERENCE_DELETE_INVALID_STATUS_CODE_ERROR
-                        .getErrorMessage(),
+                    BrandingPreferencesConstants.ErrorMessages.BRANDING_PREFERENCE_DELETE_INVALID_STATUS_CODE_ERROR.getErrorMessage(),
                     null,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
-                error.response?.data?.message ?? BrandingPreferencesConstants
-                    .ErrorMessages.BRANDING_PREFERENCE_DELETE_ERROR.getErrorMessage(),
+                error.response?.data?.message ??
+                    BrandingPreferencesConstants.ErrorMessages.BRANDING_PREFERENCE_DELETE_ERROR.getErrorMessage(),
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

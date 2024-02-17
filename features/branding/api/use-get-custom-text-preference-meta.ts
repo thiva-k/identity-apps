@@ -17,12 +17,12 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import { AppConstants } from "../../core/constants/app-constants";
+import { AppConstants } from "@wso2is/feature-constants.common";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
+} from "@wso2is/feature-hooks.common/use-request";
 import { CustomTextPreferenceMeta } from "../models/custom-text-preference";
 
 /**
@@ -31,10 +31,9 @@ import { CustomTextPreferenceMeta } from "../models/custom-text-preference";
  * @param shouldFetch - Should fetch the data.
  * @returns SWR response object containing the data, error, isValidating, mutate.
  */
-const useGetCustomTextPreferenceMeta = <
-    Data = CustomTextPreferenceMeta,
-    Error = RequestErrorInterface
->(shouldFetch: boolean = true): RequestResultInterface<Data, Error> => {
+const useGetCustomTextPreferenceMeta = <Data = CustomTextPreferenceMeta, Error = RequestErrorInterface>(
+    shouldFetch: boolean = true
+): RequestResultInterface<Data, Error> => {
     const basename: string = AppConstants.getAppBasename() ? `/${AppConstants.getAppBasename()}` : "";
     const url: string = `https://${window.location.host}${basename}/resources/branding/i18n/meta.json`;
 

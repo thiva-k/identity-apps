@@ -17,14 +17,10 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import isEmpty from "lodash-es/isEmpty";
-import React, {
-    Fragment,
-    FunctionComponent,
-    ReactElement
-} from "react";
+import React, { Fragment, FunctionComponent, ReactElement } from "react";
 import { useSelector } from "react-redux";
-import { AppState } from "../../../core/store";
 import { BrandingPreferencesConstants } from "../../constants";
 import { CustomTextPreferenceConstants } from "../../constants/custom-text-preference-constants";
 import useBrandingPreference from "../../hooks/use-branding-preference";
@@ -51,94 +47,83 @@ interface ProductFooterInterface extends IdentifiableComponentInterface {
 export const ProductFooter: FunctionComponent<ProductFooterInterface> = (
     props: ProductFooterInterface
 ): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId,
-        brandingPreference
-    } = props;
+    const { ["data-componentid"]: componentId, brandingPreference } = props;
 
     const { i18n } = useBrandingPreference();
 
     const systemTheme: string = useSelector((state: AppState) => state.config.ui.theme?.name);
 
     return (
-        <div data-componentid = { componentId } className="footer">
+        <div data-componentid={componentId} className="footer">
             <div className="ui container fluid">
                 <div className="ui text menu">
                     <div className="left menu">
                         <a className="item no-hover copyright-text line-break" id="copyright">
-                            { !isEmpty(i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.COPYRIGHT, "")) && (
+                            {!isEmpty(i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.COPYRIGHT, "")) && (
                                 <>
-                                    <span>{ i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.COPYRIGHT, "") }</span>
-                                    { (brandingPreference.configs?.removeDefaultBranding === false) && (
+                                    <span>{i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.COPYRIGHT, "")}</span>
+                                    {brandingPreference.configs?.removeDefaultBranding === false && (
                                         <div className="powered-by-logo-divider">|</div>
-                                    ) }
+                                    )}
                                 </>
-                            ) }
-                            {
-                                (brandingPreference.configs?.removeDefaultBranding === false) && (
-                                    <Fragment>
-                                        Powered by <div className="powered-by-logo">
-                                            <img
-                                                width="80"
-                                                height="20"
-                                                src={
-                                                    Object.prototype.hasOwnProperty.call(
-                                                        BrandingPreferenceMeta
-                                                            .getBrandingPreferenceInternalFallbacks(systemTheme)
-                                                            .theme,
-                                                        brandingPreference.theme.activeTheme
-                                                    )
-                                                        ? BrandingPreferenceMeta
-                                                            .getBrandingPreferenceInternalFallbacks(systemTheme)
-                                                            .theme[
-                                                                brandingPreference.theme.activeTheme
-                                                            ].images.logo.imgURL
-                                                        : BrandingPreferenceMeta
-                                                            .getBrandingPreferenceInternalFallbacks(systemTheme)
-                                                            .theme[
-                                                                BrandingPreferencesConstants.DEFAULT_THEME
-                                                            ].images.logo.imgURL
-                                                }
-                                                alt="Asgardeo Logo"
-                                            />
-                                        </div>
-                                    </Fragment>
-                                )
-                            }
+                            )}
+                            {brandingPreference.configs?.removeDefaultBranding === false && (
+                                <Fragment>
+                                    Powered by{" "}
+                                    <div className="powered-by-logo">
+                                        <img
+                                            width="80"
+                                            height="20"
+                                            src={
+                                                Object.prototype.hasOwnProperty.call(
+                                                    BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(
+                                                        systemTheme
+                                                    ).theme,
+                                                    brandingPreference.theme.activeTheme
+                                                )
+                                                    ? BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(
+                                                          systemTheme
+                                                      ).theme[brandingPreference.theme.activeTheme].images.logo.imgURL
+                                                    : BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(
+                                                          systemTheme
+                                                      ).theme[BrandingPreferencesConstants.DEFAULT_THEME].images.logo
+                                                          .imgURL
+                                            }
+                                            alt="Asgardeo Logo"
+                                        />
+                                    </div>
+                                </Fragment>
+                            )}
                         </a>
                     </div>
                     <div className="right menu">
-                        {
-                            !isEmpty(brandingPreference.urls?.privacyPolicyURL) && (
-                                <a
-                                    id="privacy-policy"
-                                    className="item"
-                                    href={ brandingPreference.urls.privacyPolicyURL }
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    data-testid="login-page-privacy-policy-link"
-                                >
-                                    { i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.PRIVACY_POLICY,
-                                        "Privacy Policy") }
-                                </a>
-                            )
-                        }
-                        {
-                            !isEmpty(brandingPreference.urls?.termsOfUseURL) && (
-                                <a
-                                    id="terms-of-service"
-                                    className="item"
-                                    href={ brandingPreference.urls.termsOfUseURL }
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    data-testid="login-page-privacy-policy-link"
-                                >
-                                    { i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.TERMS_OF_SERVICE,
-                                        "Terms of Service") }
-                                </a>
-                            )
-                        }
+                        {!isEmpty(brandingPreference.urls?.privacyPolicyURL) && (
+                            <a
+                                id="privacy-policy"
+                                className="item"
+                                href={brandingPreference.urls.privacyPolicyURL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                data-testid="login-page-privacy-policy-link"
+                            >
+                                {i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.PRIVACY_POLICY, "Privacy Policy")}
+                            </a>
+                        )}
+                        {!isEmpty(brandingPreference.urls?.termsOfUseURL) && (
+                            <a
+                                id="terms-of-service"
+                                className="item"
+                                href={brandingPreference.urls.termsOfUseURL}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                data-testid="login-page-privacy-policy-link"
+                            >
+                                {i18n(
+                                    CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.TERMS_OF_SERVICE,
+                                    "Terms of Service"
+                                )}
+                            </a>
+                        )}
                     </div>
                 </div>
             </div>

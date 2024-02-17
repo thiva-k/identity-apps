@@ -17,12 +17,12 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import { AppConstants } from "../../core/constants/app-constants";
+import { AppConstants } from "@wso2is/feature-constants.common";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
+} from "@wso2is/feature-hooks.common/use-request";
 import { CustomTextPreferenceScreenMetaInterface } from "../models/custom-text-preference";
 
 /**
@@ -36,13 +36,11 @@ const useGetCustomTextPreferenceScreenMeta = <
     Data = CustomTextPreferenceScreenMetaInterface,
     Error = RequestErrorInterface
 >(
-        shouldFetch: boolean,
-        screen: string
-    ): RequestResultInterface<Data, Error> => {
+    shouldFetch: boolean,
+    screen: string
+): RequestResultInterface<Data, Error> => {
     const basename: string = AppConstants.getAppBasename() ? `/${AppConstants.getAppBasename()}` : "";
-    const url: string = `https://${
-        window.location.host
-    }${basename}/resources/branding/i18n/screens/${screen}/meta.json`;
+    const url: string = `https://${window.location.host}${basename}/resources/branding/i18n/screens/${screen}/meta.json`;
 
     const requestConfig: RequestConfigInterface = {
         headers: {

@@ -19,6 +19,7 @@
 import Button from "@oxygen-ui/react/Button";
 import Chip from "@oxygen-ui/react/Chip";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { AppState } from "@wso2is/feature-store.common";
 import { FormPropsInterface } from "@wso2is/form";
 import { Heading, Link, ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
 import cloneDeep from "lodash-es/cloneDeep";
@@ -40,15 +41,11 @@ import { AdvanceForm, AdvanceFormValuesInterface } from "./advanced";
 import CustomText from "./custom-text/custom-text";
 import CustomTextRevertConfirmationModal from "./custom-text/custom-text-revert-all-confirmation-modal";
 import { DesignForm, DesignFormValuesInterface } from "./design";
-import {
-    GeneralDetailsForm,
-    GeneralDetailsFormValuesInterface
-} from "./general";
+import { GeneralDetailsForm, GeneralDetailsFormValuesInterface } from "./general";
 import { BrandingPreferencePreview } from "./preview";
 import ScreenDropdown from "./screen-dropdown";
 import { StickyTabPaneActionPanel } from "./sticky-tab-pane-action-panel";
 import { commonConfig } from "../../../extensions/configs";
-import { AppState } from "../../core/store";
 import { BrandingPreferencesConstants } from "../constants";
 import { CustomTextPreferenceConstants } from "../constants/custom-text-preference-constants";
 import useBrandingPreference from "../hooks/use-branding-preference";
@@ -66,7 +63,6 @@ import { CustomTextConfigurationModes } from "../models/custom-text-preference";
  * Proptypes for the Branding preference tabs component.
  */
 interface BrandingPreferenceTabsInterface extends IdentifiableComponentInterface {
-
     /**
      * Branding preferences object.
      */
@@ -118,7 +114,6 @@ interface BrandingPreferenceTabsInterface extends IdentifiableComponentInterface
 export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInterface> = (
     props: BrandingPreferenceTabsInterface
 ): ReactElement => {
-
     const {
         ["data-componentid"]: componentId,
         predefinedThemes,
@@ -151,39 +146,36 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
     } = useBrandingPreference();
 
     const systemTheme: string = useSelector((state: AppState) => state.config.ui.theme?.name);
-    const supportEmail: string = useSelector((state: AppState) =>
-        state.config.deployment.extensions?.supportEmail as string);
+    const supportEmail: string = useSelector(
+        (state: AppState) => state.config.deployment.extensions?.supportEmail as string
+    );
     const isSAASDeployment: boolean = useSelector((state: AppState) => state?.config?.ui?.isSAASDeployment);
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(isUpdating);
-    const [
-        brandingPreferenceForPreview,
-        setBrandingPreferenceForPreview
-    ] = useState<BrandingPreferenceInterface>(brandingPreference);
-    const [
-        showCustomTextRevertAllConfirmationModal,
-        setShowCustomTextRevertAllConfirmationModal
-    ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(isUpdating);
+    const [brandingPreferenceForPreview, setBrandingPreferenceForPreview] = useState<BrandingPreferenceInterface>(
+        brandingPreference
+    );
+    const [showCustomTextRevertAllConfirmationModal, setShowCustomTextRevertAllConfirmationModal] = useState<boolean>(
+        false
+    );
 
     /**
      * Sets the branding preference preview config.
      */
     useEffect(() => {
-
         if (isEmpty(brandingPreference)) {
             return;
         }
 
         setBrandingPreferenceForPreview(moderateValuesForPreview(brandingPreference));
-    }, [ brandingPreference, predefinedThemes ]);
+    }, [brandingPreference, predefinedThemes]);
 
     /**
      * Sets the submitting state of the form.
      */
     useEffect(() => {
-
         setIsSubmitting(isUpdating);
-    }, [ isUpdating ]);
+    }, [isUpdating]);
 
     /**
      * General Preferences Tab.
@@ -198,15 +190,15 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
                 data-componentid="branding-preference-general-tab-content-container"
             >
                 <GeneralDetailsForm
-                    ref={ formRef }
-                    onSubmit={ onSubmit }
-                    initialValues={ {
+                    ref={formRef}
+                    onSubmit={onSubmit}
+                    initialValues={{
                         organizationDetails: {
                             displayName: brandingPreference.organizationDetails?.displayName,
                             supportEmail: brandingPreference.organizationDetails?.supportEmail
                         }
-                    } }
-                    broadcastValues={ (values: GeneralDetailsFormValuesInterface) => {
+                    }}
+                    broadcastValues={(values: GeneralDetailsFormValuesInterface) => {
                         setBrandingPreferenceForPreview({
                             ...moderateValuesForPreview({
                                 ...brandingPreference,
@@ -217,21 +209,21 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
                                 }
                             })
                         });
-                    } }
-                    isLoading={ isLoading }
-                    readOnly={ readOnly }
-                    isLive={ brandingPreference.configs.isBrandingEnabled }
+                    }}
+                    isLoading={isLoading}
+                    readOnly={readOnly}
+                    isLive={brandingPreference.configs.isBrandingEnabled}
                     data-componentid="branding-preference-general-details-form"
                 />
             </Segment>
             <StickyTabPaneActionPanel
-                formRef={ formRef }
-                saveButton={ {
+                formRef={formRef}
+                saveButton={{
                     "data-componentid": "branding-preference-general-details-form-submit-button",
                     isDisabled: isSubmitting || isLoading,
                     isLoading: isSubmitting,
                     readOnly: readOnly
-                } }
+                }}
                 data-componentid="sticky-tab-action-panel"
             />
         </ResourceTab.Pane>
@@ -250,14 +242,14 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
                 data-componentid="branding-preference-design-tab-content-container"
             >
                 <DesignForm
-                    initialValues={ {
+                    initialValues={{
                         layout: brandingPreference.layout,
                         theme: brandingPreference.theme
-                    } }
-                    ref={ formRef }
-                    isLoading={ isLoading }
-                    onSubmit={ onSubmit }
-                    broadcastValues={ (values: DesignFormValuesInterface) => {
+                    }}
+                    ref={formRef}
+                    isLoading={isLoading}
+                    onSubmit={onSubmit}
+                    broadcastValues={(values: DesignFormValuesInterface) => {
                         setBrandingPreferenceForPreview({
                             ...moderateValuesForPreview({
                                 ...brandingPreference,
@@ -266,19 +258,19 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
                             })
                         });
                         onLayoutChange(values);
-                    } }
-                    readOnly={ readOnly }
+                    }}
+                    readOnly={readOnly}
                     data-componentid="branding-preference-design-form"
                 />
             </Segment>
             <StickyTabPaneActionPanel
-                formRef={ formRef }
-                saveButton={ {
+                formRef={formRef}
+                saveButton={{
                     "data-componentid": "branding-preference-design-form-submit-button",
                     isDisabled: isSubmitting || isLoading,
                     isLoading: isSubmitting,
                     readOnly: readOnly
-                } }
+                }}
                 data-componentid="sticky-tab-action-panel"
             />
         </ResourceTab.Pane>
@@ -297,58 +289,60 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
                 data-componentid="branding-preference-advanced-tab-content-container"
             >
                 <AdvanceForm
-                    ref={ formRef }
-                    onSubmit={ onSubmit }
-                    initialValues={ {
+                    ref={formRef}
+                    onSubmit={onSubmit}
+                    initialValues={{
                         urls: {
                             cookiePolicyURL: brandingPreference.urls?.cookiePolicyURL,
                             privacyPolicyURL: brandingPreference.urls?.privacyPolicyURL,
                             selfSignUpURL: brandingPreference.urls?.selfSignUpURL,
                             termsOfUseURL: brandingPreference.urls?.termsOfUseURL
                         }
-                    } }
-                    isLoading={ isLoading }
-                    isSubmitting={ isSubmitting }
-                    broadcastValues={ (values: AdvanceFormValuesInterface) => {
+                    }}
+                    isLoading={isLoading}
+                    isSubmitting={isSubmitting}
+                    broadcastValues={(values: AdvanceFormValuesInterface) => {
                         setBrandingPreferenceForPreview({
                             ...moderateValuesForPreview({
                                 ...brandingPreference,
                                 urls: values.urls
                             })
                         });
-                    } }
-                    readOnly={ readOnly }
+                    }}
+                    readOnly={readOnly}
                     data-componentid="branding-preference-advanced-form"
                 />
-                <Divider hidden/>
-                { !commonConfig.enableDefaultBrandingPreviewSection && !isLoading && (
-                    <Message info className={ "mb-5 connector-info" }>
-                        <Heading as="h3">
-                            { t("extensions:develop.branding.tabs.general.customRequest.heading") }
-                        </Heading>
+                <Divider hidden />
+                {!commonConfig.enableDefaultBrandingPreviewSection && !isLoading && (
+                    <Message info className={"mb-5 connector-info"}>
+                        <Heading as="h3">{t("extensions:develop.branding.tabs.general.customRequest.heading")}</Heading>
                         <p>
                             <Trans
-                                i18nKey={ "extensions:develop.branding.tabs.general.customRequest.description" }
-                                tOptions={ {
+                                i18nKey={"extensions:develop.branding.tabs.general.customRequest.description"}
+                                tOptions={{
                                     supportEmail
-                                } }
+                                }}
                             >
-                            If you require further customizations, please reach to us at <Link
+                                If you require further customizations, please reach to us at{" "}
+                                <Link
                                     data-componentid="branding-preference-custom-request-mail-trigger"
-                                    link={ `mailto:${ supportEmail }` }>{ supportEmail }</Link>
+                                    link={`mailto:${supportEmail}`}
+                                >
+                                    {supportEmail}
+                                </Link>
                             </Trans>
                         </p>
                     </Message>
-                ) }
+                )}
             </Segment>
             <StickyTabPaneActionPanel
-                formRef={ formRef }
-                saveButton={ {
+                formRef={formRef}
+                saveButton={{
                     "data-componentid": "branding-preference-advanced-form-submit-button",
                     isDisabled: isSubmitting || isLoading,
                     isLoading: isSubmitting,
                     readOnly: readOnly
-                } }
+                }}
                 data-componentid="sticky-tab-action-panel"
             />
         </ResourceTab.Pane>
@@ -361,10 +355,10 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
     const PreviewPreferenceTabPane = (): ReactElement => (
         <ResourceTab.Pane className="preview-tab" attached="bottom" data-componentid="branding-preference-preview-tab">
             <BrandingPreferencePreview
-                screenType={ selectedScreen }
-                isLoading={ isLoading }
-                brandingPreference={ brandingPreferenceForPreview }
-                onPreviewResize={ onPreviewResize }
+                screenType={selectedScreen}
+                isLoading={isLoading}
+                brandingPreference={brandingPreferenceForPreview}
+                onPreviewResize={onPreviewResize}
                 data-componentid="branding-preference-preview"
             />
         </ResourceTab.Pane>
@@ -372,17 +366,18 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
 
     const TextPreferenceTabPane = (): ReactElement => (
         <ResourceTab.Pane className="text-tab" attached="bottom" data-componentid="branding-preference-text-tab">
-            <CustomText readOnly={ readOnly } />
+            <CustomText readOnly={readOnly} />
             <StickyTabPaneActionPanel
-                formRef={ formRef }
-                saveButton={ {
+                formRef={formRef}
+                saveButton={{
                     "data-componentid": "branding-preference-custom-text-form-submit-button",
                     isDisabled: isSubmitting || isLoading,
                     isLoading: isSubmitting,
                     onClick: () => {
                         if (activeCustomTextConfigurationMode === CustomTextConfigurationModes.TEXT_FIELDS) {
-                            document.getElementById(CustomTextPreferenceConstants.FORM_ID)
-                                .dispatchEvent(new Event("submit", { bubbles:true, cancelable: true }));
+                            document
+                                .getElementById(CustomTextPreferenceConstants.FORM_ID)
+                                .dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
                         } else {
                             updateCustomTextPreference(customTextFormSubscription?.values);
                         }
@@ -392,28 +387,28 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
                         }
                     },
                     readOnly: readOnly
-                } }
+                }}
                 data-componentid="sticky-tab-action-panel"
             >
                 <Button
-                    disabled={ !isCustomTextConfigured }
-                    onClick={ () =>  {
+                    disabled={!isCustomTextConfigured}
+                    onClick={() => {
                         setShowCustomTextRevertAllConfirmationModal(true);
-                    } }
+                    }}
                 >
-                    { t("console:branding.form.actions.resetAll") }
+                    {t("console:branding.form.actions.resetAll")}
                 </Button>
             </StickyTabPaneActionPanel>
-            { showCustomTextRevertAllConfirmationModal && (
+            {showCustomTextRevertAllConfirmationModal && (
                 <CustomTextRevertConfirmationModal
-                    open={ showCustomTextRevertAllConfirmationModal }
-                    onClose={ () => setShowCustomTextRevertAllConfirmationModal(false) }
-                    onPrimaryActionClick={ () => {
+                    open={showCustomTextRevertAllConfirmationModal}
+                    onClose={() => setShowCustomTextRevertAllConfirmationModal(false)}
+                    onPrimaryActionClick={() => {
                         resetAllCustomTextPreference(selectedScreen, selectedLocale);
                         setShowCustomTextRevertAllConfirmationModal(false);
-                    } }
+                    }}
                 />
-            ) }
+            )}
         </ResourceTab.Pane>
     );
 
@@ -422,8 +417,7 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
      *
      * @returns TabProps [ "panes" ] Resolved tab panes.
      */
-    const resolveTabPanes = (): TabProps [ "panes" ] => {
-
+    const resolveTabPanes = (): TabProps["panes"] => {
         const panes: ResourceTabPaneInterface[] = [];
 
         panes.push({
@@ -448,15 +442,15 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
             "data-tabid": BrandingPreferencesConstants.TABS.TEXT_TAB_ID,
             menuItem: (
                 <Menu.Item key="text">
-                    { t("console:branding.tabs.text.label") }
-                    { isSAASDeployment && (
+                    {t("console:branding.tabs.text.label")}
+                    {isSAASDeployment && (
                         <Chip
                             size="small"
-                            sx={ { marginLeft: 1 } }
-                            label={ t("common:beta").toUpperCase() }
+                            sx={{ marginLeft: 1 }}
+                            label={t("common:beta").toUpperCase()}
                             className="oxygen-chip-beta"
                         />
-                    ) }
+                    )}
                 </Menu.Item>
             ),
             render: TextPreferenceTabPane
@@ -477,21 +471,23 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
      * @param preference - Preference Object.
      */
     const moderateValuesForPreview = (preference: BrandingPreferenceInterface): BrandingPreferenceInterface => {
-
         const preferenceForPreview: BrandingPreferenceInterface = cloneDeep(preference);
 
         for (const key in PredefinedThemes) {
-            if (isEmpty(preferenceForPreview.theme[ PredefinedThemes[ key ] ]?.images?.logo?.imgURL)) {
-                set(preferenceForPreview,
-                    `theme.${ PredefinedThemes[ key ] }.images.logo.imgURL`,
+            if (isEmpty(preferenceForPreview.theme[PredefinedThemes[key]]?.images?.logo?.imgURL)) {
+                set(
+                    preferenceForPreview,
+                    `theme.${PredefinedThemes[key]}.images.logo.imgURL`,
                     Object.prototype.hasOwnProperty.call(
                         BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(systemTheme).theme,
-                        PredefinedThemes[ key ]
+                        PredefinedThemes[key]
                     )
-                        ? BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(systemTheme)
-                            .theme[ PredefinedThemes[ key ] ].images.logo.imgURL
-                        : BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(systemTheme)
-                            .theme[ BrandingPreferencesConstants.DEFAULT_THEME ].images.logo.imgURL
+                        ? BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(systemTheme).theme[
+                              PredefinedThemes[key]
+                          ].images.logo.imgURL
+                        : BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(systemTheme).theme[
+                              BrandingPreferencesConstants.DEFAULT_THEME
+                          ].images.logo.imgURL
                 );
             }
         }
@@ -500,13 +496,13 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
     };
 
     return (
-        <Segment.Group horizontal className="basic branding-preference-tab-group" data-componentid={ componentId }>
-            <Segment basic padded={ false }>
+        <Segment.Group horizontal className="basic branding-preference-tab-group" data-componentid={componentId}>
+            <Segment basic padded={false}>
                 <ResourceTab
                     attached="top"
-                    secondary={ false }
-                    pointing={ false }
-                    onTabChange={ (
+                    secondary={false}
+                    pointing={false}
+                    onTabChange={(
                         event: MouseEvent<HTMLDivElement>,
                         data: TabProps,
                         activeTabMetadata?: {
@@ -516,42 +512,42 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
                     ) => {
                         activeTabMetadata && updateActiveTab(activeTabMetadata["data-tabid"]);
                         setBrandingPreferenceForPreview(moderateValuesForPreview(brandingPreference));
-                    } }
-                    panes={ resolveTabPanes() }
-                    data-componentid={ `${componentId}-forms` }
+                    }}
+                    panes={resolveTabPanes()}
+                    data-componentid={`${componentId}-forms`}
                 />
             </Segment>
-            { isSplitView && (
-                <Segment basic padded={ false } className="preview">
+            {isSplitView && (
+                <Segment basic padded={false} className="preview">
                     <ResourceTab
                         attached="top"
-                        secondary={ false }
-                        pointing={ false }
-                        panes={ [
+                        secondary={false}
+                        pointing={false}
+                        panes={[
                             {
                                 menuItem: (
                                     <div className="preview-title-bar">
-                                        <div>{ t("console:branding.tabs.preview.label") }</div>
-                                        { activeTab !== BrandingPreferencesConstants.TABS.TEXT_TAB_ID && (
+                                        <div>{t("console:branding.tabs.preview.label")}</div>
+                                        {activeTab !== BrandingPreferencesConstants.TABS.TEXT_TAB_ID && (
                                             <div className="preview-screen-selection">
                                                 <ScreenDropdown
-                                                    defaultScreen={ PreviewScreenType.LOGIN }
-                                                    screens={ getScreens(BrandingSubFeatures.DESIGN) }
-                                                    onChange={ (screen: PreviewScreenType) => {
+                                                    defaultScreen={PreviewScreenType.LOGIN}
+                                                    screens={getScreens(BrandingSubFeatures.DESIGN)}
+                                                    onChange={(screen: PreviewScreenType) => {
                                                         onSelectedPreviewScreenChange(screen);
-                                                    } }
+                                                    }}
                                                 />
                                             </div>
-                                        ) }
+                                        )}
                                     </div>
                                 ),
                                 render: PreviewPreferenceTabPane
                             }
-                        ] }
-                        data-componentid={ `${componentId}-preview` }
+                        ]}
+                        data-componentid={`${componentId}-preview`}
                     />
                 </Segment>
-            ) }
+            )}
         </Segment.Group>
     );
 };

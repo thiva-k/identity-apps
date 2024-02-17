@@ -17,13 +17,8 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    useEffect,
-    useState
-} from "react";
-import { AppConstants } from "../../../../../core/constants";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { CustomTextPreferenceConstants } from "../../../../constants/custom-text-preference-constants";
 import useBrandingPreference from "../../../../hooks/use-branding-preference";
 
@@ -45,7 +40,7 @@ const BasicAuthFragment: FunctionComponent<BasicAuthFragmentInterface> = (
 
     const { i18n } = useBrandingPreference();
 
-    const [ googleLogoURL, setGoogleLogoURL ] = useState<string>(undefined);
+    const [googleLogoURL, setGoogleLogoURL] = useState<string>(undefined);
 
     useEffect(() => {
         if (!AppConstants.getClientOrigin()) {
@@ -53,21 +48,26 @@ const BasicAuthFragment: FunctionComponent<BasicAuthFragmentInterface> = (
         }
 
         if (AppConstants.getAppBasename()) {
-            setGoogleLogoURL(AppConstants.getClientOrigin() +
-                "/" + AppConstants.getAppBasename() +
-                "/libs/themes/default/assets/images/identity-providers/google-idp-illustration.svg");
+            setGoogleLogoURL(
+                AppConstants.getClientOrigin() +
+                    "/" +
+                    AppConstants.getAppBasename() +
+                    "/libs/themes/default/assets/images/identity-providers/google-idp-illustration.svg"
+            );
 
             return;
         }
 
-        setGoogleLogoURL(AppConstants.getClientOrigin()
-            + "/libs/themes/default/assets/images/identity-providers/google-idp-illustration.svg");
-    }, [ AppConstants.getClientOrigin(), AppConstants.getAppBasename() ]);
+        setGoogleLogoURL(
+            AppConstants.getClientOrigin() +
+                "/libs/themes/default/assets/images/identity-providers/google-idp-illustration.svg"
+        );
+    }, [AppConstants.getClientOrigin(), AppConstants.getAppBasename()]);
 
     return (
-        <div data-componentid={ componentId }>
+        <div data-componentid={componentId}>
             <h3 className="ui header">
-                { i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.LOGIN.HEADING, "Sign In") }
+                {i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.LOGIN.HEADING, "Sign In")}
             </h3>
 
             <div className="segment-form">
@@ -99,19 +99,13 @@ const BasicAuthFragment: FunctionComponent<BasicAuthFragmentInterface> = (
                                 data-testid="login-page-password-input"
                             />
                             <i aria-hidden="true" className="lock icon"></i>
-                            <i
-                                id="password-eye"
-                                className="eye icon right-align password-toggle slash"></i>
+                            <i id="password-eye" className="eye icon right-align password-toggle slash"></i>
                         </div>
                     </div>
 
                     <div className="buttons mt-2">
                         <div className="field external-link-container text-small">
-                            <a
-                                id="passwordRecoverLink"
-                            >
-                                Forgot password?
-                            </a>
+                            <a id="passwordRecoverLink">Forgot password?</a>
                         </div>
                     </div>
 
@@ -128,10 +122,7 @@ const BasicAuthFragment: FunctionComponent<BasicAuthFragmentInterface> = (
                             <label>Remember me on this computer</label>
                         </div>
                     </div>
-                    <input
-                        type="hidden"
-                        name="sessionDataKey"
-                    />
+                    <input type="hidden" name="sessionDataKey" />
                     <div className="mt-0">
                         <div className="buttons">
                             <button
@@ -140,14 +131,16 @@ const BasicAuthFragment: FunctionComponent<BasicAuthFragmentInterface> = (
                                 role="button"
                                 data-testid="login-page-continue-login-button"
                             >
-                                { i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.LOGIN.BUTTON, "Sign In") }
+                                {i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.LOGIN.BUTTON, "Sign In")}
                             </button>
                         </div>
                     </div>
                     <div className="mt-4 mb-4">
                         <div className="mt-3 external-link-container text-small">
-                            { i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.REGISTER_TEXT.MESSAGE, 
-                                "Don't have an account? ") }
+                            {i18n(
+                                CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.REGISTER_TEXT.MESSAGE,
+                                "Don't have an account? "
+                            )}
                             <a
                                 target="_self"
                                 id="registerLink"
@@ -155,15 +148,15 @@ const BasicAuthFragment: FunctionComponent<BasicAuthFragmentInterface> = (
                                 rel="noopener noreferrer"
                                 data-testid="login-page-create-account-button"
                             >
-                                { i18n(CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.REGISTER_TEXT.REGISTER, 
-                                    "Register") }
+                                {i18n(
+                                    CustomTextPreferenceConstants.TEXT_BUNDLE_KEYS.REGISTER_TEXT.REGISTER,
+                                    "Register"
+                                )}
                             </a>
                         </div>
                     </div>
                 </div>
-                <div className="ui horizontal divider">
-                    Or
-                </div>
+                <div className="ui horizontal divider">Or</div>
                 <div className="field">
                     <div className="ui vertical ui center aligned segment form">
                         <div className="social-login blurring social-dimmer">
@@ -173,11 +166,7 @@ const BasicAuthFragment: FunctionComponent<BasicAuthFragmentInterface> = (
                                     className="ui seconda button"
                                     data-testid="login-page-sign-in-with-google"
                                 >
-                                    <img
-                                        alt="google-logo"
-                                        className="ui image"
-                                        src={ googleLogoURL }
-                                    />
+                                    <img alt="google-logo" className="ui image" src={googleLogoURL} />
                                     <span>Sign In With Google</span>
                                 </button>
                             </div>

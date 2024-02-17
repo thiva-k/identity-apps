@@ -20,6 +20,9 @@ import { OrganizationType } from "@wso2is/common";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertInterface, AlertLevels } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import { OrganizationResponseInterface } from "@wso2is/feature-organizations.common/models";
+import { AppState } from "@wso2is/feature-store.common";
 import { FormState } from "@wso2is/form";
 import { SupportedLanguagesMeta } from "@wso2is/i18n";
 import cloneDeep from "lodash-es/cloneDeep";
@@ -31,9 +34,6 @@ import React, { FunctionComponent, PropsWithChildren, ReactElement, useEffect, u
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { AppState } from "../../core/store";
-import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
-import { OrganizationResponseInterface } from "../../organizations/models/organizations";
 import deleteCustomTextPreference from "../api/delete-custom-text-preference";
 import updateCustomTextPreference from "../api/update-custom-text-preference";
 import useGetBrandingPreferenceResolve from "../api/use-get-branding-preference-resolve";
@@ -89,28 +89,28 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
         (state: AppState) => state?.organization?.organization
     );
 
-    const [ selectedScreen, setSelectedPreviewScreen ] = useState<PreviewScreenType>(PreviewScreenType.COMMON);
-    const [ selectedLocale, setSelectedCustomTextLocale ] = useState<string>(
+    const [selectedScreen, setSelectedPreviewScreen] = useState<PreviewScreenType>(PreviewScreenType.COMMON);
+    const [selectedLocale, setSelectedCustomTextLocale] = useState<string>(
         CustomTextPreferenceConstants.DEFAULT_LOCALE
     );
-    const [ customTextFormSubscription, setCustomTextFormSubscription ] = useState<
+    const [customTextFormSubscription, setCustomTextFormSubscription] = useState<
         Partial<FormState<CustomTextInterface, CustomTextInterface>>
     >(null);
-    const [ activeTab, setActiveTab ] = useState<string>(null);
-    const [ activeCustomTextConfigurationMode, setActiveCustomTextConfigurationMode ] = useState<
+    const [activeTab, setActiveTab] = useState<string>(null);
+    const [activeCustomTextConfigurationMode, setActiveCustomTextConfigurationMode] = useState<
         CustomTextConfigurationModes
     >(CustomTextConfigurationModes.TEXT_FIELDS);
 
-    const [ isCustomTextPreferenceConfigured, setIsCustomTextPreferenceConfigured ] = useState<boolean>(true);
+    const [isCustomTextPreferenceConfigured, setIsCustomTextPreferenceConfigured] = useState<boolean>(true);
 
+    const { data: brandingPreference } = useGetBrandingPreferenceResolve(tenantDomain);
 
-    const {
-        data: brandingPreference
-    } = useGetBrandingPreferenceResolve(tenantDomain);
-
-    const {
-        data: customTextCommons
-    } = useGetCustomTextPreferenceResolve(!!selectedLocale, tenantDomain, "common", selectedLocale);
+    const { data: customTextCommons } = useGetCustomTextPreferenceResolve(
+        !!selectedLocale,
+        tenantDomain,
+        "common",
+        selectedLocale
+    );
 
     const {
         data: customText,
@@ -120,31 +120,26 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
         !!selectedScreen && !!selectedLocale,
         tenantDomain,
         selectedScreen,
-        selectedLocale);
+        selectedLocale
+    );
 
-    const {
-        data: customTextFallbackCommons
-    } = useGetCustomTextPreferenceFallbacks(!!selectedLocale, tenantDomain, PreviewScreenType.COMMON, selectedLocale);
+    const { data: customTextFallbackCommons } = useGetCustomTextPreferenceFallbacks(
+        !!selectedLocale,
+        tenantDomain,
+        PreviewScreenType.COMMON,
+        selectedLocale
+    );
 
-    const {
-        data: customTextFallbacks
-    } = useGetCustomTextPreferenceFallbacks(
+    const { data: customTextFallbacks } = useGetCustomTextPreferenceFallbacks(
         !!selectedScreen && !!selectedLocale,
         tenantDomain,
         selectedScreen,
         selectedLocale
     );
 
-    const {
-        data: customTextMeta
-    } = useGetCustomTextPreferenceMeta();
+    const { data: customTextMeta } = useGetCustomTextPreferenceMeta();
 
-    const {
-        data: customTextScreenMeta
-    } = useGetCustomTextPreferenceScreenMeta(
-        !!selectedScreen,
-        selectedScreen
-    );
+    const { data: customTextScreenMeta } = useGetCustomTextPreferenceScreenMeta(!!selectedScreen, selectedScreen);
 
     /**
      * Merge the custom text preference with the fallbacks.
@@ -158,7 +153,7 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
             ),
             cloneDeep(customText)
         );
-    }, [ customTextFallbacks, customText ]);
+    }, [customTextFallbacks, customText]);
 
     /**
      * Check if the custom text preference fetch request has failed.
@@ -186,7 +181,7 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
                 message: t("console:brandingCustomText.notifications.getPreferenceError.message")
             })
         );
-    }, [ customTextPreferenceFetchRequestError ]);
+    }, [customTextPreferenceFetchRequestError]);
 
     /**
      * Moderates the Custom Text Preference response.
@@ -195,15 +190,14 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
         if (!customText) {
             return;
         }
-        if (organizationType === OrganizationType.SUBORGANIZATION
-            && customText?.name !== currentOrganization?.id) {
+        if (organizationType === OrganizationType.SUBORGANIZATION && customText?.name !== currentOrganization?.id) {
             // This means the sub-org has no custom text preference configured.
             // It gets the custom text preference from the parent org.
             setIsCustomTextPreferenceConfigured(false);
         } else {
             setIsCustomTextPreferenceConfigured(true);
         }
-    }, [ customText ]);
+    }, [customText]);
 
     /**
      * Updates the custom text preference.
@@ -216,25 +210,27 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
         values: CustomTextPreferenceInterface,
         _isCustomTextPreferenceConfigured: boolean
     ): Promise<void> => {
+        return updateCustomTextPreference(
+            _isCustomTextPreferenceConfigured,
+            values,
+            tenantDomain,
+            selectedScreen,
+            selectedLocale
+        )
+            .then(() => {
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t("console:brandingCustomText.notifications.updateSuccess.description", {
+                            locale: selectedLocale,
+                            screen: selectedScreen
+                        }),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:brandingCustomText.notifications.updateSuccess.message")
+                    })
+                );
 
-        return updateCustomTextPreference(_isCustomTextPreferenceConfigured, values, tenantDomain, selectedScreen,
-            selectedLocale)
-            .then(
-                () => {
-                    dispatch(
-                        addAlert<AlertInterface>({
-                            description: t("console:brandingCustomText.notifications.updateSuccess.description", {
-                                locale: selectedLocale,
-                                screen: selectedScreen
-                            }),
-                            level: AlertLevels.SUCCESS,
-                            message: t("console:brandingCustomText.notifications.updateSuccess.message")
-                        })
-                    );
-
-                    mutateCustomTextPreferenceFetchRequest();
-                }
-            )
+                mutateCustomTextPreferenceFetchRequest();
+            })
             .catch((error: IdentityAppsApiException) => {
                 // Edge Case.Try again with POST, if custom text preference has been removed due to concurrent sessions.
                 if (error.code === BrandingPreferencesConstants.CUSTOM_TEXT_PREFERENCE_NOT_CONFIGURED_ERROR_CODE) {
@@ -260,25 +256,26 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
      * @param locale - Locale to be reset.
      */
     const _deleteCustomTextPreference = (screen: string, locale: string): void => {
-        deleteCustomTextPreference(tenantDomain, screen, locale).then(() => {
-            dispatch(
-                addAlert<AlertInterface>({
-                    description: t("console:brandingCustomText.notifications.resetSuccess.description", {
-                        locale: selectedLocale,
-                        screen: selectedScreen
-                    }),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:brandingCustomText.notifications.resetSuccess.message")
-                })
-            );
+        deleteCustomTextPreference(tenantDomain, screen, locale)
+            .then(() => {
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t("console:brandingCustomText.notifications.resetSuccess.description", {
+                            locale: selectedLocale,
+                            screen: selectedScreen
+                        }),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:brandingCustomText.notifications.resetSuccess.message")
+                    })
+                );
 
-            setCustomTextFormSubscription({
-                ...customTextFormSubscription,
-                values: cloneDeep(customTextFallbacks?.preference?.text)
-            });
+                setCustomTextFormSubscription({
+                    ...customTextFormSubscription,
+                    values: cloneDeep(customTextFallbacks?.preference?.text)
+                });
 
-            mutateCustomTextPreferenceFetchRequest();
-        })
+                mutateCustomTextPreferenceFetchRequest();
+            })
             .catch(() => {
                 dispatch(
                     addAlert<AlertInterface>({
@@ -349,7 +346,7 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
 
     return (
         <AuthenticationFlowContext.Provider
-            value={ {
+            value={{
                 activeCustomTextConfigurationMode,
                 activeTab,
                 customText: customTextFormSubscription?.values ?? resolvedCustomText?.preference?.text,
@@ -425,14 +422,17 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
                     setCustomTextFormSubscription(updatedValues);
                 },
                 updateCustomTextPreference: (): void => {
-                    _updateCustomTextPreference({
-                        ...resolvedCustomText?.preference,
-                        text: customTextFormSubscription?.values
-                    }, isCustomTextPreferenceConfigured);
+                    _updateCustomTextPreference(
+                        {
+                            ...resolvedCustomText?.preference,
+                            text: customTextFormSubscription?.values
+                        },
+                        isCustomTextPreferenceConfigured
+                    );
                 }
-            } }
+            }}
         >
-            { children }
+            {children}
         </AuthenticationFlowContext.Provider>
     );
 };
