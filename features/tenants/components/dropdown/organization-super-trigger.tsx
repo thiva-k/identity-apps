@@ -18,7 +18,7 @@
 
 import { GenericIcon } from "@wso2is/react-components";
 import React, { ReactElement } from "react";
-import { getMiscellaneousIcons } from "../../../core/configs";
+import { getMiscellaneousIcons } from "../../../feature-configs.common";
 
 export const OrganizationSuperTrigger = (): ReactElement => {
     return (

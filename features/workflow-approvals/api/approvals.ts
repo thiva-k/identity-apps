@@ -18,7 +18,7 @@
 
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
-import { store } from "../../core";
+import { store } from "../../feature-store.common";
 import { ApprovalStatus, ApprovalTaskDetails, ApprovalTaskListItemInterface, ApprovalTaskSummary } from "../models";
 
 /**

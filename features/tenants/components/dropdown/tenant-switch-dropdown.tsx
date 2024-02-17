@@ -30,11 +30,11 @@ import { Button, Dropdown, Grid, Icon, Input, Item, Loader, Segment } from "sema
 import { 
     ReactComponent as CrossIcon 
 } from "../../../../../themes/default/assets/images/icons/cross-icon.svg";
-import { getMiscellaneousIcons } from "../../../core";
+import { getMiscellaneousIcons } from "../../../feature-configs.common";
 import OrganizationSwitcherList from
-    "../../../organizations/components/organization-switch/organization-switch-list";
-import { OrganizationManagementConstants } from "../../../organizations/constants";
-import { OrganizationInterface } from "../../../organizations/models";
+    "../../../feature-organizations.common/components/organization-switch/organization-switch-list";
+import { OrganizationManagementConstants } from "../../../feature-organizations.common/constants";
+import { OrganizationInterface } from "../../../feature-organizations.common/models";
 import { getAssociatedTenants } from "../../api";
 import { TenantInfo, TenantRequestResponse } from "../../models";
 import { AddTenantWizard } from "../add-modal";

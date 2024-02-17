@@ -19,8 +19,8 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core/store";
-import { OrganizationType } from "../../organizations/constants";
+import { OrganizationType } from "../../feature-organizations.common/constants";
+import { store } from "../../feature-store.common";
 import { TenantRequestResponse } from "../models";
 
 const getDomainQueryParam = (): string => {

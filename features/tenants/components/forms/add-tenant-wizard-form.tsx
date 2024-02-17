@@ -34,7 +34,7 @@ import React, {
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Segment } from "semantic-ui-react";
-import { AppState } from "../../../core/store";
+import { AppState } from "../../../feature-store.common";
 import { checkDuplicateTenants } from "../../api";
 import { TenantManagementConstants } from "../../constants";
 
