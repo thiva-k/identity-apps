@@ -32,19 +32,19 @@ import { BrandingPreferenceResourceEndpointsInterface } from "../branding/models
 import { CertificatesResourceEndpointsInterface } from "../certificates";
 import { ClaimResourceEndpointsInterface } from "../claims/models/endpoints";
 import { ConsoleSettingsResourceEndpointsInterface } from "../console-settings/models/endpoints";
-import { GroupsResourceEndpointsInterface } from "../groups";
+import { GroupsResourceEndpointsInterface } from "../feature-groups.common/models/endpoints";
+import { OrganizationResourceEndpointsInterface } from "../feature-organizations/models";
+import { RolesResourceEndpointsInterface } from "../feature-roles.common/models/endpoints";
+import { UsersResourceEndpointsInterface } from "../feature-users.common/models/endpoints";
 import { IDPResourceEndpointsInterface } from "../identity-providers/models/endpoints";
+import { IdentityProviderTemplateLoadingStrategies } from "../identity-providers/models/identity-provider";
 import { ScopesResourceEndpointsInterface } from "../oidc-scopes";
-import { OrganizationResourceEndpointsInterface } from "../organizations/models";
 import { JWTAuthenticationServiceEndpointsInterface } from "../private-key-jwt/models";
-import { RolesResourceEndpointsInterface } from "../roles/models/endpoints";
 import { SecretsManagementEndpoints } from "../secrets/models/endpoints";
 import { ServerConfigurationsResourceEndpointsInterface } from "../server-configurations";
 import { TenantResourceEndpointsInterface } from "../tenants/models/endpoints";
-import { UsersResourceEndpointsInterface } from "../users/models/endpoints";
 import { UserstoreResourceEndpointsInterface } from "../userstores/models/endpoints";
 import { ValidationServiceEndpointsInterface } from "../validation/models";
-import { IdentityProviderTemplateLoadingStrategies } from "../identity-providers/models/identity-provider";
 
 export type ConfigInterface = CommonConfigInterface<
     DeploymentConfigInterface,
