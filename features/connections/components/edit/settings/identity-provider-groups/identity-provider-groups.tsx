@@ -20,21 +20,16 @@ import { AccessControlConstants, Show } from "@wso2is/access-control";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertLevels, IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState, store } from "@wso2is/feature-store.common";
 import { I18n } from "@wso2is/i18n";
 import { ContentLoader, EmphasizedSegment, Hint, PrimaryButton } from "@wso2is/react-components";
-import React, {
-    ChangeEvent,
-    FunctionComponent,
-    ReactElement,
-    useEffect,
-    useState
-} from "react";
+import React, { ChangeEvent, FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Form, Grid } from "semantic-ui-react";
 import { IdentityProviderGroupsList } from "./identity-provider-groups-list";
-import { AppState, FeatureConfigInterface, store } from "../../../../../core";
 import { updateClaimsConfigs, useClaimConfigs } from "../../../../api/connections";
 import { ConnectionManagementConstants } from "../../../../constants/connection-constants";
 import {
@@ -48,8 +43,9 @@ const FORM_ID: string = "idp-group-attributes-form";
 /**
  * Proptypes for the identity provider groups component.
  */
-interface IdentityProviderGroupsPropsInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
+interface IdentityProviderGroupsPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Currently editing IDP.
      */
@@ -76,21 +72,16 @@ interface IdentityProviderGroupsPropsInterface extends SBACInterface<FeatureConf
 export const IdentityProviderGroupsTab: FunctionComponent<IdentityProviderGroupsPropsInterface> = (
     props: IdentityProviderGroupsPropsInterface
 ): ReactElement => {
-
-    const {
-        editingIDP,
-        isReadOnly,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { editingIDP, isReadOnly, ["data-componentid"]: componentId } = props;
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ claimConfigs, setClaimConfigs ] = useState<ConnectionClaimsInterface>(undefined);
-    const [ groupAttribute, setGroupAttribute ] = useState<string>("");
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [claimConfigs, setClaimConfigs] = useState<ConnectionClaimsInterface>(undefined);
+    const [groupAttribute, setGroupAttribute] = useState<string>("");
 
     const {
         data: originalClaimConfigs,
@@ -100,8 +91,7 @@ export const IdentityProviderGroupsTab: FunctionComponent<IdentityProviderGroups
     } = useClaimConfigs(editingIDP?.id);
 
     useEffect(() => {
-        if (originalClaimConfigs instanceof IdentityAppsApiException
-                || claimConfigsFetchRequestError) {
+        if (originalClaimConfigs instanceof IdentityAppsApiException || claimConfigsFetchRequestError) {
             handleRetrieveError();
 
             return;
@@ -113,7 +103,7 @@ export const IdentityProviderGroupsTab: FunctionComponent<IdentityProviderGroups
 
         setClaimConfigs(originalClaimConfigs);
         setGroupAttribute(getGroupAttribute());
-    }, [ originalClaimConfigs ]);
+    }, [originalClaimConfigs]);
 
     /**
      * Displays the error banner when unable to fetch identity claim configurations.
@@ -121,11 +111,15 @@ export const IdentityProviderGroupsTab: FunctionComponent<IdentityProviderGroups
     const handleRetrieveError = (): void => {
         dispatch(
             addAlert({
-                description: t("extensions:console.identityProviderGroups.claimConfigs." +
-                    "notifications.fetchConfigs.genericError.description"),
+                description: t(
+                    "extensions:console.identityProviderGroups.claimConfigs." +
+                        "notifications.fetchConfigs.genericError.description"
+                ),
                 level: AlertLevels.ERROR,
-                message: t("extensions:console.identityProviderGroups.claimConfigs." +
-                    "notifications.fetchConfigs.genericError.message")
+                message: t(
+                    "extensions:console.identityProviderGroups.claimConfigs." +
+                        "notifications.fetchConfigs.genericError.message"
+                )
             })
         );
     };
@@ -148,7 +142,7 @@ export const IdentityProviderGroupsTab: FunctionComponent<IdentityProviderGroups
         }
     };
 
-    const handleGroupMappingUpdate =() : void => {
+    const handleGroupMappingUpdate = (): void => {
         if (groupAttribute.trim()) {
             setIsSubmitting(true);
             const mappedAttribute: ConnectionClaimsInterface = {
@@ -184,112 +178,128 @@ export const IdentityProviderGroupsTab: FunctionComponent<IdentityProviderGroups
             // Update the identity provider group mapping.
             updateClaimsConfigs(editingIDP?.id, mappedAttribute)
                 .then(() => {
-                    store.dispatch(addAlert({
-                        description: I18n.instance.t("console:develop.features.authenticationProvider." +
-                                "notifications.updateAttributes.success.description"),
-                        level: AlertLevels.SUCCESS,
-                        message: I18n.instance.t("console:develop.features.authenticationProvider." +
-                                "notifications.updateAttributes." +
-                                "success.message")
-                    }));
+                    store.dispatch(
+                        addAlert({
+                            description: I18n.instance.t(
+                                "console:develop.features.authenticationProvider." +
+                                    "notifications.updateAttributes.success.description"
+                            ),
+                            level: AlertLevels.SUCCESS,
+                            message: I18n.instance.t(
+                                "console:develop.features.authenticationProvider." +
+                                    "notifications.updateAttributes." +
+                                    "success.message"
+                            )
+                        })
+                    );
                     mutateClaimConfigsFetchRequest();
                 })
                 .catch((error: IdentityAppsApiException) => {
                     if (error.response && error.response.data && error.response.data.description) {
-                        store.dispatch(addAlert({
-                            description: I18n.instance.t("console:develop.features.authenticationProvider." +
-                                "notifications.updateClaimsConfigs.error.description",
-                            { description: error.response.data.description }),
-                            level: AlertLevels.ERROR,
-                            message: I18n.instance.t("console:develop.features.authenticationProvider" +
-                                ".notifications.updateClaimsConfigs." +
-                                "error.message")
-                        }));
+                        store.dispatch(
+                            addAlert({
+                                description: I18n.instance.t(
+                                    "console:develop.features.authenticationProvider." +
+                                        "notifications.updateClaimsConfigs.error.description",
+                                    { description: error.response.data.description }
+                                ),
+                                level: AlertLevels.ERROR,
+                                message: I18n.instance.t(
+                                    "console:develop.features.authenticationProvider" +
+                                        ".notifications.updateClaimsConfigs." +
+                                        "error.message"
+                                )
+                            })
+                        );
                     }
 
-                    store.dispatch(addAlert({
-                        description: I18n.instance.t("console:develop.features.authenticationProvider.notifications." +
-                            "updateClaimsConfigs.genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: I18n.instance.t("console:develop.features.authenticationProvider.notifications." +
-                            "updateClaimsConfigs.genericError.message")
-                    }));
-                }).finally(() => {
+                    store.dispatch(
+                        addAlert({
+                            description: I18n.instance.t(
+                                "console:develop.features.authenticationProvider.notifications." +
+                                    "updateClaimsConfigs.genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: I18n.instance.t(
+                                "console:develop.features.authenticationProvider.notifications." +
+                                    "updateClaimsConfigs.genericError.message"
+                            )
+                        })
+                    );
+                })
+                .finally(() => {
                     setIsSubmitting(false);
                 });
         }
     };
 
-
-    return (
-        !isClaimConfigsFetchRequestLoading
-            ? (
-                <>
-                    <EmphasizedSegment padded="very">
-                        <Grid>
-                            <Grid.Row>
-                                <Grid.Column width={ 8 }>
-                                    <Form
-                                        id={ FORM_ID }
-                                        onSubmit={ handleGroupMappingUpdate }
-                                    >
-                                        <Form.Input
-                                            name="groupAttribute"
-                                            label={ t("extensions:console.identityProviderGroups.claimConfigs." +
-                                                "groupAttributeLabel") }
-                                            placeholder={ t("extensions:console.identityProviderGroups.claimConfigs." +
-                                                "groupAttributePlaceholder") }
-                                            readOnly={ isReadOnly }
-                                            maxLength={ ConnectionManagementConstants.CLAIM_CONFIG_FIELD_MAX_LENGTH }
-                                            minLength={ ConnectionManagementConstants.CLAIM_CONFIG_FIELD_MIN_LENGTH }
-                                            data-componentid={ `${ componentId }-group-attribute-input` }
-                                            value={ groupAttribute }
-                                            onChange={ (e: ChangeEvent<HTMLInputElement>) => {
-                                                setGroupAttribute(e.target.value);
-                                            } }
-                                            width={ 16 }
-                                        />
-                                        <Hint>
-                                            { t("extensions:console.identityProviderGroups.claimConfigs." +
-                                                "groupAttributeHint") }
-                                        </Hint>
-                                        <Divider hidden />
-                                        { !isReadOnly && (
-                                            <Show when={ AccessControlConstants.IDP_EDIT }>
-                                                <PrimaryButton
-                                                    size="small"
-                                                    loading={ isSubmitting }
-                                                    disabled={ isSubmitting }
-                                                    type="submit"
-                                                    ariaLabel="Update group attributes button"
-                                                    data-componentid={ `${ componentId }-update-button` }
-                                                >
-                                                    { t("common:update") }
-                                                </PrimaryButton>
-                                            </Show>
-                                        ) }
-                                    </Form>
-                                </Grid.Column>
-                            </Grid.Row>
-                        </Grid>
-                    </EmphasizedSegment>
-                    <Divider hidden/>
-                    <EmphasizedSegment padded="very">
-                        <IdentityProviderGroupsList
-                            idpId={ editingIDP?.id }
-                            featureConfig={ featureConfig }
-                            readOnly={ isReadOnly }
-                            allowedScopes={ allowedScopes }
-                            isGroupListLoading={ false }
-                        />
-                    </EmphasizedSegment>
-                </>
-            )
-            : (
-                <EmphasizedSegment padded>
-                    <ContentLoader inline="centered" active/>
-                </EmphasizedSegment>
-            )
+    return !isClaimConfigsFetchRequestLoading ? (
+        <>
+            <EmphasizedSegment padded="very">
+                <Grid>
+                    <Grid.Row>
+                        <Grid.Column width={8}>
+                            <Form id={FORM_ID} onSubmit={handleGroupMappingUpdate}>
+                                <Form.Input
+                                    name="groupAttribute"
+                                    label={t(
+                                        "extensions:console.identityProviderGroups.claimConfigs." +
+                                            "groupAttributeLabel"
+                                    )}
+                                    placeholder={t(
+                                        "extensions:console.identityProviderGroups.claimConfigs." +
+                                            "groupAttributePlaceholder"
+                                    )}
+                                    readOnly={isReadOnly}
+                                    maxLength={ConnectionManagementConstants.CLAIM_CONFIG_FIELD_MAX_LENGTH}
+                                    minLength={ConnectionManagementConstants.CLAIM_CONFIG_FIELD_MIN_LENGTH}
+                                    data-componentid={`${componentId}-group-attribute-input`}
+                                    value={groupAttribute}
+                                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                        setGroupAttribute(e.target.value);
+                                    }}
+                                    width={16}
+                                />
+                                <Hint>
+                                    {t(
+                                        "extensions:console.identityProviderGroups.claimConfigs." + "groupAttributeHint"
+                                    )}
+                                </Hint>
+                                <Divider hidden />
+                                {!isReadOnly && (
+                                    <Show when={AccessControlConstants.IDP_EDIT}>
+                                        <PrimaryButton
+                                            size="small"
+                                            loading={isSubmitting}
+                                            disabled={isSubmitting}
+                                            type="submit"
+                                            ariaLabel="Update group attributes button"
+                                            data-componentid={`${componentId}-update-button`}
+                                        >
+                                            {t("common:update")}
+                                        </PrimaryButton>
+                                    </Show>
+                                )}
+                            </Form>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </EmphasizedSegment>
+            <Divider hidden />
+            <EmphasizedSegment padded="very">
+                <IdentityProviderGroupsList
+                    idpId={editingIDP?.id}
+                    featureConfig={featureConfig}
+                    readOnly={isReadOnly}
+                    allowedScopes={allowedScopes}
+                    isGroupListLoading={false}
+                />
+            </EmphasizedSegment>
+        </>
+    ) : (
+        <EmphasizedSegment padded>
+            <ContentLoader inline="centered" active />
+        </EmphasizedSegment>
     );
 };
 

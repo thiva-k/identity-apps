@@ -32,8 +32,7 @@ import { ConnectionsManagementUtils } from "../../../utils/connection-utils";
 /**
  * Proptypes for the Organization enterprise connection create wizard content.
  */
-interface OrganizationEnterpriseConnectionCreateWizardContentPropsInterface
-    extends IdentifiableComponentInterface {
+interface OrganizationEnterpriseConnectionCreateWizardContentPropsInterface extends IdentifiableComponentInterface {
     /**
      * Trigger form submit.
      * @param submitFunctionCb - Callback.
@@ -73,169 +72,156 @@ const FORM_ID: string = "organization-enterprise-authenticator-wizard-form";
  * @param props - Props injected to the component.
  * @returns Functional component.
  */
-export const OrganizationEnterpriseConnectionCreateWizardContent:
-    FunctionComponent<OrganizationEnterpriseConnectionCreateWizardContentPropsInterface> = (
-        props: OrganizationEnterpriseConnectionCreateWizardContentPropsInterface
-    ): ReactElement => {
+export const OrganizationEnterpriseConnectionCreateWizardContent: FunctionComponent<OrganizationEnterpriseConnectionCreateWizardContentPropsInterface> = (
+    props: OrganizationEnterpriseConnectionCreateWizardContentPropsInterface
+): ReactElement => {
+    const {
+        triggerSubmission,
+        triggerPrevious,
+        changePageNumber,
+        template,
+        setTotalPage,
+        onSubmit,
+        ["data-componentid"]: componentId
+    } = props;
 
-        const {
-            triggerSubmission,
-            triggerPrevious,
-            changePageNumber,
-            template,
-            setTotalPage,
-            onSubmit,
-            ["data-componentid"]: componentId
-        } = props;
+    const { t } = useTranslation();
 
-        const { t } = useTranslation();
+    const idpNameValidationCache: MutableRefObject<IdpNameValidationCache> = useRef(null);
+    const [isUserInputIdpNameAlreadyTaken, setIsUserInputIdpNameAlreadyTaken] = useState<boolean>(undefined);
 
-        const idpNameValidationCache: MutableRefObject<IdpNameValidationCache> = useRef(null);
-        const [ isUserInputIdpNameAlreadyTaken, setIsUserInputIdpNameAlreadyTaken ] = useState<boolean>(undefined);
+    /**
+     * Check if the typed IDP name is already taken.
+     *
+     * @param value - User input for the IDP name.
+     */
+    const idpNameValidation: DebouncedFunc<(value: string) => void> = debounce(async (value: string) => {
+        let idpExist: boolean;
 
-        /**
-         * Check if the typed IDP name is already taken.
-         *
-         * @param value - User input for the IDP name.
-         */
-        const idpNameValidation: DebouncedFunc<(value: string) => void> = debounce(
-            async (value: string) => {
-                let idpExist: boolean;
+        if (idpNameValidationCache?.current?.value === value) {
+            idpExist = idpNameValidationCache?.current?.state;
+        }
 
-                if (idpNameValidationCache?.current?.value === value) {
-                    idpExist = idpNameValidationCache?.current?.state;
-                }
-
-                if (idpExist === undefined) {
-                    try {
-                        idpExist = await ConnectionsManagementUtils.searchIdentityProviderName(value);
-                    } catch (e) {
-                        /**
-                         * Ignore the error, as a failed identity provider search
-                         * should not result in user blocking. However, if the
-                         * identity provider name already exists, it will undergo
-                         * validation from the backend, and any resulting errors
-                         * will be displayed in the user interface.
-                         */
-                        idpExist = false;
-                    }
-
-                    idpNameValidationCache.current = {
-                        state: idpExist,
-                        value
-                    };
-                }
-
-                setIsUserInputIdpNameAlreadyTaken(!!idpExist);
-            },
-            500
-        );
-
-        /**
-         * Validates the Form.
-         *
-         * @param values - Form Values.
-         * @returns Form validation.
-         */
-        const validateForm = (values: OrganizationEnterpriseConnectionCreateWizardFormValuesInterface):
-        OrganizationEnterpriseConnectionCreateWizardFormErrorValidationsInterface => {
-
-            const errors: OrganizationEnterpriseConnectionCreateWizardFormErrorValidationsInterface = {
-                description: undefined,
-                name: undefined
-            };
-
-            if (!values.name) {
-                errors.name = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+        if (idpExist === undefined) {
+            try {
+                idpExist = await ConnectionsManagementUtils.searchIdentityProviderName(value);
+            } catch (e) {
+                /**
+                 * Ignore the error, as a failed identity provider search
+                 * should not result in user blocking. However, if the
+                 * identity provider name already exists, it will undergo
+                 * validation from the backend, and any resulting errors
+                 * will be displayed in the user interface.
+                 */
+                idpExist = false;
             }
 
-            return errors;
+            idpNameValidationCache.current = {
+                state: idpExist,
+                value
+            };
+        }
+
+        setIsUserInputIdpNameAlreadyTaken(!!idpExist);
+    }, 500);
+
+    /**
+     * Validates the Form.
+     *
+     * @param values - Form Values.
+     * @returns Form validation.
+     */
+    const validateForm = (
+        values: OrganizationEnterpriseConnectionCreateWizardFormValuesInterface
+    ): OrganizationEnterpriseConnectionCreateWizardFormErrorValidationsInterface => {
+        const errors: OrganizationEnterpriseConnectionCreateWizardFormErrorValidationsInterface = {
+            description: undefined,
+            name: undefined
         };
 
-        return (
-            <Wizard
-                id={ FORM_ID }
-                initialValues={ { name: template?.idp?.name } }
-                onSubmit={
-                    (values: OrganizationEnterpriseConnectionCreateWizardFormValuesInterface) =>
-                        onSubmit(values)
-                }
-                triggerSubmit={ (submitFunction: () => void) => triggerSubmission(submitFunction) }
-                triggerPrevious={ (previousFunction: () => void) => triggerPrevious(previousFunction) }
-                changePage={ (step: number) => changePageNumber(step) }
-                setTotalPage={ (step: number) => setTotalPage(step) }
-                data-componenentid={ componentId }
-            >
-                <WizardPage validate={ validateForm }>
-                    <Field.Input
-                        ariaLabel="Organization IDP Name"
-                        inputType="name"
-                        name="name"
-                        label={ t("console:develop.features.authenticationProvider.forms." +
-                        "generalDetails.name.label") }
-                        placeholder={ t("console:develop.features.authenticationProvider.forms." +
-                        "generalDetails.name.placeholder") }
-                        required={ true }
-                        listen={ idpNameValidation }
-                        validation={
-                            () => {
-                                if (isUserInputIdpNameAlreadyTaken) {
-                                    return t(
-                                        "console:develop.features." +
-                                        "authenticationProvider.forms.generalDetails.name." +
-                                        "validations.duplicate"
-                                    );
-                                }
+        if (!values.name) {
+            errors.name = t("console:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
+        }
 
-                                return null;
-                            }
-                        }
-                        maxLength={
-                            AuthenticatorManagementConstants
-                                .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MAX_LENGTH as number
-                        }
-                        minLength={
-                            AuthenticatorManagementConstants
-                                .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MIN_LENGTH as number
-                        }
-                        data-componentid={ `${componentId}-idp-name` }
-                        width={ 13 }
-                    />
-                    <Field.Input
-                        ariaLabel="Organization IDP Description"
-                        inputType="description"
-                        name="description"
-                        label={
-                            t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.description.placeholder")
-                        }
-                        placeholder={
-                            t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.description.placeholder")
-                        }
-                        message={
-                            t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.description.placeholder")
-                        }
-                        type="text"
-                        maxLength={
-                            AuthenticatorManagementConstants
-                                .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
-                                .IDP_DESCRIPTION_MAX_LENGTH as number
-                        }
-                        minLength={
-                            AuthenticatorManagementConstants
-                                .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
-                                .IDP_DESCRIPTION_MIN_LENGTH as number
-                        }
-                        data-componentid={ `${componentId}-idp-description` }
-                        width={ 30 }
-                    />
-                </WizardPage>
-            </Wizard>
-        );
+        return errors;
     };
+
+    return (
+        <Wizard
+            id={FORM_ID}
+            initialValues={{ name: template?.idp?.name }}
+            onSubmit={(values: OrganizationEnterpriseConnectionCreateWizardFormValuesInterface) => onSubmit(values)}
+            triggerSubmit={(submitFunction: () => void) => triggerSubmission(submitFunction)}
+            triggerPrevious={(previousFunction: () => void) => triggerPrevious(previousFunction)}
+            changePage={(step: number) => changePageNumber(step)}
+            setTotalPage={(step: number) => setTotalPage(step)}
+            data-componenentid={componentId}
+        >
+            <WizardPage validate={validateForm}>
+                <Field.Input
+                    ariaLabel="Organization IDP Name"
+                    inputType="name"
+                    name="name"
+                    label={t("console:develop.features.authenticationProvider.forms." + "generalDetails.name.label")}
+                    placeholder={t(
+                        "console:develop.features.authenticationProvider.forms." + "generalDetails.name.placeholder"
+                    )}
+                    required={true}
+                    listen={idpNameValidation}
+                    validation={() => {
+                        if (isUserInputIdpNameAlreadyTaken) {
+                            return t(
+                                "console:develop.features." +
+                                    "authenticationProvider.forms.generalDetails.name." +
+                                    "validations.duplicate"
+                            );
+                        }
+
+                        return null;
+                    }}
+                    maxLength={
+                        AuthenticatorManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_NAME_MAX_LENGTH as number
+                    }
+                    minLength={
+                        AuthenticatorManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_NAME_MIN_LENGTH as number
+                    }
+                    data-componentid={`${componentId}-idp-name`}
+                    width={13}
+                />
+                <Field.Input
+                    ariaLabel="Organization IDP Description"
+                    inputType="description"
+                    name="description"
+                    label={t(
+                        "console:develop.features.authenticationProvider.forms." +
+                            "generalDetails.description.placeholder"
+                    )}
+                    placeholder={t(
+                        "console:develop.features.authenticationProvider.forms." +
+                            "generalDetails.description.placeholder"
+                    )}
+                    message={t(
+                        "console:develop.features.authenticationProvider.forms." +
+                            "generalDetails.description.placeholder"
+                    )}
+                    type="text"
+                    maxLength={
+                        AuthenticatorManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_DESCRIPTION_MAX_LENGTH as number
+                    }
+                    minLength={
+                        AuthenticatorManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_DESCRIPTION_MIN_LENGTH as number
+                    }
+                    data-componentid={`${componentId}-idp-description`}
+                    width={30}
+                />
+            </WizardPage>
+        </Wizard>
+    );
+};
 
 /**
  * Default props for the Organization Enterprise Connection Create Wizard Page Component.

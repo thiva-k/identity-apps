@@ -17,6 +17,15 @@
  */
 
 import { RoleListInterface, RolesInterface, TestableComponentInterface } from "@wso2is/core/models";
+import { getOrganizationRoles } from "@wso2is/feature-organizations.common/api/organization-role";
+import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
+import {
+    OrganizationResponseInterface,
+    OrganizationRoleListItemInterface,
+    OrganizationRoleListResponseInterface
+} from "@wso2is/feature-organizations.common/models";
+import { getRolesList } from "@wso2is/feature-roles.common/api/roles";
+import { AppState } from "@wso2is/feature-store.common";
 import { DynamicField, KeyValue } from "@wso2is/forms";
 import { Heading, Hint } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
@@ -24,15 +33,6 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
-import { AppState } from "../../../../../core";
-import { getOrganizationRoles } from "../../../../../organizations/api";
-import { useGetCurrentOrganizationType } from "../../../../../organizations/hooks/use-get-organization-type";
-import {
-    OrganizationResponseInterface,
-    OrganizationRoleListItemInterface,
-    OrganizationRoleListResponseInterface
-} from "../../../../../organizations/models";
-import { getRolesList } from "../../../../../roles/api/roles";
 import { ConnectionManagementConstants } from "../../../../constants/connection-constants";
 import { ConnectionRoleMappingInterface } from "../../../../models/connection";
 import { handleGetRoleListError } from "../../../../utils/connection-utils";
@@ -41,7 +41,6 @@ import { handleGetRoleListError } from "../../../../utils/connection-utils";
  * Proptypes for the identity providers settings component.
  */
 interface RoleMappingSettingsPropsInterface extends TestableComponentInterface {
-
     /**
      * Trigger submission.
      */
@@ -71,18 +70,12 @@ interface RoleMappingSettingsPropsInterface extends TestableComponentInterface {
 export const RoleMappingSettings: FunctionComponent<RoleMappingSettingsPropsInterface> = (
     props: RoleMappingSettingsPropsInterface
 ): ReactElement => {
-
     const currentOrganization: OrganizationResponseInterface = useSelector(
-        (state: AppState) => state.organization.organization);
-    const [ roleList, setRoleList ] = useState<RolesInterface[] | OrganizationRoleListItemInterface[]>();
+        (state: AppState) => state.organization.organization
+    );
+    const [roleList, setRoleList] = useState<RolesInterface[] | OrganizationRoleListItemInterface[]>();
 
-    const {
-        onSubmit,
-        triggerSubmit,
-        initialRoleMappings,
-        isReadOnly,
-        [ "data-testid" ]: testId
-    } = props;
+    const { onSubmit, triggerSubmit, initialRoleMappings, isReadOnly, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
     const { isSuperOrganization } = useGetCurrentOrganizationType();
@@ -94,7 +87,8 @@ export const RoleMappingSettings: FunctionComponent<RoleMappingSettingsPropsInte
         const filterRole: RolesInterface[] | OrganizationRoleListItemInterface[] = roleList.filter(
             (role: RolesInterface) => {
                 return !(role.displayName.includes("Application/") || role.displayName.includes("Internal/"));
-            });
+            }
+        );
 
         return filterRole.map((role: OrganizationRoleListItemInterface) => {
             return {
@@ -118,13 +112,13 @@ export const RoleMappingSettings: FunctionComponent<RoleMappingSettingsPropsInte
                     handleGetRoleListError(error);
                 });
         } else {
-            getOrganizationRoles(currentOrganization.id, null, null, null)
-                .then((response: OrganizationRoleListResponseInterface) => {
+            getOrganizationRoles(currentOrganization.id, null, null, null).then(
+                (response: OrganizationRoleListResponseInterface) => {
                     setRoleList(response.Resources);
-                });
+                }
+            );
         }
-    }, [ initialRoleMappings ]);
-
+    }, [initialRoleMappings]);
 
     /**
      * Prepends `Internal/` to the role name if it does not have a domain prepended already.
@@ -135,7 +129,7 @@ export const RoleMappingSettings: FunctionComponent<RoleMappingSettingsPropsInte
      */
     const resolveRoleName = (role: string): string => {
         if (role.split("/").length === 1) {
-            return `${ ConnectionManagementConstants.INTERNAL_DOMAIN }${ role }`;
+            return `${ConnectionManagementConstants.INTERNAL_DOMAIN}${role}`;
         }
 
         return role;
@@ -152,8 +146,8 @@ export const RoleMappingSettings: FunctionComponent<RoleMappingSettingsPropsInte
         const roleParts: string[] = role.split("/");
 
         if (roleParts.length > 1) {
-            if (roleParts[ 0 ] === ConnectionManagementConstants.INTERNAL_DOMAIN.slice(0, -1)) {
-                return roleParts[ 1 ];
+            if (roleParts[0] === ConnectionManagementConstants.INTERNAL_DOMAIN.slice(0, -1)) {
+                return roleParts[1];
             }
         }
 
@@ -163,51 +157,57 @@ export const RoleMappingSettings: FunctionComponent<RoleMappingSettingsPropsInte
     return (
         <>
             <Grid.Row>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
+                <Grid.Column mobile={16} tablet={16} computer={10}>
                     <Heading as="h4">
-                        { t("console:develop.features.authenticationProvider.forms.roleMapping.heading") }
+                        {t("console:develop.features.authenticationProvider.forms.roleMapping.heading")}
                     </Heading>
                     <DynamicField
-                        bottomMargin={ false }
+                        bottomMargin={false}
                         data={
-                            initialRoleMappings ?
-                                initialRoleMappings.map((mapping: ConnectionRoleMappingInterface) => {
-                                    return {
-                                        key: resolveRoleDisplayName(mapping.localRole),
-                                        value: mapping.idpRole
-                                    };
-                                }) : []
+                            initialRoleMappings
+                                ? initialRoleMappings.map((mapping: ConnectionRoleMappingInterface) => {
+                                      return {
+                                          key: resolveRoleDisplayName(mapping.localRole),
+                                          value: mapping.idpRole
+                                      };
+                                  })
+                                : []
                         }
                         keyType="dropdown"
-                        keyData={ roleList ? getFilteredRoles() : [] }
-                        keyName={ t("console:develop.features.authenticationProvider.forms.roleMapping.keyName") }
-                        valueName={ t("console:develop.features.authenticationProvider.forms.roleMapping.valueName") }
-                        keyRequiredMessage={ t("console:develop.features.authenticationProvider.forms.roleMapping." +
-                            "validation.keyRequiredMessage") }
-                        valueRequiredErrorMessage={ t("console:develop.features.authenticationProvider.forms." +
-                            "roleMapping.validation.valueRequiredErrorMessage") }
-                        duplicateKeyErrorMsg={ t("console:develop.features.authenticationProvider.forms.roleMapping." +
-                            "validation.duplicateKeyErrorMsg") }
-                        submit={ triggerSubmit }
-                        listen={ (data: KeyValue[]) => {
+                        keyData={roleList ? getFilteredRoles() : []}
+                        keyName={t("console:develop.features.authenticationProvider.forms.roleMapping.keyName")}
+                        valueName={t("console:develop.features.authenticationProvider.forms.roleMapping.valueName")}
+                        keyRequiredMessage={t(
+                            "console:develop.features.authenticationProvider.forms.roleMapping." +
+                                "validation.keyRequiredMessage"
+                        )}
+                        valueRequiredErrorMessage={t(
+                            "console:develop.features.authenticationProvider.forms." +
+                                "roleMapping.validation.valueRequiredErrorMessage"
+                        )}
+                        duplicateKeyErrorMsg={t(
+                            "console:develop.features.authenticationProvider.forms.roleMapping." +
+                                "validation.duplicateKeyErrorMsg"
+                        )}
+                        submit={triggerSubmit}
+                        listen={(data: KeyValue[]) => {
                             if (data.length > 0) {
-                                const finalData: ConnectionRoleMappingInterface[] = data.map(
-                                    (mapping: KeyValue) => {
-                                        return {
-                                            idpRole: mapping.value,
-                                            localRole: resolveRoleName(mapping.key)
-                                        };
-                                    });
+                                const finalData: ConnectionRoleMappingInterface[] = data.map((mapping: KeyValue) => {
+                                    return {
+                                        idpRole: mapping.value,
+                                        localRole: resolveRoleName(mapping.key)
+                                    };
+                                });
 
                                 onSubmit(finalData);
                             } else {
                                 onSubmit([]);
                             }
-                        } }
-                        data-testid={ testId }
-                        readOnly={ isReadOnly }
+                        }}
+                        data-testid={testId}
+                        readOnly={isReadOnly}
                     />
-                    <Hint>{ t("console:develop.features.authenticationProvider.forms.roleMapping.hint") }</Hint>
+                    <Hint>{t("console:develop.features.authenticationProvider.forms.roleMapping.hint")}</Hint>
                 </Grid.Column>
             </Grid.Row>
         </>

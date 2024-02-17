@@ -39,14 +39,9 @@ import { Dispatch } from "redux";
 import { Grid, Icon, Modal } from "semantic-ui-react";
 import { AuthenticatorTemplateSelection } from "./steps/authenticator-template-selection";
 import { AuthenticatorSettings } from "../../../identity-providers/components/wizards/steps";
-import {
-    getFederatedAuthenticatorMetadata,
-    updateFederatedAuthenticator
-} from "../../api/connections";
+import { getFederatedAuthenticatorMetadata, updateFederatedAuthenticator } from "../../api/connections";
 import { getConnectionWizardStepIcons } from "../../configs/ui";
-import {
-    FederatedAuthenticatorMetaDataInterface
-} from "../../models/authenticators";
+import { FederatedAuthenticatorMetaDataInterface } from "../../models/authenticators";
 import {
     CommonPluggableComponentPropertyInterface,
     ConnectionInterface,
@@ -115,7 +110,6 @@ interface WizardStepInterface {
 export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizardPropsInterface> = (
     props: AddAuthenticatorWizardPropsInterface
 ): ReactElement => {
-
     const {
         closeWizard,
         currentStep,
@@ -125,32 +119,33 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
         availableTemplates,
         idpId,
         isDefaultAuthenticatorAvailable,
-        [ "data-testid" ]: testId,
-        [ "data-componentid" ]: componentId
+        ["data-testid"]: testId,
+        ["data-componentid"]: componentId
     } = props;
 
-    const [ initWizard, setInitWizard ] = useState<boolean>(true);
-    const [ wizardSteps, setWizardSteps ] = useState<WizardStepInterface[]>(undefined);
+    const [initWizard, setInitWizard] = useState<boolean>(true);
+    const [wizardSteps, setWizardSteps] = useState<WizardStepInterface[]>(undefined);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [ isSelectionHidden, setIsSelectionHidden ] = useState<boolean>(false);
-    const [ wizardState, setWizardState ] = useState<WizardStateInterface>(undefined);
-    const [ partiallyCompletedStep, setPartiallyCompletedStep ] = useState<number>(undefined);
-    const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(currentStep);
-    const [ selectedAuthenticatorMetadata, setSelectedAuthenticatorMetadata ] =
-        useState<FederatedAuthenticatorMetaInterface>(undefined);
-    const [ selectedTemplateId, setSelectedTemplateId ] = useState<string>(undefined);
-    const [ selectedManualModeOptionId, setSelectedManualModeOptionId ] = useState<string>(undefined);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ isTemplateSelected, setIsTemplateSelected ] = useState<boolean>(false);
+    const [isSelectionHidden, setIsSelectionHidden] = useState<boolean>(false);
+    const [wizardState, setWizardState] = useState<WizardStateInterface>(undefined);
+    const [partiallyCompletedStep, setPartiallyCompletedStep] = useState<number>(undefined);
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(currentStep);
+    const [selectedAuthenticatorMetadata, setSelectedAuthenticatorMetadata] = useState<
+        FederatedAuthenticatorMetaInterface
+    >(undefined);
+    const [selectedTemplateId, setSelectedTemplateId] = useState<string>(undefined);
+    const [selectedManualModeOptionId, setSelectedManualModeOptionId] = useState<string>(undefined);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [isTemplateSelected, setIsTemplateSelected] = useState<boolean>(false);
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
 
     // Triggers for each wizard step.
-    const [ submitTemplateSelection, setSubmitTemplateSelection ] = useTrigger();
-    const [ submitAuthenticator, setSubmitAuthenticator ] = useTrigger();
+    const [submitTemplateSelection, setSubmitTemplateSelection] = useTrigger();
+    const [submitAuthenticator, setSubmitAuthenticator] = useTrigger();
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     const formTopRef: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
 
@@ -214,7 +209,7 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
             setSelectedManualModeOptionId(values.manualModeOptionId);
         } else {
             setWizardState({
-                [ WizardConstants.AUTHENTICATOR ]: values
+                [WizardConstants.AUTHENTICATOR]: values
             });
         }
 
@@ -233,11 +228,10 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
      * @param identityProvider - Identity provider data.
      */
     const handleWizardFormFinish = (identityProvider: ConnectionInterface): void => {
-        const authenticator: FederatedAuthenticatorListItemInterface =
-            identityProvider?.federatedAuthenticators?.authenticators.find(
-                (a: FederatedAuthenticatorListItemInterface) =>
-                    a.authenticatorId === identityProvider?.federatedAuthenticators?.defaultAuthenticatorId
-            );
+        const authenticator: FederatedAuthenticatorListItemInterface = identityProvider?.federatedAuthenticators?.authenticators.find(
+            (a: FederatedAuthenticatorListItemInterface) =>
+                a.authenticatorId === identityProvider?.federatedAuthenticators?.defaultAuthenticatorId
+        );
 
         authenticator.properties = authenticator?.properties.filter(
             (property: CommonPluggableComponentPropertyInterface) => {
@@ -263,38 +257,53 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
         setIsSubmitting(true);
         updateFederatedAuthenticator(idpId, authenticator)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider" +
-                        ".notifications.addFederatedAuthenticator." +
-                        "success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider" +
-                        ".notifications.addFederatedAuthenticator.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.authenticationProvider" +
+                                ".notifications.addFederatedAuthenticator." +
+                                "success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.authenticationProvider" +
+                                ".notifications.addFederatedAuthenticator.success.message"
+                        )
+                    })
+                );
                 closeWizard();
             })
             .catch((error: IdentityAppsApiException) => {
                 if (error.response && error.response.data && error.response.data.description) {
                     setAlert({
-                        description: t("console:develop.features.authenticationProvider." +
-                            "notifications.addFederatedAuthenticator." +
-                            "error.description", { description: error.response.data.description }),
+                        description: t(
+                            "console:develop.features.authenticationProvider." +
+                                "notifications.addFederatedAuthenticator." +
+                                "error.description",
+                            { description: error.response.data.description }
+                        ),
                         level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider.notifications." +
-                            "addFederatedAuthenticator.error.message")
+                        message: t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "addFederatedAuthenticator.error.message"
+                        )
                     });
                     scrollToTop();
 
                     return;
                 }
                 setAlert({
-                    description: t("console:develop.features.authenticationProvider." +
-                        "notifications.addFederatedAuthenticator." +
-                        "genericError.description"),
+                    description: t(
+                        "console:develop.features.authenticationProvider." +
+                            "notifications.addFederatedAuthenticator." +
+                            "genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider." +
-                        "notifications.addFederatedAuthenticator." +
-                        "genericError.message")
+                    message: t(
+                        "console:develop.features.authenticationProvider." +
+                            "notifications.addFederatedAuthenticator." +
+                            "genericError.message"
+                    )
                 });
                 scrollToTop();
             })
@@ -307,7 +316,6 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
      * Called when modal close event is triggered.
      */
     const handleWizardClose = (): void => {
-
         // Clear data.
         setSelectedAuthenticatorMetadata(undefined);
 
@@ -331,51 +339,51 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
             case WizardSteps.TEMPLATE_SELECTION: {
                 return (
                     <AuthenticatorTemplateSelection
-                        triggerSubmit={ submitTemplateSelection }
-                        onSubmit={ (values: ConnectionInterface): void => handleWizardFormSubmit(values, false) }
-                        manualModeOptions={ manualModeOptions }
-                        authenticatorTemplates={ availableTemplates }
-                        onTemplateSelect={ (): void => setIsTemplateSelected(true) }
-                        data-testid={ `${ testId }-template-selection` }
+                        triggerSubmit={submitTemplateSelection}
+                        onSubmit={(values: ConnectionInterface): void => handleWizardFormSubmit(values, false)}
+                        manualModeOptions={manualModeOptions}
+                        authenticatorTemplates={availableTemplates}
+                        onTemplateSelect={(): void => setIsTemplateSelected(true)}
+                        data-testid={`${testId}-template-selection`}
                     />
                 );
             }
             case WizardSteps.AUTHENTICATOR_SETTINGS: {
                 return (
                     <>
-                        {
-                            selectedAuthenticatorMetadata && isEmpty(selectedAuthenticatorMetadata?.properties) && (
-                                <EmptyPlaceholder
-                                    data-componentid={ `${ componentId }-empty-placeholder` }
-                                    image={ getEmptyPlaceholderIllustrations().newList }
-                                    imageSize="tiny"
-                                    title={
-                                        t("console:develop.features.authenticationProvider.wizards.addAuthenticator." +
-                                            "steps.authenticatorSettings.emptyPlaceholder.title")
-                                    }
-                                    subtitle={ [
-                                        t("console:develop.features.authenticationProvider.wizards.addAuthenticator." +
-                                            "steps.authenticatorSettings.emptyPlaceholder.subtitles.0"),
-                                        <Trans
-                                            key="0"
-                                            i18nKey={
-                                                "console:develop.features.authenticationProvider.wizards." +
-                                                "addAuthenticator.steps.authenticatorSettings.emptyPlaceholder." +
-                                                "subtitles.1"
-                                            }
-                                        >
-                                            configured at this level. Simply click on <Code>Finish</Code>.
-                                        </Trans>
-                                    ] }
-                                />
-                            )
-                        }
+                        {selectedAuthenticatorMetadata && isEmpty(selectedAuthenticatorMetadata?.properties) && (
+                            <EmptyPlaceholder
+                                data-componentid={`${componentId}-empty-placeholder`}
+                                image={getEmptyPlaceholderIllustrations().newList}
+                                imageSize="tiny"
+                                title={t(
+                                    "console:develop.features.authenticationProvider.wizards.addAuthenticator." +
+                                        "steps.authenticatorSettings.emptyPlaceholder.title"
+                                )}
+                                subtitle={[
+                                    t(
+                                        "console:develop.features.authenticationProvider.wizards.addAuthenticator." +
+                                            "steps.authenticatorSettings.emptyPlaceholder.subtitles.0"
+                                    ),
+                                    <Trans
+                                        key="0"
+                                        i18nKey={
+                                            "console:develop.features.authenticationProvider.wizards." +
+                                            "addAuthenticator.steps.authenticatorSettings.emptyPlaceholder." +
+                                            "subtitles.1"
+                                        }
+                                    >
+                                        configured at this level. Simply click on <Code>Finish</Code>.
+                                    </Trans>
+                                ]}
+                            />
+                        )}
                         <AuthenticatorSettings
-                            metadata={ selectedAuthenticatorMetadata }
-                            initialValues={ wizardState[WizardConstants.AUTHENTICATOR] }
-                            onSubmit={ (values: ConnectionInterface): void => handleWizardFormSubmit(values, true) }
-                            triggerSubmit={ submitAuthenticator }
-                            data-testid={ `${ testId }-authenticator-settings` }
+                            metadata={selectedAuthenticatorMetadata}
+                            initialValues={wizardState[WizardConstants.AUTHENTICATOR]}
+                            onSubmit={(values: ConnectionInterface): void => handleWizardFormSubmit(values, true)}
+                            triggerSubmit={submitAuthenticator}
+                            data-testid={`${testId}-authenticator-settings`}
                         />
                     </>
                 );
@@ -407,7 +415,7 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
                 [WizardConstants.AUTHENTICATOR]: selectedTemplate.idp
             });
         }
-    }, [ selectedTemplateId ]);
+    }, [selectedTemplateId]);
 
     useEffect(() => {
         if (selectedManualModeOptionId) {
@@ -417,7 +425,7 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
                 [WizardConstants.AUTHENTICATOR]: {}
             });
         }
-    }, [ selectedManualModeOptionId ]);
+    }, [selectedManualModeOptionId]);
 
     /**
      * Called when required backend data are gathered.
@@ -427,28 +435,36 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
             return;
         }
 
-        setWizardState(merge(wizardState, {
-            [WizardConstants.AUTHENTICATOR]: {}
-        }));
-        setWizardSteps([
-            {
-                icon: getConnectionWizardStepIcons().general,
-                name: WizardSteps.TEMPLATE_SELECTION,
-                submitCallback: setSubmitTemplateSelection,
-                title: t("console:develop.features.authenticationProvider.wizards.addAuthenticator." +
-                    "steps.authenticatorSelection.title")
-            },
-            {
-                icon: getConnectionWizardStepIcons().authenticatorSettings,
-                name: WizardSteps.AUTHENTICATOR_SETTINGS,
-                submitCallback: setSubmitAuthenticator,
-                title: t("console:develop.features.authenticationProvider.wizards.addAuthenticator." +
-                    "steps.authenticatorConfiguration.title")
-            }
-        ].filter(Boolean));
+        setWizardState(
+            merge(wizardState, {
+                [WizardConstants.AUTHENTICATOR]: {}
+            })
+        );
+        setWizardSteps(
+            [
+                {
+                    icon: getConnectionWizardStepIcons().general,
+                    name: WizardSteps.TEMPLATE_SELECTION,
+                    submitCallback: setSubmitTemplateSelection,
+                    title: t(
+                        "console:develop.features.authenticationProvider.wizards.addAuthenticator." +
+                            "steps.authenticatorSelection.title"
+                    )
+                },
+                {
+                    icon: getConnectionWizardStepIcons().authenticatorSettings,
+                    name: WizardSteps.AUTHENTICATOR_SETTINGS,
+                    submitCallback: setSubmitAuthenticator,
+                    title: t(
+                        "console:develop.features.authenticationProvider.wizards.addAuthenticator." +
+                            "steps.authenticatorConfiguration.title"
+                    )
+                }
+            ].filter(Boolean)
+        );
 
         setInitWizard(false);
-    }, [ idpId ]);
+    }, [idpId]);
 
     /**
      * Sets the current wizard step to the previous on every `partiallyCompletedStep`
@@ -460,7 +476,7 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
         }
         setCurrentWizardStep(currentWizardStep - 1);
         setPartiallyCompletedStep(undefined);
-    }, [ partiallyCompletedStep ]);
+    }, [partiallyCompletedStep]);
 
     if (!wizardSteps) {
         return null;
@@ -468,84 +484,78 @@ export const AuthenticatorCreateWizard: FunctionComponent<AddAuthenticatorWizard
 
     return (
         <Modal
-            open={ true }
+            open={true}
             className="wizard identity-provider-create-wizard"
             dimmer="blurring"
-            onClose={ handleWizardClose }
-            closeOnDimmerClick={ false }
+            onClose={handleWizardClose}
+            closeOnDimmerClick={false}
             closeOnEscape
-            data-testid={ `${ testId }-modal` }
+            data-testid={`${testId}-modal`}
         >
-            <Modal.Header className="wizard-header" data-testid={ `${ testId }-modal-header` }>
-                { title }
-                { subTitle &&
-                    <Heading as="h6">{ subTitle }</Heading>
-                }
+            <Modal.Header className="wizard-header" data-testid={`${testId}-modal-header`}>
+                {title}
+                {subTitle && <Heading as="h6">{subTitle}</Heading>}
             </Modal.Header>
-            <Modal.Content className="steps-container" data-testid={ `${ testId }-modal-content-1` }>
+            <Modal.Content className="steps-container" data-testid={`${testId}-modal-content-1`}>
                 <Steps.Group
-                    header={ t("console:develop.features.authenticationProvider." +
-                    "wizards.addAuthenticator.header") }
-                    current={ currentWizardStep }>
-                    { wizardSteps.map((step: WizardStepInterface, index: number) => (
-                        <Steps.Step
-                            key={ index }
-                            icon={ step.icon }
-                            title={ step.title }
-                        />
-                    )) }
+                    header={t("console:develop.features.authenticationProvider." + "wizards.addAuthenticator.header")}
+                    current={currentWizardStep}
+                >
+                    {wizardSteps.map((step: WizardStepInterface, index: number) => (
+                        <Steps.Step key={index} icon={step.icon} title={step.title} />
+                    ))}
                 </Steps.Group>
             </Modal.Content>
-            <Modal.Content className="content-container" scrolling data-testid={ `${ testId }-modal-content-2` }>
-                { alert && alertComponent }
-                <div ref={ formTopRef } />
-                { resolveStepContent(currentWizardStep) as any }
+            <Modal.Content className="content-container" scrolling data-testid={`${testId}-modal-content-2`}>
+                {alert && alertComponent}
+                <div ref={formTopRef} />
+                {resolveStepContent(currentWizardStep) as any}
             </Modal.Content>
-            <Modal.Actions data-testid={ `${ testId }-modal-actions` }>
+            <Modal.Actions data-testid={`${testId}-modal-actions`}>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
                                 floated="left"
-                                onClick={ handleWizardClose }
+                                onClick={handleWizardClose}
                                 data-testid="add-connection-modal-cancel-button"
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                            { currentWizardStep < wizardSteps.length - 1 && (
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            {currentWizardStep < wizardSteps.length - 1 && (
                                 <PrimaryButton
                                     floated="right"
-                                    onClick={ navigateToNext }
-                                    disabled={ !isTemplateSelected }
+                                    onClick={navigateToNext}
+                                    disabled={!isTemplateSelected}
                                     data-testid="add-connection-modal-next-button"
                                 >
-                                    { t("console:develop.features.authenticationProvider.wizards.buttons.next") }
-                                    <Icon name="arrow right"/>
+                                    {t("console:develop.features.authenticationProvider.wizards.buttons.next")}
+                                    <Icon name="arrow right" />
                                 </PrimaryButton>
-                            ) }
-                            { currentWizardStep === wizardSteps.length - 1 && (
+                            )}
+                            {currentWizardStep === wizardSteps.length - 1 && (
                                 <PrimaryButton
                                     floated="right"
-                                    onClick={ navigateToNext }
+                                    onClick={navigateToNext}
                                     data-testid="add-connection-modal-finish-button"
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
                                 >
-                                    { t("console:develop.features.authenticationProvider.wizards.buttons.finish") }
+                                    {t("console:develop.features.authenticationProvider.wizards.buttons.finish")}
                                 </PrimaryButton>
-                            ) }
-                            { currentWizardStep > 0 && (
+                            )}
+                            {currentWizardStep > 0 && (
                                 <LinkButton
                                     floated="right"
-                                    onClick={ navigateToPrevious }
-                                    data-testid={ `${ testId }-modal-previous-button` }>
-                                    <Icon name="arrow left"/>
-                                    { t("console:develop.features.authenticationProvider" +
-                                        ".wizards.buttons.previous") }
+                                    onClick={navigateToPrevious}
+                                    data-testid={`${testId}-modal-previous-button`}
+                                >
+                                    <Icon name="arrow left" />
+                                    {t("console:develop.features.authenticationProvider" + ".wizards.buttons.previous")}
                                 </LinkButton>
-                            ) }
+                            )}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

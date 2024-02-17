@@ -19,6 +19,8 @@
 import { IdentityAppsError } from "@wso2is/core/errors";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { ModalWithSidePanel, TierLimitReachErrorModal } from "@wso2is/feature-components.common";
+import { EventPublisher } from "@wso2is/feature-utils.common";
 import { GenericIcon, Heading, LinkButton, PrimaryButton, useWizardAlert } from "@wso2is/react-components";
 import { ContentLoader } from "@wso2is/react-components/src/components/loader/content-loader";
 import { AxiosError, AxiosResponse } from "axios";
@@ -29,14 +31,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid } from "semantic-ui-react";
-import {
-    OrganizationEnterpriseConnectionCreateWizardContent
-} from "./organization-enterprise-connection-create-wizard-content";
-import {
-    EventPublisher,
-    ModalWithSidePanel,
-    TierLimitReachErrorModal
-} from "../../../../core";
+import { OrganizationEnterpriseConnectionCreateWizardContent } from "./organization-enterprise-connection-create-wizard-content";
 import { createConnection } from "../../../api/connections";
 import { getConnectionIcons } from "../../../configs/ui";
 import { ConnectionManagementConstants } from "../../../constants/connection-constants";
@@ -49,9 +44,9 @@ import {
 /**
  * Proptypes for the Organization Enterprise Authentication Provider Create Wizard.
  */
-interface OrganizationEnterpriseConnectionCreateWizardPropsInterface extends IdentifiableComponentInterface,
-    GenericConnectionCreateWizardPropsInterface {
-}
+interface OrganizationEnterpriseConnectionCreateWizardPropsInterface
+    extends IdentifiableComponentInterface,
+        GenericConnectionCreateWizardPropsInterface {}
 
 /**
  * Proptypes for the Authentication Wizard Form values.
@@ -88,12 +83,9 @@ export interface OrganizationEnterpriseConnectionCreateWizardFormErrorValidation
  *
  * @returns OrganizationEnterpriseConnectionCreateWizard component.
  */
-export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
-    OrganizationEnterpriseConnectionCreateWizardPropsInterface
-> = (
+export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<OrganizationEnterpriseConnectionCreateWizardPropsInterface> = (
     props: OrganizationEnterpriseConnectionCreateWizardPropsInterface
 ): ReactElement => {
-
     const {
         onWizardClose,
         onIDPCreate,
@@ -108,13 +100,13 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
 
     const { t } = useTranslation();
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
-    const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(currentStep);
-    const [ wizStep, setWizStep ] = useState<number>(0);
-    const [ totalStep, setTotalStep ] = useState<number>(0);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ openLimitReachedModal, setOpenLimitReachedModal ] = useState<boolean>(false);
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(currentStep);
+    const [wizStep, setWizStep] = useState<number>(0);
+    const [totalStep, setTotalStep] = useState<number>(0);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [openLimitReachedModal, setOpenLimitReachedModal] = useState<boolean>(false);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -123,7 +115,7 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
      */
     useEffect(() => {
         setCurrentWizardStep(wizStep + 1);
-    }, [ wizStep ]);
+    }, [wizStep]);
 
     /**
      * Creates a new identity provider.
@@ -131,7 +123,6 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
      * @param identityProvider - Identity provider object.
      */
     const createNewIdentityProvider = (identityProvider: ConnectionInterface): void => {
-
         setIsSubmitting(true);
 
         createConnection(identityProvider)
@@ -140,13 +131,18 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
                     type: componentId
                 });
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                        "success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                        "success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.authenticationProvider.notifications.addIDP." +
+                                "success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.authenticationProvider.notifications.addIDP." + "success.message"
+                        )
+                    })
+                );
 
                 // The created resource's id is sent as a location header.
                 // If that's available, navigate to the edit page.
@@ -165,9 +161,7 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
             .catch((error: AxiosError) => {
                 const identityAppsError: IdentityAppsError = ConnectionManagementConstants.ERROR_CREATE_LIMIT_REACHED;
 
-                if (error.response.status === 403 &&
-                    error?.response?.data?.code ===
-                    identityAppsError.getErrorCode()) {
+                if (error.response.status === 403 && error?.response?.data?.code === identityAppsError.getErrorCode()) {
                     setOpenLimitReachedModal(true);
 
                     return;
@@ -175,29 +169,34 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
 
                 if (error.response && error.response.data && error.response.data.description) {
                     setAlert({
-                        description: t("console:develop.features.authenticationProvider.notifications." +
-                            "addIDP.error.description",
-                        { description: error.response.data.description }),
+                        description: t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "addIDP.error.description",
+                            { description: error.response.data.description }
+                        ),
                         level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider.notifications." +
-                            "addIDP.error.message")
+                        message: t(
+                            "console:develop.features.authenticationProvider.notifications." + "addIDP.error.message"
+                        )
                     });
 
                     return;
                 }
 
                 setAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                        "genericError.description"),
+                    description: t(
+                        "console:develop.features.authenticationProvider.notifications.addIDP." +
+                            "genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                        "genericError.message")
+                    message: t(
+                        "console:develop.features.authenticationProvider.notifications.addIDP." + "genericError.message"
+                    )
                 });
             })
             .finally(() => {
                 setIsSubmitting(false);
-            })
-        ;
+            });
     };
 
     /**
@@ -206,24 +205,21 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
      * @param identityProvider - Identity provider data.
      */
     const handleWizardFormFinish = (identityProvider: ConnectionInterface): void => {
-
         const connector: OutboundProvisioningConnectorInterface =
             identityProvider?.provisioning?.outboundConnectors?.connectors[0];
 
-        const isGoogleConnector: boolean = get(connector,
-            ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME) ===
+        const isGoogleConnector: boolean =
+            get(connector, ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME) ===
             ConnectionManagementConstants.PROVISIONING_CONNECTOR_GOOGLE;
 
         // If the outbound connector is Google, remove the displayName from the connector.
         if (connector && isGoogleConnector) {
-            delete connector[
-                ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME
-            ];
+            delete connector[ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME];
         }
 
-        delete (identityProvider.certificate);
-        delete (identityProvider.claims);
-        delete (identityProvider.provisioning);
+        delete identityProvider.certificate;
+        delete identityProvider.claims;
+        delete identityProvider.provisioning;
 
         // Use description from template if the user description is not given.
         identityProvider.description = identityProvider.description || template.description;
@@ -235,7 +231,6 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
      * Called when modal close event is triggered.
      */
     const handleWizardClose = (): void => {
-
         // Trigger the close method from props.
         onWizardClose();
     };
@@ -254,10 +249,7 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
      *
      * @param values - Form values.
      */
-    const onSubmitWizard = (
-        values: OrganizationEnterpriseConnectionCreateWizardFormValuesInterface
-    ): void => {
-
+    const onSubmitWizard = (values: OrganizationEnterpriseConnectionCreateWizardFormValuesInterface): void => {
         const identityProvider: ConnectionInterface = { ...template.idp };
 
         identityProvider.name = values.name.toString();
@@ -275,59 +267,57 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
      * @returns Resolved step wizard actions.
      */
     const resolveStepActions = (): ReactElement => {
-
         return (
             <Grid>
-                <Grid.Row column={ 1 }>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                <Grid.Row column={1}>
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
                         <LinkButton
                             floated="left"
-                            onClick={ handleWizardClose }
-                            data-testid={ `${componentId}-modal-cancel-button` }
+                            onClick={handleWizardClose}
+                            data-testid={`${componentId}-modal-cancel-button`}
                         >
-                            { t("common:cancel") }
+                            {t("common:cancel")}
                         </LinkButton>
                     </Grid.Column>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                        { currentWizardStep !== totalStep ? (
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
+                        {currentWizardStep !== totalStep ? (
                             <PrimaryButton
                                 floated="right"
-                                onClick={ () => {
+                                onClick={() => {
                                     submitForm();
-                                } }
-                                data-testid={ `${componentId}-modal-finish-button` }
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
+                                }}
+                                data-testid={`${componentId}-modal-finish-button`}
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
                             >
-                                { t("console:develop.features.authenticationProvider.wizards.buttons.next") }
+                                {t("console:develop.features.authenticationProvider.wizards.buttons.next")}
                             </PrimaryButton>
                         ) : (
                             <>
                                 <PrimaryButton
                                     floated="right"
-                                    onClick={ () => {
+                                    onClick={() => {
                                         submitForm();
-                                    } }
-                                    data-testid={ `${componentId}-modal-finish-button` }
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
+                                    }}
+                                    data-testid={`${componentId}-modal-finish-button`}
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
                                 >
-                                    { t("console:develop.features.authenticationProvider.wizards.buttons.finish") }
+                                    {t("console:develop.features.authenticationProvider.wizards.buttons.finish")}
                                 </PrimaryButton>
                             </>
-                        ) }
-                        {
-                            currentWizardStep > 1 &&
-                            (<LinkButton
+                        )}
+                        {currentWizardStep > 1 && (
+                            <LinkButton
                                 floated="right"
-                                onClick={ () => {
+                                onClick={() => {
                                     triggerPreviousForm();
-                                } }
-                                data-testid={ `${componentId}-modal-previous-button` }
+                                }}
+                                data-testid={`${componentId}-modal-previous-button`}
                             >
-                                { t("console:develop.features.authenticationProvider.wizards.buttons.previous") }
-                            </LinkButton>)
-                        }
+                                {t("console:develop.features.authenticationProvider.wizards.buttons.previous")}
+                            </LinkButton>
+                        )}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -340,29 +330,25 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
      * @returns Help panel component.
      */
     const renderHelpPanel = (): ReactElement => {
-
         // Return null when `showHelpPanel` is false or `wizardHelp` is not defined in `selectedTemplate` object.
         if (!template?.content?.wizardHelp || currentWizardStep === 0) {
             return null;
         }
 
-        const {
-            wizardHelp: WizardHelp
-        } = template?.content;
+        const { wizardHelp: WizardHelp } = template?.content;
 
         return (
             <ModalWithSidePanel.SidePanel>
                 <ModalWithSidePanel.Header className="wizard-header help-panel-header muted">
                     <div className="help-panel-header-text">
-                        {
-                            t("console:develop.features.authenticationProvider.templates" +
-                                ".facebook.wizardHelp.heading")
-                        }
+                        {t(
+                            "console:develop.features.authenticationProvider.templates" + ".facebook.wizardHelp.heading"
+                        )}
                     </div>
                 </ModalWithSidePanel.Header>
                 <ModalWithSidePanel.Content>
-                    <Suspense fallback={ <ContentLoader/> }>
-                        <WizardHelp/>
+                    <Suspense fallback={<ContentLoader />}>
+                        <WizardHelp />
                     </Suspense>
                 </ModalWithSidePanel.Content>
             </ModalWithSidePanel.SidePanel>
@@ -381,81 +367,71 @@ export const OrganizationEnterpriseConnectionCreateWizard: FunctionComponent<
 
     return (
         <>
-            { openLimitReachedModal &&
-                (<TierLimitReachErrorModal
-                    actionLabel={ t(
+            {openLimitReachedModal && (
+                <TierLimitReachErrorModal
+                    actionLabel={t(
+                        "console:develop.features.idp.notifications." + "tierLimitReachedError.emptyPlaceholder.action"
+                    )}
+                    handleModalClose={handleLimitReachedModalClose}
+                    header={t("console:develop.features.idp.notifications.tierLimitReachedError.heading")}
+                    description={t(
                         "console:develop.features.idp.notifications." +
-                        "tierLimitReachedError.emptyPlaceholder.action"
-                    ) }
-                    handleModalClose={ handleLimitReachedModalClose }
-                    header={ t(
-                        "console:develop.features.idp.notifications.tierLimitReachedError.heading"
-                    ) }
-                    description={ t(
-                        "console:develop.features.idp.notifications." +
-                        "tierLimitReachedError.emptyPlaceholder.subtitles"
-                    ) }
-                    message={ t(
-                        "console:develop.features.idp.notifications." +
-                        "tierLimitReachedError.emptyPlaceholder.title"
-                    ) }
-                    openModal={ openLimitReachedModal }
-                />) }
+                            "tierLimitReachedError.emptyPlaceholder.subtitles"
+                    )}
+                    message={t(
+                        "console:develop.features.idp.notifications." + "tierLimitReachedError.emptyPlaceholder.title"
+                    )}
+                    openModal={openLimitReachedModal}
+                />
+            )}
             <ModalWithSidePanel
-                open={ !openLimitReachedModal }
+                open={!openLimitReachedModal}
                 className="wizard identity-provider-create-wizard"
                 dimmer="blurring"
-                onClose={ handleWizardClose }
-                closeOnDimmerClick={ false }
+                onClose={handleWizardClose}
+                closeOnDimmerClick={false}
                 closeOnEscape
-                data-testid={ `${componentId}-modal` }
+                data-testid={`${componentId}-modal`}
             >
                 <ModalWithSidePanel.MainPanel>
-                    <ModalWithSidePanel.Header
-                        className="wizard-header"
-                        data-testid={ `${componentId}-modal-header` }
-                    >
+                    <ModalWithSidePanel.Header className="wizard-header" data-testid={`${componentId}-modal-header`}>
                         <div className="display-flex">
                             <GenericIcon
-                                icon={ getConnectionIcons().organizationSSO }
+                                icon={getConnectionIcons().organizationSSO}
                                 size="mini"
                                 transparent
                                 spaced="right"
-                                data-testid={ `${componentId}-image` }
+                                data-testid={`${componentId}-image`}
                             />
                             <div className="ml-1">
-                                { title }
-                                { subTitle &&
-                                    (<Heading as="h6">
-                                        { subTitle }
-                                    </Heading>)
-                                }
+                                {title}
+                                {subTitle && <Heading as="h6">{subTitle}</Heading>}
                             </div>
                         </div>
                     </ModalWithSidePanel.Header>
                     <ModalWithSidePanel.Content
                         className="content-container"
-                        data-testid={ `${componentId}-modal-content` }
+                        data-testid={`${componentId}-modal-content`}
                     >
-                        { alert && alertComponent }
+                        {alert && alertComponent}
                         <OrganizationEnterpriseConnectionCreateWizardContent
-                            onSubmit={ onSubmitWizard }
-                            triggerSubmission={ (submitFunctionCb: () => void) => {
+                            onSubmit={onSubmitWizard}
+                            triggerSubmission={(submitFunctionCb: () => void) => {
                                 submitForm = submitFunctionCb;
-                            } }
-                            triggerPrevious={ (previousFunctionCb: () => void) => {
+                            }}
+                            triggerPrevious={(previousFunctionCb: () => void) => {
                                 triggerPreviousForm = previousFunctionCb;
-                            } }
-                            changePageNumber={ (step: number) => setWizStep(step) }
-                            setTotalPage={ (pageNumber: number) => setTotalStep(pageNumber) }
-                            template={ template }
+                            }}
+                            changePageNumber={(step: number) => setWizStep(step)}
+                            setTotalPage={(pageNumber: number) => setTotalStep(pageNumber)}
+                            template={template}
                         />
                     </ModalWithSidePanel.Content>
-                    <ModalWithSidePanel.Actions data-testid={ `${componentId}-modal-actions` }>
-                        { resolveStepActions() }
+                    <ModalWithSidePanel.Actions data-testid={`${componentId}-modal-actions`}>
+                        {resolveStepActions()}
                     </ModalWithSidePanel.Actions>
                 </ModalWithSidePanel.MainPanel>
-                { renderHelpPanel() }
+                {renderHelpPanel()}
             </ModalWithSidePanel>
         </>
     );

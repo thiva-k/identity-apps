@@ -16,12 +16,11 @@
  * under the License.
  */
 
-import {
-    VerticalStepper,
-    VerticalStepperStepInterface
-} from "@wso2is/common/src";
+import { VerticalStepper, VerticalStepperStepInterface } from "@wso2is/common/src";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { FeatureConfigInterface } from "@wso2is/feature-models.common";
+import { AppState } from "@wso2is/feature-store.common";
 import { GenericIcon, Heading, Link, PageHeader, Text } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useMemo, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -29,14 +28,11 @@ import { useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
 import CustomizeStepsIllustration from "./assets/customize-steps.png";
-import ApplicationSelectionModal
-    from "../../../../../extensions/components/shared/application-selection-modal";
+import ApplicationSelectionModal from "../../../../../extensions/components/shared/application-selection-modal";
 import {
     ConnectionInterface,
     ConnectionTemplateInterface
 } from "../../../../../features/connections/models/connection";
-import { FeatureConfigInterface } from "../../../../core/models";
-import { AppState } from "../../../../core/store";
 
 /**
  * Prop types of the component.
@@ -61,22 +57,19 @@ interface AppleAuthenticatorQuickStartPropsInterface extends IdentifiableCompone
 const AppleAuthenticatorQuickStart: FunctionComponent<AppleAuthenticatorQuickStartPropsInterface> = (
     props: AppleAuthenticatorQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const isApplicationReadAccessAllowed: boolean = useMemo(() => (
-        hasRequiredScopes(
-            featureConfig?.applications, featureConfig?.applications?.scopes?.read, allowedScopes)
-    ), [ featureConfig, allowedScopes ]);
+    const isApplicationReadAccessAllowed: boolean = useMemo(
+        () => hasRequiredScopes(featureConfig?.applications, featureConfig?.applications?.scopes?.read, allowedScopes),
+        [featureConfig, allowedScopes]
+    );
 
     /**
      * Vertical Stepper steps.
@@ -91,9 +84,14 @@ const AppleAuthenticatorQuickStart: FunctionComponent<AppleAuthenticatorQuickSta
                                 "extensions:develop.identityProviders.apple.quickStart.steps.selectApplication.content"
                             }
                         >
-                            Choose the { isApplicationReadAccessAllowed ? (
-                                <Link external={ false } onClick={ () => setShowApplicationModal(true) }>
-                                application </Link>) : "application" }
+                            Choose the{" "}
+                            {isApplicationReadAccessAllowed ? (
+                                <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                                    application{" "}
+                                </Link>
+                            ) : (
+                                "application"
+                            )}
                             for which you want to set up Apple login.
                         </Trans>
                     </Text>
@@ -106,14 +104,16 @@ const AppleAuthenticatorQuickStart: FunctionComponent<AppleAuthenticatorQuickSta
                 <>
                     <Text>
                         <Trans
-                            i18nKey={ "extensions:develop.identityProviders.apple.quickStart.steps" +
-                            ".selectDefaultConfig.content" }
+                            i18nKey={
+                                "extensions:develop.identityProviders.apple.quickStart.steps" +
+                                ".selectDefaultConfig.content"
+                            }
                         >
-                            Go to <strong>Login Flow</strong> tab and click on <strong>Add Apple login
-                            </strong> to configure a Apple login flow.
+                            Go to <strong>Login Flow</strong> tab and click on <strong>Add Apple login</strong> to
+                            configure a Apple login flow.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
@@ -126,13 +126,11 @@ const AppleAuthenticatorQuickStart: FunctionComponent<AppleAuthenticatorQuickSta
             stepContent: (
                 <>
                     <Text>
-                        <Trans
-                            i18nKey="extensions:develop.identityProviders.apple.quickStart.steps.customizeFlow.content"
-                        >
+                        <Trans i18nKey="extensions:develop.identityProviders.apple.quickStart.steps.customizeFlow.content">
                             Continue to configure the login flow as required.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ CustomizeStepsIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={CustomizeStepsIllustration} size="huge" />
                 </>
             ),
             stepTitle: t("extensions:develop.identityProviders.apple.quickStart.steps.customizeFlow.heading")
@@ -141,46 +139,35 @@ const AppleAuthenticatorQuickStart: FunctionComponent<AppleAuthenticatorQuickSta
 
     return (
         <>
-            <Grid data-componentid={ componentId } className="authenticator-quickstart-content">
+            <Grid data-componentid={componentId} className="authenticator-quickstart-content">
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
+                    <Grid.Column width={16}>
                         <PageHeader
                             className="mb-2"
-                            title={ t("extensions:develop.identityProviders.apple.quickStart.heading") }
-                            imageSpaced={ false }
-                            bottomMargin={ false }
+                            title={t("extensions:develop.identityProviders.apple.quickStart.heading")}
+                            imageSpaced={false}
+                            bottomMargin={false}
                         />
                         <Heading subHeading as="h6">
-                            { t("extensions:develop.identityProviders.apple.quickStart.subHeading") }
+                            {t("extensions:develop.identityProviders.apple.quickStart.subHeading")}
                         </Heading>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
-                        <VerticalStepper
-                            alwaysOpen
-                            isSidePanelOpen
-                            stepContent={ steps }
-                            isNextEnabled={ true }
-                        />
+                    <Grid.Column width={16}>
+                        <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ componentId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={
-                            t("extensions:develop.identityProviders.apple.quickStart.addLoginModal.heading")
-                        }
-                        subHeading={
-                            t("extensions:develop.identityProviders.apple.quickStart.addLoginModal.subHeading")
-                        }
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${componentId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.apple.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.apple.quickStart.addLoginModal.subHeading")}
+                />
+            )}
         </>
     );
 };
