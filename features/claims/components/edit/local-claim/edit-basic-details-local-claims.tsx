@@ -66,7 +66,6 @@ import { useValidationConfigData } from "../../../../validation/api";
 import { ValidationFormInterface } from "../../../../validation/models";
 import { deleteAClaim, getExternalClaims, updateAClaim } from "../../../api";
 import { ClaimManagementConstants } from "../../../constants";
-import WindowsDesktopApplicationCreateWizardHelp from "features/applications/data/application-templates/templates/windows-desktop-application/create-wizard-help";
 
 /**
  * Prop types for `EditBasicDetailsLocalClaims` component
