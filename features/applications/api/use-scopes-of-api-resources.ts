@@ -18,11 +18,13 @@
 
 import { HttpMethods } from "@wso2is/core/models";
 import { store } from "@wso2is/feature-store.common";
-import useRequest, {
+import { AxiosRequestConfig } from "axios";
+import  {
     RequestErrorInterface,
     RequestResultInterface
-} from "apps/console/src/features/core/hooks/use-request";
-import { AxiosRequestConfig } from "axios";
+} from "../../feature-hooks.common";
+import useRequest from "../../feature-hooks.common/use-request";
+
 import { AuthorizedPermissionListItemInterface } from "../models/api-authorization";
 
 /**

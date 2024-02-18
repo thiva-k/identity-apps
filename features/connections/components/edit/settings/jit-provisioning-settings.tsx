@@ -25,11 +25,11 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { SimpleUserStoreListItemInterface } from "../../../../applications/models";
+import { useGetCurrentOrganizationType } from "../../../../feature-organizations.common/hooks/use-get-organization-type";
 import { getUserStoreList } from "../../../../userstores/api";
 import { updateJITProvisioningConfigs } from "../../../api/connections";
 import { JITProvisioningResponseInterface } from "../../../models/connection";
 import { JITProvisioningConfigurationsForm } from "../forms";
-import { useGetCurrentOrganizationType } from "apps/console/src/features/organizations/hooks/use-get-organization-type";
 
 /**
  * Proptypes for the identity provider general details component.

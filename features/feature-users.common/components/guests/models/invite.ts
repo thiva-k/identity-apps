@@ -17,7 +17,7 @@
  */
 
 import { RolesInterface } from "@wso2is/core/models";
-import { InviteUserStatus } from "apps/console/src/extensions/components/users/models";
+import { InviteUserStatus } from "extensions/components/users/models";
 import { ReactNode } from "react";
 
 /**

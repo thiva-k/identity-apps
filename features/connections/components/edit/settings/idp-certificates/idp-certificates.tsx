@@ -36,7 +36,6 @@ import {
     SwitcherOptionProps
 } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
-import { IdentityProviderManagementConstants } from "apps/console/src/features/identity-providers/constants";
 import React, { FunctionComponent, ReactElement, ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,6 +45,7 @@ import { AddIdpCertificateModal } from "./add-idp-certificate-modal";
 import { EmptyCertificatesPlaceholder } from "./empty-certificates-placeholder";
 import { IdpCertificatesList } from "./idp-cetificates-list";
 import { commonConfig } from "../../../../../../extensions/configs";
+import { IdentityProviderManagementConstants } from "../../../../../identity-providers/constants";
 import { updateIDPCertificate } from "../../../../api/connections";
 import { ConnectionManagementConstants } from "../../../../constants/connection-constants";
 import { CertificatePatchRequestInterface, ConnectionInterface } from "../../../../models/connection";

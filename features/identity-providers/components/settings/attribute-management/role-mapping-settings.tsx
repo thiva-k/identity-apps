@@ -26,12 +26,13 @@ import { getRolesList } from "@wso2is/feature-roles.common/api/roles";
 import { AppState } from "@wso2is/feature-store.common";
 import { DynamicField, KeyValue } from "@wso2is/forms";
 import { Heading, Hint } from "@wso2is/react-components";
-import { useGetCurrentOrganizationType } from "apps/console/src/features/organizations/hooks/use-get-organization-type";
 import { AxiosError, AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
+import { useGetCurrentOrganizationType }
+ from "../../../../feature-organizations.common/hooks/use-get-organization-type";
 import { IdentityProviderConstants } from "../../../constants";
 import { IdentityProviderRoleMappingInterface } from "../../../models";
 import { handleGetRoleListError } from "../../utils";

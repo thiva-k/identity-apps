@@ -52,9 +52,9 @@ import {
     ResourceTab,
     ResourceTabPaneInterface
 } from "@wso2is/react-components";
-import { UsersConstants } from "apps/console/src/extensions/components/users/constants";
-import { InvitationStatus } from "apps/console/src/extensions/components/users/models";
 import { AxiosError, AxiosResponse } from "axios";
+import { UsersConstants } from "extensions/components/users/constants";
+import { InvitationStatus } from "extensions/components/users/models";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";

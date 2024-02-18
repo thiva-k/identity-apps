@@ -32,11 +32,6 @@ import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { AppState } from "@wso2is/feature-store.common";
 import { EventPublisher } from "@wso2is/feature-utils.common";
 import { ConfirmationModal, ContentLoader, EmphasizedSegment } from "@wso2is/react-components";
-import { useOIDCScopesList } from "apps/console/src/features/oidc-scopes/api/oidc-scopes";
-import {
-    OIDCScopesClaimsListInterface,
-    OIDCScopesListInterface
-} from "apps/console/src/features/oidc-scopes/models/oidc-scopes";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
 import sortBy from "lodash-es/sortBy";
@@ -54,6 +49,11 @@ import { applicationConfig } from "../../../../../extensions";
 import { AccessControlConstants } from "../../../../access-control/constants/access-control";
 import { getAllExternalClaims, getAllLocalClaims, getDialects } from "../../../../claims/api";
 import { SubjectAttributeListItem } from "../../../../identity-providers/components/settings";
+import { useOIDCScopesList } from "../../../../oidc-scopes/api/oidc-scopes";
+import {
+    OIDCScopesClaimsListInterface,
+    OIDCScopesListInterface
+} from "../../../../oidc-scopes/models/oidc-scopes";
 import { updateAuthProtocolConfig, updateClaimConfiguration } from "../../../api/";
 import {
     AppClaimInterface,

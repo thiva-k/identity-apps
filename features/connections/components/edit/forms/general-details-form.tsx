@@ -22,12 +22,12 @@ import { AppState } from "@wso2is/feature-store.common";
 import { Field, Form } from "@wso2is/form";
 import { EmphasizedSegment, Heading } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
-import { IdentityProviderManagementConstants } from "apps/console/src/features/identity-providers/constants";
 import React, { FunctionComponent, ReactElement, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Grid } from "semantic-ui-react";
 import { identityProviderConfig } from "../../../../../extensions";
+import { IdentityProviderManagementConstants } from "../../../../identity-providers/constants";
 import { AuthenticatorManagementConstants } from "../../../constants/autheticator-constants";
 import { ConnectionManagementConstants } from "../../../constants/connection-constants";
 import {

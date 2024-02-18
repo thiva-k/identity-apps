@@ -36,7 +36,6 @@ import {
     SegmentedAccordionTitleActionInterface,
     useDocumentation
 } from "@wso2is/react-components";
-import { OIDCScopesClaimsListInterface } from "apps/console/src/features/oidc-scopes";
 import { IdentifiableComponentInterface } from "modules/core/src/models";
 import React, {
     ChangeEvent,
@@ -61,6 +60,7 @@ import {
 } from "./attribute-settings";
 import { applicationConfig } from "../../../../../extensions";
 import { ClaimManagementConstants } from "../../../../claims/constants";
+import { OIDCScopesClaimsListInterface } from "../../../../oidc-scopes";
 import {
     ClaimConfigurationInterface,
     ClaimMappingInterface,

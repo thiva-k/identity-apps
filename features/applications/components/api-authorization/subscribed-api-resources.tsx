@@ -32,8 +32,6 @@ import {
     SegmentedAccordion,
     SegmentedAccordionTitleActionInterface
 } from "@wso2is/react-components";
-import { getEmptyPlaceholderIllustrations, history } from "apps/console/src/features/core";
-import { RequestErrorInterface } from "apps/console/src/features/core/hooks/use-request";
 import { AxiosError } from "axios";
 import React, { Fragment, FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -41,6 +39,9 @@ import { Form, Grid, Header, Icon, Input } from "semantic-ui-react";
 import { ScopeForm } from "./scope-form";
 import { APIResourcesConstants } from "../../../api-resources/constants";
 import { APIResourceInterface } from "../../../api-resources/models";
+import { getEmptyPlaceholderIllustrations } from "../../../feature-configs.common";
+import { history } from "../../../feature-helpers.common";
+import { RequestErrorInterface } from "../../../feature-hooks.common";
 import { Policy } from "../../constants/api-authorization";
 import { ApplicationTemplateIdTypes } from "../../models";
 import { AuthorizedAPIListItemInterface, AuthorizedPermissionListItemInterface } from "../../models/api-authorization";

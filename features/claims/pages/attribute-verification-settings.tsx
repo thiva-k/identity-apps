@@ -25,7 +25,6 @@ import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { AppState } from "@wso2is/feature-store.common";
 import { Field, Form } from "@wso2is/form";
 import { ContentLoader, EmphasizedSegment, PageLayout } from "@wso2is/react-components";
-import { ServerConfigurationsConstants } from "apps/console/src/features/server-configurations/constants";
 import { AxiosError } from "axios";
 import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
@@ -33,6 +32,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { getConnectorDetails, updateGovernanceConnector } from "../../server-configurations/api";
+import { ServerConfigurationsConstants } from "../../server-configurations/constants";
 import {
     ConnectorPropertyInterface,
     GovernanceConnectorInterface,

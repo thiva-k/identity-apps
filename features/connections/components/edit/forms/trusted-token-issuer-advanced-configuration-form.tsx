@@ -20,12 +20,12 @@ import { AlertLevels, ClaimDialect, ExternalClaim, IdentifiableComponentInterfac
 import { addAlert } from "@wso2is/core/store";
 import { Field, Form } from "@wso2is/form";
 import { Code, Hint, Message, Text } from "@wso2is/react-components";
-import { getDialects, getExternalClaims } from "apps/console/src/features/claims/api";
 import { IdentityAppsApiException } from "modules/core/dist/types/exceptions";
 import React, { Dispatch, FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dropdown, DropdownItemProps, DropdownProps, Header } from "semantic-ui-react";
+import { getDialects, getExternalClaims } from "../../../../claims/api";
 import { ImplicitAssociaionConfigInterface } from "../../../models/connection";
 
 const FORM_ID: string = "idp-implicit-association-form";

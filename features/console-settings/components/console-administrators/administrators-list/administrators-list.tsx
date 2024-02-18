@@ -26,8 +26,7 @@ import { history } from "@wso2is/feature-helpers.common";
 import { UserBasicInterface, UserRoleInterface } from "@wso2is/feature-models.common";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { EmptyPlaceholder, ListLayout, PrimaryButton } from "@wso2is/react-components";
-import { UsersConstants } from "apps/console/src/extensions/components/users/constants/users";
-import { UserStoreDropdownItem } from "apps/console/src/features/userstores/models";
+import { UsersConstants } from "extensions/components/users/constants/users";
 import React, { ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
@@ -36,6 +35,7 @@ import { Dropdown, DropdownItemProps, DropdownProps, Icon, PaginationProps } fro
 import AdministratorsTable from "./administrators-table";
 import { AccessControlConstants } from "../../../../access-control/constants/access-control";
 import { PRIMARY_USERSTORE } from "../../../../userstores/constants";
+import { UserStoreDropdownItem } from "../../../../userstores/models";
 import useAdministrators from "../../../hooks/use-administrators";
 import useBulkAssignAdministratorRoles from "../../../hooks/use-bulk-assign-user-roles";
 import AddExistingUserWizard from "../add-existing-user-wizard/add-existing-user-wizard";

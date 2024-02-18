@@ -31,7 +31,7 @@ import { getRolesList } from "@wso2is/feature-roles.common/api";
 import { updateIDPRoleMappings } from "../../../api";
 import { IdentityProviderRolesInterface } from "../../../models";
 import { handleGetRoleListError, handleUpdateIDPRoleMappingsError } from "../../utils";
-import { useGetCurrentOrganizationType } from "apps/console/src/features/organizations/hooks/use-get-organization-type";
+import { useGetCurrentOrganizationType } from "../../../../feature-organizations.common/hooks/use-get-organization-type";
 
 interface OutboundProvisioningRolesPropsInterface extends TestableComponentInterface {
     idpId: string;

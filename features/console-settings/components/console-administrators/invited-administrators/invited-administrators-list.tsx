@@ -25,7 +25,7 @@ import { UIConstants } from "@wso2is/feature-constants.common";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { deleteParentOrgInvite } from "@wso2is/feature-users.common/components/guests/api/invite";
 import { EmptyPlaceholder, ListLayout, PrimaryButton } from "@wso2is/react-components";
-import { PRIMARY_USERSTORE, UsersConstants } from "apps/console/src/extensions/components/users/constants/users";
+import { PRIMARY_USERSTORE, UsersConstants } from "extensions/components/users/constants/users";
 import React, { ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";

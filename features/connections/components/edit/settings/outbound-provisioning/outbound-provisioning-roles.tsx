@@ -27,12 +27,12 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Button, DropdownItemProps, Form, Grid, Icon, Label } from "semantic-ui-react";
-import { OrganizationUtils } from "../../../../../organizations/utils";
-import { getRolesList } from "../../../../../roles/api";
+import { useGetCurrentOrganizationType } from 
+"../../../../../feature-organizations.common/hooks/use-get-organization-type";
+import { getRolesList } from "../../../../../feature-roles.common/api";
 import { updateConnectionRoleMappings } from "../../../../api/connections";
 import { ConnectionRolesInterface } from "../../../../models/connection";
 import { handleGetRoleListError, handleUpdateIDPRoleMappingsError } from "../../../../utils/connection-utils";
-import { useGetCurrentOrganizationType } from "apps/console/src/features/organizations/hooks/use-get-organization-type";
 
 interface OutboundProvisioningRolesPropsInterface extends TestableComponentInterface {
     idpId: string;

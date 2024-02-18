@@ -24,7 +24,7 @@ import { ConfigReducerStateInterface } from "@wso2is/feature-models.common";
 import { AppState } from "@wso2is/feature-store.common";
 import { DropdownChild, Field, Form } from "@wso2is/form";
 import { Code, FormInputLabel, FormSection } from "@wso2is/react-components";
-import { identityProviderConfig } from "apps/console/src/extensions";
+import { identityProviderConfig } from "extensions";
 import React, { FunctionComponent, PropsWithChildren, ReactElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";

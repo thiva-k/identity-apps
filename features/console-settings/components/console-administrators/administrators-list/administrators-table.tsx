@@ -32,6 +32,8 @@ import { UserRoleInterface } from "@wso2is/feature-models.common";
 // eslint-disable-next-line no-duplicate-imports
 import { FeatureConfigInterface, UserBasicInterface } from "@wso2is/feature-models.common";
 import { AppState } from "@wso2is/feature-store.common";
+import { UserManagementConstants } from "@wso2is/feature-users.common/constants";
+import { UserListInterface } from "@wso2is/feature-users.common/models";
 import {
     ConfirmationModal,
     DataTable,
@@ -42,7 +44,7 @@ import {
     UserAvatar,
     useConfirmationModalAlert
 } from "@wso2is/react-components";
-import { UserManagementUtils } from "apps/console/src/extensions/components/users/utils/user-management-utils";
+import { UserManagementUtils } from "extensions/components/users/utils/user-management-utils";
 import moment from "moment";
 import React, { ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -50,8 +52,6 @@ import { useSelector } from "react-redux";
 import { Header, Label, ListItemProps, SemanticICONS } from "semantic-ui-react";
 
 import { useServerConfigs } from "../../../../server-configurations";
-import { UserManagementConstants } from "@wso2is/feature-users.common/constants";
-import { UserListInterface } from "@wso2is/feature-users.common/models";
 import useConsoleRoles from "../../../hooks/use-console-roles";
 import "./administrators-table.scss";
 
