@@ -94,7 +94,7 @@ import { getAUserStore, getUserStores } from "../../../userstores/api";
 import { PRIMARY_USERSTORE } from "../../../userstores/constants";
 import { useValidationConfigData } from "../../../validation/api";
 import { ValidationFormInterface } from "../../../validation/models";
-import { UserManagementUtils, getUsernameConfiguration } from "../../utils";
+import { UserManagementUtils, getUsernameConfiguration } from "@wso2is/feature-users.common/utils";
 import { BulkImportResponseList } from "../bulk-import-response-list";
 
 /**

@@ -66,7 +66,7 @@ import { getAUserStore, getUserStores } from "../../../userstores/api";
 import { useValidationConfigData } from "../../../validation/api";
 import { ValidationFormInterface } from "../../../validation/models";
 import { getUserWizardStepIcons } from "../../configs";
-import { generatePassword, getConfiguration, getUsernameConfiguration } from "../../utils";
+import { generatePassword, getConfiguration, getUsernameConfiguration } from "@wso2is/feature-users.common/utils";
 
 interface AddUserWizardPropsInterface extends IdentifiableComponentInterface, TestableComponentInterface {
     closeWizard: () => void;

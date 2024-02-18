@@ -62,7 +62,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, CheckboxProps, Divider, DropdownItemProps, Form, Grid, Input } from "semantic-ui-react";
-import { ChangePasswordComponent } from "../components/user-change-password";
+import { ChangePasswordComponent } from "./user-change-password";
 import { commonConfig, userConfig } from "../../../extensions";
 import { TenantInfo } from "../../../extensions/components/tenants/models";
 import { getAssociationType } from "../../../extensions/components/tenants/utils/tenants";
