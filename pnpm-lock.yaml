@@ -2978,9 +2978,6 @@ importers:
       '@wso2is/feature-users.common':
         specifier: '*'
         version: link:../feature-users.common
-      '@wso2is/feature-utils.common':
-        specifier: '*'
-        version: link:../feature-utils.common
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form
@@ -7800,9 +7797,6 @@ importers:
       '@wso2is/feature-components.common':
         specifier: '*'
         version: link:../feature-components.common
-      '@wso2is/feature-configs.common':
-        specifier: '*'
-        version: link:../feature-configs.common
       '@wso2is/feature-constants.common':
         specifier: '*'
         version: link:../feature-constants.common
@@ -9614,6 +9608,9 @@ importers:
       '@wso2is/dynamic-forms':
         specifier: ^2.0.29
         version: link:../../modules/dynamic-forms
+      '@wso2is/feature-constants.common':
+        specifier: '*'
+        version: link:../feature-constants.common
       '@wso2is/feature-hooks.common':
         specifier: '*'
         version: link:../feature-hooks.common
@@ -11846,6 +11843,9 @@ importers:
       '@wso2is/feature-constants.common':
         specifier: '*'
         version: link:../feature-constants.common
+      '@wso2is/feature-groups.common':
+        specifier: '*'
+        version: link:../feature-groups.common
       '@wso2is/feature-helpers.common':
         specifier: '*'
         version: link:../feature-helpers.common
@@ -16232,9 +16232,6 @@ importers:
       '@wso2is/feature-users.common':
         specifier: '*'
         version: link:../feature-users.common
-      '@wso2is/feature-utils.common':
-        specifier: '*'
-        version: link:../feature-utils.common
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form

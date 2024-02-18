@@ -41,13 +41,9 @@ import {
     SearchRoleInterface
 } from "@wso2is/feature-roles.common/models/roles";
 import { AppState } from "@wso2is/feature-store.common";
-import { getUserDetails, updateUserInfo } from "@wso2is/feature-users.common/api";
-import { AdminAccountTypes, UserManagementConstants } from "@wso2is/feature-users.common/constants";
-import {
-    AccountConfigSettingsInterface,
-    SchemaAttributeValueInterface,
-    SubValueInterface
-} from "@wso2is/feature-users.common/models";
+import { getUserDetails, updateUserInfo } from "../api";
+import { AdminAccountTypes, UserManagementConstants } from "../constants";
+import { AccountConfigSettingsInterface, SchemaAttributeValueInterface, SubValueInterface } from "../models";
 import { Field, Forms, Validation } from "@wso2is/forms";
 import { SupportedLanguagesMeta } from "@wso2is/i18n";
 import {

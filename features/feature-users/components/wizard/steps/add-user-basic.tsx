@@ -30,7 +30,7 @@ import { Dropdown, DropdownItemProps, DropdownProps, Form, Grid, Menu, Message, 
 import { ServerConfigurationsConstants } from "../../../../server-configurations/constants/server-configurations-constants";
 import { PRIMARY_USERSTORE, USERSTORE_REGEX_PROPERTIES } from "../../../../userstores/constants/user-store-constants";
 import { ValidationDataInterface, ValidationFormInterface } from "../../../../validation/models";
-import { generatePassword, getConfiguration, getUsernameConfiguration } from "../../../utils";
+import { generatePassword, getConfiguration, getUsernameConfiguration } from "@wso2is/feature-users.common/utils";
 
 /**
  * Proptypes for the add user component.

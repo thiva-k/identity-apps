@@ -19,13 +19,9 @@ import { AlertInterface, AlertLevels, IdentifiableComponentInterface } from "@ws
 import { addAlert } from "@wso2is/core/store";
 import { AppConstants } from "@wso2is/feature-constants.common";
 import { history } from "@wso2is/feature-helpers.common";
-import { deleteRoleById, updateRoleDetails, useRolesList } from "@wso2is/feature-roles.common/api";
-import { RoleAudienceTypes, RoleConstants, Schemas } from "@wso2is/feature-roles.common/constants";
-import {
-    PatchRoleDataInterface,
-    RoleBasicInterface,
-    RoleEditSectionsInterface
-} from "@wso2is/feature-roles.common/models/roles";
+import { deleteRoleById, updateRoleDetails, useRolesList } from "../../api";
+import { RoleAudienceTypes, RoleConstants, Schemas } from "../../constants";
+import { PatchRoleDataInterface, RoleBasicInterface, RoleEditSectionsInterface } from "../../models/roles";
 import { Field, Form } from "@wso2is/form";
 import { ConfirmationModal, DangerZone, DangerZoneGroup, EmphasizedSegment } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useState } from "react";
@@ -34,7 +30,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider } from "semantic-ui-react";
 
-import { RoleDeleteErrorConfirmation } from "../../../feature-roles/components/wizard/role-delete-error-confirmation";
+import { RoleDeleteErrorConfirmation } from "../wizard/role-delete-error-confirmation";
 
 /**
  * Interface to contain props needed for component

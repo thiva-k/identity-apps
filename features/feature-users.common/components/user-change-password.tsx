@@ -23,7 +23,6 @@ import { history } from "@wso2is/feature-helpers.common";
 import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { PatchRoleDataInterface } from "@wso2is/feature-roles.common/models/roles";
 import { AppState } from "@wso2is/feature-store.common/";
-import { updateUserInfo } from "@wso2is/feature-users.common/api";
 import { SharedUserStoreUtils } from "@wso2is/feature-utils.common";
 import { Field, FormValue, Forms, RadioChild, Validation, useTrigger } from "@wso2is/forms";
 import { LinkButton, Message, PasswordValidation, PrimaryButton } from "@wso2is/react-components";
@@ -36,7 +35,8 @@ import { ConnectorPropertyInterface, ServerConfigurationsConstants } from "../..
 import { PRIMARY_USERSTORE, USERSTORE_REGEX_PROPERTIES } from "../../userstores/constants/user-store-constants";
 import { useValidationConfigData } from "../../validation/api";
 import { ValidationFormInterface } from "../../validation/models";
-import { getConfiguration } from "../utils";
+import { updateUserInfo } from "../api";
+import { getConfiguration } from "../utils/generate-password.utils";
 
 /**
  * Prop types for the change user password component.

@@ -36,7 +36,7 @@ import { OrganizationUtils } from "@wso2is/feature-organizations.common/utils";
 import { getRolesList } from "@wso2is/feature-roles.common/api/roles";
 import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "@wso2is/feature-roles.common/constants";
 import { AppState } from "@wso2is/feature-store.common";
-import { UserRolePermissions } from "@wso2is/feature-users.common/components/user-role-permissions";
+import { UserRolePermissions } from "../components/user-role-permissions";
 import {
     ContentLoader,
     EmphasizedSegment,
@@ -57,7 +57,7 @@ import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } 
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Button, Divider, Grid, Icon, Input, InputOnChangeData, Label, Modal, Table } from "semantic-ui-react";
-import { RolePermissions } from "./wizard/user-role-permissions";
+import { RolePermissions } from "../components/wizard/user-role-permissions";
 
 interface UserRolesV1PropsInterface {
     /**
