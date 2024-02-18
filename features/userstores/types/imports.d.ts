@@ -39,4 +39,3 @@ declare module "*.png" {
 
 declare module "*.md";
 
-// for new
