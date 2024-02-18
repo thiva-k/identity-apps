@@ -19,13 +19,14 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import useRequest, {
+import {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../../features/core/hooks/use-request";
-import { store } from "../../core";
-import { Config } from "../../core/configs";
+} from "../../../features/feature-hooks.common";
+import useRequest from "../../../features/feature-hooks.common/use-request";
+import { store } from "../../feature-store.common";
+import { Config } from "../../feature-configs.common";
 import { UpdateJWTAuthenticatorConfigInterface } from "../models/private-key-jwt-config";
 
 /**
