@@ -27,7 +27,6 @@
         "@wso2is/common": "^2.0.31",
         "@wso2is/dynamic-forms": "^2.0.29",
         "@wso2is/feature-store.common": "*",
-        "@wso2is/feature-configs.common": "*",
         "@wso2is/feature-hooks.common": "*",
         "@wso2is/feature-models.common": "*",
         "@wso2is/feature-utils.common": "*",
