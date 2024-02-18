@@ -20,9 +20,7 @@ import { MultitenantConstants } from "@wso2is/feature-constants.common/multitena
 import useAppSettings from "@wso2is/feature-hooks.common/use-app-settings";
 import { useContext } from "react";
 import useAuthorization from "../../authorization/hooks/use-authorization";
-import OrganizationsContext, {
-    OrganizationsContextProps
-} from "../../feature-organizations/context/organizations-context";
+import OrganizationsContext, { OrganizationsContextProps } from "../context/organizations-context";
 
 /**
  * Interface for the return type of the UseOrganizations hook.

@@ -30,12 +30,8 @@ import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common
 import { history } from "@wso2is/feature-helpers.common";
 import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { AppState } from "@wso2is/feature-store.common";
-import { getUserSessions, terminateAllUserSessions, terminateUserSession } from "@wso2is/feature-users.common/api";
-import {
-    ApplicationSessionInterface,
-    UserSessionInterface,
-    UserSessionsInterface
-} from "@wso2is/feature-users.common/models";
+import { getUserSessions, terminateAllUserSessions, terminateUserSession } from "../api";
+import { ApplicationSessionInterface, UserSessionInterface, UserSessionsInterface } from "../models";
 import {
     ConfirmationModal,
     ContentLoader,

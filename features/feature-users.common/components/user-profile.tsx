@@ -41,13 +41,9 @@ import {
     SearchRoleInterface
 } from "@wso2is/feature-roles.common/models/roles";
 import { AppState } from "@wso2is/feature-store.common";
-import { getUserDetails, updateUserInfo } from "@wso2is/feature-users.common/api";
-import { AdminAccountTypes, UserManagementConstants } from "@wso2is/feature-users.common/constants";
-import {
-    AccountConfigSettingsInterface,
-    SchemaAttributeValueInterface,
-    SubValueInterface
-} from "@wso2is/feature-users.common/models";
+import { getUserDetails, updateUserInfo } from "../api";
+import { AdminAccountTypes, UserManagementConstants } from "../constants";
+import { AccountConfigSettingsInterface, SchemaAttributeValueInterface, SubValueInterface } from "../models";
 import { Field, Forms, Validation } from "@wso2is/forms";
 import { SupportedLanguagesMeta } from "@wso2is/i18n";
 import {
@@ -66,7 +62,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, CheckboxProps, Divider, DropdownItemProps, Form, Grid, Input } from "semantic-ui-react";
-import { ChangePasswordComponent } from "./user-change-password";
+import { ChangePasswordComponent } from "../components/user-change-password";
 import { commonConfig, userConfig } from "../../../extensions";
 import { TenantInfo } from "../../../extensions/components/tenants/models";
 import { getAssociationType } from "../../../extensions/components/tenants/utils/tenants";

@@ -24,7 +24,6 @@ import { addAlert } from "@wso2is/core/store";
 import { FeatureConfigInterface } from "@wso2is/feature-models.common";
 import { useGetCurrentOrganizationType } from "@wso2is/feature-organizations.common/hooks/use-get-organization-type";
 import { AppState, store } from "@wso2is/feature-store.common";
-import { AdminAccountTypes, UserManagementConstants } from "@wso2is/feature-users.common/constants";
 import { ResourceTab } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import isEqual from "lodash-es/isEqual";
@@ -33,15 +32,16 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { TabProps } from "semantic-ui-react";
-import { UserGroupsList } from "../../feature-users/components/user-groups-edit";
-import { UserProfile } from "../../feature-users/components/user-profile";
-import { UserRolesList } from "../../feature-users/components/user-roles-list";
-import { UserRolesV1List } from "../../feature-users/components/user-roles-v1-list";
-import { UserSessions } from "../../feature-users/components/user-sessions";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
+import { UserGroupsList } from "../components/user-groups-edit";
+import { UserProfile } from "../components/user-profile";
+import { UserRolesList } from "../components/user-roles-list";
+import { UserRolesV1List } from "../components/user-roles-v1-list";
+import { UserSessions } from "../components/user-sessions";
 import { ServerConfigurationsInterface, getServerConfigs } from "../../server-configurations";
 import { ConnectorPropertyInterface } from "../../server-configurations/models";
-import useUserManagement from "../../feature-users/hooks/use-user-management";
+import { AdminAccountTypes, UserManagementConstants } from "../constants";
+import useUserManagement from "../hooks/use-user-management";
 
 interface EditUserPropsInterface extends SBACInterface<FeatureConfigInterface> {
     /**
