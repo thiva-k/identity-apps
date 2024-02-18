@@ -43,7 +43,11 @@ import {
     Placeholder
 } from "semantic-ui-react";
 import { getAllExternalClaims, getAllLocalClaims } from "../../claims/api";
-import { AppConstants, AppState, FeatureConfigInterface, UIConstants, history, sortList } from "../../core";
+import { AppConstants, UIConstants } from "../../feature-constants.common";
+import { AppState } from "../../feature-store.common";
+import { FeatureConfigInterface } from "../..//feature-models.common";
+import { history } from "../../feature-helpers.common";
+import { sortList } from "../../feature-utils.common";
 import { getOIDCScopeDetails, updateOIDCScopeDetails } from "../api";
 import { EditOIDCScope } from "../components";
 import { OIDCScopesManagementConstants } from "../constants";

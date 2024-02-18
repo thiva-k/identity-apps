@@ -49,7 +49,9 @@ import { Dispatch } from "redux";
 import { Header, Icon, SemanticICONS } from "semantic-ui-react";
 import { AttributeSelectionWizardOtherDialect }
     from "../../applications/components/settings/attribute-management/attirbute-selection-wizard-other-dialect";
-import { AppState, FeatureConfigInterface, getEmptyPlaceholderIllustrations } from "../../core";
+import { FeatureConfigInterface } from "../../feature-models.common";
+import { getEmptyPlaceholderIllustrations } from "../../feature-configs.common";
+import { AppState } from "../../feature-store.common";
 import { updateOIDCScopeDetails } from "../api";
 import { OIDCScopesManagementConstants } from "../constants";
 import { OIDCScopesListInterface } from "../models";

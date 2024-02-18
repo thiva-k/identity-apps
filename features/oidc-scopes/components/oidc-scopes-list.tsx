@@ -45,13 +45,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, SemanticICONS } from "semantic-ui-react";
 import { ApplicationManagementConstants } from "../../applications/constants";
-import {
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
+import { getEmptyPlaceholderIllustrations } from "../../feature-configs.common";
+import { AppConstants } from "../../feature-constants.common";
+import { history } from "../../feature-helpers.common";
+import { FeatureConfigInterface } from "../../feature-models.common";
+import { AppState } from "../../feature-store.common";
+
 import { deleteOIDCScope } from "../api";
 import { OIDCScopesManagementConstants } from "../constants";
 import { OIDCScopesListInterface } from "../models";
