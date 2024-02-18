@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -17,8 +18,12 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
+import { AppConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
 import {
-    ContentLoader, EmptyPlaceholder,
+    ContentLoader,
+    EmptyPlaceholder,
     GridLayout,
     PageLayout,
     ResourceGrid,
@@ -28,11 +33,6 @@ import cloneDeep from "lodash-es/cloneDeep";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { RouteComponentProps } from "react-router";
-import {
-    AppConstants,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
 import { useIDVPTemplateTypeMetadataList } from "../api";
 import { IdvpCreateWizard } from "../components/wizards/idvp-create-wizard";
 import { IdentityVerificationProviderConstants } from "../constants";
@@ -53,22 +53,16 @@ type IDVPTemplateSelectPagePropsInterface = IdentifiableComponentInterface & Rou
 const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemplateSelectPagePropsInterface> = (
     props: IDVPTemplateSelectPagePropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-componentid" ]: componentID
-    } = props;
+    const { ["data-componentid"]: componentID } = props;
 
     const { t } = useTranslation();
 
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ templateType, setTemplateType ] = useState<string>(undefined);
-    const [ tags, setTags ] = useState<Set<string>>(new Set());
-    const [
-        filteredCategorizedTemplates,
-        setFilteredCategorizedTemplates
-    ] = useState<IDVPTypeMetadataInterface[]>([]);
-    const [ selectedTemplate, setSelectedTemplate ] = useState<IDVPTypeMetadataInterface>(undefined);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [templateType, setTemplateType] = useState<string>(undefined);
+    const [tags, setTags] = useState<Set<string>>(new Set());
+    const [filteredCategorizedTemplates, setFilteredCategorizedTemplates] = useState<IDVPTypeMetadataInterface[]>([]);
+    const [selectedTemplate, setSelectedTemplate] = useState<IDVPTypeMetadataInterface>(undefined);
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
     const {
         data: idvpTemplateTypes,
@@ -80,7 +74,6 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
      * Set initial metadata for identity verification provider types.
      */
     useEffect(() => {
-
         if (!idvpTemplateTypes || !Array.isArray(idvpTemplateTypes) || !(idvpTemplateTypes.length > 0)) {
             return;
         }
@@ -94,18 +87,17 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
             });
         });
         setTags(tags);
-    }, [ idvpTemplateTypes ]);
+    }, [idvpTemplateTypes]);
 
     /**
      * Handles errors with IDVP template type request.
      */
     useEffect(() => {
-        if(!idvpTemplateTypeRequestError){
+        if (!idvpTemplateTypeRequestError) {
             return;
         }
         handleIDVPTemplateRequestError(idvpTemplateTypeRequestError);
-    }, [ idvpTemplateTypeRequestError ]);
-
+    }, [idvpTemplateTypeRequestError]);
 
     /**
      * Handles back button click.
@@ -113,7 +105,6 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
      * @returns void
      */
     const handleBackButtonClick = (): void => {
-
         history.push(AppConstants.getPaths().get(IdentityVerificationProviderConstants.IDVP_PATH));
     };
 
@@ -125,7 +116,6 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
      * @returns void
      */
     const handleTemplateSelection = (e: SyntheticEvent, selectedTemplate: IDVPTypeMetadataInterface): void => {
-
         /**
          * Find the matching template for the selected card.
          * if found then set the template to state.
@@ -146,7 +136,6 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
      * @returns void
      */
     const handleSuccessfulIDVPCreation = (id: string): void => {
-
         // If ID is present, navigate to the edit page of the created IDVP.
         if (id) {
             history.push({
@@ -170,7 +159,6 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
      * @returns IDVP template types that matches the search query and selected filters.
      */
     const getSearchResults = (query: string, selectedFilters: string[]): IDVPTypeMetadataInterface[] => {
-
         const templatesClone: IDVPTypeMetadataInterface[] = cloneDeep(idvpTemplateTypes);
 
         return templatesClone.filter((idvpType: IDVPTypeMetadataInterface) => {
@@ -181,13 +169,12 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
                 isSearchQueryMatched = idvpType.name.toLocaleLowerCase().includes(query);
             }
 
-            if(selectedFilters.length > 0) {
-                isFilterMatched = selectedFilters.some((filter:string) => idvpType.tags.includes(filter));
+            if (selectedFilters.length > 0) {
+                isFilterMatched = selectedFilters.some((filter: string) => idvpType.tags.includes(filter));
             }
 
             return isSearchQueryMatched && isFilterMatched;
         });
-
     };
 
     /**
@@ -198,7 +185,6 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
      * @returns void
      */
     const handleIDVPTypeSearch = (query: string, selectedFilters: string[]): void => {
-
         // Update the internal state to manage placeholders etc.
         setSearchQuery(query);
         // Filter out the templates.
@@ -213,7 +199,6 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
      * @returns void
      */
     const handleIDVPTypeFilter = (query: string, selectedFilters: string[]): void => {
-
         // Update the internal state to manage placeholders etc.
         setSearchQuery(query);
         // Filter out the templates.
@@ -226,19 +211,18 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
      * @returns Placeholder element
      */
     const showPlaceholders = (list: any[]): ReactElement => {
-
         // When the search returns empty.
         if (searchQuery && list.length === 0) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:develop.placeholders.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("console:develop.placeholders.emptySearchResult.title")}
+                    subtitle={[
                         t("console:develop.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                         t("console:develop.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-componentid={ `${ componentID }-empty-search-placeholder` }
+                    ]}
+                    data-componentid={`${componentID}-empty-search-placeholder`}
                 />
             );
         }
@@ -247,16 +231,14 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
         if (list.length === 0) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    title={
-                        t("console:develop.features.idvp.placeholders.emptyIDVPTypeList.title")
-                    }
-                    subtitle={ [
+                    title={t("console:develop.features.idvp.placeholders.emptyIDVPTypeList.title")}
+                    subtitle={[
                         t("console:develop.features.idvp.placeholders.emptyIDVPTypeList.subtitles.0"),
                         t("console:develop.features.idvp.placeholders.emptyIDVPTypeList.subtitles.1")
-                    ] }
-                    data-componentid={ `${ componentID }-empty-placeholder` }
+                    ]}
+                    data-componentid={`${componentID}-empty-placeholder`}
                 />
             );
         }
@@ -266,79 +248,71 @@ const IdentityVerificationProviderTemplateSelectPage: FunctionComponent<IDVPTemp
 
     return (
         <PageLayout
-            pageTitle={ "Create a New Identity Verification Provider" }
-            isLoading={ isIDVPTemplateTypeRequestLoading }
-            title={ t("console:develop.pages.idvpTemplate.title") }
-            contentTopMargin={ true }
-            description={ t("console:develop.pages.idvpTemplate.subTitle") }
-            backButton={ {
-                "data-componentid": `${ componentID }-page-back-button`,
+            pageTitle={"Create a New Identity Verification Provider"}
+            isLoading={isIDVPTemplateTypeRequestLoading}
+            title={t("console:develop.pages.idvpTemplate.title")}
+            contentTopMargin={true}
+            description={t("console:develop.pages.idvpTemplate.subTitle")}
+            backButton={{
+                "data-componentid": `${componentID}-page-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:develop.pages.idvpTemplate.backButton")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            data-componentid={ `${ componentID }-page-layout` }
+            bottomMargin={false}
+            data-componentid={`${componentID}-page-layout`}
             showBottomDivider
         >
             <GridLayout
-                search={ (
+                search={
                     <SearchWithFilterLabels
-                        placeholder={ t("console:develop.pages.idvpTemplate.search.placeholder") }
-                        onSearch={ handleIDVPTypeSearch }
-                        onFilter={ handleIDVPTypeFilter }
-                        filterLabels={ [ ...tags ] }
-                        disableSearchFilterDropdown={ true }
+                        placeholder={t("console:develop.pages.idvpTemplate.search.placeholder")}
+                        onSearch={handleIDVPTypeSearch}
+                        onFilter={handleIDVPTypeFilter}
+                        filterLabels={[...tags]}
+                        disableSearchFilterDropdown={true}
                     />
-                ) }
-                isLoading={ isIDVPTemplateTypeRequestLoading }
-            >
-                {
-                    (!isIDVPTemplateTypeRequestLoading && filteredCategorizedTemplates)
-                        ? (
-                            <ResourceGrid
-                                isEmpty={ !(filteredCategorizedTemplates && filteredCategorizedTemplates.length > 0) }
-                                emptyPlaceholder={ showPlaceholders(filteredCategorizedTemplates) }
-                            >
-                                {
-                                    filteredCategorizedTemplates.map((
-                                        template: IDVPTypeMetadataInterface,
-                                        templateIndex: number
-                                    ) => {
-
-                                        return (
-                                            <ResourceGrid.Card
-                                                key={ templateIndex }
-                                                resourceName={ template.name }
-                                                comingSoonRibbonLabel={ t("common:comingSoon") }
-                                                resourceDescription={ template.description }
-                                                resourceImage={
-                                                    resolveIDVPImage(template.image)
-                                                }
-                                                tags={ template.tags }
-                                                onClick={ (e: SyntheticEvent) => {
-                                                    handleTemplateSelection(e, template);
-                                                } }
-                                                showTooltips={ { description: true, header: false } }
-                                                data-componentid={ `${ componentID }-${ template.name }` }
-                                            />
-                                        );
-                                    })
-                                }
-                            </ResourceGrid>
-                        )
-                        : <ContentLoader dimmer/>
                 }
+                isLoading={isIDVPTemplateTypeRequestLoading}
+            >
+                {!isIDVPTemplateTypeRequestLoading && filteredCategorizedTemplates ? (
+                    <ResourceGrid
+                        isEmpty={!(filteredCategorizedTemplates && filteredCategorizedTemplates.length > 0)}
+                        emptyPlaceholder={showPlaceholders(filteredCategorizedTemplates)}
+                    >
+                        {filteredCategorizedTemplates.map(
+                            (template: IDVPTypeMetadataInterface, templateIndex: number) => {
+                                return (
+                                    <ResourceGrid.Card
+                                        key={templateIndex}
+                                        resourceName={template.name}
+                                        comingSoonRibbonLabel={t("common:comingSoon")}
+                                        resourceDescription={template.description}
+                                        resourceImage={resolveIDVPImage(template.image)}
+                                        tags={template.tags}
+                                        onClick={(e: SyntheticEvent) => {
+                                            handleTemplateSelection(e, template);
+                                        }}
+                                        showTooltips={{ description: true, header: false }}
+                                        data-componentid={`${componentID}-${template.name}`}
+                                    />
+                                );
+                            }
+                        )}
+                    </ResourceGrid>
+                ) : (
+                    <ContentLoader dimmer />
+                )}
             </GridLayout>
             <IdvpCreateWizard
-                showWizard={ showWizard }
-                type={ templateType }
-                selectedTemplateType={ selectedTemplate }
-                onIDVPCreate={ handleSuccessfulIDVPCreation }
-                onWizardClose={ () => {
+                showWizard={showWizard}
+                type={templateType}
+                selectedTemplateType={selectedTemplate}
+                onIDVPCreate={handleSuccessfulIDVPCreation}
+                onWizardClose={() => {
                     setTemplateType(undefined);
                     setShowWizard(false);
-                } }
+                }}
             />
         </PageLayout>
     );

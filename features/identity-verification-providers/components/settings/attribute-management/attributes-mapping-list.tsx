@@ -57,7 +57,7 @@ export interface AttributeMappingListProps extends IdentifiableComponentInterfac
      * @param oldMapping - The mapping before editing.
      * @param mapping - The mapping after editing.
      */
-    onMappingEdited: ( oldMapping: IDVPClaimMappingInterface, mapping: IDVPClaimMappingInterface) => void;
+    onMappingEdited: (oldMapping: IDVPClaimMappingInterface, mapping: IDVPClaimMappingInterface) => void;
     /**
      * Placeholder to show when there is no data.
      */
@@ -77,7 +77,6 @@ export interface AttributeMappingListProps extends IdentifiableComponentInterfac
 export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> = (
     props: AttributeMappingListProps
 ): ReactElement => {
-
     const {
         availableAttributesList,
         attributeMappingsListToShow,
@@ -88,7 +87,7 @@ export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> 
         readOnly
     } = props;
 
-    const [ editingMappings, setEditingMappings ] = useState<string[]>([]);
+    const [editingMappings, setEditingMappings] = useState<string[]>([]);
 
     /**
      * This function is used to check whether actions for the component should be hidden or not.
@@ -111,7 +110,7 @@ export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> 
                 hidden: shouldHideAction,
                 icon: (): SemanticICONS => "pencil alternate",
                 onClick: (e: SyntheticEvent, mapping: IDVPClaimMappingInterface) => {
-                    setEditingMappings([ ...editingMappings, mapping.localClaim.id ]);
+                    setEditingMappings([...editingMappings, mapping.localClaim.id]);
                 },
                 popupText: (): string => "Edit",
                 renderer: "semantic-icon"
@@ -120,9 +119,9 @@ export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> 
                 hidden: shouldHideAction,
                 icon: (): SemanticICONS => "trash alternate",
                 onClick: (e: SyntheticEvent, mapping: IDVPClaimMappingInterface) => {
-                // In our interface, once user enter into editing mode they
-                // cannot delete it unless its updated. So, no need to remove
-                // or check for `editingMappings` in this function.
+                    // In our interface, once user enter into editing mode they
+                    // cannot delete it unless its updated. So, no need to remove
+                    // or check for `editingMappings` in this function.
                     onMappingDeleted(mapping);
                 },
                 popupText: (): string => "Delete",
@@ -140,21 +139,12 @@ export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> 
     const getAttributeMappingListItemInViewMode = (mapping: IDVPClaimMappingInterface) => {
         return (
             <Header image as="h6" className="header-with-icon">
-                <AppAvatar
-                    image={ (
-                        <AnimatedAvatar
-                            name={ mapping.idvpClaim }
-                            size="mini"
-                        />
-                    ) }
-                    size="mini"
-                    spaced="right"
-                />
+                <AppAvatar image={<AnimatedAvatar name={mapping.idvpClaim} size="mini" />} size="mini" spaced="right" />
                 <Header.Content>
-                    { mapping.idvpClaim }
+                    {mapping.idvpClaim}
                     <Header.Subheader>
-                        <Code compact withBackground={ false }>
-                            { mapping.localClaim.uri }
+                        <Code compact withBackground={false}>
+                            {mapping.localClaim.uri}
                         </Code>
                     </Header.Subheader>
                 </Header.Content>
@@ -168,31 +158,31 @@ export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> 
      * @returns An array of table columns.
      */
     const createTableColumns = (): TableColumnInterface[] => {
-
         const attributePreviewTableColumn: TableColumnInterface = {
             dataIndex: "claim",
             id: "column-1",
             render(mapping: IDVPClaimMappingInterface): ReactNode {
-                return editingMappings.includes(mapping.localClaim.id)
-                    ? (
-                        <AttributeMappingListItem
-                            editingMode
-                            mapping={ mapping }
-                            availableAttributeList={ availableAttributesList }
-                            alreadyMappedAttributesList={ alreadyMappedAttributesList }
-                            onSubmit={ (editedMapping: IDVPClaimMappingInterface) => {
-                                // Remove it from currently editing mappings.
-                                setEditingMappings([
-                                    ...editingMappings
-                                        .filter((id: string) => id !== mapping.localClaim.id)
-                                        .filter((id: string) => id !== editedMapping.localClaim.id)
-                                ]);
-                                // Once done, notify the parent that a mapping has been
-                                // changed with the edited instance itself.
-                                onMappingEdited(mapping, editedMapping);
-                            } }
-                        />
-                    ) : getAttributeMappingListItemInViewMode(mapping);
+                return editingMappings.includes(mapping.localClaim.id) ? (
+                    <AttributeMappingListItem
+                        editingMode
+                        mapping={mapping}
+                        availableAttributeList={availableAttributesList}
+                        alreadyMappedAttributesList={alreadyMappedAttributesList}
+                        onSubmit={(editedMapping: IDVPClaimMappingInterface) => {
+                            // Remove it from currently editing mappings.
+                            setEditingMappings([
+                                ...editingMappings
+                                    .filter((id: string) => id !== mapping.localClaim.id)
+                                    .filter((id: string) => id !== editedMapping.localClaim.id)
+                            ]);
+                            // Once done, notify the parent that a mapping has been
+                            // changed with the edited instance itself.
+                            onMappingEdited(mapping, editedMapping);
+                        }}
+                    />
+                ) : (
+                    getAttributeMappingListItemInViewMode(mapping)
+                );
             },
             title: "Mapped Claim"
         };
@@ -213,15 +203,14 @@ export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> 
     return (
         <DataTable<IDVPClaimMappingInterface[]>
             className="attributes-mapping-list"
-            actions={ createTableActions() }
-            columns={ createTableColumns() }
-            data={ attributeMappingsListToShow }
-            showHeader={ false }
-            placeholders={ noDataPlaceholder }
-            selectable={ () => false }
-            isRowSelectable={ () => false }
-            onRowClick={ () => null }
+            actions={createTableActions()}
+            columns={createTableColumns()}
+            data={attributeMappingsListToShow}
+            showHeader={false}
+            placeholders={noDataPlaceholder}
+            selectable={() => false}
+            isRowSelectable={() => false}
+            onRowClick={() => null}
         />
     );
-
 };

@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -19,18 +20,18 @@
 import { AsgardeoSPAClient, HttpClientInstance, HttpResponse } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AcceptHeaderValues, ContentTypeHeaderValues, HttpMethods } from "@wso2is/core/models";
-import { AxiosError } from "axios";
-import { store } from "../../core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
+} from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
+import { AxiosError } from "axios";
 import { IDVPListResponseInterface, IdentityVerificationProviderInterface } from "../models";
 
-const httpClient: HttpClientInstance = AsgardeoSPAClient
-    .getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Delete an identity verification provider.
@@ -38,18 +39,17 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient
  * @returns - A promise containing the response from the API call.
  */
 export const deleteIDVP = async (id: string): Promise<HttpResponse> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": AcceptHeaderValues.APP_JSON,
+            Accept: AcceptHeaderValues.APP_JSON,
             "Content-Type": ContentTypeHeaderValues.APP_JSON
         },
         method: HttpMethods.DELETE,
-        url: `${ store.getState().config.endpoints.identityVerificationProviders }/${ id }`
+        url: `${store.getState().config.endpoints.identityVerificationProviders}/${id}`
     };
 
     return httpClient(requestConfig)
-        .then((response: HttpResponse) =>  response)
+        .then((response: HttpResponse) => response)
         .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 error.message,
@@ -68,21 +68,22 @@ export const deleteIDVP = async (id: string): Promise<HttpResponse> => {
  * @param rest - Rest of the data.
  * @returns - A promise containing the response from the API call.
  */
-export const updateIdentityVerificationProvider = ({ id, ...rest }: IdentityVerificationProviderInterface):
-    Promise<HttpResponse | undefined> => {
-
+export const updateIdentityVerificationProvider = ({
+    id,
+    ...rest
+}: IdentityVerificationProviderInterface): Promise<HttpResponse | undefined> => {
     const requestConfig: RequestConfigInterface = {
         data: rest,
         headers: {
-            "Accept": AcceptHeaderValues.APP_JSON,
+            Accept: AcceptHeaderValues.APP_JSON,
             "Content-Type": ContentTypeHeaderValues.APP_JSON
         },
         method: HttpMethods.PUT,
-        url: `${ store.getState().config.endpoints.identityVerificationProviders }/${ id }`
+        url: `${store.getState().config.endpoints.identityVerificationProviders}/${id}`
     };
 
     return httpClient(requestConfig)
-        .then((response: HttpResponse) =>  response)
+        .then((response: HttpResponse) => response)
         .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 error.message,
@@ -101,21 +102,21 @@ export const updateIdentityVerificationProvider = ({ id, ...rest }: IdentityVeri
  * @param rest - Rest of the data.
  * @returns - A promise containing the response from the API call.
  */
-export const createIdentityVerificationProvider = (data: IdentityVerificationProviderInterface):
-    Promise<HttpResponse | undefined> => {
-
+export const createIdentityVerificationProvider = (
+    data: IdentityVerificationProviderInterface
+): Promise<HttpResponse | undefined> => {
     const requestConfig: RequestConfigInterface = {
         data: data,
         headers: {
-            "Accept": AcceptHeaderValues.APP_JSON,
+            Accept: AcceptHeaderValues.APP_JSON,
             "Content-Type": ContentTypeHeaderValues.APP_JSON
         },
         method: HttpMethods.POST,
-        url: `${ store.getState().config.endpoints.identityVerificationProviders }`
+        url: `${store.getState().config.endpoints.identityVerificationProviders}`
     };
 
     return httpClient(requestConfig)
-        .then((response: HttpResponse) =>  response)
+        .then((response: HttpResponse) => response)
         .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 error.message,
@@ -133,15 +134,18 @@ export const createIdentityVerificationProvider = (data: IdentityVerificationPro
  * @param id - ID of the identity verification provider.
  * @returns - Requested IDVP
  */
-export const useIdentityVerificationProvider = <Data = IdentityVerificationProviderInterface,
-    Error = RequestErrorInterface>(id: string): RequestResultInterface<Data, Error> => {
-
+export const useIdentityVerificationProvider = <
+    Data = IdentityVerificationProviderInterface,
+    Error = RequestErrorInterface
+>(
+    id: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": AcceptHeaderValues.APP_JSON
+            Accept: AcceptHeaderValues.APP_JSON
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.identityVerificationProviders }/${ id }`
+        url: `${store.getState().config.endpoints.identityVerificationProviders}/${id}`
     };
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
 
@@ -170,10 +174,9 @@ export const useIdentityVerificationProviderList = <Data = IDVPListResponseInter
     filter?: string,
     requiredAttributes?: string
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": AcceptHeaderValues.APP_JSON,
+            Accept: AcceptHeaderValues.APP_JSON,
             "Content-Type": ContentTypeHeaderValues.APP_JSON
         },
         method: HttpMethods.GET,

@@ -28,11 +28,7 @@ import { Dispatch } from "redux";
 import { Button, Divider, Grid } from "semantic-ui-react";
 import { AttributesSelection } from "./attribute-management/attribute-selection";
 import { AccessControlConstants } from "../../../access-control/constants/access-control";
-import {
-    IDVPClaimMappingInterface,
-    IDVPClaimsInterface,
-    IdentityVerificationProviderInterface
-} from "../../models";
+import { IDVPClaimMappingInterface, IDVPClaimsInterface, IdentityVerificationProviderInterface } from "../../models";
 import { updateIDVP } from "../../utils";
 
 /**
@@ -85,7 +81,6 @@ interface AttributeSettingsPropsInterface extends IdentifiableComponentInterface
 export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterface> = (
     props: AttributeSettingsPropsInterface
 ): ReactElement => {
-
     const {
         idvp,
         initialClaims,
@@ -101,8 +96,8 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
     const { t } = useTranslation();
 
     // Selected local claims in claim mapping.
-    const [ selectedClaimsWithMapping, setSelectedClaimsWithMapping ] = useState<IDVPClaimMappingInterface[]>([]);
-    const [ isSubmissionLoading, setIsSubmissionLoading ] = useState<boolean>(false);
+    const [selectedClaimsWithMapping, setSelectedClaimsWithMapping] = useState<IDVPClaimMappingInterface[]>([]);
+    const [isSubmissionLoading, setIsSubmissionLoading] = useState<boolean>(false);
 
     /**
      * Evaluates whether the attribute update can be submitted or not.
@@ -110,9 +105,9 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      * @returns true if the attribute update can be submitted.
      */
     const canSubmitAttributeUpdate = (): boolean => {
-        return isEmpty(selectedClaimsWithMapping?.filter(
-            (element: IDVPClaimMappingInterface) => isEmpty(element.idvpClaim)
-        ));
+        return isEmpty(
+            selectedClaimsWithMapping?.filter((element: IDVPClaimMappingInterface) => isEmpty(element.idvpClaim))
+        );
     };
 
     /**
@@ -121,7 +116,6 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      * @returns void
      */
     const handleAttributesUpdate = (): void => {
-
         idvp.claims = selectedClaimsWithMapping.map((element: IDVPClaimMappingInterface) => {
             return {
                 idvpClaim: element.idvpClaim,
@@ -132,50 +126,50 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
         if (canSubmitAttributeUpdate()) {
             updateIDVP(idvp, setIsSubmissionLoading, onUpdate);
         } else {
-            dispatch(addAlert(
-                {
-                    description: t("console:develop.features.idvp.notifications.submitAttributeSettings" +
-                        ".error.description"),
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.idvp.notifications.submitAttributeSettings" + ".error.description"
+                    ),
                     level: AlertLevels.WARNING,
                     message: t("console:develop.features.idvp.notifications.submitAttributeSettings.error.message")
-                }
-            ));
+                })
+            );
         }
     };
 
-
     if (isLoading) {
-        return <Loader/>;
+        return <Loader />;
     }
 
     return (
         <EmphasizedSegment padded="very">
             <Grid className="attributes-settings">
                 <div className="form-container with-max-width">
-                    <Grid.Row columns={ 1 }>
+                    <Grid.Row columns={1}>
                         <Grid.Column>
                             <AttributesSelection
-                                initialClaims={ initialClaims }
-                                setMappedAttributes={ setSelectedClaimsWithMapping }
-                                hideIdentityClaimAttributes={ hideIdentityClaimAttributes }
-                                mappedAttributesList={ [ ...selectedClaimsWithMapping ] }
-                                isReadOnly={ isReadOnly }
+                                initialClaims={initialClaims}
+                                setMappedAttributes={setSelectedClaimsWithMapping}
+                                hideIdentityClaimAttributes={hideIdentityClaimAttributes}
+                                mappedAttributesList={[...selectedClaimsWithMapping]}
+                                isReadOnly={isReadOnly}
                             />
                         </Grid.Column>
                     </Grid.Row>
-                    <Divider hidden/>
+                    <Divider hidden />
                     <Grid.Row>
                         <Grid.Column>
-                            <Show when={ AccessControlConstants.IDVP_EDIT }>
+                            <Show when={AccessControlConstants.IDVP_EDIT}>
                                 <Button
                                     primary
                                     size="small"
-                                    loading={ isSubmissionLoading }
-                                    disabled={ isSubmissionLoading }
-                                    onClick={ handleAttributesUpdate }
-                                    data-componentid={ `${ componentId }-update-button` }
+                                    loading={isSubmissionLoading}
+                                    disabled={isSubmissionLoading}
+                                    onClick={handleAttributesUpdate}
+                                    data-componentid={`${componentId}-update-button`}
                                 >
-                                    { t("common:update") }
+                                    {t("common:update")}
                                 </Button>
                             </Show>
                         </Grid.Column>

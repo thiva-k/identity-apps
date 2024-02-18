@@ -17,8 +17,7 @@
  */
 
 import { FunctionComponent, SVGProps } from "react";
-import { ReactComponent as AuthorizeIcon } from 
-    "../../../themes/default/assets/images/icons/account-policy-icon.svg";
+import { ReactComponent as AuthorizeIcon } from "../../../themes/default/assets/images/icons/account-policy-icon.svg";
 import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
 import { ReactComponent as KeyIcon } from "../../../themes/default/assets/images/icons/key-icon.svg";
 
@@ -27,7 +26,6 @@ export const getAPIResourceWizardStepIcons = (): {
     authorize: FunctionComponent<SVGProps<SVGSVGElement>>;
     permissions: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         authorize: AuthorizeIcon,
         general: DocumentIcon,

@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -36,8 +37,7 @@ export const updateIDVP = (
     idvp: IdentityVerificationProviderInterface,
     setIsSubmitting: (boolean) => void,
     onUpdate: () => void
-) : void => {
-
+): void => {
     setIsSubmitting(true);
     updateIdentityVerificationProvider(idvp)
         .then(handleIDVPUpdateSuccess)
@@ -58,7 +58,7 @@ export const updateIDVP = (
 export const getContentLoader = (): ReactElement => {
     return (
         <EmphasizedSegment padded>
-            <ContentLoader inline="centered" active/>
+            <ContentLoader inline="centered" active />
         </EmphasizedSegment>
     );
 };

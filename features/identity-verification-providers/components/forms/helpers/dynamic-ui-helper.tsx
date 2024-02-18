@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -30,7 +31,7 @@ import {
 const ERROR_MSG_REQUIRED_FIELD: string = "This field cannot be empty";
 const ERROR_MSG_REGEX_FAILED: string = "Pattern validation failed";
 
-type InputFieldValue = string | boolean | number | DropdownOptionsInterface ;
+type InputFieldValue = string | boolean | number | DropdownOptionsInterface;
 
 /**
  * Renders the IDVP configuration property form fields with the given metadata.
@@ -47,7 +48,6 @@ export const renderFormUIWithMetadata = (
     isReadOnly: boolean = false,
     padBetweenElements: boolean = false
 ): ReactElement => {
-
     /**
      * Creates a form field with the given input field metadata.
      *
@@ -56,13 +56,13 @@ export const renderFormUIWithMetadata = (
      */
     const createElement = (elementMetadata: InputFieldMetadata): ReactElement => {
         // exclude rendering the divider for the first input element.
-        const includeDivider: boolean= padBetweenElements ? elementMetadata.displayOrder !== 1 : false;
+        const includeDivider: boolean = padBetweenElements ? elementMetadata.displayOrder !== 1 : false;
         // If there is an already existing IDVP, get the current value of the element from the IDVP.
         let currentElementValue: InputFieldValue = idvp?.configProperties?.find(
-            (property: IDVPConfigPropertiesInterface ) => (property.key === elementMetadata.name)
+            (property: IDVPConfigPropertiesInterface) => property.key === elementMetadata.name
         )?.value;
 
-        switch(elementMetadata?.type) {
+        switch (elementMetadata?.type) {
             case FieldInputTypes.INPUT_DEFAULT:
             case FieldInputTypes.INPUT_IDENTIFIER:
             case FieldInputTypes.INPUT_NAME:
@@ -74,153 +74,153 @@ export const renderFormUIWithMetadata = (
             case FieldInputTypes.INPUT_URL:
                 return (
                     <>
-                        { includeDivider && <Divider hidden={ true }/> }
+                        {includeDivider && <Divider hidden={true} />}
                         <Field.Input
-                            ariaLabel={ elementMetadata.name }
-                            inputType={ elementMetadata.type }
-                            name={ elementMetadata.name }
-                            label={ elementMetadata.label }
-                            required={ elementMetadata.required }
-                            message={ elementMetadata.message }
-                            placeholder={ elementMetadata.placeholder }
-                            validate={ (value: string ) =>  performValidations(value, elementMetadata) }
-                            value={ currentElementValue ?? elementMetadata.defaultValue }
-                            initialValue={ currentElementValue ?? elementMetadata.defaultValue }
-                            maxLength={ elementMetadata.maxLength }
-                            minLength={ elementMetadata.minLength }
-                            data-componentid={ elementMetadata.dataComponentId }
-                            hint={ elementMetadata.hint }
-                            readOnly={ isReadOnly }
+                            ariaLabel={elementMetadata.name}
+                            inputType={elementMetadata.type}
+                            name={elementMetadata.name}
+                            label={elementMetadata.label}
+                            required={elementMetadata.required}
+                            message={elementMetadata.message}
+                            placeholder={elementMetadata.placeholder}
+                            validate={(value: string) => performValidations(value, elementMetadata)}
+                            value={currentElementValue ?? elementMetadata.defaultValue}
+                            initialValue={currentElementValue ?? elementMetadata.defaultValue}
+                            maxLength={elementMetadata.maxLength}
+                            minLength={elementMetadata.minLength}
+                            data-componentid={elementMetadata.dataComponentId}
+                            hint={elementMetadata.hint}
+                            readOnly={isReadOnly}
                         />
                     </>
                 );
             case FieldInputTypes.INPUT_PASSWORD:
                 return (
                     <>
-                        { includeDivider && <Divider hidden={ true }/> }
+                        {includeDivider && <Divider hidden={true} />}
                         <Field.Input
-                            ariaLabel={ elementMetadata.name }
-                            inputType={ elementMetadata.type }
-                            type={ elementMetadata.type }
-                            name={ elementMetadata.name }
-                            label={ elementMetadata.label }
-                            required={ elementMetadata.required }
-                            message={ elementMetadata.message }
-                            placeholder={ elementMetadata.placeholder }
-                            validate={ (value: string ) => performValidations(value, elementMetadata) }
-                            value={ currentElementValue ?? elementMetadata.defaultValue }
-                            initialValue={ currentElementValue ?? elementMetadata.defaultValue }
-                            maxLength={ elementMetadata.maxLength }
-                            minLength={ elementMetadata.minLength }
-                            data-componentid={ elementMetadata.dataComponentId }
-                            hint={ elementMetadata.hint }
-                            readOnly={ isReadOnly }
+                            ariaLabel={elementMetadata.name}
+                            inputType={elementMetadata.type}
+                            type={elementMetadata.type}
+                            name={elementMetadata.name}
+                            label={elementMetadata.label}
+                            required={elementMetadata.required}
+                            message={elementMetadata.message}
+                            placeholder={elementMetadata.placeholder}
+                            validate={(value: string) => performValidations(value, elementMetadata)}
+                            value={currentElementValue ?? elementMetadata.defaultValue}
+                            initialValue={currentElementValue ?? elementMetadata.defaultValue}
+                            maxLength={elementMetadata.maxLength}
+                            minLength={elementMetadata.minLength}
+                            data-componentid={elementMetadata.dataComponentId}
+                            hint={elementMetadata.hint}
+                            readOnly={isReadOnly}
                         />
                     </>
                 );
             case MetaDataInputTypes.TEXT_AREA:
-                return(
+                return (
                     <>
-                        { includeDivider && <Divider hidden={ true }/> }
+                        {includeDivider && <Divider hidden={true} />}
                         <Field.Textarea
-                            ariaLabel={ elementMetadata.name }
-                            name={ elementMetadata.name }
-                            label={ elementMetadata.label }
-                            hint={ elementMetadata.hint }
-                            data-componentid={ elementMetadata.dataComponentId }
-                            required={ elementMetadata.required }
-                            validate={ (value: string ) => performValidations(value, elementMetadata) }
-                            value={ currentElementValue ?? elementMetadata.defaultValue }
-                            initialValue={ currentElementValue ?? elementMetadata.defaultValue }
-                            maxLength={ elementMetadata.maxLength }
-                            minLength={ elementMetadata.minLength }
-                            placeholder={ elementMetadata.placeholder }
-                            readOnly={ isReadOnly }
+                            ariaLabel={elementMetadata.name}
+                            name={elementMetadata.name}
+                            label={elementMetadata.label}
+                            hint={elementMetadata.hint}
+                            data-componentid={elementMetadata.dataComponentId}
+                            required={elementMetadata.required}
+                            validate={(value: string) => performValidations(value, elementMetadata)}
+                            value={currentElementValue ?? elementMetadata.defaultValue}
+                            initialValue={currentElementValue ?? elementMetadata.defaultValue}
+                            maxLength={elementMetadata.maxLength}
+                            minLength={elementMetadata.minLength}
+                            placeholder={elementMetadata.placeholder}
+                            readOnly={isReadOnly}
                         />
                     </>
                 );
             case MetaDataInputTypes.CHECKBOX:
                 return (
                     <>
-                        { includeDivider && <Divider hidden={ true }/> }
+                        {includeDivider && <Divider hidden={true} />}
                         <Field.Checkbox
-                            ariaLabel={ elementMetadata.name }
-                            name={ elementMetadata.name }
-                            hint={ elementMetadata.hint }
-                            label={ elementMetadata.label }
-                            data-componentid={ elementMetadata.dataComponentId }
-                            required={ elementMetadata.required }
-                            initialValue={ toBoolean(currentElementValue, elementMetadata.defaultValue) }
-                            disabled={ isReadOnly }
-                            format={ (v: boolean) => (v) }
-                            parse={ (v:boolean) => (v) }
+                            ariaLabel={elementMetadata.name}
+                            name={elementMetadata.name}
+                            hint={elementMetadata.hint}
+                            label={elementMetadata.label}
+                            data-componentid={elementMetadata.dataComponentId}
+                            required={elementMetadata.required}
+                            initialValue={toBoolean(currentElementValue, elementMetadata.defaultValue)}
+                            disabled={isReadOnly}
+                            format={(v: boolean) => v}
+                            parse={(v: boolean) => v}
                         />
                     </>
                 );
             case MetaDataInputTypes.TOGGLE:
                 return (
                     <>
-                        { includeDivider && <Divider hidden={ true }/> }
+                        {includeDivider && <Divider hidden={true} />}
                         <Field.Checkbox
                             toggle
-                            ariaLabel={ elementMetadata.name }
-                            name={ elementMetadata.name }
-                            hint={ elementMetadata.hint }
-                            label={ elementMetadata.label }
-                            data-componentid={ elementMetadata.dataComponentId }
-                            required={ elementMetadata.required }
-                            initialValue={ toBoolean(currentElementValue, elementMetadata.defaultValue) }
-                            disabled={ isReadOnly }
-                            format={ (v: boolean) => (v) }
-                            parse={ (v:boolean) => (v) }
+                            ariaLabel={elementMetadata.name}
+                            name={elementMetadata.name}
+                            hint={elementMetadata.hint}
+                            label={elementMetadata.label}
+                            data-componentid={elementMetadata.dataComponentId}
+                            required={elementMetadata.required}
+                            initialValue={toBoolean(currentElementValue, elementMetadata.defaultValue)}
+                            disabled={isReadOnly}
+                            format={(v: boolean) => v}
+                            parse={(v: boolean) => v}
                         />
                     </>
                 );
             case MetaDataInputTypes.DROPDOWN:
-                currentElementValue = currentElementValue ??
-                    (elementMetadata.defaultValue as DropdownOptionsInterface).value;
+                currentElementValue =
+                    currentElementValue ?? (elementMetadata.defaultValue as DropdownOptionsInterface).value;
 
                 return (
                     <>
-                        { includeDivider && <Divider hidden={ true }/> }
+                        {includeDivider && <Divider hidden={true} />}
                         <Field.Dropdown
                             search
                             fluid
                             type="dropdown"
-                            ariaLabel={ elementMetadata.name }
-                            name={ elementMetadata.name }
-                            hint={ elementMetadata.hint }
-                            label={ elementMetadata.label }
-                            data-componentid={ elementMetadata.dataComponentId }
-                            required={ elementMetadata.required }
-                            options={ getDropdownOptions(elementMetadata.options) }
-                            value={ currentElementValue }
-                            initialValue={ currentElementValue }
-                            isReadOnly={ isReadOnly }
-                            disabled={ isReadOnly }
+                            ariaLabel={elementMetadata.name}
+                            name={elementMetadata.name}
+                            hint={elementMetadata.hint}
+                            label={elementMetadata.label}
+                            data-componentid={elementMetadata.dataComponentId}
+                            required={elementMetadata.required}
+                            options={getDropdownOptions(elementMetadata.options)}
+                            value={currentElementValue}
+                            initialValue={currentElementValue}
+                            isReadOnly={isReadOnly}
+                            disabled={isReadOnly}
                         />
                     </>
                 );
             default:
-                return(
+                return (
                     <>
-                        { includeDivider && <Divider hidden={ true }/> }
+                        {includeDivider && <Divider hidden={true} />}
                         <Field.Input
-                            ariaLabel={ elementMetadata.name }
-                            inputType={ FieldInputTypes.INPUT_DEFAULT }
-                            name={ elementMetadata.name }
-                            label={ elementMetadata.label }
-                            required={ elementMetadata.required }
-                            message={ elementMetadata.message }
-                            placeholder={ elementMetadata.placeholder }
-                            validate={ (value: string ) => performValidations(value, elementMetadata) }
-                            value={ currentElementValue ?? elementMetadata.defaultValue }
-                            initialValue={ currentElementValue ?? elementMetadata.defaultValue }
-                            maxLength={ elementMetadata.maxLength }
-                            minLength={ elementMetadata.minLength }
-                            data-componentid={ elementMetadata.dataComponentId }
-                            hint={ elementMetadata.hint }
-                            readOnly={ isReadOnly }
+                            ariaLabel={elementMetadata.name}
+                            inputType={FieldInputTypes.INPUT_DEFAULT}
+                            name={elementMetadata.name}
+                            label={elementMetadata.label}
+                            required={elementMetadata.required}
+                            message={elementMetadata.message}
+                            placeholder={elementMetadata.placeholder}
+                            validate={(value: string) => performValidations(value, elementMetadata)}
+                            value={currentElementValue ?? elementMetadata.defaultValue}
+                            initialValue={currentElementValue ?? elementMetadata.defaultValue}
+                            maxLength={elementMetadata.maxLength}
+                            minLength={elementMetadata.minLength}
+                            data-componentid={elementMetadata.dataComponentId}
+                            hint={elementMetadata.hint}
+                            readOnly={isReadOnly}
                         />
                     </>
                 );
@@ -229,13 +229,11 @@ export const renderFormUIWithMetadata = (
 
     return (
         <>
-            {
-                uiMetaData
-                    ?.sort((a: InputFieldMetadata, b: InputFieldMetadata) => a.displayOrder - b.displayOrder)
-                    ?.map((element: InputFieldMetadata) => {
-                        return createElement(element);
-                    })
-            }
+            {uiMetaData
+                ?.sort((a: InputFieldMetadata, b: InputFieldMetadata) => a.displayOrder - b.displayOrder)
+                ?.map((element: InputFieldMetadata) => {
+                    return createElement(element);
+                })}
         </>
     );
 };
@@ -249,10 +247,8 @@ export const renderFormUIWithMetadata = (
 const getDropdownOptions = (options: DropdownOptionsInterface[]) => {
     return options.map((option: DropdownOptionsInterface, index: number) => ({
         content: (
-            <Header as="h6" key={ `dropdown-option-${ index }` }>
-                <Header.Content>
-                    { option.label }
-                </Header.Content>
+            <Header as="h6" key={`dropdown-option-${index}`}>
+                <Header.Content>{option.label}</Header.Content>
             </Header>
         ),
         key: option.value,
@@ -268,8 +264,7 @@ const getDropdownOptions = (options: DropdownOptionsInterface[]) => {
  * @param elementMetaData - Metadata of the field.
  * @returns An error message if the validation fails.
  */
-export const performValidations = ( value: string, elementMetaData: InputFieldMetadata): string => {
-
+export const performValidations = (value: string, elementMetaData: InputFieldMetadata): string => {
     // perform required validation
     if (elementMetaData.required && !value) {
         return ERROR_MSG_REQUIRED_FIELD;
@@ -285,7 +280,7 @@ export const performValidations = ( value: string, elementMetaData: InputFieldMe
         const regexp: RegExp = new RegExp(elementMetaData.validationRegex);
 
         if (!regexp.test(value)) {
-            return  elementMetaData.regexValidationError ?? ERROR_MSG_REGEX_FAILED;
+            return elementMetaData.regexValidationError ?? ERROR_MSG_REGEX_FAILED;
         }
     }
 
@@ -302,11 +297,10 @@ export const performValidations = ( value: string, elementMetaData: InputFieldMe
  * @param currentElementValue - Current element value
  * @param defaultValue - Default value
  */
-const toBoolean = (currentElementValue: InputFieldValue , defaultValue: InputFieldValue): boolean => {
-
-    if(currentElementValue) {
-        return typeof currentElementValue === "boolean"? currentElementValue : currentElementValue === "true";
+const toBoolean = (currentElementValue: InputFieldValue, defaultValue: InputFieldValue): boolean => {
+    if (currentElementValue) {
+        return typeof currentElementValue === "boolean" ? currentElementValue : currentElementValue === "true";
     }
 
-    return typeof defaultValue === "boolean"? defaultValue : defaultValue === "true";
+    return typeof defaultValue === "boolean" ? defaultValue : defaultValue === "true";
 };

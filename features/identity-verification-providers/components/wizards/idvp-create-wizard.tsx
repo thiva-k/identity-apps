@@ -19,6 +19,7 @@
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { ModalWithSidePanel } from "@wso2is/feature-components.common";
 import { Field, Wizard2, WizardPage } from "@wso2is/form";
 import {
     ContentLoader,
@@ -35,7 +36,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Icon } from "semantic-ui-react";
-import { ModalWithSidePanel } from "../../../core";
 import {
     createIdentityVerificationProvider,
     useIDVPTemplate,
@@ -85,7 +85,7 @@ interface WizardStepInterface {
 interface WizardFormValuesInterface {
     name: string;
     description: string;
-    [ key: string ]: any;
+    [key: string]: any;
 }
 
 const WIZARD_ID: string = "idvp-create-wizard-content";
@@ -137,25 +137,19 @@ interface IDVPCreateWizardInterface extends IdentifiableComponentInterface {
 export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
     props: IDVPCreateWizardInterface
 ): ReactElement => {
-
-    const {
-        showWizard,
-        onWizardClose,
-        selectedTemplateType,
-        onIDVPCreate
-    } = props;
+    const { showWizard, onWizardClose, selectedTemplateType, onIDVPCreate } = props;
 
     const wizardRef: React.MutableRefObject<any> = useRef(null);
     const componentId: string = "idvp-create-wizard-factory";
 
     const { t } = useTranslation();
 
-    const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(0);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(0);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const dispatch: Dispatch = useDispatch();
-    const [ selectedClaimsWithMapping, setSelectedClaimsWithMapping ] = useState<IDVPClaimMappingInterface[]>([]);
+    const [selectedClaimsWithMapping, setSelectedClaimsWithMapping] = useState<IDVPClaimMappingInterface[]>([]);
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     const {
         data: idvpList,
@@ -169,33 +163,31 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
         error: idvpTemplateFetchRequestError
     } = useIDVPTemplate(selectedTemplateType?.id);
 
-    const {
-        data: uiMetaData,
-        error: uiMetaDataLoadError,
-        isLoading: isUIMetadataLoading
-    } = useUIMetadata(selectedTemplateType?.id);
+    const { data: uiMetaData, error: uiMetaDataLoadError, isLoading: isUIMetadataLoading } = useUIMetadata(
+        selectedTemplateType?.id
+    );
 
-    const [ isNextDisabled, setIsNextDisabled ] = useState<boolean>(false);
+    const [isNextDisabled, setIsNextDisabled] = useState<boolean>(false);
 
     /**
      * Called when idvpListFetchRequestError changes to handle IDVP list fetch request error.
      */
     useEffect(() => {
-        if(!idvpListFetchRequestError) {
+        if (!idvpListFetchRequestError) {
             return;
         }
         handleIdvpListFetchRequestError(idvpListFetchRequestError);
-    }, [ idvpListFetchRequestError ]);
+    }, [idvpListFetchRequestError]);
 
     /**
      * Called when uiMetaDataLoadError changes to handle UI metadata load error.
      */
     useEffect(() => {
-        if(!uiMetaDataLoadError) {
+        if (!uiMetaDataLoadError) {
             return;
         }
         handleUIMetadataLoadError(uiMetaDataLoadError);
-    }, [ uiMetaDataLoadError ]);
+    }, [uiMetaDataLoadError]);
 
     /**
      * Called when idvpTemplateFetchRequestError changes to handle IDVP template fetch request error.
@@ -205,8 +197,7 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
             return;
         }
         handleIDVPTemplateFetchRequestError(idvpTemplateFetchRequestError);
-    }, [ idvpTemplateFetchRequestError ]);
-
+    }, [idvpTemplateFetchRequestError]);
 
     /**
      * Creates a new identity verification provider.
@@ -215,17 +206,17 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
      * @returns void
      */
     const createNewIDVP = (modifiedIDVPTemplate: IdentityVerificationProviderInterface): void => {
-
         setIsSubmitting(true);
 
         createIdentityVerificationProvider(modifiedIDVPTemplate)
-            .then((response:AxiosResponse) => {
-
-                dispatch(addAlert({
-                    description: t("console:develop.features.idvp.notifications.addIDVP.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.idvp.notifications.addIDVP.success.message")
-                }));
+            .then((response: AxiosResponse) => {
+                dispatch(
+                    addAlert({
+                        description: t("console:develop.features.idvp.notifications.addIDVP.success.description"),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:develop.features.idvp.notifications.addIDVP.success.message")
+                    })
+                );
 
                 // The id of the created IDVP is sent in the response body.If that's available,
                 // navigate to the edit page.
@@ -241,9 +232,9 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
             .catch((error: IdentityAppsApiException) => {
                 if (error?.response?.data?.description) {
                     setAlert({
-                        description: t("console:develop.features.idvp.notifications.addIDVP.error.description",
-                            { description: error.response.data.description }
-                        ),
+                        description: t("console:develop.features.idvp.notifications.addIDVP.error.description", {
+                            description: error.response.data.description
+                        }),
                         level: AlertLevels.ERROR,
                         message: t("console:develop.features.idvp.notifications.addIDVP.error.message")
                     });
@@ -259,8 +250,7 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
             })
             .finally(() => {
                 setIsSubmitting(false);
-            })
-        ;
+            });
     };
 
     /**
@@ -269,7 +259,7 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
      */
     const handleWizardClose = (): void => {
         // Clear alerts if any.
-        if(alert){
+        if (alert) {
             setAlert(undefined);
         }
         onWizardClose();
@@ -281,61 +271,62 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
      * @returns Resolved step wizard actions.
      */
     const resolveStepActions = (): ReactElement => {
-
         return (
             <Grid>
-                <Grid.Row column={ 1 }>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                <Grid.Row column={1}>
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
                         <LinkButton
                             floated="left"
-                            onClick={ handleWizardClose }
-                            data-componentid={ `${ componentId }-modal-cancel-button` }>
-                            { t("common:cancel") }
+                            onClick={handleWizardClose}
+                            data-componentid={`${componentId}-modal-cancel-button`}
+                        >
+                            {t("common:cancel")}
                         </LinkButton>
                     </Grid.Column>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                        { /*Check whether we have more steps*/ }
-                        { currentWizardStep < wizardSteps.length - 1 && (
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
+                        {/*Check whether we have more steps*/}
+                        {currentWizardStep < wizardSteps.length - 1 && (
                             <PrimaryButton
-                                disabled={ isNextDisabled }
+                                disabled={isNextDisabled}
                                 floated="right"
-                                onClick={ () => {
+                                onClick={() => {
                                     wizardRef.current.gotoNextPage();
-                                } }
-                                data-componentid={ `${ componentId }-modal-next-button` }>
-                                { t("console:develop.features.authenticationProvider.wizards.buttons.next") }
-                                <Icon name="arrow right"/>
+                                }}
+                                data-componentid={`${componentId}-modal-next-button`}
+                            >
+                                {t("console:develop.features.authenticationProvider.wizards.buttons.next")}
+                                <Icon name="arrow right" />
                             </PrimaryButton>
-                        ) }
-                        { /*Check whether it's the last step*/ }
-                        { currentWizardStep === wizardSteps.length - 1 && (
+                        )}
+                        {/*Check whether it's the last step*/}
+                        {currentWizardStep === wizardSteps.length - 1 && (
                             // Note that we use the same logic as the next button
                             // element. This is because we pass a callback to
                             // onSubmit which triggers a dedicated handler.
                             <PrimaryButton
-                                disabled={ isNextDisabled || isSubmitting }
+                                disabled={isNextDisabled || isSubmitting}
                                 type="submit"
                                 floated="right"
-                                onClick={ () => {
+                                onClick={() => {
                                     wizardRef.current.gotoNextPage();
-                                } }
-                                data-componentid={ `${ componentId }-modal-finish-button` }
-                                loading={ isSubmitting }
+                                }}
+                                data-componentid={`${componentId}-modal-finish-button`}
+                                loading={isSubmitting}
                             >
-                                { t("console:develop.features.authenticationProvider.wizards.buttons.finish") }
+                                {t("console:develop.features.authenticationProvider.wizards.buttons.finish")}
                             </PrimaryButton>
-                        ) }
-                        { currentWizardStep > 0 && (
+                        )}
+                        {currentWizardStep > 0 && (
                             <LinkButton
                                 type="submit"
                                 floated="right"
-                                onClick={ () => wizardRef.current.gotoPreviousPage() }
-                                data-componentid={ `${ componentId }-modal-previous-button` }>
-                                <Icon name="arrow left"/>
-                                { t("console:develop.features.authenticationProvider.wizards.buttons." +
-                                    "previous") }
+                                onClick={() => wizardRef.current.gotoPreviousPage()}
+                                data-componentid={`${componentId}-modal-previous-button`}
+                            >
+                                <Icon name="arrow left" />
+                                {t("console:develop.features.authenticationProvider.wizards.buttons." + "previous")}
                             </LinkButton>
-                        ) }
+                        )}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -346,10 +337,7 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
      * Resolves the content of wizard pages.
      */
     const resolveWizardPages = (): Array<ReactElement> => {
-        return [
-            wizardConfigurationPage(),
-            wizardAttributesPage()
-        ];
+        return [wizardConfigurationPage(), wizardAttributesPage()];
     };
 
     /**
@@ -358,7 +346,6 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
      * @returns Configurations wizard page.
      */
     const wizardConfigurationPage = (): ReactElement => {
-
         /**
          * Validates the configuration page data.
          *
@@ -366,19 +353,18 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
          * @returns error message to be displayed if there is a validation error.
          */
         const validateConfigurationPage = (values: any): string => {
-
             const nameValidationError: string = validateIDVPName(values?.name, idvpList.identityVerificationProviders);
 
-            if(nameValidationError) {
+            if (nameValidationError) {
                 setIsNextDisabled(true);
 
                 return nameValidationError;
             }
 
-            for(const setting of uiMetaData?.pages?.edit?.settings) {
-                const configurationValidationError: string = performValidations( values[setting.name], setting);
+            for (const setting of uiMetaData?.pages?.edit?.settings) {
+                const configurationValidationError: string = performValidations(values[setting.name], setting);
 
-                if(configurationValidationError) {
+                if (configurationValidationError) {
                     setIsNextDisabled(true);
 
                     return configurationValidationError;
@@ -388,26 +374,25 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
         };
 
         return (
-            <WizardPage
-                validate={ validateConfigurationPage }
-            >
+            <WizardPage validate={validateConfigurationPage}>
                 <Field.Input
                     ariaLabel="name"
                     inputType="resource_name"
                     name="name"
-                    label={ t("console:develop.features.idvp.forms.generalDetails.name.label") }
-                    required={ true }
-                    message={ t("console:develop.features.idvp.forms.generalDetails.name.validations.empty") }
-                    placeholder={ t("console:develop.features.idvp.forms.generalDetails.name.placeholder") }
-                    validate={ (value: string) => validateIDVPName(value, idvpList.identityVerificationProviders) }
-                    maxLength={ IdentityVerificationProviderConstants.IDVP_NAME_MAX_LENGTH }
-                    minLength={ IdentityVerificationProviderConstants.IDVP_NAME_MIN_LENGTH }
-                    format={ (values: any) => values.toString().trimStart() }
-                    data-componentid={ `${ componentId }-form-wizard-idvp-name` }
-                    hint={ t("console:develop.features.idvp.forms.generalDetails.name.hint") }
+                    label={t("console:develop.features.idvp.forms.generalDetails.name.label")}
+                    required={true}
+                    message={t("console:develop.features.idvp.forms.generalDetails.name.validations.empty")}
+                    placeholder={t("console:develop.features.idvp.forms.generalDetails.name.placeholder")}
+                    validate={(value: string) => validateIDVPName(value, idvpList.identityVerificationProviders)}
+                    maxLength={IdentityVerificationProviderConstants.IDVP_NAME_MAX_LENGTH}
+                    minLength={IdentityVerificationProviderConstants.IDVP_NAME_MIN_LENGTH}
+                    format={(values: any) => values.toString().trimStart()}
+                    data-componentid={`${componentId}-form-wizard-idvp-name`}
+                    hint={t("console:develop.features.idvp.forms.generalDetails.name.hint")}
                 />
-                { renderFormUIWithMetadata(uiMetaData?.pages?.edit?.settings, idvpTemplate) }
-            </WizardPage>);
+                {renderFormUIWithMetadata(uiMetaData?.pages?.edit?.settings, idvpTemplate)}
+            </WizardPage>
+        );
     };
 
     /**
@@ -418,11 +403,11 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
     const wizardAttributesPage = (): ReactElement => (
         <WizardPage>
             <AttributesSelectionWizardPage
-                mappedAttributesList={ selectedClaimsWithMapping }
-                initialClaims={ getInitialClaimMappingsFromTemplate(idvpTemplate.claims) }
-                hideIdentityClaimAttributes={ true }
-                data-componentid={ `${ componentId }-attribute-settings` }
-                setMappedAttributeList={ setSelectedClaimsWithMapping }
+                mappedAttributesList={selectedClaimsWithMapping}
+                initialClaims={getInitialClaimMappingsFromTemplate(idvpTemplate.claims)}
+                hideIdentityClaimAttributes={true}
+                data-componentid={`${componentId}-attribute-settings`}
+                setMappedAttributeList={setSelectedClaimsWithMapping}
             />
         </WizardPage>
     );
@@ -434,14 +419,13 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
      * @returns void
      */
     const handleFormSubmit = (values: WizardFormValuesInterface): void => {
-
         // Update the name and description on the template with the values from the form.
         idvpTemplate.Name = values?.name ?? idvpTemplate.Name;
         idvpTemplate.description = values?.description ?? idvpTemplate.description;
 
         // Update the config properties on the template with the values from the form.
-        for(const configs of idvpTemplate?.configProperties) {
-            if(values[configs?.key]){
+        for (const configs of idvpTemplate?.configProperties) {
+            if (values[configs?.key]) {
                 configs.value = values[configs?.key];
             }
         }
@@ -464,18 +448,15 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
     const renderWizardHeader = (): ReactElement => (
         <div className="display-flex">
             <GenericIcon
-                icon={ resolveIDVPImage(selectedTemplateType.image) }
+                icon={resolveIDVPImage(selectedTemplateType.image)}
                 size="x30"
                 transparent
-                spaced={ "right" }
-                data-componentid={ `${ componentId }-image` }/>
+                spaced={"right"}
+                data-componentid={`${componentId}-image`}
+            />
             <div>
-                { selectedTemplateType.name }
-                { selectedTemplateType.description && (
-                    <Heading as="h6">
-                        { selectedTemplateType.description }
-                    </Heading>
-                ) }
+                {selectedTemplateType.name}
+                {selectedTemplateType.description && <Heading as="h6">{selectedTemplateType.description}</Heading>}
             </div>
         </div>
     );
@@ -486,15 +467,10 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
      * @returns rendered step
      */
     const renderStepsGroup = (): ReactElement => (
-        <Steps.Group
-            current={ currentWizardStep }>
-            { wizardSteps.map((step: WizardStepInterface, index: number) => (
-                <Steps.Step
-                    active
-                    key={ index }
-                    icon={ step.icon }
-                    title={ step.title }/>
-            )) }
+        <Steps.Group current={currentWizardStep}>
+            {wizardSteps.map((step: WizardStepInterface, index: number) => (
+                <Steps.Step active key={index} icon={step.icon} title={step.title} />
+            ))}
         </Steps.Group>
     );
 
@@ -505,57 +481,58 @@ export const IdvpCreateWizard: FunctionComponent<IDVPCreateWizardInterface> = (
      */
     const renderWizardContent = () => (
         <>
-            { alert && alertComponent }
-            { isIDVPListRequestLoading ? <ContentLoader/> : (
+            {alert && alertComponent}
+            {isIDVPListRequestLoading ? (
+                <ContentLoader />
+            ) : (
                 <Wizard2
-                    id={ WIZARD_ID }
-                    ref={ wizardRef }
-                    onSubmit={ handleFormSubmit }
-                    uncontrolledForm={ true }
-                    pageChanged={ (index: number) => setCurrentWizardStep(index) }
-                    data-componentid={ componentId }>
-                    { resolveWizardPages() }
+                    id={WIZARD_ID}
+                    ref={wizardRef}
+                    onSubmit={handleFormSubmit}
+                    uncontrolledForm={true}
+                    pageChanged={(index: number) => setCurrentWizardStep(index)}
+                    data-componentid={componentId}
+                >
+                    {resolveWizardPages()}
                 </Wizard2>
-            ) }
+            )}
         </>
     );
 
-    return (showWizard && !isIDVPListRequestLoading && !isIDVPTemplateRequestLoading && !isUIMetadataLoading)
-        ? (
-            <ModalWithSidePanel
-                open={ showWizard }
-                className="wizard identity-verification-provider-create-wizard"
-                dimmer="blurring"
-                onClose={ onWizardClose }
-                closeOnDimmerClick={ false }
-                closeOnEscape
-                data-componentid={ `${ componentId }-modal` }>
-                <ModalWithSidePanel.MainPanel>
-                    <ModalWithSidePanel.Header
-                        className="wizard-header"
-                        data-componentid={ `${ componentId }-modal-header` }>
-                        { renderWizardHeader() }
-                    </ModalWithSidePanel.Header>
-                    <React.Fragment>
-                        <ModalWithSidePanel.Content
-                            className="steps-container"
-                            data-componentid={ `${ componentId }-modal-content-1` }>
-                            { renderStepsGroup() }
-                        </ModalWithSidePanel.Content>
-                        <ModalWithSidePanel.Content
-                            className="content-container"
-                            data-componentid={ `${ componentId }-modal-content-2` }>
-                            { renderWizardContent() }
-                        </ModalWithSidePanel.Content>
-                    </React.Fragment>
-                    <ModalWithSidePanel.Actions
-                        data-componentid={ `${ componentId }-modal-actions` }>
-                        { resolveStepActions() }
-                    </ModalWithSidePanel.Actions>
-                </ModalWithSidePanel.MainPanel>
-            </ModalWithSidePanel>
-        )
-        : null;
+    return showWizard && !isIDVPListRequestLoading && !isIDVPTemplateRequestLoading && !isUIMetadataLoading ? (
+        <ModalWithSidePanel
+            open={showWizard}
+            className="wizard identity-verification-provider-create-wizard"
+            dimmer="blurring"
+            onClose={onWizardClose}
+            closeOnDimmerClick={false}
+            closeOnEscape
+            data-componentid={`${componentId}-modal`}
+        >
+            <ModalWithSidePanel.MainPanel>
+                <ModalWithSidePanel.Header className="wizard-header" data-componentid={`${componentId}-modal-header`}>
+                    {renderWizardHeader()}
+                </ModalWithSidePanel.Header>
+                <React.Fragment>
+                    <ModalWithSidePanel.Content
+                        className="steps-container"
+                        data-componentid={`${componentId}-modal-content-1`}
+                    >
+                        {renderStepsGroup()}
+                    </ModalWithSidePanel.Content>
+                    <ModalWithSidePanel.Content
+                        className="content-container"
+                        data-componentid={`${componentId}-modal-content-2`}
+                    >
+                        {renderWizardContent()}
+                    </ModalWithSidePanel.Content>
+                </React.Fragment>
+                <ModalWithSidePanel.Actions data-componentid={`${componentId}-modal-actions`}>
+                    {resolveStepActions()}
+                </ModalWithSidePanel.Actions>
+            </ModalWithSidePanel.MainPanel>
+        </ModalWithSidePanel>
+    ) : null;
 };
 
 /**

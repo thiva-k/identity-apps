@@ -16,20 +16,26 @@
  * under the License.
  */
 
-import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
+declare module "*.json" {
+    const value: any;
 
-export const getAddDialectWizardStepIcons = (): {
-    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-} => {
-    return {
-        general: DocumentIcon as any
-    };
-};
+    export default value;
+}
 
-export const getAddLocalClaimWizardStepIcons = (): {
-    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-} => {
-    return {
-        general: DocumentIcon as any
-    };
-};
+declare module "*.svg" {
+    import React = require("react");
+
+    export const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+    const src: string;
+
+    export default src;
+}
+
+declare module "*.png" {
+    const content: string;
+
+    export default content;
+}
+
+declare module "*.md";
+

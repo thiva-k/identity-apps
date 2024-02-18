@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -16,13 +17,13 @@
  * under the License.
  */
 
-import { AcceptHeaderValues ,HttpMethods } from "@wso2is/core/models";
-import { store } from "../../core";
+import { AcceptHeaderValues, HttpMethods } from "@wso2is/core/models";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../core/hooks/use-request";
+} from "@wso2is/feature-hooks.common/use-request";
+import { store } from "@wso2is/feature-store.common";
 import { IDVPTypeMetadataInterface, IdentityVerificationProviderInterface, UIMetaDataForIDVP } from "../models";
 
 /**
@@ -35,13 +36,13 @@ export const useUIMetadata = <Data = UIMetaDataForIDVP, Error = RequestErrorInte
 ): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": AcceptHeaderValues.APP_JSON
+            Accept: AcceptHeaderValues.APP_JSON
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.IDVPExtensionEndpoint }/${ idvpType }/metadata`
+        url: `${store.getState().config.endpoints.IDVPExtensionEndpoint}/${idvpType}/metadata`
     };
     // If the idvpType is not set, passing null to the useRequest hook will abort the request.
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>( idvpType? requestConfig : null);
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(idvpType ? requestConfig : null);
 
     return {
         data,
@@ -56,18 +57,19 @@ export const useUIMetadata = <Data = UIMetaDataForIDVP, Error = RequestErrorInte
  * A hook to get the list of IDVP template types
  * @returns - List of IDVP template types
  */
-export const useIDVPTemplateTypeMetadataList = <Data = IDVPTypeMetadataInterface[], Error = RequestErrorInterface>(
-
-): RequestResultInterface<Data, Error> => {
+export const useIDVPTemplateTypeMetadataList = <
+    Data = IDVPTypeMetadataInterface[],
+    Error = RequestErrorInterface
+>(): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": AcceptHeaderValues.APP_JSON
+            Accept: AcceptHeaderValues.APP_JSON
         },
         method: HttpMethods.GET,
         url: store.getState().config.endpoints.IDVPExtensionEndpoint
     };
 
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>( requestConfig );
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
 
     return {
         data,
@@ -88,14 +90,14 @@ export const useIDVPTemplateTypeMetadata = <Data = IDVPTypeMetadataInterface, Er
 ): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": AcceptHeaderValues.APP_JSON
+            Accept: AcceptHeaderValues.APP_JSON
         },
         method: HttpMethods.GET,
-        url: store.getState().config.endpoints.IDVPExtensionEndpoint + "/"+ idvpType
+        url: store.getState().config.endpoints.IDVPExtensionEndpoint + "/" + idvpType
     };
 
     // IF the idvpType is not set, passing null to the useRequest hook will abort the request.
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>( idvpType ? requestConfig : null );
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(idvpType ? requestConfig : null);
 
     return {
         data,
@@ -116,14 +118,14 @@ export const useIDVPTemplate = <Data = IdentityVerificationProviderInterface, Er
 ): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": AcceptHeaderValues.APP_JSON
+            Accept: AcceptHeaderValues.APP_JSON
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.IDVPExtensionEndpoint }/${ idvpType }/template`
+        url: `${store.getState().config.endpoints.IDVPExtensionEndpoint}/${idvpType}/template`
     };
 
     // IF the idvpType is not set, passing null to the useRequest hook will abort the request.
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>( idvpType ? requestConfig : null );
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(idvpType ? requestConfig : null);
 
     return {
         data,

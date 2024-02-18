@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -18,12 +19,13 @@
 
 import { Show } from "@wso2is/access-control";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { AppConstants, UIConstants } from "@wso2is/feature-constants.common";
+import { history } from "@wso2is/feature-helpers.common";
 import { ListLayout, PageLayout, PrimaryButton } from "@wso2is/react-components";
 import React, { FunctionComponent, MouseEvent, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
-import { AppConstants, UIConstants, history } from "../../core";
 import { useIDVPTemplateTypeMetadataList, useIdentityVerificationProviderList } from "../api";
 import { IdentityVerificationProviderList } from "../components";
 import { IdentityVerificationProviderConstants } from "../constants";
@@ -40,8 +42,8 @@ const IdentityVerificationProvidersPage: FunctionComponent<IDVPPropsInterface> =
     const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ listOffset, setListOffset ] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [listOffset, setListOffset] = useState<number>(0);
     const {
         data: idvpList,
         isLoading: isIDVPListRequestLoading,
@@ -58,22 +60,22 @@ const IdentityVerificationProvidersPage: FunctionComponent<IDVPPropsInterface> =
     /**
      * Displays error notification if the API fetch request for IDVP list failed.
      */
-    useEffect( () => {
+    useEffect(() => {
         if (!idvpListFetchRequestError) {
             return;
         }
         handleIdvpListFetchRequestError(idvpListFetchRequestError);
-    } , [ idvpListFetchRequestError ]);
+    }, [idvpListFetchRequestError]);
 
     /**
      * Displays error notification if the API fetch request for IDVP template type list failed.
      */
     useEffect(() => {
-        if (!idvpTemplateTypeRequestError){
+        if (!idvpTemplateTypeRequestError) {
             return;
         }
         handleIDVPTemplateRequestError(idvpTemplateTypeRequestError);
-    }, [ idvpTemplateTypeRequestError ]);
+    }, [idvpTemplateTypeRequestError]);
 
     /**
      * Handles item per page dropdown page.
@@ -110,56 +112,57 @@ const IdentityVerificationProvidersPage: FunctionComponent<IDVPPropsInterface> =
         <PageLayout
             pageTitle="Identity Verification Providers"
             action={
-                (!isIDVPListRequestLoading && (idvpList?.identityVerificationProviders?.length > 0)) &&
-                (
-                    <Show when={ AccessControlConstants.IDVP_WRITE }>
+                !isIDVPListRequestLoading &&
+                idvpList?.identityVerificationProviders?.length > 0 && (
+                    <Show when={AccessControlConstants.IDVP_WRITE}>
                         <PrimaryButton
-                            onClick={ (): void => {
-                                history.push(AppConstants.getPaths().get(
-                                    IdentityVerificationProviderConstants.IDVP_TEMPLATE_PATH
-                                ));
-                            } }
-                            data-componentid={ `${ componentId }-add-button` }
+                            onClick={(): void => {
+                                history.push(
+                                    AppConstants.getPaths().get(
+                                        IdentityVerificationProviderConstants.IDVP_TEMPLATE_PATH
+                                    )
+                                );
+                            }}
+                            data-componentid={`${componentId}-add-button`}
                         >
-                            <Icon name="add"/> { t("console:develop.features.idvp.buttons.addIDVP") }
+                            <Icon name="add" /> {t("console:develop.features.idvp.buttons.addIDVP")}
                         </PrimaryButton>
                     </Show>
                 )
             }
-            title={ t("console:develop.pages.idvp.title") }
-            description={ t("console:develop.pages.idvp.subTitle") }
-            data-componentid={ `${ componentId }-page-layout` }
-            actionColumnWidth={ 6 }
-            headingColumnWidth={ 10 }
+            title={t("console:develop.pages.idvp.title")}
+            description={t("console:develop.pages.idvp.subTitle")}
+            data-componentid={`${componentId}-page-layout`}
+            actionColumnWidth={6}
+            headingColumnWidth={10}
         >
             <ListLayout
-                isLoading={ isIDVPListRequestLoading || isIDVPTemplateTypeRequestLoading }
-                currentListSize={ idvpList?.count ?? 0 }
-                listItemLimit={ listItemLimit }
-                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                onPageChange={ handlePaginationChange }
-                showPagination={ true }
-                showTopActionPanel={ false }
-                totalPages={
-                    Math.ceil((idvpList?.totalResults ?? 1) / listItemLimit)
-                }
-                totalListSize={ idvpList?.totalResults ?? 0 }
-                data-componentid={ `${ componentId }-list-layout` }
+                isLoading={isIDVPListRequestLoading || isIDVPTemplateTypeRequestLoading}
+                currentListSize={idvpList?.count ?? 0}
+                listItemLimit={listItemLimit}
+                onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                onPageChange={handlePaginationChange}
+                showPagination={true}
+                showTopActionPanel={false}
+                totalPages={Math.ceil((idvpList?.totalResults ?? 1) / listItemLimit)}
+                totalListSize={idvpList?.totalResults ?? 0}
+                data-componentid={`${componentId}-list-layout`}
             >
                 <IdentityVerificationProviderList
-                    isLoading={ isIDVPListRequestLoading || isIDVPTemplateTypeRequestLoading }
-                    idvpList={ idvpList }
-                    idvpTemplateTypeList={ idvpTemplateTypes }
-                    onEmptyListPlaceholderActionClick={ () =>
+                    isLoading={isIDVPListRequestLoading || isIDVPTemplateTypeRequestLoading}
+                    idvpList={idvpList}
+                    idvpTemplateTypeList={idvpTemplateTypes}
+                    onEmptyListPlaceholderActionClick={() =>
                         history.push(
                             AppConstants.getPaths().get(IdentityVerificationProviderConstants.IDVP_TEMPLATE_PATH)
                         )
                     }
-                    onIdentityVerificationProviderDelete={ onIdentityVerificationProviderDelete }
-                    data-componentid={ `${ componentId }-list` }
+                    onIdentityVerificationProviderDelete={onIdentityVerificationProviderDelete}
+                    data-componentid={`${componentId}-list`}
                 />
             </ListLayout>
-        </PageLayout>);
+        </PageLayout>
+    );
 };
 
 export default IdentityVerificationProvidersPage;

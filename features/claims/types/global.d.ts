@@ -16,20 +16,18 @@
  * under the License.
  */
 
-import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
+declare global {
+    interface Window {
+        themeHash: any;
+        publicPath: any;
+    }
 
-export const getAddDialectWizardStepIcons = (): {
-    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-} => {
-    return {
-        general: DocumentIcon as any
-    };
-};
+    const contextPathGlobal: string;
+    const serverOriginGlobal: string;
+    const superTenantGlobal: string;
+    const tenantPrefixGlobal: string;
+    const isAdaptiveAuthenticationAvailable: boolean;
+    const isOrganizationManagementEnabled: boolean;
+}
 
-export const getAddLocalClaimWizardStepIcons = (): {
-    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
-} => {
-    return {
-        general: DocumentIcon as any
-    };
-};
+export {};

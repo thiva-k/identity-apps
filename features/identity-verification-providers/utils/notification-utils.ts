@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2023, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ * Copyright (c) {{year}}, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -19,9 +19,9 @@
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AlertLevels } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
+import { store } from "@wso2is/feature-store.common";
 import { I18n } from "@wso2is/i18n";
 import { AxiosError } from "axios";
-import { store } from "../../core";
 
 /**
  * Show an alert with an error message if the IDVP delete API call fails.
@@ -30,8 +30,7 @@ import { store } from "../../core";
  * @returns void
  */
 export const handleIDVPDeleteError = (error: IdentityAppsApiException): void => {
-
-    if(!error){
+    if (!error) {
         return;
     }
 
@@ -43,9 +42,7 @@ export const handleIDVPDeleteError = (error: IdentityAppsApiException): void => 
                     { description: error.response.data.description }
                 ),
                 level: AlertLevels.ERROR,
-                message: I18n.instance.t(
-                    "console:develop.features.idvp.notifications.deleteIDVP.error.message"
-                )
+                message: I18n.instance.t("console:develop.features.idvp.notifications.deleteIDVP.error.message")
             })
         );
 
@@ -69,7 +66,6 @@ export const handleIDVPDeleteError = (error: IdentityAppsApiException): void => 
  * @returns void
  */
 export const handleIDVPDeleteSuccess = (): void => {
-
     store.dispatch(
         addAlert({
             description: I18n.instance.t("console:develop.features.idvp.notifications.deleteIDVP.success.description"),
@@ -85,7 +81,6 @@ export const handleIDVPDeleteSuccess = (): void => {
  * @returns void
  */
 export const handleIDVPUpdateSuccess = (): void => {
-
     store.dispatch(
         addAlert({
             description: I18n.instance.t("console:develop.features.idvp.notifications.updateIDVP.success.description"),
@@ -102,8 +97,7 @@ export const handleIDVPUpdateSuccess = (): void => {
  * @returns void
  */
 export const handleIDVPUpdateError = (error: IdentityAppsApiException): void => {
-
-    if(!error){
+    if (!error) {
         return;
     }
 
@@ -115,9 +109,7 @@ export const handleIDVPUpdateError = (error: IdentityAppsApiException): void => 
                     { description: error.response.data.description }
                 ),
                 level: AlertLevels.ERROR,
-                message: I18n.instance.t(
-                    "console:develop.features.idvp.notifications.updateIDVP.error.message"
-                )
+                message: I18n.instance.t("console:develop.features.idvp.notifications.updateIDVP.error.message")
             })
         );
 
@@ -142,8 +134,7 @@ export const handleIDVPUpdateError = (error: IdentityAppsApiException): void => 
  * @returns void
  */
 export const handleIDVPTemplateRequestError = (error: AxiosError): void => {
-
-    if(!error){
+    if (!error) {
         return;
     }
 
@@ -184,7 +175,6 @@ export const handleIDVPTemplateRequestError = (error: AxiosError): void => {
  * @returns void
  */
 export const handleIDVPTemplateTypesLoadError = (error: AxiosError): void => {
-
     if (!error) {
         return;
     }
@@ -226,7 +216,6 @@ export const handleIDVPTemplateTypesLoadError = (error: AxiosError): void => {
  * @returns void
  */
 export const handleIdvpListFetchRequestError = (idvpListFetchRequestError: AxiosError): void => {
-
     if (!idvpListFetchRequestError) {
         return;
     }
@@ -251,9 +240,7 @@ export const handleIdvpListFetchRequestError = (idvpListFetchRequestError: Axios
                 "console:develop.features.idvp.notifications.getIDVPList.genericError.description"
             ),
             level: AlertLevels.ERROR,
-            message: I18n.instance.t(
-                "console:develop.features.idvp.notifications.getIDVPList.genericError.message"
-            )
+            message: I18n.instance.t("console:develop.features.idvp.notifications.getIDVPList.genericError.message")
         })
     );
 };
@@ -264,8 +251,7 @@ export const handleIdvpListFetchRequestError = (idvpListFetchRequestError: Axios
  * @param uiMetaDataLoadError - Error response from API request.
  * @returns void
  */
-export const handleUIMetadataLoadError = (uiMetaDataLoadError: AxiosError): void=> {
-
+export const handleUIMetadataLoadError = (uiMetaDataLoadError: AxiosError): void => {
     if (!uiMetaDataLoadError) {
         return;
     }
@@ -302,7 +288,6 @@ export const handleUIMetadataLoadError = (uiMetaDataLoadError: AxiosError): void
  * @param idvpTemplateFetchRequestError - Error response from API request.
  */
 export const handleIDVPTemplateFetchRequestError = (idvpTemplateFetchRequestError: AxiosError): void => {
-
     if (!idvpTemplateFetchRequestError) {
         return;
     }
@@ -340,7 +325,6 @@ export const handleIDVPTemplateFetchRequestError = (idvpTemplateFetchRequestErro
  * @returns void
  */
 export const handleIDVPFetchRequestError = (idvpFetchError: AxiosError): void => {
-
     if (!idvpFetchError) {
         return;
     }
@@ -348,10 +332,9 @@ export const handleIDVPFetchRequestError = (idvpFetchError: AxiosError): void =>
     if (idvpFetchError?.response?.data?.description) {
         store.dispatch(
             addAlert({
-                description: I18n.instance.t(
-                    "console:develop.features.idvp.notifications.getIDVP.error.description",
-                    { description: idvpFetchError.response.data.description }
-                ),
+                description: I18n.instance.t("console:develop.features.idvp.notifications.getIDVP.error.description", {
+                    description: idvpFetchError.response.data.description
+                }),
                 level: AlertLevels.ERROR,
                 message: I18n.instance.t("console:develop.features.idvp.notifications.getIDVP.error.message")
             })

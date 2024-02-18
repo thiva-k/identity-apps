@@ -17,6 +17,7 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import { getEmptyPlaceholderIllustrations } from "@wso2is/feature-configs.common";
 import { Field, Form } from "@wso2is/form";
 import { ContentLoader, EmptyPlaceholder, Heading, Hint, LinkButton, PrimaryButton } from "@wso2is/react-components";
 import isEmpty from "lodash-es/isEmpty";
@@ -26,7 +27,6 @@ import { Divider, Grid, Icon, Segment } from "semantic-ui-react";
 import { AddAttributeSelectionModal } from "./attribute-selection-modal";
 import { AttributeMappingList } from "./attributes-mapping-list";
 import { fetchAllLocalClaims } from "./utils/claim-utils";
-import { getEmptyPlaceholderIllustrations } from "../../../../core";
 import { IDVPClaimMappingInterface, IDVPLocalClaimInterface } from "../../../models";
 
 /**
@@ -72,22 +72,21 @@ const FORM_ID: string = "idvp-attribute-selection-form";
 export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = (
     props: AttributesSelectionProps
 ): ReactElement => {
-
     const {
         initialClaims,
         mappedAttributesList,
         setMappedAttributes,
         hideIdentityClaimAttributes,
         isReadOnly,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     // Manage available local claims.
-    const [ availableLocalClaims, setAvailableLocalClaims ] = useState<IDVPLocalClaimInterface[]>([]);
-    const [ isLocalClaimsLoading, setIsLocalClaimsLoading ] = useState<boolean>(true);
-    const [ showAddModal, setShowAddModal ] = useState<boolean>(false);
-    const [ searchQuery, setSearchQuery ] = useState<string | undefined>(undefined);
-    const [ mappedAttrIds, setMappedAttrIds ] = useState<string[]>([]);
+    const [availableLocalClaims, setAvailableLocalClaims] = useState<IDVPLocalClaimInterface[]>([]);
+    const [isLocalClaimsLoading, setIsLocalClaimsLoading] = useState<boolean>(true);
+    const [showAddModal, setShowAddModal] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
+    const [mappedAttrIds, setMappedAttrIds] = useState<string[]>([]);
 
     const { t } = useTranslation();
 
@@ -109,7 +108,7 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
         }
 
         setMappedAttrIds(ids);
-    }, [ availableLocalClaims ]);
+    }, [availableLocalClaims]);
 
     /**
      * Set initial value for claim mapping.
@@ -119,13 +118,12 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
             return;
         }
         setInitialValues();
-    }, [ availableLocalClaims ]);
+    }, [availableLocalClaims]);
 
     /**
      *  Process and set initial claims values to mapped attributes.
      */
     const setInitialValues = () => {
-
         if (!initialClaims) {
             return;
         }
@@ -155,34 +153,36 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
      */
     const _noAttributesSelectedModalPlaceholder = (): ReactElement => {
         return (
-            <Segment data-componentid={ componentId }>
+            <Segment data-componentid={componentId}>
                 <EmptyPlaceholder
-                    title={
-                        t("console:develop.features.idvp.forms.attributeSettings.attributeMapping." +
-                            "emptyPlaceholderEdit.title")
-                    }
-                    subtitle={ [
-                        <p key={ "no-attributes-configured" }>
-                            {
-                                t("console:develop.features.idvp.forms.attributeSettings.attributeMapping." +
-                                    "emptyPlaceholderEdit.subtitle")
-                            }
+                    title={t(
+                        "console:develop.features.idvp.forms.attributeSettings.attributeMapping." +
+                            "emptyPlaceholderEdit.title"
+                    )}
+                    subtitle={[
+                        <p key={"no-attributes-configured"}>
+                            {t(
+                                "console:develop.features.idvp.forms.attributeSettings.attributeMapping." +
+                                    "emptyPlaceholderEdit.subtitle"
+                            )}
                         </p>
-                    ] }
-                    action={ !isReadOnly && (
-                        <PrimaryButton
-                            onClick={ (e: React.MouseEvent<HTMLButtonElement>) => {
-                                e.preventDefault();
-                                setShowAddModal(true);
-                            } }
-                        >
-                            <Icon name="add"/>
-                            { t("console:develop.features.idvp.forms.attributeSettings.attributeMapping.addButton") }
-                        </PrimaryButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptyList }
+                    ]}
+                    action={
+                        !isReadOnly && (
+                            <PrimaryButton
+                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                                    e.preventDefault();
+                                    setShowAddModal(true);
+                                }}
+                            >
+                                <Icon name="add" />
+                                {t("console:develop.features.idvp.forms.attributeSettings.attributeMapping.addButton")}
+                            </PrimaryButton>
+                        )
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptyList}
                     imageSize="tiny"
-                    data-componentid={ `${ componentId }-empty-placeholder` }
+                    data-componentid={`${componentId}-empty-placeholder`}
                 />
             </Segment>
         );
@@ -197,19 +197,19 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
     const _attributesListSearchResultsEmptyPlaceholder = (): ReactElement => {
         return (
             <EmptyPlaceholder
-                action={ (
-                    <LinkButton onClick={ () => setSearchQuery(undefined) }>
-                        { t("console:manage.placeholders.emptySearchResult.action") }
+                action={
+                    <LinkButton onClick={() => setSearchQuery(undefined)}>
+                        {t("console:manage.placeholders.emptySearchResult.action")}
                     </LinkButton>
-                ) }
-                image={ getEmptyPlaceholderIllustrations().emptySearch }
+                }
+                image={getEmptyPlaceholderIllustrations().emptySearch}
                 imageSize="tiny"
-                title={ t("console:manage.placeholders.emptySearchResult.title") }
-                subtitle={ [
+                title={t("console:manage.placeholders.emptySearchResult.title")}
+                subtitle={[
                     t("console:manage.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                     t("console:manage.placeholders.emptySearchResult.subtitles.1")
-                ] }
-                data-componentid={ `${ componentId }-empty-search-placeholder` }
+                ]}
+                data-componentid={`${componentId}-empty-search-placeholder`}
             />
         );
     };
@@ -231,8 +231,7 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
      * @returns void
      */
     const onSave = (mappingsToBeAdded: IDVPClaimMappingInterface[]): void => {
-
-        setMappedAttributes([ ...mappedAttributesList, ...mappingsToBeAdded ]);
+        setMappedAttributes([...mappedAttributesList, ...mappingsToBeAdded]);
         setShowAddModal(false);
     };
 
@@ -242,7 +241,6 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
      * @returns Filtered mapped attributes list by the search query.
      */
     const getFilteredAttributeMappings = (): IDVPClaimMappingInterface[] => {
-
         return mappedAttributesList.filter((mapping: IDVPClaimMappingInterface) => {
             if (searchQuery) {
                 return mapping.idvpClaim.startsWith(searchQuery) || mapping.localClaim?.id.startsWith(searchQuery);
@@ -250,7 +248,6 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
 
             return true;
         });
-
     };
 
     /**
@@ -273,10 +270,9 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
      * @returns void
      */
     const handleAttributeMappingDeletion = (deletedMapping: IDVPClaimMappingInterface): void => {
-
         setMappedAttributes([
             ...mappedAttributesList?.filter(
-                (attribute: IDVPClaimMappingInterface ) => (attribute.localClaim?.id !== deletedMapping.localClaim?.id)
+                (attribute: IDVPClaimMappingInterface) => attribute.localClaim?.id !== deletedMapping.localClaim?.id
             )
         ]);
     };
@@ -290,12 +286,11 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
      */
     const handleEditAttributeMapping = (
         previous: IDVPClaimMappingInterface,
-        current:IDVPClaimMappingInterface
+        current: IDVPClaimMappingInterface
     ): void => {
-
         setMappedAttributes([
             ...mappedAttributesList.filter(
-                (attribute: IDVPClaimMappingInterface) => ( attribute?.localClaim?.id !== previous.localClaim?.id)
+                (attribute: IDVPClaimMappingInterface) => attribute?.localClaim?.id !== previous.localClaim?.id
             ),
             current
         ]);
@@ -309,94 +304,95 @@ export const AttributesSelection: FunctionComponent<AttributesSelectionProps> = 
     const getAttributeMappingListComponent = () => {
         return (
             <AttributeMappingList
-                alreadyMappedAttributesList={ [ ...mappedAttributesList ] }
-                attributeMappingsListToShow={ getFilteredAttributeMappings() }
-                noDataPlaceholder={ _attributesListSearchResultsEmptyPlaceholder() }
-                availableAttributesList={ getRemainingUnmappedAttributes() }
-                onMappingDeleted={ handleAttributeMappingDeletion }
-                onMappingEdited={ handleEditAttributeMapping }
-                readOnly={ isReadOnly }
+                alreadyMappedAttributesList={[...mappedAttributesList]}
+                attributeMappingsListToShow={getFilteredAttributeMappings()}
+                noDataPlaceholder={_attributesListSearchResultsEmptyPlaceholder()}
+                availableAttributesList={getRemainingUnmappedAttributes()}
+                onMappingDeleted={handleAttributeMappingDeletion}
+                onMappingEdited={handleEditAttributeMapping}
+                readOnly={isReadOnly}
             />
         );
     };
 
-    return (
-        isLocalClaimsLoading ? <ContentLoader/> : (
-            <Grid>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column computer={ 16 } tablet={ 16 } largeScreen={ 16 } widescreen={ 16 }>
-                        <Heading as="h4">
-                            { t("console:develop.features.idvp.forms.attributeSettings.attributeMapping.heading") }
-                        </Heading>
-                        <Hint compact>
-                            { t("console:develop.features.idvp.forms.attributeSettings.attributeMapping.hint") }
-                        </Hint>
-                        <Divider hidden/>
-                        { hasMappedAttributes() ? (
-                            <Segment>
-                                <Grid>
-                                    <Grid.Row columns={ 2 }>
-                                        <Grid.Column width={ isReadOnly ? 16 : 7 }>
-                                            <Form
-                                                id={ FORM_ID }
-                                                onSubmit={ () => ({ /*Noop*/ }) }
-                                                uncontrolledForm={ false }
+    return isLocalClaimsLoading ? (
+        <ContentLoader />
+    ) : (
+        <Grid>
+            <Grid.Row columns={1}>
+                <Grid.Column computer={16} tablet={16} largeScreen={16} widescreen={16}>
+                    <Heading as="h4">
+                        {t("console:develop.features.idvp.forms.attributeSettings.attributeMapping.heading")}
+                    </Heading>
+                    <Hint compact>
+                        {t("console:develop.features.idvp.forms.attributeSettings.attributeMapping.hint")}
+                    </Hint>
+                    <Divider hidden />
+                    {hasMappedAttributes() ? (
+                        <Segment>
+                            <Grid>
+                                <Grid.Row columns={2}>
+                                    <Grid.Column width={isReadOnly ? 16 : 7}>
+                                        <Form
+                                            id={FORM_ID}
+                                            onSubmit={() => ({
+                                                /*Noop*/
+                                            })}
+                                            uncontrolledForm={false}
+                                        >
+                                            <Field.Input
+                                                icon="search"
+                                                iconPosition="left"
+                                                inputType="default"
+                                                maxLength={120}
+                                                minLength={1}
+                                                width={16}
+                                                placeholder="Search mapped attribute"
+                                                listen={(query: string) => setSearchQuery(query)}
+                                                ariaLabel={"Search Field"}
+                                                name={"searchQuery"}
+                                            />
+                                        </Form>
+                                    </Grid.Column>
+                                    <Grid.Column width={9} textAlign="right">
+                                        {!isReadOnly && (
+                                            <PrimaryButton
+                                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
+                                                    e.preventDefault();
+                                                    setShowAddModal(true);
+                                                }}
+                                                data-componentid={`${componentId}-list-layout-add-button`}
                                             >
-                                                <Field.Input
-                                                    icon="search"
-                                                    iconPosition="left"
-                                                    inputType="default"
-                                                    maxLength={ 120 }
-                                                    minLength={ 1 }
-                                                    width={ 16 }
-                                                    placeholder="Search mapped attribute"
-                                                    listen={ (query: string) => setSearchQuery(query) }
-                                                    ariaLabel={ "Search Field" }
-                                                    name={ "searchQuery" }
-                                                />
-                                            </Form>
-                                        </Grid.Column>
-                                        <Grid.Column width={ 9 } textAlign="right">
-                                            { !isReadOnly && (
-                                                <PrimaryButton
-                                                    onClick={ (e: React.MouseEvent<HTMLButtonElement>) => {
-                                                        e.preventDefault();
-                                                        setShowAddModal(true);
-                                                    } }
-                                                    data-componentid={ `${ componentId }-list-layout-add-button` }
-                                                >
-                                                    <Icon name="add"/>
-                                                    {
-                                                        t("console:develop.features.idvp.forms.attributeSettings" +
-                                                        ".attributeMapping.addButton")
-                                                    }
-                                                </PrimaryButton>
-                                            ) }
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                    <Grid.Row columns={ 1 }>
-                                        <Grid.Column width={ 16 }>
-                                            { getAttributeMappingListComponent() }
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
-                            </Segment>
-                        ) : _noAttributesSelectedModalPlaceholder() }
-                    </Grid.Column>
-                </Grid.Row>
-                { showAddModal && (
-                    <AddAttributeSelectionModal
-                        attributeList={ getRemainingUnmappedAttributes() }
-                        alreadyMappedAttributesList={ [ ...mappedAttributesList ] }
-                        show={ showAddModal }
-                        onClose={ onCancel }
-                        onSave={ onSave }
-                    />
-                ) }
-            </Grid>
-        )
+                                                <Icon name="add" />
+                                                {t(
+                                                    "console:develop.features.idvp.forms.attributeSettings" +
+                                                        ".attributeMapping.addButton"
+                                                )}
+                                            </PrimaryButton>
+                                        )}
+                                    </Grid.Column>
+                                </Grid.Row>
+                                <Grid.Row columns={1}>
+                                    <Grid.Column width={16}>{getAttributeMappingListComponent()}</Grid.Column>
+                                </Grid.Row>
+                            </Grid>
+                        </Segment>
+                    ) : (
+                        _noAttributesSelectedModalPlaceholder()
+                    )}
+                </Grid.Column>
+            </Grid.Row>
+            {showAddModal && (
+                <AddAttributeSelectionModal
+                    attributeList={getRemainingUnmappedAttributes()}
+                    alreadyMappedAttributesList={[...mappedAttributesList]}
+                    show={showAddModal}
+                    onClose={onCancel}
+                    onSave={onSave}
+                />
+            )}
+        </Grid>
     );
-
 };
 
 /**
