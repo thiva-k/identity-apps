@@ -22,7 +22,10 @@ import { EmptyPlaceholder, LinkButton, PrimaryButton } from "@wso2is/react-compo
 import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { Icon } from "semantic-ui-react";
-import { AppConstants, getEmptyPlaceholderIllustrations, history } from "../../core";
+import { AppConstants } from "../../feature-constants.common";
+import { getEmptyPlaceholderIllustrations } from "../../feature-configs.common";
+import { history } from "features/feature-helpers.common";
+
 import { FEATURE_BASE_PATH } from "../constants/secrets.common";
 
 /**
