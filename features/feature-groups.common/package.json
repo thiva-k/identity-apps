@@ -33,7 +33,6 @@
         "@wso2is/feature-configs.common": "*",
         "@wso2is/feature-hooks.common": "*",
         "@wso2is/feature-models.common": "*",
-        "@wso2is/feature-utils.common": "*",
         "@wso2is/feature-constants.common": "*",
         "@wso2is/feature-helpers.common": "*",
         "@wso2is/feature-apis.common": "*",
