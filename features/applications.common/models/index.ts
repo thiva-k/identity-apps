@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022, WSO2 Inc. (http://www.wso2.com) All Rights Reserved.
+ * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,5 +16,7 @@
  * under the License.
  */
 
-export * from "./organizations";
+export * from "./application";
+export * from "./application-inbound";
 export * from "./endpoints";
+// export * from "./reducer-state";

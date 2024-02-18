@@ -1808,9 +1808,6 @@ importers:
       '@wso2is/feature-organizations.common':
         specifier: '*'
         version: link:../feature-organizations.common
-      '@wso2is/feature-roles.common':
-        specifier: '*'
-        version: link:../feature-roles.common
       '@wso2is/feature-store.common':
         specifier: '*'
         version: link:../feature-store.common
@@ -2948,9 +2945,6 @@ importers:
       '@wso2is/feature-components.common':
         specifier: '*'
         version: link:../feature-components.common
-      '@wso2is/feature-configs.common':
-        specifier: '*'
-        version: link:../feature-configs.common
       '@wso2is/feature-constants.common':
         specifier: '*'
         version: link:../feature-constants.common
@@ -2966,18 +2960,9 @@ importers:
       '@wso2is/feature-models.common':
         specifier: '*'
         version: link:../feature-models.common
-      '@wso2is/feature-organizations.common':
-        specifier: '*'
-        version: link:../feature-organizations.common
-      '@wso2is/feature-roles.common':
-        specifier: '*'
-        version: link:../feature-roles.common
       '@wso2is/feature-store.common':
         specifier: '*'
         version: link:../feature-store.common
-      '@wso2is/feature-users.common':
-        specifier: '*'
-        version: link:../feature-users.common
       '@wso2is/form':
         specifier: ^2.0.31
         version: link:../../modules/form
@@ -3348,9 +3333,6 @@ importers:
       '@wso2is/feature-hooks.common':
         specifier: '*'
         version: link:../feature-hooks.common
-      '@wso2is/feature-models.common':
-        specifier: '*'
-        version: link:../feature-models.common
       '@wso2is/feature-organizations.common':
         specifier: '*'
         version: link:../feature-organizations.common
@@ -7809,9 +7791,6 @@ importers:
       '@wso2is/feature-hooks.common':
         specifier: '*'
         version: link:../feature-hooks.common
-      '@wso2is/feature-models.common':
-        specifier: '*'
-        version: link:../feature-models.common
       '@wso2is/feature-roles.common':
         specifier: '*'
         version: link:../feature-roles.common
@@ -12959,9 +12938,6 @@ importers:
       '@wso2is/feature-components.common':
         specifier: '*'
         version: link:../feature-components.common
-      '@wso2is/feature-configs.common':
-        specifier: '*'
-        version: link:../feature-configs.common
       '@wso2is/feature-constants.common':
         specifier: '*'
         version: link:../feature-constants.common
@@ -15107,9 +15083,6 @@ importers:
       '@wso2is/feature-components.common':
         specifier: '*'
         version: link:../feature-components.common
-      '@wso2is/feature-configs.common':
-        specifier: '*'
-        version: link:../feature-configs.common
       '@wso2is/feature-constants.common':
         specifier: '*'
         version: link:../feature-constants.common
@@ -16211,9 +16184,6 @@ importers:
       '@wso2is/feature-components.common':
         specifier: '*'
         version: link:../feature-components.common
-      '@wso2is/feature-configs.common':
-        specifier: '*'
-        version: link:../feature-configs.common
       '@wso2is/feature-constants.common':
         specifier: '*'
         version: link:../feature-constants.common

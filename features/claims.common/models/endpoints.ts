@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2022, WSO2 Inc. (http://www.wso2.com) All Rights Reserved.
+ * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com).
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,5 +16,21 @@
  * under the License.
  */
 
-export * from "./organizations";
-export * from "./endpoints";
+/**
+ * Interface for the Claim Management feature resource endpoints.
+ */
+export interface ClaimResourceEndpointsInterface {
+    claims: string;
+    externalClaims: string;
+    localClaims: string;
+    resourceTypes: string;
+}
+
+/**
+ * Interface for the Server Supported Claims resource endpoints.
+ */
+export interface ServerSupportedClaimsInterface {
+    id: string;
+    name: string;
+    attributes: string[];
+}
