@@ -32,6 +32,8 @@ import {
     UserGroupIcon
 } from "@oxygen-ui/react-icons";
 import { LegacyModeInterface, RouteInterface } from "@wso2is/core/models";
+import ApplicationsPage from "@wso2is/features/applications/pages/applications";
+import UsersPage  from "@wso2is/features/users/pages/users";
 import compact from "lodash-es/compact";
 import keyBy from "lodash-es/keyBy";
 import merge from "lodash-es/merge";
@@ -50,8 +52,6 @@ import { AppView, FullScreenView } from "../../../views";
 import { APIResourcesConstants } from "../../api-resources/constants";
 import { ServerConfigurationsConstants } from "../../server-configurations";
 import { AppConstants } from "../constants";
-import UsersPage  from "@wso2is/features/users/pages/users";
-
 /**
  * Get App View Routes.
  *
@@ -89,6 +89,19 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         name: "Home",
                         order: 0,
                         path: AppConstants.getPaths().get("GETTING_STARTED"),
+                        protected: true,
+                        showOnSidePanel: true
+                    },
+                    {
+                        component: ApplicationsPage,
+                        exact: false,
+                        icon: {
+                            icon: getSidePanelIcons().home
+                        },
+                        id: "applications",
+                        name: "Applications",
+                        order: 1,
+                        path: "apptest",
                         protected: true,
                         showOnSidePanel: true
                     },
