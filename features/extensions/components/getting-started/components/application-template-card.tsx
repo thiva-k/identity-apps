@@ -28,7 +28,7 @@ import { ApplicationAddTile } from "./application-add-tile";
 import { ApplicationTile } from "./application-tile";
 import { getApplicationTemplateIllustrations } from "features/applications/configs/ui";
 import CustomApplicationTemplate from
-    "../../../../features/applications/data/application-templates/templates/custom-application/custom-application.json";
+    "features/applications/data/application-templates/templates/custom-application/custom-application.json";
 import {
     ApplicationListItemInterface,
     ApplicationTemplateListItemInterface

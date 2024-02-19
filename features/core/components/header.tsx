@@ -41,7 +41,7 @@ import { organizationConfigs } from "features/extensions";
 import { FeatureGateConstants } from "features/extensions/components/feature-gate/constants/feature-gate";
 import { SubscriptionContext } from "features/extensions/components/subscription/contexts/subscription-context";
 import { TenantTier, TenantTierRequestResponse } from "features/extensions/components/subscription/models/subscription";
-import { ReactComponent as LogoutIcon } from "../../../default/assets/images/icons/logout-icon.svg";
+import { ReactComponent as LogoutIcon } from "../../themes/default/assets/images/icons/logout-icon.svg";
 import { ReactComponent as MyAccountIcon } from "../../themes/default/assets/images/icons/user-icon.svg";
 import { ReactComponent as AskHelpIcon } from "../../themes/wso2is/assets/images/icons/ask-help-icon.svg";
 import { ReactComponent as CommunityIcon } from "../../themes/wso2is/assets/images/icons/community-icon.svg";

@@ -33,7 +33,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Dropdown, Grid, Icon, Input, Item, Menu, Placeholder, SemanticICONS } from "semantic-ui-react";
-import { organizationConfigs } from "../../../../extensions";
+import { organizationConfigs } from "features/extensions";
 import { FeatureGateConstants } from "../../../extensions/components/feature-gate/constants/feature-gate";
 import { getMiscellaneousIcons } from "../../../core/configs";
 import { AppConstants } from "../../../core/constants";
