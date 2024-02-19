@@ -46,8 +46,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Checkbox, CheckboxProps, Grid, Icon, List, Ref } from "semantic-ui-react";
-import { ApplicationManagementConstants } from "../../../../features/applications/constants";
-import { AppConstants, AppState, history } from "../../../../features/core";
+import { ApplicationManagementConstants } from "features/applications/constants";
+import { AppConstants, AppState, history } from "features/core";
 import { useSMSNotificationSenders } from "../../identity-providers/api";
 import {
     updateMyAccountMFAOptions,

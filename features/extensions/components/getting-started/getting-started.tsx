@@ -35,10 +35,10 @@ import {
     AppState,
     EventPublisher,
     history
-} from "../../../features/core";
-import { setActiveView } from "../../../features/core/store";
-import { OrganizationType } from "../../../features/organizations/constants";
-import { useGetCurrentOrganizationType } from "../../../features/organizations/hooks/use-get-organization-type";
+} from "features/core";
+import { setActiveView } from "features/core/store";
+import { OrganizationType } from "features/organizations/constants";
+import { useGetCurrentOrganizationType } from "features/organizations/hooks/use-get-organization-type";
 import { AppViewExtensionTypes } from "../../configs/models";
 
 /**

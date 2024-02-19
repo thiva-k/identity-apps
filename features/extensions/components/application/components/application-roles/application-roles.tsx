@@ -55,14 +55,14 @@ import { Dispatch } from "redux";
 import { Divider, DropdownProps, Grid, Header, Icon, PaginationProps, SemanticICONS } from "semantic-ui-react";
 import { CreateApplicationRoleWizard } from "./create-app-role-wizard";
 import { EditApplicationRole } from "./edit-app-role";
-import { ApplicationInterface } from "../../../../../features/applications/models";
+import { ApplicationInterface } from "features/applications/models";
 import {
     AppState,
     UIConstants,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../../../../features/core";
-import { OrganizationResponseInterface } from "../../../../../features/organizations/models";
+} from "features/core";
+import { OrganizationResponseInterface } from "features/organizations/models";
 import { deleteRole, getApplicationRolesList, useSharedApplicationData } from "../../api/application-roles";
 import {
     ApplicationRolesResponseInterface,

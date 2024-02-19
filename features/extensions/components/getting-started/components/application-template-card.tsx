@@ -26,17 +26,17 @@ import { Card, Divider, Grid } from "semantic-ui-react";
 import { CategoryItem } from "./app-category-item";
 import { ApplicationAddTile } from "./application-add-tile";
 import { ApplicationTile } from "./application-tile";
-import { getApplicationTemplateIllustrations } from "../../../../features/applications/configs/ui";
+import { getApplicationTemplateIllustrations } from "features/applications/configs/ui";
 import CustomApplicationTemplate from
     "../../../../features/applications/data/application-templates/templates/custom-application/custom-application.json";
 import {
     ApplicationListItemInterface,
     ApplicationTemplateListItemInterface
-} from "../../../../features/applications/models";
+} from "features/applications/models";
 import {
     ApplicationTemplateManagementUtils
-} from "../../../../features/applications/utils/application-template-management-utils";
-import { AppState, EventPublisher } from "../../../../features/core";
+} from "features/applications/utils/application-template-management-utils";
+import { AppState, EventPublisher } from "features/core";
 
 export type DynamicApplicationContextCardPropsInterface = {
     applications: ApplicationListItemInterface[];

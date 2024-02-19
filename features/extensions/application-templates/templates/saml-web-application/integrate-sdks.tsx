@@ -48,9 +48,9 @@ import {
     ApplicationInterface,
     ApplicationTemplateInterface,
     SAMLApplicationConfigurationInterface
-} from "../../../../features/applications/models";
-import { AppState } from "../../../../features/core";
-import { Config } from "../../../../features/core/configs";
+} from "features/applications/models";
+import { AppState } from "features/core";
+import { Config } from "features/core/configs";
 import MavenLogo from "../../../assets/images/icons/maven-logo.svg";
 import TomcatLogo from "../../../assets/images/icons/tomcat-icon.svg";
 import {

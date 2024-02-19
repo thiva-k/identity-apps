@@ -28,10 +28,10 @@ import {
     FeatureConfigInterface,
     getSidePanelIcons,
     history
-} from "../../../../features/core";
-import { getGroupById } from "../../../../features/groups/api";
-import { GroupsInterface } from "../../../../features/groups/models";
-import GroupManagementProvider from "../../../../features/groups/providers/group-management-provider";
+} from "features/core";
+import { getGroupById } from "features/groups/api";
+import { GroupsInterface } from "features/groups/models";
+import GroupManagementProvider from "features/groups/providers/group-management-provider";
 import { EditGroup } from "../edit-group";
 
 const GroupEditPage: FunctionComponent<any> = (): ReactElement => {

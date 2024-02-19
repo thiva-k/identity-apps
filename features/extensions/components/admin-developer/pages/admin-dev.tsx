@@ -36,7 +36,7 @@ import {
     AdvancedSearchWithBasicFilters,
     UIConstants,
     getEmptyPlaceholderIllustrations
-} from "../../../../features/core";
+} from "features/core";
 import { deleteInvite, resendInvite, updateInvite } from "../api";
 import { InviteeRoleSelection } from "../components";
 import { InviteUserStatus, UserInviteInterface } from "../models";

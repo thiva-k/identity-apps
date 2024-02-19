@@ -32,11 +32,11 @@ import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
 import BuildLoginFlowIllustration from
-    "../../../../features/connections/components/authenticators/fido/assets/build-login-flow.png";
+    "features/connections/components/authenticators/fido/assets/build-login-flow.png";
 import ConfigureParametersIllustration from
-    "../../../../features/connections/components/authenticators/fido/assets/configure-parameters.png";
-import { FeatureConfigInterface } from "../../../../features/core/models";
-import { AppState } from "../../../../features/core/store";
+    "features/connections/components/authenticators/fido/assets/configure-parameters.png";
+import { FeatureConfigInterface } from "features/core/models";
+import { AppState } from "features/core/store";
 import { VerticalStepper, VerticalStepperStepInterface } from "../../component-extensions";
 import ApplicationSelectionModal from "../../shared/application-selection-modal";
 

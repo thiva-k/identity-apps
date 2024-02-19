@@ -36,8 +36,8 @@ import { IntegrateStepGeneratorFactory } from "./integrate-step-generator-factor
 import {
     ApplicationInterface,
     ApplicationTemplateInterface
-} from "../../../../../features/applications/models";
-import { AppState, ConfigReducerStateInterface } from "../../../../../features/core";
+} from "features/applications/models";
+import { AppState, ConfigReducerStateInterface } from "features/core";
 import { SDKInitConfig } from "../../../shared";
 import { AddUserStepContent } from "../../../shared/components";
 import { SupportedSPATechnologyTypes } from "../models";

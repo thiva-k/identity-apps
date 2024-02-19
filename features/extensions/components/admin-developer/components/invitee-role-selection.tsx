@@ -30,7 +30,7 @@ import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Modal } from "semantic-ui-react";
-import { getRolesList } from "../../../../features/roles/api";
+import { getRolesList } from "features/roles/api";
 import { UserInviteInterface } from "../models";
 
 interface InviteeRoleSelectionPropsInterface extends TestableComponentInterface {

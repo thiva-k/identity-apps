@@ -22,9 +22,9 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import { updateRoleDetails } from "../../../../../features/roles/api";
-import { PRIMARY_DOMAIN } from "../../../../../features/roles/constants";
-import { CreateRoleMemberInterface, PatchRoleDataInterface } from "../../../../../features/roles/models";
+import { updateRoleDetails } from "features/roles/api";
+import { PRIMARY_DOMAIN } from "features/roles/constants";
+import { CreateRoleMemberInterface, PatchRoleDataInterface } from "features/roles/models";
 import { AddRoleUsers } from "../wizard";
 
 interface RoleUserDetailsProps {

@@ -24,10 +24,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownProps, Grid, Modal, ModalProps, PaginationProps } from "semantic-ui-react";
-import { getApplicationList } from "../../../features/applications/api";
-import { ApplicationList } from "../../../features/applications/components/application-list";
-import { ApplicationListInterface } from "../../../features/applications/models";
-import { AppConstants, UIConstants, history } from "../../../features/core";
+import { getApplicationList } from "features/applications/api";
+import { ApplicationList } from "features/applications/components/application-list";
+import { ApplicationListInterface } from "features/applications/models";
+import { AppConstants, UIConstants, history } from "features/core";
 
 /**
  * Proptypes for the application selection modal component.

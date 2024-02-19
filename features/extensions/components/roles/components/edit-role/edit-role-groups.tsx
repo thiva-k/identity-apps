@@ -54,9 +54,9 @@ import {
     Modal,
     Table
 } from "semantic-ui-react";
-import { getEmptyPlaceholderIllustrations, updateResources } from "../../../../../features/core";
-import { getGroupList } from "../../../../../features/groups/api";
-import { APPLICATION_DOMAIN, INTERNAL_DOMAIN, PRIMARY_DOMAIN } from "../../../../../features/roles/constants";
+import { getEmptyPlaceholderIllustrations, updateResources } from "features/core";
+import { getGroupList } from "features/groups/api";
+import { APPLICATION_DOMAIN, INTERNAL_DOMAIN, PRIMARY_DOMAIN } from "features/roles/constants";
 
 interface RoleGroupsPropsInterface extends TestableComponentInterface {
     /**

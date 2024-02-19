@@ -37,7 +37,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Form, Grid } from "semantic-ui-react";
-import { AppConstants, SharedUserStoreConstants, SharedUserStoreUtils, history } from "../../../../features/core";
+import { AppConstants, SharedUserStoreConstants, SharedUserStoreUtils, history } from "features/core";
 import {
     GroupsInterface,
     PatchGroupDataInterface,
@@ -45,7 +45,7 @@ import {
     deleteGroupById,
     searchGroupList,
     updateGroupDetails
-} from "../../../../features/groups";
+} from "features/groups";
 import { CONSUMER_USERSTORE } from "../../users/constants";
 
 /**

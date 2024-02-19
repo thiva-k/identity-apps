@@ -22,8 +22,8 @@ import Tree from "rc-tree";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Label } from "semantic-ui-react";
-import { TreeNode } from "../../../../../features/roles/models";
-import { RoleManagementUtils } from "../../../../../features/roles/utils";
+import { TreeNode } from "features/roles/models";
+import { RoleManagementUtils } from "features/roles/utils";
 
 interface AddUserWizardSummaryProps extends TestableComponentInterface {
     summary: any;
