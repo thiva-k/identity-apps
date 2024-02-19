@@ -20,7 +20,7 @@ import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { MarketingConsentModal } from "./marketing-consent-modal";
-import { AppState } from "../../../../../features/core";
+import { AppState } from "features/core";
 import { useUserConsentList } from "../api";
 import { ConsentResponseInterface, ConsentStatus, ConsentTypes } from "../models";
 import { getMarketingConsentStatusFromLocalStorage, setMarketingConsentStatusToLocalStorage } from "../utils";
@@ -40,11 +40,11 @@ export const MarketingConsentModalWrapper: FunctionComponent<IdentifiableCompone
     const uuid: string = useSelector((state: AppState) => state.profile.profileInfo.id);
     const isPrivilegedUser: boolean = useSelector((state: AppState) => state.auth.isPrivilegedUser);
 
-    const [ isMarketingConsentOpen, setIsMarketingConsentOpen ] = useState<boolean>(false);
-    const [ shouldFetch, setShouldFetch ] = useState<boolean>(false);
+    const [isMarketingConsentOpen, setIsMarketingConsentOpen] = useState<boolean>(false);
+    const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
     /**
-     * Calls the custom hook to fetch user consent data. {@link shouldFetch} is used to 
+     * Calls the custom hook to fetch user consent data. {@link shouldFetch} is used to
      * conditionally call the fetcher function.
      */
     const {
@@ -67,8 +67,8 @@ export const MarketingConsentModalWrapper: FunctionComponent<IdentifiableCompone
         if (isPrivilegedUser) return;
 
         setShouldFetch(true);
-    }, [ uuid ]);
-    
+    }, [uuid]);
+
     /**
      * Decides to show or hide the marketing consent banner based on the fetched user consent data.
      */
@@ -80,16 +80,16 @@ export const MarketingConsentModalWrapper: FunctionComponent<IdentifiableCompone
         }
 
         const marketingConsent: ConsentResponseInterface = userConsentList.find(
-            (consent: ConsentResponseInterface) => consent.consentType === ConsentTypes.MARKETING);
-        const marketingConsentStatus: ConsentStatus = 
-            marketingConsent?.status ?? ConsentStatus.NOT_GIVEN;
+            (consent: ConsentResponseInterface) => consent.consentType === ConsentTypes.MARKETING
+        );
+        const marketingConsentStatus: ConsentStatus = marketingConsent?.status ?? ConsentStatus.NOT_GIVEN;
 
         if (marketingConsentStatus === ConsentStatus.NOT_GIVEN) {
             setIsMarketingConsentOpen(true);
         } else {
             setMarketingConsentStatusToLocalStorage(uuid);
         }
-    }, [ isConsentListLoading ]);
+    }, [isConsentListLoading]);
 
     /**
      * Handles the close event of the marketing consent modal.
@@ -99,11 +99,8 @@ export const MarketingConsentModalWrapper: FunctionComponent<IdentifiableCompone
     };
 
     return (
-        <div data-componentid={ componentId }>
-            <MarketingConsentModal 
-                isOpen={ isMarketingConsentOpen }
-                onClosed={ handleMarketingConsentClosed }
-            />
+        <div data-componentid={componentId}>
+            <MarketingConsentModal isOpen={isMarketingConsentOpen} onClosed={handleMarketingConsentClosed} />
         </div>
     );
 };

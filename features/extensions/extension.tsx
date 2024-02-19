@@ -16,12 +16,12 @@
  * under the License.
  */
 
-import { EmptyPlaceholder, ErrorBoundary  } from "@wso2is/react-components";
+import { EmptyPlaceholder, ErrorBoundary } from "@wso2is/react-components";
 import React, { ReactElement, Suspense, lazy, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Placeholder } from "semantic-ui-react";
 import { ExtensionsManager } from "./extensions-manager";
-import { AppUtils, getEmptyPlaceholderIllustrations } from "../features/core";
+import { AppUtils, getEmptyPlaceholderIllustrations } from "features/core";
 
 /**
  * Extension Interface.
@@ -39,51 +39,48 @@ interface ExtensionInterface {
  * @returns component placeholder.
  */
 export const ComponentPlaceholder = (props: ExtensionInterface): ReactElement => {
-
     const { section, type } = props;
 
     const { t } = useTranslation();
 
-    const [ Component, setComponent ] = useState<JSX.Element|any>(null);
+    const [Component, setComponent] = useState<JSX.Element | any>(null);
 
-    const fragment: any = ExtensionsManager.getConfig()?.sections[ type + "s" ]?.[ section ];
+    const fragment: any = ExtensionsManager.getConfig()?.sections[type + "s"]?.[section];
 
     useEffect(() => {
-
         if (Component || !fragment) {
             return;
         }
 
         setComponent(lazy(() => import(`${fragment}`)));
-    }, [ fragment ]);
+    }, [fragment]);
 
     return (
         <ErrorBoundary
-            onChunkLoadError={ AppUtils.onChunkLoadError }
-            fallback={ (
+            onChunkLoadError={AppUtils.onChunkLoadError}
+            fallback={
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().genericError }
+                    image={getEmptyPlaceholderIllustrations().genericError}
                     imageSize="tiny"
-                    subtitle={ [
+                    subtitle={[
                         t("console:common.placeholders.genericError.subtitles.0"),
                         t("console:common.placeholders.genericError.subtitles.1")
-                    ] }
-                    title={ t("console:common.placeholders.genericError.title") }
+                    ]}
+                    title={t("console:common.placeholders.genericError.title")}
                 />
-            ) }
+            }
         >
             <Suspense
-                fallback={ (
+                fallback={
                     <Placeholder>
                         <Placeholder.Header>
                             <Placeholder.Line />
                             <Placeholder.Line />
                         </Placeholder.Header>
                     </Placeholder>
-                ) }>
-                {
-                    Component && <Component />
                 }
+            >
+                {Component && <Component />}
             </Suspense>
         </ErrorBoundary>
     );

@@ -24,23 +24,22 @@ import {
     ExtensionsConfigInterface,
     IdentityProviderTemplateExtensionsConfigInterface
 } from "./models";
-import { TemplateConfigInterface, TemplateContentInterface } from "../features/applications/data/application-templates";
+import { TemplateConfigInterface, TemplateContentInterface } from "features/applications/data/application-templates";
 import {
     ApplicationTemplateCategoryInterface,
     ApplicationTemplateGroupInterface,
     ApplicationTemplateInterface
-} from "../features/applications/models";
+} from "features/applications/models";
 import {
     IdentityProviderTemplateCategoryInterface,
     IdentityProviderTemplateGroupInterface,
     IdentityProviderTemplateListItemInterface
-} from "../features/identity-providers/models";
+} from "features/identity-providers/models";
 
 /**
  * Class to manage extensions.
  */
 export class ExtensionsManager {
-
     private static instance: ExtensionsManager = new ExtensionsManager();
 
     /**
@@ -48,14 +47,13 @@ export class ExtensionsManager {
      * the class.
      *
      */
-    private constructor() { }
+    private constructor() {}
 
     /**
      *
      * @returns an instance of the class.
      */
     public static getInstance(): ExtensionsManager {
-
         return this.instance;
     }
 
@@ -64,7 +62,6 @@ export class ExtensionsManager {
      * @returns the extensions config.
      */
     public static getConfig(): ExtensionsConfigInterface {
-
         return ExtensionsConfig();
     }
 
@@ -74,9 +71,8 @@ export class ExtensionsManager {
      * @returns the application template config.
      */
     public getApplicationTemplatesConfig(): ApplicationTemplateExtensionsConfigInterface {
-
-        const config: ApplicationTemplateExtensionsConfigInterface = ExtensionsManager.getConfig()
-            .templateExtensions?.applications;
+        const config: ApplicationTemplateExtensionsConfigInterface = ExtensionsManager.getConfig().templateExtensions
+            ?.applications;
 
         if (!config) {
             return {
@@ -88,31 +84,31 @@ export class ExtensionsManager {
 
         // If categories exists, try to resolve the category config by lazy loading the resource etc.
         if (config.categories && Array.isArray(config.categories) && config.categories.length > 0) {
-            config.categories = config.categories
-                .map((category: TemplateConfigInterface<ApplicationTemplateCategoryInterface>) => {
+            config.categories = config.categories.map(
+                (category: TemplateConfigInterface<ApplicationTemplateCategoryInterface>) => {
                     return ExtensionsManager.lazyLoadTemplateResources<ApplicationTemplateCategoryInterface>(category);
-                });
+                }
+            );
         }
 
         // If groups exists, try to resolve the group config by lazy loading the resource etc.
         if (config.groups && Array.isArray(config.groups) && config.groups.length > 0) {
-            config.groups = config.groups
-                .map((group: TemplateConfigInterface<ApplicationTemplateGroupInterface>) => {
-                    return ExtensionsManager.lazyLoadTemplateResources<ApplicationTemplateGroupInterface>(group);
-                });
+            config.groups = config.groups.map((group: TemplateConfigInterface<ApplicationTemplateGroupInterface>) => {
+                return ExtensionsManager.lazyLoadTemplateResources<ApplicationTemplateGroupInterface>(group);
+            });
         }
 
         // If templates exists, try to resolve the group config by lazy loading the resource etc.
         if (config.templates && Array.isArray(config.templates) && config.templates.length > 0) {
-            config.templates = config.templates
-                .map((template: TemplateConfigInterface<ApplicationTemplateInterface>) => {
+            config.templates = config.templates.map(
+                (template: TemplateConfigInterface<ApplicationTemplateInterface>) => {
                     return ExtensionsManager.lazyLoadTemplateResources<ApplicationTemplateGroupInterface>(template);
-                });
+                }
+            );
         }
 
         return config;
     }
-
 
     /**
      * Builds and returns the IDP template config.
@@ -120,7 +116,6 @@ export class ExtensionsManager {
      * @returns the IDP template config.
      */
     public getIdentityProviderTemplatesConfig(): IdentityProviderTemplateExtensionsConfigInterface {
-
         const config: IdentityProviderTemplateExtensionsConfigInterface = ExtensionsManager.getConfig()
             .templateExtensions?.identityProviders;
 
@@ -134,29 +129,35 @@ export class ExtensionsManager {
 
         // If categories exists, try to resolve the category config by lazy loading the resource etc.
         if (config.categories && Array.isArray(config.categories) && config.categories.length > 0) {
-            config.categories = config.categories
-                .map((category: TemplateConfigInterface<IdentityProviderTemplateCategoryInterface>) => {
-                    return ExtensionsManager
-                        .lazyLoadTemplateResources<IdentityProviderTemplateCategoryInterface>(category);
-                });
+            config.categories = config.categories.map(
+                (category: TemplateConfigInterface<IdentityProviderTemplateCategoryInterface>) => {
+                    return ExtensionsManager.lazyLoadTemplateResources<IdentityProviderTemplateCategoryInterface>(
+                        category
+                    );
+                }
+            );
         }
 
         // If groups exists, try to resolve the group config by lazy loading the resource etc.
         if (config.groups && Array.isArray(config.groups) && config.groups.length > 0) {
-            config.groups = config.groups
-                .map((group: TemplateConfigInterface<IdentityProviderTemplateGroupInterface>) => {
-                    return ExtensionsManager.
-                        lazyLoadTemplateResources<IdentityProviderTemplateListItemInterface>(group);
-                });
+            config.groups = config.groups.map(
+                (group: TemplateConfigInterface<IdentityProviderTemplateGroupInterface>) => {
+                    return ExtensionsManager.lazyLoadTemplateResources<IdentityProviderTemplateListItemInterface>(
+                        group
+                    );
+                }
+            );
         }
 
         // If templates exists, try to resolve the group config by lazy loading the resource etc.
         if (config.templates && Array.isArray(config.templates) && config.templates.length > 0) {
-            config.templates = config.templates
-                .map((template: TemplateConfigInterface<IdentityProviderTemplateListItemInterface>) => {
-                    return ExtensionsManager.
-                        lazyLoadTemplateResources<IdentityProviderTemplateListItemInterface>(template);
-                });
+            config.templates = config.templates.map(
+                (template: TemplateConfigInterface<IdentityProviderTemplateListItemInterface>) => {
+                    return ExtensionsManager.lazyLoadTemplateResources<IdentityProviderTemplateListItemInterface>(
+                        template
+                    );
+                }
+            );
         }
 
         return config;
@@ -170,17 +171,16 @@ export class ExtensionsManager {
      */
     // eslint-disable-next-line @typescript-eslint/ban-types
     private static lazyLoadTemplateResources<T = {}>(
-        templateConfig: TemplateConfigInterface<T>): TemplateConfigInterface<T> {
-
+        templateConfig: TemplateConfigInterface<T>
+    ): TemplateConfigInterface<T> {
         // Dynamically lazy loads the content.
         const loadContent = (content: TemplateContentInterface): TemplateContentInterface => {
-
             if (!content && !isObject(content)) {
                 return null;
             }
 
-            for (const [ key, value ] of Object.entries(content)) {
-                content[ key ] = lazy(() => import(`${ value }`));
+            for (const [key, value] of Object.entries(content)) {
+                content[key] = lazy(() => import(`${value}`));
             }
 
             return content;
@@ -188,12 +188,11 @@ export class ExtensionsManager {
 
         // Lazy loads the resource.
         const loadResource = (resource: any) => {
-
             if (typeof resource !== "string") {
                 return resource;
             }
 
-            return import(`${ resource }`).then((module: any) => module.default);
+            return import(`${resource}`).then((module: any) => module.default);
         };
 
         return {

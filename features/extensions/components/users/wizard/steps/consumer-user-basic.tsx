@@ -22,20 +22,20 @@ import { FormValidation } from "@wso2is/validation";
 import React, { MutableRefObject, ReactElement, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dropdown, DropdownItemProps, DropdownProps, Form, Grid, Menu, Message, Radio } from "semantic-ui-react";
-import { SharedUserStoreConstants } from "../../../../../features/core";
-import { EventPublisher, SharedUserStoreUtils } from "../../../../../features/core/utils";
-import { getUsersList } from "../../../../../features/users/api/users";
+import { SharedUserStoreConstants } from "features/core";
+import { EventPublisher, SharedUserStoreUtils } from "features/core/utils";
+import { getUsersList } from "features/users/api/users";
 import { 
     BasicUserDetailsInterface,
     UserListInterface
-} from "../../../../../features/users/models/user";
+} from "features/users/models/user";
 import {
     generatePassword, 
     getConfiguration, 
     getUsernameConfiguration
-} from "../../../../../features/users/utils";
-import { USERSTORE_REGEX_PROPERTIES } from "../../../../../features/userstores/constants/user-store-constants";
-import { ValidationDataInterface, ValidationFormInterface } from "../../../../../features/validation/models";
+} from "features/users/utils";
+import { USERSTORE_REGEX_PROPERTIES } from "features/userstores/constants/user-store-constants";
+import { ValidationDataInterface, ValidationFormInterface } from "features/validation/models";
 import { CONSUMER_USERSTORE, UsersConstants } from "../../../users/constants";
 
 /**

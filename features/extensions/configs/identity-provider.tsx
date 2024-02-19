@@ -21,16 +21,14 @@ import { I18n } from "@wso2is/i18n";
 import { ResourceTabPaneInterface } from "@wso2is/react-components";
 import React, { ElementType, FunctionComponent, ReactElement, SVGProps, lazy } from "react";
 import { IdentityProviderConfig } from "./models";
-import { ConnectionTabTypes } from "../../features/connections";
-import { IdentityProviderManagementConstants } from "../../features/identity-providers/constants";
+import { ConnectionTabTypes } from "features/connections";
+import { IdentityProviderManagementConstants } from "features/identity-providers/constants";
 import {
     AuthenticatorLabels,
     GenericIdentityProviderCreateWizardPropsInterface,
     IdentityProviderTabTypes
-} from "../../features/identity-providers/models";
-import {
-    SmsOTPAuthenticator
-} from "../components/authenticators/sms-otp/sms-otp-authenticator";
+} from "features/identity-providers/models";
+import { SmsOTPAuthenticator } from "../components/authenticators/sms-otp/sms-otp-authenticator";
 import QuickStartTab from "../components/component-extensions/application/quick-start-tab";
 import { getIdPIcons } from "../components/identity-providers/configs/ui";
 import { SIWEAuthenticatorForm } from "../identity-provider-templates/templates/swe/swe-authenticator-form";
@@ -41,7 +39,6 @@ import { SIWEAuthenticationProviderCreateWizard } from "../identity-provider-tem
  * A class to hold authenticator constants that get overidden.
  */
 export class IdentityProviderExtensionConstants {
-
     public static readonly FIDO_AUTHENTICATOR_DISPLAY_NAME: string = "Passkey";
 }
 
@@ -49,7 +46,7 @@ export const identityProviderConfig: IdentityProviderConfig = {
     authenticatorResponseExtension: [],
     // TODO: Refactor authenticators out of IdentityProviderConfigs to AuthenticatorConfig
     authenticators: {
-        [ IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_ID ]: {
+        [IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_ID]: {
             content: {
                 quickStart: lazy(() => import("../components/authenticators/email-otp/quick-start"))
             },
@@ -57,7 +54,7 @@ export const identityProviderConfig: IdentityProviderConfig = {
             isEnabled: true,
             useAuthenticatorsAPI: false
         },
-        [ IdentityProviderManagementConstants.SMS_OTP_AUTHENTICATOR_ID ]: {
+        [IdentityProviderManagementConstants.SMS_OTP_AUTHENTICATOR_ID]: {
             content: {
                 quickStart: lazy(() => import("../components/authenticators/sms-otp/quick-start"))
             },
@@ -65,7 +62,7 @@ export const identityProviderConfig: IdentityProviderConfig = {
             isEnabled: true,
             useAuthenticatorsAPI: false
         },
-        [ IdentityProviderManagementConstants.TOTP_AUTHENTICATOR_ID ]: {
+        [IdentityProviderManagementConstants.TOTP_AUTHENTICATOR_ID]: {
             content: {
                 quickStart: lazy(() => import("../components/authenticators/totp/quick-start"))
             },
@@ -73,7 +70,7 @@ export const identityProviderConfig: IdentityProviderConfig = {
             isEnabled: true,
             useAuthenticatorsAPI: true
         },
-        [ IdentityProviderManagementConstants.FIDO_AUTHENTICATOR_ID ]: {
+        [IdentityProviderManagementConstants.FIDO_AUTHENTICATOR_ID]: {
             content: {
                 quickStart: lazy(() => import("../components/authenticators/fido/quick-start"))
             },
@@ -81,7 +78,7 @@ export const identityProviderConfig: IdentityProviderConfig = {
             isEnabled: true,
             useAuthenticatorsAPI: false
         },
-        [ IdentityProviderManagementConstants.MAGIC_LINK_AUTHENTICATOR_ID ]: {
+        [IdentityProviderManagementConstants.MAGIC_LINK_AUTHENTICATOR_ID]: {
             content: {
                 quickStart: lazy(() => import("../components/authenticators/magic-link/quick-start"))
             },
@@ -95,25 +92,17 @@ export const identityProviderConfig: IdentityProviderConfig = {
             templateId: string,
             props: GenericIdentityProviderCreateWizardPropsInterface & IdentifiableComponentInterface
         ): ReactElement => {
-
-            const {
-                "data-componentid": componentId,
-                title,
-                subTitle,
-                onWizardClose,
-                template,
-                ...rest
-            } = props;
+            const { "data-componentid": componentId, title, subTitle, onWizardClose, template, ...rest } = props;
 
             if (templateId === SIWEIdPTemplate.templateId) {
                 return (
                     <SIWEAuthenticationProviderCreateWizard
-                        title={ title }
-                        subTitle={ subTitle }
-                        onWizardClose={ onWizardClose }
-                        template={ template }
-                        data-componentid={ componentId }
-                        { ...rest }
+                        title={title}
+                        subTitle={subTitle}
+                        onWizardClose={onWizardClose}
+                        template={template}
+                        data-componentid={componentId}
+                        {...rest}
                     />
                 );
             }
@@ -139,7 +128,6 @@ export const identityProviderConfig: IdentityProviderConfig = {
             templateId: string,
             props: Record<string, any>
         ): ReactElement | null => {
-
             const {
                 "data-componentid": componentId,
                 enableSubmitButton,
@@ -156,31 +144,31 @@ export const identityProviderConfig: IdentityProviderConfig = {
             if (templateId === SIWEIdPTemplate.templateId) {
                 return (
                     <SIWEAuthenticatorForm
-                        data-componentid={ componentId }
-                        enableSubmitButton={ enableSubmitButton }
-                        initialValues={ initialValues }
-                        isSubmitting={ isSubmitting }
-                        metadata={ metadata }
-                        onSubmit={ onSubmit }
-                        readOnly={ readOnly }
-                        showCustomProperties={ showCustomProperties }
-                        triggerSubmit={ triggerSubmit }
-                        { ...rest }
+                        data-componentid={componentId}
+                        enableSubmitButton={enableSubmitButton}
+                        initialValues={initialValues}
+                        isSubmitting={isSubmitting}
+                        metadata={metadata}
+                        onSubmit={onSubmit}
+                        readOnly={readOnly}
+                        showCustomProperties={showCustomProperties}
+                        triggerSubmit={triggerSubmit}
+                        {...rest}
                     />
                 );
             }
 
-            if( type === IdentityProviderManagementConstants.SMS_OTP_AUTHENTICATOR_ID ) {
+            if (type === IdentityProviderManagementConstants.SMS_OTP_AUTHENTICATOR_ID) {
                 return (
                     <SmsOTPAuthenticator
-                        initialValues={ initialValues }
-                        metadata={ metadata }
-                        onSubmit={ onSubmit }
-                        triggerSubmit={ triggerSubmit }
-                        enableSubmitButton={ enableSubmitButton }
-                        showCustomProperties={ showCustomProperties }
-                        isSubmitting={ isSubmitting }
-                        { ...rest }
+                        initialValues={initialValues}
+                        metadata={metadata}
+                        onSubmit={onSubmit}
+                        triggerSubmit={triggerSubmit}
+                        enableSubmitButton={enableSubmitButton}
+                        showCustomProperties={showCustomProperties}
+                        isSubmitting={isSubmitting}
+                        {...rest}
                     />
                 );
             }
@@ -196,15 +184,15 @@ export const identityProviderConfig: IdentityProviderConfig = {
                     menuItem: I18n.instance.t(
                         "console:develop.componentExtensions.component.application.quickStart.title"
                     ),
-                    render: () => <QuickStartTab content={ content as ElementType } { ...rest } />
+                    render: () => <QuickStartTab content={content as ElementType} {...rest} />
                 }
             ];
         },
         isTabEnabledForIdP: (templateType: string, tabType: ConnectionTabTypes): boolean | undefined => {
-
             const templateMapping: Map<string, Set<string>> = new Map<string, Set<string>>([
                 [
-                    IdentityProviderTabTypes.USER_ATTRIBUTES, new Set([
+                    IdentityProviderTabTypes.USER_ATTRIBUTES,
+                    new Set([
                         IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.FACEBOOK,
                         IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GOOGLE,
                         IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GITHUB,
@@ -216,27 +204,24 @@ export const identityProviderConfig: IdentityProviderConfig = {
                     ])
                 ],
                 [
-                    IdentityProviderTabTypes.SETTINGS, new Set([
-                        IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER
-                    ])
+                    IdentityProviderTabTypes.SETTINGS,
+                    new Set([IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER])
                 ],
                 [
-                    IdentityProviderTabTypes.ATTRIBUTES, new Set([
-                        IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER
-                    ])
+                    IdentityProviderTabTypes.ATTRIBUTES,
+                    new Set([IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER])
                 ],
                 [
-                    IdentityProviderTabTypes.CONNECTED_APPS, new Set([
-                        IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER
-                    ])
+                    IdentityProviderTabTypes.CONNECTED_APPS,
+                    new Set([IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER])
                 ],
                 [
-                    IdentityProviderTabTypes.CONNECTED_APPS, new Set([
-                        IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER
-                    ])
+                    IdentityProviderTabTypes.CONNECTED_APPS,
+                    new Set([IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER])
                 ],
                 [
-                    IdentityProviderTabTypes.IDENTITY_PROVIDER_GROUPS, new Set([
+                    IdentityProviderTabTypes.IDENTITY_PROVIDER_GROUPS,
+                    new Set([
                         IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.FACEBOOK,
                         IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GOOGLE,
                         IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GITHUB,
@@ -247,19 +232,16 @@ export const identityProviderConfig: IdentityProviderConfig = {
                     ])
                 ],
                 [
-                    IdentityProviderTabTypes.OUTBOUND_PROVISIONING, new Set([
-                        IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER
-                    ])
+                    IdentityProviderTabTypes.OUTBOUND_PROVISIONING,
+                    new Set([IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER])
                 ],
                 [
-                    IdentityProviderTabTypes.JIT_PROVISIONING, new Set([
-                        IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER
-                    ])
+                    IdentityProviderTabTypes.JIT_PROVISIONING,
+                    new Set([IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER])
                 ],
                 [
-                    IdentityProviderTabTypes.ADVANCED, new Set([
-                        IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER
-                    ])
+                    IdentityProviderTabTypes.ADVANCED,
+                    new Set([IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER])
                 ]
             ]);
 
@@ -287,18 +269,16 @@ export const identityProviderConfig: IdentityProviderConfig = {
         responseAuthenticationContextClassEnabled: true,
         saml2WebSSOUserIdLocationEnabled: true
     },
-    fidoTags: [
-        AuthenticatorLabels.PASSWORDLESS,
-        AuthenticatorLabels.PASSKEY
-    ],
+    fidoTags: [AuthenticatorLabels.PASSWORDLESS, AuthenticatorLabels.PASSKEY],
     filterFidoTags: (tags: string[]): string[] => {
-        return tags.filter((tag: string) =>
-            tag === AuthenticatorLabels.PASSWORDLESS || tag === AuthenticatorLabels.PASSKEY);
+        return tags.filter(
+            (tag: string) => tag === AuthenticatorLabels.PASSWORDLESS || tag === AuthenticatorLabels.PASSKEY
+        );
     },
     generalDetailsForm: {
         showCertificate: true
     },
-    getIconExtensions: (): Record<string, string | FunctionComponent<SVGProps<SVGSVGElement>>>  => {
+    getIconExtensions: (): Record<string, string | FunctionComponent<SVGProps<SVGSVGElement>>> => {
         return {
             ...getIdPIcons()
         };

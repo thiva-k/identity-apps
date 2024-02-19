@@ -17,9 +17,9 @@
  */
 
 import { DocumentationLinksExtensionInterface } from "./models/documentation";
-import { Config } from "../../features/core/configs/app";
+import { Config } from "features/core/configs/app";
 
-export const getDocumentationLinksExtension = () : DocumentationLinksExtensionInterface => {
+export const getDocumentationLinksExtension = (): DocumentationLinksExtensionInterface => {
     const documentationBaseUrl: string = Config?.getDeploymentConfig()?.docSiteURL;
 
     return {

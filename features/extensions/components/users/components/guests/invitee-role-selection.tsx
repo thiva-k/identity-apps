@@ -28,7 +28,7 @@ import {
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Divider, Form, Grid, Modal } from "semantic-ui-react";
-import { getRolesList } from "../../../../../features/roles/api";
+import { getRolesList } from "features/roles/api";
 import { UserInviteInterface } from "../../models";
 
 interface InviteeRoleSelectionPropsInterface extends TestableComponentInterface {
@@ -53,7 +53,6 @@ interface InviteeRoleSelectionPropsInterface extends TestableComponentInterface 
 export const InviteeRoleSelection: FunctionComponent<InviteeRoleSelectionPropsInterface> = (
     props: InviteeRoleSelectionPropsInterface
 ): ReactElement => {
-
     const {
         invitee,
         showSelectionModal,
@@ -66,11 +65,11 @@ export const InviteeRoleSelection: FunctionComponent<InviteeRoleSelectionPropsIn
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
 
-    const [ roleList, setRoleList ] = useState<RolesInterface[]>(undefined);
-    const [ , setFilteredRoleList ] = useState<RolesInterface[]>(undefined);
-    const [ selectedRoles, setSelectedRoles ] = useState<string[]>(undefined);
-    const [ , setRoleListRequestLoading ] = useState<boolean>(false);
-    const [ isAllRoleListSelected ] = useState<boolean>(false);
+    const [roleList, setRoleList] = useState<RolesInterface[]>(undefined);
+    const [, setFilteredRoleList] = useState<RolesInterface[]>(undefined);
+    const [selectedRoles, setSelectedRoles] = useState<string[]>(undefined);
+    const [, setRoleListRequestLoading] = useState<boolean>(false);
+    const [isAllRoleListSelected] = useState<boolean>(false);
 
     /**
      * Set the available role list in the system to the state.
@@ -82,9 +81,11 @@ export const InviteeRoleSelection: FunctionComponent<InviteeRoleSelectionPropsIn
         getRolesList(null)
             .then((response: any) => {
                 response.data.Resources.map((role: RolesInterface) => {
-                    if (role.displayName !== "system" &&
+                    if (
+                        role.displayName !== "system" &&
                         role.displayName !== "everyone" &&
-                        role.displayName !== "selfsignup") {
+                        role.displayName !== "selfsignup"
+                    ) {
                         roleList.push(role);
                     }
                 });
@@ -105,14 +106,14 @@ export const InviteeRoleSelection: FunctionComponent<InviteeRoleSelectionPropsIn
         }
 
         setSelectedRoles(invitee.roles);
-    }, [ invitee?.roles ]);
+    }, [invitee?.roles]);
 
     /**
      * Select all selected roles
      */
     useEffect(() => {
         if (isAllRoleListSelected) {
-            const selectedRoleList: string[] = [ ...invitee?.roles ];
+            const selectedRoleList: string[] = [...invitee?.roles];
 
             roleList.map((role: RolesInterface) => {
                 selectedRoleList.push(role.displayName);
@@ -121,7 +122,7 @@ export const InviteeRoleSelection: FunctionComponent<InviteeRoleSelectionPropsIn
         } else {
             setSelectedRoles([]);
         }
-    }, [ isAllRoleListSelected ]);
+    }, [isAllRoleListSelected]);
 
     /**
      * Handle the role selection checkbox change.
@@ -134,20 +135,13 @@ export const InviteeRoleSelection: FunctionComponent<InviteeRoleSelectionPropsIn
     };
 
     return (
-        <Modal
-            open={ showSelectionModal }
-            size="small"
-            className="user-roles attribute-modal"
-            dimmer="blurring"
-        >
+        <Modal open={showSelectionModal} size="small" className="user-roles attribute-modal" dimmer="blurring">
             <Modal.Header>
-                { t("console:manage.features.invite.rolesUpdateModal.header") }
+                {t("console:manage.features.invite.rolesUpdateModal.header")}
                 <Heading subHeading ellipsis as="h6">
-                    { t("console:manage.features.invite.rolesUpdateModal.subHeader") }
-                    <DocumentationLink
-                        link={ getLink("manage.users.collaboratorAccounts.roles.learnMore") }
-                    >
-                        { t("extensions:common.learnMore") }
+                    {t("console:manage.features.invite.rolesUpdateModal.subHeader")}
+                    <DocumentationLink link={getLink("manage.users.collaboratorAccounts.roles.learnMore")}>
+                        {t("extensions:common.learnMore")}
                     </DocumentationLink>
                 </Heading>
             </Modal.Header>
@@ -155,68 +149,57 @@ export const InviteeRoleSelection: FunctionComponent<InviteeRoleSelectionPropsIn
                 <EmphasizedSegment>
                     <Form.Group>
                         <Divider hidden />
-                        {
-                            roleList?.map((role: RolesInterface, index: number) => {
-                                const roleName: string[] = role?.displayName?.split("/");
+                        {roleList?.map((role: RolesInterface, index: number) => {
+                            const roleName: string[] = role?.displayName?.split("/");
 
-                                if (
-                                    roleName?.length >= 1 &&
-                                    !roleName.includes("everyone") &&
-                                    !roleName.includes("system") &&
-                                    !roleName.includes("selfsignup")
-                                ) {
-                                    return (
-                                        <>
-                                            <Form.Radio
-                                                onChange={ () => handleRoleSelection(role?.displayName) }
-                                                key={ index }
-                                                label={
-                                                    roleName?.length > 1
-                                                        ? roleName[ 1 ]
-                                                        : roleName[ 0 ]
-                                                }
-                                                checked={ selectedRoles.includes(role?.displayName) }
-                                                data-testid={
-                                                    "user-mgt-update-roles-" +
-                                                    "modal-unselected-roles"
-                                                }
-                                                readOnly={ readOnly }
-                                            />
-                                            <Divider hidden />
-                                        </>
-                                    );
-                                }
-                            })
-                        }
+                            if (
+                                roleName?.length >= 1 &&
+                                !roleName.includes("everyone") &&
+                                !roleName.includes("system") &&
+                                !roleName.includes("selfsignup")
+                            ) {
+                                return (
+                                    <>
+                                        <Form.Radio
+                                            onChange={() => handleRoleSelection(role?.displayName)}
+                                            key={index}
+                                            label={roleName?.length > 1 ? roleName[1] : roleName[0]}
+                                            checked={selectedRoles.includes(role?.displayName)}
+                                            data-testid={"user-mgt-update-roles-" + "modal-unselected-roles"}
+                                            readOnly={readOnly}
+                                        />
+                                        <Divider hidden />
+                                    </>
+                                );
+                            }
+                        })}
                     </Form.Group>
                 </EmphasizedSegment>
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 2 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={2}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
                                 data-testid="group-mgt-update-roles-modal-cancel-button"
                                 floated="left"
-                                onClick={ handleSelectionModalClose }
+                                onClick={handleSelectionModalClose}
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                            { !readOnly && (
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            {!readOnly && (
                                 <PrimaryButton
                                     data-testid="group-mgt-update-roles-modal-save-button"
                                     floated="right"
-                                    onClick={ () => handleInviteeRolesUpdate(invitee?.id, selectedRoles) }
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
-
+                                    onClick={() => handleInviteeRolesUpdate(invitee?.id, selectedRoles)}
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
                                 >
-                                    { t("common:save") }
+                                    {t("common:save")}
                                 </PrimaryButton>
-                            )
-                            }
+                            )}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

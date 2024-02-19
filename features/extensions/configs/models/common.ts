@@ -17,7 +17,7 @@
  */
 
 import { FeatureAccessConfigInterface } from "@wso2is/core/models";
-import { FeatureConfigInterface } from "../../../features/core/models";
+import { FeatureConfigInterface } from "features/core/models";
 
 export interface CommonConfig {
     advancedSearchWithBasicFilters: {

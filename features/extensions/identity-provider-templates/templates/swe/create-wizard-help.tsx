@@ -29,7 +29,7 @@ import {
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Divider } from "semantic-ui-react";
-import { IdentityProviderManagementUtils } from "../../../../features/identity-providers/utils";
+import { IdentityProviderManagementUtils } from "features/identity-providers/utils";
 import { SIWEConstants } from "../../../components/identity-providers/constants";
 import { identityProviderConfig } from "../../../configs/identity-provider";
 
@@ -45,159 +45,134 @@ type SIWEAuthenticationProviderCreateWizardHelpPropsInterface = IdentifiableComp
  *
  * @returns siwe idp template creation wizard help.
  */
-const SIWEAuthenticationProviderCreateWizardHelp: FunctionComponent<
-    SIWEAuthenticationProviderCreateWizardHelpPropsInterface> = (
-        props: SIWEAuthenticationProviderCreateWizardHelpPropsInterface
-    ): ReactElement => {
+const SIWEAuthenticationProviderCreateWizardHelp: FunctionComponent<SIWEAuthenticationProviderCreateWizardHelpPropsInterface> = (
+    props: SIWEAuthenticationProviderCreateWizardHelpPropsInterface
+): ReactElement => {
+    const { ["data-componentid"]: componentId } = props;
 
-        const {
-            [ "data-componentid" ]: componentId
-        } = props;
+    const { t } = useTranslation();
+    const { getLink } = useDocumentation();
 
-        const { t } = useTranslation();
-        const { getLink } = useDocumentation();
+    const [useNewConnectionsView, setUseNewConnectionsView] = useState<boolean>(undefined);
 
-        const [ useNewConnectionsView, setUseNewConnectionsView ] = useState<boolean>(undefined);
+    /**
+     * Checks if the listing view defined in the config is the new connections view.
+     */
+    useEffect(() => {
+        if (useNewConnectionsView !== undefined) {
+            return;
+        }
 
-        /**
-         * Checks if the listing view defined in the config is the new connections view.
-         */
-        useEffect(() => {
+        setUseNewConnectionsView(identityProviderConfig.useNewConnectionsView);
+    }, [identityProviderConfig]);
 
-            if (useNewConnectionsView !== undefined) {
-                return;
-            }
-
-            setUseNewConnectionsView(identityProviderConfig.useNewConnectionsView);
-        }, [ identityProviderConfig ]);
-
-        return (
-            <div data-testid={ componentId }>
-                <Message
-                    type="info"
-                    header={
-                        t("console:develop.features.authenticationProvider.templates.github.wizardHelp." +
-                        "preRequisites.heading")
-                    }
-                    content={ (
-                        <>
-                            <p>
-                                <Trans
-                                    i18nKey={
-                                        "extensions:develop.identityProviders.siwe.wizardHelp." +
-                                        "preRequisites.getCredentials"
-                                    }
-                                >
-                                    Before you begin, register an <strong>OIDC client</strong> using the OIDC 
-                                    client registration of <Code withBackground={ false }>
-                                        oidc.signinwithethereum.org
-                                    </Code>, and obtain a <strong>client ID & secret</strong>.
-                                </Trans>
-                            </p>
-                            <p>
-                                <Trans
-                                    i18nKey={
-                                        "extensions:develop.identityProviders.siwe.wizardHelp." +
-                                        ".preRequisites.configureRedirectURI"
-                                    }
-                                >
-                                    The following URL has to be set as the <strong>Redirect URI</strong>.
-                                </Trans>
-
-                                <CopyInputField
-                                    className="copy-input-dark spaced"
-                                    value={ IdentityProviderManagementUtils.getCommonAuthEndpoint() }
-                                />
-                            </p>
-                            <DocumentationLink
-                                link={ getLink("develop.connections.newConnection.siwe.help.configureOIDC") }
-                                showEmptyLinkText
-                            >
-                                {
-                                    t("extensions:develop.identityProviders.siwe.wizardHelp" +
-                                    ".preRequisites.clientRegistrationDocs")
+    return (
+        <div data-testid={componentId}>
+            <Message
+                type="info"
+                header={t(
+                    "console:develop.features.authenticationProvider.templates.github.wizardHelp." +
+                        "preRequisites.heading"
+                )}
+                content={
+                    <>
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "extensions:develop.identityProviders.siwe.wizardHelp." +
+                                    "preRequisites.getCredentials"
                                 }
-                            </DocumentationLink>
-                            <p>
-                                <Trans
-                                    i18nKey={
-                                        "extensions:develop.identityProviders.siwe.wizardHelp" +
-                                        ".preRequisites.configureClient"
-                                    }
-                                >
-                                    If you want to quickly get things started, use the following 
-                                    <Code withBackground={ false }>curl</Code> command to register the client.
-                                </Trans>
-                                <Divider hidden />
-                                <CodeEditor
-                                    oneLiner
-                                    readOnly="nocursor"
-                                    withClipboardCopy
-                                    showLineNumbers={ false }
-                                    language="shell"
-                                    options={ {
-                                        lineWrapping: true
-                                    } }
-                                    height="100%"
-                                    theme="dark"
-                                    sourceCode={
-                                        SIWEConstants.SIWE_CLIENT_REGISTRATION_CURL_COMMAND
-                                            .replace(
-                                                "${commonauth}",
-                                                IdentityProviderManagementUtils.getCommonAuthEndpoint()
-                                            )
-                                    }
-                                />
-                            </p>
-                        </>)
-                    }
-                />
+                            >
+                                Before you begin, register an <strong>OIDC client</strong> using the OIDC client
+                                registration of <Code withBackground={false}>oidc.signinwithethereum.org</Code>, and
+                                obtain a <strong>client ID & secret</strong>.
+                            </Trans>
+                        </p>
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "extensions:develop.identityProviders.siwe.wizardHelp." +
+                                    ".preRequisites.configureRedirectURI"
+                                }
+                            >
+                                The following URL has to be set as the <strong>Redirect URI</strong>.
+                            </Trans>
 
-                <Heading as="h5">
-                    { t("extensions:develop.identityProviders.siwe.wizardHelp.name.heading") }
-                </Heading>
-                <p>
-                    {
-                        useNewConnectionsView
-                            ? t("extensions:develop.identityProviders.siwe.wizardHelp.name.connectionDescription")
-                            : t("extensions:develop.identityProviders.siwe.wizardHelp.name.idpDescription")
-                    }
-                </p>
+                            <CopyInputField
+                                className="copy-input-dark spaced"
+                                value={IdentityProviderManagementUtils.getCommonAuthEndpoint()}
+                            />
+                        </p>
+                        <DocumentationLink
+                            link={getLink("develop.connections.newConnection.siwe.help.configureOIDC")}
+                            showEmptyLinkText
+                        >
+                            {t(
+                                "extensions:develop.identityProviders.siwe.wizardHelp" +
+                                    ".preRequisites.clientRegistrationDocs"
+                            )}
+                        </DocumentationLink>
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "extensions:develop.identityProviders.siwe.wizardHelp" +
+                                    ".preRequisites.configureClient"
+                                }
+                            >
+                                If you want to quickly get things started, use the following
+                                <Code withBackground={false}>curl</Code> command to register the client.
+                            </Trans>
+                            <Divider hidden />
+                            <CodeEditor
+                                oneLiner
+                                readOnly="nocursor"
+                                withClipboardCopy
+                                showLineNumbers={false}
+                                language="shell"
+                                options={{
+                                    lineWrapping: true
+                                }}
+                                height="100%"
+                                theme="dark"
+                                sourceCode={SIWEConstants.SIWE_CLIENT_REGISTRATION_CURL_COMMAND.replace(
+                                    "${commonauth}",
+                                    IdentityProviderManagementUtils.getCommonAuthEndpoint()
+                                )}
+                            />
+                        </p>
+                    </>
+                }
+            />
 
-                <Divider/>
+            <Heading as="h5">{t("extensions:develop.identityProviders.siwe.wizardHelp.name.heading")}</Heading>
+            <p>
+                {useNewConnectionsView
+                    ? t("extensions:develop.identityProviders.siwe.wizardHelp.name.connectionDescription")
+                    : t("extensions:develop.identityProviders.siwe.wizardHelp.name.idpDescription")}
+            </p>
 
-                <Heading as="h5">
-                    { t("extensions:develop.identityProviders.siwe.wizardHelp.clientId.heading") }
-                </Heading>
-                <p>
-                    <Trans
-                        i18nKey={
-                            "extensions:develop.identityProviders.siwe.wizardHelp.clientId.description"
-                        }
-                    >
-                        Provide the <Code>client_id</Code> you received from
-                        <Code>oidc.signinwithethereum.org</Code> for your OIDC client.
-                    </Trans>
-                </p>
+            <Divider />
 
-                <Divider/>
+            <Heading as="h5">{t("extensions:develop.identityProviders.siwe.wizardHelp.clientId.heading")}</Heading>
+            <p>
+                <Trans i18nKey={"extensions:develop.identityProviders.siwe.wizardHelp.clientId.description"}>
+                    Provide the <Code>client_id</Code> you received from
+                    <Code>oidc.signinwithethereum.org</Code> for your OIDC client.
+                </Trans>
+            </p>
 
-                <Heading as="h5">
-                    { t("extensions:develop.identityProviders.siwe.wizardHelp.clientSecret.heading") }
-                </Heading>
-                <p>
-                    <Trans
-                        i18nKey={
-                            "extensions:develop.identityProviders.siwe.wizardHelp.clientSecret.description"
-                        }
-                    >
-                        Provide the <Code>client_secret</Code> you received from
-                        <Code>oidc.signinwithethereum.org</Code> for your OIDC client.
-                    </Trans>
-                </p>
-            </div>
-        );
-    };
+            <Divider />
+
+            <Heading as="h5">{t("extensions:develop.identityProviders.siwe.wizardHelp.clientSecret.heading")}</Heading>
+            <p>
+                <Trans i18nKey={"extensions:develop.identityProviders.siwe.wizardHelp.clientSecret.description"}>
+                    Provide the <Code>client_secret</Code> you received from
+                    <Code>oidc.signinwithethereum.org</Code> for your OIDC client.
+                </Trans>
+            </p>
+        </div>
+    );
+};
 
 /**
  * Default props for the component

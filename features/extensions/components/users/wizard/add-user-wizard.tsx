@@ -45,30 +45,30 @@ import {
     AddUserWizardSummary,
     UserTypeSelection
 } from "./steps";
-import { AppState, UserBasicInterface, UserStoreDetails, UserStoreProperty } from "../../../../features/core";
+import { AppState, UserBasicInterface, UserStoreDetails, UserStoreProperty } from "features/core";
 import {
     GroupsInterface,
     PatchGroupDataInterface,
     getGroupList,
     updateGroupDetails
-} from "../../../../features/groups";
-import { updateRoleDetails } from "../../../../features/roles/api/roles";
-import { PatchRoleDataInterface } from "../../../../features/roles/models/roles";
-import { addUser } from "../../../../features/users/api/users";
-import { getUserWizardStepIcons } from "../../../../features/users/configs/ui";
+} from "features/groups";
+import { updateRoleDetails } from "features/roles/api/roles";
+import { PatchRoleDataInterface } from "features/roles/models/roles";
+import { addUser } from "features/users/api/users";
+import { getUserWizardStepIcons } from "features/users/configs/ui";
 import {
     AddUserWizardStateInterface,
     BasicUserDetailsInterface,
     UserDetailsInterface,
     createEmptyUserDetails
-} from "../../../../features/users/models/user";
+} from "features/users/models/user";
 import {
     generatePassword,
     getConfiguration
-} from "../../../../features/users/utils/generate-password.utils";
-import { getUsernameConfiguration } from "../../../../features/users/utils/user-management-utils";
-import { useValidationConfigData } from "../../../../features/validation/api";
-import { ValidationFormInterface } from "../../../../features/validation/models";
+} from "features/users/utils/generate-password.utils";
+import { getUsernameConfiguration } from "features/users/utils/user-management-utils";
+import { useValidationConfigData } from "features/validation/api";
+import { ValidationFormInterface } from "features/validation/models";
 import { administratorConfig } from "../../../configs/administrator";
 import { SCIMConfigs } from "../../../configs/scim";
 import { AdminAccountTypes, CONSUMER_USERSTORE } from "../../users/constants";

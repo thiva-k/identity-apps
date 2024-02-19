@@ -33,34 +33,27 @@ import {
     UpdateGovernanceConnectorConfigInterface,
     UpdateGovernanceConnectorConfigPropertyInterface,
     UpdateMultipleGovernanceConnectorsInterface
-} from "../../features/server-configurations";
-import { ValidationFormInterface } from "../../features/validation/models";
+} from "features/server-configurations";
+import { ValidationFormInterface } from "features/validation/models";
 import {
     updatePasswordExpiryProperties,
     useGetPasswordExpiryProperties
 } from "../components/password-expiry/api/password-expiry";
 import { generatePasswordExpiry } from "../components/password-expiry/components/password-expiry";
-import {
-    updatePasswordHistoryCount,
-    useGetPasswordHistoryCount
-} from "../components/password-history-count/api";
+import { updatePasswordHistoryCount, useGetPasswordHistoryCount } from "../components/password-history-count/api";
 import { generatePasswordHistoryCount } from "../components/password-history-count/components";
 import { updatePasswordPolicyProperties } from "../components/password-policies/api/password-policies";
 
 export const serverConfigurationConfig: ServerConfigurationConfig = {
     autoEnableConnectorToggleProperty: false,
-    backButtonDisabledConnectorIDs: [
-        ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID
-    ],
+    backButtonDisabledConnectorIDs: [ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID],
     connectorCategoriesToHide: [
         ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID,
         ServerConfigurationsConstants.IDENTITY_GOVERNANCE_PASSWORD_POLICIES_ID
     ],
-    connectorCategoriesToShow: [ "all" ],
-    connectorPropertiesToShow: [ "all" ],
-    connectorStatusViewDisabledConnectorIDs: [
-        ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID
-    ],
+    connectorCategoriesToShow: ["all"],
+    connectorPropertiesToShow: ["all"],
+    connectorStatusViewDisabledConnectorIDs: [ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID],
     connectorToggleName: {
         "account-recovery": ServerConfigurationsConstants.PASSWORD_RECOVERY_NOTIFICATION_BASED_ENABLE,
         "account-recovery-username": ServerConfigurationsConstants.USERNAME_RECOVERY_ENABLE,
@@ -78,7 +71,7 @@ export const serverConfigurationConfig: ServerConfigurationConfig = {
         ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID,
         ServerConfigurationsConstants.USER_CLAIM_UPDATE_CONNECTOR_ID
     ],
-    connectorsToShow: [ "all" ],
+    connectorsToShow: ["all"],
     customConnectors: [
         ServerConfigurationsConstants.SAML2_SSO_CONNECTOR_ID,
         ServerConfigurationsConstants.SESSION_MANAGEMENT_CONNECTOR_ID,
@@ -94,13 +87,7 @@ export const serverConfigurationConfig: ServerConfigurationConfig = {
         t: TFunction<"translation", undefined>,
         isReadOnly: boolean = false
     ): ReactElement => {
-        return generatePasswordExpiry(
-            componentId,
-            passwordExpiryEnabled,
-            setPasswordExpiryEnabled,
-            t,
-            isReadOnly
-        );
+        return generatePasswordExpiry(componentId, passwordExpiryEnabled, setPasswordExpiryEnabled, t, isReadOnly);
     },
     passwordHistoryCountComponent: (
         componentId: string,
@@ -131,9 +118,8 @@ export const serverConfigurationConfig: ServerConfigurationConfig = {
     ): PasswordHistoryCountInterface => {
         const isEnabled: boolean =
             passwordHistoryCount.properties.filter(
-                (property: ConnectorPropertyInterface) =>
-                    property.name === "passwordHistory.enable"
-            )[ 0 ].value === "true";
+                (property: ConnectorPropertyInterface) => property.name === "passwordHistory.enable"
+            )[0].value === "true";
 
         setPasswordHistoryEnabled(isEnabled);
 
@@ -141,15 +127,14 @@ export const serverConfigurationConfig: ServerConfigurationConfig = {
             ...initialValues,
             passwordHistoryCount: parseInt(
                 passwordHistoryCount.properties.filter(
-                    (property: ConnectorPropertyInterface) =>
-                        property.name === "passwordHistory.count"
-                )[ 0 ].value
+                    (property: ConnectorPropertyInterface) => property.name === "passwordHistory.count"
+                )[0].value
             ),
             passwordHistoryCountEnabled: isEnabled
         };
     },
     processPasswordCountSubmitData: (data: PasswordHistoryCountInterface) => {
-        let passwordHistoryCount: number | undefined = parseInt((data.passwordHistoryCount as string));
+        let passwordHistoryCount: number | undefined = parseInt(data.passwordHistoryCount as string);
         const passwordHistoryCountEnabled: boolean | undefined = data.passwordHistoryCountEnabled;
 
         delete data.passwordHistoryCount;
@@ -185,7 +170,7 @@ export const serverConfigurationConfig: ServerConfigurationConfig = {
             passwordExpiry?.properties?.filter(
                 (property: ConnectorPropertyInterface) =>
                     property.name === ServerConfigurationsConstants.PASSWORD_EXPIRY_ENABLE
-            )[ 0 ].value === "true";
+            )[0].value === "true";
 
         setPasswordExpiryEnabled(isEnabled);
 
@@ -196,12 +181,12 @@ export const serverConfigurationConfig: ServerConfigurationConfig = {
                 passwordExpiry?.properties?.filter(
                     (property: ConnectorPropertyInterface) =>
                         property.name === ServerConfigurationsConstants.PASSWORD_EXPIRY_TIME
-                )[ 0 ].value
+                )[0].value
             )
         };
     },
     processPasswordExpirySubmitData: (data: PasswordExpiryInterface) => {
-        let passwordExpiryTime: number | undefined = parseInt((data.passwordExpiryTime as string));
+        let passwordExpiryTime: number | undefined = parseInt(data.passwordExpiryTime as string);
         const passwordExpiryEnabled: boolean | undefined = data.passwordExpiryEnabled;
 
         delete data.passwordExpiryTime;
@@ -228,9 +213,9 @@ export const serverConfigurationConfig: ServerConfigurationConfig = {
         return updatePasswordExpiryProperties(passwordExpiryData);
     },
     processPasswordPoliciesSubmitData: (data: PasswordPoliciesInterface, isLegacy: boolean) => {
-        let passwordExpiryTime: number | undefined = parseInt((data.passwordExpiryTime as string));
+        let passwordExpiryTime: number | undefined = parseInt(data.passwordExpiryTime as string);
         const passwordExpiryEnabled: boolean | undefined = data.passwordExpiryEnabled;
-        let passwordHistoryCount: number | undefined = parseInt((data.passwordHistoryCount as string));
+        let passwordHistoryCount: number | undefined = parseInt(data.passwordHistoryCount as string);
         const passwordHistoryCountEnabled: boolean | undefined = data.passwordHistoryCountEnabled;
 
         delete data.passwordExpiryTime;
@@ -247,41 +232,53 @@ export const serverConfigurationConfig: ServerConfigurationConfig = {
         }
 
         const legacyPasswordPoliciesData: {
-            id: string, properties: UpdateGovernanceConnectorConfigPropertyInterface[] } = {
-                id: ServerConfigurationsConstants.PASSWORD_POLICY_CONNECTOR_ID,
-                properties: [
-                    {
-                        name: ServerConfigurationsConstants.PASSWORD_POLICY_ENABLE,
-                        value: data[
-                            GovernanceConnectorUtils.encodeConnectorPropertyName(
-                                ServerConfigurationsConstants.PASSWORD_POLICY_ENABLE) ]?.toString()
-                    },
-                    {
-                        name: ServerConfigurationsConstants.PASSWORD_POLICY_MIN_LENGTH,
-                        value: data[
-                            GovernanceConnectorUtils.encodeConnectorPropertyName(
-                                ServerConfigurationsConstants.PASSWORD_POLICY_MIN_LENGTH) ]?.toString()
-                    },
-                    {
-                        name: ServerConfigurationsConstants.PASSWORD_POLICY_MAX_LENGTH,
-                        value: data[
-                            GovernanceConnectorUtils.encodeConnectorPropertyName(
-                                ServerConfigurationsConstants.PASSWORD_POLICY_MAX_LENGTH) ]?.toString()
-                    },
-                    {
-                        name: ServerConfigurationsConstants.PASSWORD_POLICY_PATTERN,
-                        value: data[
-                            GovernanceConnectorUtils.encodeConnectorPropertyName(
-                                ServerConfigurationsConstants.PASSWORD_POLICY_PATTERN) ]?.toString()
-                    },
-                    {
-                        name: ServerConfigurationsConstants.PASSWORD_POLICY_ERROR_MESSAGE,
-                        value: data[
-                            GovernanceConnectorUtils.encodeConnectorPropertyName(
-                                ServerConfigurationsConstants.PASSWORD_POLICY_ERROR_MESSAGE) ]?.toString()
-                    }
-                ]
-            };
+            id: string;
+            properties: UpdateGovernanceConnectorConfigPropertyInterface[];
+        } = {
+            id: ServerConfigurationsConstants.PASSWORD_POLICY_CONNECTOR_ID,
+            properties: [
+                {
+                    name: ServerConfigurationsConstants.PASSWORD_POLICY_ENABLE,
+                    value: data[
+                        GovernanceConnectorUtils.encodeConnectorPropertyName(
+                            ServerConfigurationsConstants.PASSWORD_POLICY_ENABLE
+                        )
+                    ]?.toString()
+                },
+                {
+                    name: ServerConfigurationsConstants.PASSWORD_POLICY_MIN_LENGTH,
+                    value: data[
+                        GovernanceConnectorUtils.encodeConnectorPropertyName(
+                            ServerConfigurationsConstants.PASSWORD_POLICY_MIN_LENGTH
+                        )
+                    ]?.toString()
+                },
+                {
+                    name: ServerConfigurationsConstants.PASSWORD_POLICY_MAX_LENGTH,
+                    value: data[
+                        GovernanceConnectorUtils.encodeConnectorPropertyName(
+                            ServerConfigurationsConstants.PASSWORD_POLICY_MAX_LENGTH
+                        )
+                    ]?.toString()
+                },
+                {
+                    name: ServerConfigurationsConstants.PASSWORD_POLICY_PATTERN,
+                    value: data[
+                        GovernanceConnectorUtils.encodeConnectorPropertyName(
+                            ServerConfigurationsConstants.PASSWORD_POLICY_PATTERN
+                        )
+                    ]?.toString()
+                },
+                {
+                    name: ServerConfigurationsConstants.PASSWORD_POLICY_ERROR_MESSAGE,
+                    value: data[
+                        GovernanceConnectorUtils.encodeConnectorPropertyName(
+                            ServerConfigurationsConstants.PASSWORD_POLICY_ERROR_MESSAGE
+                        )
+                    ]?.toString()
+                }
+            ]
+        };
 
         const passwordPoliciesData: UpdateMultipleGovernanceConnectorsInterface = {
             connectors: [
@@ -332,30 +329,28 @@ export const serverConfigurationConfig: ServerConfigurationConfig = {
         return (
             <Card fluid>
                 <Card.Content className="connector-section-content">
-                    <Grid.Row columns={ 1 }>
+                    <Grid.Row columns={1}>
                         <Grid.Column>
                             <Grid padded>
                                 <Grid.Row>
-                                    <Grid.Column width={ 16 }>
+                                    <Grid.Column width={16}>
                                         <div
-                                            className={ connectorIllustration ? "connector-section-with-image-bg" : "" }
-                                            style={ {
-                                                background: `url(${ connectorIllustration })`
-                                            } }
+                                            className={connectorIllustration ? "connector-section-with-image-bg" : ""}
+                                            style={{
+                                                background: `url(${connectorIllustration})`
+                                            }}
                                         >
                                             <Header>
-                                                { connectorTitle }
-                                                <Header.Subheader>
-                                                    { connectorSubHeading }
-                                                </Header.Subheader>
+                                                {connectorTitle}
+                                                <Header.Subheader>{connectorSubHeading}</Header.Subheader>
                                             </Header>
                                         </div>
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
-                            { message }
+                            {message}
                             <Divider />
-                            { connectorForm }
+                            {connectorForm}
                         </Grid.Column>
                     </Grid.Row>
                 </Card.Content>

@@ -27,7 +27,7 @@ import CustomizeStepsIllustration from "./assets/customize-steps.png";
 import {
     IdentityProviderInterface,
     IdentityProviderTemplateInterface
-} from "../../../../features/identity-providers/models/identity-provider";
+} from "features/identity-providers/models/identity-provider";
 import { VerticalStepper, VerticalStepperStepInterface } from "../../../components/component-extensions";
 import ApplicationSelectionModal from "../../../components/shared/application-selection-modal";
 
@@ -45,14 +45,11 @@ interface HyprAuthenticatorQuickStartPropsInterface extends IdentifiableComponen
 const HyprAuthenticatorQuickStart: FunctionComponent<HyprAuthenticatorQuickStartPropsInterface> = (
     props: HyprAuthenticatorQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     const authScript: string = `var onLoginRequest = function onLoginRequest(context) {
 
@@ -90,12 +87,14 @@ const HyprAuthenticatorQuickStart: FunctionComponent<HyprAuthenticatorQuickStart
                 <Text>
                     <Trans
                         i18nKey={
-                            "extensions:develop.identityProviders.hypr.quickStart" +
-                            ".steps.selectApplication.content"
+                            "extensions:develop.identityProviders.hypr.quickStart" + ".steps.selectApplication.content"
                         }
                     >
                         Choose the
-                        <Link external={ false } onClick={ () => setShowApplicationModal(true) }> application</Link>
+                        <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                            {" "}
+                            application
+                        </Link>
                         for which you want to set up HYPR login.
                     </Trans>
                 </Text>
@@ -112,18 +111,16 @@ const HyprAuthenticatorQuickStart: FunctionComponent<HyprAuthenticatorQuickStart
                                 "selectDefaultConfig.content"
                             }
                         >
-                            Go to the <strong>Login Flow</strong> tab and click on <strong>Start with default
-                            configuration</strong>.
+                            Go to the <strong>Login Flow</strong> tab and click on{" "}
+                            <strong>Start with default configuration</strong>.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
                 <Trans
-                    i18nKey={
-                        "extensions:develop.identityProviders.hypr.quickStart.steps.selectDefaultConfig.heading"
-                    }
+                    i18nKey={"extensions:develop.identityProviders.hypr.quickStart.steps.selectDefaultConfig.heading"}
                 >
                     Select <strong>Start with default configuration</strong>
                 </Trans>
@@ -138,46 +135,44 @@ const HyprAuthenticatorQuickStart: FunctionComponent<HyprAuthenticatorQuickStart
                                 "extensions:develop.identityProviders.hypr.quickStart.steps.configureLogin.addHypr"
                             }
                         >
-                            Add HYPR authenticator to step 1 by clicking on
-                            the <strong>Add Authentication</strong> button.
+                            Add HYPR authenticator to step 1 by clicking on the <strong>Add Authentication</strong>{" "}
+                            button.
                         </Trans>
                     </Text>
 
-                    <GenericIcon inline transparent icon={ CustomizeStepsIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={CustomizeStepsIllustration} size="huge" />
 
                     <Text>
                         <Trans
                             i18nKey={
                                 "extensions:develop.identityProviders.hypr.quickStart.steps." +
-                                    "configureLogin.conditionalAuth"
+                                "configureLogin.conditionalAuth"
                             }
                         >
-                            Turn on <strong>Conditional Authentication</strong> by switching the toggle and
-                            add the following conditional authentication script.
+                            Turn on <strong>Conditional Authentication</strong> by switching the toggle and add the
+                            following conditional authentication script.
                         </Trans>
                     </Text>
 
                     <div className="connection-code-segment">
                         <CodeEditor
-                            height={ "100%" }
+                            height={"100%"}
                             readOnly
                             withClipboardCopy
                             language="typescript"
-                            sourceCode={ authScript }
+                            sourceCode={authScript}
                         />
                     </div>
 
                     <Text>
                         <Trans
-                            i18nKey={
-                                "extensions:develop.identityProviders.hypr.quickStart.steps.configureLogin.update"
-                            }
+                            i18nKey={"extensions:develop.identityProviders.hypr.quickStart.steps.configureLogin.update"}
                         >
                             Click <strong>Update</strong> to confirm.
                         </Trans>
                     </Text>
 
-                    <GenericIcon inline transparent icon={ ConditionalAuthIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={ConditionalAuthIllustration} size="huge" />
                 </>
             ),
             stepTitle: t("extensions:develop.identityProviders.hypr.quickStart.steps.configureLogin.heading")
@@ -186,49 +181,37 @@ const HyprAuthenticatorQuickStart: FunctionComponent<HyprAuthenticatorQuickStart
 
     return (
         <>
-            <Grid data-testid={ componentId } className="authenticator-quickstart-content">
+            <Grid data-testid={componentId} className="authenticator-quickstart-content">
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
+                    <Grid.Column width={16}>
                         <PageHeader
                             className="mb-2"
-                            title={ t("extensions:develop.identityProviders.hypr.quickStart.heading") }
-                            imageSpaced={ false }
-                            bottomMargin={ false }
+                            title={t("extensions:develop.identityProviders.hypr.quickStart.heading")}
+                            imageSpaced={false}
+                            bottomMargin={false}
                         />
                         <Heading subHeading as="h6">
-                            { t("extensions:develop.identityProviders.hypr.quickStart.subHeading") }
+                            {t("extensions:develop.identityProviders.hypr.quickStart.subHeading")}
                         </Heading>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
-                        <VerticalStepper
-                            alwaysOpen
-                            isSidePanelOpen
-                            stepContent={ steps }
-                            isNextEnabled={ true }
-                        />
+                    <Grid.Column width={16}>
+                        <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ componentId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={
-                            t("extensions:develop.identityProviders.hypr.quickStart.addLoginModal.heading")
-                        }
-                        subHeading={
-                            t("extensions:develop.identityProviders.hypr.quickStart.addLoginModal.subHeading")
-                        }
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${componentId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.hypr.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.hypr.quickStart.addLoginModal.subHeading")}
+                />
+            )}
         </>
     );
-
 };
 
 /**

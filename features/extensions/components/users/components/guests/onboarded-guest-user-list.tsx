@@ -50,16 +50,16 @@ import {
     UserRoleInterface,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../../../../features/core";
-import { updateRoleDetails } from "../../../../../features/roles/api/roles";
-import { PatchRoleDataInterface } from "../../../../../features/roles/models/roles";
-import { RealmConfigInterface } from "../../../../../features/server-configurations";
-import { UserManagementConstants } from "../../../../../features/users/constants";
+} from "features/core";
+import { updateRoleDetails } from "features/roles/api/roles";
+import { PatchRoleDataInterface } from "features/roles/models/roles";
+import { RealmConfigInterface } from "features/server-configurations";
+import { UserManagementConstants } from "features/users/constants";
 import {
     InternalAdminUserListInterface,
     UserBasicInterface,
     UserListInterface
-} from "../../../../../features/users/models";
+} from "features/users/models";
 import { SCIMConfigs } from "../../../../configs/scim";
 import { FeatureGateConstants } from "../../../feature-gate/constants/feature-gate";
 import { deleteGuestUser } from "../../api";
@@ -69,9 +69,10 @@ import { UserManagementUtils } from "../../utils";
 /**
  * Prop types for the onboarded collaborator users list component.
  */
-interface OnboardedGuestUsersListProps extends SBACInterface<FeatureConfigInterface>, LoadableComponentInterface,
-    IdentifiableComponentInterface {
-
+interface OnboardedGuestUsersListProps
+    extends SBACInterface<FeatureConfigInterface>,
+        LoadableComponentInterface,
+        IdentifiableComponentInterface {
     /**
      * Admin account type.
      */
@@ -155,8 +156,8 @@ interface OnboardedGuestUsersListProps extends SBACInterface<FeatureConfigInterf
  * @returns the react component for the onboarded/accepted admins list.
  */
 export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUsersListProps> = (
-    props: OnboardedGuestUsersListProps): ReactElement => {
-
+    props: OnboardedGuestUsersListProps
+): ReactElement => {
     const {
         adminType,
         adminRoleId,
@@ -175,23 +176,23 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
         showListItemActions,
         onboardedGuestUsersList,
         associationType,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingUser, setDeletingUser ] = useState<UserBasicInterface | UserRoleInterface>(undefined);
-    const [ alert, setAlert, alertComponent ] = useConfirmationModalAlert();
-    const [ usersList, setUsersList ] = useState<UserListInterface | InternalAdminUserListInterface>({});
-    const [ loading, setLoading ] = useState(false);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingUser, setDeletingUser] = useState<UserBasicInterface | UserRoleInterface>(undefined);
+    const [alert, setAlert, alertComponent] = useConfirmationModalAlert();
+    const [usersList, setUsersList] = useState<UserListInterface | InternalAdminUserListInterface>({});
+    const [loading, setLoading] = useState(false);
 
     const authenticatedUser: string = useSelector((state: AppState) => state?.auth?.username);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const isPrivilegedUser: boolean = useSelector((state: AppState) => state.auth.isPrivilegedUser);
 
-    const saasFeatureStatus : FeatureStatus = useCheckFeatureStatus(FeatureGateConstants.SAAS_FEATURES_IDENTIFIER);
+    const saasFeatureStatus: FeatureStatus = useCheckFeatureStatus(FeatureGateConstants.SAAS_FEATURES_IDENTIFIER);
 
     /**
      * Set users list.
@@ -204,54 +205,70 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
         }
 
         setUsersList(onboardedGuestUsersList);
-    }, [ onboardedGuestUsersList ]);
+    }, [onboardedGuestUsersList]);
 
     const handleUserEdit = (user: UserBasicInterface | UserRoleInterface) => {
         if ("id" in user) {
-            history.push(UsersConstants.getPaths().get("COLLABORATOR_USER_EDIT_PATH").replace(":id", user.id));
+            history.push(
+                UsersConstants.getPaths()
+                    .get("COLLABORATOR_USER_EDIT_PATH")
+                    .replace(":id", user.id)
+            );
         }
 
         if ("value" in user) {
-            history.push(UsersConstants.getPaths().get("COLLABORATOR_USER_EDIT_PATH").replace(":id", user.value));
+            history.push(
+                UsersConstants.getPaths()
+                    .get("COLLABORATOR_USER_EDIT_PATH")
+                    .replace(":id", user.value)
+            );
         }
     };
 
     const handleUserDelete = (user: UserBasicInterface | UserRoleInterface): Promise<void> => {
-        const accountType: string = user[ SCIMConfigs.scim.enterpriseSchema ]?.userAccountType
-            ? user[ SCIMConfigs.scim.enterpriseSchema ]?.userAccountType
+        const accountType: string = user[SCIMConfigs.scim.enterpriseSchema]?.userAccountType
+            ? user[SCIMConfigs.scim.enterpriseSchema]?.userAccountType
             : UserAccountTypes.CUSTOMER;
 
         if (accountType === UserAccountTypes.COLLABORATOR && "id" in user) {
             return deleteGuestUser(user.id)
                 .then(() => {
-                    dispatch(addAlert({
-                        description: t(
-                            "console:manage.features.invite.notifications.deleteInvite.success.description"
-                        ),
-                        level: AlertLevels.SUCCESS,
-                        message: t(
-                            "console:manage.features.users.notifications.deleteUser.success.message"
-                        )
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.invite.notifications.deleteInvite.success.description"
+                            ),
+                            level: AlertLevels.SUCCESS,
+                            message: t("console:manage.features.users.notifications.deleteUser.success.message")
+                        })
+                    );
                     onUserDelete();
-                }).catch((error: IdentityAppsApiException) => {
+                })
+                .catch((error: IdentityAppsApiException) => {
                     if (error.response && error.response.data && error.response.data.description) {
-                        dispatch(addAlert({
-                            description: error.response.data.description,
-                            level: AlertLevels.ERROR,
-                            message: t("console:manage.features.users.notifications.deleteUser.error.message")
-                        }));
+                        dispatch(
+                            addAlert({
+                                description: error.response.data.description,
+                                level: AlertLevels.ERROR,
+                                message: t("console:manage.features.users.notifications.deleteUser.error.message")
+                            })
+                        );
 
                         return;
                     }
-                    dispatch(addAlert({
-                        description: t("console:manage.features.users.notifications.deleteUser." +
-                            "genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.users.notifications.deleteUser.genericError" +
-                            ".message")
-                    }));
-                }).finally(() => {
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.users.notifications.deleteUser." + "genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.users.notifications.deleteUser.genericError" + ".message"
+                            )
+                        })
+                    );
+                })
+                .finally(() => {
                     setLoading(false);
                     setShowDeleteConfirmationModal(false);
                     setDeletingUser(undefined);
@@ -266,46 +283,52 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
                         value: {}
                     }
                 ],
-                schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+                schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
             };
 
             return updateRoleDetails(adminRoleId, roleData)
                 .then(() => {
-                    dispatch(addAlert({
-                        description: t(
-                            "console:manage.features.invite.notifications.deleteInvite.success.description"
-                        ),
-                        level: AlertLevels.SUCCESS,
-                        message: t(
-                            "console:manage.features.users.notifications.deleteUser.success.message"
-                        )
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.invite.notifications.deleteInvite.success.description"
+                            ),
+                            level: AlertLevels.SUCCESS,
+                            message: t("console:manage.features.users.notifications.deleteUser.success.message")
+                        })
+                    );
                     onUserDelete();
                 })
                 .catch((error: IdentityAppsApiException) => {
                     if (error.response && error.response.data && error.response.data.description) {
-                        dispatch(addAlert({
-                            description: error.response.data.description,
-                            level: AlertLevels.ERROR,
-                            message: t("console:manage.features.users.notifications.deleteUser.error.message")
-                        }));
+                        dispatch(
+                            addAlert({
+                                description: error.response.data.description,
+                                level: AlertLevels.ERROR,
+                                message: t("console:manage.features.users.notifications.deleteUser.error.message")
+                            })
+                        );
 
                         return;
                     }
-                    dispatch(addAlert({
-                        description: t("console:manage.features.users.notifications.deleteUser." +
-                            "genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.users.notifications.deleteUser.genericError" +
-                            ".message")
-                    }));
-                }).finally(() => {
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.users.notifications.deleteUser." + "genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.users.notifications.deleteUser.genericError" + ".message"
+                            )
+                        })
+                    );
+                })
+                .finally(() => {
                     setLoading(false);
                     setShowDeleteConfirmationModal(false);
                     setDeletingUser(undefined);
                 });
         } else if (accountType === UserAccountTypes.CUSTOMER && "id" in user) {
-
             const roleData: PatchRoleDataInterface = {
                 Operations: [
                     {
@@ -314,35 +337,45 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
                         value: {}
                     }
                 ],
-                schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+                schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
             };
 
             return updateRoleDetails(adminRoleId, roleData)
                 .then(() => {
-                    dispatch(addAlert({
-                        description: t("console:manage.features.users.notifications.revokeAdmin.success.description"),
-                        level: AlertLevels.SUCCESS,
-                        message: t("console:manage.features.users.notifications.revokeAdmin.success.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.users.notifications.revokeAdmin.success.description"
+                            ),
+                            level: AlertLevels.SUCCESS,
+                            message: t("console:manage.features.users.notifications.revokeAdmin.success.message")
+                        })
+                    );
                     onUserDelete();
                 })
                 .catch((error: IdentityAppsApiException) => {
                     if (error.response && error.response.data && error.response.data.description) {
-                        dispatch(addAlert({
-                            description: error.response.data.description,
-                            level: AlertLevels.ERROR,
-                            message: t("console:manage.features.users.notifications.revokeAdmin.error.message")
-                        }));
+                        dispatch(
+                            addAlert({
+                                description: error.response.data.description,
+                                level: AlertLevels.ERROR,
+                                message: t("console:manage.features.users.notifications.revokeAdmin.error.message")
+                            })
+                        );
 
                         return;
                     }
-                    dispatch(addAlert({
-                        description: t("console:manage.features.users.notifications.revokeAdmin." +
-                            "genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.users.notifications.revokeAdmin.genericError.message")
-                    }));
-                }).finally(() => {
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.users.notifications.revokeAdmin." + "genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.users.notifications.revokeAdmin.genericError.message")
+                        })
+                    );
+                })
+                .finally(() => {
                     setLoading(false);
                     setShowDeleteConfirmationModal(false);
                     setDeletingUser(undefined);
@@ -365,39 +398,37 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
                 render: (user: UserBasicInterface): ReactNode => {
                     const header: string = UserManagementUtils.resolveUserListHeader(user);
                     const subHeader: string = UserManagementUtils.resolveUserListSubheader(user);
-                    const isNameAvailable: boolean = user.name?.familyName !== undefined ||
-                        user.name?.givenName !== undefined;
+                    const isNameAvailable: boolean =
+                        user.name?.familyName !== undefined || user.name?.givenName !== undefined;
 
                     return (
                         <Header
                             image
                             as="h6"
                             className="header-with-icon"
-                            data-componentid={ `${ componentId }-item-heading` }
+                            data-componentid={`${componentId}-item-heading`}
                         >
                             <UserAvatar
                                 data-componentid="users-list-item-image"
-                                name={ user.userName.split("/")?.length > 1
-                                    ? user.userName.split("/")[ 1 ]
-                                    : user.userName.split("/")[ 0 ]
+                                name={
+                                    user.userName.split("/")?.length > 1
+                                        ? user.userName.split("/")[1]
+                                        : user.userName.split("/")[0]
                                 }
                                 size="mini"
-                                image={ user.profileUrl }
+                                image={user.profileUrl}
                                 spaced="right"
                                 data-suppress=""
                             />
                             <Header.Content>
-                                { header }
-                                { resolveOwnershipLabel(user) }
-                                { resolveMyselfLabel(user) }
-                                {
-                                    (isNameAvailable) &&
-                                        (<Header.Subheader
-                                            data-componentid={ `${ componentId }-item-sub-heading` }
-                                        >
-                                            { subHeader }
-                                        </Header.Subheader>)
-                                }
+                                {header}
+                                {resolveOwnershipLabel(user)}
+                                {resolveMyselfLabel(user)}
+                                {isNameAvailable && (
+                                    <Header.Subheader data-componentid={`${componentId}-item-sub-heading`}>
+                                        {subHeader}
+                                    </Header.Subheader>
+                                )}
                             </Header.Content>
                         </Header>
                     );
@@ -413,29 +444,27 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
                 id: "idpType",
                 key: "idpType",
                 render: (user: UserBasicInterface): ReactNode => {
-                    if (user[ SCIMConfigs.scim.enterpriseSchema ]?.idpType) {
-                        if (user[ SCIMConfigs.scim.enterpriseSchema ]?.idpType.split("/").length > 1) {
-                            return user[ SCIMConfigs.scim.enterpriseSchema ]?.idpType.split("/")[1];
+                    if (user[SCIMConfigs.scim.enterpriseSchema]?.idpType) {
+                        if (user[SCIMConfigs.scim.enterpriseSchema]?.idpType.split("/").length > 1) {
+                            return user[SCIMConfigs.scim.enterpriseSchema]?.idpType.split("/")[1];
                         }
 
-                        return user[ SCIMConfigs.scim.enterpriseSchema ]?.idpType;
+                        return user[SCIMConfigs.scim.enterpriseSchema]?.idpType;
                     } else {
                         return "N/A";
                     }
                 },
                 title: (
                     <>
-                        <div className={ "header-with-popup" }>
-                            <span>
-                                { t("extensions:manage.users.list.columns.idpType") }
-                            </span>
+                        <div className={"header-with-popup"}>
+                            <span>{t("extensions:manage.users.list.columns.idpType")}</span>
                             <Popup
-                                trigger={ (
-                                    <div className="inline" >
+                                trigger={
+                                    <div className="inline">
                                         <Icon disabled name="info circle" className="link pointing pl-1" />
                                     </div>
-                                ) }
-                                content={ t("extensions:manage.users.list.popups.content.idpTypeContent") }
+                                }
+                                content={t("extensions:manage.users.list.popups.content.idpTypeContent")}
                                 position="top center"
                                 size="mini"
                                 hideOnScroll
@@ -465,27 +494,24 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
                 id: "name",
                 key: "name",
                 render: (user: UserRoleInterface): ReactNode => {
-                    const username: string = user.display.split("/")?.length > 1
-                        ? user.display.split("/")[ 1 ]
-                        : user.display.split("/")[ 0 ];
+                    const username: string =
+                        user.display.split("/")?.length > 1 ? user.display.split("/")[1] : user.display.split("/")[0];
 
                     return (
                         <Header
                             image
                             as="h6"
                             className="header-with-icon"
-                            data-componentid={ `${ componentId }-item-heading` }
+                            data-componentid={`${componentId}-item-heading`}
                         >
                             <UserAvatar
                                 data-componentid="users-list-item-image"
-                                name={ username }
+                                name={username}
                                 size="mini"
                                 spaced="right"
                                 data-suppress=""
                             />
-                            <Header.Content>
-                                { username }
-                            </Header.Content>
+                            <Header.Content>{username}</Header.Content>
                         </Header>
                     );
                 },
@@ -518,36 +544,46 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
         const actions: TableActionsInterface[] = [
             {
                 "data-componentid": "administrators-list-item-edit-button",
-                hidden: (): boolean => !isFeatureEnabled(featureConfig?.users,
-                    UserManagementConstants.FEATURE_DICTIONARY.get("USER_READ")),
+                hidden: (): boolean =>
+                    !isFeatureEnabled(
+                        featureConfig?.users,
+                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_READ")
+                    ),
                 icon: (user: UserBasicInterface): SemanticICONS => {
-                    const userStore: string = user?.userName?.split("/").length > 1
-                        ? user?.userName?.split("/")[0]
-                        : "PRIMARY";
+                    const userStore: string =
+                        user?.userName?.split("/").length > 1 ? user?.userName?.split("/")[0] : "PRIMARY";
 
-                    return (
-                        !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.update, allowedScopes)
-                    || !isFeatureEnabled(featureConfig?.users,
-                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE"))
-                    || readOnlyUserStores?.includes(userStore.toString())
-                    || adminType === AdminAccountTypes.EXTERNAL)
+                    return !hasRequiredScopes(
+                        featureConfig?.users,
+                        featureConfig?.users?.scopes?.update,
+                        allowedScopes
+                    ) ||
+                        !isFeatureEnabled(
+                            featureConfig?.users,
+                            UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")
+                        ) ||
+                        readOnlyUserStores?.includes(userStore.toString()) ||
+                        adminType === AdminAccountTypes.EXTERNAL
                         ? "eye"
                         : "pencil alternate";
-
                 },
                 onClick: (e: SyntheticEvent, user: UserBasicInterface | UserRoleInterface): void =>
                     handleUserEdit(user),
                 popupText: (user: UserBasicInterface): string => {
-                    const userStore: string = user?.userName?.split("/").length > 1
-                        ? user?.userName?.split("/")[0]
-                        : "PRIMARY";
+                    const userStore: string =
+                        user?.userName?.split("/").length > 1 ? user?.userName?.split("/")[0] : "PRIMARY";
 
-                    return (
-                        !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.update, allowedScopes)
-                    || !isFeatureEnabled(featureConfig?.users,
-                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE"))
-                    || readOnlyUserStores?.includes(userStore.toString())
-                    || adminType === AdminAccountTypes.EXTERNAL)
+                    return !hasRequiredScopes(
+                        featureConfig?.users,
+                        featureConfig?.users?.scopes?.update,
+                        allowedScopes
+                    ) ||
+                        !isFeatureEnabled(
+                            featureConfig?.users,
+                            UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")
+                        ) ||
+                        readOnlyUserStores?.includes(userStore.toString()) ||
+                        adminType === AdminAccountTypes.EXTERNAL
                         ? t("common:view")
                         : t("common:edit");
                 },
@@ -558,19 +594,24 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
         actions.push({
             "data-componentid": "administrators-list-item-delete-button",
             hidden: (user: UserBasicInterface): boolean => {
-                const userStore: string = user?.userName?.split("/").length > 1
-                    ? user?.userName?.split("/")[0]
-                    : UserstoreConstants.PRIMARY_USER_STORE;
+                const userStore: string =
+                    user?.userName?.split("/").length > 1
+                        ? user?.userName?.split("/")[0]
+                        : UserstoreConstants.PRIMARY_USER_STORE;
 
-                return !isFeatureEnabled(featureConfig?.users,
-                    UserManagementConstants.FEATURE_DICTIONARY.get("USER_DELETE"))
-                    || isPrivilegedUser
-                    || !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.delete, allowedScopes)
-                    || readOnlyUserStores?.includes(userStore.toString())
-                    || (adminType === AdminAccountTypes.EXTERNAL
-                    && (getUserNameWithoutDomain(user?.userName) === realmConfigs?.adminUser
-                    || authenticatedUser?.includes(getUserNameWithoutDomain(user?.userName))))
-                    || associationType === GUEST_ADMIN_ASSOCIATION_TYPE;
+                return (
+                    !isFeatureEnabled(
+                        featureConfig?.users,
+                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_DELETE")
+                    ) ||
+                    isPrivilegedUser ||
+                    !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.delete, allowedScopes) ||
+                    readOnlyUserStores?.includes(userStore.toString()) ||
+                    (adminType === AdminAccountTypes.EXTERNAL &&
+                        (getUserNameWithoutDomain(user?.userName) === realmConfigs?.adminUser ||
+                            authenticatedUser?.includes(getUserNameWithoutDomain(user?.userName)))) ||
+                    associationType === GUEST_ADMIN_ASSOCIATION_TYPE
+                );
             },
             icon: (): SemanticICONS => "trash alternate",
             onClick: (e: SyntheticEvent, user: UserBasicInterface | UserRoleInterface): void => {
@@ -591,13 +632,11 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
      * @returns - The label indication of the ownership within the table.
      */
     const resolveOwnershipLabel = (user: UserBasicInterface): ReactNode => {
-        if (adminType === AdminAccountTypes.EXTERNAL &&
-            user[ SCIMConfigs.scim.enterpriseSchema ]?.userAccountType === UserAccountTypes.OWNER) {
-            return (
-                <Label size="small">
-                    Owner
-                </Label>
-            );
+        if (
+            adminType === AdminAccountTypes.EXTERNAL &&
+            user[SCIMConfigs.scim.enterpriseSchema]?.userAccountType === UserAccountTypes.OWNER
+        ) {
+            return <Label size="small">Owner</Label>;
         }
 
         return null;
@@ -614,14 +653,13 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
             return null;
         }
         // Extracting the current username from authenticatedUser.
-        const currentUsername: string = authenticatedUser?.split("@").slice(0, 2).join("@");
+        const currentUsername: string = authenticatedUser
+            ?.split("@")
+            .slice(0, 2)
+            .join("@");
 
         if (currentUsername === getUserNameWithoutDomain(user?.userName)) {
-            return (
-                <Label size="small">
-                    Me
-                </Label>
-            );
+            return <Label size="small">Me</Label>;
         }
 
         return null;
@@ -637,19 +675,20 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
         if (searchQuery && usersList?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title") }
-                    subtitle={ [
-                        t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0",
-                            { query: searchQuery }),
+                    title={t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title")}
+                    subtitle={[
+                        t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0", {
+                            query: searchQuery
+                        }),
                         t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -657,10 +696,10 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
         if (usersList?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    data-componentid={ `${ componentId }-empty-placeholder` }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    data-componentid={`${componentId}-empty-placeholder`}
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    subtitle={ [ "There are no collaborator users associated with your organization at the moment." ] }
+                    subtitle={["There are no collaborator users associated with your organization at the moment."]}
                 />
             );
         }
@@ -672,65 +711,63 @@ export const OnboardedGuestUsersList: React.FunctionComponent<OnboardedGuestUser
         <>
             <DataTable<UserBasicInterface>
                 className="users-table"
-                externalSearch={ advancedSearch }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                externalSearch={advancedSearch}
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "circular"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ usersList.Resources }
-                onColumnSelectionChange={ onColumnSelectionChange }
-                onRowClick={ (e: SyntheticEvent, user: UserBasicInterface): void => {
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={usersList.Resources}
+                onColumnSelectionChange={onColumnSelectionChange}
+                onRowClick={(e: SyntheticEvent, user: UserBasicInterface): void => {
                     handleUserEdit(user);
                     onListItemClick && onListItemClick(e, user);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ saasFeatureStatus === FeatureStatus.ENABLED }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-componentid={ componentId }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={saasFeatureStatus === FeatureStatus.ENABLED}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-componentid={componentId}
             />
-            {
-                deletingUser && (
-                    <ConfirmationModal
-                        primaryActionLoading={ loading }
-                        data-componentid={ `${ componentId }-confirmation-modal` }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertionHint={ t("console:manage.features.user.deleteUser.confirmationModal.assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction="Confirm"
-                        secondaryAction="Cancel"
-                        onSecondaryActionClick={ (): void => {
-                            setShowDeleteConfirmationModal(false);
-                            setAlert(null);
-                        } }
-                        onPrimaryActionClick={ (): void => {
-                            setLoading(true);
-                            handleUserDelete(deletingUser);
-                        } }
-                        closeOnDimmerClick={ false }
+            {deletingUser && (
+                <ConfirmationModal
+                    primaryActionLoading={loading}
+                    data-componentid={`${componentId}-confirmation-modal`}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertionHint={t("console:manage.features.user.deleteUser.confirmationModal.assertionHint")}
+                    assertionType="checkbox"
+                    primaryAction="Confirm"
+                    secondaryAction="Cancel"
+                    onSecondaryActionClick={(): void => {
+                        setShowDeleteConfirmationModal(false);
+                        setAlert(null);
+                    }}
+                    onPrimaryActionClick={(): void => {
+                        setLoading(true);
+                        handleUserDelete(deletingUser);
+                    }}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-componentid={`${componentId}-confirmation-modal-header`}>
+                        {t("console:manage.features.user.deleteUser.confirmationModal.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        data-componentid={`${componentId}-confirmation-modal-message`}
+                        attached
+                        negative
                     >
-                        <ConfirmationModal.Header data-componentid={ `${ componentId }-confirmation-modal-header` }>
-                            { t("console:manage.features.user.deleteUser.confirmationModal.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            data-componentid={ `${ componentId }-confirmation-modal-message` }
-                            attached
-                            negative
-                        >
-                            { t("extensions:manage.guest.deleteUser.confirmationModal.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-componentid={ `${ componentId }-confirmation-modal-content` }>
-                            <div className="modal-alert-wrapper"> { alert && alertComponent }</div>
-                            { t("extensions:manage.guest.deleteUser.confirmationModal.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+                        {t("extensions:manage.guest.deleteUser.confirmationModal.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-componentid={`${componentId}-confirmation-modal-content`}>
+                        <div className="modal-alert-wrapper"> {alert && alertComponent}</div>
+                        {t("extensions:manage.guest.deleteUser.confirmationModal.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

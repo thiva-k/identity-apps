@@ -16,20 +16,19 @@
  * under the License.
  */
 
-import { AppConstants } from "../../../../features/core";
+import { AppConstants } from "features/core";
 
 /**
  * Class containing users constants.
  */
 export class UsersConstants {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     // Name of the Asgardeo userstore.
     public static readonly ASGARDEO_USERSTORE: string = "ASGARDEO_USER";
@@ -54,7 +53,7 @@ export class UsersConstants {
 
     // Query param to exclude roles and groups from getUserList API call.
     public static readonly GROUPS_AND_ROLES_ATTRIBUTE: string = "groups,roles";
-    
+
     // Query param to exclude groups from getUserList API call.
     public static readonly GROUPS_ATTRIBUTE: string = "groups";
 
@@ -76,7 +75,6 @@ export class UsersConstants {
      * @returns Map of users paths
      */
     public static getPaths(): Map<string, string> {
-
         return new Map<string, string>()
             .set("USERS_PATH", `${AppConstants.getAdminViewBasePath()}/users`)
             .set("USERS_EDIT_PATH", `${AppConstants.getAdminViewBasePath()}/:user-type/:id`)
@@ -84,7 +82,8 @@ export class UsersConstants {
             .set("CUSTOMER_USER_EDIT_PATH", `${AppConstants.getAdminViewBasePath()}/users/:id`)
             .set("COLLABORATOR_USERS_PATH", `${AppConstants.getAdminViewBasePath()}/administrators`)
             .set("COLLABORATOR_USER_EDIT_PATH", `${AppConstants.getAdminViewBasePath()}/administrators/:id`)
-            .set("COLLABORATOR_SETTINGS_EDIT_PATH",
+            .set(
+                "COLLABORATOR_SETTINGS_EDIT_PATH",
                 `${AppConstants.getAdminViewBasePath()}/administrator-settings-edit`
             );
     }
@@ -93,8 +92,8 @@ export class UsersConstants {
      * Consumer user store property values
      */
     public static readonly PASSWORD_JS_REGEX: string = "^[\\S]{5,30}$";
-    public static readonly ROLENAME_JS_REGEX: string =  "^[\\S]{3,30}$";
-    public static readonly USERNAME_JS_REGEX: string =  "^[\\S]{3,30}$";
+    public static readonly ROLENAME_JS_REGEX: string = "^[\\S]{3,30}$";
+    public static readonly USERNAME_JS_REGEX: string = "^[\\S]{3,30}$";
 
     /**
      * User local storage property values
@@ -111,7 +110,7 @@ export class UsersConstants {
         PASSWORD_MIN_LENGTH: 8,
         PASSWORD_NUMERIC: /[0-9]/g,
         PASSWORD_UPPER_CASE: /[A-Z]/g
-    }
+    };
 }
 
 /**

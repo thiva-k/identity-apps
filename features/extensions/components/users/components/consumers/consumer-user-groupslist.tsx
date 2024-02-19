@@ -53,14 +53,14 @@ import {
     getEmptyPlaceholderIllustrations,
     getSidePanelIcons,
     updateResources
-} from "../../../../../features/core";
+} from "features/core";
 import { 
     GroupsInterface, 
     GroupsMemberInterface, 
     SearchGroupInterface, 
     searchGroupList 
-} from "../../../../../features/groups";
-import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "../../../../../features/roles/constants/role-constants";
+} from "features/groups";
+import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "features/roles/constants/role-constants";
 import { UsersConstants } from "../../constants";
 
 interface ConsumerUserGroupsPropsInterface {

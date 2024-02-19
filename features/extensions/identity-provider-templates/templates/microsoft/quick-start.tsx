@@ -26,7 +26,7 @@ import CustomizeStepsIllustration from "./assets/customize-steps.png";
 import {
     IdentityProviderInterface,
     IdentityProviderTemplateInterface
-} from "../../../../features/identity-providers/models/identity-provider";
+} from "features/identity-providers/models/identity-provider";
 import { VerticalStepper, VerticalStepperStepInterface } from "../../../components/component-extensions";
 import ApplicationSelectionModal from "../../../components/shared/application-selection-modal";
 
@@ -54,14 +54,11 @@ interface MicrosoftAuthenticatorQuickStartPropsInterface extends TestableCompone
 const MicrosoftAuthenticatorQuickStart: FunctionComponent<MicrosoftAuthenticatorQuickStartPropsInterface> = (
     props: MicrosoftAuthenticatorQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     /**
      * Vertical Stepper steps.
@@ -74,12 +71,15 @@ const MicrosoftAuthenticatorQuickStart: FunctionComponent<MicrosoftAuthenticator
                     <Text>
                         <Trans
                             i18nKey={
-                                "extensions:develop.identityProviders.microsoft.quickStart"+
+                                "extensions:develop.identityProviders.microsoft.quickStart" +
                                 ".steps.selectApplication.content"
                             }
                         >
                             Choose the
-                            <Link external={ false } onClick={ () => setShowApplicationModal(true) }> application</Link>
+                            <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                                {" "}
+                                application
+                            </Link>
                             for which you want to set up Microsoft login.
                         </Trans>
                     </Text>
@@ -93,15 +93,15 @@ const MicrosoftAuthenticatorQuickStart: FunctionComponent<MicrosoftAuthenticator
                     <Text>
                         <Trans
                             i18nKey={
-                                "extensions:develop.identityProviders.microsoft.quickStart.steps."+
+                                "extensions:develop.identityProviders.microsoft.quickStart.steps." +
                                 "selectDefaultConfig.content"
                             }
                         >
-                            Go to <strong>Login Flow</strong> tab and click on <strong>Start with default
-                            configuration</strong>.
+                            Go to <strong>Login Flow</strong> tab and click on{" "}
+                            <strong>Start with default configuration</strong>.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
@@ -126,7 +126,7 @@ const MicrosoftAuthenticatorQuickStart: FunctionComponent<MicrosoftAuthenticator
                             Continue to configure the login flow as required.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ CustomizeStepsIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={CustomizeStepsIllustration} size="huge" />
                 </>
             ),
             stepTitle: t("extensions:develop.identityProviders.microsoft.quickStart.steps.customizeFlow.heading")
@@ -135,46 +135,35 @@ const MicrosoftAuthenticatorQuickStart: FunctionComponent<MicrosoftAuthenticator
 
     return (
         <>
-            <Grid data-testid={ testId } className="authenticator-quickstart-content">
+            <Grid data-testid={testId} className="authenticator-quickstart-content">
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
+                    <Grid.Column width={16}>
                         <PageHeader
                             className="mb-2"
-                            title={ t("extensions:develop.identityProviders.microsoft.quickStart.heading") }
-                            imageSpaced={ false }
-                            bottomMargin={ false }
+                            title={t("extensions:develop.identityProviders.microsoft.quickStart.heading")}
+                            imageSpaced={false}
+                            bottomMargin={false}
                         />
                         <Heading subHeading as="h6">
-                            { t("extensions:develop.identityProviders.microsoft.quickStart.subHeading") }
+                            {t("extensions:develop.identityProviders.microsoft.quickStart.subHeading")}
                         </Heading>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
-                        <VerticalStepper
-                            alwaysOpen
-                            isSidePanelOpen
-                            stepContent={ steps }
-                            isNextEnabled={ true }
-                        />
+                    <Grid.Column width={16}>
+                        <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ testId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={
-                            t("extensions:develop.identityProviders.microsoft.quickStart.addLoginModal.heading")
-                        }
-                        subHeading={
-                            t("extensions:develop.identityProviders.microsoft.quickStart.addLoginModal.subHeading")
-                        }
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${testId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.microsoft.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.microsoft.quickStart.addLoginModal.subHeading")}
+                />
+            )}
         </>
     );
 };
