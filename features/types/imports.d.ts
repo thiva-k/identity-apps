@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2019, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
  * WSO2 LLC. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -16,20 +16,26 @@
  * under the License.
  */
 
-import {  FunctionComponent, SVGProps } from "react";
-import {
-    ReactComponent as PendingApprovalOutlineIcon
-} from "../../themes/default/assets/images/icons/outline-icons/pending-approval-outline.svg";
+declare module "*.json" {
+    const value: any;
 
-export const getTableIcons = (): {
-    header: {
-        default: FunctionComponent<SVGProps<SVGSVGElement>>;
-    }
-} => {
+    export default value;
+}
 
-    return {
-        header: {
-            default: PendingApprovalOutlineIcon
-        }
-    };
-};
+declare module "*.svg" {
+    import React = require("react");
+
+    export const ReactComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+    const src: string;
+
+    export default src;
+}
+
+declare module "*.png" {
+    const content: string;
+
+    export default content;
+}
+
+declare module "*.md";
+
