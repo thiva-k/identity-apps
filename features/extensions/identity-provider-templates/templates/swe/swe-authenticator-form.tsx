@@ -23,7 +23,7 @@ import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, ReactNode, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Icon, SemanticICONS } from "semantic-ui-react";
-import { IdentityProviderManagementConstants } from "../../../../features/identity-providers/constants";
+import { IdentityProviderManagementConstants } from "features/identity-providers/constants";
 import {
     CommonAuthenticatorFormFieldInterface,
     CommonAuthenticatorFormFieldMetaInterface,
@@ -31,7 +31,7 @@ import {
     CommonAuthenticatorFormMetaInterface,
     CommonAuthenticatorFormPropertyInterface,
     CommonPluggableComponentMetaPropertyInterface
-} from "../../../../features/identity-providers/models";
+} from "features/identity-providers/models";
 import { SIWEConstants } from "../../../components/identity-providers/constants";
 
 /**
@@ -147,26 +147,24 @@ const FORM_ID: string = "siwe-authenticator-form";
 export const SIWEAuthenticatorForm: FunctionComponent<SIWEAuthenticatorFormPropsInterface> = (
     props: SIWEAuthenticatorFormPropsInterface
 ): ReactElement => {
-
     const {
         metadata,
         initialValues: originalInitialValues,
         onSubmit,
         readOnly,
         isSubmitting,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ formFields, setFormFields ] = useState<SIWEAuthenticatorFormFieldsInterface>(undefined);
-    const [ initialValues, setInitialValues ] = useState<SIWEAuthenticatorFormInitialValuesInterface>(undefined);
+    const [formFields, setFormFields] = useState<SIWEAuthenticatorFormFieldsInterface>(undefined);
+    const [initialValues, setInitialValues] = useState<SIWEAuthenticatorFormInitialValuesInterface>(undefined);
 
     /**
      * Flattens and resolved form initial values and field metadata.
      */
     useEffect(() => {
-
         if (isEmpty(originalInitialValues?.properties)) {
             return;
         }
@@ -175,12 +173,13 @@ export const SIWEAuthenticatorForm: FunctionComponent<SIWEAuthenticatorFormProps
         let resolvedInitialValues: SIWEAuthenticatorFormInitialValuesInterface = null;
 
         originalInitialValues.properties.map((value: CommonAuthenticatorFormPropertyInterface) => {
-            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties
-                .find((meta: CommonPluggableComponentMetaPropertyInterface) => meta.key === value.key);
+            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties.find(
+                (meta: CommonPluggableComponentMetaPropertyInterface) => meta.key === value.key
+            );
 
             resolvedFormFields = {
                 ...resolvedFormFields,
-                [ value.key ]: {
+                [value.key]: {
                     meta,
                     value: value.value
                 }
@@ -188,13 +187,13 @@ export const SIWEAuthenticatorForm: FunctionComponent<SIWEAuthenticatorFormProps
 
             resolvedInitialValues = {
                 ...resolvedInitialValues,
-                [ value.key ]: value.value
+                [value.key]: value.value
             };
         });
 
         setFormFields(resolvedFormFields);
         setInitialValues(resolvedInitialValues);
-    }, [ originalInitialValues ]);
+    }, [originalInitialValues]);
 
     /**
      * Prepare form values for submitting.
@@ -202,12 +201,12 @@ export const SIWEAuthenticatorForm: FunctionComponent<SIWEAuthenticatorFormProps
      * @param values - Form values.
      * @returns Sanitized form values.
      */
-    const getUpdatedConfigurations = (values: SIWEAuthenticatorFormInitialValuesInterface)
-        : CommonAuthenticatorFormInitialValuesInterface => {
-
+    const getUpdatedConfigurations = (
+        values: SIWEAuthenticatorFormInitialValuesInterface
+    ): CommonAuthenticatorFormInitialValuesInterface => {
         const properties: any[] = [];
 
-        for (const [ key, value ] of Object.entries(values)) {
+        for (const [key, value] of Object.entries(values)) {
             if (key !== undefined) {
                 properties.push({
                     key: key,
@@ -229,25 +228,28 @@ export const SIWEAuthenticatorForm: FunctionComponent<SIWEAuthenticatorFormProps
      * @returns Scope metadata.
      */
     const resolveScopeMetadata = (scope: string): ScopeMetaInterface => {
-
         if (scope === SIWEConstants.SIWE_SCOPE_DICTIONARY.PROFILE) {
             return {
-                description: t("extensions:develop.identityProviders.siwe.forms.authenticatorSettings" +
-                    ".scopes.list.profile.description"),
+                description: t(
+                    "extensions:develop.identityProviders.siwe.forms.authenticatorSettings" +
+                        ".scopes.list.profile.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { scope }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {scope}
                     </Code>
                 ),
                 icon: "user outline"
             };
         } else if (scope === SIWEConstants.SIWE_SCOPE_DICTIONARY.OPENID) {
             return {
-                description: t("extensions:develop.identityProviders.siwe.forms.authenticatorSettings" +
-                    ".scopes.list.openid.description"),
+                description: t(
+                    "extensions:develop.identityProviders.siwe.forms.authenticatorSettings" +
+                        ".scopes.list.openid.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { scope }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {scope}
                     </Code>
                 ),
                 icon: "openid"
@@ -263,42 +265,39 @@ export const SIWEAuthenticatorForm: FunctionComponent<SIWEAuthenticatorFormProps
 
     return (
         <Form
-            id={ FORM_ID }
-            uncontrolledForm={ false }
-            onSubmit={ (values: any) => onSubmit(getUpdatedConfigurations(values as any)) }
-            initialValues={ initialValues }
+            id={FORM_ID}
+            uncontrolledForm={false}
+            onSubmit={(values: any) => onSubmit(getUpdatedConfigurations(values as any))}
+            initialValues={initialValues}
         >
             <Field.Input
                 ariaLabel="SIWE authenticator client ID"
                 inputType="default"
                 name="ClientId"
-                label={
-                    t("extensions:develop.identityProviders.siwe.forms.authenticatorSettings.clientId.label")
-                }
-                placeholder={
-                    t("extensions:develop.identityProviders.siwe.forms.authenticatorSettings.clientId.placeholder")
-                }
-                hint={ (
+                label={t("extensions:develop.identityProviders.siwe.forms.authenticatorSettings.clientId.label")}
+                placeholder={t(
+                    "extensions:develop.identityProviders.siwe.forms.authenticatorSettings.clientId.placeholder"
+                )}
+                hint={
                     <Trans
                         i18nKey={
-                            "extensions:develop.identityProviders.siwe.forms" +
-                            ".authenticatorSettings.clientId.hint"
+                            "extensions:develop.identityProviders.siwe.forms" + ".authenticatorSettings.clientId.hint"
                         }
                     >
                         The <Code>Client ID</Code> you received from <Code>oidc.signinwithethereum.org</Code>
                         for your OIDC client.
                     </Trans>
-                ) }
-                required={ formFields?.ClientId?.meta?.isMandatory }
-                readOnly={ readOnly || formFields?.ClientId?.meta?.readOnly }
-                value={ formFields?.ClientId?.value }
-                maxLength={ formFields?.ClientId?.meta?.maxLength }
-                minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ componentId }-client-id` }
+                required={formFields?.ClientId?.meta?.isMandatory}
+                readOnly={readOnly || formFields?.ClientId?.meta?.readOnly}
+                value={formFields?.ClientId?.value}
+                maxLength={formFields?.ClientId?.meta?.maxLength}
+                minLength={
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_ID_MIN_LENGTH as number
+                }
+                width={16}
+                data-testid={`${componentId}-client-id`}
             />
             <Field.Input
                 ariaLabel="SIWE authenticator client secret"
@@ -306,15 +305,14 @@ export const SIWEAuthenticatorForm: FunctionComponent<SIWEAuthenticatorFormProps
                 inputType="password"
                 type="password"
                 name="ClientSecret"
-                label={
-                    t("extensions:develop.identityProviders.siwe.forms" +
-                        ".authenticatorSettings.clientSecret.label")
-                }
-                placeholder={
-                    t("extensions:develop.identityProviders.siwe.forms" +
-                        ".authenticatorSettings.clientSecret.placeholder")
-                }
-                hint={ (
+                label={t(
+                    "extensions:develop.identityProviders.siwe.forms" + ".authenticatorSettings.clientSecret.label"
+                )}
+                placeholder={t(
+                    "extensions:develop.identityProviders.siwe.forms" +
+                        ".authenticatorSettings.clientSecret.placeholder"
+                )}
+                hint={
                     <Trans
                         i18nKey={
                             "extensions:develop.identityProviders.siwe.forms" +
@@ -324,120 +322,97 @@ export const SIWEAuthenticatorForm: FunctionComponent<SIWEAuthenticatorFormProps
                         The <Code>Client secret</Code> you received <Code>oidc.signinwithethereum.org</Code>
                         for your OIDC client.
                     </Trans>
-                ) }
-                required={ formFields?.ClientSecret?.meta?.isMandatory }
-                readOnly={ readOnly || formFields?.ClientSecret?.meta?.readOnly }
-                value={ formFields?.ClientSecret?.value }
-                maxLength={ formFields?.ClientSecret?.meta?.maxLength }
-                minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ componentId }-client-secret` }
+                required={formFields?.ClientSecret?.meta?.isMandatory}
+                readOnly={readOnly || formFields?.ClientSecret?.meta?.readOnly}
+                value={formFields?.ClientSecret?.value}
+                maxLength={formFields?.ClientSecret?.meta?.maxLength}
+                minLength={
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_SECRET_MIN_LENGTH as number
+                }
+                width={16}
+                data-testid={`${componentId}-client-secret`}
             />
             <Field.Input
                 ariaLabel="SIWE authenticator authorized redirect URL"
                 inputType="copy_input"
                 name="callbackUrl"
-                label={
-                    t("extensions:develop.identityProviders.siwe.forms" +
-                        ".authenticatorSettings.callbackUrl.label")
-                }
-                placeholder={
-                    t("extensions:develop.identityProviders.siwe.forms" +
-                        ".authenticatorSettings.callbackUrl.placeholder")
-                }
-                hint={
-                    t("extensions:develop.identityProviders.siwe.forms" +
-                        ".authenticatorSettings.callbackUrl.hint")
-                }
-                required={ formFields?.callbackUrl?.meta?.isMandatory }
-                value={ formFields?.callbackUrl?.value }
-                readOnly={ readOnly || formFields?.callbackUrl?.meta?.readOnly }
-                maxLength={ formFields?.callbackUrl?.meta?.maxLength }
+                label={t(
+                    "extensions:develop.identityProviders.siwe.forms" + ".authenticatorSettings.callbackUrl.label"
+                )}
+                placeholder={t(
+                    "extensions:develop.identityProviders.siwe.forms" + ".authenticatorSettings.callbackUrl.placeholder"
+                )}
+                hint={t("extensions:develop.identityProviders.siwe.forms" + ".authenticatorSettings.callbackUrl.hint")}
+                required={formFields?.callbackUrl?.meta?.isMandatory}
+                value={formFields?.callbackUrl?.value}
+                readOnly={readOnly || formFields?.callbackUrl?.meta?.readOnly}
+                maxLength={formFields?.callbackUrl?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CALLBACK_URL_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CALLBACK_URL_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ componentId }-authorized-redirect-url` }
+                width={16}
+                data-testid={`${componentId}-authorized-redirect-url`}
             />
-            {
-                formFields?.scope?.value
-                && formFields.scope.value.split
-                && formFields.scope.value.split(" ").length > 0
-                && (
-                    <FormSection
-                        heading={
-                            t("extensions:develop.identityProviders.siwe.forms" +
-                                ".authenticatorSettings.scopes.heading")
-                        }
-                    >
-                        <div className="authenticator-dynamic-properties">
-                            {
-                                formFields.scope.value
-                                    .split(" ")
-                                    .map((scope: string, index: number) => {
+            {formFields?.scope?.value && formFields.scope.value.split && formFields.scope.value.split(" ").length > 0 && (
+                <FormSection
+                    heading={t(
+                        "extensions:develop.identityProviders.siwe.forms" + ".authenticatorSettings.scopes.heading"
+                    )}
+                >
+                    <div className="authenticator-dynamic-properties">
+                        {formFields.scope.value.split(" ").map((scope: string, index: number) => {
+                            const scopeMeta: ScopeMetaInterface = resolveScopeMetadata(scope);
 
-                                        const scopeMeta: ScopeMetaInterface = resolveScopeMetadata(scope);
-
-                                        return (
-                                            <div
-                                                key={ index }
-                                                className="authenticator-dynamic-property"
-                                                data-testid={ scope }
-                                            >
-                                                <div className="authenticator-dynamic-property-name-container">
-                                                    <GenericIcon
-                                                        square
-                                                        inline
-                                                        transparent
-                                                        icon={ <Icon name={ scopeMeta.icon }/> }
-                                                        size="micro"
-                                                        className="authenticator-dynamic-property-icon"
-                                                        spaced="right"
-                                                        verticalAlign="top"
-                                                    />
-                                                    <div data-testid={ `${ scope }-name` }>
-                                                        { scopeMeta.displayName }
-                                                    </div>
-                                                </div>
-                                                <div
-                                                    className="authenticator-dynamic-property-description"
-                                                    data-testid={ `${ scope }-description` }
-                                                >
-                                                    { scopeMeta.description }
-                                                </div>
-                                            </div>
-                                        );
-                                    })
+                            return (
+                                <div key={index} className="authenticator-dynamic-property" data-testid={scope}>
+                                    <div className="authenticator-dynamic-property-name-container">
+                                        <GenericIcon
+                                            square
+                                            inline
+                                            transparent
+                                            icon={<Icon name={scopeMeta.icon} />}
+                                            size="micro"
+                                            className="authenticator-dynamic-property-icon"
+                                            spaced="right"
+                                            verticalAlign="top"
+                                        />
+                                        <div data-testid={`${scope}-name`}>{scopeMeta.displayName}</div>
+                                    </div>
+                                    <div
+                                        className="authenticator-dynamic-property-description"
+                                        data-testid={`${scope}-description`}
+                                    >
+                                        {scopeMeta.description}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <Hint>
+                        <Trans
+                            i18nKey={
+                                "extensions:develop.identityProviders.siwe.forms" + ".authenticatorSettings.scopes.hint"
                             }
-                        </div>
-                        <Hint>
-                            <Trans
-                                i18nKey={
-                                    "extensions:develop.identityProviders.siwe.forms" +
-                                    ".authenticatorSettings.scopes.hint"
-                                }
-                            >
-                                The type of access provided for the connected apps to access data from Ethereum wallet.
-                            </Trans>
-                        </Hint>
-                    </FormSection>
-                )
-            }
+                        >
+                            The type of access provided for the connected apps to access data from Ethereum wallet.
+                        </Trans>
+                    </Hint>
+                </FormSection>
+            )}
             <Field.Button
-                form={ FORM_ID }
+                form={FORM_ID}
                 size="small"
                 buttonType="primary_btn"
                 ariaLabel="GitHub authenticator update button"
                 name="update-button"
-                data-testid={ `${ componentId }-submit-button` }
-                disabled={ isSubmitting }
-                loading={ isSubmitting }
-                label={ t("common:update") }
-                hidden={ readOnly }
+                data-testid={`${componentId}-submit-button`}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                label={t("common:update")}
+                hidden={readOnly}
             />
         </Form>
     );

@@ -17,10 +17,8 @@
  */
 
 import { RouteInterface } from "@wso2is/core/models";
-import { ApplicationTemplatesConfigInterface } from "../features/applications/data/application-templates";
-import {
-    IdentityProviderTemplatesConfigInterface
-} from "../features/identity-providers/data/identity-provider-templates";
+import { ApplicationTemplatesConfigInterface } from "features/applications/data/application-templates";
+import { IdentityProviderTemplatesConfigInterface } from "features/identity-providers/data/identity-provider-templates";
 
 /**
  * Interface for the core extensions config.
@@ -52,7 +50,7 @@ export interface SectionExtensionsConfigInterface {
  * Interface for the section component extensions config.
  */
 export interface SectionComponentExtensionsConfigInterface {
-    [ key: string ]: string;
+    [key: string]: string;
 }
 
 /**

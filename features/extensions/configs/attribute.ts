@@ -20,10 +20,10 @@ import { I18n } from "@wso2is/i18n";
 import { AxiosResponse } from "axios";
 import { SemanticICONS } from "semantic-ui-react";
 import { AttributeConfig } from "./models";
-import { deleteADialect } from "../../features/claims/api/claims";
-import { ClaimManagementConstants } from "../../features/claims/constants/claim-management-constants";
-import { getUserStoreList } from "../../features/userstores/api";
-import { UserStoreListItem } from "../../features/userstores/models";
+import { deleteADialect } from "features/claims/api/claims";
+import { ClaimManagementConstants } from "features/claims/constants/claim-management-constants";
+import { getUserStoreList } from "features/userstores/api";
+import { UserStoreListItem } from "features/userstores/models";
 import { getClaimsForDialect, getDialects } from "../components/claims/api";
 
 /**
@@ -32,7 +32,7 @@ import { getClaimsForDialect, getDialects } from "../components/claims/api";
  * @param claim - claim
  */
 const isIdentityClaims = (claim: ExternalClaim): boolean => {
-    const enableIdentityClaims: boolean = window[ "AppUtils" ]?.getConfig()?.ui?.enableIdentityClaims;
+    const enableIdentityClaims: boolean = window["AppUtils"]?.getConfig()?.ui?.enableIdentityClaims;
 
     if (enableIdentityClaims) {
         return false;
@@ -78,40 +78,46 @@ export const attributeConfig: AttributeConfig = {
     },
     defaultScimMapping: {
         "urn:ietf:params:scim:schemas:core:2.0": new Map()
-            .set("urn:ietf:params:scim:schemas:core:2.0:externalId","http://wso2.org/claims/externalid")
-            .set("urn:ietf:params:scim:schemas:core:2.0:id","http://wso2.org/claims/userid")
-            .set("urn:ietf:params:scim:schemas:core:2.0:meta.created","http://wso2.org/claims/created")
-            .set("urn:ietf:params:scim:schemas:core:2.0:meta.lastModified","http://wso2.org/claims/modified")
-            .set("urn:ietf:params:scim:schemas:core:2.0:meta.location","http://wso2.org/claims/location")
-            .set("urn:ietf:params:scim:schemas:core:2.0:meta.resourceType","http://wso2.org/claims/resourceType")
-            .set("urn:ietf:params:scim:schemas:core:2.0:meta.version","http://wso2.org/claims/metadata.version"),
+            .set("urn:ietf:params:scim:schemas:core:2.0:externalId", "http://wso2.org/claims/externalid")
+            .set("urn:ietf:params:scim:schemas:core:2.0:id", "http://wso2.org/claims/userid")
+            .set("urn:ietf:params:scim:schemas:core:2.0:meta.created", "http://wso2.org/claims/created")
+            .set("urn:ietf:params:scim:schemas:core:2.0:meta.lastModified", "http://wso2.org/claims/modified")
+            .set("urn:ietf:params:scim:schemas:core:2.0:meta.location", "http://wso2.org/claims/location")
+            .set("urn:ietf:params:scim:schemas:core:2.0:meta.resourceType", "http://wso2.org/claims/resourceType")
+            .set("urn:ietf:params:scim:schemas:core:2.0:meta.version", "http://wso2.org/claims/metadata.version"),
         "urn:ietf:params:scim:schemas:core:2.0:User": new Map()
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:active","http://wso2.org/claims/active")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:addresses#home.locality",
-                "http://wso2.org/claims/locality")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:addresses#home.postalCode",
-                "http://wso2.org/claims/postalcode")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:addresses#home.region",
-                "http://wso2.org/claims/region")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:addresses#home.streetAddress",
-                "http://wso2.org/claims/streetaddress")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:displayName","http://wso2.org/claims/displayName")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:emails","http://wso2.org/claims/emailaddress")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:groups","http://wso2.org/claims/groups")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:locale","http://wso2.org/claims/local")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:name.familyName","http://wso2.org/claims/lastname")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:name.formatted","http://wso2.org/claims/fullname")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:name.givenName","http://wso2.org/claims/givenname")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:name.middleName","http://wso2.org/claims/middleName")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:nickName","http://wso2.org/claims/nickname")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:phoneNumbers.mobile","http://wso2.org/claims/mobile")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:photos.thumbnail","http://wso2.org/claims/thumbnail")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:profileUrl","http://wso2.org/claims/url")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:roles.default","http://wso2.org/claims/roles")
-            .set("urn:ietf:params:scim:schemas:core:2.0:User:userName","http://wso2.org/claims/username"),
-        "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": new Map()
-            .set("urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager.displayName",
-                "http://wso2.org/claims/manager.displayName")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:active", "http://wso2.org/claims/active")
+            .set(
+                "urn:ietf:params:scim:schemas:core:2.0:User:addresses#home.locality",
+                "http://wso2.org/claims/locality"
+            )
+            .set(
+                "urn:ietf:params:scim:schemas:core:2.0:User:addresses#home.postalCode",
+                "http://wso2.org/claims/postalcode"
+            )
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:addresses#home.region", "http://wso2.org/claims/region")
+            .set(
+                "urn:ietf:params:scim:schemas:core:2.0:User:addresses#home.streetAddress",
+                "http://wso2.org/claims/streetaddress"
+            )
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:displayName", "http://wso2.org/claims/displayName")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:emails", "http://wso2.org/claims/emailaddress")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:groups", "http://wso2.org/claims/groups")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:locale", "http://wso2.org/claims/local")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:name.familyName", "http://wso2.org/claims/lastname")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:name.formatted", "http://wso2.org/claims/fullname")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:name.givenName", "http://wso2.org/claims/givenname")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:name.middleName", "http://wso2.org/claims/middleName")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:nickName", "http://wso2.org/claims/nickname")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:phoneNumbers.mobile", "http://wso2.org/claims/mobile")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:photos.thumbnail", "http://wso2.org/claims/thumbnail")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:profileUrl", "http://wso2.org/claims/url")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:roles.default", "http://wso2.org/claims/roles")
+            .set("urn:ietf:params:scim:schemas:core:2.0:User:userName", "http://wso2.org/claims/username"),
+        "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User": new Map().set(
+            "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User:manager.displayName",
+            "http://wso2.org/claims/manager.displayName"
+        )
     },
     editAttributeMappings: {
         /**
@@ -148,21 +154,19 @@ export const attributeConfig: AttributeConfig = {
             let dialectID: string = "";
             let noCustomClaims: boolean = false;
 
-            await getDialects()
-                .then((response: Claim[] | ClaimDialect[]) => {
-                    response.map((dialect: Claim | ClaimDialect) => {
-                        if (dialect.dialectURI === "urn:scim:wso2:schema") {
-                            dialectID = dialect.id;
-                        }
-                    });
-                });
-
-            await getClaimsForDialect(dialectID)
-                .then((response: Claim[] | ClaimDialect[]) => {
-                    if (response.length === 0) {
-                        noCustomClaims = true;
+            await getDialects().then((response: Claim[] | ClaimDialect[]) => {
+                response.map((dialect: Claim | ClaimDialect) => {
+                    if (dialect.dialectURI === "urn:scim:wso2:schema") {
+                        dialectID = dialect.id;
                     }
                 });
+            });
+
+            await getClaimsForDialect(dialectID).then((response: Claim[] | ClaimDialect[]) => {
+                if (response.length === 0) {
+                    noCustomClaims = true;
+                }
+            });
 
             if (noCustomClaims) {
                 deleteADialect(dialectID);
@@ -230,43 +234,41 @@ export const attributeConfig: AttributeConfig = {
     isSCIMEditable: true,
     localAttributes: {
         checkAttributeNameAvailability: async (
-            attributeName: string, protocol: string
+            attributeName: string,
+            protocol: string
         ): Promise<Map<string, boolean>> => {
             let dialectID: string = "";
-            const availability: Map<string, boolean> = new Map()
-                .set("SCIM", true)
-                .set("OIDC", true);
+            const availability: Map<string, boolean> = new Map().set("SCIM", true).set("OIDC", true);
 
-            if (protocol === "OIDC" || protocol === "BOTH" ) {
-                await getClaimsForDialect(ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("OIDC"))
-                    .then((response: Claim[] | ExternalClaim[]) => {
+            if (protocol === "OIDC" || protocol === "BOTH") {
+                await getClaimsForDialect(ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("OIDC")).then(
+                    (response: Claim[] | ExternalClaim[]) => {
                         response.map((attrib: Claim | ExternalClaim) => {
                             if (attrib.claimURI === attributeName) {
                                 availability.set("OIDC", false);
                             }
                         });
-                    });
+                    }
+                );
             }
 
-            if (protocol === "SCIM" || protocol === "BOTH" ) {
-                await getDialects()
-                    .then((response: Claim[] | ClaimDialect[]) => {
-                        response.map((dialect: Claim | ClaimDialect) => {
-                            if (dialect.dialectURI === "urn:scim:wso2:schema") {
-                                dialectID = dialect.id;
+            if (protocol === "SCIM" || protocol === "BOTH") {
+                await getDialects().then((response: Claim[] | ClaimDialect[]) => {
+                    response.map((dialect: Claim | ClaimDialect) => {
+                        if (dialect.dialectURI === "urn:scim:wso2:schema") {
+                            dialectID = dialect.id;
+                        }
+                    });
+                });
+
+                if (dialectID !== "") {
+                    await getClaimsForDialect(dialectID).then((response: Claim[] | ExternalClaim[]) => {
+                        response.map((attrib: Claim | ExternalClaim) => {
+                            if (attrib.claimURI === "urn:scim:wso2:schema:" + attributeName) {
+                                availability.set("SCIM", false);
                             }
                         });
                     });
-
-                if (dialectID !== "") {
-                    await getClaimsForDialect(dialectID)
-                        .then((response: Claim[] | ExternalClaim[]) => {
-                            response.map((attrib: Claim | ExternalClaim) => {
-                                if (attrib.claimURI === "urn:scim:wso2:schema:" + attributeName) {
-                                    availability.set("SCIM", false);
-                                }
-                            });
-                        });
                 }
             }
 
@@ -289,28 +291,26 @@ export const attributeConfig: AttributeConfig = {
         getDialect: async (dialectURI: string): Promise<Claim | ClaimDialect> => {
             let dialectObject: Claim | ClaimDialect;
 
-            await getDialects()
-                .then((response: Claim[] | ClaimDialect[]) => {
-                    response.map((dialect: Claim | ClaimDialect) => {
-                        if (dialect.dialectURI === dialectURI) {
-                            dialectObject = dialect;
-                        }
-                    });
+            await getDialects().then((response: Claim[] | ClaimDialect[]) => {
+                response.map((dialect: Claim | ClaimDialect) => {
+                    if (dialect.dialectURI === dialectURI) {
+                        dialectObject = dialect;
+                    }
                 });
+            });
 
             return Promise.resolve(dialectObject);
         },
         isSCIMCustomDialectAvailable: async (): Promise<string> => {
             let dialectID: string = "";
 
-            await getDialects()
-                .then((response: Claim[] | ClaimDialect[]) => {
-                    response.map((dialect: Claim | ClaimDialect) => {
-                        if (dialect.dialectURI === "urn:scim:wso2:schema") {
-                            dialectID = dialect.id;
-                        }
-                    });
+            await getDialects().then((response: Claim[] | ClaimDialect[]) => {
+                response.map((dialect: Claim | ClaimDialect) => {
+                    if (dialect.dialectURI === "urn:scim:wso2:schema") {
+                        dialectID = dialect.id;
+                    }
                 });
+            });
 
             return Promise.resolve(dialectID);
         },
@@ -318,13 +318,11 @@ export const attributeConfig: AttributeConfig = {
             const userStores: UserStoreListItem[] = [];
 
             await getUserStoreList().then((response: AxiosResponse) => {
-
                 response.data.map((store: UserStoreListItem) => {
                     if (!hiddenUserStores.includes(store.name)) {
                         userStores.push(store);
                     }
                 });
-
             });
 
             return Promise.resolve(userStores);

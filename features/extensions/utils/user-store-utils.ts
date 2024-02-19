@@ -17,17 +17,16 @@
  */
 
 import { AxiosResponse } from "axios";
-import { getAUserStore } from "../../features/core/api";
-import { SharedUserStoreConstants } from "../../features/core/constants";
-import { getUserStoreList } from "../../features/userstores/api";
-import { UserStoreListItem, UserStorePostData, UserStoreProperty } from "../../features/userstores/models";
+import { getAUserStore } from "features/core/api";
+import { SharedUserStoreConstants } from "features/core/constants";
+import { getUserStoreList } from "features/userstores/api";
+import { UserStoreListItem, UserStorePostData, UserStoreProperty } from "features/userstores/models";
 
 /**
  * Utility class for common user store operations.
  */
 export class UserStoreUtils {
-
-    private static primaryUserStore:string = "PRIMARY";
+    private static primaryUserStore: string = "PRIMARY";
 
     /**
      * Private constructor to avoid object instantiation from outside
@@ -35,7 +34,7 @@ export class UserStoreUtils {
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * The following method fetch the user store ids list.
@@ -44,7 +43,6 @@ export class UserStoreUtils {
      * @returns userstores list
      */
     public static async getUserStoreIds(userstores?: UserStoreListItem[]): Promise<string[] | void> {
-
         const getIds = (userstoresList: UserStoreListItem[]): string[] => {
             const userStoreIds: string[] = userstoresList.map((userStore: UserStoreListItem) => userStore.id);
 
@@ -71,21 +69,24 @@ export class UserStoreUtils {
      * @param userstores - Externally provided usertores list.
      */
     public static async getReadOnlyUserStores(userstores?: UserStoreListItem[]): Promise<string[]> {
-        const ids: string[] = await UserStoreUtils.getUserStoreIds(userstores) as string[];
+        const ids: string[] = (await UserStoreUtils.getUserStoreIds(userstores)) as string[];
         const readOnlyUserStores: string[] = [];
-    
+
         readOnlyUserStores.push(UserStoreUtils.primaryUserStore);
 
         ids.forEach((id: string) => {
             getAUserStore(id)
                 .then((res: UserStorePostData) => {
                     res.properties.forEach((property: UserStoreProperty) => {
-                        if (property.name === SharedUserStoreConstants.READONLY_USER_STORE
-                            && property.value === "true") {
+                        if (
+                            property.name === SharedUserStoreConstants.READONLY_USER_STORE &&
+                            property.value === "true"
+                        ) {
                             readOnlyUserStores.push(res.name.toUpperCase());
                         }
                     });
-                }).catch(() => {
+                })
+                .catch(() => {
                     // Add debug logs here one a logger is added.
                     // Tracked here https://github.com/wso2/product-is/issues/11650.
                 });

@@ -18,7 +18,7 @@
 
 import { ProfileInfoInterface } from "@wso2is/core/models";
 import { User } from "./models";
-import { deleteUser } from "../../features/users/api/users";
+import { deleteUser } from "features/users/api/users";
 
 export const userConfig: User = {
     bulkUserImportLimit: {

@@ -23,9 +23,9 @@ import {
     ExtendedClaimInterface,
     ExtendedExternalClaimInterface,
     SelectedDialectInterface
-} from "../../../features/applications/components/settings";
-import { ApplicationInterface, ApplicationTabTypes } from "../../../features/applications/models";
-import { FeatureConfigInterface } from "../../../features/core";
+} from "features/applications/components/settings";
+import { ApplicationInterface, ApplicationTabTypes } from "features/applications/models";
+import { FeatureConfigInterface } from "features/core";
 import { OIDCSDKMeta } from "../../application-templates/templates/oidc-web-application/models";
 import { SAMLSDKMeta } from "../../application-templates/templates/saml-web-application/models";
 import { SDKMetaInterface } from "../../application-templates/templates/single-page-application/models";
@@ -39,11 +39,11 @@ export interface ApplicationConfig {
         showSaaS: boolean;
         showReturnAuthenticatedIdPs: boolean;
     };
-    allowedGrantTypes: Record<string, string[]>,
+    allowedGrantTypes: Record<string, string[]>;
     generalSettings: {
         getFieldReadOnlyStatus: (application: ApplicationInterface, fieldName: string) => boolean;
     };
-    hiddenGrantTypes: string[],
+    hiddenGrantTypes: string[];
     attributeSettings: {
         advancedAttributeSettings: {
             showIncludeTenantDomain: boolean;
@@ -83,16 +83,8 @@ export interface ApplicationConfig {
         ) => ResourceTabPaneInterface[];
         getTabPanelReadOnlyStatus: (tabPanelName: string, application: ApplicationInterface) => boolean;
         isTabEnabledForApp: (clientId: string, tabType: ApplicationTabTypes, tenantDomain: string) => boolean;
-        getActions: (
-            clientId: string,
-            tenant: string,
-            testId: string
-        ) => ReactElement;
-        getOverriddenDescription: (
-            clientId: string,
-            tenantDomain: string,
-            templateName: string
-        ) => ReactElement,
+        getActions: (clientId: string, tenant: string, testId: string) => ReactElement;
+        getOverriddenDescription: (clientId: string, tenantDomain: string, templateName: string) => ReactElement;
         getOverriddenImage: (clientId: string, tenantDomain: string) => ReactElement;
         getOveriddenTab: (
             clientId: string,
@@ -108,7 +100,7 @@ export interface ApplicationConfig {
             tenantDomain: string,
             templateId?: string,
             customApplicationTemplateId?: string
-        ) => number
+        ) => number;
     };
     inboundOIDCForm: {
         shouldValidateCertificate: boolean;
@@ -133,11 +125,11 @@ export interface ApplicationConfig {
         artifactBindingAllowed: boolean;
     };
     marketingConsent: {
-        getBannerComponent: () => ReactElement
+        getBannerComponent: () => ReactElement;
     };
     signInMethod: {
         authenticatorSelection: {
-            customAuthenticatorAdditionValidation ?: (
+            customAuthenticatorAdditionValidation?: (
                 authenticatorID: string,
                 stepIndex: number,
                 dispatch: Dispatch
@@ -166,6 +158,6 @@ export interface ApplicationConfig {
     quickstart: {
         oidcWeb: OIDCSDKMeta;
         samlWeb: SAMLSDKMeta;
-        spa: SDKMetaInterface
+        spa: SDKMetaInterface;
     };
 }

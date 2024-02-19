@@ -19,11 +19,11 @@
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import { ResourceTabPaneInterface } from "@wso2is/react-components";
 import { FunctionComponent, ReactElement, ReactNode, SVGProps } from "react";
-import { ConnectionTabTypes } from "../../../features/connections/models/connection";
+import { ConnectionTabTypes } from "features/connections/models/connection";
 import {
     AuthenticatorInterface,
     GenericIdentityProviderCreateWizardPropsInterface
-} from "../../../features/identity-providers/models";
+} from "features/identity-providers/models";
 
 export interface ExtendedSamlConfigInterface {
     isArtifactBindingEnabled: boolean;
@@ -60,7 +60,7 @@ export interface IdentityProviderConfig {
             templateId: string,
             props: GenericIdentityProviderCreateWizardPropsInterface & IdentifiableComponentInterface
         ) => ReactElement | null;
-    },
+    };
     editIdentityProvider: {
         showAdvancedSettings: boolean;
         showIssuerSettings: boolean;
@@ -105,7 +105,7 @@ export interface IdentityProviderConfig {
         menuItemName: string;
         enableAssociateLocalUserField: {
             show: boolean;
-        },
+        };
         enableJitProvisioningField: {
             show: boolean;
         };

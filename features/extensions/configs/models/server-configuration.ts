@@ -18,9 +18,9 @@
 
 import { ReactElement, ReactNode } from "react";
 import { TFunction } from "react-i18next";
-import { RequestErrorInterface, RequestResultInterface } from "../../../features/core/hooks/use-request";
-import { GovernanceConnectorInterface } from "../../../features/server-configurations";
-import { ValidationFormInterface } from "../../../features/validation/models";
+import { RequestErrorInterface, RequestResultInterface } from "features/core/hooks/use-request";
+import { GovernanceConnectorInterface } from "features/server-configurations";
+import { ValidationFormInterface } from "features/validation/models";
 
 export interface ServerConfigurationConfig {
     autoEnableConnectorToggleProperty: boolean;
@@ -35,7 +35,7 @@ export interface ServerConfigurationConfig {
     customConnectors: string[];
     extendedConnectors: string[];
     predefinedConnectorCategories: string[];
-    dynamicConnectors: boolean,
+    dynamicConnectors: boolean;
     intendSettings: boolean;
     renderConnector: (
         connector: GovernanceConnectorInterface,

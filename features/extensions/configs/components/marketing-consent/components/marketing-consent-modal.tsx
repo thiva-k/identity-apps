@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2022, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -26,7 +27,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Card, Grid, Icon } from "semantic-ui-react";
-import { AppState } from "../../../../../features/core";
+import { AppState } from "features/core";
 import { updateUserConsent } from "../api";
 import { getMarketingConsentIllustrations } from "../configs";
 import { setMarketingConsentStatusToLocalStorage } from "../utils";
@@ -55,22 +56,18 @@ interface MarketingConsentModalPropTypes extends IdentifiableComponentInterface 
 export const MarketingConsentModal: FunctionComponent<MarketingConsentModalPropTypes> = (
     props: MarketingConsentModalPropTypes
 ): ReactElement => {
-    const { 
-        isOpen,
-        onClosed,
-        ["data-componentid"]: componentId
-    } = props;
+    const { isOpen, onClosed, ["data-componentid"]: componentId } = props;
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
 
     const uuid: string = useSelector((state: AppState) => state.profile.profileInfo.id);
 
-    const [ isLoading, setIsLoading ] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     /**
      * Handles updating user consent.
-     * 
+     *
      * @param isSubscribed - Is subscribed or declined.
      */
     const submitUserConsent = (isSubscribed: boolean): void => {
@@ -78,22 +75,28 @@ export const MarketingConsentModal: FunctionComponent<MarketingConsentModalPropT
         updateUserConsent(isSubscribed)
             .then((response: AxiosResponse) => {
                 if (response?.status !== 200) {
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("extensions:console.marketingConsent.notifications.errors.update.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("extensions:console.marketingConsent.notifications.errors.update.message")
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t(
+                                "extensions:console.marketingConsent.notifications.errors.update.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t("extensions:console.marketingConsent.notifications.errors.update.message")
+                        })
+                    );
                 }
-                
+
                 setMarketingConsentStatusToLocalStorage(uuid);
                 onClosed();
             })
             .catch((_: IdentityAppsApiException) => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:console.marketingConsent.notifications.errors.update.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:console.marketingConsent.notifications.errors.update.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t("extensions:console.marketingConsent.notifications.errors.update.description"),
+                        level: AlertLevels.ERROR,
+                        message: t("extensions:console.marketingConsent.notifications.errors.update.message")
+                    })
+                );
             })
             .finally(() => {
                 setIsLoading(false);
@@ -122,62 +125,56 @@ export const MarketingConsentModal: FunctionComponent<MarketingConsentModalPropT
     };
 
     return (
-        <Card
-            data-componentid={ componentId }
-            className={ `marketing-consent-modal ${isOpen ? "": "hidden"}` }
-        >
+        <Card data-componentid={componentId} className={`marketing-consent-modal ${isOpen ? "" : "hidden"}`}>
             <Card.Content className="p-4">
                 <Grid>
                     <Grid.Row>
-                        <Grid.Column width={ 3 }>
+                        <Grid.Column width={3}>
                             <GenericIcon
-                                icon={ getMarketingConsentIllustrations().mailBox }
+                                icon={getMarketingConsentIllustrations().mailBox}
                                 defaultIcon
                                 transparent
                                 inline
                                 size="large"
                             />
                         </Grid.Column>
-                        <Grid.Column width={ 13 }>
+                        <Grid.Column width={13}>
                             <Card.Content>
                                 <div className="header-wrapper">
-                                    <h4 
-                                        data-componentid={ `${componentId}-heading` }
-                                        className="ui header"
-                                    >
-                                        { t("extensions:console.marketingConsent.heading") }
+                                    <h4 data-componentid={`${componentId}-heading`} className="ui header">
+                                        {t("extensions:console.marketingConsent.heading")}
                                     </h4>
                                     <Icon
-                                        link={ true }
-                                        onClick={ handleCloseButtonClick }
+                                        link={true}
+                                        onClick={handleCloseButtonClick}
                                         className=""
                                         size="small"
                                         color="grey"
                                         name="close"
-                                        data-componentid={ `${componentId}-close-btn` }
+                                        data-componentid={`${componentId}-close-btn`}
                                     />
                                 </div>
                                 <Card.Description className="mb-2">
-                                    { t("extensions:console.marketingConsent.description") }
+                                    {t("extensions:console.marketingConsent.description")}
                                 </Card.Description>
                                 <Card.Content>
                                     <Button
                                         primary
-                                        onClick={ handleSubscribeButtonClick }
-                                        disabled={ isLoading }
-                                        data-componentid={ `${componentId}-subscribe-btn` }
+                                        onClick={handleSubscribeButtonClick}
+                                        disabled={isLoading}
+                                        data-componentid={`${componentId}-subscribe-btn`}
                                     >
-                                        { t("extensions:console.marketingConsent.actions.subscribe") }
+                                        {t("extensions:console.marketingConsent.actions.subscribe")}
                                     </Button>
                                     <Button
                                         basic
                                         primary
                                         className="link-button"
-                                        onClick={ handleDeclineButtonClick }
-                                        disabled={ isLoading }
-                                        data-componentid={ `${componentId}-decline-btn` }
+                                        onClick={handleDeclineButtonClick}
+                                        disabled={isLoading}
+                                        data-componentid={`${componentId}-decline-btn`}
                                     >
-                                        { t("extensions:console.marketingConsent.actions.decline") }
+                                        {t("extensions:console.marketingConsent.actions.decline")}
                                     </Button>
                                 </Card.Content>
                             </Card.Content>
