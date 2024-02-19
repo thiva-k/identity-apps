@@ -1,3 +1,5 @@
+/* eslint-disable header/header */
+/* eslint-disable max-len */
 /**
  * Copyright (c) 2020-2023, WSO2 LLC. (https://www.wso2.com).
  *
@@ -29,70 +31,28 @@ import {
     UserPlusIcon,
     VerticleFilterBarsIcon
 } from "@oxygen-ui/react-icons";
-import UsernameValidationIcon from "../../../extensions/assets/images/icons/username-validation-icon.svg";
-import {
-    default as LockRecoverIcon
-} from "../../../themes/default/assets/images/icons/lock-recover-icon.svg";
-import {
-    default as PasswordValidationIcon
-} from "../../../themes/default/assets/images/icons/password-validation.svg";
-import {
-    ReactComponent as RobotIcon
-} from "../../../themes/default/assets/images/icons/robot-icon.svg";
-import {
-    default as UserAddIcon
-} from "../../../themes/default/assets/images/icons/user-add.svg";
-import {
-    default as WarningWithNumberIcon
-} from "../../../themes/default/assets/images/icons/warning-with-number.svg";
-import {
-    default as AccountDisableConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/account-disable-illustration.svg";
-import {
-    default as AccountLockConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/account-lock.svg";
-import {
-    default as AccountRecoveryConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/account-recovery-illustration.svg";
-import {
-    default as AnalyticsEngineConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/analytics-engine-illustration.svg";
-import {
-    default as AskPasswordConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/ask-password-illustration.svg";
-import {
-    default as reCaptchaConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/captcha-sso-illustration.svg";
-import {
-    default as ConsentInfoConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/consent-management-illustration.svg";
-import {
-    default as DefaultConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/default-connector-illustration.svg";
-import {
-    default as LiteUserRegistrationConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/lite-user-registration.svg";
-import {
-    default as idleAccountSuspendConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/lock-idle-accounts-illustration.svg";
-import {
-    default as PasswordHistoryConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/password-history.svg";
-import {
-    default as PasswordPatternConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/password-pattern-illustration.svg";
-import {
-    default as PasswordResetConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/password-reset-illustration.svg";
-import {
-    default as SelfRegConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/self-registration-illustration.svg";
-import {
-    default as UserClaimUpdateConnectorIllustration
-} from "../../../themes/default/assets/images/illustrations/governance-connectors/user-claim-update-illustration.svg";
-import {
-    default as JWTKeyIcon
-} from "../../../themes/default/assets/images/illustrations/jwt-key-icon.svg";
+import UsernameValidationIcon from "../../extensions/assets/images/icons/username-validation-icon.svg";
+import { default as LockRecoverIcon } from "../../themes/default/assets/images/icons/lock-recover-icon.svg";
+import { default as PasswordValidationIcon } from "../../themes/default/assets/images/icons/password-validation.svg";
+import { ReactComponent as RobotIcon } from "../../themes/default/assets/images/icons/robot-icon.svg";
+import { default as UserAddIcon } from "../../themes/default/assets/images/icons/user-add.svg";
+import { default as WarningWithNumberIcon } from "../../themes/default/assets/images/icons/warning-with-number.svg";
+import { default as AccountDisableConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/account-disable-illustration.svg";
+import { default as AccountLockConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/account-lock.svg";
+import { default as AccountRecoveryConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/account-recovery-illustration.svg";
+import { default as AnalyticsEngineConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/analytics-engine-illustration.svg";
+import { default as AskPasswordConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/ask-password-illustration.svg";
+import { default as reCaptchaConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/captcha-sso-illustration.svg";
+import { default as ConsentInfoConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/consent-management-illustration.svg";
+import { default as DefaultConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/default-connector-illustration.svg";
+import { default as LiteUserRegistrationConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/lite-user-registration.svg";
+import { default as idleAccountSuspendConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/lock-idle-accounts-illustration.svg";
+import { default as PasswordHistoryConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/password-history.svg";
+import { default as PasswordPatternConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/password-pattern-illustration.svg";
+import { default as PasswordResetConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/password-reset-illustration.svg";
+import { default as SelfRegConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/self-registration-illustration.svg";
+import { default as UserClaimUpdateConnectorIllustration } from "../../themes/default/assets/images/illustrations/governance-connectors/user-claim-update-illustration.svg";
+import { default as JWTKeyIcon } from "../../themes/default/assets/images/illustrations/jwt-key-icon.svg";
 import { ServerConfigurationsConstants } from "../constants";
 
 interface GetGovernanceConnectorIllustrationsInterface {
@@ -108,30 +68,27 @@ interface ConnectorCategoryIconsInterface {
     [key: string]: Icon | any;
 }
 
-export const getGovernanceConnectorIllustrations = () : GetGovernanceConnectorIllustrationsInterface => {
-
+export const getGovernanceConnectorIllustrations = (): GetGovernanceConnectorIllustrationsInterface => {
     return {
-        [ ServerConfigurationsConstants.PASSWORD_HISTORY_CONNECTOR_ID ]: PasswordHistoryConnectorIllustration,
-        [ ServerConfigurationsConstants.PASSWORD_POLICY_CONNECTOR_ID ]: PasswordPatternConnectorIllustration,
-        [ ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID ]: SelfRegConnectorIllustration,
-        [ ServerConfigurationsConstants.LITE_USER_REGISTRATION_CONNECTOR_ID
-        ]: LiteUserRegistrationConnectorIllustration,
-        [ ServerConfigurationsConstants.USER_EMAIL_VERIFICATION_CONNECTOR_ID ]: AskPasswordConnectorIllustration,
-        [ ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID ]: AccountLockConnectorIllustration,
-        [ ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID ]: reCaptchaConnectorIllustration,
-        [ ServerConfigurationsConstants.IDLE_ACCOUNT_SUSPEND_CONNECTOR_ID ]: idleAccountSuspendConnectorIllustration,
-        [ ServerConfigurationsConstants.ACCOUNT_DISABLE_CONNECTOR_ID ]: AccountDisableConnectorIllustration,
-        [ ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID ]: AccountRecoveryConnectorIllustration,
-        [ ServerConfigurationsConstants.PASSWORD_RESET_CONNECTOR_ID ]: PasswordResetConnectorIllustration,
-        [ ServerConfigurationsConstants.CONSENT_INFO_CONNECTOR_ID ]: ConsentInfoConnectorIllustration,
-        [ ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID ]: AnalyticsEngineConnectorIllustration,
-        [ ServerConfigurationsConstants.USER_CLAIM_UPDATE_CONNECTOR_ID ]: UserClaimUpdateConnectorIllustration,
+        [ServerConfigurationsConstants.PASSWORD_HISTORY_CONNECTOR_ID]: PasswordHistoryConnectorIllustration,
+        [ServerConfigurationsConstants.PASSWORD_POLICY_CONNECTOR_ID]: PasswordPatternConnectorIllustration,
+        [ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID]: SelfRegConnectorIllustration,
+        [ServerConfigurationsConstants.LITE_USER_REGISTRATION_CONNECTOR_ID]: LiteUserRegistrationConnectorIllustration,
+        [ServerConfigurationsConstants.USER_EMAIL_VERIFICATION_CONNECTOR_ID]: AskPasswordConnectorIllustration,
+        [ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID]: AccountLockConnectorIllustration,
+        [ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID]: reCaptchaConnectorIllustration,
+        [ServerConfigurationsConstants.IDLE_ACCOUNT_SUSPEND_CONNECTOR_ID]: idleAccountSuspendConnectorIllustration,
+        [ServerConfigurationsConstants.ACCOUNT_DISABLE_CONNECTOR_ID]: AccountDisableConnectorIllustration,
+        [ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID]: AccountRecoveryConnectorIllustration,
+        [ServerConfigurationsConstants.PASSWORD_RESET_CONNECTOR_ID]: PasswordResetConnectorIllustration,
+        [ServerConfigurationsConstants.CONSENT_INFO_CONNECTOR_ID]: ConsentInfoConnectorIllustration,
+        [ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID]: AnalyticsEngineConnectorIllustration,
+        [ServerConfigurationsConstants.USER_CLAIM_UPDATE_CONNECTOR_ID]: UserClaimUpdateConnectorIllustration,
         default: DefaultConnectorIllustration
     };
 };
 
 export const getSettingsSectionIcons = (): GetSettingsSectionIconsInterface => {
-
     return {
         accountLock: WarningWithNumberIcon,
         accountRecovery: LockRecoverIcon,
@@ -154,6 +111,6 @@ export const getConnectorCategoryIcon = (): ConnectorCategoryIconsInterface => {
         [ServerConfigurationsConstants.SSO_SETTINGS_CATEGORY_ID]: ShareNodesIcon,
         [ServerConfigurationsConstants.LOGIN_SECURITY_SETTINGS_CATEGORY_ID]: ShieldUserPencilIcon,
         [ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID]: RobotIcon,
-        "default": GearIcon
+        default: GearIcon
     };
 };

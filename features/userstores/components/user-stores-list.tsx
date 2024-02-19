@@ -42,7 +42,6 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, SemanticICONS } from "semantic-ui-react";
-import { userstoresConfig } from "../../../extensions";
 import {
     AppConstants,
     AppState,
@@ -51,6 +50,7 @@ import {
     getEmptyPlaceholderIllustrations,
     history
 } from "../../core";
+import { userstoresConfig } from "../../extensions";
 import { deleteUserStore } from "../api";
 import { getTableIcons } from "../configs";
 import { CONSUMER_USERSTORE, CONSUMER_USERSTORE_ID } from "../constants";
@@ -59,9 +59,10 @@ import { UserStoreListItem } from "../models";
 /**
  * Prop types of the `UserStoresList` component
  */
-interface UserStoresListPropsInterface extends SBACInterface<FeatureConfigInterface>, LoadableComponentInterface,
-    TestableComponentInterface {
-
+interface UserStoresListPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        LoadableComponentInterface,
+        TestableComponentInterface {
     /**
      * Advanced Search component.
      */
@@ -110,7 +111,6 @@ interface UserStoresListPropsInterface extends SBACInterface<FeatureConfigInterf
 export const UserStoresList: FunctionComponent<UserStoresListPropsInterface> = (
     props: UserStoresListPropsInterface
 ): ReactElement => {
-
     const {
         advancedSearch,
         defaultListItemLimit,
@@ -123,12 +123,12 @@ export const UserStoresList: FunctionComponent<UserStoresListPropsInterface> = (
         selection,
         showListItemActions,
         update,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
-    const [ deleteConfirm, setDeleteConfirm ] = useState(false);
-    const [ deleteID, setDeleteID ] = useState<string>(null);
-    const [ deleteName, setDeleteName ] = useState<string>("");
+    const [deleteConfirm, setDeleteConfirm] = useState(false);
+    const [deleteID, setDeleteID] = useState<string>(null);
+    const [deleteName, setDeleteName] = useState<string>("");
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const isPrivilegedUser: boolean = useSelector((state: AppState) => state.auth.isPrivilegedUser);
@@ -164,70 +164,76 @@ export const UserStoresList: FunctionComponent<UserStoresListPropsInterface> = (
      */
     const showDeleteConfirm = (): ReactElement => (
         <ConfirmationModal
-            onClose={ closeDeleteConfirm }
-            type={ "negative" }
-            open={ deleteConfirm }
-            assertion={ deleteName }
-            assertionHint={
-                t("console:manage.features.userstores.confirmation.hint")
-            }
-            assertionType={ "checkbox" }
-            primaryAction={ t("common:confirm") }
-            secondaryAction={ t("common:cancel") }
-            onSecondaryActionClick={ closeDeleteConfirm }
-            onPrimaryActionClick={ (): void => {
+            onClose={closeDeleteConfirm}
+            type={"negative"}
+            open={deleteConfirm}
+            assertion={deleteName}
+            assertionHint={t("console:manage.features.userstores.confirmation.hint")}
+            assertionType={"checkbox"}
+            primaryAction={t("common:confirm")}
+            secondaryAction={t("common:cancel")}
+            onSecondaryActionClick={closeDeleteConfirm}
+            onPrimaryActionClick={(): void => {
                 deleteUserStore(deleteID)
                     .then(() => {
-                        dispatch(addAlert({
-                            description: t("console:manage.features.userstores.notifications." +
-                                "deleteUserstore.success.description"),
-                            level: AlertLevels.SUCCESS,
-                            message: t("console:manage.features.userstores.notifications." +
-                                "deleteUserstore.success.message")
-
-                        }));
-                        dispatch(addAlert({
-                            description: t("console:manage.features.userstores.notifications." +
-                                "delay.description"),
-                            level: AlertLevels.WARNING,
-                            message: t("console:manage.features.userstores.notifications." +
-                                "delay.message")
-                        }));
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.userstores.notifications." +
+                                        "deleteUserstore.success.description"
+                                ),
+                                level: AlertLevels.SUCCESS,
+                                message: t(
+                                    "console:manage.features.userstores.notifications." +
+                                        "deleteUserstore.success.message"
+                                )
+                            })
+                        );
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.userstores.notifications." + "delay.description"
+                                ),
+                                level: AlertLevels.WARNING,
+                                message: t("console:manage.features.userstores.notifications." + "delay.message")
+                            })
+                        );
                         update();
                     })
                     .catch((error: IdentityAppsError) => {
-                        dispatch(addAlert({
-                            description: error?.description
-                                ?? t("console:manage.features.userstores.notifications." +
-                                    "deleteUserstore.genericError.description"),
-                            level: AlertLevels.ERROR,
-                            message: error?.message
-                                ?? t("console:manage.features.userstores.notifications." +
-                                    "deleteUserstore.genericError.message")
-                        }));
-                    }).finally(() => {
+                        dispatch(
+                            addAlert({
+                                description:
+                                    error?.description ??
+                                    t(
+                                        "console:manage.features.userstores.notifications." +
+                                            "deleteUserstore.genericError.description"
+                                    ),
+                                level: AlertLevels.ERROR,
+                                message:
+                                    error?.message ??
+                                    t(
+                                        "console:manage.features.userstores.notifications." +
+                                            "deleteUserstore.genericError.message"
+                                    )
+                            })
+                        );
+                    })
+                    .finally(() => {
                         closeDeleteConfirm();
                     });
-            } }
-            data-testid={ `${ testId }-delete-confirmation-modal` }
-            closeOnDimmerClick={ false }
+            }}
+            data-testid={`${testId}-delete-confirmation-modal`}
+            closeOnDimmerClick={false}
         >
-            <ConfirmationModal.Header
-                data-testid={ `${ testId }-delete-confirmation-modal-header` }
-            >
-                { t("console:manage.features.userstores.confirmation.header") }
+            <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                {t("console:manage.features.userstores.confirmation.header")}
             </ConfirmationModal.Header>
-            <ConfirmationModal.Message
-                attached
-                negative
-                data-testid={ `${ testId }-delete-confirmation-modal-message` }
-            >
-                { t("console:manage.features.userstores.confirmation.message") }
+            <ConfirmationModal.Message attached negative data-testid={`${testId}-delete-confirmation-modal-message`}>
+                {t("console:manage.features.userstores.confirmation.message")}
             </ConfirmationModal.Message>
-            <ConfirmationModal.Content
-                data-testid={ `${ testId }-delete-confirmation-modal-content` }
-            >
-                { t("console:manage.features.userstores.confirmation.content") }
+            <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                {t("console:manage.features.userstores.confirmation.content")}
             </ConfirmationModal.Content>
         </ConfirmationModal>
     );
@@ -242,35 +248,34 @@ export const UserStoresList: FunctionComponent<UserStoresListPropsInterface> = (
         if (searchQuery) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:manage.placeholders.emptySearchResult.action") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:manage.placeholders.emptySearchResult.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.placeholders.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("console:manage.placeholders.emptySearchResult.title")}
+                    subtitle={[
                         t("console:manage.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                         t("console:manage.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder` }
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder`}
                 />
             );
         }
 
         if (list?.length === 0) {
-            if (!hasRequiredScopes(featureConfig?.userStores, featureConfig?.userStores?.scopes?.create,
-                allowedScopes)) {
+            if (
+                !hasRequiredScopes(featureConfig?.userStores, featureConfig?.userStores?.scopes?.create, allowedScopes)
+            ) {
                 return (
                     <EmptyPlaceholder
-                        image={ getEmptyPlaceholderIllustrations().newList }
+                        image={getEmptyPlaceholderIllustrations().newList}
                         imageSize="tiny"
-                        title={ t("console:manage.features.userstores.placeholders.emptyListReadOnly.title") }
-                        subtitle={ [
-                            t("console:manage.features.userstores.placeholders.emptyListReadOnly.subtitles")
-                        ] }
-                        data-testid={ `${ testId }-empty-placeholder` }
+                        title={t("console:manage.features.userstores.placeholders.emptyListReadOnly.title")}
+                        subtitle={[t("console:manage.features.userstores.placeholders.emptyListReadOnly.subtitles")]}
+                        data-testid={`${testId}-empty-placeholder`}
                     />
                 );
             }
@@ -278,19 +283,17 @@ export const UserStoresList: FunctionComponent<UserStoresListPropsInterface> = (
             if (!userstoresConfig.userstoreList.renderEmptyPlaceholder(onEmptyListPlaceholderActionClick)) {
                 return (
                     <EmptyPlaceholder
-                        action={ (
-                            <PrimaryButton onClick={ onEmptyListPlaceholderActionClick }>
+                        action={
+                            <PrimaryButton onClick={onEmptyListPlaceholderActionClick}>
                                 <Icon name="add" />
-                                { t("console:manage.features.userstores.placeholders.emptyList.action") }
+                                {t("console:manage.features.userstores.placeholders.emptyList.action")}
                             </PrimaryButton>
-                        ) }
-                        image={ getEmptyPlaceholderIllustrations().newList }
+                        }
+                        image={getEmptyPlaceholderIllustrations().newList}
                         imageSize="tiny"
-                        title={ t("console:manage.features.userstores.placeholders.emptyList.title") }
-                        subtitle={ [
-                            t("console:manage.features.userstores.placeholders.emptyList.subtitles")
-                        ] }
-                        data-testid={ `${ testId }-empty-placeholder` }
+                        title={t("console:manage.features.userstores.placeholders.emptyList.title")}
+                        subtitle={[t("console:manage.features.userstores.placeholders.emptyList.subtitles")]}
+                        data-testid={`${testId}-empty-placeholder`}
                     />
                 );
             } else {
@@ -303,10 +306,18 @@ export const UserStoresList: FunctionComponent<UserStoresListPropsInterface> = (
 
     const handleUserstoreEdit = (userstoreId: string) => {
         if (userstoresConfig.onUserstoreEdit(userstoreId)) {
-            history.push(AppConstants.getPaths().get("USERSTORES_EDIT").replace(":id", userstoreId));
+            history.push(
+                AppConstants.getPaths()
+                    .get("USERSTORES_EDIT")
+                    .replace(":id", userstoreId)
+            );
         } else {
-            history.push(AppConstants.getPaths().get("USERSTORES_EDIT").replace(":id", userstoreId).replace(
-                "edit-user-store", userstoresConfig.userstoreEdit.remoteUserStoreEditPath));
+            history.push(
+                AppConstants.getPaths()
+                    .get("USERSTORES_EDIT")
+                    .replace(":id", userstoreId)
+                    .replace("edit-user-store", userstoresConfig.userstoreEdit.remoteUserStoreEditPath)
+            );
         }
     };
 
@@ -323,62 +334,50 @@ export const UserStoresList: FunctionComponent<UserStoresListPropsInterface> = (
                 id: "name",
                 key: "name",
                 render: (userstore: UserStoreListItem) => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ testId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                         <GenericIcon
                             defaultIcon
                             relaxed="very"
                             size="micro"
                             shape="rounded"
                             spaced="right"
-                            hoverable={ false }
-                            icon={ getTableIcons().header.default }
+                            hoverable={false}
+                            icon={getTableIcons().header.default}
                         />
                         <Header.Content>
-                            {
-                                userstore.enabled
-                                    ? (
-                                        <Popup
-                                            trigger={ (
-                                                <Icon
-                                                    className="mr-2 ml-0 vertical-aligned-baseline"
-                                                    size="small"
-                                                    name="circle"
-                                                    color="green"
-                                                />
-                                            ) }
-                                            content={ t("common:enabled") }
-                                            inverted
+                            {userstore.enabled ? (
+                                <Popup
+                                    trigger={
+                                        <Icon
+                                            className="mr-2 ml-0 vertical-aligned-baseline"
+                                            size="small"
+                                            name="circle"
+                                            color="green"
                                         />
-                                    ) : (
-                                        <Popup
-                                            trigger={ (
-                                                <Icon
-                                                    className="mr-2 ml-0 vertical-aligned-baseline"
-                                                    size="small"
-                                                    name="circle"
-                                                    color="orange"
-                                                />
-                                            ) }
-                                            content={ t("common:disabled") }
-                                            inverted
+                                    }
+                                    content={t("common:enabled")}
+                                    inverted
+                                />
+                            ) : (
+                                <Popup
+                                    trigger={
+                                        <Icon
+                                            className="mr-2 ml-0 vertical-aligned-baseline"
+                                            size="small"
+                                            name="circle"
+                                            color="orange"
                                         />
-                                    )
-                            }
+                                    }
+                                    content={t("common:disabled")}
+                                    inverted
+                                />
+                            )}
                         </Header.Content>
                         <Header.Content>
-                            {
-                                userstore?.name === CONSUMER_USERSTORE
-                                    ? UserstoreConstants.CUSTOMER_USER_STORE_MAPPING
-                                    : userstore?.name
-                            }
-                            <Header.Subheader>
-                                { userstore.description }
-                            </Header.Subheader>
+                            {userstore?.name === CONSUMER_USERSTORE
+                                ? UserstoreConstants.CUSTOMER_USER_STORE_MAPPING
+                                : userstore?.name}
+                            <Header.Subheader>{userstore.description}</Header.Subheader>
                         </Header.Content>
                     </Header>
                 ),
@@ -407,17 +406,36 @@ export const UserStoresList: FunctionComponent<UserStoresListPropsInterface> = (
 
         return [
             {
-                icon: (): SemanticICONS => hasRequiredScopes(featureConfig?.userStores,
-                    featureConfig?.userStores?.scopes?.update, allowedScopes) ?  "pencil alternate" : "eye",
+                icon: (): SemanticICONS =>
+                    hasRequiredScopes(
+                        featureConfig?.userStores,
+                        featureConfig?.userStores?.scopes?.update,
+                        allowedScopes
+                    )
+                        ? "pencil alternate"
+                        : "eye",
                 onClick: (e: SyntheticEvent, userstore: UserStoreListItem): void => handleUserstoreEdit(userstore?.id),
-                popupText: (): string => hasRequiredScopes(featureConfig?.userStores,
-                    featureConfig?.userStores?.scopes?.update, allowedScopes) ? t("common:edit") : t("common:view"),
+                popupText: (): string =>
+                    hasRequiredScopes(
+                        featureConfig?.userStores,
+                        featureConfig?.userStores?.scopes?.update,
+                        allowedScopes
+                    )
+                        ? t("common:edit")
+                        : t("common:view"),
                 renderer: "semantic-icon"
             },
             {
                 hidden: (userstore: UserStoreListItem): boolean => {
-                    return !hasRequiredScopes(featureConfig?.userStores, featureConfig?.userStores?.scopes?.delete,
-                        allowedScopes) || userstore.id == CONSUMER_USERSTORE_ID || isPrivilegedUser;
+                    return (
+                        !hasRequiredScopes(
+                            featureConfig?.userStores,
+                            featureConfig?.userStores?.scopes?.delete,
+                            allowedScopes
+                        ) ||
+                        userstore.id == CONSUMER_USERSTORE_ID ||
+                        isPrivilegedUser
+                    );
                 },
                 icon: (): SemanticICONS => "trash alternate",
                 onClick: (e: SyntheticEvent, userstore: UserStoreListItem): void =>
@@ -430,26 +448,26 @@ export const UserStoresList: FunctionComponent<UserStoresListPropsInterface> = (
 
     return (
         <>
-            { deleteConfirm && showDeleteConfirm() }
+            {deleteConfirm && showDeleteConfirm()}
             <DataTable<UserStoreListItem>
                 className="userstores-table"
-                externalSearch={ advancedSearch }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                externalSearch={advancedSearch}
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ list }
-                onRowClick={ (e: SyntheticEvent, userstore: UserStoreListItem): void => {
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={list}
+                onRowClick={(e: SyntheticEvent, userstore: UserStoreListItem): void => {
                     handleUserstoreEdit(userstore?.id);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ false }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-testid={ testId }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={false}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-testid={testId}
             />
         </>
     );

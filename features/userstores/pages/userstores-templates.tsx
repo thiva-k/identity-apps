@@ -24,7 +24,7 @@ import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useS
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import { userstoresConfig } from "../../../extensions";
+import { userstoresConfig } from "../../extensions";
 import { AppConstants, getEmptyPlaceholderIllustrations, history } from "../../core";
 import { getAType, getUserstoreTypes } from "../api";
 import { AddUserStore } from "../components";
@@ -63,16 +63,13 @@ interface UserstoreTypeListItem {
 const UserstoresTemplates: FunctionComponent<UserstoresTemplatesPageInterface> = (
     props: UserstoresTemplatesPageInterface
 ): ReactElement => {
+    const { ["data-testid"]: testId } = props;
 
-    const {
-        [ "data-testid" ]: testId
-    } = props;
-
-    const [ userstoreTypes, setUserstoreTypes ] = useState<UserstoreTypeListItem[]>([]);
-    const [ rawUserstoreTypes, setRawUserstoreTypes ] = useState<UserstoreType[]>([]);
-    const [ openModal, setOpenModal ] = useState(false);
-    const [ selectedType, setSelectedType ] = useState<UserstoreType>(null);
-    const [ isLoading, setIsLoading ] = useState(true);
+    const [userstoreTypes, setUserstoreTypes] = useState<UserstoreTypeListItem[]>([]);
+    const [rawUserstoreTypes, setRawUserstoreTypes] = useState<UserstoreType[]>([]);
+    const [openModal, setOpenModal] = useState(false);
+    const [selectedType, setSelectedType] = useState<UserstoreType>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const dispatch: Dispatch = useDispatch();
 
@@ -80,151 +77,157 @@ const UserstoresTemplates: FunctionComponent<UserstoresTemplatesPageInterface> =
 
     useEffect(() => {
         selectedType && setOpenModal(true);
-    }, [ selectedType ]);
+    }, [selectedType]);
 
     useEffect(() => {
         !openModal && setSelectedType(null);
-    }, [ openModal ]);
+    }, [openModal]);
 
     /**
      * Fetches the list of userstore types.
      */
     useEffect(() => {
-        getUserstoreTypes().then(async (response: TypeResponse[]) => {
-            setIsLoading(true);
-            const typeRequests: Promise<UserstoreType>[] = response.map((type: TypeResponse) => {
-                return getAType(type.typeId, null);
-            });
-            const results: (void | UserstoreType)[] = await Promise.all(
-                typeRequests.map((response: Promise<UserstoreType>) => response.catch((error: AxiosError) => {
-                    dispatch(addAlert({
-                        description: t("console:manage.features.userstores.notifications." +
-                                "fetchUserstoreTemplates.genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.message
-                            || t("console:manage.features.userstores.notifications." +
-                                "fetchUserstoreTemplates.genericError.message")
-                    }));
-                }))
-            );
+        getUserstoreTypes()
+            .then(async (response: TypeResponse[]) => {
+                setIsLoading(true);
+                const typeRequests: Promise<UserstoreType>[] = response.map((type: TypeResponse) => {
+                    return getAType(type.typeId, null);
+                });
+                const results: (void | UserstoreType)[] = await Promise.all(
+                    typeRequests.map((response: Promise<UserstoreType>) =>
+                        response.catch((error: AxiosError) => {
+                            dispatch(
+                                addAlert({
+                                    description: t(
+                                        "console:manage.features.userstores.notifications." +
+                                            "fetchUserstoreTemplates.genericError.description"
+                                    ),
+                                    level: AlertLevels.ERROR,
+                                    message:
+                                        error?.message ||
+                                        t(
+                                            "console:manage.features.userstores.notifications." +
+                                                "fetchUserstoreTemplates.genericError.message"
+                                        )
+                                })
+                            );
+                        })
+                    )
+                );
 
-            const userstoreTypes: UserstoreTypeListItem[] = [];
-            const uniqueUserstoreTypes: UserstoreTypeListItem[] = [];
-            const rawUserstoreTypes: UserstoreType[] = [];
+                const userstoreTypes: UserstoreTypeListItem[] = [];
+                const uniqueUserstoreTypes: UserstoreTypeListItem[] = [];
+                const rawUserstoreTypes: UserstoreType[] = [];
 
-            results.forEach((type: UserstoreType) => {
-                if (type && !userstoresConfig.shouldShowUserstore(type.typeName)) {
-                    rawUserstoreTypes.push(type);
-                    if (type.typeName.toLowerCase().includes("unique")) {
-                        uniqueUserstoreTypes.push(
-                            {
-                                description: type.description
-                                    ?? USER_STORE_TYPE_DESCRIPTIONS[ type.typeName ],
+                results.forEach((type: UserstoreType) => {
+                    if (type && !userstoresConfig.shouldShowUserstore(type.typeName)) {
+                        rawUserstoreTypes.push(type);
+                        if (type.typeName.toLowerCase().includes("unique")) {
+                            uniqueUserstoreTypes.push({
+                                description: type.description ?? USER_STORE_TYPE_DESCRIPTIONS[type.typeName],
                                 id: type.typeId,
-                                image: USERSTORE_TYPE_IMAGES[ type.typeName ],
-                                name: USERSTORE_TYPE_DISPLAY_NAMES[ type.typeName ]
-                            }
-                        );
-                    } else {
-                        userstoreTypes.push(
-                            {
-                                description: USER_STORE_TYPE_DESCRIPTIONS[ type.typeName ] 
-                                    ?? DEFAULT_DESCRIPTION_CUSTOM_USERSTORE,
+                                image: USERSTORE_TYPE_IMAGES[type.typeName],
+                                name: USERSTORE_TYPE_DISPLAY_NAMES[type.typeName]
+                            });
+                        } else {
+                            userstoreTypes.push({
+                                description:
+                                    USER_STORE_TYPE_DESCRIPTIONS[type.typeName] ?? DEFAULT_DESCRIPTION_CUSTOM_USERSTORE,
                                 id: type.typeId,
-                                image: USERSTORE_TYPE_IMAGES[ type.typeName ] ?? DEFAULT_USERSTORE_TYPE_IMAGE,
-                                name: USERSTORE_TYPE_DISPLAY_NAMES[ type.typeName ] ?? type.typeName
-                            }
-                        );
+                                image: USERSTORE_TYPE_IMAGES[type.typeName] ?? DEFAULT_USERSTORE_TYPE_IMAGE,
+                                name: USERSTORE_TYPE_DISPLAY_NAMES[type.typeName] ?? type.typeName
+                            });
+                        }
                     }
-                }
+                });
+                setUserstoreTypes(uniqueUserstoreTypes.concat(userstoreTypes));
+                setRawUserstoreTypes(rawUserstoreTypes);
+            })
+            .catch((error: AxiosError) => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.userstores.notifications." +
+                                "fetchUserstoreTypes.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t(
+                                "console:manage.features.userstores.notifications." +
+                                    "fetchUserstoreTypes.genericError.message"
+                            )
+                    })
+                );
+            })
+            .finally(() => {
+                setIsLoading(false);
             });
-            setUserstoreTypes(uniqueUserstoreTypes.concat(userstoreTypes));
-            setRawUserstoreTypes(rawUserstoreTypes);
-        }).catch((error: AxiosError) => {
-            dispatch(addAlert({
-                description: t("console:manage.features.userstores.notifications." +
-                    "fetchUserstoreTypes.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: error?.message || t("console:manage.features.userstores.notifications." +
-                    "fetchUserstoreTypes.genericError.message")
-            }));
-        }).finally(() => {
-            setIsLoading(false);
-        });
     }, []);
 
     return (
         <>
-            {
-                openModal
-                && (
-                    <AddUserStore
-                        open={ openModal }
-                        onClose={ () => {
-                            setOpenModal(false);
-                        } }
-                        type={ selectedType }
-                        data-testid={ `${ testId }-add-userstore-wizard` }
-                    />
-                )
-            }
+            {openModal && (
+                <AddUserStore
+                    open={openModal}
+                    onClose={() => {
+                        setOpenModal(false);
+                    }}
+                    type={selectedType}
+                    data-testid={`${testId}-add-userstore-wizard`}
+                />
+            )}
             <PageLayout
-                isLoading={ isLoading }
-                title={ t("console:manage.features.userstores.pageLayout.templates.title") }
-                pageTitle={ t("console:manage.features.userstores.pageLayout.templates.title") }
-                description={ t("console:manage.features.userstores.pageLayout.templates.description") }
-                contentTopMargin={ true }
-                backButton={ {
+                isLoading={isLoading}
+                title={t("console:manage.features.userstores.pageLayout.templates.title")}
+                pageTitle={t("console:manage.features.userstores.pageLayout.templates.title")}
+                description={t("console:manage.features.userstores.pageLayout.templates.description")}
+                contentTopMargin={true}
+                backButton={{
                     onClick: () => {
                         history.push(AppConstants.getPaths().get("USERSTORES"));
                     },
                     text: t("console:manage.features.userstores.pageLayout.templates.back")
-                }
-                }
+                }}
                 titleTextAlign="left"
-                bottomMargin={ false }
+                bottomMargin={false}
                 showBottomDivider
-                data-testid={ `${ testId }-page-layout` }
+                data-testid={`${testId}-page-layout`}
             >
-                {
-                    userstoreTypes && (
-                        <div className="quick-start-templates">
-                            <TemplateGrid<UserstoreTypeListItem>
-                                type="userstore"
-                                templates={ userstoreTypes }
-                                onTemplateSelect={ (e: SyntheticEvent, { id }: { id: string }) => {
-                                    setSelectedType(rawUserstoreTypes.find(
-                                        (type: UserstoreType) => type.typeId === id));
-                                } }
-                                templateIcons={ getUserstoreTemplateIllustrations() as any }
-                                templateIconOptions={ {
-                                    fill: "primary"
-                                } }
-                                templateIconSize="tiny"
-                                paginate={ true }
-                                paginationLimit={ userstoreTypes?.length ? userstoreTypes.length : 0 }
-                                paginationOptions={ {
-                                    showLessButtonLabel: t("common:showLess"),
-                                    showMoreButtonLabel: t("common:showMore")
-                                } }
-                                emptyPlaceholder={ (
-                                    !isLoading && (
-                                        <EmptyPlaceholder
-                                            image={ getEmptyPlaceholderIllustrations().newList }
-                                            imageSize="tiny"
-                                            title={ t("console:manage.features.templates.emptyPlaceholder.title") }
-                                            subtitle={
-                                                [ t("console:manage.features.templates.emptyPlaceholder.subtitles") ]
-                                            }
-                                            data-testid={ `${ testId }-grid-empty-placeholder` }
-                                        />
-                                    )
-                                ) }
-                                data-testid={ `${ testId }-grid` }
-                            />
-                        </div>
-                    )
-                }
+                {userstoreTypes && (
+                    <div className="quick-start-templates">
+                        <TemplateGrid<UserstoreTypeListItem>
+                            type="userstore"
+                            templates={userstoreTypes}
+                            onTemplateSelect={(e: SyntheticEvent, { id }: { id: string }) => {
+                                setSelectedType(rawUserstoreTypes.find((type: UserstoreType) => type.typeId === id));
+                            }}
+                            templateIcons={getUserstoreTemplateIllustrations() as any}
+                            templateIconOptions={{
+                                fill: "primary"
+                            }}
+                            templateIconSize="tiny"
+                            paginate={true}
+                            paginationLimit={userstoreTypes?.length ? userstoreTypes.length : 0}
+                            paginationOptions={{
+                                showLessButtonLabel: t("common:showLess"),
+                                showMoreButtonLabel: t("common:showMore")
+                            }}
+                            emptyPlaceholder={
+                                !isLoading && (
+                                    <EmptyPlaceholder
+                                        image={getEmptyPlaceholderIllustrations().newList}
+                                        imageSize="tiny"
+                                        title={t("console:manage.features.templates.emptyPlaceholder.title")}
+                                        subtitle={[t("console:manage.features.templates.emptyPlaceholder.subtitles")]}
+                                        data-testid={`${testId}-grid-empty-placeholder`}
+                                    />
+                                )
+                            }
+                            data-testid={`${testId}-grid`}
+                        />
+                    </div>
+                )}
             </PageLayout>
         </>
     );

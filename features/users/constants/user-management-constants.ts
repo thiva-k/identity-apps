@@ -17,20 +17,19 @@
  */
 
 // Keep statement as this to avoid cyclic dependency. Do not import from config index.
-import { SCIMConfigs } from "../../../extensions/configs/scim";
+import { SCIMConfigs } from "../../extensions/configs/scim";
 
 /**
  * Class containing app constants which can be used across several applications.
  */
 export class UserManagementConstants {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Default role list item limit.
@@ -51,8 +50,13 @@ export class UserManagementConstants {
      * @typeParam DEFAULT_USER_LIST_ATTRIBUTES - string[]
      * @defaultValue
      */
-    public static readonly DEFAULT_USER_LIST_ATTRIBUTES: string[] = [ "name", "emails", "userName", "profileUrl",
-        "meta.lastModified" ];
+    public static readonly DEFAULT_USER_LIST_ATTRIBUTES: string[] = [
+        "name",
+        "emails",
+        "userName",
+        "profileUrl",
+        "meta.lastModified"
+    ];
 
     /**
      * Set of keys used to enable/disable features.
@@ -67,23 +71,23 @@ export class UserManagementConstants {
 
     // API errors
     public static readonly USER_INFO_UPDATE_ERROR: string = "Could not update the user information.";
-    public static readonly GET_USER_SESSIONS_REQUEST_INVALID_STATUS_CODE_ERROR: string = "Received an invalid " +
-        "status code while retrieving the user sessions.";
+    public static readonly GET_USER_SESSIONS_REQUEST_INVALID_STATUS_CODE_ERROR: string =
+        "Received an invalid " + "status code while retrieving the user sessions.";
 
-    public static readonly GET_USER_SESSIONS_REQUEST_ERROR: string = "Could not retrieve the user sessions " +
-        "due to some error.";
+    public static readonly GET_USER_SESSIONS_REQUEST_ERROR: string =
+        "Could not retrieve the user sessions " + "due to some error.";
 
-    public static readonly TERMINATE_USER_SESSION_REQUEST_INVALID_STATUS_CODE_ERROR: string = "Received an invalid " +
-        "status code while terminating the user sessions.";
+    public static readonly TERMINATE_USER_SESSION_REQUEST_INVALID_STATUS_CODE_ERROR: string =
+        "Received an invalid " + "status code while terminating the user sessions.";
 
-    public static readonly TERMINATE_USER_SESSION_REQUEST_ERROR: string = "Could not terminate the user session " +
-        "due to some error.";
+    public static readonly TERMINATE_USER_SESSION_REQUEST_ERROR: string =
+        "Could not terminate the user session " + "due to some error.";
 
-    public static readonly TERMINATE_ALL_USER_SESSIONS_REQUEST_INVALID_STATUS_CODE_ERROR: string = "Received an " +
-        "invalid status code while terminating all the user sessions.";
+    public static readonly TERMINATE_ALL_USER_SESSIONS_REQUEST_INVALID_STATUS_CODE_ERROR: string =
+        "Received an " + "invalid status code while terminating all the user sessions.";
 
-    public static readonly TERMINATE_ALL_USER_SESSIONS_ERROR: string = "Could not terminate all the user sessions " +
-        "due to some error.";
+    public static readonly TERMINATE_ALL_USER_SESSIONS_ERROR: string =
+        "Could not terminate all the user sessions " + "due to some error.";
 
     public static readonly WSO2_LOCAL_CLAIM_DIALECT: string = "http://wso2.org/claims";
     public static readonly SCIM2_USER_SCHEMA: string = "urn:ietf:params:scim:schemas:core:2.0:User";
@@ -130,7 +134,7 @@ export class UserManagementConstants {
 
     // ID of the form used in the invite parent organization user component.
     public static readonly INVITE_PARENT_ORG_USER_FORM_ID: string = "invite-parent-org-user-form";
-    public static readonly USERNAME_REGEX_ERROR_CODE: string = "31301"
+    public static readonly USERNAME_REGEX_ERROR_CODE: string = "31301";
 }
 
 /**
@@ -213,7 +217,7 @@ export enum UserAddOptionTypes {
  */
 export enum BulkUserImportStatus {
     FAILED = "FAILED",
-    SUCCESS = "SUCCESS",
+    SUCCESS = "SUCCESS"
 }
 
 /**
@@ -222,7 +226,7 @@ export enum BulkUserImportStatus {
  */
 export enum BulkImportResponseOperationTypes {
     USER_CREATION = "userCreation",
-    ROLE_ASSIGNMENT = "roleAssignment",
+    ROLE_ASSIGNMENT = "roleAssignment"
 }
 
 /**
@@ -261,8 +265,8 @@ export enum WizardStepsFormTypes {
     USER_MODE = "UserMode",
     BASIC_DETAILS = "BasicDetails",
     INVITE_BASIC_DETAILS = "InviteBasicDetails",
-    ROLE_LIST= "RoleList",
-    GROUP_LIST= "GroupList",
+    ROLE_LIST = "RoleList",
+    GROUP_LIST = "GroupList",
     SUMMARY = "summary",
     USER_TYPE = "UserType",
     USER_SUMMARY = "UserSummary"

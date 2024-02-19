@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -16,38 +18,24 @@
  * under the License.
  */
 
-import {  FunctionComponent, SVGProps } from "react";
-import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
-import {
-    ReactComponent as DatabaseOutlineIcon
-} from "../../../themes/default/assets/images/icons/outline-icons/database-outline.svg";
-import {
-    ReactComponent as ActiveDirectoryUserstoreIllustration
-} from "../../../themes/default/assets/images/illustrations/ad-illustration.svg";
-import {
-    ReactComponent as CustomApplicationTemplateIllustration
-} from "../../../themes/default/assets/images/illustrations/custom-app-illustration.svg";
-import {
-    ReactComponent as JDBCUserstoreIllustration
-} from "../../../themes/default/assets/images/illustrations/jdbc-illustration.svg";
-import {
-    ReactComponent as LDAPUserstoreIllustration
-} from "../../../themes/default/assets/images/illustrations/ldap-illustration.svg";
-import {
-    ReactComponent as LDAPReadOnlyUserstoreIllustration
-} from "../../../themes/default/assets/images/illustrations/ldap-readonly-illustration.svg";
+import { FunctionComponent, SVGProps } from "react";
+import { ReactComponent as DocumentIcon } from "../../themes/default/assets/images/icons/document-icon.svg";
+import { ReactComponent as DatabaseOutlineIcon } from "../../themes/default/assets/images/icons/outline-icons/database-outline.svg";
+import { ReactComponent as ActiveDirectoryUserstoreIllustration } from "../../themes/default/assets/images/illustrations/ad-illustration.svg";
+import { ReactComponent as CustomApplicationTemplateIllustration } from "../../themes/default/assets/images/illustrations/custom-app-illustration.svg";
+import { ReactComponent as JDBCUserstoreIllustration } from "../../themes/default/assets/images/illustrations/jdbc-illustration.svg";
+import { ReactComponent as LDAPUserstoreIllustration } from "../../themes/default/assets/images/illustrations/ldap-illustration.svg";
+import { ReactComponent as LDAPReadOnlyUserstoreIllustration } from "../../themes/default/assets/images/illustrations/ldap-readonly-illustration.svg";
 
-export const getAddUserstoreWizardStepIcons  = (): {
+export const getAddUserstoreWizardStepIcons = (): {
     general: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         general: DocumentIcon
     };
 };
 
-export const getDatabaseAvatarGraphic  = (): FunctionComponent<SVGProps<SVGSVGElement>> => {
-
+export const getDatabaseAvatarGraphic = (): FunctionComponent<SVGProps<SVGSVGElement>> => {
     return DatabaseOutlineIcon;
 };
 
@@ -58,7 +46,6 @@ export const getUserstoreTemplateIllustrations = (): {
     ldap: FunctionComponent<SVGProps<SVGSVGElement>>;
     ldapro: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         ad: ActiveDirectoryUserstoreIllustration,
         default: CustomApplicationTemplateIllustration,
@@ -71,9 +58,8 @@ export const getUserstoreTemplateIllustrations = (): {
 export const getTableIcons = (): {
     header: {
         default: FunctionComponent<SVGProps<SVGSVGElement>>;
-    }
+    };
 } => {
-
     return {
         header: {
             default: DatabaseOutlineIcon

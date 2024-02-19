@@ -26,7 +26,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
-import { userstoresConfig } from "../../../extensions/configs/userstores";
+import { userstoresConfig } from "../../extensions/configs/userstores";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
 import {
     AdvancedSearchWithBasicFilters,
@@ -54,13 +54,8 @@ type UserStoresPageInterface = TestableComponentInterface;
  *
  * @returns User Stores page.
  */
-const UserStores: FunctionComponent<UserStoresPageInterface> = (
-    props: UserStoresPageInterface
-): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+const UserStores: FunctionComponent<UserStoresPageInterface> = (props: UserStoresPageInterface): ReactElement => {
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
@@ -86,19 +81,19 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ userStores, setUserStores ] = useState<UserStoreListItem[]>([]);
-    const [ offset, setOffset ] = useState(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ isLoading, setIsLoading ] = useState(true);
-    const [ filteredUserStores, setFilteredUserStores ] = useState<UserStoreListItem[]>([]);
-    const [ sortBy, setSortBy ] = useState(SORT_BY[ 0 ]);
-    const [ sortOrder, setSortOrder ] = useState(true);
-    const [ searchQuery, setSearchQuery ] = useState("");
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
+    const [userStores, setUserStores] = useState<UserStoreListItem[]>([]);
+    const [offset, setOffset] = useState(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [isLoading, setIsLoading] = useState(true);
+    const [filteredUserStores, setFilteredUserStores] = useState<UserStoreListItem[]>([]);
+    const [sortBy, setSortBy] = useState(SORT_BY[0]);
+    const [sortOrder, setSortOrder] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ resetPagination, setResetPagination ] = useTrigger();
+    const [resetPagination, setResetPagination] = useTrigger();
 
     /**
      * Fetches all userstores.
@@ -117,23 +112,29 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
         };
 
         setIsLoading(true);
-        getUserStores(params).then((response: UserStoreListItem[]) => {
-            setUserStores(response);
-            setFilteredUserStores(response);
-            setIsLoading(false);
-        }).catch((error: any) => {
-            setIsLoading(false);
-            dispatch(addAlert(
-                {
-                    description: error?.description
-                        || t("console:manage.features.userstores.notifications.fetchUserstores.genericError" +
-                            ".description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.userstores.notifications.fetchUserstores.genericError.message")
-                }
-            ));
-        });
+        getUserStores(params)
+            .then((response: UserStoreListItem[]) => {
+                setUserStores(response);
+                setFilteredUserStores(response);
+                setIsLoading(false);
+            })
+            .catch((error: any) => {
+                setIsLoading(false);
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.userstores.notifications.fetchUserstores.genericError" +
+                                    ".description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t("console:manage.features.userstores.notifications.fetchUserstores.genericError.message")
+                    })
+                );
+            });
     };
 
     useEffect(() => {
@@ -141,8 +142,8 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
     }, []);
 
     useEffect(() => {
-        setFilteredUserStores((sortList(filteredUserStores, sortBy.value, sortOrder)));
-    }, [ sortBy, sortOrder ]);
+        setFilteredUserStores(sortList(filteredUserStores, sortBy.value, sortOrder));
+    }, [sortBy, sortOrder]);
 
     /**
      * This slices and returns a portion of the list.
@@ -174,7 +175,7 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
      * @param data - Pagination data.
      */
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setOffset((data.activePage as number - 1) * listItemLimit);
+        setOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     /**
@@ -193,11 +194,9 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
      * @param data - Dropdown data.
      */
     const handleSortStrategyChange = (event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
-        setSortBy(SORT_BY.filter((option: {
-            key: number;
-            text: string;
-            value: string;
-        }) => option.value === data.value)[ 0 ]);
+        setSortBy(
+            SORT_BY.filter((option: { key: number; text: string; value: string }) => option.value === data.value)[0]
+        );
     };
 
     /**
@@ -226,35 +225,32 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
     return (
         <PageLayout
             action={
-                (isLoading || !(!searchQuery && filteredUserStores?.length <= 0))
-                && userstoresConfig.userstoreList.allowAddingUserstores
-                && (
-                    <Show
-                        when={ AccessControlConstants.USER_STORE_WRITE }
-                    >
+                (isLoading || !(!searchQuery && filteredUserStores?.length <= 0)) &&
+                userstoresConfig.userstoreList.allowAddingUserstores && (
+                    <Show when={AccessControlConstants.USER_STORE_WRITE}>
                         <PrimaryButton
-                            onClick={ () => {
+                            onClick={() => {
                                 history.push(AppConstants.getPaths().get("USERSTORE_TEMPLATES"));
-                            } }
-                            data-testid={ `${ testId }-list-layout-add-button` }
+                            }}
+                            data-testid={`${testId}-list-layout-add-button`}
                         >
-                            <Icon name="add"/>
-                            { t("console:manage.features.userstores.pageLayout.list.primaryAction") }
+                            <Icon name="add" />
+                            {t("console:manage.features.userstores.pageLayout.list.primaryAction")}
                         </PrimaryButton>
                     </Show>
                 )
             }
-            isLoading={ isLoading }
-            title={ t("console:manage.features.userstores.pageLayout.list.title") }
-            pageTitle={ t("console:manage.features.userstores.pageLayout.list.title") }
-            description={ t("console:manage.features.userstores.pageLayout.list.description") }
-            data-testid={ `${ testId }-page-layout` }
+            isLoading={isLoading}
+            title={t("console:manage.features.userstores.pageLayout.list.title")}
+            pageTitle={t("console:manage.features.userstores.pageLayout.list.title")}
+            description={t("console:manage.features.userstores.pageLayout.list.description")}
+            data-testid={`${testId}-page-layout`}
         >
             <ListLayout
                 advancedSearch={
-                    (<AdvancedSearchWithBasicFilters
-                        onFilter={ handleUserstoreFilter }
-                        filterAttributeOptions={ [
+                    <AdvancedSearchWithBasicFilters
+                        onFilter={handleUserstoreFilter}
+                        filterAttributeOptions={[
                             {
                                 key: 0,
                                 text: t("common:name"),
@@ -265,50 +261,47 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
                                 text: t("common:description"),
                                 value: "description"
                             }
-                        ] }
-                        filterAttributePlaceholder={
-                            t("console:manage.features.userstores.advancedSearch.form.inputs" +
-                                ".filterAttribute.placeholder")
-                        }
-                        filterConditionsPlaceholder={
-                            t("console:manage.features.userstores.advancedSearch.form.inputs" +
-                                ".filterCondition.placeholder")
-                        }
-                        filterValuePlaceholder={
-                            t("console:manage.features.userstores.advancedSearch.form.inputs" +
-                                ".filterValue.placeholder")
-                        }
-                        placeholder={
-                            t("console:manage.features.userstores.advancedSearch.placeholder")
-                        }
+                        ]}
+                        filterAttributePlaceholder={t(
+                            "console:manage.features.userstores.advancedSearch.form.inputs" +
+                                ".filterAttribute.placeholder"
+                        )}
+                        filterConditionsPlaceholder={t(
+                            "console:manage.features.userstores.advancedSearch.form.inputs" +
+                                ".filterCondition.placeholder"
+                        )}
+                        filterValuePlaceholder={t(
+                            "console:manage.features.userstores.advancedSearch.form.inputs" + ".filterValue.placeholder"
+                        )}
+                        placeholder={t("console:manage.features.userstores.advancedSearch.placeholder")}
                         defaultSearchAttribute="name"
                         defaultSearchOperator="co"
-                        triggerClearQuery={ triggerClearQuery }
-                        data-testid={ `${ testId }-advanced-search` }
-                    />)
+                        triggerClearQuery={triggerClearQuery}
+                        data-testid={`${testId}-advanced-search`}
+                    />
                 }
-                currentListSize={ listItemLimit }
-                listItemLimit={ listItemLimit }
-                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                onPageChange={ handlePaginationChange }
-                onSortStrategyChange={ handleSortStrategyChange }
-                onSortOrderChange={ handleSortOrderChange }
-                resetPagination={ resetPagination }
-                leftActionPanel={ null }
-                showPagination={ true }
-                sortOptions={ SORT_BY }
-                sortStrategy={ sortBy }
-                showTopActionPanel={ isLoading || !(!searchQuery && filteredUserStores?.length <= 0) }
-                totalPages={ Math.ceil(filteredUserStores?.length / listItemLimit) }
-                totalListSize={ filteredUserStores?.length }
-                isLoading={ isLoading }
-                data-testid={ `${ testId }-list-layout` }
+                currentListSize={listItemLimit}
+                listItemLimit={listItemLimit}
+                onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                onPageChange={handlePaginationChange}
+                onSortStrategyChange={handleSortStrategyChange}
+                onSortOrderChange={handleSortOrderChange}
+                resetPagination={resetPagination}
+                leftActionPanel={null}
+                showPagination={true}
+                sortOptions={SORT_BY}
+                sortStrategy={sortBy}
+                showTopActionPanel={isLoading || !(!searchQuery && filteredUserStores?.length <= 0)}
+                totalPages={Math.ceil(filteredUserStores?.length / listItemLimit)}
+                totalListSize={filteredUserStores?.length}
+                isLoading={isLoading}
+                data-testid={`${testId}-list-layout`}
             >
                 <UserStoresList
                     advancedSearch={
-                        (<AdvancedSearchWithBasicFilters
-                            onFilter={ handleUserstoreFilter }
-                            filterAttributeOptions={ [
+                        <AdvancedSearchWithBasicFilters
+                            onFilter={handleUserstoreFilter}
+                            filterAttributeOptions={[
                                 {
                                     key: 0,
                                     text: t("common:name"),
@@ -319,37 +312,35 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
                                     text: t("common:description"),
                                     value: "description"
                                 }
-                            ] }
-                            filterAttributePlaceholder={
-                                t("console:manage.features.userstores.advancedSearch.form.inputs" +
-                                    ".filterAttribute.placeholder")
-                            }
-                            filterConditionsPlaceholder={
-                                t("console:manage.features.userstores.advancedSearch.form.inputs" +
-                                    ".filterCondition.placeholder")
-                            }
-                            filterValuePlaceholder={
-                                t("console:manage.features.userstores.advancedSearch.form.inputs" +
-                                    ".filterValue.placeholder")
-                            }
-                            placeholder={
-                                t("console:manage.features.userstores.advancedSearch.placeholder")
-                            }
+                            ]}
+                            filterAttributePlaceholder={t(
+                                "console:manage.features.userstores.advancedSearch.form.inputs" +
+                                    ".filterAttribute.placeholder"
+                            )}
+                            filterConditionsPlaceholder={t(
+                                "console:manage.features.userstores.advancedSearch.form.inputs" +
+                                    ".filterCondition.placeholder"
+                            )}
+                            filterValuePlaceholder={t(
+                                "console:manage.features.userstores.advancedSearch.form.inputs" +
+                                    ".filterValue.placeholder"
+                            )}
+                            placeholder={t("console:manage.features.userstores.advancedSearch.placeholder")}
                             defaultSearchAttribute="name"
                             defaultSearchOperator="co"
-                            triggerClearQuery={ triggerClearQuery }
-                            data-testid={ `${ testId }-advanced-search` }
-                        />)
+                            triggerClearQuery={triggerClearQuery}
+                            data-testid={`${testId}-advanced-search`}
+                        />
                     }
-                    list={ paginate(filteredUserStores, listItemLimit, offset) }
-                    onEmptyListPlaceholderActionClick={
-                        () => history.push(AppConstants.getPaths().get("USERSTORE_TEMPLATES"))
+                    list={paginate(filteredUserStores, listItemLimit, offset)}
+                    onEmptyListPlaceholderActionClick={() =>
+                        history.push(AppConstants.getPaths().get("USERSTORE_TEMPLATES"))
                     }
-                    onSearchQueryClear={ handleSearchQueryClear }
-                    searchQuery={ searchQuery }
-                    update={ fetchUserStores }
-                    featureConfig={ featureConfig }
-                    data-testid={ `${ testId }-list` }
+                    onSearchQueryClear={handleSearchQueryClear}
+                    searchQuery={searchQuery}
+                    update={fetchUserStores}
+                    featureConfig={featureConfig}
+                    data-testid={`${testId}-list`}
                 />
             </ListLayout>
         </PageLayout>

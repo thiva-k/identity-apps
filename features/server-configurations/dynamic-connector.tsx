@@ -19,14 +19,7 @@
 import { AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { AxiosError } from "axios";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    ReactNode,
-    SyntheticEvent,
-    useEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
@@ -58,9 +51,9 @@ interface DynamicConnectorPropsInterface extends TestableComponentInterface {
 export const ExtendedDynamicConnector: FunctionComponent<DynamicConnectorPropsInterface> = (
     props: DynamicConnectorPropsInterface
 ): ReactElement => {
-    const { connector, connectorForm, connectorIllustration, connectorToggleName, [ "data-testid" ]: testId } = props;
+    const { connector, connectorForm, connectorIllustration, connectorToggleName, ["data-testid"]: testId } = props;
 
-    const [ showForm, setShowForm ] = useState<boolean>(false);
+    const [showForm, setShowForm] = useState<boolean>(false);
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
@@ -76,7 +69,7 @@ export const ExtendedDynamicConnector: FunctionComponent<DynamicConnectorPropsIn
 
             setShowForm(enableProperty?.value === "true");
         }
-    }, [ connector ]);
+    }, [connector]);
 
     /**
      * This is called when the enable toggle changes.
@@ -103,12 +96,12 @@ export const ExtendedDynamicConnector: FunctionComponent<DynamicConnectorPropsIn
         }
 
         if (
-            serverConfigurationConfig.connectorToggleName[ connector?.name ] &&
+            serverConfigurationConfig.connectorToggleName[connector?.name] &&
             serverConfigurationConfig.autoEnableConnectorToggleProperty
         ) {
             updateData.properties.push({
                 name: GovernanceConnectorUtils.decodeConnectorPropertyName(
-                    serverConfigurationConfig.connectorToggleName[ connector?.name ]
+                    serverConfigurationConfig.connectorToggleName[connector?.name]
                 ),
                 value: data.checked.toString()
             });
@@ -120,13 +113,13 @@ export const ExtendedDynamicConnector: FunctionComponent<DynamicConnectorPropsIn
                     addAlert({
                         description: t(
                             "console:manage.features.governanceConnectors.notifications." +
-                            "updateConnector.success.description",
+                                "updateConnector.success.description",
                             { name: connector.friendlyName }
                         ),
                         level: AlertLevels.SUCCESS,
                         message: t(
                             "console:manage.features.governanceConnectors.notifications." +
-                            "updateConnector.success.message"
+                                "updateConnector.success.message"
                         )
                     })
                 );
@@ -137,13 +130,13 @@ export const ExtendedDynamicConnector: FunctionComponent<DynamicConnectorPropsIn
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "updateConnector.error.description",
+                                    "updateConnector.error.description",
                                 { description: error.response.data.description }
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "updateConnector.error.message"
+                                    "updateConnector.error.message"
                             )
                         })
                     );
@@ -153,12 +146,12 @@ export const ExtendedDynamicConnector: FunctionComponent<DynamicConnectorPropsIn
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "updateConnector.genericError.description"
+                                    "updateConnector.genericError.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "updateConnector.genericError.message"
+                                    "updateConnector.genericError.message"
                             )
                         })
                     );
@@ -172,12 +165,11 @@ export const ExtendedDynamicConnector: FunctionComponent<DynamicConnectorPropsIn
     const connectorToggle = (): ReactElement => {
         return (
             <Checkbox
-                label={ t("extensions:manage.serverConfigurations." +
-                    "accountManagement.accountRecovery.toggleName") }
+                label={t("extensions:manage.serverConfigurations." + "accountManagement.accountRecovery.toggleName")}
                 toggle
-                onChange={ handleToggle }
-                checked={ showForm }
-                data-testId={ `${ testId }-enable-toggle` }
+                onChange={handleToggle}
+                checked={showForm}
+                data-testId={`${testId}-enable-toggle`}
             />
         );
     };
@@ -185,37 +177,39 @@ export const ExtendedDynamicConnector: FunctionComponent<DynamicConnectorPropsIn
     return (
         <Segment padded className="governance-connector-banner">
             <Grid>
-                <Grid.Row columns={ 2 }>
-                    <Grid.Column computer={ 10 } tablet={ 16 } mobile={ 16 }>
+                <Grid.Row columns={2}>
+                    <Grid.Column computer={10} tablet={16} mobile={16}>
                         <Header>
-                            <span data-testId={ `${ testId }-header` }>
-                                { t("extensions:manage.serverConfigurations." +
-                                     "accountManagement.accountRecovery.heading") }
+                            <span data-testId={`${testId}-header`}>
+                                {t(
+                                    "extensions:manage.serverConfigurations." +
+                                        "accountManagement.accountRecovery.heading"
+                                )}
                             </span>
                             <Divider hidden />
-                            <Header.Subheader data-testId={ `${ testId }-sub-header` }>
-                                { t("extensions:manage.serverConfigurations." +
-                                    "accountManagement.accountRecovery.subHeading") }
+                            <Header.Subheader data-testId={`${testId}-sub-header`}>
+                                {t(
+                                    "extensions:manage.serverConfigurations." +
+                                        "accountManagement.accountRecovery.subHeading"
+                                )}
                             </Header.Subheader>
                         </Header>
                         <Divider hidden />
-                        { connectorToggle() }
+                        {connectorToggle()}
                     </Grid.Column>
-                    <Grid.Column computer={ 6 } >
-                        <Image src={ connectorIllustration } className="governance-connector-banner-image" />
+                    <Grid.Column computer={6}>
+                        <Image src={connectorIllustration} className="governance-connector-banner-image" />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            { showForm && (
+            {showForm && (
                 <>
                     <Divider hidden />
                     <Divider />
-                    <Header as="h5">
-                        { t("extensions:manage.serverConfigurations.additionalSettings") }
-                    </Header>
-                    { connectorForm }
+                    <Header as="h5">{t("extensions:manage.serverConfigurations.additionalSettings")}</Header>
+                    {connectorForm}
                 </>
-            ) }
+            )}
         </Segment>
     );
 };

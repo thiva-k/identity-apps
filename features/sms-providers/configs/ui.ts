@@ -17,7 +17,7 @@
  */
 
 import { FunctionComponent, ReactNode } from "react";
-import { ReactComponent as SMSIcon } from "../../../themes/default/assets/images/icons/sms-icon.svg";
+import { ReactComponent as SMSIcon } from "../../themes/default/assets/images/icons/sms-icon.svg";
 
 export const getSMSProviderIcons = (): {
     twilio: FunctionComponent | ReactNode;

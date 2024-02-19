@@ -22,7 +22,8 @@ import {
     AlertLevels,
     IdentifiableComponentInterface,
     MultiValueAttributeInterface,
-    TestableComponentInterface } from "@wso2is/core/models";
+    TestableComponentInterface
+} from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { LocalStorageUtils } from "@wso2is/core/utils";
 import {
@@ -34,16 +35,10 @@ import {
     ResourceTab,
     ResourceTabPaneInterface
 } from "@wso2is/react-components";
-import { UsersConstants } from "apps/console/src/extensions/components/users/constants";
-import { InvitationStatus } from "apps/console/src/extensions/components/users/models";
 import { AxiosError, AxiosResponse } from "axios";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    SyntheticEvent,
-    useEffect,
-    useMemo,
-    useState } from "react";
+import { UsersConstants } from "features/extensions/components/users/constants";
+import { InvitationStatus } from "features/extensions/components/users/models";
+import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
@@ -84,12 +79,7 @@ import { UsersList } from "../components/users-list";
 import { AddUserWizard } from "../components/wizard/add-user-wizard";
 import { BulkImportUserWizard } from "../components/wizard/bulk-import-user-wizard";
 import { InviteParentOrgUserWizard } from "../components/wizard/invite-parent-org-user-wizard";
-import {
-    UserAccountTypes,
-    UserAccountTypesMain,
-    UserAddOptionTypes,
-    UserManagementConstants
-} from "../constants";
+import { UserAccountTypes, UserAccountTypesMain, UserAddOptionTypes, UserManagementConstants } from "../constants";
 import { UserListInterface } from "../models";
 
 interface UserStoreItem {
@@ -115,14 +105,8 @@ const NUMBER_OF_PAGES_FOR_LDAP: number = 100;
  * @param props - Props injected to the component.
  * @returns React Element
  */
-const UsersPage: FunctionComponent<UsersPageInterface> = (
-    props: UsersPageInterface
-): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId,
-        [ "data-componentid" ]: componentId
-    } = props;
+const UsersPage: FunctionComponent<UsersPageInterface> = (props: UsersPageInterface): ReactElement => {
+    const { ["data-testid"]: testId, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
@@ -131,37 +115,37 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ activeTabIndex, setActiveTabIndex ] = useState<number>(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ showBulkImportWizard, setShowBulkImportWizard ] = useState<boolean>(false);
-    const [ usersList, setUsersList ] = useState<UserListInterface>({});
-    const [ isListUpdated, setListUpdated ] = useState(false);
-    const [ userListMetaContent, setUserListMetaContent ] = useState(undefined);
-    const [ userStoreOptions, setUserStoresList ] = useState([]);
-    const [ userStore, setUserStore ] = useState<string>(PRIMARY_USERSTORE.toLocaleLowerCase());
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ isUserListRequestLoading, setUserListRequestLoading ] = useState<boolean>(false);
-    const [ readOnlyUserStoresList, setReadOnlyUserStoresList ] = useState<string[]>(undefined);
-    const [ userStoreError, setUserStoreError ] = useState(false);
-    const [ emailVerificationEnabled, setEmailVerificationEnabled ] = useState<boolean>(undefined);
-    const [ isNextPageAvailable, setIsNextPageAvailable ] = useState<boolean>(undefined);
-    const [ realmConfigs, setRealmConfigs ] = useState<RealmConfigInterface>(undefined);
-    const [ selectedAddUserType ] = useState<UserAccountTypes>(UserAccountTypes.USER);
-    const [ userType, setUserType ] = useState<string>();
-    const [ selectedUserStore ] = useState<string>(CONSUMER_USERSTORE);
-    const [ invitationStatusOption, setInvitationStatusOption ] = useState<string>(InvitationStatus.PENDING);
-    const [ isUsersNextPageAvailable ] = useState<boolean>(undefined);
-    const [ isSelectedUserStoreReadOnly ] = useState<boolean>(false);
-    const [ isInvitationStatusOptionChanged, setIsInvitationStatusOptionChanged ] = useState<boolean>(false);
-    const [ filterGuestList, setFilterGuestList ] = useState<UserInviteInterface[]>();
-    const [ finalGuestList, setFinalGuestList ] = useState<UserInviteInterface[]>([]);
-    const [ paginatedGuestList, setPaginateGuestList ] = useState<UserInviteInterface[]>([]);
-    const [ showMultipleInviteConfirmationModal, setShowMultipleInviteConfirmationModal ] = useState<boolean>(false);
-    const [ connectorConfigLoading, setConnecterConfigLoading ] = useState<boolean>(false);
-    const [ showInviteParentUserWizard, setShowInviteParentUserWizard ] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [activeTabIndex, setActiveTabIndex] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [showBulkImportWizard, setShowBulkImportWizard] = useState<boolean>(false);
+    const [usersList, setUsersList] = useState<UserListInterface>({});
+    const [isListUpdated, setListUpdated] = useState(false);
+    const [userListMetaContent, setUserListMetaContent] = useState(undefined);
+    const [userStoreOptions, setUserStoresList] = useState([]);
+    const [userStore, setUserStore] = useState<string>(PRIMARY_USERSTORE.toLocaleLowerCase());
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [isUserListRequestLoading, setUserListRequestLoading] = useState<boolean>(false);
+    const [readOnlyUserStoresList, setReadOnlyUserStoresList] = useState<string[]>(undefined);
+    const [userStoreError, setUserStoreError] = useState(false);
+    const [emailVerificationEnabled, setEmailVerificationEnabled] = useState<boolean>(undefined);
+    const [isNextPageAvailable, setIsNextPageAvailable] = useState<boolean>(undefined);
+    const [realmConfigs, setRealmConfigs] = useState<RealmConfigInterface>(undefined);
+    const [selectedAddUserType] = useState<UserAccountTypes>(UserAccountTypes.USER);
+    const [userType, setUserType] = useState<string>();
+    const [selectedUserStore] = useState<string>(CONSUMER_USERSTORE);
+    const [invitationStatusOption, setInvitationStatusOption] = useState<string>(InvitationStatus.PENDING);
+    const [isUsersNextPageAvailable] = useState<boolean>(undefined);
+    const [isSelectedUserStoreReadOnly] = useState<boolean>(false);
+    const [isInvitationStatusOptionChanged, setIsInvitationStatusOptionChanged] = useState<boolean>(false);
+    const [filterGuestList, setFilterGuestList] = useState<UserInviteInterface[]>();
+    const [finalGuestList, setFinalGuestList] = useState<UserInviteInterface[]>([]);
+    const [paginatedGuestList, setPaginateGuestList] = useState<UserInviteInterface[]>([]);
+    const [showMultipleInviteConfirmationModal, setShowMultipleInviteConfirmationModal] = useState<boolean>(false);
+    const [connectorConfigLoading, setConnecterConfigLoading] = useState<boolean>(false);
+    const [showInviteParentUserWizard, setShowInviteParentUserWizard] = useState<boolean>(false);
 
     const { isSubOrganization, isSuperOrganization, isFirstLevelOrganization } = useGetCurrentOrganizationType();
 
@@ -171,7 +155,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
-    const isSubOrg: boolean = window[ "AppUtils" ].getConfig().organizationName;
+    const isSubOrg: boolean = window["AppUtils"].getConfig().organizationName;
 
     const invitationStatusOptions: DropdownItemProps[] = [
         {
@@ -201,7 +185,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         }
 
         return false;
-    }, [ userStore ]);
+    }, [userStore]);
 
     /**
      * Fetch the list of available userstores.
@@ -214,7 +198,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         if (CommonHelpers.lookupKey(tenantSettings, username) !== null) {
             const userSettings: Record<string, any> = CommonHelpers.lookupKey(tenantSettings, username);
             const userPreferences: Record<string, any> = userSettings[1];
-            const tempColumns: Map<string, string> = new Map<string, string> ();
+            const tempColumns: Map<string, string> = new Map<string, string>();
 
             if (userPreferences.identityAppsSettings.userPreferences.userListColumns.length < 1) {
                 const metaColumns: string[] = UserManagementConstants.DEFAULT_USER_LIST_ATTRIBUTES;
@@ -244,7 +228,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         const attributes: string = userListMetaContent ? generateAttributesString(userListMetaContent?.values()) : null;
 
         getList(listItemLimit, listOffset, null, attributes, userStore);
-    }, [ listItemLimit, listOffset, userStore ]);
+    }, [listItemLimit, listOffset, userStore]);
 
     /**
      * Handles the parent user invitations search query changes.
@@ -278,7 +262,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
                 const searchValue: string = searchQuery.split("eq ")[1];
 
                 searchList = searchList?.filter((invite: UserInviteInterface) => {
-                    return (invite?.username === searchValue);
+                    return invite?.username === searchValue;
                 });
             } else if (searchQuery.includes("userName co ")) {
                 const searchValue: string = searchQuery.split("co ")[1];
@@ -290,7 +274,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
             setPaginateGuestList(searchList);
             setFilterGuestList(searchList);
         }
-    }, [ searchQuery ]);
+    }, [searchQuery]);
 
     useEffect(() => {
         if (!isListUpdated) {
@@ -300,24 +284,24 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
 
         getList(listItemLimit, listOffset, null, attributes, userStore);
         setListUpdated(false);
-    }, [ isListUpdated ]);
+    }, [isListUpdated]);
 
     useEffect(() => {
         setShowMultipleInviteConfirmationModal(
-            showBulkImportWizard
-            && !connectorConfigLoading
-            && !emailVerificationEnabled
+            showBulkImportWizard && !connectorConfigLoading && !emailVerificationEnabled
         );
-    }, [ showBulkImportWizard, connectorConfigLoading ]);
+    }, [showBulkImportWizard, connectorConfigLoading]);
 
     /**
      * Handles parent user invitation pagination.
      */
     useEffect(() => {
-        setFinalGuestList(parentOrgUserInviteList?.invitations?.filter((invitation: UserInviteInterface) =>
-            invitation.status === InvitationStatus.PENDING.toUpperCase()));
-
-    }, [ parentOrgUserInviteList?.invitations ]);
+        setFinalGuestList(
+            parentOrgUserInviteList?.invitations?.filter(
+                (invitation: UserInviteInterface) => invitation.status === InvitationStatus.PENDING.toUpperCase()
+            )
+        );
+    }, [parentOrgUserInviteList?.invitations]);
 
     /**
      * User effect to handle Pagination for pending/expired Guest.
@@ -328,7 +312,8 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         }
 
         let finalInvitations: UserInviteInterface[] = paginatedGuestList?.filter(
-            (invitation: UserInviteInterface) => invitation.status === invitationStatusOption.toUpperCase());
+            (invitation: UserInviteInterface) => invitation.status === invitationStatusOption.toUpperCase()
+        );
 
         if (finalInvitations?.length > listItemLimit) {
             finalInvitations = finalInvitations.slice(listOffset, listOffset + listItemLimit);
@@ -338,7 +323,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
             setFinalGuestList(finalInvitations);
             setIsNextPageAvailable(false);
         }
-    }, [ paginatedGuestList, listOffset, listItemLimit, isInvitationStatusOptionChanged, invitationStatusOption ]);
+    }, [paginatedGuestList, listOffset, listItemLimit, isInvitationStatusOptionChanged, invitationStatusOption]);
 
     const getReadOnlyUserStoresList = (): void => {
         SharedUserStoreUtils.getReadOnlyUserStores().then((response: string[]) => {
@@ -350,16 +335,15 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
     const getList = (limit: number, offset: number, filter: string, attribute: string, domain: string) => {
         setUserListRequestLoading(true);
 
-        const modifiedLimit : number = limit + TEMP_RESOURCE_LIST_ITEM_LIMIT_OFFSET;
+        const modifiedLimit: number = limit + TEMP_RESOURCE_LIST_ITEM_LIMIT_OFFSET;
 
         getUsersList(modifiedLimit, offset, filter, attribute, domain, "groups,roles")
             .then((response: UserListInterface) => {
                 const data: UserListInterface = { ...response };
 
                 data.Resources = data?.Resources?.map((resource: UserBasicInterface) => {
-                    const userStore: string = resource.userName.split("/").length > 1
-                        ? resource.userName.split("/")[0]
-                        : "Primary";
+                    const userStore: string =
+                        resource.userName.split("/").length > 1 ? resource.userName.split("/")[0] : "Primary";
 
                     if (userStore !== CONSUMER_USERSTORE) {
                         let email: string = null;
@@ -374,11 +358,11 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
                             }
                         }
 
-                        resource.emails = [ email ];
+                        resource.emails = [email];
 
                         return resource;
                     } else {
-                        const resources: UserBasicInterface[] = [ ...data.Resources ];
+                        const resources: UserBasicInterface[] = [...data.Resources];
 
                         resources.splice(resources.indexOf(resource), 1);
                         data.Resources = resources;
@@ -387,25 +371,34 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
 
                 setUsersList(moderateUsersList(data, modifiedLimit, TEMP_RESOURCE_LIST_ITEM_LIMIT_OFFSET));
                 setUserStoreError(false);
-            }).catch((error: AxiosError) => {
+            })
+            .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? error?.response?.data?.detail
-                            ?? t("console:manage.features.users.notifications.fetchUsers.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message
-                            ?? t("console:manage.features.users.notifications.fetchUsers.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:manage.features.users.notifications.fetchUsers.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:manage.features.users.notifications.fetchUsers.error.message")
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:manage.features.users.notifications.fetchUsers.genericError." +
-                        "description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.users.notifications.fetchUsers.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.users.notifications.fetchUsers.genericError." + "description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.users.notifications.fetchUsers.genericError.message")
+                    })
+                );
 
                 setUserStoreError(true);
                 setUsersList({
@@ -434,9 +427,11 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
      * @param popCount - Tempt count used which will be removed after figuring out if next page is available.
      * @returns UserListInterface
      */
-    const moderateUsersList = (list: UserListInterface, requestedLimit: number,
-        popCount: number = 1): UserListInterface => {
-
+    const moderateUsersList = (
+        list: UserListInterface,
+        requestedLimit: number,
+        popCount: number = 1
+    ): UserListInterface => {
         const moderated: UserListInterface = list;
 
         if (moderated.itemsPerPage === requestedLimit) {
@@ -467,31 +462,30 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
             value: ""
         };
 
-        getUserStoreList()
-            .then((response: AxiosResponse<UserStoreListItem[]>) => {
-                if (storeOptions.length === 0) {
-                    storeOptions.push(storeOption);
-                }
-                response.data.map((store: UserStoreListItem, index: number) => {
-                    if (store.name !== CONSUMER_USERSTORE) {
-                        getAUserStore(store.id).then((response: UserStorePostData) => {
-                            const isDisabled: boolean = response.properties.find(
-                                (property: UserStoreProperty) => property.name === "Disabled")?.value === "true";
+        getUserStoreList().then((response: AxiosResponse<UserStoreListItem[]>) => {
+            if (storeOptions.length === 0) {
+                storeOptions.push(storeOption);
+            }
+            response.data.map((store: UserStoreListItem, index: number) => {
+                if (store.name !== CONSUMER_USERSTORE) {
+                    getAUserStore(store.id).then((response: UserStorePostData) => {
+                        const isDisabled: boolean =
+                            response.properties.find((property: UserStoreProperty) => property.name === "Disabled")
+                                ?.value === "true";
 
-                            if (!isDisabled) {
-                                storeOption = {
-                                    key: index,
-                                    text: store.name,
-                                    value: store.name
-                                };
-                                storeOptions.push(storeOption);
-                            }
-                        });
-                    }
+                        if (!isDisabled) {
+                            storeOption = {
+                                key: index,
+                                text: store.name,
+                                value: store.name
+                            };
+                            storeOptions.push(storeOption);
+                        }
+                    });
                 }
-                );
-                setUserStoresList(storeOptions);
             });
+            setUserStoresList(storeOptions);
+        });
 
         setUserStoresList(storeOptions);
     };
@@ -518,8 +512,10 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         if (!attArray.includes(UserManagementConstants.SCIM2_SCHEMA_DICTIONARY.get("USERNAME"))) {
             attArray.push(UserManagementConstants.SCIM2_SCHEMA_DICTIONARY.get("USERNAME"));
         }
-        if (isSubOrganization() &&
-            !attArray.includes(UserManagementConstants.SCIM2_SCHEMA_DICTIONARY.get("ENTERPRISE_USER"))) {
+        if (
+            isSubOrganization() &&
+            !attArray.includes(UserManagementConstants.SCIM2_SCHEMA_DICTIONARY.get("ENTERPRISE_USER"))
+        ) {
             attArray.push(UserManagementConstants.SCIM2_SCHEMA_DICTIONARY.get("ENTERPRISE_USER"));
         }
 
@@ -530,10 +526,9 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
      * Util method to get super admin
      */
     const getAdminUser = () => {
-        getServerConfigs()
-            .then((response: ServerConfigurationsInterface) => {
-                setRealmConfigs(response?.realmConfig);
-            });
+        getServerConfigs().then((response: ServerConfigurationsInterface) => {
+            setRealmConfigs(response?.realmConfig);
+        });
     };
 
     /**
@@ -542,13 +537,13 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
      * @param metaColumns - string[]
      */
     const setUserMetaColumns = (metaColumns: string[]) => {
-        if(CommonHelpers.lookupKey(tenantSettings, username) !== null) {
+        if (CommonHelpers.lookupKey(tenantSettings, username) !== null) {
             const userSettings: Record<string, any> = CommonHelpers.lookupKey(tenantSettings, username);
             const userPreferences: Record<string, any> = userSettings[1];
 
             const newUserSettings: Record<string, any> = {
                 ...tenantSettings,
-                [ username ]: {
+                [username]: {
                     ...userPreferences,
                     identityAppsSettings: {
                         ...userPreferences.identityAppsSettings,
@@ -603,7 +598,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
     };
 
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setListOffset((data.activePage as number - 1) * listItemLimit);
+        setListOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     const handleItemsPerPageDropdownChange = (event: React.MouseEvent<HTMLAnchorElement>, data: DropdownProps) => {
@@ -629,78 +624,81 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         setConnecterConfigLoading(true);
         getConnectorCategory(ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID)
             .then((response: GovernanceConnectorCategoryInterface) => {
-                const connectors: GovernanceConnectorInterface[]  = response?.connectors;
+                const connectors: GovernanceConnectorInterface[] = response?.connectors;
                 const userOnboardingConnector: GovernanceConnectorInterface = connectors.find(
-                    (connector: GovernanceConnectorInterface) => connector.id
-                        === ServerConfigurationsConstants.USER_EMAIL_VERIFICATION_CONNECTOR_ID
+                    (connector: GovernanceConnectorInterface) =>
+                        connector.id === ServerConfigurationsConstants.USER_EMAIL_VERIFICATION_CONNECTOR_ID
                 );
 
                 const emailVerification: ConnectorPropertyInterface = userOnboardingConnector.properties.find(
                     (property: ConnectorPropertyInterface) =>
-                        property.name === ServerConfigurationsConstants.EMAIL_VERIFICATION_ENABLED);
+                        property.name === ServerConfigurationsConstants.EMAIL_VERIFICATION_ENABLED
+                );
 
                 setEmailVerificationEnabled(emailVerification.value === "true");
-            }).catch((error: AxiosError) => {
+            })
+            .catch((error: AxiosError) => {
                 handleAlerts({
-                    description: error?.response?.data?.description ?? t(
-                        "console:manage.features.governanceConnectors.notifications." +
-                        "getConnector.genericError.description"
-                    ),
+                    description:
+                        error?.response?.data?.description ??
+                        t(
+                            "console:manage.features.governanceConnectors.notifications." +
+                                "getConnector.genericError.description"
+                        ),
                     level: AlertLevels.ERROR,
-                    message: error?.response?.data?.message ?? t(
-                        "console:manage.features.governanceConnectors.notifications." +
-                        "getConnector.genericError.message"
-                    )
+                    message:
+                        error?.response?.data?.message ??
+                        t(
+                            "console:manage.features.governanceConnectors.notifications." +
+                                "getConnector.genericError.message"
+                        )
                 });
-            }).finally(() => setConnecterConfigLoading(false));
+            })
+            .finally(() => setConnecterConfigLoading(false));
     };
 
     const addUserDropdownTrigger: ReactElement = (
-        <PrimaryButton
-            data-componentid={ `${ testId }-add-user-button` }
-            data-testid={ `${ testId }-add-user-button` }
-        >
-            <Icon name="add"/>
-            { t("extensions:manage.users.buttons.addUserBtn") }
-            <Icon name="dropdown" className="ml-3 mr-0"/>
+        <PrimaryButton data-componentid={`${testId}-add-user-button`} data-testid={`${testId}-add-user-button`}>
+            <Icon name="add" />
+            {t("extensions:manage.users.buttons.addUserBtn")}
+            <Icon name="dropdown" className="ml-3 mr-0" />
         </PrimaryButton>
     );
 
-
     const advancedSearchFilter = (): ReactElement => (
         <AdvancedSearchWithBasicFilters
-            onFilter={ handleUserFilter }
-            filterAttributeOptions={ [
+            onFilter={handleUserFilter}
+            filterAttributeOptions={[
                 {
                     key: 0,
-                    text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                        "filterAttributeOptions.username"),
+                    text: t(
+                        "console:manage.features.users.advancedSearch.form.dropdown." +
+                            "filterAttributeOptions.username"
+                    ),
                     value: "userName"
                 },
                 {
                     key: 1,
-                    text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                        "filterAttributeOptions.email"),
+                    text: t(
+                        "console:manage.features.users.advancedSearch.form.dropdown." + "filterAttributeOptions.email"
+                    ),
                     value: "emails"
                 }
-            ] }
-            filterAttributePlaceholder={
-                t("console:manage.features.users.advancedSearch.form.inputs.filterAttribute" +
-                    ".placeholder")
-            }
-            filterConditionsPlaceholder={
-                t("console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
-                    ".placeholder")
-            }
-            filterValuePlaceholder={
-                t("console:manage.features.users.advancedSearch.form.inputs.filterValue" +
-                    ".placeholder")
-            }
-            placeholder={ t("console:manage.features.users.advancedSearch.placeholder") }
+            ]}
+            filterAttributePlaceholder={t(
+                "console:manage.features.users.advancedSearch.form.inputs.filterAttribute" + ".placeholder"
+            )}
+            filterConditionsPlaceholder={t(
+                "console:manage.features.users.advancedSearch.form.inputs.filterCondition" + ".placeholder"
+            )}
+            filterValuePlaceholder={t(
+                "console:manage.features.users.advancedSearch.form.inputs.filterValue" + ".placeholder"
+            )}
+            placeholder={t("console:manage.features.users.advancedSearch.placeholder")}
             defaultSearchAttribute="userName"
             defaultSearchOperator="co"
-            triggerClearQuery={ triggerClearQuery }
-            disableSearchAndFilterOptions={ usersList?.totalResults <= 0 && !searchQuery }
+            triggerClearQuery={triggerClearQuery}
+            disableSearchAndFilterOptions={usersList?.totalResults <= 0 && !searchQuery}
         />
     );
 
@@ -717,53 +715,57 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
             <ListLayout
                 // TODO add sorting functionality.
                 className="sub-org-users-list"
-                advancedSearch={ advancedSearchFilter() }
-                currentListSize={ usersList.itemsPerPage }
-                listItemLimit={ listItemLimit }
-                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
+                advancedSearch={advancedSearchFilter()}
+                currentListSize={usersList.itemsPerPage}
+                listItemLimit={listItemLimit}
+                onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
                 data-testid="user-mgt-user-list-layout"
-                onPageChange={ handlePaginationChange }
+                onPageChange={handlePaginationChange}
                 rightActionPanel={
-                    isFirstLevelOrganization() || isSuperOrganization()
-                        ? (<Dropdown
+                    isFirstLevelOrganization() || isSuperOrganization() ? (
+                        <Dropdown
                             data-testid="user-mgt-user-list-userstore-dropdown"
                             selection
-                            options={ userStoreOptions && userStoreOptions }
-                            onChange={ handleDomainChange }
-                            defaultValue={ PRIMARY_USERSTORE.toLocaleLowerCase() }
-                        />) : null
+                            options={userStoreOptions && userStoreOptions}
+                            onChange={handleDomainChange}
+                            defaultValue={PRIMARY_USERSTORE.toLocaleLowerCase()}
+                        />
+                    ) : null
                 }
-                showPagination={ true }
-                totalPages={ Math.ceil(usersList.totalResults / listItemLimit) }
-                totalListSize={ usersList.totalResults }
-                paginationOptions={ {
+                showPagination={true}
+                totalPages={Math.ceil(usersList.totalResults / listItemLimit)}
+                totalListSize={usersList.totalResults}
+                paginationOptions={{
                     disableNextButton: !isNextPageAvailable
-                } }
-                isLoading={ isUserListRequestLoading }
+                }}
+                isLoading={isUserListRequestLoading}
             >
-                { userStoreError
-                    ? (<EmptyPlaceholder
-                        subtitle={ [ t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
-                            t("console:manage.features.users.placeholders.userstoreError.subtitles.1")     ] }
-                        title={ t("console:manage.features.users.placeholders.userstoreError.title") }
-                        image={ getEmptyPlaceholderIllustrations().genericError }
+                {userStoreError ? (
+                    <EmptyPlaceholder
+                        subtitle={[
+                            t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
+                            t("console:manage.features.users.placeholders.userstoreError.subtitles.1")
+                        ]}
+                        title={t("console:manage.features.users.placeholders.userstoreError.title")}
+                        image={getEmptyPlaceholderIllustrations().genericError}
                         imageSize="tiny"
-                    />)
-                    : (<UsersList
-                        advancedSearch={ advancedSearchFilter() }
-                        usersList={ usersList }
-                        onUserDelete={ onUserDelete }
-                        userMetaListContent={ null }
-                        realmConfigs={ realmConfigs }
-                        onEmptyListPlaceholderActionClick={ () => setShowWizard(true) }
-                        onSearchQueryClear={ handleSearchQueryClear }
-                        searchQuery={ searchQuery }
+                    />
+                ) : (
+                    <UsersList
+                        advancedSearch={advancedSearchFilter()}
+                        usersList={usersList}
+                        onUserDelete={onUserDelete}
+                        userMetaListContent={null}
+                        realmConfigs={realmConfigs}
+                        onEmptyListPlaceholderActionClick={() => setShowWizard(true)}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        searchQuery={searchQuery}
                         data-testid="user-mgt-user-list"
-                        readOnlyUserStores={ readOnlyUserStoresList }
-                        featureConfig={ featureConfig }
-                        isReadOnlyUserStore={ isReadOnlyUserStore }
-                    />)
-                }
+                        readOnlyUserStores={readOnlyUserStoresList}
+                        featureConfig={featureConfig}
+                        isReadOnlyUserStore={isReadOnlyUserStore}
+                    />
+                )}
             </ListLayout>
         );
     };
@@ -779,10 +781,13 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
                 value: UserAccountTypesMain.EXTERNAL
             });
         }
-        if (hasRequiredScopes(
-            featureConfig?.bulkUserImport,
-            featureConfig?.bulkUserImport?.scopes?.create,
-            allowedScopes)) {
+        if (
+            hasRequiredScopes(
+                featureConfig?.bulkUserImport,
+                featureConfig?.bulkUserImport?.scopes?.create,
+                allowedScopes
+            )
+        ) {
             dropDownOptions.push({
                 "data-componentid": `${testId}-bulk-import-users-dropdown-item`,
                 "data-testid": `${testId}-bulk-import-users-dropdown-item`,
@@ -791,9 +796,11 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
                 value: UserAddOptionTypes.BULK_IMPORT
             });
         }
-        if (isSubOrganization() &&
+        if (
+            isSubOrganization() &&
             featureConfig?.guestUser?.enabled &&
-            hasRequiredScopes(featureConfig?.guestUser, featureConfig?.guestUser?.scopes?.create, allowedScopes)) {
+            hasRequiredScopes(featureConfig?.guestUser, featureConfig?.guestUser?.scopes?.create, allowedScopes)
+        ) {
             dropDownOptions.push({
                 "data-componentid": `${componentId}-invite-parent-user`,
                 key: 3,
@@ -843,25 +850,27 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
     const renderUserDropDown = (): ReactElement => {
         return (
             <Dropdown
-                data-componentid={ `${ componentId }-add-user-dropdown` }
+                data-componentid={`${componentId}-add-user-dropdown`}
                 direction="left"
                 floating
-                icon={ null }
-                trigger={ addUserDropdownTrigger }
+                icon={null}
+                trigger={addUserDropdownTrigger}
             >
-                <Dropdown.Menu >
-                    { getAddUserOptions().map((option: {
-                        "data-componentid": string;
-                        key: number;
-                        text: string;
-                        value: UserAccountTypes;
-                    }) => (
-                        <Dropdown.Item
-                            key={ option.value }
-                            onClick={ ()=> handleDropdownItemChange(option.value) }
-                            { ...option }
-                        />
-                    )) }
+                <Dropdown.Menu>
+                    {getAddUserOptions().map(
+                        (option: {
+                            "data-componentid": string;
+                            key: number;
+                            text: string;
+                            value: UserAccountTypes;
+                        }) => (
+                            <Dropdown.Item
+                                key={option.value}
+                                onClick={() => handleDropdownItemChange(option.value)}
+                                {...option}
+                            />
+                        )
+                    )}
                 </Dropdown.Menu>
             </Dropdown>
         );
@@ -870,26 +879,29 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
     const showUserWizard = (): ReactElement => {
         return (
             <AddUserWizard
-                data-componentid={ `${ componentId }-user-mgt-add-user-wizard-modal` }
-                data-testid={ `${ testId }-user-mgt-add-user-wizard-modal` }
-                isSubOrg={ isSubOrg }
-                closeWizard={ () => {
+                data-componentid={`${componentId}-user-mgt-add-user-wizard-modal`}
+                data-testid={`${testId}-user-mgt-add-user-wizard-modal`}
+                isSubOrg={isSubOrg}
+                closeWizard={() => {
                     setShowWizard(false);
                     setEmailVerificationEnabled(undefined);
-                } }
-                emailVerificationEnabled={ emailVerificationEnabled }
-                onSuccessfulUserAddition={ (id: string) => {
+                }}
+                emailVerificationEnabled={emailVerificationEnabled}
+                onSuccessfulUserAddition={(id: string) => {
                     mutateParentOrgUserInviteList();
                     eventPublisher.publish("manage-users-finish-creating-user");
-                    history.push(UsersConstants.getPaths().get("CUSTOMER_USER_EDIT_PATH")
-                        .replace(":id", id));
-                } }
-                defaultUserTypeSelection={ selectedAddUserType }
-                userTypeSelection={ userType }
-                listOffset={ listOffset }
-                listItemLimit={ listItemLimit }
-                updateList={ () => setListUpdated(true) }
-                userStore= { userStore }
+                    history.push(
+                        UsersConstants.getPaths()
+                            .get("CUSTOMER_USER_EDIT_PATH")
+                            .replace(":id", id)
+                    );
+                }}
+                defaultUserTypeSelection={selectedAddUserType}
+                userTypeSelection={userType}
+                listOffset={listOffset}
+                listItemLimit={listItemLimit}
+                updateList={() => setListUpdated(true)}
+                userStore={userStore}
             />
         );
     };
@@ -916,70 +928,56 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         return (
             <ListLayout
                 className="sub-org-users-list"
-                advancedSearch={ advancedSearchFilter() }
-                currentListSize={ usersList?.itemsPerPage }
-                listItemLimit={ listItemLimit }
-                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                data-componentid={ `${ componentId }-user-mgt-user-list-layout` }
-                data-testid={ `${ testId }-user-mgt-user-list-layout` }
-                onPageChange={ handlePaginationChange }
-                showPagination={ true }
-                totalPages={ resolveTotalPages() }
-                totalListSize={ usersList?.totalResults }
-                isLoading={
-                    isUserListRequestLoading
-                    || isParentOrgUserInviteListLoading
-                }
-                paginationOptions={ {
+                advancedSearch={advancedSearchFilter()}
+                currentListSize={usersList?.itemsPerPage}
+                listItemLimit={listItemLimit}
+                onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                data-componentid={`${componentId}-user-mgt-user-list-layout`}
+                data-testid={`${testId}-user-mgt-user-list-layout`}
+                onPageChange={handlePaginationChange}
+                showPagination={true}
+                totalPages={resolveTotalPages()}
+                totalListSize={usersList?.totalResults}
+                isLoading={isUserListRequestLoading || isParentOrgUserInviteListLoading}
+                paginationOptions={{
                     disableNextButton: !isUsersNextPageAvailable,
-                    showItemsPerPageDropdown: selectedUserStore === CONSUMER_USERSTORE
-                        ? true
-                        : false
-                } }
-                showPaginationPageLimit={ !isSelectedUserStoreReadOnly }
+                    showItemsPerPageDropdown: selectedUserStore === CONSUMER_USERSTORE ? true : false
+                }}
+                showPaginationPageLimit={!isSelectedUserStoreReadOnly}
                 leftActionPanel={
-                    (
-                        <Dropdown
-                            data-componentid={ `${ componentId }-list-userstore-dropdown` }
-                            selection
-                            options={ invitationStatusOptions }
-                            onChange={ handleAccountStatusChange }
-                            text={
-                                t("console:manage.features.parentOrgInvitations.filterLabel")
-                                +  invitationStatusOption
-                            }
-                            disabled={
-                                isParentOrgUserInviteListLoading
-                            }
-                        />
-                    )
+                    <Dropdown
+                        data-componentid={`${componentId}-list-userstore-dropdown`}
+                        selection
+                        options={invitationStatusOptions}
+                        onChange={handleAccountStatusChange}
+                        text={t("console:manage.features.parentOrgInvitations.filterLabel") + invitationStatusOption}
+                        disabled={isParentOrgUserInviteListLoading}
+                    />
                 }
             >
-                {
-                    userStoreError
-                        ? (
-                            <EmptyPlaceholder
-                                subtitle={ [ t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
-                                    t("console:manage.features.users.placeholders.userstoreError.subtitles.1") ] }
-                                title={ t("console:manage.features.users.placeholders.userstoreError.title") }
-                                image={ getEmptyPlaceholderIllustrations().genericError }
-                                imageSize="tiny"
-                            />
-                        )
-                        : (
-                            <GuestUsersList
-                                invitationStatusOption={ null }
-                                onEmptyListPlaceholderActionClick={ () => setShowWizard(true) }
-                                onboardedGuestUserList={ usersList }
-                                onSearchQueryClear={ handleSearchQueryClear }
-                                guestUsersList={ finalGuestList }
-                                getGuestUsersList={ () => mutateParentOrgUserInviteList() }
-                                searchQuery={ searchQuery }
-                                userTypeSelection={ UserAccountTypesMain.EXTERNAL }
-                                data-testid={ testId }
-                            />
-                        )
-                }
+                {userStoreError ? (
+                    <EmptyPlaceholder
+                        subtitle={[
+                            t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
+                            t("console:manage.features.users.placeholders.userstoreError.subtitles.1")
+                        ]}
+                        title={t("console:manage.features.users.placeholders.userstoreError.title")}
+                        image={getEmptyPlaceholderIllustrations().genericError}
+                        imageSize="tiny"
+                    />
+                ) : (
+                    <GuestUsersList
+                        invitationStatusOption={null}
+                        onEmptyListPlaceholderActionClick={() => setShowWizard(true)}
+                        onboardedGuestUserList={usersList}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        guestUsersList={finalGuestList}
+                        getGuestUsersList={() => mutateParentOrgUserInviteList()}
+                        searchQuery={searchQuery}
+                        userTypeSelection={UserAccountTypesMain.EXTERNAL}
+                        data-testid={testId}
+                    />
+                )}
             </ListLayout>
         );
     };
@@ -996,7 +994,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
             /** Response from the LDAP only contains the total items per page.
              * No way to resolve the total number of items. So a large value will be set here and the
              * next button will be disabled if there are no more items to fetch.
-            */
+             */
             return NUMBER_OF_PAGES_FOR_LDAP;
         }
     };
@@ -1004,28 +1002,28 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
     const renderMultipleInviteConfirmationModel = (): ReactElement => {
         return (
             <ConfirmationModal
-                data-componentid={ `${componentId}-select-multiple-invite-confirmation-modal` }
-                onClose={ (): void => {
+                data-componentid={`${componentId}-select-multiple-invite-confirmation-modal`}
+                onClose={(): void => {
                     setShowMultipleInviteConfirmationModal(false);
                     setShowBulkImportWizard(false);
-                } }
+                }}
                 type="warning"
-                open={ showMultipleInviteConfirmationModal }
-                primaryAction={ t("common:close") }
-                onPrimaryActionClick={ (): void => {
+                open={showMultipleInviteConfirmationModal}
+                primaryAction={t("common:close")}
+                onPrimaryActionClick={(): void => {
                     setShowMultipleInviteConfirmationModal(false);
                     setShowBulkImportWizard(false);
-                } }
-                closeOnDimmerClick={ false }
+                }}
+                closeOnDimmerClick={false}
             >
                 <ConfirmationModal.Header>
-                    { t("console:manage.features.users.confirmations.addMultipleUser.header") }
+                    {t("console:manage.features.users.confirmations.addMultipleUser.header")}
                 </ConfirmationModal.Header>
                 <ConfirmationModal.Message attached warning>
-                    { t("console:manage.features.users.confirmations.addMultipleUser.message") }
+                    {t("console:manage.features.users.confirmations.addMultipleUser.message")}
                 </ConfirmationModal.Message>
                 <ConfirmationModal.Content>
-                    { t("console:manage.features.users.confirmations.addMultipleUser.content") }
+                    {t("console:manage.features.users.confirmations.addMultipleUser.content")}
                 </ConfirmationModal.Content>
             </ConfirmationModal>
         );
@@ -1039,56 +1037,44 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
     return (
         <PageLayout
             action={
-                hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.create, allowedScopes)
-                && !isUserListRequestLoading
-                && (!isSubOrganization() || !isParentOrgUserInviteListLoading)
-                && !isReadOnlyUserStore
-                && renderUserDropDown()
+                hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.create, allowedScopes) &&
+                !isUserListRequestLoading &&
+                (!isSubOrganization() || !isParentOrgUserInviteListLoading) &&
+                !isReadOnlyUserStore &&
+                renderUserDropDown()
             }
-            title={ t("console:manage.pages.users.title") }
-            pageTitle={ t("console:manage.pages.users.title") }
-            description={ t("extensions:manage.users.usersSubTitle") }
-            data-testid={ `${ testId }-page-layout` }
+            title={t("console:manage.pages.users.title")}
+            pageTitle={t("console:manage.pages.users.title")}
+            description={t("extensions:manage.users.usersSubTitle")}
+            data-testid={`${testId}-page-layout`}
         >
-            { isSubOrg
-                ? (
-                    <ResourceTab
-                        activeIndex= { activeTabIndex }
-                        data-testid= { `${ testId }-administrator-tabs` }
-                        defaultActiveIndex={ 0 }
-                        onTabChange={ handleTabChange }
-                        panes= { resolveAdminTabPanes() }
-                    />
-                ) : renderUsersList()
-            }
-            {
-                showWizard && showUserWizard()
-            }
-            {
-                showBulkImportWizard
-                && !connectorConfigLoading
-                && emailVerificationEnabled
-                && (
-                    <BulkImportUserWizard
-                        data-componentid="user-mgt-bulk-import-user-wizard-modal"
-                        closeWizard={ handleBulkImportWizardClose }
-                        userstore={ PRIMARY_USERSTORE }
-                    />
-                )
-            }
-            {
-                showMultipleInviteConfirmationModal &&
-                    renderMultipleInviteConfirmationModel()
-            }
-            {
-                showInviteParentUserWizard && (
-                    <InviteParentOrgUserWizard
-                        closeWizard={ handleInviteParentUserWizardClose }
-                        onUserInviteSuccess={ () => mutateParentOrgUserInviteList() }
-                        data-componentid="user-mgt-invite-parent-user-wizard-modal"
-                    />
-                )
-            }
+            {isSubOrg ? (
+                <ResourceTab
+                    activeIndex={activeTabIndex}
+                    data-testid={`${testId}-administrator-tabs`}
+                    defaultActiveIndex={0}
+                    onTabChange={handleTabChange}
+                    panes={resolveAdminTabPanes()}
+                />
+            ) : (
+                renderUsersList()
+            )}
+            {showWizard && showUserWizard()}
+            {showBulkImportWizard && !connectorConfigLoading && emailVerificationEnabled && (
+                <BulkImportUserWizard
+                    data-componentid="user-mgt-bulk-import-user-wizard-modal"
+                    closeWizard={handleBulkImportWizardClose}
+                    userstore={PRIMARY_USERSTORE}
+                />
+            )}
+            {showMultipleInviteConfirmationModal && renderMultipleInviteConfirmationModel()}
+            {showInviteParentUserWizard && (
+                <InviteParentOrgUserWizard
+                    closeWizard={handleInviteParentUserWizardClose}
+                    onUserInviteSuccess={() => mutateParentOrgUserInviteList()}
+                    data-componentid="user-mgt-invite-parent-user-wizard-modal"
+                />
+            )}
         </PageLayout>
     );
 };

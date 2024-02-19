@@ -50,17 +50,18 @@ import { GovernanceConnectorCategoryInterface, GovernanceConnectorInterface } fr
 /**
  * Props for the Governance connector configuration categories page.
  */
-export interface GovernanceConnectorCategoriesGridInterface extends
-    IdentifiableComponentInterface, LoadableComponentInterface {
-        /**
-         * Connector categories.
-         */
-        connectorCategories: GovernanceConnectorCategoryInterface[];
-        /**
-         * Dynamic connector catergories.
-         */
-        dynamicConnectors: GovernanceConnectorCategoryInterface[];
-    }
+export interface GovernanceConnectorCategoriesGridInterface
+    extends IdentifiableComponentInterface,
+        LoadableComponentInterface {
+    /**
+     * Connector categories.
+     */
+    connectorCategories: GovernanceConnectorCategoryInterface[];
+    /**
+     * Dynamic connector catergories.
+     */
+    dynamicConnectors: GovernanceConnectorCategoryInterface[];
+}
 
 /**
  * Choose the application template from this page.
@@ -72,39 +73,31 @@ export interface GovernanceConnectorCategoriesGridInterface extends
 const GovernanceConnectorCategoriesGrid: FunctionComponent<GovernanceConnectorCategoriesGridInterface> = (
     props: GovernanceConnectorCategoriesGridInterface
 ): ReactElement => {
-    const {
-        isLoading,
-        ["data-componentid"]: componentId,
-        connectorCategories,
-        dynamicConnectors
-    } = props;
+    const { isLoading, ["data-componentid"]: componentId, connectorCategories, dynamicConnectors } = props;
 
     /**
      * Combine the connectors and dynamic connectors and group them by category.
      */
     const combinedConnectors: GovernanceConnectorCategoryInterface[] = useMemo(() => {
-        const combined: GovernanceConnectorCategoryInterface[] = [
-            ...connectorCategories
-        ];
+        const combined: GovernanceConnectorCategoryInterface[] = [...connectorCategories];
 
         // Add the dynamic connectors to the combined list grouped by title.
-        serverConfigurationConfig.dynamicConnectors && dynamicConnectors?.length > 0 && dynamicConnectors.forEach(
-            (dynamicConnector: GovernanceConnectorCategoryInterface) => {
-                const index: number = combined.findIndex((category: GovernanceConnectorCategoryInterface) =>
-                    category?.title === dynamicConnector?.title);
+        serverConfigurationConfig.dynamicConnectors &&
+            dynamicConnectors?.length > 0 &&
+            dynamicConnectors.forEach((dynamicConnector: GovernanceConnectorCategoryInterface) => {
+                const index: number = combined.findIndex(
+                    (category: GovernanceConnectorCategoryInterface) => category?.title === dynamicConnector?.title
+                );
 
                 if (index < 0) {
                     combined.push(dynamicConnector);
                 } else {
-                    combined[index].connectors = [
-                        ...combined[index].connectors,
-                        ...dynamicConnector.connectors
-                    ];
+                    combined[index].connectors = [...combined[index].connectors, ...dynamicConnector.connectors];
                 }
             });
 
         return combined;
-    }, [ connectorCategories, dynamicConnectors ]);
+    }, [connectorCategories, dynamicConnectors]);
 
     /**
      * Handles connector selection.
@@ -113,10 +106,12 @@ const GovernanceConnectorCategoriesGrid: FunctionComponent<GovernanceConnectorCa
      */
     const handleConnectorSelection = (connector: GovernanceConnectorInterface): void => {
         if (connector.isCustom) {
-            history.push(AppConstants.getPaths()
-                .get("GOVERNANCE_CONNECTOR_EDIT")
-                .replace(":categoryId", connector.categoryId)
-                .replace(":connectorId", connector.id));
+            history.push(
+                AppConstants.getPaths()
+                    .get("GOVERNANCE_CONNECTOR_EDIT")
+                    .replace(":categoryId", connector.categoryId)
+                    .replace(":connectorId", connector.id)
+            );
         } else {
             history.push(connector.route);
         }
@@ -126,80 +121,44 @@ const GovernanceConnectorCategoriesGrid: FunctionComponent<GovernanceConnectorCa
         return <ContentLoader dimmer />;
     }
 
-    const resolveConnectorCategoryIcon = (id : string): ReactElement => {
+    const resolveConnectorCategoryIcon = (id: string): ReactElement => {
         switch (id) {
             case ServerConfigurationsConstants.IDENTITY_GOVERNANCE_PASSWORD_POLICIES_ID:
-                return (
-                    <PadlockAsteriskIcon size="small" className="icon" />
-                );
+                return <PadlockAsteriskIcon size="small" className="icon" />;
             case ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID:
-                return (
-                    <ShieldCheckIcon size="small" className="icon" />
-                );
+                return <ShieldCheckIcon size="small" className="icon" />;
             case ServerConfigurationsConstants.ORGANIZATION_SELF_SERVICE_CONNECTOR_ID:
-                return (
-                    <BuildingGearIcon className="icon" />
-                );
+                return <BuildingGearIcon className="icon" />;
             case ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID:
-                return (
-                    <UserPlusIcon className="icon" />
-                );
+                return <UserPlusIcon className="icon" />;
             case ServerConfigurationsConstants.LOGIN_ATTEMPT_SECURITY_CONNECTOR_CATEGORY_ID:
-                return (
-                    <HexagonTwoIcon className="icon" />
-                );
+                return <HexagonTwoIcon className="icon" />;
             case ServerConfigurationsConstants.MFA_CONNECTOR_CATEGORY_ID:
-                return (
-                    <ShieldCheckIcon className="icon" />
-                );
+                return <ShieldCheckIcon className="icon" />;
             case ServerConfigurationsConstants.SESSION_MANAGEMENT_CONNECTOR_ID:
-                return (
-                    <UserDatabaseIcon className="icon" />
-                );
+                return <UserDatabaseIcon className="icon" />;
             case ServerConfigurationsConstants.ASK_PASSWORD_CONNECTOR_ID:
-                return (
-                    <UserGearIcon className="icon" />
-                );
+                return <UserGearIcon className="icon" />;
             case ServerConfigurationsConstants.ALTERNATIVE_LOGIN_IDENTIFIER:
-                return (
-                    <ArrowLoopRightUserIcon className="icon" />
-                );
+                return <ArrowLoopRightUserIcon className="icon" />;
             case ServerConfigurationsConstants.MULTI_ATTRIBUTE_LOGIN_CONNECTOR_ID:
-                return (
-                    <UserDocumentIcon className="icon" />
-                );
+                return <UserDocumentIcon className="icon" />;
             case ServerConfigurationsConstants.USERNAME_VALIDATION:
-                return (
-                    <CircleUserIcon className="icon" />
-                );
+                return <CircleUserIcon className="icon" />;
             case ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID:
-                return (
-                    <UserPlusIcon className="icon" />
-                );
+                return <UserPlusIcon className="icon" />;
             case ServerConfigurationsConstants.LOGIN_ATTEMPT_SECURITY:
-                return (
-                    <HexagonTwoIcon className="icon" />
-                );
+                return <HexagonTwoIcon className="icon" />;
             case ServerConfigurationsConstants.PASSWORD_RECOVERY:
-                return (
-                    <ShieldUserPencilIcon className="icon" />
-                );
+                return <ShieldUserPencilIcon className="icon" />;
             case ServerConfigurationsConstants.ADMIN_FORCED_PASSWORD_RESET:
-                return (
-                    <UserBriefcaseIcon className="icon" />
-                );
+                return <UserBriefcaseIcon className="icon" />;
             case ServerConfigurationsConstants.USERNAME_RECOVERY:
-                return (
-                    <EnvelopeAtIcon className="icon" />
-                );
+                return <EnvelopeAtIcon className="icon" />;
             case ServerConfigurationsConstants.SAML2_SSO_CONNECTOR_ID:
-                return (
-                    <ShareNodesIcon className="icon" />
-                );
+                return <ShareNodesIcon className="icon" />;
             case ServerConfigurationsConstants.EMAIL_DOMAIN_DISCOVERY:
-                return (
-                    <EnvelopeMagnifyingGlassIcon className="icon" />
-                );
+                return <EnvelopeMagnifyingGlassIcon className="icon" />;
             default:
                 return <GearIcon className="icon" />;
         }
@@ -207,59 +166,53 @@ const GovernanceConnectorCategoriesGrid: FunctionComponent<GovernanceConnectorCa
 
     return (
         <div>
-            { combinedConnectors?.map((category: GovernanceConnectorCategoryInterface, index: number) => {
-                return category.connectors && category.connectors.length > 0 && (
-                    <div className="catergory-container" key={ index }>
-                        <Typography
-                            color="text.primary"
-                            className="mb-3"
-                            variant="h4"
-                        >
-                            { category?.title }
-                        </Typography>
-                        <div className="governance-connector-list-grid-wrapper" data-componentid={ componentId }>
-                            <div className="governance-connector-list-grid">
-                                {
-                                    category.connectors.map((connector: GovernanceConnectorInterface) => {
+            {combinedConnectors?.map((category: GovernanceConnectorCategoryInterface, index: number) => {
+                return (
+                    category.connectors &&
+                    category.connectors.length > 0 && (
+                        <div className="catergory-container" key={index}>
+                            <Typography color="text.primary" className="mb-3" variant="h4">
+                                {category?.title}
+                            </Typography>
+                            <div className="governance-connector-list-grid-wrapper" data-componentid={componentId}>
+                                <div className="governance-connector-list-grid">
+                                    {category.connectors.map((connector: GovernanceConnectorInterface) => {
                                         if (!serverConfigurationConfig.connectorsToHide.includes(connector.id)) {
                                             return (
                                                 <Card
-                                                    key={ connector.id }
+                                                    key={connector.id}
                                                     className="governance-connector"
-                                                    onClick={ () => handleConnectorSelection(connector) }
-                                                    data-componentid={ connector.testId }
+                                                    onClick={() => handleConnectorSelection(connector)}
+                                                    data-componentid={connector.testId}
                                                 >
                                                     <CardContent className="governance-connector-header">
                                                         <Avatar
                                                             variant="square"
                                                             randomBackgroundColor
-                                                            backgroundColorRandomizer={ category.id }
+                                                            backgroundColorRandomizer={category.id}
                                                             className="governance-connector-icon-container"
                                                         >
-                                                            { resolveConnectorCategoryIcon(connector.id) }
+                                                            {resolveConnectorCategoryIcon(connector.id)}
                                                         </Avatar>
                                                         <div>
-                                                            <Typography variant="h6">
-                                                                { connector.header }
-                                                            </Typography>
+                                                            <Typography variant="h6">{connector.header}</Typography>
                                                         </div>
                                                     </CardContent>
                                                     <CardContent>
                                                         <Typography variant="body2" color="text.secondary">
-                                                            { connector.description }
+                                                            {connector.description}
                                                         </Typography>
                                                     </CardContent>
                                                 </Card>
                                             );
                                         }
-                                    })
-                                }
+                                    })}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    )
                 );
-            })
-            }
+            })}
         </div>
     );
 };

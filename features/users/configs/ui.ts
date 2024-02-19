@@ -1,3 +1,4 @@
+/* eslint-disable header/header */
 /**
  * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
  *
@@ -16,13 +17,13 @@
  * under the License.
  */
 
-import {  FunctionComponent, SVGProps } from "react";
-import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
-import { ReactComponent as ForbiddenIcon } from "../../../themes/default/assets/images/icons/forbidden-icon.svg";
-import { ReactComponent as GearsIcon } from "../../../themes/default/assets/images/icons/gears-icon.svg";
-import { ReactComponent as ReportIcon } from "../../../themes/default/assets/images/icons/report-icon.svg";
-import { ReactComponent as SpinWheelIcon } from "../../../themes/default/assets/images/icons/spin-wheel-icon.svg";
-import { ReactComponent as UserIcon } from "../../../themes/default/assets/images/icons/user-icon.svg";
+import { FunctionComponent, SVGProps } from "react";
+import { ReactComponent as DocumentIcon } from "../../themes/default/assets/images/icons/document-icon.svg";
+import { ReactComponent as ForbiddenIcon } from "../../themes/default/assets/images/icons/forbidden-icon.svg";
+import { ReactComponent as GearsIcon } from "../../themes/default/assets/images/icons/gears-icon.svg";
+import { ReactComponent as ReportIcon } from "../../themes/default/assets/images/icons/report-icon.svg";
+import { ReactComponent as SpinWheelIcon } from "../../themes/default/assets/images/icons/spin-wheel-icon.svg";
+import { ReactComponent as UserIcon } from "../../themes/default/assets/images/icons/user-icon.svg";
 
 export const getUserWizardStepIcons = (): {
     general: FunctionComponent<SVGProps<SVGSVGElement>>;
@@ -31,7 +32,6 @@ export const getUserWizardStepIcons = (): {
     summary: FunctionComponent<SVGProps<SVGSVGElement>>;
     user: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         general: DocumentIcon,
         groups: GearsIcon,
@@ -44,7 +44,6 @@ export const getUserWizardStepIcons = (): {
 export const getUserSessionAccordionIcons = (): {
     terminate: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         terminate: ForbiddenIcon
     };

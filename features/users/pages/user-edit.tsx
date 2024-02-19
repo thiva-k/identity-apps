@@ -44,7 +44,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Icon, Label } from "semantic-ui-react";
-import { SCIMConfigs } from "../../../extensions/configs/scim";
+import { SCIMConfigs } from "../../extensions/configs/scim";
 import { getProfileInformation } from "../../authentication/store";
 import {
     AppConstants,

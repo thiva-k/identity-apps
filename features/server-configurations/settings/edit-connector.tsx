@@ -20,7 +20,7 @@ import { TestableComponentInterface } from "@wso2is/core/models";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { SettingsSection } from "./settings-section";
-import { serverConfigurationConfig } from "../../../extensions/configs";
+import { serverConfigurationConfig } from "../../extensions/configs";
 import { AppConstants, history } from "../../core";
 import { getSettingsSectionIcons } from "../configs";
 import { ServerConfigurationsConstants } from "../constants/server-configurations-constants";
@@ -43,19 +43,12 @@ interface EditConnectorProps extends TestableComponentInterface {
  *
  * @returns a React.ReactElement.
  */
-export const EditConnector: FunctionComponent<EditConnectorProps> = (
-    props: EditConnectorProps
-): ReactElement => {
-    const {
-        connector,
-        categoryID,
-        connectorToggleName,
-        ["data-testid"]: testId
-    } = props;
+export const EditConnector: FunctionComponent<EditConnectorProps> = (props: EditConnectorProps): ReactElement => {
+    const { connector, categoryID, connectorToggleName, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ enableOption, setEnableOption ] = useState<boolean>(undefined);
+    const [enableOption, setEnableOption] = useState<boolean>(undefined);
 
     /**
      * Initial connector status.
@@ -71,26 +64,18 @@ export const EditConnector: FunctionComponent<EditConnectorProps> = (
 
             setEnableOption(enableProperty?.value === "true");
         }
-    }, [ connector ]);
+    }, [connector]);
 
     const resolveConnectorTitle = (connector: GovernanceConnectorInterface): string => {
         switch (connector?.id) {
             case ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID:
-                return (
-                    t("extensions:manage.serverConfigurations.accountSecurity.loginAttemptSecurity.heading")
-                );
+                return t("extensions:manage.serverConfigurations.accountSecurity.loginAttemptSecurity.heading");
             case ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID:
-                return (
-                    t("extensions:manage.serverConfigurations.accountRecovery.passwordRecovery.heading")
-                );
+                return t("extensions:manage.serverConfigurations.accountRecovery.passwordRecovery.heading");
             case ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID:
-                return (
-                    t("extensions:manage.serverConfigurations.accountSecurity.botDetection.heading")
-                );
+                return t("extensions:manage.serverConfigurations.accountSecurity.botDetection.heading");
             case ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID:
-                return (
-                    t("extensions:manage.serverConfigurations.userOnboarding.selfRegistration.heading")
-                );
+                return t("extensions:manage.serverConfigurations.userOnboarding.selfRegistration.heading");
             case ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID:
                 return t("extensions:manage.serverConfigurations.analytics.heading");
             default:
@@ -101,54 +86,40 @@ export const EditConnector: FunctionComponent<EditConnectorProps> = (
     const resolveConnectorDescription = (connector: GovernanceConnectorInterface): string => {
         switch (connector?.id) {
             case ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID:
-                return (
-                    t("extensions:manage.serverConfigurations.accountSecurity.loginAttemptSecurity." +
-                        "connectorDescription")
+                return t(
+                    "extensions:manage.serverConfigurations.accountSecurity.loginAttemptSecurity." +
+                        "connectorDescription"
                 );
             case ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID:
-                return (
-                    t("extensions:manage.serverConfigurations.accountRecovery.passwordRecovery.connectorDescription")
+                return t(
+                    "extensions:manage.serverConfigurations.accountRecovery.passwordRecovery.connectorDescription"
                 );
             case ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID:
-                return (
-                    t("extensions:manage.serverConfigurations.accountSecurity.botDetection.connectorDescription")
-                );
+                return t("extensions:manage.serverConfigurations.accountSecurity.botDetection.connectorDescription");
             case ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID:
-                return (
-                    t("extensions:manage.serverConfigurations.userOnboarding.selfRegistration.connectorDescription")
-                );
+                return t("extensions:manage.serverConfigurations.userOnboarding.selfRegistration.connectorDescription");
             case ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID:
                 return t("extensions:manage.serverConfigurations.analytics.subHeading");
             default:
-                return (
-                    connector?.description
-                        ? connector.description
-                        : connector?.friendlyName
-                        && t("console:manage.features.governanceConnectors.connectorSubHeading", {
-                            name: connector?.friendlyName
-                        })
-                );
+                return connector?.description
+                    ? connector.description
+                    : connector?.friendlyName &&
+                          t("console:manage.features.governanceConnectors.connectorSubHeading", {
+                              name: connector?.friendlyName
+                          });
         }
     };
 
     const resolveConnectorIcon = (connector: GovernanceConnectorInterface): string => {
         switch (connector?.id) {
             case ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID:
-                return (
-                    getSettingsSectionIcons().accountLock
-                );
+                return getSettingsSectionIcons().accountLock;
             case ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID:
-                return (
-                    getSettingsSectionIcons().botDetection
-                );
+                return getSettingsSectionIcons().botDetection;
             case ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID:
-                return (
-                    getSettingsSectionIcons().accountRecovery
-                );
+                return getSettingsSectionIcons().accountRecovery;
             case ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID:
-                return (
-                    getSettingsSectionIcons().selfRegistration
-                );
+                return getSettingsSectionIcons().selfRegistration;
             default:
                 return null;
         }
@@ -158,23 +129,24 @@ export const EditConnector: FunctionComponent<EditConnectorProps> = (
      * Handle connector advance setting selection.
      */
     const handleSelection = () => {
-        history.push(AppConstants.getPaths()
-            .get("GOVERNANCE_CONNECTOR_EDIT")
-            .replace(":categoryId", categoryID)
-            .replace(":connectorId", connector?.id));
+        history.push(
+            AppConstants.getPaths()
+                .get("GOVERNANCE_CONNECTOR_EDIT")
+                .replace(":categoryId", categoryID)
+                .replace(":connectorId", connector?.id)
+        );
     };
 
     return (
         <SettingsSection
-            data-testid={ `${testId}-${connector?.id}-settings-section` }
-            description={ resolveConnectorDescription(connector) }
-            icon={ resolveConnectorIcon(connector) }
-            header={ resolveConnectorTitle(connector) }
-            onPrimaryActionClick={ handleSelection }
-            primaryAction={ "Configure" }
-            connectorEnabled={ enableOption }
-        >
-        </SettingsSection>
+            data-testid={`${testId}-${connector?.id}-settings-section`}
+            description={resolveConnectorDescription(connector)}
+            icon={resolveConnectorIcon(connector)}
+            header={resolveConnectorTitle(connector)}
+            onPrimaryActionClick={handleSelection}
+            primaryAction={"Configure"}
+            connectorEnabled={enableOption}
+        ></SettingsSection>
     );
 };
 

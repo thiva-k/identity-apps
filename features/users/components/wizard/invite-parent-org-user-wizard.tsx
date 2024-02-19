@@ -22,7 +22,7 @@ import { AxiosError, AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Modal } from "semantic-ui-react";
-import { UsersConstants } from "../../../../extensions/components/users/constants";
+import { UsersConstants } from "../../../extensions/components/users/constants";
 import { UserManagementConstants } from "../../constants";
 import { sendParentOrgUserInvite } from "../guests/api/invite";
 import {
@@ -39,7 +39,7 @@ import { ParentInviteResponseList } from "../parent-user-invite-response-list";
  */
 interface InviteParentOrgUserWizardProps extends IdentifiableComponentInterface {
     closeWizard: () => void;
-    [ "data-componentid" ]: string;
+    ["data-componentid"]: string;
     /**
      * The Callback to trigger on user invite success.
      */
@@ -49,18 +49,14 @@ interface InviteParentOrgUserWizardProps extends IdentifiableComponentInterface 
 export const InviteParentOrgUserWizard: FunctionComponent<InviteParentOrgUserWizardProps> = (
     props: InviteParentOrgUserWizardProps
 ): ReactElement => {
-
-    const {
-        closeWizard,
-        onUserInviteSuccess,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { closeWizard, onUserInviteSuccess, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
-    const [ parentOrgUserInvitationResults, setParentOrgUserInvitationResults ] =
-        useState<ParentOrgUserInvitationResult[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [alert, setAlert, alertComponent] = useWizardAlert();
+    const [parentOrgUserInvitationResults, setParentOrgUserInvitationResults] = useState<
+        ParentOrgUserInvitationResult[]
+    >([]);
 
     /**
      * Triggers a form submit event for the form in the InviteParentOrgUser component.
@@ -88,8 +84,10 @@ export const InviteParentOrgUserWizard: FunctionComponent<InviteParentOrgUserWiz
                 level: AlertLevels.ERROR,
                 message: t("console:manage.features.invite.notifications.sendInvite.error.message")
             });
-        } else if (error?.response?.status === 403 &&
-            error?.response?.data?.code === UsersConstants.ERROR_COLLABORATOR_USER_LIMIT_REACHED) {
+        } else if (
+            error?.response?.status === 403 &&
+            error?.response?.data?.code === UsersConstants.ERROR_COLLABORATOR_USER_LIMIT_REACHED
+        ) {
             setAlert({
                 description: t("extensions:manage.invite.notifications.sendInvite.limitReachError.description"),
                 level: AlertLevels.ERROR,
@@ -97,19 +95,16 @@ export const InviteParentOrgUserWizard: FunctionComponent<InviteParentOrgUserWiz
             });
         } else if (error?.response?.data?.description) {
             setAlert({
-                description: t(
-                    "console:manage.features.invite.notifications.sendInvite.error.description",
-                    { description: error?.response?.data?.description }
-                ),
+                description: t("console:manage.features.invite.notifications.sendInvite.error.description", {
+                    description: error?.response?.data?.description
+                }),
                 level: AlertLevels.ERROR,
                 message: t("console:manage.features.invite.notifications.sendInvite.error.message")
             });
         } else {
             // Generic error message
             setAlert({
-                description: t(
-                    "console:manage.features.invite.notifications.sendInvite.genericError.description"
-                ),
+                description: t("console:manage.features.invite.notifications.sendInvite.genericError.description"),
                 level: AlertLevels.ERROR,
                 message: t("console:manage.features.invite.notifications.sendInvite.genericError.message")
             });
@@ -123,7 +118,7 @@ export const InviteParentOrgUserWizard: FunctionComponent<InviteParentOrgUserWiz
     const inviteParentOrgUser = (values: InviteParentOrgUserFormValuesInterface) => {
         const invite: ParentOrgUserInviteInterface = {
             groups: values?.groups?.map((group: GroupsAutoCompleteOption) => group.group.id),
-            usernames:  values?.username
+            usernames: values?.username
         };
 
         setAlert(null);
@@ -145,64 +140,55 @@ export const InviteParentOrgUserWizard: FunctionComponent<InviteParentOrgUserWiz
 
     return (
         <Modal
-            data-componentid={ componentId }
+            data-componentid={componentId}
             open
             className="wizard application-create-wizard"
             dimmer="blurring"
             size="small"
-            onClose={ closeWizard }
-            closeOnDimmerClick={ false }
+            onClose={closeWizard}
+            closeOnDimmerClick={false}
             closeOnEscape
         >
             <Modal.Header className="wizard-header">
-                { t("console:manage.features.parentOrgInvitations.addUserWizard.heading") }
-                <Heading as="h6">
-                    { t("console:manage.features.parentOrgInvitations.addUserWizard.description") }
-                </Heading>
+                {t("console:manage.features.parentOrgInvitations.addUserWizard.heading")}
+                <Heading as="h6">{t("console:manage.features.parentOrgInvitations.addUserWizard.description")}</Heading>
             </Modal.Header>
             <Modal.Content className="content-container" scrolling>
-                { alert && alertComponent }
-                { parentOrgUserInvitationResults?.length > 0
-                    ? (
-                        <ParentInviteResponseList
-                            response={ parentOrgUserInvitationResults }
-                            isLoading={ isSubmitting }
-                        />
-                    ) : (
-                        <InviteParentOrgUser
-                            onSubmit={ inviteParentOrgUser }
-                            data-componentid={ `${ componentId }-form` }
-                        />
-                    ) }
+                {alert && alertComponent}
+                {parentOrgUserInvitationResults?.length > 0 ? (
+                    <ParentInviteResponseList response={parentOrgUserInvitationResults} isLoading={isSubmitting} />
+                ) : (
+                    <InviteParentOrgUser onSubmit={inviteParentOrgUser} data-componentid={`${componentId}-form`} />
+                )}
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 2 }>
-                        <Grid.Column mobile={ 8 }>
+                    <Grid.Row column={2}>
+                        <Grid.Column mobile={8}>
                             <LinkButton
-                                data-componentid={ `${ componentId }-cancel-button` }
+                                data-componentid={`${componentId}-cancel-button`}
                                 floated="left"
-                                onClick={ () => {
+                                onClick={() => {
                                     closeWizard();
-                                } }
+                                }}
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        {
-                            !parentOrgUserInvitationResults || parentOrgUserInvitationResults?.length < 1 && (
-                                <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        {!parentOrgUserInvitationResults ||
+                            (parentOrgUserInvitationResults?.length < 1 && (
+                                <Grid.Column mobile={8} tablet={8} computer={8}>
                                     <PrimaryButton
-                                        data-componentid={ `${componentId}-finish-button` }
+                                        data-componentid={`${componentId}-finish-button`}
                                         floated="right"
-                                        onClick={ submitParentUserInviteForm }
-                                        loading={ isSubmitting }
-                                        disabled={ isSubmitting }
+                                        onClick={submitParentUserInviteForm}
+                                        loading={isSubmitting}
+                                        disabled={isSubmitting}
                                     >
-                                        { t("extensions:manage.features.user.addUser.invite") }
+                                        {t("extensions:manage.features.user.addUser.invite")}
                                     </PrimaryButton>
                                 </Grid.Column>
-                            ) }
+                            ))}
                     </Grid.Row>
                 </Grid>
             </Modal.Actions>

@@ -16,13 +16,13 @@
  * under the License.
  */
 
-import { InviteUserStatus } from "apps/console/src/extensions/components/users/models";
+import { InviteUserStatus } from "features/extensions/components/users/models";
 import { ReactNode } from "react";
 import { GroupsInterface } from "../../../../groups";
 
 /**
-  * Enum for role types.
-  */
+ * Enum for role types.
+ */
 export enum RoleType {
     EVERYONE = "everyone",
     SYSTEM = "system",
@@ -30,8 +30,8 @@ export enum RoleType {
 }
 
 /**
-  * Interface to store data for create group api.
-  */
+ * Interface to store data for create group api.
+ */
 export interface UserInviteInterface {
     id?: string;
     roles?: string[];
@@ -71,11 +71,11 @@ export interface AdministratorInviteInterface {
 export interface ParentOrgUserInvitationResult {
     username: string;
     result: {
-        status: ParentOrgUserInviteResultStatus
+        status: ParentOrgUserInviteResultStatus;
         errorCode?: string;
         errorMessage?: string;
         errorDescription?: string;
-    }
+    };
 }
 
 /**
