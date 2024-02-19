@@ -58,7 +58,7 @@ import { Card, Checkbox, CheckboxProps, Dimmer, Divider, Grid } from "semantic-u
 import { OauthProtocolSettingsWizardForm } from "./oauth-protocol-settings-wizard-form";
 import { PassiveStsProtocolSettingsWizardForm } from "./passive-sts-protocol-settings-wizard-form";
 import { SAMLProtocolAllSettingsWizardForm } from "./saml-protocol-settings-all-option-wizard-form";
-import { applicationConfig } from "../../../../extensions";
+import { applicationConfig } from "features/extensions";
 import { AccessControlConstants } from "../../../access-control/constants/access-control";
 import useAuthorization from "../../../authorization/hooks/use-authorization";
 import {

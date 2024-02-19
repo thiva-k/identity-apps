@@ -40,7 +40,7 @@ import { Icon } from "semantic-ui-react";
 import {
     AuthenticatorExtensionsConfigInterface,
     identityProviderConfig
-} from "../../../extensions/configs";
+} from "features/extensions/configs";
 import {
     AdvancedSearchWithBasicFilters,
     AppConstants,

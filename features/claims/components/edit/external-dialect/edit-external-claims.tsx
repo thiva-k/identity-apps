@@ -28,7 +28,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Divider, DropdownProps, Grid, Icon, Modal, PaginationProps } from "semantic-ui-react";
 import { ClaimsList, ListType } from "../../";
-import { attributeConfig } from "../../../../../extensions";
+import { attributeConfig } from "features/extensions";
 import {
     AdvancedSearchWithBasicFilters,
     AppConstants,

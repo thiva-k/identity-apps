@@ -25,7 +25,7 @@ import React, { FunctionComponent, ReactElement, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Grid } from "semantic-ui-react";
-import { identityProviderConfig } from "../../../../../extensions";
+import { identityProviderConfig } from "features/extensions";
 import { AppState, ConfigReducerStateInterface } from "../../../../core";
 import { AuthenticatorManagementConstants } from "../../../constants/autheticator-constants";
 import { ConnectionManagementConstants } from "../../../constants/connection-constants";

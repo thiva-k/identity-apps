@@ -19,7 +19,7 @@
 import { AppThemeConfigInterface } from "@wso2is/core/models";
 import { StringUtils } from "@wso2is/core/utils";
 import { MultitenantConstants } from "./multitenant-constants";
-import { identityProviderConfig } from "../../../extensions/configs";
+import { identityProviderConfig } from "features/extensions/configs";
 import {
     GovernanceCategoryForOrgsInterface,
     GovernanceConnectorCategoryInterface,

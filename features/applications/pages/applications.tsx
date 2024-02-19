@@ -55,7 +55,7 @@ import {
     List,
     PaginationProps
 } from "semantic-ui-react";
-import { applicationConfig } from "../../../extensions";
+import { applicationConfig } from "features/extensions";
 import {
     AdvancedSearchWithBasicFilters,
     AppConstants,

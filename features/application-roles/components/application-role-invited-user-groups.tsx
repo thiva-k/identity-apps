@@ -36,10 +36,10 @@ import { Dispatch } from "redux";
 import { Grid, Header, Icon, Input } from "semantic-ui-react";
 import {
     useApplicationRoleInvitedUserGroups, useDescendantsOfSubOrg
-} from "../../../extensions/components/application/api";
+} from "features/extensions/components/application/api";
 import {
     ApplicationRoleGroupInterface, DescendantDataInterface
-} from "../../../extensions/components/application/models";
+} from "features/extensions/components/application/models";
 import { UIConstants } from "../../core";
 import { CONSUMER_USERSTORE } from "../../userstores/constants";
 

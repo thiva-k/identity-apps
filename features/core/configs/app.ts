@@ -19,8 +19,8 @@
 import { DocumentationConstants } from "@wso2is/core/constants";
 import { DocumentationProviders, DocumentationStructureFileTypes } from "@wso2is/core/models";
 import { I18nModuleInitOptions, I18nModuleOptionsInterface, MetaI18N, generateBackendPaths } from "@wso2is/i18n";
-import { getFeatureGateResourceEndpoints } from "../../../extensions/components/feature-gate/configs";
-import { getExtendedFeatureResourceEndpoints } from "../../../extensions/configs/endpoints";
+import { getFeatureGateResourceEndpoints } from "features/extensions/components/feature-gate/configs";
+import { getExtendedFeatureResourceEndpoints } from "features/extensions/configs/endpoints";
 import { getAPIResourceEndpoints } from "../../api-resources/configs/endpoint";
 import { getApplicationsResourceEndpoints } from "../../applications/configs/endpoints";
 import isLegacyAuthzRuntime from "../../authorization/utils/get-legacy-authz-runtime";

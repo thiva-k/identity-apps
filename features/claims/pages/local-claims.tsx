@@ -28,7 +28,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownItemProps, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
-import { attributeConfig } from "../../../extensions";
+import { attributeConfig } from "features/extensions";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
 import { getAllLocalClaims } from "../../claims/api";
 import {

@@ -35,7 +35,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Label } from "semantic-ui-react";
-import { applicationConfig } from "../../../extensions/configs/application";
+import { applicationConfig } from "features/extensions/configs/application";
 import {
     AppConstants,
     AppState,

@@ -43,7 +43,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Accordion,  Grid, Icon, Menu, Modal, Segment, Sidebar } from "semantic-ui-react";
-import { serverConfigurationConfig } from "../../../../../../extensions/configs/server-configuration";
+import { serverConfigurationConfig } from "features/extensions/configs/server-configuration";
 import {
     ELK_RISK_BASED_TEMPLATE_NAME
 } from "../../../../../../features/authentication-flow-builder/constants/template-constants";

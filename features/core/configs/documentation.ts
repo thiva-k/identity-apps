@@ -17,7 +17,7 @@
  */
 
 // DO NOT SHORTEN THE IMPORT PATH as it could lead to circular dependencies.
-import { getDocumentationLinksExtension } from "../../../extensions/configs/documentation";
+import { getDocumentationLinksExtension } from "features/extensions/configs/documentation";
 import { DocumentationLinksInterface } from "../models";
 
 /**

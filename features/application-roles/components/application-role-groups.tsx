@@ -41,11 +41,11 @@ import AssignGroupWizard from "./assign-group-wizard";
 import {
     updateApplicationRoleMappedGroups,
     useApplicationRoleMappedGroups
-} from "../../../extensions/components/application/api";
+} from "features/extensions/components/application/api";
 import {
     ApplicationRoleGroupInterface,
     ApplicationRoleGroupsUpdatePayloadInterface
-} from "../../../extensions/components/application/models";
+} from "features/extensions/components/application/models";
 import { UIConstants } from "../../core";
 import { CONSUMER_USERSTORE } from "../../userstores/constants";
 

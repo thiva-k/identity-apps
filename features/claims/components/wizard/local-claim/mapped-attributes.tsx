@@ -22,7 +22,7 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Grid } from "semantic-ui-react";
-import { attributeConfig } from "../../../../../extensions";
+import { attributeConfig } from "features/extensions";
 import { AppState } from "../../../../core";
 import { getUserStoreList } from "../../../../userstores/api";
 import { UserStoreListItem } from "../../../../userstores/models/user-stores";

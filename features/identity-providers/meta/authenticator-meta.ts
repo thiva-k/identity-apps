@@ -18,7 +18,7 @@
 
 import get from "lodash-es/get";
 import { ReactNode } from "react";
-import { identityProviderConfig } from "../../../extensions";
+import { identityProviderConfig } from "features/extensions";
 import { getAuthenticatorIcons } from "../configs/ui";
 import { IdentityProviderManagementConstants } from "../constants";
 import { AuthenticatorCategories, AuthenticatorLabels, FederatedAuthenticatorInterface } from "../models";

@@ -26,7 +26,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownItemProps, DropdownOnSearchChangeData, Grid, Label } from "semantic-ui-react";
-import { SCIMConfigs, attributeConfig } from "../../../../extensions";
+import { SCIMConfigs, attributeConfig } from "features/extensions";
 import { getAllLocalClaims } from "../../../claims/api";
 import { AppConstants, AppState, history } from "../../../core";
 import { addExternalClaim, getServerSupportedClaimsForSchema } from "../../api";

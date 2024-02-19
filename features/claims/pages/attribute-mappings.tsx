@@ -35,7 +35,7 @@ import { RouteChildrenProps } from "react-router";
 import { Dispatch } from "redux";
 import { Image, StrictTabProps } from "semantic-ui-react";
 import ExternalDialectEditPage from "./external-dialect-edit";
-import { SCIMConfigs, attributeConfig } from "../../../extensions";
+import { SCIMConfigs, attributeConfig } from "features/extensions";
 import { getAllExternalClaims, getDialects } from "../../claims/api";
 import { AppConstants, AppState, getTechnologyLogos, history } from "../../core";
 import { } from "../components";

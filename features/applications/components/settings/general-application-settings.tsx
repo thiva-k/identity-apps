@@ -33,7 +33,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider } from "semantic-ui-react";
-import { applicationConfig } from "../../../../extensions";
+import { applicationConfig } from "features/extensions";
 import { AccessControlConstants } from "../../../access-control/constants/access-control";
 import { AppState, FeatureConfigInterface, UIConfigInterface } from "../../../core";
 import { deleteApplication, updateApplicationDetails } from "../../api";

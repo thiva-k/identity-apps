@@ -31,7 +31,7 @@ import React, { Fragment, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Accordion, Grid } from "semantic-ui-react";
 import RolesList from "./roles-list";
-import { ApplicationRoleInterface } from "../../../extensions/components/groups/models";
+import { ApplicationRoleInterface } from "features/extensions/components/groups/models";
 import { AppConstants, getEmptyPlaceholderIllustrations, history } from "../../core";
 
 interface ApplicationRolesListProps extends LoadableComponentInterface, IdentifiableComponentInterface {

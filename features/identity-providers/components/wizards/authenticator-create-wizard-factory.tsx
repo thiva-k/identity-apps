@@ -35,7 +35,7 @@ import {
     OrganizationEnterpriseAuthenticationProviderCreateWizard
 } from "./organization-enterprise/organization-enterprise-authentication-provider-create-wizard";
 import { TrustedTokenIssuerCreateWizard } from "./trusted-token-issuer/trusted-token-issuer-create-wizard";
-import { identityProviderConfig } from "../../../../extensions/configs/identity-provider";
+import { identityProviderConfig } from "features/extensions/configs/identity-provider";
 import { AppState, ConfigReducerStateInterface } from "../../../core";
 import { getIdentityProviderList, getIdentityProviderTemplate } from "../../api";
 import { IdentityProviderManagementConstants } from "../../constants";

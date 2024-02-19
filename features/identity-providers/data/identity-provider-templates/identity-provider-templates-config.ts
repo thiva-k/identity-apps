@@ -37,10 +37,10 @@ import OrganizationEnterpriseIDPTemplate from
     "./templates/organization-enterprise-identity-provider/organization-enterprise-identity-provider.json";
 import EnterpriseSAMLIdentityProviderTemplate
     from "./templates/saml-identity-provider/enterprise-saml-identity-provider.json";
-import { ExtensionsManager, identityProviderConfig } from "../../../../extensions";
+import { ExtensionsManager, identityProviderConfig } from "features/extensions";
 import {
     EnterpriseIdentityProviderTemplateExtension
-} from "../../../../extensions/configs/identity-providers-templates";
+} from "features/extensions/configs/identity-providers-templates";
 import { AppConstants, store } from "../../../core";
 import { IdentityProviderTemplateCategoryInterface, IdentityProviderTemplateGroupInterface } from "../../models";
 

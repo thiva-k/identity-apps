@@ -31,7 +31,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Modal, ModalProps } from "semantic-ui-react";
-import { UsersConstants } from "../../../../../extensions/components/users/constants/users";
+import { UsersConstants } from "features/extensions/components/users/constants/users";
 import { AppState } from "../../../../core/store";
 import { sendParentOrgUserInvite } from "../../../../users/components/guests/api/invite";
 import {

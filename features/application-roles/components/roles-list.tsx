@@ -27,7 +27,7 @@ import {
 import React, { ChangeEvent, ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Header, Icon, Input, SemanticICONS } from "semantic-ui-react";
-import { RoleBasicInterface } from "../../../extensions/components/groups/models";
+import { RoleBasicInterface } from "features/extensions/components/groups/models";
 import { history } from "../../core";
 import { AppConstants, UIConstants } from "../../core/constants";
 

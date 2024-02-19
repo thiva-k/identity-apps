@@ -41,7 +41,7 @@ import Typography from "@oxygen-ui/react/Typography";
 import { IdentifiableComponentInterface, LoadableComponentInterface } from "@wso2is/core/models";
 import { ContentLoader } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useMemo } from "react";
-import { serverConfigurationConfig } from "../../../extensions";
+import { serverConfigurationConfig } from "features/extensions";
 import { AppConstants, history } from "../../core";
 import "./governance-connector-grid.scss";
 import { ServerConfigurationsConstants } from "../constants/server-configurations-constants";

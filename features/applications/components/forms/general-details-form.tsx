@@ -28,7 +28,7 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider } from "semantic-ui-react";
-import { applicationConfig } from "../../../../extensions";
+import { applicationConfig } from "features/extensions";
 import { AppConstants, AppState, UIConfigInterface } from "../../../core";
 import { OrganizationType } from "../../../organizations/constants";
 import { useMyAccountStatus } from "../../api";

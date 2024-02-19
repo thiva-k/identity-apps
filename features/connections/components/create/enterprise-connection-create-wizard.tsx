@@ -68,7 +68,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Icon, Grid as SemanticGrid } from "semantic-ui-react";
-import { commonConfig } from "../../../../extensions";
+import { commonConfig } from "features/extensions";
 import { EventPublisher } from "../../../core";
 import { createConnection, useGetConnectionTemplate } from "../../api/connections";
 import { getConnectionIcons, getConnectionWizardStepIcons } from "../../configs/ui";

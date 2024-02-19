@@ -43,7 +43,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Icon, List } from "semantic-ui-react";
 import { handleIDPDeleteError } from "./utils";
-import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "../../../extensions/configs";
+import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "features/extensions/configs";
 import { getApplicationDetails } from "../../applications/api";
 import { ApplicationBasicInterface } from "../../applications/models";
 import {

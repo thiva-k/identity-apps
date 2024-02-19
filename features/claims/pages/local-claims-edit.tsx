@@ -25,7 +25,7 @@ import { useDispatch } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Image } from "semantic-ui-react";
-import { attributeConfig } from "../../../extensions";
+import { attributeConfig } from "features/extensions";
 import { AppConstants, history } from "../../core";
 import { getAClaim } from "../api";
 import {

@@ -30,7 +30,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Dropdown, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
 import InvitedAdministratorsTable from "./invited-administrators-table";
-import { UserInviteInterface } from "../../../../../extensions/components/users/models/invite";
+import { UserInviteInterface } from "features/extensions/components/users/models/invite";
 import { useGetCurrentOrganizationType } from "../../../../../features/organizations/hooks/use-get-organization-type";
 import { UserStoreDropdownItem } from "../../../../../features/userstores/models";
 import { AccessControlConstants } from "../../../../access-control/constants/access-control";

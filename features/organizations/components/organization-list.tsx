@@ -43,7 +43,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
-import { organizationConfigs } from "../../../extensions";
+import { organizationConfigs } from "features/extensions";
 import useSignIn from "../../authentication/hooks/use-sign-in";
 import useAuthorization from "../../authorization/hooks/use-authorization";
 import {

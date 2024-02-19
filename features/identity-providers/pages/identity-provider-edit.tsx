@@ -42,7 +42,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Label } from "semantic-ui-react";
-import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "../../../extensions/configs";
+import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "features/extensions/configs";
 import {
     AppConstants,
     AppState,

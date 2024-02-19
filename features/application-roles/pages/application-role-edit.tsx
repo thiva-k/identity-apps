@@ -28,11 +28,11 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import { getApplicationRolesList } from "../../../extensions/components/application/api";
+import { getApplicationRolesList } from "features/extensions/components/application/api";
 import {
     ApplicationRolesResponseInterface,
     RoleListItemInterface
-} from "../../../extensions/components/application/models";
+} from "features/extensions/components/application/models";
 import { AppConstants, history } from "../../core";
 import EditApplicationRoles from "../components/edit-application-role";
 

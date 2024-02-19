@@ -42,7 +42,7 @@ import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } 
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { ExtendedFeatureConfigInterface } from "../../../extensions/configs/models";
+import { ExtendedFeatureConfigInterface } from "features/extensions/configs/models";
 import { EventPublisher } from "../../core";
 import { AppState } from "../../core/store";
 import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";

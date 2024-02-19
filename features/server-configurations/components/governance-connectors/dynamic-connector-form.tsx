@@ -37,7 +37,7 @@ import {
     Form,
     Grid
 } from "semantic-ui-react";
-import { serverConfigurationConfig } from "../../../../extensions";
+import { serverConfigurationConfig } from "features/extensions";
 import {
     AppState,
     FeatureConfigInterface

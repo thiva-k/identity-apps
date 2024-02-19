@@ -38,15 +38,15 @@ import merge from "lodash-es/merge";
 import values from "lodash-es/values";
 import React, { FunctionComponent, lazy } from "react";
 import { getSidePanelIcons } from "./ui";
-import { identityProviderConfig, userstoresConfig } from "../../../extensions";
+import { identityProviderConfig, userstoresConfig } from "features/extensions";
 import {
     APIResourcesConstants as APIResourcesExtensionConstants
-}from "../../../extensions/components/api-resources/constants";
-import { FeatureGateConstants } from "../../../extensions/components/feature-gate/constants/feature-gate";
-import { RemoteUserStoreConstants } from "../../../extensions/components/user-stores/constants";
-import { UsersConstants } from "../../../extensions/components/users/constants";
-import { AppLayout, AuthLayout, DefaultLayout, ErrorLayout } from "../../../layouts";
-import { AppView, FullScreenView } from "../../../views";
+}from "features/extensions/components/api-resources/constants";
+import { FeatureGateConstants } from "features/extensions/components/feature-gate/constants/feature-gate";
+import { RemoteUserStoreConstants } from "features/extensions/components/user-stores/constants";
+import { UsersConstants } from "features/extensions/components/users/constants";
+import { AppLayout, AuthLayout, DefaultLayout, ErrorLayout } from "features/layouts";
+import { AppView, FullScreenView } from "features/views";
 import { APIResourcesConstants } from "../../api-resources/constants";
 import { ServerConfigurationsConstants } from "../../server-configurations";
 import { AppConstants } from "../constants";
@@ -79,7 +79,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
             keyBy(
                 compact([
                     {
-                        component: lazy(() => import("../../../extensions/components/getting-started/getting-started")),
+                        component: lazy(() => import("features/extensions/components/getting-started/getting-started")),
                         exact: false,
                         icon: {
                             icon: getSidePanelIcons().home
@@ -167,7 +167,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             {
                                 component: lazy(() =>
                                     import(
-                                        "../../../extensions/components/account-login/" +
+                                        "features/extensions/components/account-login/" +
                                         "pages/username-validation-edit"
                                     )
                                 ),
@@ -184,7 +184,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             {
                                 component: lazy(() =>
                                     import(
-                                        "../../../extensions/components/account-login/" +
+                                        "features/extensions/components/account-login/" +
                                         "pages/alternative-login-identifier-edit"
                                     )
                                 ),
@@ -531,7 +531,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         component: lazy(() => import("../../../features/branding/pages/branding")),
                         exact: true,
                         icon: {
-                            icon: import("../../../extensions/assets/images/icons/paint-palette-and-brush-outline.svg")
+                            icon: import("features/extensions/assets/images/icons/paint-palette-and-brush-outline.svg")
                         },
                         id: "branding",
                         name: "extensions:develop.sidePanel.stylesAndText",
@@ -605,7 +605,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         children: [
                             {
                                 component: lazy(() =>
-                                    import("../../../extensions/components/" + "my-account/pages/my-account-edit")
+                                    import("features/extensions/components/" + "my-account/pages/my-account-edit")
                                 ),
                                 exact: true,
                                 icon: {
@@ -618,10 +618,10 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../../extensions/components/my-account/pages/my-account")),
+                        component: lazy(() => import("features/extensions/components/my-account/pages/my-account")),
                         exact: true,
                         icon: {
-                            icon: import("../../../extensions/assets/images/icons/self-service-portal-icon.svg")
+                            icon: import("features/extensions/assets/images/icons/self-service-portal-icon.svg")
                         },
                         id: "myAccount",
                         name: "Self-Service Portal",
@@ -635,7 +635,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         children: [
                             {
                                 component: lazy(() =>
-                                    import("../../../extensions/components/" + "my-account/pages/my-account-edit")
+                                    import("features/extensions/components/" + "my-account/pages/my-account-edit")
                                 ),
                                 exact: true,
                                 icon: {
@@ -648,10 +648,10 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../../extensions/components/my-account/pages/my-account")),
+                        component: lazy(() => import("features/extensions/components/my-account/pages/my-account")),
                         exact: true,
                         icon: {
-                            icon: import("../../../extensions/assets/images/icons/self-service-portal-icon.svg")
+                            icon: import("features/extensions/assets/images/icons/self-service-portal-icon.svg")
                         },
                         id: "myAccount",
                         name: "Self-Service Portal",
@@ -929,11 +929,11 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     },
                     {
                         category: "extensions:develop.sidePanel.categories.monitor",
-                        component: lazy(() => import("../../../extensions/components/logs/pages/logs")),
+                        component: lazy(() => import("features/extensions/components/logs/pages/logs")),
                         exact: true,
                         featureGateIds: [ FeatureGateConstants.SAAS_FEATURES_IDENTIFIER ],
                         icon: {
-                            icon: import("../../../extensions/assets/images/icons/event-publishing.svg")
+                            icon: import("features/extensions/assets/images/icons/event-publishing.svg")
                         },
                         id: "logs",
                         name: "extensions:develop.sidePanel.monitor",
@@ -944,7 +944,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     },
                     {
                         category: "extensions:develop.sidePanel.categories.monitor",
-                        component: lazy(() => import("../../../extensions/components/events/pages/event-edit")),
+                        component: lazy(() => import("features/extensions/components/events/pages/event-edit")),
                         exact: true,
                         featureGateIds: [ FeatureGateConstants.SAAS_FEATURES_IDENTIFIER ],
                         icon: {
@@ -1221,7 +1221,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 children: [
                     {
                         component: lazy(() =>
-                            import("../../../extensions/components/api-resources/pages/api-resource-edit")
+                            import("features/extensions/components/api-resources/pages/api-resource-edit")
                         ),
                         exact: true,
                         id: "apiResources-edit",
@@ -1232,11 +1232,11 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     }
                 ],
                 component: lazy(() =>
-                    import("../../../extensions/components/api-resources/pages/api-resources")
+                    import("features/extensions/components/api-resources/pages/api-resources")
                 ),
                 exact: true,
                 icon: {
-                    icon: import("../../../extensions/assets/images/icons/api-resources-icon.svg")
+                    icon: import("features/extensions/assets/images/icons/api-resources-icon.svg")
                 },
                 id: "apiResources",
                 name: "extensions:develop.sidePanel.apiResources",
@@ -1250,11 +1250,11 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 children: [
                     {
                         component: lazy(() =>
-                            import("../../../extensions/components/" + "users/pages/consumer-user-edit")
+                            import("features/extensions/components/" + "users/pages/consumer-user-edit")
                         ),
                         exact: true,
                         icon: {
-                            icon: import("../../../extensions/assets/images/icons/user-icon.svg")
+                            icon: import("features/extensions/assets/images/icons/user-icon.svg")
                         },
                         id: "customer-user-edit",
                         name: "Customer Users Edit",
@@ -1263,10 +1263,10 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../../extensions/" + "components/users/pages/users")),
+                component: lazy(() => import("features/extensions/" + "components/users/pages/users")),
                 exact: true,
                 icon: {
-                    icon: import("../../../extensions/assets/images/icons/user-icon.svg")
+                    icon: import("features/extensions/assets/images/icons/user-icon.svg")
                 },
                 id: "users",
                 name: "Users",
@@ -1280,11 +1280,11 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 children: [
                     {
                         component: lazy(() =>
-                            import("../../../extensions/components/" + "users/pages/guest-user-edit")
+                            import("features/extensions/components/" + "users/pages/guest-user-edit")
                         ),
                         exact: true,
                         icon: {
-                            icon: import("../../../extensions/assets/images/icons/admin-icon.svg")
+                            icon: import("features/extensions/assets/images/icons/admin-icon.svg")
                         },
                         id: "collaborator-user-edit",
                         name: "Collaborator Users Edit",
@@ -1294,7 +1294,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     },
                     {
                         component: lazy(() =>
-                            import("../../../extensions/components/users" + "/pages/administrator-settings")
+                            import("features/extensions/components/users" + "/pages/administrator-settings")
                         ),
                         exact: true,
                         icon: {
@@ -1307,10 +1307,10 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../../extensions/components/users/pages/administrators")),
+                component: lazy(() => import("features/extensions/components/users/pages/administrators")),
                 exact: true,
                 icon: {
-                    icon: import("../../../extensions/assets/images/icons/admin-icon.svg")
+                    icon: import("features/extensions/assets/images/icons/admin-icon.svg")
                 },
                 id: "administrators",
                 name: "Administrators",
@@ -1324,7 +1324,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 children: [
                     {
                         component: lazy(() =>
-                            import("../../../extensions/components/" + "groups/pages/groups-edit")
+                            import("features/extensions/components/" + "groups/pages/groups-edit")
                         ),
                         exact: true,
                         icon: {
@@ -1337,7 +1337,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../../extensions/components/groups/pages/groups")),
+                component: lazy(() => import("features/extensions/components/groups/pages/groups")),
                 exact: true,
                 icon: {
                     icon: <UserGroupIcon className="icon" fill="black" />
@@ -1397,7 +1397,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     {
                         component: lazy(() =>
                             import(
-                                "../../../extensions/components/user-stores/" +
+                                "features/extensions/components/user-stores/" +
                                 "pages/remote-user-store-edit-page"
                             )
                         ),
@@ -1416,7 +1416,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     {
                         component: lazy(() =>
                             import(
-                                "../../../extensions/components/user-stores/pages/" +
+                                "features/extensions/components/user-stores/pages/" +
                                 "remote-customer-user-store-create"
                             )
                         ),
@@ -1430,7 +1430,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../../extensions/components/user-stores/pages/user-stores")),
+                component: lazy(() => import("features/extensions/components/user-stores/pages/user-stores")),
                 exact: true,
                 icon: {
                     icon: getSidePanelIcons().userStore
@@ -1546,7 +1546,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 ),
                 exact: true,
                 icon: {
-                    icon: import("../../../extensions/assets/images/icons/api-resources-icon.svg")
+                    icon: import("features/extensions/assets/images/icons/api-resources-icon.svg")
                 },
                 id: "apiResources",
                 name: "extensions:develop.sidePanel.apiResources",
@@ -1592,7 +1592,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         ),
                         exact: true,
                         icon: {
-                            icon: import("../../../extensions/assets/images/icons/admin-icon.svg")
+                            icon: import("features/extensions/assets/images/icons/admin-icon.svg")
                         },
                         id: "collaborator-user-edit",
                         name: "Collaborator Users Edit",
@@ -1602,7 +1602,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     },
                     {
                         component: lazy(() =>
-                            import("../../../extensions/components/users" + "/pages/administrator-settings")
+                            import("features/extensions/components/users" + "/pages/administrator-settings")
                         ),
                         exact: true,
                         icon: {
@@ -1615,10 +1615,10 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../../extensions/components/users/pages/administrators")),
+                component: lazy(() => import("features/extensions/components/users/pages/administrators")),
                 exact: true,
                 icon: {
-                    icon: import("../../../extensions/assets/images/icons/admin-icon.svg")
+                    icon: import("features/extensions/assets/images/icons/admin-icon.svg")
                 },
                 id: "administrators",
                 name: "Administrators",
@@ -1895,7 +1895,7 @@ export const getErrorLayoutRoutes = (): RouteInterface[] => {
 export const getAuthLayoutRoutes = (): RouteInterface[] => {
     const routes: RouteInterface[] = [
         {
-            component: lazy(() => import("../../../extensions/components/tenants/pages/create-tenant")),
+            component: lazy(() => import("features/extensions/components/tenants/pages/create-tenant")),
             exact: true,
             icon: null,
             id: "createTenant",

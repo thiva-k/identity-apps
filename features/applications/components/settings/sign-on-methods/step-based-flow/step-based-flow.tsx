@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { AddAuthenticatorModal } from "./add-authenticator-modal";
 import { AuthenticationStep } from "./authentication-step";
-import { applicationConfig, identityProviderConfig } from "../../../../../../extensions";
+import { applicationConfig, identityProviderConfig } from "features/extensions";
 import { AuthenticatorManagementConstants } from "../../../../../connections/constants/autheticator-constants";
 import { AppState, EventPublisher, FeatureConfigInterface } from "../../../../../core";
 import {

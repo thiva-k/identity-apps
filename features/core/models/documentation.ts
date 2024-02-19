@@ -17,6 +17,6 @@
  */
 
 // DO NOT SHORTEN THE IMPORT PATH as it could lead to circular dependencies.
-import { DocumentationLinksExtensionInterface } from "../../../extensions/configs";
+import { DocumentationLinksExtensionInterface } from "features/extensions/configs";
 
 export type DocumentationLinksInterface = DocumentationLinksExtensionInterface;
