@@ -24,7 +24,7 @@ import { EmphasizedSegment } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { SimpleUserStoreListItemInterface } from "../../../../applications/models";
+import { SimpleUserStoreListItemInterface } from "../../../../applications.common/models";
 import { useGetCurrentOrganizationType } from "../../../../feature-organizations.common/hooks/use-get-organization-type";
 import { getUserStoreList } from "../../../../userstores/api";
 import { updateJITProvisioningConfigs } from "../../../api/connections";

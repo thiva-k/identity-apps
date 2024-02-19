@@ -45,7 +45,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { getAuthenticatorList } from "./common";
-import { getApplicationDetails } from "../../applications/api";
+import { getApplicationDetails } from "../../applications.common/api";
 import { deleteConnection, getConnectedApps } from "../api/connections";
 import { getConnectionIcons } from "../configs/ui";
 import { AuthenticatorManagementConstants } from "../constants/autheticator-constants";

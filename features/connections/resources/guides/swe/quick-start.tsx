@@ -33,8 +33,8 @@ import { Dispatch } from "redux";
 import { DropdownProps, Grid, Modal, PaginationProps } from "semantic-ui-react";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
 import CustomizeStepsIllustration from "./assets/customize-steps.png";
+import { ApplicationList } from "../../../../../features/applications.common/components/application-list";
 import { useApplicationList } from "../../../../../features/applications/api";
-import { ApplicationList } from "../../../../../features/applications/components/application-list";
 import {
     ConnectionInterface,
     ConnectionTemplateInterface

@@ -43,16 +43,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Header, Icon, Input, Label, SemanticICONS } from "semantic-ui-react";
 import { applicationListConfig } from "../../../../../extensions/configs/application-list";
-import { getApplicationDetails } from "../../../../applications/api";
-import { ApplicationManagementConstants } from "../../../../applications/constants";
+import { getApplicationDetails } from "../../../../applications.common/api";
+import { ApplicationManagementConstants } from "../../../../applications.common/constants";
 import {
     ApplicationAccessTypes,
     ApplicationBasicInterface,
     ApplicationListItemInterface,
     ApplicationTemplateListItemInterface
-} from "../../../../applications/models";
+} from "../../../../applications.common/models";
 // eslint-disable-next-line max-len
-import { ApplicationTemplateManagementUtils } from "../../../../applications/utils/application-template-management-utils";
+import { ApplicationTemplateManagementUtils } from "../../../../applications.common/utils/application-template-management-utils";
 import { ConsoleSettingsModes } from "../../../../console-settings/models/ui";
 
 import { getConnectedApps } from "../../../api/connections";
