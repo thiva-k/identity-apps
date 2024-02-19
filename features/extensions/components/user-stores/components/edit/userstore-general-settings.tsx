@@ -42,16 +42,16 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, CheckboxProps, Divider, Grid, Icon, List, Segment } from "semantic-ui-react";
-import { AppConstants, AppState, history } from "../../../../../features/core";
-import { deleteUserStore, patchUserStore } from "../../../../../features/userstores/api/user-stores";
-import { DISABLED } from "../../../../../features/userstores/constants/user-store-constants";
+import { AppConstants, AppState, history } from "features/core";
+import { deleteUserStore, patchUserStore } from "features/userstores/api/user-stores";
+import { DISABLED } from "features/userstores/constants/user-store-constants";
 import {
     CategorizedProperties,
     PatchData,
     TypeProperty,
     UserStore,
     UserStoreProperty
-} from "../../../../../features/userstores/models/user-stores";
+} from "features/userstores/models/user-stores";
 import { disconnectAgentConnection, generateToken, getAgentConnections, regenerateToken } from "../../api";
 import { AgentConnectionInterface, RegenerateTokenInterface } from "../../models";
 

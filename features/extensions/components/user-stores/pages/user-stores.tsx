@@ -24,17 +24,11 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { PaginationProps } from "semantic-ui-react";
-import {
-    AppState,
-    FeatureConfigInterface,
-    UIConstants,
-    history,
-    sortList
-} from "../../../../features/core";
-import { useUserStores } from "../../../../features/userstores/api";
-import { UserStoresList } from "../../../../features/userstores/components";
-import { UserStoreManagementConstants } from "../../../../features/userstores/constants";
-import { UserStoreListItem } from "../../../../features/userstores/models/user-stores";
+import { AppState, FeatureConfigInterface, UIConstants, history, sortList } from "features/core";
+import { useUserStores } from "features/userstores/api";
+import { UserStoresList } from "features/userstores/components";
+import { UserStoreManagementConstants } from "features/userstores/constants";
+import { UserStoreListItem } from "features/userstores/models/user-stores";
 import { RemoteUserStoreConstants } from "../constants";
 
 /**
@@ -49,13 +43,8 @@ type UserStoresPageInterface = TestableComponentInterface;
  *
  * @returns Userstores page.
  */
-const UserStores: FunctionComponent<UserStoresPageInterface> = (
-    props: UserStoresPageInterface
-): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+const UserStores: FunctionComponent<UserStoresPageInterface> = (props: UserStoresPageInterface): ReactElement => {
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
@@ -83,16 +72,16 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ userStores, setUserStores ] = useState<UserStoreListItem[]>([]);
-    const [ offset, setOffset ] = useState(0);
+    const [userStores, setUserStores] = useState<UserStoreListItem[]>([]);
+    const [offset, setOffset] = useState(0);
     // TODO: Verify and remove unnecessary state variable usages.
     // https://github.com/wso2-enterprise/asgardeo-product/issues/16362
-    const [ listItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ filteredUserStores, setFilteredUserStores ] = useState<UserStoreListItem[]>(undefined);
-    const [ sortBy ] = useState(SORT_BY[ 0 ]);
-    const [ sortOrder ] = useState(true);
-    const [ searchQuery, setSearchQuery ] = useState("");
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
+    const [listItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [filteredUserStores, setFilteredUserStores] = useState<UserStoreListItem[]>(undefined);
+    const [sortBy] = useState(SORT_BY[0]);
+    const [sortOrder] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
 
     const dispatch: Dispatch = useDispatch();
 
@@ -117,7 +106,7 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
 
         setUserStores(userStores);
         setFilteredUserStores(userStores);
-    }, [ originalUserStoreList ]);
+    }, [originalUserStoreList]);
 
     /**
      * Handles Userstore fetch request error.
@@ -128,24 +117,29 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
         }
 
         // Ignore resource not found errors.
-        if (userStoreListFetchRequestError?.response?.data?.message
-            === UserStoreManagementConstants.RESOURCE_NOT_FOUND_ERROR_MESSAGE) {
+        if (
+            userStoreListFetchRequestError?.response?.data?.message ===
+            UserStoreManagementConstants.RESOURCE_NOT_FOUND_ERROR_MESSAGE
+        ) {
             return;
         }
 
-        dispatch(addAlert({
-            description: userStoreListFetchRequestError?.response?.data?.description
-                || t("console:manage.features.userstores.notifications.fetchUserstores.genericError" +
-                    ".description"),
-            level: AlertLevels.ERROR,
-            message: userStoreListFetchRequestError?.response?.data?.message
-                || t("console:manage.features.userstores.notifications.fetchUserstores.genericError.message")
-        }));
-    }, [ userStoreListFetchRequestError ]);
+        dispatch(
+            addAlert({
+                description:
+                    userStoreListFetchRequestError?.response?.data?.description ||
+                    t("console:manage.features.userstores.notifications.fetchUserstores.genericError" + ".description"),
+                level: AlertLevels.ERROR,
+                message:
+                    userStoreListFetchRequestError?.response?.data?.message ||
+                    t("console:manage.features.userstores.notifications.fetchUserstores.genericError.message")
+            })
+        );
+    }, [userStoreListFetchRequestError]);
 
     useEffect(() => {
-        setFilteredUserStores((sortList(filteredUserStores, sortBy.value, sortOrder)));
-    }, [ sortBy, sortOrder ]);
+        setFilteredUserStores(sortList(filteredUserStores, sortBy.value, sortOrder));
+    }, [sortBy, sortOrder]);
 
     /**
      * This slices and returns a portion of the list.
@@ -167,7 +161,7 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
      * @param data - Pagination component data.
      */
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setOffset((data.activePage as number - 1) * listItemLimit);
+        setOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     /**
@@ -182,41 +176,39 @@ const UserStores: FunctionComponent<UserStoresPageInterface> = (
     return (
         <PageLayout
             pageTitle="User Stores"
-            title={ t("extensions:manage.features.userStores.list.title") }
-            description={ (
+            title={t("extensions:manage.features.userStores.list.title")}
+            description={
                 <>
-                    { t("extensions:manage.features.userStores.list.subTitle") }
-                    <DocumentationLink
-                        link={ getLink("manage.userStores.userStoresList.learnMore") }
-                    >
-                        { t("extensions:common.learnMore") }
+                    {t("extensions:manage.features.userStores.list.subTitle")}
+                    <DocumentationLink link={getLink("manage.userStores.userStoresList.learnMore")}>
+                        {t("extensions:common.learnMore")}
                     </DocumentationLink>
                 </>
-            ) }
-            data-testid={ `${ testId }-page-layout` }
+            }
+            data-testid={`${testId}-page-layout`}
         >
             <ListLayout
-                currentListSize={ listItemLimit }
-                listItemLimit={ listItemLimit }
-                onPageChange={ handlePaginationChange }
-                leftActionPanel={ null }
-                showPagination={ false }
-                showTopActionPanel={ false }
-                totalPages={ 1 }
-                totalListSize={ filteredUserStores?.length }
-                isLoading={ isUserStoreListFetchRequestLoading || filteredUserStores === undefined }
-                data-testid={ `${ testId }-list-layout` }
+                currentListSize={listItemLimit}
+                listItemLimit={listItemLimit}
+                onPageChange={handlePaginationChange}
+                leftActionPanel={null}
+                showPagination={false}
+                showTopActionPanel={false}
+                totalPages={1}
+                totalListSize={filteredUserStores?.length}
+                isLoading={isUserStoreListFetchRequestLoading || filteredUserStores === undefined}
+                data-testid={`${testId}-list-layout`}
             >
                 <UserStoresList
-                    list={ paginate(filteredUserStores, listItemLimit, offset) }
-                    onEmptyListPlaceholderActionClick={ () =>
+                    list={paginate(filteredUserStores, listItemLimit, offset)}
+                    onEmptyListPlaceholderActionClick={() =>
                         history.push(RemoteUserStoreConstants.getPaths().get("REMOTE_USER_STORE_CREATE"))
                     }
-                    onSearchQueryClear={ handleSearchQueryClear }
-                    searchQuery={ searchQuery }
-                    update={ () => mutateUserStoreListFetchRequest() }
-                    featureConfig={ featureConfig }
-                    data-testid={ `${ testId }-list` }
+                    onSearchQueryClear={handleSearchQueryClear}
+                    searchQuery={searchQuery}
+                    update={() => mutateUserStoreListFetchRequest()}
+                    featureConfig={featureConfig}
+                    data-testid={`${testId}-list`}
                 />
             </ListLayout>
         </PageLayout>
