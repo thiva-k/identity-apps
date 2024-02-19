@@ -17,64 +17,54 @@
  */
 
 import { identityProviderConfig } from "features/extensions/configs/identity-provider";
-import BasicAuthIcon from "../../../themes/default/assets/images/authenticators/basic-auth.png";
-import FIDOLogo from "../../../themes/default/assets/images/authenticators/fido-passkey-black.svg";
-import SMSOTPIcon from "../../../themes/default/assets/images/authenticators/sms-otp.svg";
-import SalesforceLogo from "../../../themes/default/assets/images/connectors/salesforce.png";
-import SCIMLogo from "../../../themes/default/assets/images/connectors/scim.png";
-import SPMLLogo from "../../../themes/default/assets/images/connectors/spml.png";
-import BackupCodesAuthenticatorLogo from "../../../themes/default/assets/images/icons/backup-code-icon.svg";
-import CertificateColoredIcon from "../../../themes/default/assets/images/icons/certificate-colored-icon.svg";
-import ClockColoredIcon from "../../../themes/default/assets/images/icons/clock-colored-icon.svg";
-import ConnectionIcon from "../../../themes/default/assets/images/icons/connection.svg";
-import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
-import { ReactComponent as GearsIcon } from "../../../themes/default/assets/images/icons/gears-icon.svg";
-import MagicLinkLogo from "../../../themes/default/assets/images/icons/magic-link-icon.svg";
-import MagnifierColoredIcon from "../../../themes/default/assets/images/icons/magnifier-colored-icon.svg";
-import { ReactComponent as OpenBookIcon } from "../../../themes/default/assets/images/icons/open-book-icon.svg";
-import TOTPIcon from "../../../themes/default/assets/images/icons/outline-icons/clock-outline.svg";
-import { ReactComponent as ReportIcon } from "../../../themes/default/assets/images/icons/report-icon.svg";
-import EmailOTPIcon from "../../../themes/default/assets/images/icons/solid-icons/email-solid.svg";
-import {
-    ReactComponent as ProvisionCapabilityIcon
-} from "../../../themes/default/assets/images/identity-provider-capabilities/provision.svg";
-import {
-    ReactComponent as EnterpriseModeIdPIcon
-} from "../../../themes/default/assets/images/identity-providers/enterprise-idp-illustration.svg";
-import {
-    ReactComponent as ExpertModeIdPIcon
-} from "../../../themes/default/assets/images/identity-providers/expert.svg";
-import FacebookLogo from "../../../themes/default/assets/images/identity-providers/facebook-idp-illustration.svg";
-import GithubIdPIcon from "../../../themes/default/assets/images/identity-providers/github-idp-illustration.svg";
-import GoogleLogo from "../../../themes/default/assets/images/identity-providers/google-idp-illustration.svg";
-import HyprLogo from "../../../themes/default/assets/images/identity-providers/hypr.svg";
-import KerberosLogo from "../../../themes/default/assets/images/identity-providers/kerberos.png";
-import Office365Logo from "../../../themes/default/assets/images/identity-providers/office-365.svg";
-import OrganizationSSOIcon from "../../../themes/default/assets/images/identity-providers/organization-sso.svg";
-import TrustedTokenIssuerIcon
-    from "../../../themes/default/assets/images/identity-providers/trusted-token-issuer-illustration.svg";
-import TwitterLogo from "../../../themes/default/assets/images/identity-providers/twitter.svg";
-import YahooLogo from "../../../themes/default/assets/images/identity-providers/yahoo.svg";
-import OIDCLogo from "../../../themes/default/assets/images/protocols/openid-connect.png";
-import OpenIDLogo from "../../../themes/default/assets/images/protocols/openid.png";
-import SamlLogo from "../../../themes/default/assets/images/protocols/saml.png";
-import WSFedLogo from "../../../themes/default/assets/images/protocols/ws-fed.png";
-import JWTLogo from "../../../themes/default/assets/images/technologies/jwt-logo.svg";
-import AppleLogo from "../../../themes/default/assets/images/third-party/apple-logo.svg";
-import LinkedInLogo
-    from "../../../themes/default/assets/images/third-party/linkedin-logo.svg";
-import MicrosoftLogo from "../../../themes/default/assets/images/third-party/microsoft-logo.svg";
+import BasicAuthIcon from "../../themes/default/assets/images/authenticators/basic-auth.png";
+import FIDOLogo from "../../themes/default/assets/images/authenticators/fido-passkey-black.svg";
+import SMSOTPIcon from "../../themes/default/assets/images/authenticators/sms-otp.svg";
+import SalesforceLogo from "../../themes/default/assets/images/connectors/salesforce.png";
+import SCIMLogo from "../../themes/default/assets/images/connectors/scim.png";
+import SPMLLogo from "../../themes/default/assets/images/connectors/spml.png";
+import BackupCodesAuthenticatorLogo from "../../themes/default/assets/images/icons/backup-code-icon.svg";
+import CertificateColoredIcon from "../../themes/default/assets/images/icons/certificate-colored-icon.svg";
+import ClockColoredIcon from "../../themes/default/assets/images/icons/clock-colored-icon.svg";
+import ConnectionIcon from "../../themes/default/assets/images/icons/connection.svg";
+import { ReactComponent as DocumentIcon } from "../../themes/default/assets/images/icons/document-icon.svg";
+import { ReactComponent as GearsIcon } from "../../themes/default/assets/images/icons/gears-icon.svg";
+import MagicLinkLogo from "../../themes/default/assets/images/icons/magic-link-icon.svg";
+import MagnifierColoredIcon from "../../themes/default/assets/images/icons/magnifier-colored-icon.svg";
+import { ReactComponent as OpenBookIcon } from "../../themes/default/assets/images/icons/open-book-icon.svg";
+import TOTPIcon from "../../themes/default/assets/images/icons/outline-icons/clock-outline.svg";
+import { ReactComponent as ReportIcon } from "../../themes/default/assets/images/icons/report-icon.svg";
+import EmailOTPIcon from "../../themes/default/assets/images/icons/solid-icons/email-solid.svg";
+import { ReactComponent as ProvisionCapabilityIcon } from "../../themes/default/assets/images/identity-provider-capabilities/provision.svg";
+import { ReactComponent as EnterpriseModeIdPIcon } from "../../themes/default/assets/images/identity-providers/enterprise-idp-illustration.svg";
+import { ReactComponent as ExpertModeIdPIcon } from "../../themes/default/assets/images/identity-providers/expert.svg";
+import FacebookLogo from "../../themes/default/assets/images/identity-providers/facebook-idp-illustration.svg";
+import GithubIdPIcon from "../../themes/default/assets/images/identity-providers/github-idp-illustration.svg";
+import GoogleLogo from "../../themes/default/assets/images/identity-providers/google-idp-illustration.svg";
+import HyprLogo from "../../themes/default/assets/images/identity-providers/hypr.svg";
+import KerberosLogo from "../../themes/default/assets/images/identity-providers/kerberos.png";
+import Office365Logo from "../../themes/default/assets/images/identity-providers/office-365.svg";
+import OrganizationSSOIcon from "../../themes/default/assets/images/identity-providers/organization-sso.svg";
+import TrustedTokenIssuerIcon from "../../themes/default/assets/images/identity-providers/trusted-token-issuer-illustration.svg";
+import TwitterLogo from "../../themes/default/assets/images/identity-providers/twitter.svg";
+import YahooLogo from "../../themes/default/assets/images/identity-providers/yahoo.svg";
+import OIDCLogo from "../../themes/default/assets/images/protocols/openid-connect.png";
+import OpenIDLogo from "../../themes/default/assets/images/protocols/openid.png";
+import SamlLogo from "../../themes/default/assets/images/protocols/saml.png";
+import WSFedLogo from "../../themes/default/assets/images/protocols/ws-fed.png";
+import JWTLogo from "../../themes/default/assets/images/technologies/jwt-logo.svg";
+import AppleLogo from "../../themes/default/assets/images/third-party/apple-logo.svg";
+import LinkedInLogo from "../../themes/default/assets/images/third-party/linkedin-logo.svg";
+import MicrosoftLogo from "../../themes/default/assets/images/third-party/microsoft-logo.svg";
 import { SupportedServices } from "../models";
 
 export const getAddIDPCertificateWizardStepIcons = (): any => {
-
     return {
         general: DocumentIcon
     };
 };
 
 export const getIdentityProviderWizardStepIcons = (): any => {
-
     return {
         authenticatorSettings: GearsIcon,
         general: DocumentIcon,
@@ -84,7 +74,6 @@ export const getIdentityProviderWizardStepIcons = (): any => {
 };
 
 export const getAuthenticatorIcons = (): any => {
-
     return {
         AppleOIDCAuthenticator: AppleLogo,
         BasicAuthenticator: BasicAuthIcon,
@@ -119,7 +108,6 @@ export const getAuthenticatorIcons = (): any => {
 };
 
 export const getConnectorIcons = (): any => {
-
     return {
         google: GoogleLogo,
         salesforce: SalesforceLogo,
@@ -129,7 +117,6 @@ export const getConnectorIcons = (): any => {
 };
 
 export const getIdPIcons = (): any => {
-
     return {
         apple: AppleLogo,
         default: ConnectionIcon,
@@ -145,7 +132,7 @@ export const getIdPIcons = (): any => {
         microsoft: MicrosoftLogo,
         office365: Office365Logo,
         oidc: OIDCLogo,
-        organizationSSO:  OrganizationSSOIcon,
+        organizationSSO: OrganizationSSOIcon,
         saml: SamlLogo,
         smsOTP: SMSOTPIcon,
         trustedTokenIssuer: TrustedTokenIssuerIcon,
@@ -157,7 +144,6 @@ export const getIdPIcons = (): any => {
 };
 
 export const getIdPTemplateDocsIcons = (): any => {
-
     return {
         apple: AppleLogo,
         facebook: FacebookLogo,
@@ -169,15 +155,13 @@ export const getIdPTemplateDocsIcons = (): any => {
 };
 
 export const getIdPCapabilityIcons = (): any => {
-
     return {
-        [ SupportedServices.AUTHENTICATION ]: ConnectionIcon,
-        [ SupportedServices.PROVISIONING ]: ProvisionCapabilityIcon
+        [SupportedServices.AUTHENTICATION]: ConnectionIcon,
+        [SupportedServices.PROVISIONING]: ProvisionCapabilityIcon
     };
 };
 
 export const getOutboundProvisioningConnectorWizard = (): any => {
-
     return {
         connectorDetails: DocumentIcon,
         connectorSelection: GearsIcon,
@@ -186,7 +170,6 @@ export const getOutboundProvisioningConnectorWizard = (): any => {
 };
 
 export const getHelpPanelIcons = (): any => {
-
     return {
         tabs: {
             docs: OpenBookIcon

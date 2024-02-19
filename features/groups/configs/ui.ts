@@ -16,11 +16,11 @@
  * under the License.
  */
 
-import {  FunctionComponent, SVGProps } from "react";
-import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
-import { ReactComponent as GearsIcon } from "../../../themes/default/assets/images/icons/gears-icon.svg";
-import { ReactComponent as ReportIcon } from "../../../themes/default/assets/images/icons/report-icon.svg";
-import { ReactComponent as UserIcon } from "../../../themes/default/assets/images/icons/user-icon.svg";
+import { FunctionComponent, SVGProps } from "react";
+import { ReactComponent as DocumentIcon } from "../../themes/default/assets/images/icons/document-icon.svg";
+import { ReactComponent as GearsIcon } from "../../themes/default/assets/images/icons/gears-icon.svg";
+import { ReactComponent as ReportIcon } from "../../themes/default/assets/images/icons/report-icon.svg";
+import { ReactComponent as UserIcon } from "../../themes/default/assets/images/icons/user-icon.svg";
 
 export const getGroupsWizardStepIcons = (): {
     general: FunctionComponent<SVGProps<SVGSVGElement>>;
@@ -28,7 +28,6 @@ export const getGroupsWizardStepIcons = (): {
     summary: FunctionComponent<SVGProps<SVGSVGElement>>;
     users: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         general: DocumentIcon,
         roles: GearsIcon,

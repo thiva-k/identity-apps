@@ -16,11 +16,9 @@
  * under the License.
  */
 
-import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
-import { ReactComponent as GearsIcon } from "../../../themes/default/assets/images/icons/gears-icon.svg";
-import {
-    ReactComponent as DefaultIDPIcon
-} from "../../../themes/default/assets/images/identity-providers/enterprise-idp-illustration.svg";
+import { ReactComponent as DocumentIcon } from "../../themes/default/assets/images/icons/document-icon.svg";
+import { ReactComponent as GearsIcon } from "../../themes/default/assets/images/icons/gears-icon.svg";
+import { ReactComponent as DefaultIDPIcon } from "../../themes/default/assets/images/identity-providers/enterprise-idp-illustration.svg";
 
 /**
  * Get the Identity Verification Provider create wizard steps icons.
@@ -28,7 +26,6 @@ import {
  * @returns IDVP create wizard step icons.
  */
 export const getIDVPCreateWizardStepIcons = (): any => {
-
     return {
         general: DocumentIcon,
         idvpSettings: GearsIcon
@@ -40,6 +37,6 @@ export const getIDVPCreateWizardStepIcons = (): any => {
  *
  * @returns Default image for the Identity Verification Provider.
  */
-export const getDefaultImageForIDVP = (): any  => {
+export const getDefaultImageForIDVP = (): any => {
     return DefaultIDPIcon;
 };

@@ -16,17 +16,13 @@
  * under the License.
  */
 
-import {  FunctionComponent, SVGProps } from "react";
-import {
-    ReactComponent as CertificateAvatar
-} from "../../../themes/default/assets/images/icons/certificate-avatar.svg";
-import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
-import { ReactComponent as FileUploadIllustration } from "../../../themes/default/assets/images/icons/upload.svg";
-import { ReactComponent as CertificateBadge } from "../../../themes/default/assets/images/illustrations/badge.svg";
-import {
-    ReactComponent as CertificateIllustration
-} from "../../../themes/default/assets/images/illustrations/certificate.svg";
-import { ReactComponent as CertificateRibbon } from "../../../themes/default/assets/images/illustrations/ribbon.svg";
+import { FunctionComponent, SVGProps } from "react";
+import { ReactComponent as CertificateAvatar } from "../../themes/default/assets/images/icons/certificate-avatar.svg";
+import { ReactComponent as DocumentIcon } from "../../themes/default/assets/images/icons/document-icon.svg";
+import { ReactComponent as FileUploadIllustration } from "../../themes/default/assets/images/icons/upload.svg";
+import { ReactComponent as CertificateBadge } from "../../themes/default/assets/images/illustrations/badge.svg";
+import { ReactComponent as CertificateIllustration } from "../../themes/default/assets/images/illustrations/certificate.svg";
+import { ReactComponent as CertificateRibbon } from "../../themes/default/assets/images/illustrations/ribbon.svg";
 
 export const getCertificateIllustrations = (): {
     avatar: FunctionComponent<SVGProps<SVGSVGElement>>;
@@ -35,7 +31,6 @@ export const getCertificateIllustrations = (): {
     ribbon: FunctionComponent<SVGProps<SVGSVGElement>>;
     uploadPlaceholder: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         avatar: CertificateAvatar,
         badge: CertificateBadge,
@@ -46,9 +41,8 @@ export const getCertificateIllustrations = (): {
 };
 
 export const getImportCertificateWizardStepIcons = (): {
-    general: FunctionComponent<SVGProps<SVGSVGElement>> ,
+    general: FunctionComponent<SVGProps<SVGSVGElement>>;
 } => {
-
     return {
         general: DocumentIcon
     };

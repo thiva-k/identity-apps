@@ -43,10 +43,8 @@ import { EmailTemplateScreenSkeleton } from "./email-template-screen-skeleton";
 import { LoginScreenSkeleton } from "./login-screen-skeleton";
 import { MyAccountScreenSkeleton } from "./my-account-screen-skeleton";
 import { commonConfig } from "features/extensions/configs";
-import { ReactComponent as CustomLayoutSuccessImg } from
-    "../../../../themes/wso2is/assets/images/branding/custom-layout-success.svg";
-import { ReactComponent as CustomLayoutWarningImg } from
-    "../../../../themes/wso2is/assets/images/branding/custom-layout-warning.svg";
+import { ReactComponent as CustomLayoutSuccessImg } from "../../../themes/wso2is/assets/images/branding/custom-layout-success.svg";
+import { ReactComponent as CustomLayoutWarningImg } from "../../../themes/wso2is/assets/images/branding/custom-layout-warning.svg";
 import { AppState } from "../../../core/store";
 import { useLayout, useLayoutStyle } from "../../api";
 import { usePreviewContent, usePreviewStyle } from "../../api/preview-skeletons";
@@ -85,50 +83,42 @@ interface BrandingPreferencePreviewInterface extends IdentifiableComponentInterf
 export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePreviewInterface> = (
     props: BrandingPreferencePreviewInterface
 ): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId,
-        brandingPreference,
-        isLoading,
-        screenType,
-        onPreviewResize
-    } = props;
+    const { ["data-componentid"]: componentId, brandingPreference, isLoading, screenType, onPreviewResize } = props;
 
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
 
     const tenantDomain: string = useSelector((state: AppState) => state.auth.tenantDomain);
-    const supportEmail: string = useSelector((state: AppState) =>
-        state.config.deployment.extensions?.supportEmail as string);
+    const supportEmail: string = useSelector(
+        (state: AppState) => state.config.deployment.extensions?.supportEmail as string
+    );
 
     const brandingPreviewContainerRef: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>(null);
 
-    const [ isIframeReady, setIsIframeReady ] = useState<boolean>(false);
-    const [ wrapperStyle, setWrapperStyle ] = useState<CSSProperties>(null);
-    const [ iFrameStyle, setIFrameStyle ] = useState<CSSProperties>(null);
-    const [ layoutContext, setLayoutContext ] = useState<string[]>([ "", "", "", "", "", "" ]);
-    const [ isLayoutResolving, setIsLayoutResolving ] = useState<boolean>(true);
-    const [ isErrorOccured, setIsErrorOccured ] = useState<boolean>(false);
+    const [isIframeReady, setIsIframeReady] = useState<boolean>(false);
+    const [wrapperStyle, setWrapperStyle] = useState<CSSProperties>(null);
+    const [iFrameStyle, setIFrameStyle] = useState<CSSProperties>(null);
+    const [layoutContext, setLayoutContext] = useState<string[]>(["", "", "", "", "", ""]);
+    const [isLayoutResolving, setIsLayoutResolving] = useState<boolean>(true);
+    const [isErrorOccured, setIsErrorOccured] = useState<boolean>(false);
 
-    const {
-        data: layoutBlob,
-        isLoading: layoutLoading
-    } = useLayout(brandingPreference.layout.activeLayout, tenantDomain);
-    const {
-        data: layoutStyleBlob,
-        isLoading: layoutStyleLoading
-    } = useLayoutStyle(brandingPreference.layout.activeLayout, tenantDomain);
-    const {
-        data: previewScreenSkeletonContent,
-        isLoading: isPreviewScreenSkeletonContentLoading
-    } = usePreviewContent(screenType);
+    const { data: layoutBlob, isLoading: layoutLoading } = useLayout(
+        brandingPreference.layout.activeLayout,
+        tenantDomain
+    );
+    const { data: layoutStyleBlob, isLoading: layoutStyleLoading } = useLayoutStyle(
+        brandingPreference.layout.activeLayout,
+        tenantDomain
+    );
+    const { data: previewScreenSkeletonContent, isLoading: isPreviewScreenSkeletonContentLoading } = usePreviewContent(
+        screenType
+    );
     const { data: previewScreenSkeletonStyles } = usePreviewStyle(screenType);
 
     /**
      * Update the iframe styles to achieve responsiveness.
      */
     const updateStyles = () => {
-
         if (!brandingPreviewContainerRef?.current) {
             return;
         }
@@ -153,7 +143,7 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
 
         setIFrameStyle({
             height: iFrameOriginalHeight,
-            transform: `scale(${1/scalingFactor})`,
+            transform: `scale(${1 / scalingFactor})`,
             transformOrigin: "0 0",
             width: iFrameOriginalWidth
         });
@@ -164,9 +154,8 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
      * Set the initial styles for the iframe.
      */
     useEffect(() => {
-        if (brandingPreviewContainerRef)
-            updateStyles();
-    }, [ brandingPreviewContainerRef ]);
+        if (brandingPreviewContainerRef) updateStyles();
+    }, [brandingPreviewContainerRef]);
 
     /**
      * Add and remove event listener for update the iframe styles.
@@ -181,11 +170,10 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
      * Read the layout resources.
      */
     useEffect(() => {
-
         const fetchLayoutResources = async () => {
             setIsLayoutResolving(true);
 
-            const _layoutContext: string[] = [ ...layoutContext ];
+            const _layoutContext: string[] = [...layoutContext];
 
             let htmlContent: string, cssContent: string;
 
@@ -207,8 +195,8 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
                 try {
                     htmlContent = await layout.text();
                     cssContent = await styles.text();
-                } catch (ex: any) {
-                    setLayoutContext([ brandingPreference.layout.activeLayout, "", "", "", "", "" ]);
+                } catch (ex) {
+                    setLayoutContext([brandingPreference.layout.activeLayout, "", "", "", "", ""]);
                     setIsErrorOccured(true);
                     setIsLayoutResolving(false);
 
@@ -226,8 +214,10 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
             }
 
             // Execute the layout using mustache library.
-            const context: Record<string, string> =
-                LAYOUT_DATA[brandingPreference.layout.activeLayout](brandingPreference.layout, tenantDomain);
+            const context: Record<string, string> = LAYOUT_DATA[brandingPreference.layout.activeLayout](
+                brandingPreference.layout,
+                tenantDomain
+            );
 
             context.ProductHeader = "<section id='productHeader'></section>";
             context.MainSection = "<section id='mainSection'></section>";
@@ -235,9 +225,9 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
             const view: string = Mustache.render(htmlContent, context);
 
             const mergedCSSContent: string =
-                BrandingPreferenceMeta.getThemeSkeleton(brandingPreference.theme)
-                + BrandingPreferenceMeta.getStylesToDisablePointerEvents()
-                + cssContent;
+                BrandingPreferenceMeta.getThemeSkeleton(brandingPreference.theme) +
+                BrandingPreferenceMeta.getStylesToDisablePointerEvents() +
+                cssContent;
 
             setLayoutContext([
                 brandingPreference.layout.activeLayout,
@@ -276,8 +266,8 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
         if (loginScreenCategory.includes(screenType)) {
             return (
                 <LoginScreenSkeleton
-                    brandingPreference={ brandingPreference }
-                    layoutContent = { layoutContext[3] }
+                    brandingPreference={brandingPreference}
+                    layoutContent={layoutContext[3]}
                     data-componentid="branding-preference-preview-login-skeleton"
                 />
             );
@@ -286,8 +276,8 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
         if (screenType === PreviewScreenType.MY_ACCOUNT) {
             return (
                 <MyAccountScreenSkeleton
-                    content={ previewScreenSkeletonContent }
-                    brandingPreference={ brandingPreference }
+                    content={previewScreenSkeletonContent}
+                    brandingPreference={brandingPreference}
                     data-componentid="branding-preference-preview-my-account-skeleton"
                 />
             );
@@ -296,14 +286,14 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
         if (screenType === PreviewScreenType.EMAIL_TEMPLATE) {
             return (
                 <EmailTemplateScreenSkeleton
-                    content={ previewScreenSkeletonContent }
-                    brandingPreference={ brandingPreference }
+                    content={previewScreenSkeletonContent}
+                    brandingPreference={brandingPreference}
                     data-componentid="branding-preference-preview-email-template-skeleton"
                 />
             );
         }
 
-        return <ContentLoader data-componentid={ `${ componentId }-loader` } />;
+        return <ContentLoader data-componentid={`${componentId}-loader`} />;
     };
 
     const resolveIframeStyles = (): string => {
@@ -316,9 +306,9 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
                 return previewScreenSkeletonStyles;
             }
 
-            return `${
-                BrandingPreferenceMeta.getThemeSkeleton(brandingPreference.theme)
-            }\n${previewScreenSkeletonStyles}}`;
+            return `${BrandingPreferenceMeta.getThemeSkeleton(
+                brandingPreference.theme
+            )}\n${previewScreenSkeletonStyles}}`;
         }
 
         return layoutContext[4];
@@ -327,120 +317,119 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
     return (
         <div
             className="branding-preference-preview-container"
-            ref={ brandingPreviewContainerRef }
-            data-componentid={ componentId }
+            ref={brandingPreviewContainerRef}
+            data-componentid={componentId}
         >
-            {
-                isLoading || !isIframeReady
-                    ? (
-                        <Placeholder
-                            className="branding-preference-preview-loader"
-                            data-componentid={ `${ componentId }-loader` }
-                        >
-                            <Placeholder.Image />
-                        </Placeholder>
-                    ) : null
-            }
+            {isLoading || !isIframeReady ? (
+                <Placeholder className="branding-preference-preview-loader" data-componentid={`${componentId}-loader`}>
+                    <Placeholder.Image />
+                </Placeholder>
+            ) : null}
             <Iframe
                 cloneParentStyleSheets
                 injectStyleNodeAfterParentStyles
-                styles={ resolveIframeStyles() }
+                styles={resolveIframeStyles()}
                 styleNodeInjectionStrategy="prepend"
                 stylesheets={
-                    isErrorOccured || layoutContext[0] === PredefinedLayouts.CUSTOM
-                        ? null
-                        : [ layoutContext[5] ]
+                    isErrorOccured || layoutContext[0] === PredefinedLayouts.CUSTOM ? null : [layoutContext[5]]
                 }
-                isReady={ (status: boolean) => {
+                isReady={(status: boolean) => {
                     setIsIframeReady(status);
-                } }
-                isLoading={ !isLoading || !isIframeReady }
-                data-componentid={ `${ componentId }-iframe` }
+                }}
+                isLoading={!isLoading || !isIframeReady}
+                data-componentid={`${componentId}-iframe`}
                 className="branding-preference-preview-iframe"
-                style={ iFrameStyle }
-                wrapperStyle= { wrapperStyle }
+                style={iFrameStyle}
+                wrapperStyle={wrapperStyle}
                 id="branding-preference-preview-iframe"
             >
-                {
-                    !isLoading && isIframeReady && !isLayoutResolving && !isPreviewScreenSkeletonContentLoading
-                        ? (
-                            commonConfig.enableDefaultBrandingPreviewSection
-                                && layoutContext[0] === PredefinedLayouts.CUSTOM ? (
-                                    <div className="branding-preference-preview-message" >
-                                        <EmptyPlaceholder
-                                            image={ CustomLayoutSuccessImg }
-                                            imageSize="small"
-                                            subtitle={
-                                                [
-                                                    t("extensions:develop.branding.tabs.preview."
-                                                        + "info.layout.activatedMessage.subTitle"),
-                                                    <>
-                                                        { t("extensions:develop.branding.tabs.preview."
-                                                            + "info.layout.activatedMessage.description") }
-                                                        <DocumentationLink
-                                                            link={ getLink("develop.branding.layout.custom.learnMore") }
-                                                        >
-                                                            { t("common:learnMore") }
-                                                        </DocumentationLink>
-                                                    </>
-                                                ]
-                                            }
-                                            title={ t("extensions:develop.branding.tabs.preview."
-                                                + "info.layout.activatedMessage.title") }
-                                        />
-                                    </div>
-                                ) : (
-                                    isErrorOccured
-                                        ? (
-                                            <div className="branding-preference-preview-message" >
-                                                <EmptyPlaceholder
-                                                    image={ CustomLayoutWarningImg }
-                                                    imageSize="small"
-                                                    subtitle={
-                                                        layoutContext[0] === PredefinedLayouts.CUSTOM
-                                                            ? [
-                                                                t("extensions:develop.branding.tabs.preview."
-                                                                    + "errors.layout.notFoundWithSupport.subTitle"),
-                                                                <Trans
-                                                                    key={ 1 }
-                                                                    i18nKey={ "extensions:develop.branding."
-                                                                        + "tabs.preview.errors.layout."
-                                                                        + "notFoundWithSupport.description" }
-                                                                    tOptions={ {
-                                                                        supportEmail
-                                                                    } }
-                                                                >
-                                                                    Need a fully customized layout for your
-                                                                    organization? Reach us out at <Link
-                                                                        data-componentid=
-                                                                            { "branding-preference-"
-                                                                            + "custom-request-mail-trigger" }
-                                                                        link={ `mailto:${ supportEmail }` }
-                                                                    >
-                                                                        { supportEmail }
-                                                                    </Link>
-                                                                </Trans>
-                                                            ]
-                                                            : [
-                                                                t("extensions:develop.branding.tabs."
-                                                                    + "preview.errors.layout.notFound.subTitle")
-                                                            ]
-
-                                                    }
-                                                    title={
-                                                        layoutContext[0] === PredefinedLayouts.CUSTOM
-                                                            ? t("extensions:develop.branding.tabs.preview.errors."
-                                                                + "layout.notFoundWithSupport.title")
-                                                            : t("extensions:develop.branding.tabs.preview.errors."
-                                                                + "layout.notFound.title")
-                                                    }
-                                                />
-                                            </div>
-                                        )
-                                        : resolvePreviewScreen()
-                                )
-                        ) : <ContentLoader data-componentid={ `${ componentId }-loader` } />
-                }
+                {!isLoading && isIframeReady && !isLayoutResolving && !isPreviewScreenSkeletonContentLoading ? (
+                    commonConfig.enableDefaultBrandingPreviewSection &&
+                    layoutContext[0] === PredefinedLayouts.CUSTOM ? (
+                        <div className="branding-preference-preview-message">
+                            <EmptyPlaceholder
+                                image={CustomLayoutSuccessImg}
+                                imageSize="small"
+                                subtitle={[
+                                    t(
+                                        "extensions:develop.branding.tabs.preview." +
+                                            "info.layout.activatedMessage.subTitle"
+                                    ),
+                                    <>
+                                        {t(
+                                            "extensions:develop.branding.tabs.preview." +
+                                                "info.layout.activatedMessage.description"
+                                        )}
+                                        <DocumentationLink link={getLink("develop.branding.layout.custom.learnMore")}>
+                                            {t("common:learnMore")}
+                                        </DocumentationLink>
+                                    </>
+                                ]}
+                                title={t(
+                                    "extensions:develop.branding.tabs.preview." + "info.layout.activatedMessage.title"
+                                )}
+                            />
+                        </div>
+                    ) : isErrorOccured ? (
+                        <div className="branding-preference-preview-message">
+                            <EmptyPlaceholder
+                                image={CustomLayoutWarningImg}
+                                imageSize="small"
+                                subtitle={
+                                    layoutContext[0] === PredefinedLayouts.CUSTOM
+                                        ? [
+                                              t(
+                                                  "extensions:develop.branding.tabs.preview." +
+                                                      "errors.layout.notFoundWithSupport.subTitle"
+                                              ),
+                                              <Trans
+                                                  key={1}
+                                                  i18nKey={
+                                                      "extensions:develop.branding." +
+                                                      "tabs.preview.errors.layout." +
+                                                      "notFoundWithSupport.description"
+                                                  }
+                                                  tOptions={{
+                                                      supportEmail
+                                                  }}
+                                              >
+                                                  Need a fully customized layout for your organization? Reach us out at{" "}
+                                                  <Link
+                                                      data-componentid={
+                                                          "branding-preference-" + "custom-request-mail-trigger"
+                                                      }
+                                                      link={`mailto:${supportEmail}`}
+                                                  >
+                                                      {supportEmail}
+                                                  </Link>
+                                              </Trans>
+                                          ]
+                                        : [
+                                              t(
+                                                  "extensions:develop.branding.tabs." +
+                                                      "preview.errors.layout.notFound.subTitle"
+                                              )
+                                          ]
+                                }
+                                title={
+                                    layoutContext[0] === PredefinedLayouts.CUSTOM
+                                        ? t(
+                                              "extensions:develop.branding.tabs.preview.errors." +
+                                                  "layout.notFoundWithSupport.title"
+                                          )
+                                        : t(
+                                              "extensions:develop.branding.tabs.preview.errors." +
+                                                  "layout.notFound.title"
+                                          )
+                                }
+                            />
+                        </div>
+                    ) : (
+                        resolvePreviewScreen()
+                    )
+                ) : (
+                    <ContentLoader data-componentid={`${componentId}-loader`} />
+                )}
             </Iframe>
         </div>
     );

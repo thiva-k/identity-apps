@@ -16,38 +16,33 @@
  * under the License.
  */
 
-import BasicAuthIcon from "../../../themes/default/assets/images/authenticators/basic-auth.png";
-import FIDOIcon from "../../../themes/default/assets/images/authenticators/fido-passkey-black.svg";
-import SalesforceLogo from "../../../themes/default/assets/images/connectors/salesforce.png";
-import SCIMLogo from "../../../themes/default/assets/images/connectors/scim.png";
-import SPMLLogo from "../../../themes/default/assets/images/connectors/spml.png";
-import FacebookLogo from "../../../themes/default/assets/images/identity-providers/facebook-idp-illustration.svg";
-import GithubIdPIcon from "../../../themes/default/assets/images/identity-providers/github-idp-illustration.svg";
-import GoogleLogo from "../../../themes/default/assets/images/identity-providers/google-idp-illustration.svg";
-import KerberosLogo from "../../../themes/default/assets/images/identity-providers/kerberos.png";
-import Office365Logo from "../../../themes/default/assets/images/identity-providers/office-365.svg";
-import TrustedTokenIssuerIcon
-    from "../../../themes/default/assets/images/identity-providers/trusted-token-issuer-illustration.svg";
-import TwitterLogo from "../../../themes/default/assets/images/identity-providers/twitter.svg";
-import YahooLogo from "../../../themes/default/assets/images/identity-providers/yahoo.svg";
-import JWTLogo from "../../../themes/default/assets/images/technologies/jwt-logo.svg";
-import AppleLogo from "../../../themes/default/assets/images/third-party/apple-logo.svg";
-import MicrosoftLogo from "../../../themes/default/assets/images/third-party/microsoft-logo.svg";
+import BasicAuthIcon from "../../themes/default/assets/images/authenticators/basic-auth.png";
+import FIDOIcon from "../../themes/default/assets/images/authenticators/fido-passkey-black.svg";
+import SalesforceLogo from "../../themes/default/assets/images/connectors/salesforce.png";
+import SCIMLogo from "../../themes/default/assets/images/connectors/scim.png";
+import SPMLLogo from "../../themes/default/assets/images/connectors/spml.png";
+import FacebookLogo from "../../themes/default/assets/images/identity-providers/facebook-idp-illustration.svg";
+import GithubIdPIcon from "../../themes/default/assets/images/identity-providers/github-idp-illustration.svg";
+import GoogleLogo from "../../themes/default/assets/images/identity-providers/google-idp-illustration.svg";
+import KerberosLogo from "../../themes/default/assets/images/identity-providers/kerberos.png";
+import Office365Logo from "../../themes/default/assets/images/identity-providers/office-365.svg";
+import TrustedTokenIssuerIcon from "../../themes/default/assets/images/identity-providers/trusted-token-issuer-illustration.svg";
+import TwitterLogo from "../../themes/default/assets/images/identity-providers/twitter.svg";
+import YahooLogo from "../../themes/default/assets/images/identity-providers/yahoo.svg";
+import JWTLogo from "../../themes/default/assets/images/technologies/jwt-logo.svg";
+import AppleLogo from "../../themes/default/assets/images/third-party/apple-logo.svg";
+import MicrosoftLogo from "../../themes/default/assets/images/third-party/microsoft-logo.svg";
 import { SupportedServices } from "../models/connection";
 import ConnectionIcon from "../resources/assets/images/icons/connection.svg";
-import { ReactComponent as DefaultConnectionIcon
-} from "../resources/assets/images/icons/default-connection-icon.svg";
+import { ReactComponent as DefaultConnectionIcon } from "../resources/assets/images/icons/default-connection-icon.svg";
 import { ReactComponent as DocumentIcon } from "../resources/assets/images/icons/document-icon.svg";
 import EmailOTPIcon from "../resources/assets/images/icons/email-solid.svg";
-import { ReactComponent as EnterpriseConnectionIcon
-} from "../resources/assets/images/icons/enterprise-icon.svg";
+import { ReactComponent as EnterpriseConnectionIcon } from "../resources/assets/images/icons/enterprise-icon.svg";
 import { ReactComponent as GearsIcon } from "../resources/assets/images/icons/gears-icon.svg";
 import MagicLinkIcon from "../resources/assets/images/icons/magic-link-icon.svg";
 import OIDCConnectionIcon from "../resources/assets/images/icons/oidc-connection-icon.png";
 import OrganizationSSOIcon from "../resources/assets/images/icons/organization-sso-icon.svg";
-import {
-    ReactComponent as ProvisionIcon
-} from "../resources/assets/images/icons/provision.svg";
+import { ReactComponent as ProvisionIcon } from "../resources/assets/images/icons/provision.svg";
 import { ReactComponent as ReportIcon } from "../resources/assets/images/icons/report-icon.svg";
 import SAMLConnectionIcon from "../resources/assets/images/icons/saml-connection-icon.png";
 import SMSOTPIcon from "../resources/assets/images/icons/sms-otp.svg";
@@ -55,7 +50,6 @@ import TOTPIcon from "../resources/assets/images/icons/totp.svg";
 import WSFederationIcon from "../resources/assets/images/icons/ws-fed.png";
 
 export const getConnectionWizardStepIcons = (): any => {
-
     return {
         authenticatorSettings: GearsIcon,
         general: DocumentIcon,
@@ -65,7 +59,6 @@ export const getConnectionWizardStepIcons = (): any => {
 };
 
 export const getConnectorIcons = (): any => {
-
     return {
         google: GoogleLogo,
         salesforce: SalesforceLogo,
@@ -75,7 +68,6 @@ export const getConnectorIcons = (): any => {
 };
 
 export const getConnectionIcons = (): any => {
-
     return {
         Microsoft: MicrosoftLogo,
         apple: AppleLogo,
@@ -108,15 +100,13 @@ export const getConnectionIcons = (): any => {
 };
 
 export const getConnectionCapabilityIcons = (): any => {
-
     return {
-        [ SupportedServices.AUTHENTICATION ]: ConnectionIcon,
-        [ SupportedServices.PROVISIONING ]: ProvisionIcon
+        [SupportedServices.AUTHENTICATION]: ConnectionIcon,
+        [SupportedServices.PROVISIONING]: ProvisionIcon
     };
 };
 
 export const getOutboundProvisioningConnectorWizardIcons = (): any => {
-
     return {
         connectorDetails: DocumentIcon,
         connectorSelection: GearsIcon,

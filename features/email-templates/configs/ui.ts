@@ -16,20 +16,19 @@
  * under the License.
  */
 
-import { ReactComponent as DocumentIcon } from "../../../themes/default/assets/images/icons/document-icon.svg";
+import { ReactComponent as DocumentIcon } from "../../themes/default/assets/images/icons/document-icon.svg";
 
-export const getAddEmailTemplateTypeWizardStepIcons = (): { 
-    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;  
- } => {
+export const getAddEmailTemplateTypeWizardStepIcons = (): {
+    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+} => {
     return {
         general: DocumentIcon as any
     };
-    
 };
 
-export const getViewLocaleTemplateWizardStepIcons = (): { 
-    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;  
- } => {
+export const getViewLocaleTemplateWizardStepIcons = (): {
+    general: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+} => {
     return {
         general: DocumentIcon as any
     };
