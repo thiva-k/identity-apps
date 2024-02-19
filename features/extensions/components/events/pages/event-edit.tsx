@@ -44,7 +44,7 @@ import { Button, Divider, Grid, Placeholder, Ref } from "semantic-ui-react";
 import {
     AppState,
     FeatureConfigInterface
-} from "../../../../features/core";
+} from "features/core";
 import { ChoreoButton } from "../../shared/button/choreo-navigation-button";
 import { updateEventConfigurations, useEventConfig } from "../api";
 import { EventManagementConstants } from "../constants";

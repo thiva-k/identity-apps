@@ -28,11 +28,11 @@ import { useSelector } from "react-redux";
 import {
     SmsOtpAuthenticatorActivationSection
 } from "./sms-otp-authenticator-activation-section";
-import { FeatureConfigInterface } from "../../../../features/core/models";
-import { AppState } from "../../../../features/core/store";
+import { FeatureConfigInterface } from "features/core/models";
+import { AppState } from "features/core/store";
 import {
     SMSOTPAuthenticatorForm
-} from "../../../../features/identity-providers/components/forms/authenticators/sms-otp-authenticator-form";
+} from "features/identity-providers/components/forms/authenticators/sms-otp-authenticator-form";
 
 interface SmsOTPAuthenticatorInterface extends IdentifiableComponentInterface {
     /**

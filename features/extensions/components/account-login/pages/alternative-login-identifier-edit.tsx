@@ -58,29 +58,29 @@ import { Dispatch } from "redux";
 import { Icon } from "semantic-ui-react";
 import {
     ExtendedClaimInterface
-} from "../../../../features/applications/components/settings/attribute-management";
-import { ApplicationManagementConstants } from "../../../../features/applications/constants";
+} from "features/applications/components/settings/attribute-management";
+import { ApplicationManagementConstants } from "features/applications/constants";
 import {
     getAllLocalClaims,
     updateAClaim
-} from "../../../../features/claims/api/claims";
-import { ClaimManagementConstants } from "../../../../features/claims/constants";
+} from "features/claims/api/claims";
+import { ClaimManagementConstants } from "features/claims/constants";
 import {
     AppConstants,
     AppState,
     history
-} from "../../../../features/core";
+} from "features/core";
 import {
     getConnectorDetails,
     updateGovernanceConnector
-} from "../../../../features/server-configurations/api";
+} from "features/server-configurations/api";
 import {
     ConnectorPropertyInterface,
     GovernanceConnectorInterface,
     UpdateGovernanceConnectorConfigInterface
-} from "../../../../features/server-configurations/models";
-import { getUsernameConfiguration } from "../../../../features/users/utils/user-management-utils";
-import { useValidationConfigData } from "../../../../features/validation/api";
+} from "features/server-configurations/models";
+import { getUsernameConfiguration } from "features/users/utils/user-management-utils";
+import { useValidationConfigData } from "features/validation/api";
 import {
     AlternativeLoginIdentifierFormInterface
 } from "../models";

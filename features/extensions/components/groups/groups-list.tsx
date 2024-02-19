@@ -43,9 +43,9 @@ import {
     UIConstants,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../../features/core";
-import { GroupConstants } from "../../../features/groups/constants";
-import { GroupsInterface } from "../../../features/groups/models";
+} from "features/core";
+import { GroupConstants } from "features/groups/constants";
+import { GroupsInterface } from "features/groups/models";
 import { CONSUMER_USERSTORE } from "../users/constants";
 
 interface GroupListProps extends SBACInterface<FeatureConfigInterface>,

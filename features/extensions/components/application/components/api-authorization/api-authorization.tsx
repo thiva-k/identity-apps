@@ -44,7 +44,7 @@ import { Dispatch } from "redux";
 import { Divider, Grid, Icon } from "semantic-ui-react";
 import { SubscribedAPIResources } from ".";
 import { AuthorizeAPIResource } from "./wizard";
-import { AppState, history } from "../../../../../features/core";
+import { AppState, history } from "features/core";
 import { ExtendedFeatureConfigInterface } from "../../../../configs/models";
 import { useAPIResources } from "../../../api-resources/api";
 import { APIResourcesConstants } from "../../../api-resources/constants";

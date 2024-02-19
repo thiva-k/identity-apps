@@ -28,17 +28,17 @@ import { Button, Divider, Form, Icon, InputOnChangeData } from "semantic-ui-reac
 import { tomcatSAMLAgentDockerEnvCode } from "./code-blocks";
 import { SDKMeta } from "./meta";
 import { SupportedTraditionalSAMLAppTechnologyTypes } from "./models";
-import { updateAuthProtocolConfig } from "../../../../features/applications/api";
+import { updateAuthProtocolConfig } from "features/applications/api";
 import {
     ApplicationInterface,
     ApplicationTemplateInterface,
     SAML2ConfigurationInterface,
     SAMLApplicationConfigurationInterface,
     SupportedAuthProtocolTypes
-} from "../../../../features/applications/models";
-import { getTechnologyLogos } from "../../../../features/core/configs";
-import { AppState } from "../../../../features/core/store";
-import { EventPublisher } from "../../../../features/core/utils";
+} from "features/applications/models";
+import { getTechnologyLogos } from "features/core/configs";
+import { AppState } from "features/core/store";
+import { EventPublisher } from "features/core/utils";
 import {
     VerticalStepper,
     VerticalStepperStepInterface

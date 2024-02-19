@@ -28,17 +28,17 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Grid, Icon, Modal } from "semantic-ui-react";
 import { AddGroupUsers } from "./group-assign-users";
-import { AppConstants, history } from "../../../../features/core";
-import { EventPublisher } from "../../../../features/core/utils";
-import { createGroup } from "../../../../features/groups/api";
-import { CreateGroupSummary } from "../../../../features/groups/components/wizard";
-import { getGroupsWizardStepIcons } from "../../../../features/groups/configs";
+import { AppConstants, history } from "features/core";
+import { EventPublisher } from "features/core/utils";
+import { createGroup } from "features/groups/api";
+import { CreateGroupSummary } from "features/groups/components/wizard";
+import { getGroupsWizardStepIcons } from "features/groups/configs";
 import {
     CreateGroupInterface,
     CreateGroupMemberInterface
-} from "../../../../features/groups/models";
-import { updateRole } from "../../../../features/roles/api";
-import { PatchRoleDataInterface } from "../../../../features/roles/models";
+} from "features/groups/models";
+import { updateRole } from "features/roles/api";
+import { PatchRoleDataInterface } from "features/roles/models";
 import { commonConfig } from "../../../configs";
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../users/constants";
 

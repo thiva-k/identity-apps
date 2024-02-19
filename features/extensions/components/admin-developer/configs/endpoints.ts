@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { Config } from "../../../../features/core";
+import { Config } from "features/core";
 import { InviteResourceEndpointsInterface } from "../models";
 
 /**

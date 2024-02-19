@@ -39,8 +39,8 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { Header, Segment } from "semantic-ui-react";
 import { GroupBasics } from "./group-basics";
-import { UIConstants, UserBasicInterface, UserListInterface, getUsersList } from "../../../../features/core";
-import { GroupsMemberInterface } from "../../../../features/groups/models";
+import { UIConstants, UserBasicInterface, UserListInterface, getUsersList } from "features/core";
+import { GroupsMemberInterface } from "features/groups/models";
 import { SCIMConfigs } from "../../../configs/scim";
 import { UserManagementUtils } from "../../users/utils";
 

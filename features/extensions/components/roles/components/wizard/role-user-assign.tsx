@@ -45,9 +45,9 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Header, Icon, Input, Modal, Table } from "semantic-ui-react";
-import { UIConstants, getEmptyPlaceholderIllustrations } from "../../../../../features/core";
-import { getUsersList } from "../../../../../features/users/api/users";
-import { UserBasicInterface, UserListInterface } from "../../../../../features/users/models/user";
+import { UIConstants, getEmptyPlaceholderIllustrations } from "features/core";
+import { getUsersList } from "features/users/api/users";
+import { UserBasicInterface, UserListInterface } from "features/users/models/user";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 
 /**

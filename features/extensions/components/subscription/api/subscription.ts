@@ -22,8 +22,8 @@ import useRequest, {
     RequestResultInterface
 } from "apps/console/src/features/core/hooks/use-request";
 import { HttpMethods } from "modules/core/src/models";
-import { Config } from "../../../../features/core";
-import { useGetCurrentOrganizationType } from "../../../../features/organizations/hooks/use-get-organization-type";
+import { Config } from "features/core";
+import { useGetCurrentOrganizationType } from "features/organizations/hooks/use-get-organization-type";
 import { getDomainQueryParam } from "../../tenants/api/tenants";
 import { getTenantResourceEndpoints } from "../../tenants/configs";
 import { TenantTierRequestResponse } from "../models/subscription";

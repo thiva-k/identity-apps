@@ -50,6 +50,7 @@ import { AppView, FullScreenView } from "../../../views";
 import { APIResourcesConstants } from "../../api-resources/constants";
 import { ServerConfigurationsConstants } from "../../server-configurations";
 import { AppConstants } from "../constants";
+import UsersPage  from "@wso2is/features/users/pages/users";
 
 /**
  * Get App View Routes.
@@ -89,6 +90,13 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         order: 0,
                         path: AppConstants.getPaths().get("GETTING_STARTED"),
                         protected: true,
+                        showOnSidePanel: true
+                    },
+                    {
+                        component: UsersPage,
+                        id: "test",
+                        name: "Test",
+                        path : "testpath",
                         showOnSidePanel: true
                     },
                     {

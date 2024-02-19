@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { AppConstants } from "../../../features/core";
+import { AppConstants } from "features/core";
 
 /**
  * Class containing consumer users constants.

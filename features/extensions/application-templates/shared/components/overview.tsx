@@ -20,14 +20,14 @@ import { AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { GenericIcon, GenericIconProps, Heading, PageHeader } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Card, Grid, Radio } from "semantic-ui-react";
-import { getApplicationList } from "../../../../features/applications/api";
+import { getApplicationList } from "features/applications/api";
 import {
     ApplicationInterface,
     ApplicationListInterface,
     InboundProtocolListItemInterface,
     URLFragmentTypes
-} from "../../../../features/applications/models";
-import { EventPublisher, history } from "../../../../features/core";
+} from "features/applications/models";
+import { EventPublisher, history } from "features/core";
 import { QuickStartModes } from "../models";
 import { useDispatch } from "react-redux";
 import { addAlert } from "@wso2is/core/store";

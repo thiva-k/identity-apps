@@ -28,9 +28,9 @@ import {
     ApplicationInterface,
     ApplicationTemplateInterface,
     URLFragmentTypes
-} from "../../../../features/applications/models";
-import { history } from "../../../../features/core";
-import { getTechnologyLogos } from "../../../../features/core/configs";
+} from "features/applications/models";
+import { history } from "features/core";
+import { getTechnologyLogos } from "features/core/configs";
 import JavaLogo from "../../../assets/images/icons/java-logo.svg";
 import DotNetLogo from "../../../assets/images/icons/net-logo.svg";
 import PerlLogo from "../../../assets/images/icons/perl-logo.svg";

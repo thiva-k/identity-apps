@@ -24,7 +24,7 @@ import useRequest, {
     RequestResultInterface
 } from "apps/console/src/features/core/hooks/use-request";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../../../features/core/store";
+import { store } from "features/core/store";
 import { APIResourcesConstants } from "../constants";
 import { APIResourceInterface, APIResourcePermissionInterface, APIResourcesListInterface, 
     UpdatedAPIResourceInterface } from "../models";

@@ -19,12 +19,12 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../../../features/core";
+import { store } from "features/core";
 import useRequest, { 
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../../../features/core/hooks/use-request";
+} from "features/core/hooks/use-request";
 import { 
     ApplicationRoleGroupsAPIResponseInterface,
     ApplicationRoleGroupsUpdatePayloadInterface,

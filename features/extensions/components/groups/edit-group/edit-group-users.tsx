@@ -54,16 +54,16 @@ import { useDispatch } from "react-redux";
 import { Dispatch as ReduxDispatch } from "redux";
 import { Divider, Grid, Header, Icon, Modal, PaginationProps, Table } from "semantic-ui-react";
 import { AdvancedSearchWithBasicFilters, UIConstants, 
-    getEmptyPlaceholderIllustrations } from "../../../../features/core";
+    getEmptyPlaceholderIllustrations } from "features/core";
 import {
     CreateGroupMemberInterface,
     GroupsInterface,
     GroupsMemberInterface,
     PatchGroupDataInterface,
     updateGroupDetails
-} from "../../../../features/groups";
-import { getUsersList } from "../../../../features/users/api/users";
-import { UserBasicInterface, UserListInterface } from "../../../../features/users/models/user";
+} from "features/groups";
+import { getUsersList } from "features/users/api/users";
+import { UserBasicInterface, UserListInterface } from "features/users/models/user";
 import { SCIMConfigs } from "../../../configs/scim";
 import { UserManagementUtils } from "../../users/utils";
 

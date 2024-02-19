@@ -18,7 +18,7 @@
 
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
-import { store } from "../../../../features/core";
+import { store } from "features/core";
 import { UserInviteInterface } from "../models";
 import { getInviteResourceEndpoints } from "../configs";
 
