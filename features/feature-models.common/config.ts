@@ -27,31 +27,32 @@ import { I18nModuleOptionsInterface } from "@wso2is/i18n";
 import {
     ApplicationTemplateLoadingStrategies,
     ApplicationsResourceEndpointsInterface
-} from "../applications/models";
-import { BrandingPreferenceResourceEndpointsInterface } from "../branding/models/endpoints";
-import { CertificatesResourceEndpointsInterface } from "../certificates";
-import { ClaimResourceEndpointsInterface } from "../claims/models/endpoints";
-import { ConsoleSettingsResourceEndpointsInterface } from "../console-settings/models/endpoints";
+} from "../applications.common/models";
+import { BrandingPreferenceResourceEndpointsInterface } from "../branding.common/models/endpoints";
+import { CertificatesResourceEndpointsInterface } from "../certificates.common";
+import { ClaimResourceEndpointsInterface } from "../claims.common/models/endpoints";
+import { ConsoleSettingsResourceEndpointsInterface } from "../console-settings.common/models/endpoints";
 import { GroupsResourceEndpointsInterface } from "../feature-groups.common/models/endpoints";
-import { OrganizationResourceEndpointsInterface } from "../feature-organizations/models";
+import { OrganizationResourceEndpointsInterface } from "../feature-organizations.common/models";
 import { RolesResourceEndpointsInterface } from "../feature-roles.common/models/endpoints";
 import { UsersResourceEndpointsInterface } from "../feature-users.common/models/endpoints";
-import { IDPResourceEndpointsInterface } from "../identity-providers/models/endpoints";
-import { IdentityProviderTemplateLoadingStrategies } from "../identity-providers/models/identity-provider";
-import { ScopesResourceEndpointsInterface } from "../oidc-scopes";
-import { JWTAuthenticationServiceEndpointsInterface } from "../private-key-jwt/models";
-import { SecretsManagementEndpoints } from "../secrets/models/endpoints";
-import { ServerConfigurationsResourceEndpointsInterface } from "../server-configurations";
-import { TenantResourceEndpointsInterface } from "../tenants/models/endpoints";
-import { UserstoreResourceEndpointsInterface } from "../userstores/models/endpoints";
-import { ValidationServiceEndpointsInterface } from "../validation/models";
+import { IDPResourceEndpointsInterface } from "../identity-providers.common/models/endpoints";
+import { IdentityProviderTemplateLoadingStrategies } from "../identity-providers.common/models/identity-provider";
+import { ScopesResourceEndpointsInterface } from "../oidc-scopes.common";
+import { JWTAuthenticationServiceEndpointsInterface } from "../private-key-jwt.common/models";
+import { SecretsManagementEndpoints } from "../secrets.common/models/endpoints";
+import { ServerConfigurationsResourceEndpointsInterface } from "../server-configurations.common";
+import { TenantResourceEndpointsInterface } from "../tenants.common/models/endpoints";
+import { UserstoreResourceEndpointsInterface } from "../userstores.common/models/endpoints";
+import { ValidationServiceEndpointsInterface } from "../validation.common/models";
 
 export type ConfigInterface = CommonConfigInterface<
     DeploymentConfigInterface,
     ServiceResourceEndpointsInterface,
     FeatureConfigInterface,
     I18nModuleOptionsInterface,
-    UIConfigInterface>;
+    UIConfigInterface
+>;
 
 /**
  * Application configuration interface.
@@ -204,15 +205,15 @@ export interface FeatureConfigInterface {
     /**
      * Organization insights feature
      */
-    insights?: FeatureAccessConfigInterface
+    insights?: FeatureAccessConfigInterface;
     /**
      * Diagnostic Logs feature.
      */
-    diagnosticLogs?: FeatureAccessConfigInterface
+    diagnosticLogs?: FeatureAccessConfigInterface;
     /**
      * Audit Logs feature.
      */
-    auditLogs?: FeatureAccessConfigInterface
+    auditLogs?: FeatureAccessConfigInterface;
     /**
      * Event Configurations feature
      */
@@ -451,24 +452,24 @@ interface IdentityProviderTemplateConfigInterface {
 /**
  * Service resource endpoints config.
  */
-export interface ServiceResourceEndpointsInterface extends ClaimResourceEndpointsInterface,
-    CertificatesResourceEndpointsInterface,
-    GroupsResourceEndpointsInterface,
-    ServerConfigurationsResourceEndpointsInterface,
-    UsersResourceEndpointsInterface,
-    UserstoreResourceEndpointsInterface,
-    RolesResourceEndpointsInterface,
-    ApplicationsResourceEndpointsInterface,
-    IDPResourceEndpointsInterface,
-    ScopesResourceEndpointsInterface,
-    SecretsManagementEndpoints,
-    OrganizationResourceEndpointsInterface,
-    TenantResourceEndpointsInterface,
-    ValidationServiceEndpointsInterface,
-    JWTAuthenticationServiceEndpointsInterface,
-    BrandingPreferenceResourceEndpointsInterface,
-    ConsoleSettingsResourceEndpointsInterface {
-
+export interface ServiceResourceEndpointsInterface
+    extends ClaimResourceEndpointsInterface,
+        CertificatesResourceEndpointsInterface,
+        GroupsResourceEndpointsInterface,
+        ServerConfigurationsResourceEndpointsInterface,
+        UsersResourceEndpointsInterface,
+        UserstoreResourceEndpointsInterface,
+        RolesResourceEndpointsInterface,
+        ApplicationsResourceEndpointsInterface,
+        IDPResourceEndpointsInterface,
+        ScopesResourceEndpointsInterface,
+        SecretsManagementEndpoints,
+        OrganizationResourceEndpointsInterface,
+        TenantResourceEndpointsInterface,
+        ValidationServiceEndpointsInterface,
+        JWTAuthenticationServiceEndpointsInterface,
+        BrandingPreferenceResourceEndpointsInterface,
+        ConsoleSettingsResourceEndpointsInterface {
     CORSOrigins: string;
     // TODO: Remove this endpoint and use ID token to get the details
     me: string;
