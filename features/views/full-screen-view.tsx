@@ -46,7 +46,7 @@ import {
     RouteUtils,
     getEmptyPlaceholderIllustrations,
     getFullScreenViewRoutes
-} from "../features/core";
+} from "features/core";
 
 /**
  * Full Screen View Prop types.
