@@ -40,7 +40,7 @@ import {
     FeatureConfigInterface, 
     UserListInterface, 
     getEmptyPlaceholderIllustrations 
-} from "../../../../../features/core";
+} from "features/core";
 import { deleteInvite, resendInvite, updateInvite } from "../../api";
 import { InvitationStatus, UserInviteInterface } from "../../models";
 

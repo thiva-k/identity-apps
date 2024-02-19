@@ -25,8 +25,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Checkbox, CheckboxProps, Icon, Message } from "semantic-ui-react";
-import { history, store } from "../../../../features/core";
-import {  updateOrganizationConfig, useOrganizationConfig } from "../api/organization";
+import { history, store } from "features/core";
+import { updateOrganizationConfig, useOrganizationConfig } from "../api/organization";
 import { UsersConstants } from "../constants";
 
 /**
@@ -48,7 +48,6 @@ interface EnterpriseLoginEnabledConfigInterface {
 export const AdminSettingsPage: FunctionComponent<AdminSettingsPageInterface> = (
     props: AdminSettingsPageInterface
 ): ReactElement => {
-    
     const { ["data-componentid"]: testId } = props;
 
     const dispatch: Dispatch = useDispatch();
@@ -56,22 +55,19 @@ export const AdminSettingsPage: FunctionComponent<AdminSettingsPageInterface> = 
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
 
-    const [ isEnterpriseLoginEnabled, setIsEnterpriseLoginEnabled ] = useState<boolean>(false);
+    const [isEnterpriseLoginEnabled, setIsEnterpriseLoginEnabled] = useState<boolean>(false);
     const organizationName: string = store.getState().auth.tenantDomain;
     const {
         data: organizationConfig,
         isLoading: isOrgConfigRequestLoading,
         error: orgConfigFetchRequestError
-    } = useOrganizationConfig(
-        organizationName,
-        {
-            revalidateIfStale: false
-        }
-    );
+    } = useOrganizationConfig(organizationName, {
+        revalidateIfStale: false
+    });
 
     useEffect(() => {
         setIsEnterpriseLoginEnabled(organizationConfig?.isEnterpriseLoginEnabled);
-    }, [ isOrgConfigRequestLoading ]);
+    }, [isOrgConfigRequestLoading]);
 
     /**
      * Dispatches error notifications if Organization config fetch request fails.
@@ -80,27 +76,32 @@ export const AdminSettingsPage: FunctionComponent<AdminSettingsPageInterface> = 
         if (!orgConfigFetchRequestError) {
             return;
         }
-        
+
         if (orgConfigFetchRequestError?.response?.data?.description) {
-            dispatch(addAlert({
-                description: orgConfigFetchRequestError?.response?.data?.description
-                    ?? orgConfigFetchRequestError?.response?.data?.detail
-                        ?? t("extensions:manage.users.administratorSettings.error.description"),
-                level: AlertLevels.ERROR,
-                message: orgConfigFetchRequestError?.response?.data?.message
-                    ?? t("extensions:manage.users.administratorSettings.error.message")
-            }));
-        
+            dispatch(
+                addAlert({
+                    description:
+                        orgConfigFetchRequestError?.response?.data?.description ??
+                        orgConfigFetchRequestError?.response?.data?.detail ??
+                        t("extensions:manage.users.administratorSettings.error.description"),
+                    level: AlertLevels.ERROR,
+                    message:
+                        orgConfigFetchRequestError?.response?.data?.message ??
+                        t("extensions:manage.users.administratorSettings.error.message")
+                })
+            );
+
             return;
         }
-        
-        dispatch(addAlert({
-            description: t("extensions:manage.users.administratorSettings.genericError." +
-                        "description"),
-            level: AlertLevels.ERROR,
-            message: t("extensions:manage.users.administratorSettings.genericError.message")
-        }));
-    }, [ orgConfigFetchRequestError ]);
+
+        dispatch(
+            addAlert({
+                description: t("extensions:manage.users.administratorSettings.genericError." + "description"),
+                level: AlertLevels.ERROR,
+                message: t("extensions:manage.users.administratorSettings.genericError.message")
+            })
+        );
+    }, [orgConfigFetchRequestError]);
 
     /**
      * Handles updating the enterprise login toggle.
@@ -117,31 +118,39 @@ export const AdminSettingsPage: FunctionComponent<AdminSettingsPageInterface> = 
 
         updateOrganizationConfig(isEnterpriseLoginEnabledConfig)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("extensions:manage.users.administratorSettings.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("extensions:manage.users.administratorSettings.success.message")
-                }));
-
-            }).catch((error: AxiosError) => {
+                dispatch(
+                    addAlert({
+                        description: t("extensions:manage.users.administratorSettings.success.description"),
+                        level: AlertLevels.SUCCESS,
+                        message: t("extensions:manage.users.administratorSettings.success.message")
+                    })
+                );
+            })
+            .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? error?.response?.data?.detail
-                            ?? t("extensions:manage.users.administratorSettings.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message
-                            ?? t("extensions:manage.users.administratorSettings.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("extensions:manage.users.administratorSettings.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("extensions:manage.users.administratorSettings.error.message")
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("extensions:manage.users.administratorSettings.genericError." +
-                        "description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:manage.users.administratorSettings.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t("extensions:manage.users.administratorSettings.genericError." + "description"),
+                        level: AlertLevels.ERROR,
+                        message: t("extensions:manage.users.administratorSettings.genericError.message")
+                    })
+                );
             });
     };
 
@@ -151,7 +160,7 @@ export const AdminSettingsPage: FunctionComponent<AdminSettingsPageInterface> = 
     const handleBackButtonClick = () => {
         history.push(UsersConstants.getPaths().get("COLLABORATOR_USERS_PATH"));
     };
-    
+
     /**
      * This renders the enable toggle.
      */
@@ -159,17 +168,16 @@ export const AdminSettingsPage: FunctionComponent<AdminSettingsPageInterface> = 
         return (
             <>
                 <Checkbox
-                    label={ isEnterpriseLoginEnabled 
-                        ? t("extensions:manage.users.administratorSettings.enableToggleMessage")
-                        : t("extensions:manage.users.administratorSettings.disableToggleMessage")
+                    label={
+                        isEnterpriseLoginEnabled
+                            ? t("extensions:manage.users.administratorSettings.enableToggleMessage")
+                            : t("extensions:manage.users.administratorSettings.disableToggleMessage")
                     }
                     toggle
-                    onChange={
-                        handleUpdate
-                    }
-                    checked={ isEnterpriseLoginEnabled }
-                    readOnly={ false }
-                    data-componentid={ `${ testId }-enable-toggle` }
+                    onChange={handleUpdate}
+                    checked={isEnterpriseLoginEnabled}
+                    readOnly={false}
+                    data-componentid={`${testId}-enable-toggle`}
                 />
             </>
         );
@@ -177,37 +185,33 @@ export const AdminSettingsPage: FunctionComponent<AdminSettingsPageInterface> = 
 
     return (
         <PageLayout
-            title={ t("extensions:manage.users.administratorSettings.administratorSettingsTitle") }
-            description={ (
+            title={t("extensions:manage.users.administratorSettings.administratorSettingsTitle")}
+            description={
                 <>
-                    { t("extensions:manage.users.administratorSettings.administratorSettingsSubtitle") }
-                    <DocumentationLink
-                        link={ getLink("manage.users.collaboratorAccounts.adminSettingsLearnMore") }
-                    >
-                        { t("extensions:common.learnMore") }
+                    {t("extensions:manage.users.administratorSettings.administratorSettingsSubtitle")}
+                    <DocumentationLink link={getLink("manage.users.collaboratorAccounts.adminSettingsLearnMore")}>
+                        {t("extensions:common.learnMore")}
                     </DocumentationLink>
                 </>
-            ) }
-            backButton={ {
-                "data-componentid": `${ testId }-page-back-button`,
-                onClick:  handleBackButtonClick,
-                text: t("extensions:manage.users.administratorSettings.backButton")
-            } }
-            bottomMargin={ false }
-            contentTopMargin={ true }
-            pageHeaderMaxWidth={ true }
-            data-componentid={ `${ testId }-page-layout` }
-        >
-            {
-                connectorToggle()
             }
+            backButton={{
+                "data-componentid": `${testId}-page-back-button`,
+                onClick: handleBackButtonClick,
+                text: t("extensions:manage.users.administratorSettings.backButton")
+            }}
+            bottomMargin={false}
+            contentTopMargin={true}
+            pageHeaderMaxWidth={true}
+            data-componentid={`${testId}-page-layout`}
+        >
+            {connectorToggle()}
             <Message
                 info
-                content={ 
-                    (<>
-                        <Icon name="info circle"/>
-                        { t("extensions:manage.users.administratorSettings.toggleHint") }  
-                    </>)
+                content={
+                    <>
+                        <Icon name="info circle" />
+                        {t("extensions:manage.users.administratorSettings.toggleHint")}
+                    </>
                 }
             />
         </PageLayout>

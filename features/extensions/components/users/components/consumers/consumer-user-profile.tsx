@@ -57,28 +57,28 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, CheckboxProps, Divider, DropdownItemProps, Form, Grid, Input } from "semantic-ui-react";
 import { ChangePasswordComponent } from "./change-password";
-import { AccessControlConstants } from "../../../../../features/access-control/constants/access-control";
-import { AppState, FeatureConfigInterface, history } from "../../../../../features/core";
+import { AccessControlConstants } from "features/access-control/constants/access-control";
+import { AppState, FeatureConfigInterface, history } from "features/core";
 import {
     OperationValueInterface,
     PatchRoleDataInterface,
     ScimOperationsInterface
-} from "../../../../../features/roles/models/roles";
+} from "features/roles/models/roles";
 import {
     ConnectorPropertyInterface,
     ServerConfigurationsConstants
-} from "../../../../../features/server-configurations";
+} from "features/server-configurations";
 import {
     deleteUser,
     getUserDetails,
     updateUserInfo
-} from "../../../../../features/users/api";
-import { UserManagementConstants } from "../../../../../features/users/constants/user-management-constants";
-import { AccountConfigSettingsInterface, SubValueInterface } from "../../../../../features/users/models/user";
-import { getConfiguration } from "../../../../../features/users/utils/generate-password.utils";
-import { getUsernameConfiguration } from "../../../../../features/users/utils/user-management-utils";
-import { useValidationConfigData } from "../../../../../features/validation/api";
-import { ValidationFormInterface } from "../../../../../features/validation/models";
+} from "features/users/api";
+import { UserManagementConstants } from "features/users/constants/user-management-constants";
+import { AccountConfigSettingsInterface, SubValueInterface } from "features/users/models/user";
+import { getConfiguration } from "features/users/utils/generate-password.utils";
+import { getUsernameConfiguration } from "features/users/utils/user-management-utils";
+import { useValidationConfigData } from "features/validation/api";
+import { ValidationFormInterface } from "features/validation/models";
 import { SCIMConfigs } from "../../../../configs/scim";
 import { ADMIN_USER_NAME, UsersConstants } from "../../constants";
 import { UserManagementUtils } from "../../utils";

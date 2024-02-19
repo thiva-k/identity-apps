@@ -26,11 +26,11 @@ import { Dispatch } from "redux";
 import { TabProps } from "semantic-ui-react";
 import { ConsumerUserGroupsList } from "./consumer-user-groupslist";
 import { ConsumerUserProfile } from "./consumer-user-profile";
-import { FeatureConfigInterface } from "../../../../../features/core";
-import { GroupsInterface, useGroupList } from "../../../../../features/groups";
-import { ConnectorPropertyInterface } from "../../../../../features/server-configurations";
-import { UserSessions } from "../../../../../features/users/components/user-sessions";
-import useUserManagement from "../../../../../features/users/hooks/use-user-management";
+import { FeatureConfigInterface } from "features/core";
+import { GroupsInterface, useGroupList } from "features/groups";
+import { ConnectorPropertyInterface } from "features/server-configurations";
+import { UserSessions } from "features/users/components/user-sessions";
+import useUserManagement from "features/users/hooks/use-user-management";
 import { SCIMConfigs } from "../../../../configs/scim";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 
@@ -60,9 +60,9 @@ interface EditConsumerUserPropsInterface extends SBACInterface<FeatureConfigInte
      */
     isReadOnly?: boolean;
     /**
-      * Show if the user is from a readonly and WSOutboundUserStoreManager type user store.
-      */
-     isReadOnlyUserStore?: boolean;
+     * Show if the user is from a readonly and WSOutboundUserStoreManager type user store.
+     */
+    isReadOnlyUserStore?: boolean;
 }
 
 /**
@@ -73,7 +73,6 @@ interface EditConsumerUserPropsInterface extends SBACInterface<FeatureConfigInte
 export const EditConsumerUser: FunctionComponent<EditConsumerUserPropsInterface> = (
     props: EditConsumerUserPropsInterface
 ): JSX.Element => {
-
     const {
         user,
         handleUserUpdate,
@@ -88,14 +87,11 @@ export const EditConsumerUser: FunctionComponent<EditConsumerUserPropsInterface>
     const excludeMembers: string = "members";
     const { activeTab, updateActiveTab } = useUserManagement();
 
-    const [ groupList, setGroupsList ] = useState<GroupsInterface[]>(undefined);
+    const [groupList, setGroupsList] = useState<GroupsInterface[]>(undefined);
 
-    const {
-        data: groupData,
-        error: groupDataError
-    } = useGroupList(
-        user[ SCIMConfigs.scim.enterpriseSchema ]?.userSource
-            ? user[ SCIMConfigs.scim.enterpriseSchema ]?.userSource
+    const { data: groupData, error: groupDataError } = useGroupList(
+        user[SCIMConfigs.scim.enterpriseSchema]?.userSource
+            ? user[SCIMConfigs.scim.enterpriseSchema]?.userSource
             : CONSUMER_USERSTORE,
         excludeMembers
     );
@@ -104,27 +100,27 @@ export const EditConsumerUser: FunctionComponent<EditConsumerUserPropsInterface>
         if (groupData?.totalResults > 0) {
             setGroupsList(groupData?.Resources);
         }
-    }, [ groupData ]);
+    }, [groupData]);
 
     const handleAlerts = (alert: AlertInterface) => {
         dispatch(addAlert<AlertInterface>(alert));
     };
 
     const resolvePanes = () => {
-        if ((groupList?.length > 0 && (!user[ SCIMConfigs.scim.enterpriseSchema ]?.userSourceId)) && !groupDataError) {
-            return ([
+        if (groupList?.length > 0 && !user[SCIMConfigs.scim.enterpriseSchema]?.userSourceId && !groupDataError) {
+            return [
                 {
                     menuItem: t("console:manage.features.users.editUser.tab.menuItems.0"),
                     render: () => (
-                        <ResourceTab.Pane controlledSegmentation attached={ false }>
+                        <ResourceTab.Pane controlledSegmentation attached={false}>
                             <ConsumerUserProfile
-                                isUserProfileLoading={ isUserProfileLoading }
-                                onAlertFired={ handleAlerts }
-                                user={ user }
-                                handleUserUpdate={ handleUserUpdate }
-                                isReadOnly={ isReadOnly }
-                                isReadOnlyUserStore={ isReadOnlyUserStore }
-                                connectorProperties={ connectorProperties }
+                                isUserProfileLoading={isUserProfileLoading}
+                                onAlertFired={handleAlerts}
+                                user={user}
+                                handleUserUpdate={handleUserUpdate}
+                                isReadOnly={isReadOnly}
+                                isReadOnlyUserStore={isReadOnlyUserStore}
+                                connectorProperties={connectorProperties}
                             />
                         </ResourceTab.Pane>
                     )
@@ -132,13 +128,13 @@ export const EditConsumerUser: FunctionComponent<EditConsumerUserPropsInterface>
                 {
                     menuItem: t("console:manage.features.users.editUser.tab.menuItems.1"),
                     render: () => (
-                        <ResourceTab.Pane controlledSegmentation attached={ false }>
+                        <ResourceTab.Pane controlledSegmentation attached={false}>
                             <ConsumerUserGroupsList
-                                onAlertFired={ handleAlerts }
-                                user={ user }
-                                handleUserUpdate={ handleUserUpdate }
-                                isReadOnly={ isReadOnly }
-                                primaryGroups={ groupList }
+                                onAlertFired={handleAlerts}
+                                user={user}
+                                handleUserUpdate={handleUserUpdate}
+                                isReadOnly={isReadOnly}
+                                primaryGroups={groupList}
                             />
                         </ResourceTab.Pane>
                     )
@@ -146,52 +142,52 @@ export const EditConsumerUser: FunctionComponent<EditConsumerUserPropsInterface>
                 {
                     menuItem: t("console:manage.features.users.editUser.tab.menuItems.3"),
                     render: () => (
-                        <ResourceTab.Pane controlledSegmentation attached={ false }>
-                            <UserSessions user={ user } />
+                        <ResourceTab.Pane controlledSegmentation attached={false}>
+                            <UserSessions user={user} />
                         </ResourceTab.Pane>
                     )
                 }
-            ]);
+            ];
         } else {
-            return ([
+            return [
                 {
                     menuItem: t("console:manage.features.users.editUser.tab.menuItems.0"),
                     render: () => (
-                        <ResourceTab.Pane controlledSegmentation attached={ false }>
+                        <ResourceTab.Pane controlledSegmentation attached={false}>
                             <ConsumerUserProfile
-                                isUserProfileLoading={ isUserProfileLoading }
-                                onAlertFired={ handleAlerts }
-                                user={ user }
-                                handleUserUpdate={ handleUserUpdate }
-                                isReadOnly={ isReadOnly }
-                                isReadOnlyUserStore={ isReadOnlyUserStore }
-                                connectorProperties={ connectorProperties }
+                                isUserProfileLoading={isUserProfileLoading}
+                                onAlertFired={handleAlerts}
+                                user={user}
+                                handleUserUpdate={handleUserUpdate}
+                                isReadOnly={isReadOnly}
+                                isReadOnlyUserStore={isReadOnlyUserStore}
+                                connectorProperties={connectorProperties}
                             />
                         </ResourceTab.Pane>
                     )
                 },
-                !user[ SCIMConfigs.scim.enterpriseSchema ]?.userSourceId &&
-                    !window[ "AppUtils" ].getConfig().organizationName
+                !user[SCIMConfigs.scim.enterpriseSchema]?.userSourceId &&
+                !window["AppUtils"].getConfig().organizationName
                     ? {
-                        menuItem: t("console:manage.features.users.editUser.tab.menuItems.3"),
-                        render: () => (
-                            <ResourceTab.Pane controlledSegmentation attached={ false }>
-                                <UserSessions user={ user } />
-                            </ResourceTab.Pane>
-                        )
-                    }
+                          menuItem: t("console:manage.features.users.editUser.tab.menuItems.3"),
+                          render: () => (
+                              <ResourceTab.Pane controlledSegmentation attached={false}>
+                                  <UserSessions user={user} />
+                              </ResourceTab.Pane>
+                          )
+                      }
                     : null
-            ]);
+            ];
         }
     };
 
     return (
         <ResourceTab
-            activeIndex={ activeTab }
-            onTabChange={ (event: React.MouseEvent<HTMLDivElement>, data: TabProps) => {
+            activeIndex={activeTab}
+            onTabChange={(event: React.MouseEvent<HTMLDivElement>, data: TabProps) => {
                 updateActiveTab(data.activeIndex as number);
-            } }
-            panes={ resolvePanes() }
+            }}
+            panes={resolvePanes()}
         />
     );
 };

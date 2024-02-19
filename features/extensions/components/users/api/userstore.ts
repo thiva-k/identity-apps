@@ -20,7 +20,7 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { UserStoreDetails, store } from "../../../../features/core";
+import { UserStoreDetails, store } from "features/core";
 import { UsersConstants } from "../constants";
 
 /**
@@ -46,7 +46,7 @@ export const getUserStores = (): Promise<UserStoreDetails[]> => {
         },
         method: HttpMethods.GET,
         params: {
-            "requiredAttributes": UsersConstants.USER_STORE_PROPERTY_READ_ONLY
+            requiredAttributes: UsersConstants.USER_STORE_PROPERTY_READ_ONLY
         },
         url: store.getState().config.endpoints.userStores
     };
@@ -60,17 +60,20 @@ export const getUserStores = (): Promise<UserStoreDetails[]> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message ?? UsersConstants.RESOURCE_NOT_FOUND_ERROR_MESSAGE,
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

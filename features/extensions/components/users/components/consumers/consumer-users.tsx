@@ -38,10 +38,10 @@ import {
     FeatureConfigInterface,
     UIConstants,
     getEmptyPlaceholderIllustrations
-} from "../../../../../features/core";
-import { deleteUser } from "../../../../../features/users/api";
+} from "features/core";
+import { deleteUser } from "features/users/api";
 
-import { UserListInterface } from "../../../../../features/users/models";
+import { UserListInterface } from "features/users/models";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 import { UsersConstants } from "../../constants";
 
@@ -61,7 +61,6 @@ interface ConsumerUsersPageInterface extends TestableComponentInterface {
     setDescriptionShown: (value: string) => void;
 }
 
-
 /**
  * Consumer Users info page.
  *
@@ -71,7 +70,6 @@ interface ConsumerUsersPageInterface extends TestableComponentInterface {
 const ConsumerUsersPage: FunctionComponent<ConsumerUsersPageInterface> = (
     props: ConsumerUsersPageInterface
 ): ReactElement => {
-
     const {
         isConsumersListRequestLoading,
         getUsersList,
@@ -88,16 +86,16 @@ const ConsumerUsersPage: FunctionComponent<ConsumerUsersPageInterface> = (
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ usersList, setUsersList ] = useState<UserListInterface>({});
-    const [ userListMetaContent ] = useState(undefined);
-    const [ userStoreOptions ] = useState([]);
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ readOnlyUserStoresList ] = useState<string[]>(undefined);
-    const [ userStoreError ] = useState(false);
-    const [ showInfo, setShowInfo ] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [usersList, setUsersList] = useState<UserListInterface>({});
+    const [userListMetaContent] = useState(undefined);
+    const [userStoreOptions] = useState([]);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [readOnlyUserStoresList] = useState<string[]>(undefined);
+    const [userStoreError] = useState(false);
+    const [showInfo, setShowInfo] = useState<boolean>(false);
 
     /**
      * Set users list.
@@ -108,7 +106,7 @@ const ConsumerUsersPage: FunctionComponent<ConsumerUsersPageInterface> = (
         }
 
         setUsersList(consumersUsersList);
-    }, [ consumersUsersList ]);
+    }, [consumersUsersList]);
 
     /**
      * Show the description message for the first time.
@@ -121,12 +119,11 @@ const ConsumerUsersPage: FunctionComponent<ConsumerUsersPageInterface> = (
 
     useEffect(() => {
         if (searchQuery == undefined || searchQuery == "") {
-            getUsersList(listItemLimit, listOffset, null, null,  CONSUMER_USERSTORE);
-        } else  {
-            getUsersList(listItemLimit, listOffset, searchQuery, null,  CONSUMER_USERSTORE);
-
+            getUsersList(listItemLimit, listOffset, null, null, CONSUMER_USERSTORE);
+        } else {
+            getUsersList(listItemLimit, listOffset, searchQuery, null, CONSUMER_USERSTORE);
         }
-    }, [ listOffset, listItemLimit ]);
+    }, [listOffset, listItemLimit]);
 
     /**
      * Handles the `onSearchQueryClear` callback action.
@@ -164,7 +161,7 @@ const ConsumerUsersPage: FunctionComponent<ConsumerUsersPageInterface> = (
     };
 
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setListOffset((data.activePage as number - 1) * listItemLimit + 1);
+        setListOffset(((data.activePage as number) - 1) * listItemLimit + 1);
     };
 
     const handleItemsPerPageDropdownChange = (event: React.MouseEvent<HTMLAnchorElement>, data: DropdownProps) => {
@@ -172,20 +169,15 @@ const ConsumerUsersPage: FunctionComponent<ConsumerUsersPageInterface> = (
     };
 
     const handleUserDelete = (userId: string): Promise<void> => {
-        return deleteUser(userId)
-            .then(() => {
-                handleAlerts({
-                    description: t(
-                        "console:manage.features.users.notifications.deleteUser.success.description"
-                    ),
-                    level: AlertLevels.SUCCESS,
-                    message: t(
-                        "console:manage.features.users.notifications.deleteUser.success.message"
-                    )
-                });
-                getUsersList(listItemLimit, listOffset, null, null, CONSUMER_USERSTORE);
-                getUsersList(listItemLimit, listOffset, null, null, null);
+        return deleteUser(userId).then(() => {
+            handleAlerts({
+                description: t("console:manage.features.users.notifications.deleteUser.success.description"),
+                level: AlertLevels.SUCCESS,
+                message: t("console:manage.features.users.notifications.deleteUser.success.message")
             });
+            getUsersList(listItemLimit, listOffset, null, null, CONSUMER_USERSTORE);
+            getUsersList(listItemLimit, listOffset, null, null, null);
+        });
     };
 
     /**
@@ -200,17 +192,14 @@ const ConsumerUsersPage: FunctionComponent<ConsumerUsersPageInterface> = (
      * Show the description message.
      */
     const renderDescription = (): ReactElement => {
-
         const generateContent = () => {
             return (
                 <>
                     <Text className="message-info-text">
-                        <> 
-                            { t("extensions:manage.users.descriptions.consumerUser") }
-                            <DocumentationLink
-                                link={ getLink("manage.users.customerAccounts.learnMore") }
-                            >
-                                { t("extensions:common.learnMore") }
+                        <>
+                            {t("extensions:manage.users.descriptions.consumerUser")}
+                            <DocumentationLink link={getLink("manage.users.customerAccounts.learnMore")}>
+                                {t("extensions:common.learnMore")}
                             </DocumentationLink>
                         </>
                     </Text>
@@ -218,62 +207,55 @@ const ConsumerUsersPage: FunctionComponent<ConsumerUsersPageInterface> = (
             );
         };
 
-        return (
-            <div className="mt-3 mb-6">
-                {
-                    <Message
-                        onDismiss={ handleCloseInfo }
-                        content={ generateContent() }
-                    />
-                }
-            </div>
-        );
+        return <div className="mt-3 mb-6">{<Message onDismiss={handleCloseInfo} content={generateContent()} />}</div>;
     };
 
     return (
         <>
-            { showInfo && renderDescription() }
+            {showInfo && renderDescription()}
             <ListLayout
                 // TODO add sorting functionality.
-                advancedSearch={ (
+                advancedSearch={
                     <AdvancedSearchWithBasicFilters
-                        onFilter={ handleUserFilter }
-                        filterAttributeOptions={ [
+                        onFilter={handleUserFilter}
+                        filterAttributeOptions={[
                             {
                                 key: 0,
-                                text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                    "filterAttributeOptions.username"),
+                                text: t(
+                                    "console:manage.features.users.advancedSearch.form.dropdown." +
+                                        "filterAttributeOptions.username"
+                                ),
                                 value: "userName"
                             },
                             {
                                 key: 1,
-                                text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                    "filterAttributeOptions.email"),
+                                text: t(
+                                    "console:manage.features.users.advancedSearch.form.dropdown." +
+                                        "filterAttributeOptions.email"
+                                ),
                                 value: "emails"
                             }
-                        ] }
-                        filterAttributePlaceholder={
-                            t("console:manage.features.users.advancedSearch.form.inputs.filterAttribute.placeholder")
-                        }
-                        filterConditionsPlaceholder={
-                            t("console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
-                                ".placeholder")
-                        }
-                        filterValuePlaceholder={
-                            t("console:manage.features.users.advancedSearch.form.inputs.filterValue" +
-                                ".placeholder")
-                        }
-                        placeholder={ t("console:manage.features.users.advancedSearch.placeholder") }
+                        ]}
+                        filterAttributePlaceholder={t(
+                            "console:manage.features.users.advancedSearch.form.inputs.filterAttribute.placeholder"
+                        )}
+                        filterConditionsPlaceholder={t(
+                            "console:manage.features.users.advancedSearch.form.inputs.filterCondition" + ".placeholder"
+                        )}
+                        filterValuePlaceholder={t(
+                            "console:manage.features.users.advancedSearch.form.inputs.filterValue" + ".placeholder"
+                        )}
+                        placeholder={t("console:manage.features.users.advancedSearch.placeholder")}
                         defaultSearchAttribute="userName"
                         defaultSearchOperator="co"
-                        triggerClearQuery={ triggerClearQuery }
+                        triggerClearQuery={triggerClearQuery}
                     />
-                ) }
-                currentListSize={ usersList.itemsPerPage }
-                listItemLimit={ listItemLimit }
-                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
+                }
+                currentListSize={usersList.itemsPerPage}
+                listItemLimit={listItemLimit}
+                onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
                 data-testid="user-mgt-user-list-layout"
-                onPageChange={ handlePaginationChange }
+                onPageChange={handlePaginationChange}
                 // TODO: Enable this when the Data table component issue is fixed.
                 // rightActionPanel={
                 //     (
@@ -306,89 +288,91 @@ const ConsumerUsersPage: FunctionComponent<ConsumerUsersPageInterface> = (
                 //         </>
                 //     )
                 // }
-                showPagination={ true }
-                showTopActionPanel={ isConsumersListRequestLoading
-                || !(!searchQuery
-                    && !userStoreError
-                    && userStoreOptions.length < 3
-                    && usersList?.totalResults <= 0) }
-                totalPages={ Math.ceil(usersList.totalResults / listItemLimit) }
-                totalListSize={ usersList.totalResults }
-                paginationOptions={ {
-                    disableNextButton: !isNextPage
-                } }
-            >
-                { userStoreError
-                    ? (
-                        <EmptyPlaceholder
-                            subtitle={ [ t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
-                                t("console:manage.features.users.placeholders.userstoreError.subtitles.1")     ] }
-                            title={ t("console:manage.features.users.placeholders.userstoreError.title") }
-                            image={ getEmptyPlaceholderIllustrations().genericError }
-                            imageSize="tiny"
-                        />
-                    )
-                    : (
-                        <UsersList
-                            advancedSearch={ (
-                                <AdvancedSearchWithBasicFilters
-                                    onFilter={ handleUserFilter }
-                                    filterAttributeOptions={ [
-                                        {
-                                            key: 0,
-                                            text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                                "filterAttributeOptions.username"),
-                                            value: "userName"
-                                        },
-                                        {
-                                            key: 1,
-                                            text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                                "filterAttributeOptions.email"),
-                                            value: "emails"
-                                        },
-                                        {
-                                            key: 2,
-                                            text: "First Name",
-                                            value: "name.givenName"
-                                        },
-                                        {
-                                            key: 3,
-                                            text: "Last Name",
-                                            value: "name.familyName"
-                                        }
-                                    ] }
-                                    filterAttributePlaceholder={
-                                        t("console:manage.features.users.advancedSearch.form.inputs.filterAttribute" +
-                                            ".placeholder")
-                                    }
-                                    filterConditionsPlaceholder={
-                                        t("console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
-                                            ".placeholder")
-                                    }
-                                    filterValuePlaceholder={
-                                        t("console:manage.features.users.advancedSearch.form.inputs.filterValue" +
-                                            ".placeholder")
-                                    }
-                                    placeholder={ t("console:manage.features.users.advancedSearch.placeholder") }
-                                    defaultSearchAttribute="userName"
-                                    defaultSearchOperator="co"
-                                    triggerClearQuery={ triggerClearQuery }
-                                />
-                            ) }
-                            usersList={ usersList }
-                            handleUserDelete={ handleUserDelete }
-                            userMetaListContent={ userListMetaContent }
-                            isLoading={ isConsumersListRequestLoading }
-                            onEmptyListPlaceholderActionClick={ () => onEmptyListPlaceholderActionClick() }
-                            onSearchQueryClear={ handleSearchQueryClear }
-                            searchQuery={ searchQuery }
-                            data-testid="user-mgt-user-list"
-                            readOnlyUserStores={ readOnlyUserStoresList }
-                            featureConfig={ featureConfig }
-                            userEditPath={ UsersConstants.getPaths().get("CONSUMER_USERS_EDIT_PATH") }
-                        />
-                    )
+                showPagination={true}
+                showTopActionPanel={
+                    isConsumersListRequestLoading ||
+                    !(!searchQuery && !userStoreError && userStoreOptions.length < 3 && usersList?.totalResults <= 0)
                 }
+                totalPages={Math.ceil(usersList.totalResults / listItemLimit)}
+                totalListSize={usersList.totalResults}
+                paginationOptions={{
+                    disableNextButton: !isNextPage
+                }}
+            >
+                {userStoreError ? (
+                    <EmptyPlaceholder
+                        subtitle={[
+                            t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
+                            t("console:manage.features.users.placeholders.userstoreError.subtitles.1")
+                        ]}
+                        title={t("console:manage.features.users.placeholders.userstoreError.title")}
+                        image={getEmptyPlaceholderIllustrations().genericError}
+                        imageSize="tiny"
+                    />
+                ) : (
+                    <UsersList
+                        advancedSearch={
+                            <AdvancedSearchWithBasicFilters
+                                onFilter={handleUserFilter}
+                                filterAttributeOptions={[
+                                    {
+                                        key: 0,
+                                        text: t(
+                                            "console:manage.features.users.advancedSearch.form.dropdown." +
+                                                "filterAttributeOptions.username"
+                                        ),
+                                        value: "userName"
+                                    },
+                                    {
+                                        key: 1,
+                                        text: t(
+                                            "console:manage.features.users.advancedSearch.form.dropdown." +
+                                                "filterAttributeOptions.email"
+                                        ),
+                                        value: "emails"
+                                    },
+                                    {
+                                        key: 2,
+                                        text: "First Name",
+                                        value: "name.givenName"
+                                    },
+                                    {
+                                        key: 3,
+                                        text: "Last Name",
+                                        value: "name.familyName"
+                                    }
+                                ]}
+                                filterAttributePlaceholder={t(
+                                    "console:manage.features.users.advancedSearch.form.inputs.filterAttribute" +
+                                        ".placeholder"
+                                )}
+                                filterConditionsPlaceholder={t(
+                                    "console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
+                                        ".placeholder"
+                                )}
+                                filterValuePlaceholder={t(
+                                    "console:manage.features.users.advancedSearch.form.inputs.filterValue" +
+                                        ".placeholder"
+                                )}
+                                placeholder={t("console:manage.features.users.advancedSearch.placeholder")}
+                                defaultSearchAttribute="userName"
+                                defaultSearchOperator="co"
+                                triggerClearQuery={triggerClearQuery}
+                            />
+                        }
+                        usersList={usersList}
+                        handleUserDelete={handleUserDelete}
+                        userMetaListContent={userListMetaContent}
+                        isLoading={isConsumersListRequestLoading}
+                        onEmptyListPlaceholderActionClick={() => onEmptyListPlaceholderActionClick()}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        searchQuery={searchQuery}
+                        data-testid="user-mgt-user-list"
+                        readOnlyUserStores={readOnlyUserStoresList}
+                        featureConfig={featureConfig}
+                        userEditPath={UsersConstants.getPaths().get("CONSUMER_USERS_EDIT_PATH")}
+                    />
+                )}
             </ListLayout>
         </>
     );

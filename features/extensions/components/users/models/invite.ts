@@ -16,7 +16,7 @@
  * under the License.
  */
 import { RolesInterface } from "@wso2is/core/models";
-import { UserBasicInterface } from "../../../../features/core";
+import { UserBasicInterface } from "features/core";
 
 /**
  * Interface to store data for create group api.
@@ -83,6 +83,6 @@ export enum InvitationStatus {
  * Proptypes for the internal admin form response.
  */
 export interface InternalAdminFormDataInterface {
-    checkedUsers: UserBasicInterface[],
-    selectedRoles: RolesInterface[]
+    checkedUsers: UserBasicInterface[];
+    selectedRoles: RolesInterface[];
 }

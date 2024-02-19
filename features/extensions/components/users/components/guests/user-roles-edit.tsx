@@ -46,12 +46,12 @@ import {
     AppState,
     FeatureConfigInterface,
     updateResources
-} from "../../../../../features/core";
-import { getRolesList } from "../../../../../features/roles/api";
-import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "../../../../../features/roles/constants";
-import { RealmConfigInterface } from "../../../../../features/server-configurations/models";
-import { UserRolePermissions } from "../../../../../features/users/components/user-role-permissions";
-import { RolePermissions } from "../../../../../features/users/components/wizard/user-role-permissions";
+} from "features/core";
+import { getRolesList } from "features/roles/api";
+import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "features/roles/constants";
+import { RealmConfigInterface } from "features/server-configurations/models";
+import { UserRolePermissions } from "features/users/components/user-role-permissions";
+import { RolePermissions } from "features/users/components/wizard/user-role-permissions";
 
 interface UserRolesPropsInterface {
     /**
