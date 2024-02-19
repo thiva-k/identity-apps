@@ -28,8 +28,8 @@ import { Icon } from "semantic-ui-react";
 import DynamicConnectorForm from "./dynamic-connector-form";
 import { 
     IdentityAppsApiException 
-} from "../../../../../modules/core/dist/types/exceptions/identity-apps-api-exception";
-import { AddAlertAction } from "../../../../../../modules/core/dist/types/store/actions/types/global";
+} from "../../../../modules/core/dist/types/exceptions/identity-apps-api-exception";
+import { AddAlertAction } from "../../../../modules/core/dist/types/store/actions/types/global";
 import { serverConfigurationConfig } from "features/extensions";
 import { updateGovernanceConnector } from "../../api";
 import { ServerConfigurationsConstants } from "../../constants";
