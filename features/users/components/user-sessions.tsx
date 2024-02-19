@@ -50,7 +50,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Icon, Label, List, SemanticICONS } from "semantic-ui-react";
-import { userstoresConfig } from "../../../extensions";
+import { userstoresConfig } from "../../extensions";
 import { AppState, FeatureConfigInterface, getEmptyPlaceholderIllustrations, history } from "../../core";
 import { getUserSessions, terminateAllUserSessions, terminateUserSession } from "../api";
 import { ApplicationSessionInterface, UserSessionInterface, UserSessionsInterface } from "../models";

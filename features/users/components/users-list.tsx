@@ -42,9 +42,9 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, Label, ListItemProps, SemanticICONS } from "semantic-ui-react";
-import { UserManagementUtils } from "../../../extensions/components/users/utils";
-import { SCIMConfigs } from "../../../extensions/configs/scim";
-import { userConfig } from "../../../extensions/configs/user";
+import { UserManagementUtils } from "../../extensions/components/users/utils";
+import { SCIMConfigs } from "../../extensions/configs/scim";
+import { userConfig } from "../../extensions/configs/user";
 import {
     AppConstants,
     AppState,

@@ -41,7 +41,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Checkbox, CheckboxProps, Grid, Icon, Message, Ref } from "semantic-ui-react";
-import { serverConfigurationConfig } from "../../../extensions/configs/server-configuration";
+import { serverConfigurationConfig } from "../../extensions/configs/server-configuration";
 import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
 import { getConnectorDetails, updateGovernanceConnector } from "../api/governance-connectors";
 import { ServerConfigurationsConstants } from "../constants/server-configurations-constants";

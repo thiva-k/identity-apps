@@ -16,43 +16,25 @@
  * under the License.
  */
 
-import { 
-    AlertLevels, 
-    IdentifiableComponentInterface, 
-    TestableComponentInterface 
-} from "@wso2is/core/models";
+import { AlertLevels, IdentifiableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { 
-    Message, 
-    Text 
-} from "@wso2is/react-components";
+import { Message, Text } from "@wso2is/react-components";
 import camelCase from "lodash-es/camelCase";
 import kebabCase from "lodash-es/kebabCase";
-import React, { 
-    Dispatch, 
-    FunctionComponent, 
-    ReactElement, 
-    ReactNode, 
-    useState 
-} from "react";
-import { 
-    Trans, 
-    useTranslation 
-} from "react-i18next";
+import React, { Dispatch, FunctionComponent, ReactElement, ReactNode, useState } from "react";
+import { Trans, useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Icon } from "semantic-ui-react";
 import DynamicConnectorForm from "./dynamic-connector-form";
-import { 
-    IdentityAppsApiException 
-} from "../../../../../../../modules/core/dist/types/exceptions/identity-apps-api-exception";
-import { AddAlertAction } from "../../../../../../../modules/core/dist/types/store/actions/types/global";
-import { serverConfigurationConfig } from "../../../../extensions";
+import { IdentityAppsApiException } from "../../../modules/core/dist/types/exceptions/identity-apps-api-exception";
+import { AddAlertAction } from "../../../../modules/core/dist/types/store/actions/types/global";
+import { serverConfigurationConfig } from "../../../extensions";
 import { updateGovernanceConnector } from "../../api";
 import { ServerConfigurationsConstants } from "../../constants";
-import { 
-    ConnectorPropertyInterface, 
-    GovernanceConnectorInterface, 
-    UpdateGovernanceConnectorConfigInterface 
+import {
+    ConnectorPropertyInterface,
+    GovernanceConnectorInterface,
+    UpdateGovernanceConnectorConfigInterface
 } from "../../models";
 import { GovernanceConnectorUtils } from "../../utils";
 
@@ -74,23 +56,17 @@ interface DynamicGovernanceConnectorProps extends TestableComponentInterface, Id
 export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConnectorProps> = (
     props: DynamicGovernanceConnectorProps
 ): ReactElement => {
-
-    const {
-        connector,
-        onUpdate,
-        [ "data-componentid" ]: componentId,
-        [ "data-testid" ]: testId
-    } = props;
+    const { connector, onUpdate, ["data-componentid"]: componentId, ["data-testid"]: testId } = props;
 
     const dispatch: Dispatch<AddAlertAction<{
-            description: string;
-            level: AlertLevels;
-            message: string;
-        }>> = useDispatch();
+        description: string;
+        level: AlertLevels;
+        message: string;
+    }>> = useDispatch();
 
     const { t, i18n } = useTranslation();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const handleUpdateError = (error: IdentityAppsApiException) => {
         if (error.response && error.response.data && error.response.data.detail) {
@@ -98,7 +74,7 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
                 addAlert({
                     description: t(
                         "console:manage.features.governanceConnectors.notifications." +
-                        "updateConnector.error.description",
+                            "updateConnector.error.description",
                         { description: error.response.data.description }
                     ),
                     level: AlertLevels.ERROR,
@@ -113,12 +89,12 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
                 addAlert({
                     description: t(
                         "console:manage.features.governanceConnectors.notifications." +
-                        "updateConnector.genericError.description"
+                            "updateConnector.genericError.description"
                     ),
                     level: AlertLevels.ERROR,
                     message: t(
                         "console:manage.features.governanceConnectors.notifications." +
-                        "updateConnector.genericError.message"
+                            "updateConnector.genericError.message"
                     )
                 })
             );
@@ -130,19 +106,22 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
             operation: "UPDATE",
             properties: []
         };
-        
+
         for (const key in values) {
             data.properties.push({
                 name: GovernanceConnectorUtils.decodeConnectorPropertyName(key),
-                value: values[ key ]
+                value: values[key]
             });
         }
 
-        if (serverConfigurationConfig.connectorToggleName[ connector?.name ]
-            && serverConfigurationConfig.autoEnableConnectorToggleProperty) {
+        if (
+            serverConfigurationConfig.connectorToggleName[connector?.name] &&
+            serverConfigurationConfig.autoEnableConnectorToggleProperty
+        ) {
             data.properties.push({
                 name: GovernanceConnectorUtils.decodeConnectorPropertyName(
-                    serverConfigurationConfig.connectorToggleName[ connector?.name ]),
+                    serverConfigurationConfig.connectorToggleName[connector?.name]
+                ),
                 value: "true"
             });
         }
@@ -155,13 +134,13 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
                     addAlert({
                         description: t(
                             "console:manage.features.governanceConnectors.notifications." +
-                            "updateConnector.success.description",
+                                "updateConnector.success.description",
                             { name: resolveConnectorTitle(connector) }
                         ),
                         level: AlertLevels.SUCCESS,
                         message: t(
                             "console:manage.features.governanceConnectors.notifications." +
-                            "updateConnector.success.message"
+                                "updateConnector.success.message"
                         )
                     })
                 );
@@ -177,15 +156,15 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
     };
 
     const getConnectorInitialValues = (connector: GovernanceConnectorInterface) => {
-        const values: Record<string, string | boolean>= {};
+        const values: Record<string, string | boolean> = {};
 
         connector?.properties.map((property: ConnectorPropertyInterface) => {
             if (property.value === "true") {
-                values[ GovernanceConnectorUtils.encodeConnectorPropertyName(property.name) ] = true;
+                values[GovernanceConnectorUtils.encodeConnectorPropertyName(property.name)] = true;
             } else if (property.value === "false") {
-                values[ GovernanceConnectorUtils.encodeConnectorPropertyName(property.name) ] = false;
+                values[GovernanceConnectorUtils.encodeConnectorPropertyName(property.name)] = false;
             } else {
-                values[ GovernanceConnectorUtils.encodeConnectorPropertyName(property.name) ] = property.value;
+                values[GovernanceConnectorUtils.encodeConnectorPropertyName(property.name)] = property.value;
             }
         });
 
@@ -194,19 +173,19 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
 
     const connectorForm: ReactElement = (
         <DynamicConnectorForm
-            onSubmit={ handleSubmit }
-            connector={ connector }
-            props={ {
+            onSubmit={handleSubmit}
+            connector={connector}
+            props={{
                 properties: connector?.properties.filter(
-                    ((property: ConnectorPropertyInterface) => 
-                        serverConfigurationConfig.connectorPropertiesToShow.includes(property.name)
-                        || serverConfigurationConfig.connectorPropertiesToShow
-                            .includes(ServerConfigurationsConstants.ALL)))
-            } }
-            form={ kebabCase(connector?.friendlyName) + "-form" }
-            initialValues={ getConnectorInitialValues(connector) }
-            data-testid={ `${ testId }-${ connector?.name }-form` }
-            isSubmitting={ isSubmitting }
+                    (property: ConnectorPropertyInterface) =>
+                        serverConfigurationConfig.connectorPropertiesToShow.includes(property.name) ||
+                        serverConfigurationConfig.connectorPropertiesToShow.includes(ServerConfigurationsConstants.ALL)
+                )
+            }}
+            form={kebabCase(connector?.friendlyName) + "-form"}
+            initialValues={getConnectorInitialValues(connector)}
+            data-testid={`${testId}-${connector?.name}-form`}
+            isSubmitting={isSubmitting}
         />
     );
 
@@ -217,28 +196,37 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
      * @returns ReactNode
      */
     const resolveConnectorTitle = (connector: GovernanceConnectorInterface): ReactNode => {
-
         if (!connector) {
             return null;
         }
 
         if (connector?.id === ServerConfigurationsConstants.PASSWORD_EXPIRY_CONNECTOR_ID) {
-            return t("console:manage.features.governanceConnectors.connectorCategories.passwordPolicies." +
-            "connectors.passwordExpiry.friendlyName");
+            return t(
+                "console:manage.features.governanceConnectors.connectorCategories.passwordPolicies." +
+                    "connectors.passwordExpiry.friendlyName"
+            );
         }
 
         if (connector?.id === ServerConfigurationsConstants.USER_EMAIL_VERIFICATION_CONNECTOR_ID) {
-            return t("console:manage.features.governanceConnectors.connectorCategories.userOnboarding." +
-            "connectors.askPassword.friendlyName");
+            return t(
+                "console:manage.features.governanceConnectors.connectorCategories.userOnboarding." +
+                    "connectors.askPassword.friendlyName"
+            );
         }
 
         if (connector?.id === ServerConfigurationsConstants.USER_CLAIM_UPDATE_CONNECTOR_ID) {
-            return t("console:manage.features.governanceConnectors.connectorCategories.otherSettings." +
-            "connectors.userClaimUpdate.friendlyName");
+            return t(
+                "console:manage.features.governanceConnectors.connectorCategories.otherSettings." +
+                    "connectors.userClaimUpdate.friendlyName"
+            );
         }
 
-        const connectorTitleKey: string = "console:manage.features.governanceConnectors.connectorCategories." +
-            camelCase(connector?.category) + ".connectors." + camelCase(connector?.name) + ".friendlyName";
+        const connectorTitleKey: string =
+            "console:manage.features.governanceConnectors.connectorCategories." +
+            camelCase(connector?.category) +
+            ".connectors." +
+            camelCase(connector?.name) +
+            ".friendlyName";
         let connectorTitle: string = connector?.friendlyName;
 
         if (i18n.exists(connectorTitleKey)) {
@@ -255,7 +243,6 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
      * @returns ReactNode
      */
     const resolveConnectorDescription = (connector: GovernanceConnectorInterface): ReactNode => {
-
         if (!connector) {
             return null;
         }
@@ -263,18 +250,24 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
         let connectorName: string = connector?.friendlyName;
 
         if (connector?.id === ServerConfigurationsConstants.PASSWORD_EXPIRY_CONNECTOR_ID) {
-            connectorName = t("console:manage.features.governanceConnectors.connectorCategories.passwordPolicies." +
-            "connectors.passwordExpiry.friendlyName");
+            connectorName = t(
+                "console:manage.features.governanceConnectors.connectorCategories.passwordPolicies." +
+                    "connectors.passwordExpiry.friendlyName"
+            );
         }
 
         if (connector?.id === ServerConfigurationsConstants.USER_EMAIL_VERIFICATION_CONNECTOR_ID) {
-            connectorName = t("console:manage.features.governanceConnectors.connectorCategories.userOnboarding." +
-            "connectors.askPassword.friendlyName");
+            connectorName = t(
+                "console:manage.features.governanceConnectors.connectorCategories.userOnboarding." +
+                    "connectors.askPassword.friendlyName"
+            );
         }
 
         if (connector?.id === ServerConfigurationsConstants.USER_CLAIM_UPDATE_CONNECTOR_ID) {
-            connectorName = t("console:manage.features.governanceConnectors.connectorCategories.otherSettings." +
-            "connectors.userClaimUpdate.friendlyName");
+            connectorName = t(
+                "console:manage.features.governanceConnectors.connectorCategories.otherSettings." +
+                    "connectors.userClaimUpdate.friendlyName"
+            );
         }
 
         if (connectorName.includes(ServerConfigurationsConstants.DEPRECATION_MATCHER)) {
@@ -293,7 +286,6 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
      * @returns ReactNode
      */
     const resolveConnectorMessage = (connector: GovernanceConnectorInterface): ReactNode => {
-
         if (!connector) {
             return null;
         }
@@ -303,13 +295,13 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
                 <Message
                     warning
                     className="mb-5 connector-info"
-                    data-componentid={ `${ componentId }-${ connector?.id }-deprecation-warning` }
+                    data-componentid={`${componentId}-${connector?.id}-deprecation-warning`}
                 >
                     <Icon name="warning sign" />
-                    {
-                        t("console:manage.features.governanceConnectors.connectorCategories." +
-                            "otherSettings.connectors.analyticsEngine.messages.deprecation.heading")
-                    }
+                    {t(
+                        "console:manage.features.governanceConnectors.connectorCategories." +
+                            "otherSettings.connectors.analyticsEngine.messages.deprecation.heading"
+                    )}
                     <Text spaced="top">
                         <Trans
                             i18nKey={
@@ -317,12 +309,11 @@ export const DynamicGovernanceConnector: FunctionComponent<DynamicGovernanceConn
                                 "otherSettings.connectors.analyticsEngine.messages.deprecation.description"
                             }
                         >
-                            WSO2 Identity Server Analytics is now deprecated. Use <Text
-                                inline
-                                weight="bold"
-                            >
+                            WSO2 Identity Server Analytics is now deprecated. Use{" "}
+                            <Text inline weight="bold">
                                 ELK Analytics
-                            </Text> instead.
+                            </Text>{" "}
+                            instead.
                         </Trans>
                     </Text>
                 </Message>

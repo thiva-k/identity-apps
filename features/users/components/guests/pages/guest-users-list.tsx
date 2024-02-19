@@ -33,8 +33,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, SemanticICONS } from "semantic-ui-react";
-import { deleteInvite, resendInvite } from "../../../../../extensions/components/users/api";
-import { InvitationStatus } from "../../../../../extensions/components/users/models";
+import { deleteInvite, resendInvite } from "../../../../extensions/components/users/api";
+import { InvitationStatus } from "../../../../extensions/components/users/models";
 import {
     AppState,
     FeatureConfigInterface,
