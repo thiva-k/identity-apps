@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { Config } from "../../../../features/core";
+import { Config } from "features/core";
 import { OutboundUserStoreResourceEndpointsInterface } from "../models";
 
 /**
@@ -26,7 +26,7 @@ import { OutboundUserStoreResourceEndpointsInterface } from "../models";
  */
 export const getOutboundUserStoreResourceEndpoints = (): OutboundUserStoreResourceEndpointsInterface => {
     return {
-        connection: `${ Config.getDeploymentConfig().serverOrigin }/api/onprem-userstore/v1/connection`,
-        token: `${ Config.getDeploymentConfig().serverOrigin }/api/onprem-userstore/v1/token`
+        connection: `${Config.getDeploymentConfig().serverOrigin}/api/onprem-userstore/v1/connection`,
+        token: `${Config.getDeploymentConfig().serverOrigin}/api/onprem-userstore/v1/token`
     };
 };

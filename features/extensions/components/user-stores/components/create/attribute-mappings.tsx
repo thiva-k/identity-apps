@@ -21,9 +21,9 @@ import { ContentLoader, Hint, Text } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Grid, Header, Segment } from "semantic-ui-react";
-import { ClaimManagementConstants } from "../../../../../features/claims/constants/claim-management-constants";
-import { getUsernameConfiguration } from "../../../../../features/users/utils";
-import { useValidationConfigData } from "../../../../../features/validation/api";
+import { ClaimManagementConstants } from "features/claims/constants/claim-management-constants";
+import { getUsernameConfiguration } from "features/users/utils";
+import { useValidationConfigData } from "features/validation/api";
 
 /**
  * Prop types of the attribute mappings component
@@ -57,18 +57,17 @@ interface AttributeMappingsComponentPropsInterface extends TestableComponentInte
 export const AttributeMappingsComponent: FunctionComponent<AttributeMappingsComponentPropsInterface> = (
     props: AttributeMappingsComponentPropsInterface
 ): ReactElement => {
-
     const {
         triggerSubmit,
         handleAttributeMappingsSubmit,
         mandatoryAttributes,
         isAttributesListRequestLoading,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
-    const [ usernameAttr, setUsernameAttr ] = useState<Claim[]>([]);
-    const [ userIDAttr, setUserIDAttr ] = useState<Claim[]>([]);
-    const [ usernameType, setUsernameType ] = useState<string>("");
+    const [usernameAttr, setUsernameAttr] = useState<Claim[]>([]);
+    const [userIDAttr, setUserIDAttr] = useState<Claim[]>([]);
+    const [usernameType, setUsernameType] = useState<string>("");
     const { t } = useTranslation();
 
     const { data: validationData } = useValidationConfigData();
@@ -77,125 +76,125 @@ export const AttributeMappingsComponent: FunctionComponent<AttributeMappingsComp
         if (validationData) {
             setUsernameType(
                 getUsernameConfiguration(validationData)?.enableValidator === "false"
-                    ? t("extensions:manage.features.userStores.create.pageLayout." +
-                        "steps.attributeMappings.emailUsername")
-                    : t("extensions:manage.features.userStores.create.pageLayout." +
-                        "steps.attributeMappings.alphanumericUsername")
+                    ? t(
+                          "extensions:manage.features.userStores.create.pageLayout." +
+                              "steps.attributeMappings.emailUsername"
+                      )
+                    : t(
+                          "extensions:manage.features.userStores.create.pageLayout." +
+                              "steps.attributeMappings.alphanumericUsername"
+                      )
             );
         }
-    }, [ validationData ]);
+    }, [validationData]);
 
     useEffect(() => {
-
         if (mandatoryAttributes) {
+            const username: Claim[] = mandatoryAttributes.filter(
+                (attribute: Claim) => attribute.claimURI === ClaimManagementConstants.USER_NAME_CLAIM_URI
+            );
 
-            const username: Claim[] = mandatoryAttributes.filter((attribute: Claim) =>
-                attribute.claimURI === ClaimManagementConstants.USER_NAME_CLAIM_URI);
-
-            const userID: Claim[] = mandatoryAttributes.filter((attribute: Claim) =>
-                attribute.claimURI !== ClaimManagementConstants.USER_NAME_CLAIM_URI);
+            const userID: Claim[] = mandatoryAttributes.filter(
+                (attribute: Claim) => attribute.claimURI !== ClaimManagementConstants.USER_NAME_CLAIM_URI
+            );
 
             setUsernameAttr(username);
             setUserIDAttr(userID);
-
         }
-
-    }, [ mandatoryAttributes ]);
+    }, [mandatoryAttributes]);
 
     return (
         <Forms
-            submitState={ triggerSubmit }
-            onSubmit={ (values: Map<string, FormValue>) => {
+            submitState={triggerSubmit}
+            onSubmit={(values: Map<string, FormValue>) => {
                 handleAttributeMappingsSubmit(values);
-            } }
+            }}
         >
             <Segment className="attribute-mapping-section" padded="very">
-                {
-                    !isAttributesListRequestLoading
-                        ? (
-                            <Grid width={ 10 }>
-                                {
-                                    usernameAttr?.map((attribute: Claim, index: number) => (
-                                        <Grid.Row key={ index } columns={ 2 }>
-                                            <Grid.Column width={ 8 }>
-                                                <Header.Content>
-                                                    { attribute?.displayName }
-                                                    <Text display="inline" styles={ { color: "red" } } > *</Text>
-                                                    <Header.Subheader>
-                                                        <code className="inline-code compact transparent">
-                                                            { attribute?.claimURI }
-                                                        </code>
-                                                    </Header.Subheader>
-                                                </Header.Content>
-                                            </Grid.Column>
-                                            <Grid.Column width={ 8 }>
-                                                <Field
-                                                    name={ attribute?.claimURI }
-                                                    requiredErrorMessage="This field cannot be empty as
+                {!isAttributesListRequestLoading ? (
+                    <Grid width={10}>
+                        {usernameAttr?.map((attribute: Claim, index: number) => (
+                            <Grid.Row key={index} columns={2}>
+                                <Grid.Column width={8}>
+                                    <Header.Content>
+                                        {attribute?.displayName}
+                                        <Text display="inline" styles={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                        </Text>
+                                        <Header.Subheader>
+                                            <code className="inline-code compact transparent">
+                                                {attribute?.claimURI}
+                                            </code>
+                                        </Header.Subheader>
+                                    </Header.Content>
+                                </Grid.Column>
+                                <Grid.Column width={8}>
+                                    <Field
+                                        name={attribute?.claimURI}
+                                        requiredErrorMessage="This field cannot be empty as
                                                     email is the primary identifier of the user"
-                                                    type="text"
-                                                    required={ true }
-                                                    minLength={ 3 }
-                                                    maxLength={ 50 }
-                                                    data-testid={ `${ testId }-user-store-name-input` }
-                                                    width={ 14 }
-                                                />
-                                                <Hint>
-                                                    <Trans
-                                                        i18nKey={
-                                                            "extensions:manage.features.userStores.create.pageLayout." +
-                                                            "steps.attributeMappings.usernameHint"
-                                                        }
-                                                        tOptions={ { usernameType: usernameType } }
-                                                    >
-                                                        The mapped attribute for username should
-                                                        be <strong>unique </strong> and be of 
-                                                        <strong> type { usernameType }</strong>. 
-                                                        This field cannot be empty as
-                                                        username is the primary identifier of the user.
-                                                    </Trans>
-                                                    
-                                                </Hint>
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    ))
-                                }
-                                {
-                                    userIDAttr?.map((attribute: Claim, index: number) => (
-                                        <Grid.Row key={ index } columns={ 2 }>
-                                            <Grid.Column width={ 8 }>
-                                                <Header.Content>
-                                                    { attribute?.displayName }
-                                                    <Text display="inline" styles={ { color: "red" } } > *</Text>
-                                                    <Header.Subheader>
-                                                        <code className="inline-code compact transparent">
-                                                            { attribute?.claimURI }
-                                                        </code>
-                                                    </Header.Subheader>
-                                                </Header.Content>
-                                            </Grid.Column>
-                                            <Grid.Column width={ 8 }>
-                                                <Field
-                                                    name={ attribute?.claimURI }
-                                                    requiredErrorMessage="This field cannot be empty."
-                                                    type="text"
-                                                    required={ true }
-                                                    minLength={ 3 }
-                                                    maxLength={ 50 }
-                                                    data-testid={ `${ testId }-user-store-name-input` }
-                                                    width={ 14 }
-                                                />
-                                                <Hint>
-                                                    The mapped attribute for user ID should be <strong>unique</strong>.
-                                                </Hint>
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    ))
-                                }
-                            </Grid>
-                        )
-                        : <ContentLoader/>
-                }
+                                        type="text"
+                                        required={true}
+                                        minLength={3}
+                                        maxLength={50}
+                                        data-testid={`${testId}-user-store-name-input`}
+                                        width={14}
+                                    />
+                                    <Hint>
+                                        <Trans
+                                            i18nKey={
+                                                "extensions:manage.features.userStores.create.pageLayout." +
+                                                "steps.attributeMappings.usernameHint"
+                                            }
+                                            tOptions={{ usernameType: usernameType }}
+                                        >
+                                            The mapped attribute for username should be <strong>unique </strong> and be
+                                            of
+                                            <strong> type {usernameType}</strong>. This field cannot be empty as
+                                            username is the primary identifier of the user.
+                                        </Trans>
+                                    </Hint>
+                                </Grid.Column>
+                            </Grid.Row>
+                        ))}
+                        {userIDAttr?.map((attribute: Claim, index: number) => (
+                            <Grid.Row key={index} columns={2}>
+                                <Grid.Column width={8}>
+                                    <Header.Content>
+                                        {attribute?.displayName}
+                                        <Text display="inline" styles={{ color: "red" }}>
+                                            {" "}
+                                            *
+                                        </Text>
+                                        <Header.Subheader>
+                                            <code className="inline-code compact transparent">
+                                                {attribute?.claimURI}
+                                            </code>
+                                        </Header.Subheader>
+                                    </Header.Content>
+                                </Grid.Column>
+                                <Grid.Column width={8}>
+                                    <Field
+                                        name={attribute?.claimURI}
+                                        requiredErrorMessage="This field cannot be empty."
+                                        type="text"
+                                        required={true}
+                                        minLength={3}
+                                        maxLength={50}
+                                        data-testid={`${testId}-user-store-name-input`}
+                                        width={14}
+                                    />
+                                    <Hint>
+                                        The mapped attribute for user ID should be <strong>unique</strong>.
+                                    </Hint>
+                                </Grid.Column>
+                            </Grid.Row>
+                        ))}
+                    </Grid>
+                ) : (
+                    <ContentLoader />
+                )}
             </Segment>
         </Forms>
     );

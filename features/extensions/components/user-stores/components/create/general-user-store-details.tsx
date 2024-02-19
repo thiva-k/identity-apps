@@ -19,7 +19,7 @@
 import { isFeatureEnabled } from "@wso2is/core/helpers";
 import { SBACInterface, TestableComponentInterface } from "@wso2is/core/models";
 import { Field, FormValue, Forms, RadioChild, Validation } from "@wso2is/forms";
-import { FeatureConfigInterface } from "apps/console/src/features/core";
+import { FeatureConfigInterface } from "features/core";
 import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
@@ -29,8 +29,9 @@ import { RemoteUserStoreAccessTypes, RemoteUserStoreConstants, RemoteUserStoreTy
 /**
  * Prop types of the general user store details component
  */
-interface GeneralUserStoreDetailsPropsInterface extends SBACInterface<FeatureConfigInterface>,
-    TestableComponentInterface {
+interface GeneralUserStoreDetailsPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        TestableComponentInterface {
     /**
      * Flag to hold the submit state.
      */
@@ -67,7 +68,6 @@ interface GeneralUserStoreDetailsPropsInterface extends SBACInterface<FeatureCon
 export const GeneralUserStoreDetails: FunctionComponent<GeneralUserStoreDetailsPropsInterface> = (
     props: GeneralUserStoreDetailsPropsInterface
 ): ReactElement => {
-
     const {
         triggerSubmit,
         featureConfig,
@@ -84,14 +84,18 @@ export const GeneralUserStoreDetails: FunctionComponent<GeneralUserStoreDetailsP
     const userStoreOptions: RadioChild[] = [
         {
             "data-testid": `${testId}-create-user-store-form-user-store-ldap-option-radio-button`,
-            label: t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form.fields." +
-                "userStoreType.types.ldap.label"),
+            label: t(
+                "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form.fields." +
+                    "userStoreType.types.ldap.label"
+            ),
             value: RemoteUserStoreTypes.LDAP
         },
         {
             "data-testid": `${testId}-create-user-store-form-user-store-ad-option-radio-button`,
-            label: t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form.fields." +
-                "userStoreType.types.ad.label"),
+            label: t(
+                "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form.fields." +
+                    "userStoreType.types.ad.label"
+            ),
             value: RemoteUserStoreTypes.ActiveDirectory
         }
     ];
@@ -100,21 +104,29 @@ export const GeneralUserStoreDetails: FunctionComponent<GeneralUserStoreDetailsP
         {
             "data-componentid": `${testId}-create-user-store-form-access-type-read-only-option-radio-button`,
             hint: {
-                content: t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form." +
-                    "fields.accessType.types.readOnly.hint")
+                content: t(
+                    "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form." +
+                        "fields.accessType.types.readOnly.hint"
+                )
             },
-            label: t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form.fields." +
-                "accessType.types.readOnly.label"),
+            label: t(
+                "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form.fields." +
+                    "accessType.types.readOnly.label"
+            ),
             value: RemoteUserStoreAccessTypes.ReadOnly
         },
         {
             "data-componentid": `${testId}-create-user-store-form-access-type-read-write-option-radio-button`,
             hint: {
-                content: t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form." +
-                    "fields.accessType.types.readWrite.hint")
+                content: t(
+                    "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form." +
+                        "fields.accessType.types.readWrite.hint"
+                )
             },
-            label: t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form.fields." +
-                "accessType.types.readWrite.label"),
+            label: t(
+                "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings.form.fields." +
+                    "accessType.types.readWrite.label"
+            ),
             value: RemoteUserStoreAccessTypes.ReadWrite
         }
     ];
@@ -124,41 +136,47 @@ export const GeneralUserStoreDetails: FunctionComponent<GeneralUserStoreDetailsP
             <Grid.Row>
                 <Grid.Column>
                     <Forms
-                        submitState={ triggerSubmit }
-                        onSubmit={ (values: Map<string, FormValue>) => {
+                        submitState={triggerSubmit}
+                        onSubmit={(values: Map<string, FormValue>) => {
                             handleBasicDetailsSubmit(values);
-                        } }
+                        }}
                     >
                         <Field
                             className="uppercase"
                             type="text"
                             name="name"
-                            label={ 
-                                t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings." +
-                                "form.fields.name.label")
-                            }
-                            requiredErrorMessage={ 
-                                t("extensions:manage.features.userStores.create.pageLayout.steps." +
-                                "generalSettings.form.fields.name.requiredErrorMessage")
-                            }
-                            required={ true }
-                            placeholder={ 
-                                t("extensions:manage.features.userStores.create.pageLayout.steps." +
-                                "generalSettings.form.fields.name.placeholder")
-                            }
-                            minLength={ 3 }
-                            maxLength={ 50 }
-                            width={ 14 }
-                            data-testid={ `${testId}-user-store-name-input` }
-                            hint={ 
-                                t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings." +
-                                "form.fields.name.hint")
-                            }
-                            listen={ (values: Map<string, FormValue>) => {
+                            label={t(
+                                "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings." +
+                                    "form.fields.name.label"
+                            )}
+                            requiredErrorMessage={t(
+                                "extensions:manage.features.userStores.create.pageLayout.steps." +
+                                    "generalSettings.form.fields.name.requiredErrorMessage"
+                            )}
+                            required={true}
+                            placeholder={t(
+                                "extensions:manage.features.userStores.create.pageLayout.steps." +
+                                    "generalSettings.form.fields.name.placeholder"
+                            )}
+                            minLength={3}
+                            maxLength={50}
+                            width={14}
+                            data-testid={`${testId}-user-store-name-input`}
+                            hint={t(
+                                "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings." +
+                                    "form.fields.name.hint"
+                            )}
+                            listen={(values: Map<string, FormValue>) => {
                                 setUserStoreNameValid(values.get("name").length > 0);
-                                values.set("name", (values.get("name").toString().toUpperCase()));
-                            } }
-                            validation={ (value: string, validation: Validation) => {
+                                values.set(
+                                    "name",
+                                    values
+                                        .get("name")
+                                        .toString()
+                                        .toUpperCase()
+                                );
+                            }}
+                            validation={(value: string, validation: Validation) => {
                                 if (!isEmpty(value)) {
                                     // Regular expression to validate having / and _ in the user store name
                                     const regExpInvalidSymbols: RegExp = new RegExp("^[^_/]+$");
@@ -184,20 +202,30 @@ export const GeneralUserStoreDetails: FunctionComponent<GeneralUserStoreDetailsP
 
                                     if (!regExpInvalidSymbols.test(value)) {
                                         isMatch = false;
-                                        validationErrorMessage = t("extensions:manage.features.userStores.edit."
-                                            + "general.form.validations.invalidSymbolsErrorMessage");
-                                    } else if ((restrictedUserstores.includes(value.trim().toUpperCase()))) {
+                                        validationErrorMessage = t(
+                                            "extensions:manage.features.userStores.edit." +
+                                                "general.form.validations.invalidSymbolsErrorMessage"
+                                        );
+                                    } else if (restrictedUserstores.includes(value.trim().toUpperCase())) {
                                         isMatch = false;
-                                        validationErrorMessage = t("extensions:manage.features.userStores.edit."
-                                            + "general.form.validations.restrictedNamesErrorMessage", { name: value });
-                                    } else if ((reservedUserstores.includes(value.trim().toUpperCase()))) {
+                                        validationErrorMessage = t(
+                                            "extensions:manage.features.userStores.edit." +
+                                                "general.form.validations.restrictedNamesErrorMessage",
+                                            { name: value }
+                                        );
+                                    } else if (reservedUserstores.includes(value.trim().toUpperCase())) {
                                         isMatch = false;
-                                        validationErrorMessage = t("extensions:manage.features.userStores.edit."
-                                            + "general.form.validations.reservedNamesErrorMessage", { name: value });
+                                        validationErrorMessage = t(
+                                            "extensions:manage.features.userStores.edit." +
+                                                "general.form.validations.reservedNamesErrorMessage",
+                                            { name: value }
+                                        );
                                     } else if (regExpAllSymbols.test(value)) {
                                         isMatch = false;
-                                        validationErrorMessage = t("extensions:manage.features.userStores.edit."
-                                            + "general.form.validations.allSymbolsErrorMessage");
+                                        validationErrorMessage = t(
+                                            "extensions:manage.features.userStores.edit." +
+                                                "general.form.validations.allSymbolsErrorMessage"
+                                        );
                                     } else {
                                         isMatch = true;
                                     }
@@ -205,62 +233,62 @@ export const GeneralUserStoreDetails: FunctionComponent<GeneralUserStoreDetailsP
                                     if (!isMatch) {
                                         setUserStoreNameValid(false);
                                         validation.isValid = false;
-                                        validation.errorMessages.push(
-                                            validationErrorMessage
-                                        );
+                                        validation.errorMessages.push(validationErrorMessage);
                                     }
                                 }
-                            } }
+                            }}
                         />
                         <Field
-                            requiredErrorMessage={ null }
+                            requiredErrorMessage={null}
                             type="text"
                             name="description"
-                            label={ 
-                                t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings."
-                                + "form.fields.description.label")
-                            }
-                            required={ false }
-                            placeholder={ 
-                                t("extensions:manage.features.userStores.create.pageLayout.steps."
-                                + "generalSettings.form.fields.description.placeholder")
-                            }
-                            maxLength={ 300 }
-                            minLength={ 3 }
-                            width={ 14 }
-                            data-testid={ `${testId}-user-store-description-textarea` }
+                            label={t(
+                                "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings." +
+                                    "form.fields.description.label"
+                            )}
+                            required={false}
+                            placeholder={t(
+                                "extensions:manage.features.userStores.create.pageLayout.steps." +
+                                    "generalSettings.form.fields.description.placeholder"
+                            )}
+                            maxLength={300}
+                            minLength={3}
+                            width={14}
+                            data-testid={`${testId}-user-store-description-textarea`}
                         />
                         <Field
                             type="radio"
-                            label={ 
-                                t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings."
-                                + "form.fields.userStoreType.label")
-                            }
+                            label={t(
+                                "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings." +
+                                    "form.fields.userStoreType.label"
+                            )}
                             name="userStoreType"
                             default="createPw"
-                            listen={ (values: Map<string, RemoteUserStoreTypes>) => {
+                            listen={(values: Map<string, RemoteUserStoreTypes>) => {
                                 handleUserStoreTypeChange(values.get("userStoreType"));
-                            } }
-                            children={ userStoreOptions }
-                            value={ userStoreType ?? "LDAP" }
+                            }}
+                            children={userStoreOptions}
+                            value={userStoreType ?? "LDAP"}
                         />
                         <Field
                             type="radio"
-                            label={ 
-                                t("extensions:manage.features.userStores.create.pageLayout.steps.generalSettings."
-                                + "form.fields.accessType.label")
-                            }
+                            label={t(
+                                "extensions:manage.features.userStores.create.pageLayout.steps.generalSettings." +
+                                    "form.fields.accessType.label"
+                            )}
                             name="accessType"
                             default="createPw"
-                            listen={ (values: Map<string, RemoteUserStoreAccessTypes>) => {
+                            listen={(values: Map<string, RemoteUserStoreAccessTypes>) => {
                                 handleUserStoreAccessTypeChange(values.get("accessType"));
-                            } }
-                            children={ accessTypeOptions }
-                            value={ userStoreType ?? "true" }
-                            tabIndex={ 3 }
-                            hidden={ 
-                                !isFeatureEnabled(featureConfig?.userStores,
-                                    RemoteUserStoreConstants.FEATURE_DICTIONARY.get("USERSTORES_READ_WRITE_USERSTORES"))
+                            }}
+                            children={accessTypeOptions}
+                            value={userStoreType ?? "true"}
+                            tabIndex={3}
+                            hidden={
+                                !isFeatureEnabled(
+                                    featureConfig?.userStores,
+                                    RemoteUserStoreConstants.FEATURE_DICTIONARY.get("USERSTORES_READ_WRITE_USERSTORES")
+                                )
                             }
                         />
                     </Forms>
