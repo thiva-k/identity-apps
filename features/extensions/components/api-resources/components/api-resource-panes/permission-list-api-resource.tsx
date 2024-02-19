@@ -19,9 +19,14 @@
 import { IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
 import { CommonUtils } from "@wso2is/core/utils";
 import {
-    DataTable, EmptyPlaceholder, LinkButton, PrimaryButton, TableActionsInterface, TableColumnInterface
+    DataTable,
+    EmptyPlaceholder,
+    LinkButton,
+    PrimaryButton,
+    TableActionsInterface,
+    TableColumnInterface
 } from "@wso2is/react-components";
-import { getEmptyPlaceholderIllustrations } from "apps/console/src/features/core";
+import { getEmptyPlaceholderIllustrations } from "features/core";
 import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
@@ -31,8 +36,10 @@ import { APIResourcePanesCommonPropsInterface, APIResourcePermissionInterface } 
 /**
  * Prop-types for the API resources page component.
  */
-interface PermissionListAPIResourceInterface extends SBACInterface<ExtendedFeatureConfigInterface>,
-    IdentifiableComponentInterface, APIResourcePanesCommonPropsInterface {
+interface PermissionListAPIResourceInterface
+    extends SBACInterface<ExtendedFeatureConfigInterface>,
+        IdentifiableComponentInterface,
+        APIResourcePanesCommonPropsInterface {
     /**
      * List of API resource permissions
      */
@@ -40,7 +47,7 @@ interface PermissionListAPIResourceInterface extends SBACInterface<ExtendedFeatu
     /**
      * Search results for API resources permissions
      */
-    serachedPermissionList: APIResourcePermissionInterface[]
+    serachedPermissionList: APIResourcePermissionInterface[];
     /**
      * Clear the search query.
      */
@@ -64,7 +71,6 @@ interface PermissionListAPIResourceInterface extends SBACInterface<ExtendedFeatu
 export const PermissionListAPIResource: FunctionComponent<PermissionListAPIResourceInterface> = (
     props: PermissionListAPIResourceInterface
 ): ReactElement => {
-
     const {
         permissionList,
         serachedPermissionList,
@@ -79,7 +85,7 @@ export const PermissionListAPIResource: FunctionComponent<PermissionListAPIResou
 
     const { t } = useTranslation();
 
-    const [ clickedPermission, setClickedPermission ] = useState<APIResourcePermissionInterface>(undefined);
+    const [clickedPermission, setClickedPermission] = useState<APIResourcePermissionInterface>(undefined);
 
     /**
      * Resolves data table actions.
@@ -130,12 +136,12 @@ export const PermissionListAPIResource: FunctionComponent<PermissionListAPIResou
                 id: "displayName",
                 key: "displayName",
                 render: (permission: APIResourcePermissionInterface): ReactNode => (
-                    <Header as="h6" data-testid={ `${componentId}-permission-display-name` }>
+                    <Header as="h6" data-testid={`${componentId}-permission-display-name`}>
                         <Header.Content>
-                            { permission.displayName }
+                            {permission.displayName}
                             <Header.Subheader>
                                 <Label size="medium" className="ml-0 mt-2">
-                                    <Label.Detail className="ml-0">{ permission.name }</Label.Detail>
+                                    <Label.Detail className="ml-0">{permission.name}</Label.Detail>
                                 </Label>
                             </Header.Subheader>
                         </Header.Content>
@@ -150,11 +156,9 @@ export const PermissionListAPIResource: FunctionComponent<PermissionListAPIResou
                 id: "description",
                 key: "description",
                 render: (permission: APIResourcePermissionInterface): ReactNode => (
-                    <Header as="h6" data-testid={ `${componentId}-description` }>
+                    <Header as="h6" data-testid={`${componentId}-description`}>
                         <Header.Content>
-                            <Header.Subheader>
-                                { permission.description }
-                            </Header.Subheader>
+                            <Header.Subheader>{permission.description}</Header.Subheader>
                         </Header.Content>
                     </Header>
                 ),
@@ -173,25 +177,24 @@ export const PermissionListAPIResource: FunctionComponent<PermissionListAPIResou
 
     /**
      * Empty placeholder for the API resource permissions list.
-     * 
+     *
      * @returns `ReactElement`
      */
     const showPlaceholders = (): ReactElement => {
         if (permissionList?.length === 0) {
-            return ( 
+            return (
                 <EmptyPlaceholder
-                    subtitle = { [ t("extensions:develop.apiResource.tabs.permissions.empty.subTitle") ] }
-                    title={ t("extensions:develop.apiResource.tabs.permissions.empty.title") }
-                    image={ getEmptyPlaceholderIllustrations().emptyList }
-                    action={ 
-                        (
-                            <PrimaryButton
-                                data-componentid= { `${componentId}-add-permission-button` }
-                                onClick={ setTriggerAddAPIResourcePermissionModal }>
-                                <Icon name="add" />
-                                { t("extensions:develop.apiResource.tabs.permissions.button") }
-                            </PrimaryButton>
-                        )
+                    subtitle={[t("extensions:develop.apiResource.tabs.permissions.empty.subTitle")]}
+                    title={t("extensions:develop.apiResource.tabs.permissions.empty.title")}
+                    image={getEmptyPlaceholderIllustrations().emptyList}
+                    action={
+                        <PrimaryButton
+                            data-componentid={`${componentId}-add-permission-button`}
+                            onClick={setTriggerAddAPIResourcePermissionModal}
+                        >
+                            <Icon name="add" />
+                            {t("extensions:develop.apiResource.tabs.permissions.button")}
+                        </PrimaryButton>
                     }
                     imageSize="tiny"
                 />
@@ -200,20 +203,22 @@ export const PermissionListAPIResource: FunctionComponent<PermissionListAPIResou
         if (serachedPermissionList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    subtitle={ [ t("extensions:develop.apiResource.tabs.permissions.emptySearch.subTitle.0"),
-                        t("extensions:develop.apiResource.tabs.permissions.emptySearch.subTitle.1") ] }
-                    title={ t("extensions:develop.apiResource.tabs.permissions.emptySearch.title") }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    subtitle={[
+                        t("extensions:develop.apiResource.tabs.permissions.emptySearch.subTitle.0"),
+                        t("extensions:develop.apiResource.tabs.permissions.emptySearch.subTitle.1")
+                    ]}
+                    title={t("extensions:develop.apiResource.tabs.permissions.emptySearch.title")}
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     action={
-                        (<LinkButton onClick={ clearSearchPermission }>
-                            { t("extensions:develop.apiResource.tabs.permissions.emptySearch.viewAll") }
-                        </LinkButton>)
+                        <LinkButton onClick={clearSearchPermission}>
+                            {t("extensions:develop.apiResource.tabs.permissions.emptySearch.viewAll")}
+                        </LinkButton>
                     }
                     imageSize="tiny"
                 />
             );
         }
-        
+
         return null;
     };
 
@@ -243,20 +248,20 @@ export const PermissionListAPIResource: FunctionComponent<PermissionListAPIResou
     return (
         <DataTable<APIResourcePermissionInterface>
             className="oidc-scopes-table"
-            columnCount={ 3 }
-            isLoading={ isAPIResourceDataLoading || isSubmitting }
-            loadingStateOptions={ {
+            columnCount={3}
+            isLoading={isAPIResourceDataLoading || isSubmitting}
+            loadingStateOptions={{
                 count: 10,
                 imageType: "square"
-            } }
-            onRowClick={ copyValueToClipboard }
-            showHeader={ false }
-            placeholders={ showPlaceholders() }
-            transparent={ permissionList?.length === 0 || serachedPermissionList?.length === 0 }
-            data-testid={ componentId }
-            actions={ resolveTableActions() }
-            columns={ resolveTableColumns() }
-            data={ serachedPermissionList }
+            }}
+            onRowClick={copyValueToClipboard}
+            showHeader={false}
+            placeholders={showPlaceholders()}
+            transparent={permissionList?.length === 0 || serachedPermissionList?.length === 0}
+            data-testid={componentId}
+            actions={resolveTableActions()}
+            columns={resolveTableColumns()}
+            data={serachedPermissionList}
         />
     );
 };

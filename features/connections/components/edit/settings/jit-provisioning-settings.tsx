@@ -29,7 +29,7 @@ import { getUserStoreList } from "../../../../userstores/api";
 import { updateJITProvisioningConfigs } from "../../../api/connections";
 import { JITProvisioningResponseInterface } from "../../../models/connection";
 import { JITProvisioningConfigurationsForm } from "../forms";
-import { useGetCurrentOrganizationType } from "apps/console/src/features/organizations/hooks/use-get-organization-type";
+import { useGetCurrentOrganizationType } from "features/organizations/hooks/use-get-organization-type";
 
 /**
  * Proptypes for the identity provider general details component.
@@ -68,8 +68,8 @@ interface JITProvisioningSettingsInterface extends TestableComponentInterface {
  * @return {ReactElement}
  */
 export const JITProvisioningSettings: FunctionComponent<JITProvisioningSettingsInterface> = (
-    props: JITProvisioningSettingsInterface): ReactElement => {
-
+    props: JITProvisioningSettingsInterface
+): ReactElement => {
     const {
         idpId,
         isLoading,
@@ -77,16 +77,15 @@ export const JITProvisioningSettings: FunctionComponent<JITProvisioningSettingsI
         onUpdate,
         isReadOnly,
         loader: Loader,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const dispatch = useDispatch();
     const { isSuperOrganization } = useGetCurrentOrganizationType();
     const { t } = useTranslation();
 
-    const [ userStore, setUserStore ] = useState<SimpleUserStoreListItemInterface[]>([]);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-
+    const [userStore, setUserStore] = useState<SimpleUserStoreListItemInterface[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     /**
      * Handles the advanced config form submit action.
@@ -96,24 +95,36 @@ export const JITProvisioningSettings: FunctionComponent<JITProvisioningSettingsI
     const handleJITProvisioningConfigFormSubmit = (values: any): void => {
         updateJITProvisioningConfigs(idpId, values)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateJITProvisioning." +
-                        "success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateJITProvisioning.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.authenticationProvider." +
+                                "notifications.updateJITProvisioning." +
+                                "success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.authenticationProvider." +
+                                "notifications.updateJITProvisioning.success.message"
+                        )
+                    })
+                );
                 onUpdate(idpId);
             })
             .catch(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications." +
-                        "updateJITProvisioning.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider.notifications." +
-                        "updateJITProvisioning.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "updateJITProvisioning.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.authenticationProvider.notifications." +
+                                "updateJITProvisioning.genericError.message"
+                        )
+                    })
+                );
             });
     };
 
@@ -126,33 +137,33 @@ export const JITProvisioningSettings: FunctionComponent<JITProvisioningSettingsI
         });
 
         if (isSuperOrganization()) {
-            getUserStoreList().then((response) => {
-                userstore.push(...response.data);
-                setUserStore(userstore);
-            }).catch(() => {
-                setUserStore(userstore);
-            });
+            getUserStoreList()
+                .then(response => {
+                    userstore.push(...response.data);
+                    setUserStore(userstore);
+                })
+                .catch(() => {
+                    setUserStore(userstore);
+                });
         } else {
             setUserStore(userstore);
         }
     }, []);
 
-    return (
-        !isLoading
-            ? (
-                <EmphasizedSegment padded="very">
-                    <JITProvisioningConfigurationsForm
-                        idpId={ idpId }
-                        initialValues={ jitProvisioningConfigurations }
-                        onSubmit={ handleJITProvisioningConfigFormSubmit }
-                        useStoreList={ userStore }
-                        data-testid={ testId }
-                        isReadOnly={ isReadOnly }
-                        isSubmitting={ isSubmitting }
-                    />
-                </EmphasizedSegment>
-            )
-            : <Loader />
+    return !isLoading ? (
+        <EmphasizedSegment padded="very">
+            <JITProvisioningConfigurationsForm
+                idpId={idpId}
+                initialValues={jitProvisioningConfigurations}
+                onSubmit={handleJITProvisioningConfigFormSubmit}
+                useStoreList={userStore}
+                data-testid={testId}
+                isReadOnly={isReadOnly}
+                isSubmitting={isSubmitting}
+            />
+        </EmphasizedSegment>
+    ) : (
+        <Loader />
     );
 };
 

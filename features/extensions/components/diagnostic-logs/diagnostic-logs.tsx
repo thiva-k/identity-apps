@@ -17,20 +17,9 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
-import { EmptyPlaceholder,
-    Hint,
-    LinkButton,
-    Message,
-    PrimaryButton } from "@wso2is/react-components";
-import { getEmptyPlaceholderIllustrations } from "apps/console/src/features/core";
-import React, {
-    MutableRefObject,
-    ReactElement,
-    UIEventHandler,
-    useEffect,
-    useRef,
-    useState
-} from "react";
+import { EmptyPlaceholder, Hint, LinkButton, Message, PrimaryButton } from "@wso2is/react-components";
+import { getEmptyPlaceholderIllustrations } from "features/core";
+import React, { MutableRefObject, ReactElement, UIEventHandler, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Icon, Label } from "semantic-ui-react";
 import InfiniteScrollContainer from "../logs/components/infinite-scroll-container";
@@ -52,30 +41,27 @@ type DiagnosticPagePropsInterface = IdentifiableComponentInterface;
  *
  * @returns Logs Page {@link React.ReactElement}
  */
-export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactElement => {
+export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface): ReactElement => {
+    const { ["data-componentid"]: componentId } = props;
 
-    const {
-        ["data-componentid"]: componentId
-    } = props;
-
-    const [ isPreviousEmpty, setIsPreviousEmpty ] = useState<boolean>(false);
-    const [ isNextEmpty, setIsNextEmpty ] = useState<boolean>(false);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ filterQuery, setFilterQuery ] = useState<string>("");
-    const [ inputQuery, setInputQuery ] = useState<string>("");
-    const [ endTime, setEndTime ] = useState<string>("");
-    const [ startTime, setStartTime ] = useState<string>("");
-    const [ timeRange, setTimeRange ] = useState<number>(0.25);
-    const [ filterMap, setFilterMap ] = useState<Map<string, string>>(new Map());
-    const [ filterList, setFilterList ] = useState<{ key: string, value:string }[]>([]);
-    const [ requestPayload, setRequestPayload ] = useState<InterfaceLogsRequest | null>(null);
-    const [ showLastLogTime, setShowLastLogTime ] = useState<boolean>(false);
-    const [ showDelayMessage, setShowDelayMessage ] = useState<boolean>(false);
-    const [ lastDiagnosticLogRequestTime, setLastDiagnosticLogRequestTime ] = useState<string>("");
-    const [ lastDiagnosticLogRequestTimeRange, setLastDiagnosticLogRequestTimeRange ] = useState<number>(0.25);
-    const [ showRefreshButton, setShowRefreshButton ] = useState<boolean>(false);
-    const [ timerRunning, setTimerRunning ] = useState<boolean>(false);
-    const [ diagnosticLogList, setDiagnosticLogList ] = useState<InterfaceLogEntry[]>([]);
+    const [isPreviousEmpty, setIsPreviousEmpty] = useState<boolean>(false);
+    const [isNextEmpty, setIsNextEmpty] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [filterQuery, setFilterQuery] = useState<string>("");
+    const [inputQuery, setInputQuery] = useState<string>("");
+    const [endTime, setEndTime] = useState<string>("");
+    const [startTime, setStartTime] = useState<string>("");
+    const [timeRange, setTimeRange] = useState<number>(0.25);
+    const [filterMap, setFilterMap] = useState<Map<string, string>>(new Map());
+    const [filterList, setFilterList] = useState<{ key: string; value: string }[]>([]);
+    const [requestPayload, setRequestPayload] = useState<InterfaceLogsRequest | null>(null);
+    const [showLastLogTime, setShowLastLogTime] = useState<boolean>(false);
+    const [showDelayMessage, setShowDelayMessage] = useState<boolean>(false);
+    const [lastDiagnosticLogRequestTime, setLastDiagnosticLogRequestTime] = useState<string>("");
+    const [lastDiagnosticLogRequestTimeRange, setLastDiagnosticLogRequestTimeRange] = useState<number>(0.25);
+    const [showRefreshButton, setShowRefreshButton] = useState<boolean>(false);
+    const [timerRunning, setTimerRunning] = useState<boolean>(false);
+    const [diagnosticLogList, setDiagnosticLogList] = useState<InterfaceLogEntry[]>([]);
 
     const { t } = useTranslation();
     const timeZone: string = "GMT+0000 UTC";
@@ -100,16 +86,16 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
                 }, LogsConstants.REFRESH_BUTTON_TIMEOUT);
             }
         }
-    }, [ lastDiagnosticLogRequestTime ]);
+    }, [lastDiagnosticLogRequestTime]);
 
     useEffect(() => {
         setShowRefreshButton(false);
-    }, [ endTime, startTime, inputQuery, filterQuery ]);
+    }, [endTime, startTime, inputQuery, filterQuery]);
 
     useEffect(() => {
         const current: number = getDateTimeWithOffset(timeZone);
         const currentEndTime: string = current.toString();
-        const currentStartTime: string = (current - 3600*1000*timeRange).toString();
+        const currentStartTime: string = (current - 3600 * 1000 * timeRange).toString();
 
         setEndTime(currentEndTime);
         setStartTime(currentStartTime);
@@ -129,10 +115,9 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
 
     const { error, list, loading, next, previous } = useFetch(requestPayload);
 
-
-    useEffect (() => {
+    useEffect(() => {
         setDiagnosticLogList(list);
-    }, [ list ]);
+    }, [list]);
 
     /**
      * Handles the behaviour of the infinite scroller
@@ -145,7 +130,6 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
          * When the at the top of the log container
          */
         if (element.scrollTop === 0) {
-
             if (previous) {
                 setRequestPayload({
                     filter: searchQuery,
@@ -176,55 +160,49 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
         }
     };
 
-    const renderDiagnosticLogContent = () : ReactElement => {
-
+    const renderDiagnosticLogContent = (): ReactElement => {
         return (
             <div>
                 <div className="top-action-bar">
-                    { advancedSearchFilter() }
+                    {advancedSearchFilter()}
                     <TimeRangeSelector
-                        setFromTime={ (value: string): void => setStartTime(value) }
-                        setToTime={ (value: string): void => setEndTime(value) }
-                        setTimeRange={ (value: number): void => setTimeRange(value) }
-                        data-componentid={ componentId }
+                        setFromTime={(value: string): void => setStartTime(value)}
+                        setToTime={(value: string): void => setEndTime(value)}
+                        setTimeRange={(value: number): void => setTimeRange(value)}
+                        data-componentid={componentId}
                     />
-                    { showRefreshButton
-                        ? (
-                            <PrimaryButton
-                                onClick={ () => fetchLatestLogs() }
-                                data-componentid={ `${ componentId }-refresh-button` }
-                            >
-                                <Icon name="refresh" />
-                                { t("extensions:develop.monitor.filter.refreshButton.label") }
-                            </PrimaryButton>
-                        ) : (
-                            <PrimaryButton
-                                onClick={ () => handleSearch() }
-                                data-componentid={ `${ componentId }-search-button` }
-                            >
-                                <Icon name="search" />
-                                { t("extensions:develop.monitor.filter.queryButton.label") }
-                            </PrimaryButton>
-                        )
-                    }
+                    {showRefreshButton ? (
+                        <PrimaryButton
+                            onClick={() => fetchLatestLogs()}
+                            data-componentid={`${componentId}-refresh-button`}
+                        >
+                            <Icon name="refresh" />
+                            {t("extensions:develop.monitor.filter.refreshButton.label")}
+                        </PrimaryButton>
+                    ) : (
+                        <PrimaryButton onClick={() => handleSearch()} data-componentid={`${componentId}-search-button`}>
+                            <Icon name="search" />
+                            {t("extensions:develop.monitor.filter.queryButton.label")}
+                        </PrimaryButton>
+                    )}
                 </div>
                 <div>
                     <>
                         <div className="top-toolbar">
-                            { renderRefreshTime() }
+                            {renderRefreshTime()}
                             <Label.Group>
-                                { filterList && filterList.map(
-                                    (value: { key: string, value:string }, index: number) =>
-                                        (<Label key={ index } className="filter-pill">
-                                            { getLabelTextForFilterPill(value.key) }
-                                            <Label.Detail>{ value.value }</Label.Detail>
-                                            <Icon name="delete" onClick={ () => removeFilter(value.key) }></Icon>
-                                        </Label>)
-                                ) }
-                                { resolveClearAllFilters() }
+                                {filterList &&
+                                    filterList.map((value: { key: string; value: string }, index: number) => (
+                                        <Label key={index} className="filter-pill">
+                                            {getLabelTextForFilterPill(value.key)}
+                                            <Label.Detail>{value.value}</Label.Detail>
+                                            <Icon name="delete" onClick={() => removeFilter(value.key)}></Icon>
+                                        </Label>
+                                    ))}
+                                {resolveClearAllFilters()}
                             </Label.Group>
                         </div>
-                        { resolveDiagnosticLogs() }
+                        {resolveDiagnosticLogs()}
                     </>
                 </div>
             </div>
@@ -273,7 +251,7 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
 
         if (timeRange !== -1) {
             currentEndTime = currentTime.toString();
-            currentStartTime = (currentTime - 3600*1000*timeRange).toString();
+            currentStartTime = (currentTime - 3600 * 1000 * timeRange).toString();
         }
         setShowDelayMessage(false);
         setLastDiagnosticLogRequestTime(currentTime.toString());
@@ -295,7 +273,6 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
         setSearchQuery("");
         setInputQuery("");
         setShowRefreshButton(false);
-
     };
 
     /**
@@ -308,7 +285,7 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
         setFilterMap(tempMap);
         buildFilterQuery();
 
-        const arr: { key: string, value:string }[] = [];
+        const arr: { key: string; value: string }[] = [];
 
         tempMap.forEach((value: string, key: string) => {
             arr.push({ key, value });
@@ -328,7 +305,7 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
         setFilterMap(tempMap);
         buildFilterQuery();
 
-        const arr: { key: string, value:string }[] = [];
+        const arr: { key: string; value: string }[] = [];
 
         tempMap.forEach((value: string, key: string) => {
             arr.push({ key, value });
@@ -355,38 +332,31 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
     const advancedSearchFilter = (): ReactElement => (
         <form
             className="advance-search-form"
-            onSubmit={ (event: React.FormEvent<HTMLFormElement>) => { event.preventDefault(); } }>
+            onSubmit={(event: React.FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+            }}
+        >
             <div className="search-input-wrapper">
                 <div className="search-box ui action left icon input advanced-search with-add-on">
                     <input
                         autoComplete="off"
-                        placeholder={ t("extensions:develop.monitor.filter.searchBar.placeholderDiagnostic") }
-                        maxLength={ 120 }
+                        placeholder={t("extensions:develop.monitor.filter.searchBar.placeholderDiagnostic")}
+                        maxLength={120}
                         name="query"
                         type="text"
                         className="search-input"
-                        value={ inputQuery }
-                        onChange={ (e: React.FormEvent<HTMLInputElement>) =>
+                        value={inputQuery}
+                        onChange={(e: React.FormEvent<HTMLInputElement>) =>
                             setInputQuery((e.target as HTMLInputElement).value)
                         }
-                        data-componentid={ `${componentId}-search-input` }
+                        data-componentid={`${componentId}-search-input`}
                     />
                     <Icon name="search" color="grey" />
                 </div>
-                <div className="search-box-addons" hidden={ !inputQuery }>
-                    <Icon
-                        name="close"
-                        color="grey"
-                        onClick={ handleSearchQueryClear }
-                        className="icon-button"
-                    />
+                <div className="search-box-addons" hidden={!inputQuery}>
+                    <Icon name="close" color="grey" onClick={handleSearchQueryClear} className="icon-button" />
                 </div>
-                <input
-                    hidden
-                    type="submit"
-                    value="Submit"
-                    data-componentid={ `${componentId}-search-input-submit` }
-                />
+                <input hidden type="submit" value="Submit" data-componentid={`${componentId}-search-input-submit`} />
             </div>
         </form>
     );
@@ -395,93 +365,93 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
         if (error) {
             return (
                 <EmptyPlaceholder
-                    subtitle={ [
+                    subtitle={[
                         t("extensions:develop.monitor.notifications.genericError.subtitle.0"),
                         t("extensions:develop.monitor.notifications.genericError.subtitle.1")
-                    ] }
-                    title={ t("extensions:develop.monitor.notifications.genericError.title") }
-                    image={ getEmptyPlaceholderIllustrations().genericError }
+                    ]}
+                    title={t("extensions:develop.monitor.notifications.genericError.title")}
+                    image={getEmptyPlaceholderIllustrations().genericError}
                     imageSize="tiny"
-                    data-componentid={ `${ componentId }-generic-error-placeholder` }
+                    data-componentid={`${componentId}-generic-error-placeholder`}
                 />
             );
         } else if (searchQuery && list.length === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ handleSearchQueryClear }>
-                            { t("extensions:develop.monitor.notifications.emptySearchResult.actionLabel") }
+                    action={
+                        <LinkButton onClick={handleSearchQueryClear}>
+                            {t("extensions:develop.monitor.notifications.emptySearchResult.actionLabel")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("extensions:develop.monitor.notifications.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("extensions:develop.monitor.notifications.emptySearchResult.title")}
+                    subtitle={[
                         t("extensions:develop.monitor.notifications.emptySearchResult.subtitle.0"),
                         t("extensions:develop.monitor.notifications.emptySearchResult.subtitle.1")
-                    ] }
-                    data-componentid={ `${ componentId }-empty-search-placeholder` }
+                    ]}
+                    data-componentid={`${componentId}-empty-search-placeholder`}
                 />
             );
         } else if (filterQuery && list.length === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ clearAllFilters }>
-                            { t("extensions:develop.monitor.notifications.emptyFilterResult.actionLabel") }
+                    action={
+                        <LinkButton onClick={clearAllFilters}>
+                            {t("extensions:develop.monitor.notifications.emptyFilterResult.actionLabel")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("extensions:develop.monitor.notifications.emptyFilterResult.title") }
-                    subtitle={ [
+                    title={t("extensions:develop.monitor.notifications.emptyFilterResult.title")}
+                    subtitle={[
                         t("extensions:develop.monitor.notifications.emptyFilterResult.subtitle.0"),
                         t("extensions:develop.monitor.notifications.emptyFilterResult.subtitle.1")
-                    ] }
-                    data-componentid={ `${ componentId }-empty-filter-placeholder` }
+                    ]}
+                    data-componentid={`${componentId}-empty-filter-placeholder`}
                 />
             );
         } else if (list.length === 0 && (!next || !previous) && !loading) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("extensions:develop.monitor.notifications.emptyResponse.title") }
-                    subtitle={ [
+                    title={t("extensions:develop.monitor.notifications.emptyResponse.title")}
+                    subtitle={[
                         t("extensions:develop.monitor.notifications.emptyResponse.subtitle.0") +
-                        `${ LogsConstants.TIMERANGE_DROPDOWN_OPTIONS.find(
-                            (el: {key: number; text: string; value: number;}) =>
-                                el.value === lastDiagnosticLogRequestTimeRange)?.text.toLowerCase()
-                        }`,
+                            `${LogsConstants.TIMERANGE_DROPDOWN_OPTIONS.find(
+                                (el: { key: number; text: string; value: number }) =>
+                                    el.value === lastDiagnosticLogRequestTimeRange
+                            )?.text.toLowerCase()}`,
                         t("extensions:develop.monitor.notifications.emptyResponse.subtitle.1")
-                    ] }
-                    data-componentid={ `${ componentId }-empty-data-placeholder` }
+                    ]}
+                    data-componentid={`${componentId}-empty-data-placeholder`}
                 />
             );
         } else {
             return (
                 <>
-                    { (loading && showDelayMessage) && (
+                    {loading && showDelayMessage && (
                         <div className="diagnostic-logs-delay-message">
                             <Message
                                 type="info"
                                 compact
-                                content={ t("extensions:develop.monitor.filter.delayMessage.text") }
+                                content={t("extensions:develop.monitor.filter.delayMessage.text")}
                             />
                         </div>
-                    ) }
+                    )}
                     <InfiniteScrollContainer
-                        handleScroll={ handleScroll }
-                        scrollRef={ scrollRef }
-                        logs={ diagnosticLogList }
-                        loading={ loading }
-                        rowHeight= { LogsConstants.LOG_ROW_HEIGHT }
-                        logCount={ LogsConstants.LOG_FETCH_COUNT }
-                        isPreviousEmpty = { isPreviousEmpty }
-                        isNextEmpty = { isNextEmpty }
-                        logType={ TabIndex.DIAGNOSTIC_LOGS }
-                        setSearchQuery = { handleFilter }
-                        data-componentid={ componentId }
+                        handleScroll={handleScroll}
+                        scrollRef={scrollRef}
+                        logs={diagnosticLogList}
+                        loading={loading}
+                        rowHeight={LogsConstants.LOG_ROW_HEIGHT}
+                        logCount={LogsConstants.LOG_FETCH_COUNT}
+                        isPreviousEmpty={isPreviousEmpty}
+                        isNextEmpty={isNextEmpty}
+                        logType={TabIndex.DIAGNOSTIC_LOGS}
+                        setSearchQuery={handleFilter}
+                        data-componentid={componentId}
                     />
                 </>
             );
@@ -494,27 +464,23 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
                 <LinkButton
                     basic
                     compact
-                    primary={ false }
-                    data-componentid={ `${ componentId }-clear-filter-button` }
-                    onClick={ clearAllFilters }
-                    disabled={ !filterQuery }
+                    primary={false}
+                    data-componentid={`${componentId}-clear-filter-button`}
+                    onClick={clearAllFilters}
+                    disabled={!filterQuery}
                 >
-                    {
-                        t("extensions:develop.monitor.filter.topToolbar" +
-                            ".buttons.clearFilters.label")
-                    }
+                    {t("extensions:develop.monitor.filter.topToolbar" + ".buttons.clearFilters.label")}
                 </LinkButton>
             );
         }
     };
 
     const fetchLatestLogs = (): void => {
-
         if (timeRange !== -1) {
             const current: number = getDateTimeWithOffset(timeZone);
 
             setEndTime(current.toString());
-            setStartTime((current - 3600*1000*timeRange).toString());
+            setStartTime((current - 3600 * 1000 * timeRange).toString());
         }
         handleSearch();
     };
@@ -524,16 +490,15 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
 
         return (
             <div className="logs-refresh-component">
-                { showLastLogTime && (
+                {showLastLogTime && (
                     <Hint icon="warning sign" popup compact warning>
-                        { t("extensions:develop.monitor.filter.refreshMessage.tooltipText") }
+                        {t("extensions:develop.monitor.filter.refreshMessage.tooltipText")}
                     </Hint>
-                ) }
+                )}
                 <p>
-                    { showLastLogTime &&
+                    {showLastLogTime &&
                         t("extensions:develop.monitor.filter.refreshMessage.text") +
-                        getTimeFromTimestamp(isoDateString)
-                    }
+                            getTimeFromTimestamp(isoDateString)}
                 </p>
             </div>
         );
@@ -555,9 +520,5 @@ export const DiagnosticLogsPage = (props: DiagnosticPagePropsInterface) : ReactE
         return filterValue;
     };
 
-    return (
-        <div>
-            { renderDiagnosticLogContent() }
-        </div>
-    );
+    return <div>{renderDiagnosticLogContent()}</div>;
 };

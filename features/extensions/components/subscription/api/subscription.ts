@@ -20,7 +20,7 @@ import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "apps/console/src/features/core/hooks/use-request";
+} from "features/core/hooks/use-request";
 import { HttpMethods } from "modules/core/src/models";
 import { Config } from "features/core";
 import { useGetCurrentOrganizationType } from "features/organizations/hooks/use-get-organization-type";
@@ -33,9 +33,10 @@ import { TenantTierRequestResponse } from "../models/subscription";
  *
  * @returns SWR response object containing the data, error, isValidating, mutate.
  */
-const useTenantTier = <Data = TenantTierRequestResponse,
-    Error = RequestErrorInterface> (): RequestResultInterface<Data, Error> => {
-
+const useTenantTier = <Data = TenantTierRequestResponse, Error = RequestErrorInterface>(): RequestResultInterface<
+    Data,
+    Error
+> => {
     const { isFirstLevelOrganization } = useGetCurrentOrganizationType();
 
     const requestConfig: RequestConfigInterface = {

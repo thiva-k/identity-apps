@@ -16,19 +16,18 @@
  * under the License.
  */
 
-import { AppConstants } from "apps/console/src/features/core";
+import { AppConstants } from "features/core";
 
 /**
  * Class containing API resources constants.
  */
 export class APIResourcesConstants {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
-     * 
+     *
      */
-    private constructor() { }
+    private constructor() {}
 
     public static readonly AFTER_REL: string = "after";
     public static readonly BEFORE_REL: string = "before";
@@ -49,15 +48,14 @@ export class APIResourcesConstants {
      * @returns `Map<string, string>`
      */
     public static getPaths(): Map<string, string> {
-
         return new Map<string, string>()
-            .set("API_RESOURCES", `${ AppConstants.getDeveloperViewBasePath() }/` + `${this.API_RESOURCE_DIR}`)
-            .set("API_RESOURCE_EDIT", `${ AppConstants.getDeveloperViewBasePath() }/${this.API_RESOURCE_DIR}/:id`);
+            .set("API_RESOURCES", `${AppConstants.getDeveloperViewBasePath()}/` + `${this.API_RESOURCE_DIR}`)
+            .set("API_RESOURCE_EDIT", `${AppConstants.getDeveloperViewBasePath()}/${this.API_RESOURCE_DIR}/:id`);
     }
 
     /**
      * To check whether the given value is a valid permission identifier.
-     * 
+     *
      * @param value - permission identifier
      * @returns boolean - true if the value is a valid permission identifier
      */

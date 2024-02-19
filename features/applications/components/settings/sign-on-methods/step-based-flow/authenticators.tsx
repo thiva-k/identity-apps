@@ -20,7 +20,7 @@ import Chip from "@oxygen-ui/react/Chip";
 import useUIConfig from "@wso2is/common/src/hooks/use-ui-configs";
 import { TestableComponentInterface } from "@wso2is/core/models";
 import { Code, Heading, InfoCard, Popup, Text } from "@wso2is/react-components";
-import { AppState } from "apps/console/src/features/core";
+import { AppState } from "features/core";
 import classNames from "classnames";
 import React, { Fragment, FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -29,9 +29,7 @@ import { Icon, Label } from "semantic-ui-react";
 import { applicationConfig } from "features/extensions";
 import { AuthenticatorManagementConstants } from "../../../../../connections";
 import { ConnectionsManagementUtils } from "../../../../../connections/utils/connection-utils";
-import {
-    IdentityProviderManagementConstants
-} from "../../../../../identity-providers/constants/identity-provider-management-constants";
+import { IdentityProviderManagementConstants } from "../../../../../identity-providers/constants/identity-provider-management-constants";
 import { AuthenticatorMeta } from "../../../../../identity-providers/meta/authenticator-meta";
 import {
     AuthenticatorCategories,
@@ -105,7 +103,7 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
         onAuthenticatorSelect,
         selected,
         showLabels,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
@@ -113,7 +111,7 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
 
     const connectionResourcesUrl: string = UIConfig?.connectionResourcesUrl;
 
-    const [ selectedAuthenticators, setSelectedAuthenticators ] = useState<GenericAuthenticatorInterface[]>(undefined);
+    const [selectedAuthenticators, setSelectedAuthenticators] = useState<GenericAuthenticatorInterface[]>(undefined);
 
     const authenticatorCardClasses: string = classNames("authenticator", {
         "with-labels": showLabels
@@ -130,7 +128,7 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
         }
 
         setSelectedAuthenticators(selected);
-    }, [ selected ]);
+    }, [selected]);
 
     const isFactorEnabled = (authenticator: GenericAuthenticatorInterface): boolean => {
         if (authenticator.category === AuthenticatorCategories.SECOND_FACTOR) {
@@ -154,15 +152,15 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
 
             // If there exist 2FAs in the current step backup code authenticator should be enabled.
             // Otherwise, it should be disabled.
-            return SignInMethodUtils.countTwoFactorAuthenticatorsInCurrentStep(
-                currentStep,
-                authenticationSteps
-            ) > 0;
+            return SignInMethodUtils.countTwoFactorAuthenticatorsInCurrentStep(currentStep, authenticationSteps) > 0;
         }
 
-        if ([
-            IdentityProviderManagementConstants.IDENTIFIER_FIRST_AUTHENTICATOR_ID,
-            IdentityProviderManagementConstants.BASIC_AUTHENTICATOR_ID ].includes(authenticator.id)) {
+        if (
+            [
+                IdentityProviderManagementConstants.IDENTIFIER_FIRST_AUTHENTICATOR_ID,
+                IdentityProviderManagementConstants.BASIC_AUTHENTICATOR_ID
+            ].includes(authenticator.id)
+        ) {
             return SignInMethodUtils.isFirstFactorValid(currentStep, authenticationSteps);
         }
 
@@ -170,11 +168,17 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
             if (authenticationSteps[currentStep]?.options?.length !== 0) {
                 return false;
             }
-            const [ leftSideSteps ]: AuthenticationStepInterface[][] = SignInMethodUtils.getLeftAndRightSideSteps(
-                currentStep, authenticationSteps);
+            const [leftSideSteps]: AuthenticationStepInterface[][] = SignInMethodUtils.getLeftAndRightSideSteps(
+                currentStep,
+                authenticationSteps
+            );
 
-            if (!SignInMethodUtils.hasSpecificFactorsInSteps(
-                ApplicationManagementConstants.ACTIVE_SESSIONS_LIMIT_HANDLERS, leftSideSteps)) {
+            if (
+                !SignInMethodUtils.hasSpecificFactorsInSteps(
+                    ApplicationManagementConstants.ACTIVE_SESSIONS_LIMIT_HANDLERS,
+                    leftSideSteps
+                )
+            ) {
                 return false;
             }
         }
@@ -199,120 +203,118 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
         if (authenticator.category === AuthenticatorCategories.SECOND_FACTOR) {
             return (
                 <>
-                    { currentStep === 0 ? (
+                    {currentStep === 0 ? (
                         <Fragment>
-                            { InfoLabel }
+                            {InfoLabel}
                             <Text>
-                                { applicationConfig.signInMethod.authenticatorSelection.messages
+                                {applicationConfig.signInMethod.authenticatorSelection.messages
                                     .secondFactorDisabledInFirstStep ??
                                     t(
                                         "console:develop.features.applications.edit.sections" +
-                                        ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
-                                        ".secondFactorDisabledInFirstStep"
-                                    ) }
+                                            ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
+                                            ".secondFactorDisabledInFirstStep"
+                                    )}
                             </Text>
                         </Fragment>
                     ) : (
                         <Fragment>
-                            { InfoLabel }
+                            {InfoLabel}
                             <Text>
-                                { applicationConfig.signInMethod.authenticatorSelection.messages
+                                {applicationConfig.signInMethod.authenticatorSelection.messages
                                     .secondFactorDisabled ?? (
                                     <Trans
                                         i18nKey={
                                             "console:develop.features.applications.edit.sections" +
-                                                ".signOnMethod.sections.authenticationFlow.sections" +
-                                                ".stepBased.secondFactorDisabled"
+                                            ".signOnMethod.sections.authenticationFlow.sections" +
+                                            ".stepBased.secondFactorDisabled"
                                         }
                                     >
-                                            The second-factor authenticators can only be used if{ " " }
-                                        <Code withBackground>Username & Password</Code>,{ " " }
-                                        <Code withBackground>Social Login</Code>,
-                                        <Code withBackground>Passkey</Code>
-                                            or any other handlers that can handle these factors are
-                                            present in a previous step.
+                                        The second-factor authenticators can only be used if{" "}
+                                        <Code withBackground>Username & Password</Code>,{" "}
+                                        <Code withBackground>Social Login</Code>,<Code withBackground>Passkey</Code>
+                                        or any other handlers that can handle these factors are present in a previous
+                                        step.
                                     </Trans>
-                                ) }
+                                )}
                             </Text>
                         </Fragment>
-                    ) }
+                    )}
                 </>
             );
         } else if (authenticator.name === IdentityProviderManagementConstants.BACKUP_CODE_AUTHENTICATOR) {
             return (
                 <>
-                    { currentStep === 0 ? (
+                    {currentStep === 0 ? (
                         <Fragment>
-                            { InfoLabel }
+                            {InfoLabel}
                             <Text>
-                                { t(
+                                {t(
                                     "console:develop.features.applications.edit.sections" +
-                                    ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
-                                    ".backupCodesDisabledInFirstStep"
-                                ) }
+                                        ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
+                                        ".backupCodesDisabledInFirstStep"
+                                )}
                             </Text>
                         </Fragment>
                     ) : (
                         <Fragment>
-                            { InfoLabel }
+                            {InfoLabel}
                             <Text>
-                                { t(
+                                {t(
                                     "console:develop.features.applications.edit.sections" +
-                                    ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
-                                    ".backupCodesDisabled"
-                                ) }
+                                        ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
+                                        ".backupCodesDisabled"
+                                )}
                             </Text>
                         </Fragment>
-                    ) }
+                    )}
                 </>
             );
         } else if (authenticator.category === AuthenticatorCategories.SOCIAL) {
             return (
                 <Fragment>
-                    { InfoLabel }
+                    {InfoLabel}
                     <Text>
-                        { t(
+                        {t(
                             "console:develop.features.applications.edit.sections.signOnMethod.sections." +
-                            "authenticationFlow.sections.stepBased.authenticatorDisabled"
-                        ) }
+                                "authenticationFlow.sections.stepBased.authenticatorDisabled"
+                        )}
                     </Text>
                 </Fragment>
             );
-        } else if ([
-            IdentityProviderManagementConstants.IDENTIFIER_FIRST_AUTHENTICATOR_ID,
-            IdentityProviderManagementConstants.BASIC_AUTHENTICATOR_ID ].includes(authenticator.id)) {
+        } else if (
+            [
+                IdentityProviderManagementConstants.IDENTIFIER_FIRST_AUTHENTICATOR_ID,
+                IdentityProviderManagementConstants.BASIC_AUTHENTICATOR_ID
+            ].includes(authenticator.id)
+        ) {
             return (
                 <Fragment>
-                    { InfoLabel }
+                    {InfoLabel}
                     <Text>
-                        {
-                            t(
-                                "console:develop.features.applications.edit.sections" +
+                        {t(
+                            "console:develop.features.applications.edit.sections" +
                                 ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
                                 ".firstFactorDisabled"
-                            )
-                        }
+                        )}
                     </Text>
                 </Fragment>
             );
         } else if (authenticator.name === IdentityProviderManagementConstants.SESSION_EXECUTOR_AUTHENTICATOR) {
             return (
                 <Fragment>
-                    { InfoLabel }
+                    {InfoLabel}
                     <Text>
-                        {
-                            (authenticationSteps[currentStep]?.options?.length !== 0)
-                                ? t(
-                                    "console:develop.features.applications.edit.sections" +
-                                    ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
-                                    ".sessionExecutorDisabledInMultiOptionStep"
-                                )
-                                : t(
-                                    "console:develop.features.applications.edit.sections" +
-                                    ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
-                                    ".sessionExecutorDisabledInFirstStep"
-                                )
-                        }
+                        {authenticationSteps[currentStep]?.options?.length !== 0
+                            ? t(
+                                  "console:develop.features.applications.edit.sections" +
+                                      ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
+                                      ".sessionExecutorDisabledInMultiOptionStep"
+                              )
+                            : t(
+                                  "console:develop.features.applications.edit.sections" +
+                                      ".signOnMethod.sections.authenticationFlow.sections.stepBased" +
+                                      ".sessionExecutorDisabledInFirstStep"
+                              )}
                     </Text>
                 </Fragment>
             );
@@ -329,12 +331,16 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
             return;
         }
 
-        if (selectedAuthenticators.some((authenticator: GenericAuthenticatorInterface) =>
-            authenticator.id === selectedAuthenticator.id)) {
-            const filtered: GenericAuthenticatorInterface[] = selectedAuthenticators
-                .filter((authenticator: GenericAuthenticatorInterface) => {
+        if (
+            selectedAuthenticators.some(
+                (authenticator: GenericAuthenticatorInterface) => authenticator.id === selectedAuthenticator.id
+            )
+        ) {
+            const filtered: GenericAuthenticatorInterface[] = selectedAuthenticators.filter(
+                (authenticator: GenericAuthenticatorInterface) => {
                     return authenticator.id !== selectedAuthenticator.id;
-                });
+                }
+            );
 
             onAuthenticatorSelect(filtered);
             setSelectedAuthenticators(filtered);
@@ -342,8 +348,8 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
             return;
         }
 
-        onAuthenticatorSelect([ ...selectedAuthenticators, selectedAuthenticator ]);
-        setSelectedAuthenticators([ ...selectedAuthenticators, selectedAuthenticator ]);
+        onAuthenticatorSelect([...selectedAuthenticators, selectedAuthenticator]);
+        setSelectedAuthenticators([...selectedAuthenticators, selectedAuthenticator]);
     };
 
     /**
@@ -371,45 +377,35 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
     const renderFeatureStatusChip = (authenticator: GenericAuthenticatorInterface): ReactElement => {
         if (
             isSAASDeployment &&
-          authenticator?.defaultAuthenticator?.authenticatorId === AuthenticatorManagementConstants
-              .ACTIVE_SESSION_LIMIT_HANDLER_AUTHENTICATOR_ID
+            authenticator?.defaultAuthenticator?.authenticatorId ===
+                AuthenticatorManagementConstants.ACTIVE_SESSION_LIMIT_HANDLER_AUTHENTICATOR_ID
         ) {
-            return (
-                <Chip
-                    size="small"
-                    label={ t("common:beta").toUpperCase() }
-                    className="oxygen-chip-beta"
-                />
-            );
+            return <Chip size="small" label={t("common:beta").toUpperCase()} className="oxygen-chip-beta" />;
         }
 
         return null;
     };
 
     return (
-        <Fragment data-testid={ testId }>
-            { heading && <Heading as="h6">{ heading }</Heading> }
-            { authenticators.map((authenticator: GenericAuthenticatorInterface, index: number) => (
-                authenticator.id === IdentityProviderManagementConstants.BACKUP_CODE_AUTHENTICATOR_ID ?
-                    null :
-                    (<Popup
+        <Fragment data-testid={testId}>
+            {heading && <Heading as="h6">{heading}</Heading>}
+            {authenticators.map((authenticator: GenericAuthenticatorInterface, index: number) =>
+                authenticator.id === IdentityProviderManagementConstants.BACKUP_CODE_AUTHENTICATOR_ID ? null : (
+                    <Popup
                         hoverable
                         hideOnScroll
                         position="top center"
-                        key={ index }
+                        key={index}
                         on="hover"
-                        disabled={ isFactorEnabled(authenticator) }
-                        content={ resolvePopupContent(authenticator) }
+                        disabled={isFactorEnabled(authenticator)}
+                        content={resolvePopupContent(authenticator)}
                         trigger={
-                            (<InfoCard
+                            <InfoCard
                                 showTooltips
                                 imageSize="micro"
-                                className={ authenticatorCardClasses }
-                                header={
-                                    authenticator.displayName ||
-                                    defaultName
-                                }
-                                disabled={ !isFactorEnabled(authenticator) }
+                                className={authenticatorCardClasses}
+                                header={authenticator.displayName || defaultName}
+                                disabled={!isFactorEnabled(authenticator)}
                                 selected={
                                     isFactorEnabled(authenticator) &&
                                     Array.isArray(selectedAuthenticators) &&
@@ -417,33 +413,35 @@ export const Authenticators: FunctionComponent<AuthenticatorsPropsInterface> = (
                                         return evalAuthenticator.id === authenticator.id;
                                     })
                                 }
-                                subHeader={ authenticator.categoryDisplayName }
-                                description={ authenticator.description }
-                                featureStatus={ renderFeatureStatusChip(authenticator) }
+                                subHeader={authenticator.categoryDisplayName}
+                                description={authenticator.description}
+                                featureStatus={renderFeatureStatusChip(authenticator)}
                                 image={
                                     authenticator.idp === AuthenticatorCategories.LOCAL ||
-                                    authenticator
-                                        .defaultAuthenticator?.authenticatorId === AuthenticatorManagementConstants
-                                        .ORGANIZATION_ENTERPRISE_AUTHENTICATOR_ID
+                                    authenticator.defaultAuthenticator?.authenticatorId ===
+                                        AuthenticatorManagementConstants.ORGANIZATION_ENTERPRISE_AUTHENTICATOR_ID
                                         ? authenticator.image
-                                        : ConnectionsManagementUtils
-                                            .resolveConnectionResourcePath(connectionResourcesUrl, authenticator.image)
+                                        : ConnectionsManagementUtils.resolveConnectionResourcePath(
+                                              connectionResourcesUrl,
+                                              authenticator.image
+                                          )
                                 }
-                                tags={ showLabels && resolveAuthenticatorLabels(authenticator) }
-                                onClick={ () => {
+                                tags={showLabels && resolveAuthenticatorLabels(authenticator)}
+                                onClick={() => {
                                     isFactorEnabled(authenticator) && handleAuthenticatorSelect(authenticator);
-                                } }
-                                imageOptions={ {
+                                }}
+                                imageOptions={{
                                     floated: false,
                                     inline: true
-                                } }
-                                data-testid={ `${ testId }-authenticator-${ authenticator.name }` }
-                                showCardAction={ false }
-                                showSetupGuideButton={ false }
-                            />)
+                                }}
+                                data-testid={`${testId}-authenticator-${authenticator.name}`}
+                                showCardAction={false}
+                                showSetupGuideButton={false}
+                            />
                         }
-                    />)
-            )) }
+                    />
+                )
+            )}
         </Fragment>
     );
 };

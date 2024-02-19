@@ -20,9 +20,9 @@ import { ProfileSchemaInterface, TestableComponentInterface } from "@wso2is/core
 import { Field, Form, FormFieldMessage } from "@wso2is/form";
 import { ConfirmationModal, Text } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
-import { AppState } from "apps/console/src/features/core";
-import { getUsernameConfiguration } from "apps/console/src/features/users/utils/user-management-utils";
-import { useValidationConfigData } from "apps/console/src/features/validation/api";
+import { AppState } from "features/core";
+import { getUsernameConfiguration } from "features/users/utils/user-management-utils";
+import { useValidationConfigData } from "features/validation/api";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
@@ -32,9 +32,7 @@ import { Label } from "semantic-ui-react";
 import { serverConfigurationConfig } from "../../extensions/configs";
 import { GovernanceConnectorConstants } from "../constants/governance-connector-constants";
 import { ServerConfigurationsConstants } from "../constants/server-configurations-constants";
-import {
-    ConnectorPropertyInterface,
-    GovernanceConnectorInterface } from "../models/governance-connectors";
+import { ConnectorPropertyInterface, GovernanceConnectorInterface } from "../models/governance-connectors";
 import { GovernanceConnectorUtils } from "../utils";
 
 /**
@@ -60,7 +58,7 @@ interface SelfRegistrationFormInitialValuesInterface {
     /**
      * Dynamic properties.
      */
-    [ key: string ]: string | boolean;
+    [key: string]: string | boolean;
 }
 
 /**
@@ -116,41 +114,33 @@ const FORM_ID: string = "governance-connectors-self-registration-form";
 export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsInterface> = (
     props: SelfRegistrationFormPropsInterface
 ): ReactElement => {
-
-    const {
-        initialValues,
-        onSubmit,
-        readOnly,
-        isConnectorEnabled,
-        isSubmitting,
-        ["data-testid"]: testId
-    } = props;
+    const { initialValues, onSubmit, readOnly, isConnectorEnabled, isSubmitting, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ initialConnectorValues, setInitialConnectorValues ]
-        = useState<Map<string, ConnectorPropertyInterface>>(undefined);
-    const [ initialFormValues, setInitialFormValues ]
-        = useState<SelfRegistrationFormInitialValuesInterface>(undefined);
-    const [ enableAccountConfirmation, setEnableAccountConfirmation ] = useState<boolean>(false);
-    const [ enableAccountActivateImmediately, setEnableAccountActivateImmediately ] = useState<boolean>(false);
-    const [ enableAutoLogin, setEnableAutoLogin ] = useState<boolean>(false);
-    const [ isAutoLoginOptionAvailable, setAutoLoginOptionAvailable ] = useState<boolean>(true);
-    const [ isFirstTimeAccountConfirmationUpdate, setFirstTimeAccountConfirmationUpdate ] = useState<boolean>(true);
-    const [ showSignUpConfirmationEnableModal, setShowSignUpConfirmationEnableConfirmationModal ]
-        = useState<boolean>(false);
-    const [ isAlphanumericUsernameEnabled, setAlphanumericUsernameEnabled ] = useState<boolean>(false);
-    const [ emailRequired, setEmailRequired ] = useState<boolean>(false);
+    const [initialConnectorValues, setInitialConnectorValues] = useState<Map<string, ConnectorPropertyInterface>>(
+        undefined
+    );
+    const [initialFormValues, setInitialFormValues] = useState<SelfRegistrationFormInitialValuesInterface>(undefined);
+    const [enableAccountConfirmation, setEnableAccountConfirmation] = useState<boolean>(false);
+    const [enableAccountActivateImmediately, setEnableAccountActivateImmediately] = useState<boolean>(false);
+    const [enableAutoLogin, setEnableAutoLogin] = useState<boolean>(false);
+    const [isAutoLoginOptionAvailable, setAutoLoginOptionAvailable] = useState<boolean>(true);
+    const [isFirstTimeAccountConfirmationUpdate, setFirstTimeAccountConfirmationUpdate] = useState<boolean>(true);
+    const [showSignUpConfirmationEnableModal, setShowSignUpConfirmationEnableConfirmationModal] = useState<boolean>(
+        false
+    );
+    const [isAlphanumericUsernameEnabled, setAlphanumericUsernameEnabled] = useState<boolean>(false);
+    const [emailRequired, setEmailRequired] = useState<boolean>(false);
 
     const profileSchemas: ProfileSchemaInterface[] = useSelector((state: AppState) => state.profile.profileSchemas);
 
-    const {
-        data: validationData
-    } = useValidationConfigData();
+    const { data: validationData } = useValidationConfigData();
 
     useEffect(() => {
-        const emailSchema: ProfileSchemaInterface = profileSchemas
-            .find((schema: ProfileSchemaInterface) => (schema.name === "emails"));
+        const emailSchema: ProfileSchemaInterface = profileSchemas.find(
+            (schema: ProfileSchemaInterface) => schema.name === "emails"
+        );
 
         if (emailSchema) {
             setEmailRequired(emailSchema.required);
@@ -161,29 +151,28 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
         if (validationData) {
             setAlphanumericUsernameEnabled(getUsernameConfiguration(validationData)?.enableValidator === "true");
         }
-    }, [ validationData ]);
+    }, [validationData]);
 
     /**
      * Flattens and resolved form initial values and field metadata.
      */
     useEffect(() => {
-
         if (isEmpty(initialValues?.properties)) {
             return;
         }
 
-        const resolvedInitialValues: Map<string, ConnectorPropertyInterface>
-            = new Map<string, ConnectorPropertyInterface>();
-        let resolvedInitialFormValues: SelfRegistrationFormInitialValuesInterface
-            = null;
+        const resolvedInitialValues: Map<string, ConnectorPropertyInterface> = new Map<
+            string,
+            ConnectorPropertyInterface
+        >();
+        let resolvedInitialFormValues: SelfRegistrationFormInitialValuesInterface = null;
 
         initialValues.properties.map((property: ConnectorPropertyInterface) => {
-
             if (serverConfigurationConfig.dynamicConnectors) {
                 resolvedInitialValues.set(property.name, property);
                 resolvedInitialFormValues = {
                     ...resolvedInitialFormValues,
-                    [ property.name ]: property.value
+                    [property.name]: property.value
                 };
             } else {
                 if (allowedConnectorFields.includes(property.name)) {
@@ -245,8 +234,10 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
             }
         });
 
-        if ((get(resolvedInitialFormValues, "SelfRegistration.SendConfirmationOnCreation") === "true") ||
-        (get(resolvedInitialFormValues, "SelfRegistration.LockOnCreation") === "true")) {
+        if (
+            get(resolvedInitialFormValues, "SelfRegistration.SendConfirmationOnCreation") === "true" ||
+            get(resolvedInitialFormValues, "SelfRegistration.LockOnCreation") === "true"
+        ) {
             setEnableAccountConfirmation(true);
             resolvedInitialFormValues = {
                 ...resolvedInitialFormValues,
@@ -260,7 +251,7 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
         }
         setInitialConnectorValues(resolvedInitialValues);
         setInitialFormValues(resolvedInitialFormValues);
-    }, [ initialValues ]);
+    }, [initialValues]);
 
     /**
      * Prepare form values for submitting.
@@ -277,26 +268,31 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
             "SelfRegistration.VerificationCode.ExpiryTime": string | boolean | unknown;
             "SelfRegistration.Notification.InternallyManage"?: string | boolean;
         } = {
-            "SelfRegistration.AutoLogin.Enable": values.autoLogin !== undefined
-                ? !!enableAutoLogin
-                : initialConnectorValues?.get("SelfRegistration.AutoLogin.Enable").value,
-            "SelfRegistration.LockOnCreation": values.accountActivateImmediately === true ||
-            enableAccountConfirmation == false
-                ? false
-                : true,
-            "SelfRegistration.NotifyAccountConfirmation": enableAccountConfirmation !== undefined
-                ? !!enableAccountConfirmation
-                : initialConnectorValues?.get("SelfRegistration.NotifyAccountConfirmation").value,
-            "SelfRegistration.SendConfirmationOnCreation": enableAccountConfirmation !== undefined
-                ? !!enableAccountConfirmation
-                : initialConnectorValues?.get("SelfRegistration.SendConfirmationOnCreation").value,
-            "SelfRegistration.VerificationCode.ExpiryTime": values.verificationLinkExpiryTime !== undefined
-                ? values.verificationLinkExpiryTime
-                : initialConnectorValues?.get("SelfRegistration.VerificationCode.ExpiryTime").value
+            "SelfRegistration.AutoLogin.Enable":
+                values.autoLogin !== undefined
+                    ? !!enableAutoLogin
+                    : initialConnectorValues?.get("SelfRegistration.AutoLogin.Enable").value,
+            "SelfRegistration.LockOnCreation":
+                values.accountActivateImmediately === true || enableAccountConfirmation == false ? false : true,
+            "SelfRegistration.NotifyAccountConfirmation":
+                enableAccountConfirmation !== undefined
+                    ? !!enableAccountConfirmation
+                    : initialConnectorValues?.get("SelfRegistration.NotifyAccountConfirmation").value,
+            "SelfRegistration.SendConfirmationOnCreation":
+                enableAccountConfirmation !== undefined
+                    ? !!enableAccountConfirmation
+                    : initialConnectorValues?.get("SelfRegistration.SendConfirmationOnCreation").value,
+            "SelfRegistration.VerificationCode.ExpiryTime":
+                values.verificationLinkExpiryTime !== undefined
+                    ? values.verificationLinkExpiryTime
+                    : initialConnectorValues?.get("SelfRegistration.VerificationCode.ExpiryTime").value
         };
 
-        if (initialConnectorValues?.get("SelfRegistration.Notification.InternallyManage").value === "false" &&
-            enableAccountConfirmation !== undefined && !!enableAccountConfirmation) {
+        if (
+            initialConnectorValues?.get("SelfRegistration.Notification.InternallyManage").value === "false" &&
+            enableAccountConfirmation !== undefined &&
+            !!enableAccountConfirmation
+        ) {
             data = {
                 ...data,
                 "SelfRegistration.Notification.InternallyManage": true
@@ -304,7 +300,6 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
         }
 
         if (serverConfigurationConfig.dynamicConnectors) {
-
             const keysToOmit: string[] = [
                 "autoLogin",
                 "accountActivateImmediately",
@@ -334,7 +329,7 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
                 if (!keysToOmit.includes(key)) {
                     data = {
                         ...data,
-                        [ GovernanceConnectorUtils.decodeConnectorPropertyName(key) ]: values[ key ]
+                        [GovernanceConnectorUtils.decodeConnectorPropertyName(key)]: values[key]
                     };
                 }
             }
@@ -344,20 +339,26 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
     };
 
     const getAccountVerificationMsg = (): FormFieldMessage => {
-
         if (!enableAccountConfirmation) {
             if (initialConnectorValues?.get(ServerConfigurationsConstants.RE_CAPTCHA)?.value === "true") {
                 return {
-                    content: t("extensions:manage.serverConfigurations.userOnboarding." +
-                        "selfRegistration.form.fields.signUpConfirmation.recommendationMsg"),
+                    content: t(
+                        "extensions:manage.serverConfigurations.userOnboarding." +
+                            "selfRegistration.form.fields.signUpConfirmation.recommendationMsg"
+                    ),
                     type: "warning"
                 };
             } else {
                 return {
-                    content: t("extensions:manage.serverConfigurations.userOnboarding." +
-                            "selfRegistration.form.fields.signUpConfirmation.recommendationMsg") +
-                        t("extensions:manage.serverConfigurations.userOnboarding." +
-                            "selfRegistration.form.fields.signUpConfirmation.botMsg"),
+                    content:
+                        t(
+                            "extensions:manage.serverConfigurations.userOnboarding." +
+                                "selfRegistration.form.fields.signUpConfirmation.recommendationMsg"
+                        ) +
+                        t(
+                            "extensions:manage.serverConfigurations.userOnboarding." +
+                                "selfRegistration.form.fields.signUpConfirmation.botMsg"
+                        ),
                     type: "warning"
                 };
             }
@@ -370,7 +371,6 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
      * @param updatedStatus - New config value of the Sign up confirmation checkbox.
      */
     const handleSignUpConfirmation = (updatedStatus: boolean): void => {
-
         if (updatedStatus && enableAutoLogin) {
             setShowSignUpConfirmationEnableConfirmationModal(true);
         } else {
@@ -385,7 +385,6 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
      * @param updatedStatus - New config value of the Sign up confirmation checkbox.
      */
     const updateSignUpConfirmation = (updatedStatus: boolean): void => {
-
         setEnableAccountConfirmation(updatedStatus);
         if (isFirstTimeAccountConfirmationUpdate && updatedStatus) {
             setAutoLoginOptionAvailable(false);
@@ -413,10 +412,9 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
      * @param updatedStatus - New config value of the Activate account immediately checkbox.
      */
     const handleAccountActivateImmediately = (updatedStatus: boolean): void => {
-
         setEnableAccountActivateImmediately(updatedStatus);
         setAutoLoginOptionAvailable(updatedStatus);
-        if ( !updatedStatus ) {
+        if (!updatedStatus) {
             setEnableAutoLogin(false);
         }
     };
@@ -426,49 +424,44 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
      * @returns Account verification confirmation modal component.
      */
     const renderSignUpConfirmationEnableWarning = (): ReactElement => {
-
         return (
             <ConfirmationModal
-                onClose={ (): void => setShowSignUpConfirmationEnableConfirmationModal(false) }
+                onClose={(): void => setShowSignUpConfirmationEnableConfirmationModal(false)}
                 type="warning"
-                open={ showSignUpConfirmationEnableModal }
-                primaryAction={ t("common:continue") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={
-                    (): void => {
-                        setShowSignUpConfirmationEnableConfirmationModal(false);
-                    }
-                }
-                onPrimaryActionClick={
-                    (): void => {
-                        setShowSignUpConfirmationEnableConfirmationModal(false);
-                        updateSignUpConfirmation(true);
-                    }
-                }
-                closeOnDimmerClick={ false }
+                open={showSignUpConfirmationEnableModal}
+                primaryAction={t("common:continue")}
+                secondaryAction={t("common:cancel")}
+                onSecondaryActionClick={(): void => {
+                    setShowSignUpConfirmationEnableConfirmationModal(false);
+                }}
+                onPrimaryActionClick={(): void => {
+                    setShowSignUpConfirmationEnableConfirmationModal(false);
+                    updateSignUpConfirmation(true);
+                }}
+                closeOnDimmerClick={false}
             >
                 <ConfirmationModal.Header>
-                    { t("extensions:manage.serverConfigurations.userOnboarding.selfRegistration.form.fields."
-                        + "signUpConfirmation.confirmation.heading") }
+                    {t(
+                        "extensions:manage.serverConfigurations.userOnboarding.selfRegistration.form.fields." +
+                            "signUpConfirmation.confirmation.heading"
+                    )}
                 </ConfirmationModal.Header>
-                <ConfirmationModal.Message
-                    attached
-                    warning
-                >
-                    { t("extensions:manage.serverConfigurations.userOnboarding.selfRegistration.form.fields."
-                        + "signUpConfirmation.confirmation.message") }
+                <ConfirmationModal.Message attached warning>
+                    {t(
+                        "extensions:manage.serverConfigurations.userOnboarding.selfRegistration.form.fields." +
+                            "signUpConfirmation.confirmation.message"
+                    )}
                 </ConfirmationModal.Message>
                 <ConfirmationModal.Content>
                     {
-                        (
-                            <Trans
-                                i18nKey="extensions:manage.serverConfigurations.userOnboarding.selfRegistration.form.
-                                    fields.signUpConfirmation.confirmation.content">
-                                Auto login requires account to be activated immediately after the registration.
-                                When you proceed, auto login will be disabled. You can always re-enable it,
-                                when you select <strong>Activate account immediately</strong> option.
-                            </Trans>
-                        )
+                        <Trans
+                            i18nKey="extensions:manage.serverConfigurations.userOnboarding.selfRegistration.form.
+                                    fields.signUpConfirmation.confirmation.content"
+                        >
+                            Auto login requires account to be activated immediately after the registration. When you
+                            proceed, auto login will be disabled. You can always re-enable it, when you select{" "}
+                            <strong>Activate account immediately</strong> option.
+                        </Trans>
                     }
                 </ConfirmationModal.Content>
             </ConfirmationModal>
@@ -481,37 +474,52 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
      * @param values - Form values.
      * @returns Form validation.
      */
-    const validateForm = (values: SelfRegistrationFormInitialValuesInterface): {
-        verificationLinkExpiryTime: undefined
-    }=> {
-
+    const validateForm = (
+        values: SelfRegistrationFormInitialValuesInterface
+    ): {
+        verificationLinkExpiryTime: undefined;
+    } => {
         const errors: {
-            verificationLinkExpiryTime: undefined
+            verificationLinkExpiryTime: undefined;
         } = {
             verificationLinkExpiryTime: undefined
         };
 
         if (!values.verificationLinkExpiryTime) {
             // Check for required error.
-            errors.verificationLinkExpiryTime = t("extensions:manage.serverConfigurations.userOnboarding." +
-                "selfRegistration.form.fields.expiryTime.validations.empty");
-        } else if (!FormValidation.isInteger(values.verificationLinkExpiryTime as unknown as number)) {
+            errors.verificationLinkExpiryTime = t(
+                "extensions:manage.serverConfigurations.userOnboarding." +
+                    "selfRegistration.form.fields.expiryTime.validations.empty"
+            );
+        } else if (!FormValidation.isInteger((values.verificationLinkExpiryTime as unknown) as number)) {
             // Check for invalid input.
-            errors.verificationLinkExpiryTime = t("extensions:manage.serverConfigurations.userOnboarding." +
-                "selfRegistration.form.fields.expiryTime.validations.invalid");
-        } else if ((parseInt(values.verificationLinkExpiryTime, 10) < GovernanceConnectorConstants
-            .SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_VALUE)
-            || (parseInt(values.verificationLinkExpiryTime, 10) > GovernanceConnectorConstants
-                .SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_VALUE)) {
+            errors.verificationLinkExpiryTime = t(
+                "extensions:manage.serverConfigurations.userOnboarding." +
+                    "selfRegistration.form.fields.expiryTime.validations.invalid"
+            );
+        } else if (
+            parseInt(values.verificationLinkExpiryTime, 10) <
+                GovernanceConnectorConstants.SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_VALUE ||
+            parseInt(values.verificationLinkExpiryTime, 10) >
+                GovernanceConnectorConstants.SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_VALUE
+        ) {
             // Check for invalid range.
-            errors.verificationLinkExpiryTime = t("extensions:manage.serverConfigurations.userOnboarding." +
-                "selfRegistration.form.fields.expiryTime.validations.range");
-        } else if (values.verificationLinkExpiryTime &&
-            !FormValidation.isLengthValid(values.verificationLinkExpiryTime as string, GovernanceConnectorConstants
-                .SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_LENGTH)) {
+            errors.verificationLinkExpiryTime = t(
+                "extensions:manage.serverConfigurations.userOnboarding." +
+                    "selfRegistration.form.fields.expiryTime.validations.range"
+            );
+        } else if (
+            values.verificationLinkExpiryTime &&
+            !FormValidation.isLengthValid(
+                values.verificationLinkExpiryTime as string,
+                GovernanceConnectorConstants.SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_LENGTH
+            )
+        ) {
             // Check for invalid input length.
-            errors.verificationLinkExpiryTime = t("extensions:manage.serverConfigurations.userOnboarding." +
-                "selfRegistration.form.fields.expiryTime.validations.maxLengthReached");
+            errors.verificationLinkExpiryTime = t(
+                "extensions:manage.serverConfigurations.userOnboarding." +
+                    "selfRegistration.form.fields.expiryTime.validations.maxLengthReached"
+            );
         }
 
         return errors;
@@ -523,152 +531,152 @@ export const SelfRegistrationForm: FunctionComponent<SelfRegistrationFormPropsIn
 
     return (
         <Form
-            id={ FORM_ID }
-            uncontrolledForm={ false }
-            validate={ validateForm }
-            initialValues={ initialFormValues }
-            onSubmit={ (values: Record<string, unknown>) =>
-                onSubmit(getUpdatedConfigurations(values))
-            }
+            id={FORM_ID}
+            uncontrolledForm={false}
+            validate={validateForm}
+            initialValues={initialFormValues}
+            onSubmit={(values: Record<string, unknown>) => onSubmit(getUpdatedConfigurations(values))}
         >
             <Field.Checkbox
                 ariaLabel="signUpConfirmation"
                 name="signUpConfirmation"
-                label={ t("extensions:manage.serverConfigurations.userOnboarding." +
-                    "selfRegistration.form.fields.signUpConfirmation.label") }
-                listen={ (value: boolean) => handleSignUpConfirmation(value) }
-                checked={ enableAccountConfirmation }
-                required={ false }
-                readOnly={ readOnly }
-                disabled={ !isConnectorEnabled || (isAlphanumericUsernameEnabled && !emailRequired) }
-                width={ 16 }
-                data-testid={ `${testId}-notify-account-confirmation` }
-                hint={ enableAccountConfirmation && t ("extensions:manage.serverConfigurations.userOnboarding" +
-                    ".selfRegistration.form.fields.signUpConfirmation.hint") }
-                message={ getAccountVerificationMsg() }
+                label={t(
+                    "extensions:manage.serverConfigurations.userOnboarding." +
+                        "selfRegistration.form.fields.signUpConfirmation.label"
+                )}
+                listen={(value: boolean) => handleSignUpConfirmation(value)}
+                checked={enableAccountConfirmation}
+                required={false}
+                readOnly={readOnly}
+                disabled={!isConnectorEnabled || (isAlphanumericUsernameEnabled && !emailRequired)}
+                width={16}
+                data-testid={`${testId}-notify-account-confirmation`}
+                hint={
+                    enableAccountConfirmation &&
+                    t(
+                        "extensions:manage.serverConfigurations.userOnboarding" +
+                            ".selfRegistration.form.fields.signUpConfirmation.hint"
+                    )
+                }
+                message={getAccountVerificationMsg()}
             />
-            {
-                isAlphanumericUsernameEnabled && !emailRequired && (
-                    <Text
-                        compact
-                        weight={ "300" }
-                        className="field-compact-description pb-3 pt-0"
-                        size={ "13px" }
-                    >
-                        { t ("extensions:manage.serverConfigurations.userOnboarding" +
-                            ".selfRegistration.accountVerificationWarning") }
-                    </Text>
-                )
-            }
-            { enableAccountConfirmation && (
+            {isAlphanumericUsernameEnabled && !emailRequired && (
+                <Text compact weight={"300"} className="field-compact-description pb-3 pt-0" size={"13px"}>
+                    {t(
+                        "extensions:manage.serverConfigurations.userOnboarding" +
+                            ".selfRegistration.accountVerificationWarning"
+                    )}
+                </Text>
+            )}
+            {enableAccountConfirmation && (
                 <Field.Input
                     ariaLabel="verificationLinkExpiryTime"
                     inputType="number"
                     name="verificationLinkExpiryTime"
-                    min={
-                        GovernanceConnectorConstants.SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS
-                            .EXPIRY_TIME_MIN_VALUE
-                    }
-                    max={
-                        GovernanceConnectorConstants.SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS
-                            .EXPIRY_TIME_MAX_VALUE
-                    }
-                    width={ 10 }
-                    label={ t("extensions:manage.serverConfigurations.userOnboarding." +
-                        "selfRegistration.form.fields.expiryTime.label") }
-                    required={ false }
-                    hidden={ false }
-                    placeholder={ t("extensions:manage.serverConfigurations.userOnboarding." +
-                        "selfRegistration.form.fields.expiryTime.placeholder") }
+                    min={GovernanceConnectorConstants.SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_VALUE}
+                    max={GovernanceConnectorConstants.SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_VALUE}
+                    width={10}
+                    label={t(
+                        "extensions:manage.serverConfigurations.userOnboarding." +
+                            "selfRegistration.form.fields.expiryTime.label"
+                    )}
+                    required={false}
+                    hidden={false}
+                    placeholder={t(
+                        "extensions:manage.serverConfigurations.userOnboarding." +
+                            "selfRegistration.form.fields.expiryTime.placeholder"
+                    )}
                     maxLength={
-                        GovernanceConnectorConstants
-                            .SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_LENGTH
+                        GovernanceConnectorConstants.SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_LENGTH
                     }
                     labelPosition="right"
                     minLength={
-                        GovernanceConnectorConstants
-                            .SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_LENGTH
+                        GovernanceConnectorConstants.SELF_REGISTRATION_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_LENGTH
                     }
-                    readOnly={ readOnly }
-                    disabled={ !isConnectorEnabled }
-                    data-testid={ `${testId}-link-expiry-time` }
+                    readOnly={readOnly}
+                    disabled={!isConnectorEnabled}
+                    data-testid={`${testId}-link-expiry-time`}
                 >
-                    <input/>
+                    <input />
                     <Label>mins</Label>
                 </Field.Input>
-            ) }
-            { enableAccountConfirmation && (
+            )}
+            {enableAccountConfirmation && (
                 <Field.Checkbox
                     ariaLabel="accountActivateImmediately"
                     className="toggle"
                     name="accountActivateImmediately"
-                    label={ t("extensions:manage.serverConfigurations.userOnboarding." +
-                        "selfRegistration.form.fields.activateImmediately.label") }
-                    required={ false }
-                    listen={ (value: boolean) => handleAccountActivateImmediately(value) }
-                    readOnly={ readOnly }
-                    disabled={ !isConnectorEnabled }
-                    data-testid={ `${testId}-account-activate-immediately` }
-                    message={
-                        {
-                            content: t("extensions:manage.serverConfigurations.userOnboarding." +
-                                "selfRegistration.form.fields.activateImmediately.msg"),
-                            type: "info"
-                        }
-                    }
+                    label={t(
+                        "extensions:manage.serverConfigurations.userOnboarding." +
+                            "selfRegistration.form.fields.activateImmediately.label"
+                    )}
+                    required={false}
+                    listen={(value: boolean) => handleAccountActivateImmediately(value)}
+                    readOnly={readOnly}
+                    disabled={!isConnectorEnabled}
+                    data-testid={`${testId}-account-activate-immediately`}
+                    message={{
+                        content: t(
+                            "extensions:manage.serverConfigurations.userOnboarding." +
+                                "selfRegistration.form.fields.activateImmediately.msg"
+                        ),
+                        type: "info"
+                    }}
                 />
-            ) }
+            )}
             <Field.Checkbox
                 ariaLabel="autoLogin"
                 name="autoLogin"
-                label={ t("extensions:manage.serverConfigurations.userOnboarding." +
-                    "selfRegistration.form.fields.enableAutoLogin.label") }
-                listen={ (value: boolean) => setEnableAutoLogin(value) }
-                checked={ enableAutoLogin }
-                readOnly={ readOnly }
-                disabled={ !isConnectorEnabled || !isAutoLoginOptionAvailable }
-                width={ 16 }
-                data-componentid={ `${testId}-enable-auto-login` }
-                hint={
-                    t("extensions:manage.serverConfigurations.userOnboarding." +
-                        "selfRegistration.form.fields.enableAutoLogin.hint")
-                }
+                label={t(
+                    "extensions:manage.serverConfigurations.userOnboarding." +
+                        "selfRegistration.form.fields.enableAutoLogin.label"
+                )}
+                listen={(value: boolean) => setEnableAutoLogin(value)}
+                checked={enableAutoLogin}
+                readOnly={readOnly}
+                disabled={!isConnectorEnabled || !isAutoLoginOptionAvailable}
+                width={16}
+                data-componentid={`${testId}-enable-auto-login`}
+                hint={t(
+                    "extensions:manage.serverConfigurations.userOnboarding." +
+                        "selfRegistration.form.fields.enableAutoLogin.hint"
+                )}
             />
             <Field.Checkbox
                 ariaLabel="SelfRegistration.NotifyAccountConfirmation"
-                name={ GovernanceConnectorUtils.encodeConnectorPropertyName(
-                    "SelfRegistration.NotifyAccountConfirmation")
-                }
+                name={GovernanceConnectorUtils.encodeConnectorPropertyName(
+                    "SelfRegistration.NotifyAccountConfirmation"
+                )}
                 className="toggle"
-                label={ GovernanceConnectorUtils.resolveFieldLabel(
+                label={GovernanceConnectorUtils.resolveFieldLabel(
                     "User Onboarding",
                     "SelfRegistration.NotifyAccountConfirmation",
-                    "Send sign up confirmation email") }
-                defaultValue={ initialFormValues?.[
-                    "SelfRegistration.NotifyAccountConfirmation" ] === "true" }
-                readOnly={ readOnly }
-                disabled={ !isConnectorEnabled }
-                width={ 16 }
-                data-componentid={ `${ testId }-enable-notification-sign-up-confirmation` }
-                hint={ GovernanceConnectorUtils.resolveFieldHint(
+                    "Send sign up confirmation email"
+                )}
+                defaultValue={initialFormValues?.["SelfRegistration.NotifyAccountConfirmation"] === "true"}
+                readOnly={readOnly}
+                disabled={!isConnectorEnabled}
+                width={16}
+                data-componentid={`${testId}-enable-notification-sign-up-confirmation`}
+                hint={GovernanceConnectorUtils.resolveFieldHint(
                     "User Onboarding",
                     "SelfRegistration.NotifyAccountConfirmation",
-                    "Enable sending notification for self sign up confirmation.")
-                }
+                    "Enable sending notification for self sign up confirmation."
+                )}
             />
             <Field.Button
-                form={ FORM_ID }
+                form={FORM_ID}
                 size="small"
                 buttonType="primary_btn"
                 ariaLabel="Self registration update button"
                 name="update-button"
-                data-testid={ `${testId}-submit-button` }
-                disabled={ !isConnectorEnabled || isSubmitting }
-                loading={ isSubmitting }
-                label={ t("common:update") }
-                hidden={ !isConnectorEnabled || readOnly }
+                data-testid={`${testId}-submit-button`}
+                disabled={!isConnectorEnabled || isSubmitting}
+                loading={isSubmitting}
+                label={t("common:update")}
+                hidden={!isConnectorEnabled || readOnly}
             />
-            { showSignUpConfirmationEnableModal && renderSignUpConfirmationEnableWarning() }
+            {showSignUpConfirmationEnableModal && renderSignUpConfirmationEnableWarning()}
         </Form>
     );
 };
