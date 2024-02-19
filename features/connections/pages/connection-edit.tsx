@@ -45,7 +45,7 @@ import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Label } from "semantic-ui-react";
 import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "../../../extensions/configs";
-import { EditMultiFactorAuthenticator } from "../../identity-providers/components/edit-multi-factor-authenticator";
+import { EditMultiFactorAuthenticator } from "../../identity-providers.common/components/edit-multi-factor-authenticator";
 import { getLocalAuthenticator, getMultiFactorAuthenticatorDetails } from "../api/authenticators";
 import { getConnectionDetails, getConnectionMetaData, getConnectionTemplates } from "../api/connections";
 import { EditConnection } from "../components/edit/connection-edit";
