@@ -32,8 +32,6 @@ import {
     UserGroupIcon
 } from "@oxygen-ui/react-icons";
 import { LegacyModeInterface, RouteInterface } from "@wso2is/core/models";
-import ApplicationsPage from "@wso2is/features/applications/pages/applications";
-import UsersPage  from "@wso2is/features/users/pages/users";
 import compact from "lodash-es/compact";
 import keyBy from "lodash-es/keyBy";
 import merge from "lodash-es/merge";
@@ -92,26 +90,26 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         protected: true,
                         showOnSidePanel: true
                     },
-                    {
-                        component: ApplicationsPage,
-                        exact: false,
-                        icon: {
-                            icon: getSidePanelIcons().home
-                        },
-                        id: "applications",
-                        name: "Applications",
-                        order: 1,
-                        path: "apptest",
-                        protected: true,
-                        showOnSidePanel: true
-                    },
-                    {
-                        component: UsersPage,
-                        id: "test",
-                        name: "Test",
-                        path : "testpath",
-                        showOnSidePanel: true
-                    },
+                    // {
+                    //     component: ApplicationsPage,
+                    //     exact: false,
+                    //     icon: {
+                    //         icon: getSidePanelIcons().home
+                    //     },
+                    //     id: "applications",
+                    //     name: "Applications",
+                    //     order: 1,
+                    //     path: "apptest",
+                    //     protected: true,
+                    //     showOnSidePanel: true
+                    // },
+                    // {
+                    //     component: UsersPage,
+                    //     id: "test",
+                    //     name: "Test",
+                    //     path : "testpath",
+                    //     showOnSidePanel: true
+                    // },
                     {
                         children: [
                             {
@@ -264,7 +262,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../applications/pages/applications")),
+                        component: lazy(() => import("@wso2is/features/applications/pages/applications")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().applications
@@ -1592,7 +1590,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../users/pages/users")),
+                component: lazy(() => import("@wso2is/features/users/pages/users")),
                 exact: true,
                 icon: {
                     icon: getSidePanelIcons().users

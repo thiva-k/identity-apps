@@ -67,6 +67,10 @@ export const getUserStores = (params: QueryParams): Promise<any> => {
         params,
         url: store.getState().config.endpoints.userStores
     };
+    // src
+    debugger
+    console.log(store.getState())
+    console.log(store.getState().config.endpoints.userStores)
     return httpClient(requestConfig)
         .then((response) => {
             if (response.status !== 200) {

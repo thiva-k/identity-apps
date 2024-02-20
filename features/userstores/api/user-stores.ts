@@ -67,6 +67,9 @@ export const getUserStores = (params: QueryParams): Promise<any> => {
         params,
         url: store.getState().config.endpoints.userStores
     };
+    debugger
+    console.log(store.getState())
+    console.log(store.getState().config.endpoints.userStores)
     return httpClient(requestConfig)
         .then((response) => {
             if (response.status !== 200) {
@@ -98,7 +101,8 @@ export const getUserStoreList = (): Promise<UserstoreListResponseInterface[] | a
         method: HttpMethods.GET,
         url: store.getState().config.endpoints.userStores
     };
-
+    console.log(store.getState())
+    console.log(store.getState().config.endpoints.userStores)
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             if (response.status !== 200) {
