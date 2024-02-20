@@ -66,9 +66,7 @@ import { TenantTier } from "./extensions/components/subscription/models/subscrip
 import { SubscriptionProvider } from "./extensions/components/subscription/providers/subscription-provider";
 import useSignIn from "./features/authentication/hooks/use-sign-in";
 import {
-    AppState,
     AppUtils,
-    Config,
     DeploymentConfigInterface,
     FeatureConfigInterface,
     HttpUtils,
@@ -77,8 +75,9 @@ import {
     getAppViewRoutes,
     setFilteredDevelopRoutes,
     setSanitizedDevelopRoutes,
-    store
 } from "./features/core";
+import { AppState, store } from "@wso2is/features/core/store";
+import { Config } from "@wso2is/features/core";
 import { AppConstants } from "./features/core/constants";
 import { history } from "./features/core/helpers";
 import useRoutes from "./features/core/hooks/use-routes";

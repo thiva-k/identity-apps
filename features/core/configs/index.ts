@@ -24,3 +24,4 @@
 export * from "./app";
 export * from "./documentation";
 export * from "./ui";
+export * from "./routes"

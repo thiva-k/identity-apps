@@ -51,7 +51,7 @@ import { useGetAllFeatures } from "./extensions/components/feature-gate/api/feat
 import { featureGateConfig } from "./extensions/configs/feature-gate";
 import { AccessControlUtils } from "./features/access-control/configs/access-control";
 import { EventPublisher, PreLoader } from "./features/core";
-import { ProtectedRoute } from "./features/core/components";
+import { ProtectedRoute } from "@wso2is/features/core/components";
 import { Config, DocumentationLinks, getBaseRoutes } from "./features/core/configs";
 import { AppConstants } from "./features/core/constants";
 import { history } from "./features/core/helpers";
@@ -61,7 +61,7 @@ import {
     FeatureConfigInterface,
     ServiceResourceEndpointsInterface
 } from "./features/core/models";
-import { AppState, store } from "./features/core/store";
+import { AppState, store } from "@wso2is/features/core/store";
 import "moment/locale/si";
 import "moment/locale/fr";
 import { OrganizationUtils } from "./features/organizations/utils";
