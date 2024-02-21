@@ -1608,7 +1608,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 category: "extensions:manage.sidePanel.categories.userManagement",
                 children: [
                     {
-                        component: lazy(() => import("../../userstores/pages/user-stores-edit")),
+                        component: lazy(() => import("@wso2is/features/userstores/pages/user-stores-edit")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1620,7 +1620,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     },
                     {
-                        component: lazy(() => import("../../userstores/pages/userstores-templates")),
+                        component: lazy(() => import("@wso2is/features/userstores/pages/userstores-templates")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1632,7 +1632,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../userstores/pages/user-stores")),
+                component: lazy(() => import("@wso2is/features/userstores/pages/user-stores")),
                 exact: true,
                 icon: {
                     icon: getSidePanelIcons().userStore
