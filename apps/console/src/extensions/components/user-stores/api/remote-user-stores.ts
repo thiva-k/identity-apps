@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosResponse } from "axios";
-import { store } from "../../../../features/core";
+import { store } from "@wso2is/features/core";
 import { RequestConfigInterface } from "../../../../features/core/hooks/use-request";
 import { RegenerateTokenInterface } from "../models";
 
@@ -32,8 +32,9 @@ const RESOURCE_NOT_FOUND_ERROR_MESSAGE: string = "Resource not found.";
  * Initialize an axios Http client.
  *
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Fetches all user store agent connections.
@@ -49,7 +50,7 @@ export const getAgentConnections = (userStoreId: string): Promise<any> => {
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.userStoreAgentConnection }/${userStoreId}`
+        url: `${store.getState().config.endpoints.userStoreAgentConnection}/${userStoreId}`
     };
 
     return httpClient(requestConfig)
@@ -82,7 +83,7 @@ export const disconnectAgentConnection = (userStoreId: string, agentConnectionId
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
-        url: `${ store.getState().config.endpoints.userStoreAgentConnection }/${userStoreId}/agent/${agentConnectionId}`
+        url: `${store.getState().config.endpoints.userStoreAgentConnection}/${userStoreId}/agent/${agentConnectionId}`
     };
 
     return httpClient(requestConfig)
@@ -115,7 +116,7 @@ export const generateToken = (data: { userStoreId: string }): Promise<any> => {
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: `${ store.getState().config.endpoints.userStoreAgentToken }`
+        url: `${store.getState().config.endpoints.userStoreAgentToken}`
     };
 
     return httpClient(requestConfig)
@@ -148,7 +149,7 @@ export const regenerateToken = (data: RegenerateTokenInterface): Promise<any> =>
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: `${ store.getState().config.endpoints.userStoreAgentToken }/regenerate`
+        url: `${store.getState().config.endpoints.userStoreAgentToken}/regenerate`
     };
 
     return httpClient(requestConfig)

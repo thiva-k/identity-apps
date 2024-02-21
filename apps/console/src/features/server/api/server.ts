@@ -21,7 +21,7 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { I18n } from "@wso2is/i18n";
 import { AxiosError, AxiosResponse } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import useRequest,
 { RequestConfigInterface, RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
 import { ServerConstants } from "../constants/server";

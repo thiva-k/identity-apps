@@ -35,7 +35,8 @@ import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Icon } from "semantic-ui-react";
 import { getProfileInformation } from "../../../../features/authentication/store";
-import { AppState, FeatureConfigInterface, history, store } from "../../../../features/core";
+import { FeatureConfigInterface, history } from "../../../../features/core";
+import { AppState, store } from "@wso2is/features/core";
 import { PatchRoleDataInterface } from "../../../../features/roles/models/roles";
 import {
     ServerConfigurationsInterface,
@@ -63,60 +64,63 @@ import { UsersConstants } from "../constants";
  * @returns guest user edit page.
  */
 const GuestUserEditPage = (): ReactElement => {
-
     const { t } = useTranslation();
 
-    const dispatch: ThunkDispatch<AppState, any, AnyAction>  = useDispatch();
+    const dispatch: ThunkDispatch<AppState, any, AnyAction> = useDispatch();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const profileInfo: ProfileInfoInterface = useSelector((state: AppState) => state.profile.profileInfo);
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ user, setUserProfile ] = useState<ProfileInfoInterface>(emptyProfileInfo);
-    const [ isUserDetailsRequestLoading, setIsUserDetailsRequestLoading ] = useState<boolean>(false);
-    const [ readOnlyUserStoresList, setReadOnlyUserStoresList ] = useState<string[]>(undefined);
-    const [ showEditAvatarModal, setShowEditAvatarModal ] = useState<boolean>(false);
-    const [ connectorProperties, setConnectorProperties ] = useState<ConnectorPropertyInterface[]>(undefined);
-    const [ isReadOnlyUserStoresLoading, setReadOnlyUserStoresLoading ] = useState<boolean>(false);
-    const [ realmConfigs, setRealmConfigs ] = useState<RealmConfigInterface>(undefined);
-    const [ isReadOnly, setReadOnly ] = useState<boolean>(true);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ isDisplayNameEnabled, setIsDisplayNameEnabled ] = useState<boolean>(undefined);
+    const [user, setUserProfile] = useState<ProfileInfoInterface>(emptyProfileInfo);
+    const [isUserDetailsRequestLoading, setIsUserDetailsRequestLoading] = useState<boolean>(false);
+    const [readOnlyUserStoresList, setReadOnlyUserStoresList] = useState<string[]>(undefined);
+    const [showEditAvatarModal, setShowEditAvatarModal] = useState<boolean>(false);
+    const [connectorProperties, setConnectorProperties] = useState<ConnectorPropertyInterface[]>(undefined);
+    const [isReadOnlyUserStoresLoading, setReadOnlyUserStoresLoading] = useState<boolean>(false);
+    const [realmConfigs, setRealmConfigs] = useState<RealmConfigInterface>(undefined);
+    const [isReadOnly, setReadOnly] = useState<boolean>(true);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [isDisplayNameEnabled, setIsDisplayNameEnabled] = useState<boolean>(undefined);
 
     useEffect(() => {
         if (!user) {
             return;
         }
 
-        const userStore: string = user?.userName?.split("/").length > 1
-            ? user?.userName?.split("/")[ 0 ]
-            : UserstoreConstants.PRIMARY_USER_STORE;
+        const userStore: string =
+            user?.userName?.split("/").length > 1
+                ? user?.userName?.split("/")[0]
+                : UserstoreConstants.PRIMARY_USER_STORE;
 
-        if (!isFeatureEnabled(featureConfig?.users, UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE"))
-            || readOnlyUserStoresList?.includes(userStore?.toString())
-            || !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.update, allowedScopes)
+        if (
+            !isFeatureEnabled(featureConfig?.users, UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")) ||
+            readOnlyUserStoresList?.includes(userStore?.toString()) ||
+            !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.update, allowedScopes)
         ) {
             setReadOnly(true);
         }
-    }, [ user, readOnlyUserStoresList ]);
+    }, [user, readOnlyUserStoresList]);
 
     useEffect(() => {
         const properties: ConnectorPropertyInterface[] = [];
 
-        getGovernanceConnectors(ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID)
-            .then((response: GovernanceConnectorInterface[]) => {
+        getGovernanceConnectors(ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID).then(
+            (response: GovernanceConnectorInterface[]) => {
                 response.map((connector: GovernanceConnectorInterface) => {
-                    if (connector.id === ServerConfigurationsConstants.ACCOUNT_DISABLING_CONNECTOR_ID
-                        || connector.id === ServerConfigurationsConstants.ADMIN_FORCE_PASSWORD_RESET_CONNECTOR_ID) {
+                    if (
+                        connector.id === ServerConfigurationsConstants.ACCOUNT_DISABLING_CONNECTOR_ID ||
+                        connector.id === ServerConfigurationsConstants.ADMIN_FORCE_PASSWORD_RESET_CONNECTOR_ID
+                    ) {
                         connector.properties.map((property: ConnectorPropertyInterface) => {
                             properties.push(property);
                         });
                     }
                 });
 
-                getGovernanceConnectors(ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID)
-                    .then((response: GovernanceConnectorInterface[]) => {
+                getGovernanceConnectors(ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID).then(
+                    (response: GovernanceConnectorInterface[]) => {
                         response.map((connector: GovernanceConnectorInterface) => {
                             if (connector.id === ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID) {
                                 connector.properties.map((property: ConnectorPropertyInterface) => {
@@ -128,8 +132,10 @@ const GuestUserEditPage = (): ReactElement => {
                         });
 
                         setConnectorProperties(properties);
-                    });
-            });
+                    }
+                );
+            }
+        );
     }, []);
 
     /**
@@ -140,20 +146,17 @@ const GuestUserEditPage = (): ReactElement => {
             return;
         }
 
-        if (hasRequiredScopes(featureConfig?.guestUser,
-            featureConfig?.guestUser?.scopes?.read, allowedScopes)) {
+        if (hasRequiredScopes(featureConfig?.guestUser, featureConfig?.guestUser?.scopes?.read, allowedScopes)) {
             getAdminUser();
         }
         setIsDisplayNameEnabled(
-            UserUtils.isDisplayNameEnabled(
-                store.getState().profile.profileSchemas, user.displayName
-            )
+            UserUtils.isDisplayNameEnabled(store.getState().profile.profileSchemas, user.displayName)
         );
-    }, [ user ]);
+    }, [user]);
 
     useEffect(() => {
         const path: string[] = history.location.pathname.split("/");
-        const id: string = path[ path.length - 1 ];
+        const id: string = path[path.length - 1];
 
         getUser(id);
     }, []);
@@ -173,10 +176,9 @@ const GuestUserEditPage = (): ReactElement => {
      * Util method to get super admin
      */
     const getAdminUser = () => {
-        getServerConfigs()
-            .then((response: ServerConfigurationsInterface) => {
-                setRealmConfigs(response?.realmConfig);
-            });
+        getServerConfigs().then((response: ServerConfigurationsInterface) => {
+            setRealmConfigs(response?.realmConfig);
+        });
     };
 
     const getUser = (id: string) => {
@@ -222,50 +224,57 @@ const GuestUserEditPage = (): ReactElement => {
                     }
                 }
             ],
-            schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
 
         setIsSubmitting(true);
 
         updateUserInfo(user?.id, data)
             .then(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t(
-                        "console:manage.features.user.profile.notifications.updateProfileInfo.success.description"
-                    ),
-                    level: AlertLevels.SUCCESS,
-                    message: t(
-                        "console:manage.features.user.profile.notifications.updateProfileInfo.success.message"
-                    )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.user.profile.notifications.updateProfileInfo.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.user.profile.notifications.updateProfileInfo.success.message"
+                        )
+                    })
+                );
 
                 handleUserUpdate(user?.id);
             })
             .catch((error: IdentityAppsApiException) => {
-                if (error.response
-                    && error.response.data
-                    && (error.response.data.description || error.response.data.detail)) {
-
-                    dispatch(addAlert<AlertInterface>({
-                        description: error.response.data.description || error.response.data.detail,
-                        level: AlertLevels.ERROR,
-                        message: t(
-                            "console:manage.features.user.profile.notifications.updateProfileInfo.error.message"
-                        )
-                    }));
+                if (
+                    error.response &&
+                    error.response.data &&
+                    (error.response.data.description || error.response.data.detail)
+                ) {
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: error.response.data.description || error.response.data.detail,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.user.profile.notifications.updateProfileInfo.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t(
-                        "console:manage.features.user.profile.notifications.updateProfileInfo.genericError.description"
-                    ),
-                    level: AlertLevels.ERROR,
-                    message: t(
-                        "console:manage.features.user.profile.notifications.updateProfileInfo.genericError.message"
-                    )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.user.profile.notifications.updateProfileInfo.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.user.profile.notifications.updateProfileInfo.genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setShowEditAvatarModal(false);
@@ -289,12 +298,11 @@ const GuestUserEditPage = (): ReactElement => {
     };
 
     /**
-    * This function resolves the description of the user
-    *
-    * @returns the descriptipn of user's
-    */
+     * This function resolves the description of the user
+     *
+     * @returns the descriptipn of user's
+     */
     const resolveDescription = (): string | null => {
-
         const description: string = user.emails ? resolvePrimaryEmail(user?.emails) : user.userName;
 
         if (isDisplayNameEnabled) {
@@ -310,171 +318,177 @@ const GuestUserEditPage = (): ReactElement => {
 
     return (
         <TabPageLayout
-            isLoading={ isUserDetailsRequestLoading }
-            loadingStateOptions={ {
+            isLoading={isUserDetailsRequestLoading}
+            loadingStateOptions={{
                 count: 5,
                 imageType: "circular"
-            } }
+            }}
             title={
-                user?.active !== undefined
-                    ? (
-                        <>
-                            {
-                                user?.active
-                                    ? (
-                                        <Popup
-                                            trigger={ (
-                                                <Icon
-                                                    className="mr-2 ml-0 vertical-aligned-baseline"
-                                                    size="small"
-                                                    name="circle"
-                                                    color="green"
-                                                />
-                                            ) }
-                                            content={ t("common:enabled") }
-                                            inverted
-                                        />
-                                    ) : (
-                                        <Popup
-                                            trigger={ (
-                                                <Icon
-                                                    className="mr-2 ml-0 vertical-aligned-baseline"
-                                                    size="small"
-                                                    name="circle"
-                                                    color="orange"
-                                                />
-                                            ) }
-                                            content={ t("common:disabled") }
-                                            inverted
-                                        />
-                                    ) }
-                            <>
-                                {
-                                    isDisplayNameEnabled
-                                        ? user.displayName
-                                        : resolveUserDisplayName(user, null, administratorConfig.adminRoleName)
+                user?.active !== undefined ? (
+                    <>
+                        {user?.active ? (
+                            <Popup
+                                trigger={
+                                    <Icon
+                                        className="mr-2 ml-0 vertical-aligned-baseline"
+                                        size="small"
+                                        name="circle"
+                                        color="green"
+                                    />
                                 }
-                            </>
-                        </>
-                    )
-                    : (
+                                content={t("common:enabled")}
+                                inverted
+                            />
+                        ) : (
+                            <Popup
+                                trigger={
+                                    <Icon
+                                        className="mr-2 ml-0 vertical-aligned-baseline"
+                                        size="small"
+                                        name="circle"
+                                        color="orange"
+                                    />
+                                }
+                                content={t("common:disabled")}
+                                inverted
+                            />
+                        )}
                         <>
-                            {
-                                isDisplayNameEnabled
-                                    ? user.displayName
-                                    : resolveUserDisplayName(user, null, administratorConfig.adminRoleName)
-                            }
+                            {isDisplayNameEnabled
+                                ? user.displayName
+                                : resolveUserDisplayName(user, null, administratorConfig.adminRoleName)}
                         </>
-                    )
+                    </>
+                ) : (
+                    <>
+                        {isDisplayNameEnabled
+                            ? user.displayName
+                            : resolveUserDisplayName(user, null, administratorConfig.adminRoleName)}
+                    </>
+                )
             }
-            description={ resolveDescription() }
-            image={ (
+            description={resolveDescription()}
+            image={
                 <UserAvatar
-                    editable={ !isReadOnly }
-                    name={ isDisplayNameEnabled ? user.displayName : resolveUserDisplayName(user) }
+                    editable={!isReadOnly}
+                    name={isDisplayNameEnabled ? user.displayName : resolveUserDisplayName(user)}
                     size="tiny"
-                    image={ user?.profileUrl }
-                    onClick={ () => !isReadOnly && setShowEditAvatarModal(true) }
+                    image={user?.profileUrl}
+                    onClick={() => !isReadOnly && setShowEditAvatarModal(true)}
                     data-suppress=""
                 />
-            ) }
-            backButton={ {
+            }
+            backButton={{
                 "data-testid": "user-mgt-edit-admin-back-button",
                 onClick: handleBackButtonClick,
                 text: t("extensions:manage.admins.editPage.backButton")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
+            bottomMargin={false}
         >
             <EditGuestUser
-                realmConfigs={ realmConfigs }
-                featureConfig={ featureConfig }
-                user={ user }
-                handleUserUpdate={ handleUserUpdate }
-                readOnlyUserStores={ readOnlyUserStoresList }
-                connectorProperties={ connectorProperties }
-                isReadOnlyUserStoresLoading={ isReadOnlyUserStoresLoading }
+                realmConfigs={realmConfigs}
+                featureConfig={featureConfig}
+                user={user}
+                handleUserUpdate={handleUserUpdate}
+                readOnlyUserStores={readOnlyUserStoresList}
+                connectorProperties={connectorProperties}
+                isReadOnlyUserStoresLoading={isReadOnlyUserStoresLoading}
             />
-            {
-                showEditAvatarModal && (
-                    <EditAvatarModal
-                        open={ showEditAvatarModal }
-                        name={ isDisplayNameEnabled ? user.displayName : resolveUserDisplayName(user) }
-                        emails={ resolveUserEmails(user?.emails) }
-                        onClose={ () => setShowEditAvatarModal(false) }
-                        closeOnDimmerClick={ false }
-                        onCancel={ () => setShowEditAvatarModal(false) }
-                        onSubmit={ handleAvatarEditModalSubmit }
-                        isSubmitting={ isSubmitting }
-                        imageUrl={ user?.profileUrl }
-                        heading={ t("console:common.modals.editAvatarModal.heading") }
-                        submitButtonText={ t("console:common.modals.editAvatarModal.primaryButton") }
-                        cancelButtonText={ t("console:common.modals.editAvatarModal.secondaryButton") }
-                        translations={ {
-                            gravatar: {
+            {showEditAvatarModal && (
+                <EditAvatarModal
+                    open={showEditAvatarModal}
+                    name={isDisplayNameEnabled ? user.displayName : resolveUserDisplayName(user)}
+                    emails={resolveUserEmails(user?.emails)}
+                    onClose={() => setShowEditAvatarModal(false)}
+                    closeOnDimmerClick={false}
+                    onCancel={() => setShowEditAvatarModal(false)}
+                    onSubmit={handleAvatarEditModalSubmit}
+                    isSubmitting={isSubmitting}
+                    imageUrl={user?.profileUrl}
+                    heading={t("console:common.modals.editAvatarModal.heading")}
+                    submitButtonText={t("console:common.modals.editAvatarModal.primaryButton")}
+                    cancelButtonText={t("console:common.modals.editAvatarModal.secondaryButton")}
+                    translations={{
+                        gravatar: {
+                            errors: {
+                                noAssociation: {
+                                    content: (
+                                        <Trans
+                                            i18nKey={
+                                                "console:common.modals.editAvatarModal.content.gravatar" +
+                                                "errors.noAssociation.content"
+                                            }
+                                        >
+                                            It seems like the selected email is not registered on Gravatar. Sign up for
+                                            a Gravatar account by visiting
+                                            <a href="https://www.gravatar.com"> Gravatar Official Website</a>
+                                            or use one of the following.
+                                        </Trans>
+                                    ),
+                                    header: t(
+                                        "console:common.modals.editAvatarModal.content.gravatar.errors" +
+                                            ".noAssociation.header"
+                                    )
+                                }
+                            },
+                            heading: t("console:common.modals.editAvatarModal.content.gravatar.heading")
+                        },
+                        hostedAvatar: {
+                            heading: t("console:common.modals.editAvatarModal.content.hostedAvatar.heading"),
+                            input: {
                                 errors: {
-                                    noAssociation: {
-                                        content: (
-                                            <Trans
-                                                i18nKey={
-                                                    "console:common.modals.editAvatarModal.content.gravatar" +
-                                                    "errors.noAssociation.content"
-                                                }
-                                            >
-                                                It seems like the selected email is not registered on Gravatar.
-                                                Sign up for a Gravatar account by visiting 
-                                                <a href="https://www.gravatar.com"> Gravatar Official Website</a> 
-                                                or use one of the following.
-                                            </Trans>
+                                    http: {
+                                        content: t(
+                                            "console:common.modals.editAvatarModal.content." +
+                                                "hostedAvatar.input.errors.http.content"
                                         ),
-                                        header: t("console:common.modals.editAvatarModal.content.gravatar.errors" +
-                                            ".noAssociation.header")
+                                        header: t(
+                                            "console:common.modals.editAvatarModal.content." +
+                                                "hostedAvatar.input.errors.http.header"
+                                        )
+                                    },
+                                    invalid: {
+                                        content: t(
+                                            "console:common.modals.editAvatarModal.content." +
+                                                "hostedAvatar.input.errors.invalid.content"
+                                        ),
+                                        pointing: t(
+                                            "console:common.modals.editAvatarModal.content." +
+                                                "hostedAvatar.input.errors.invalid.pointing"
+                                        )
                                     }
                                 },
-                                heading: t("console:common.modals.editAvatarModal.content.gravatar.heading")
-                            },
-                            hostedAvatar: {
-                                heading: t("console:common.modals.editAvatarModal.content.hostedAvatar.heading"),
-                                input: {
-                                    errors: {
-                                        http: {
-                                            content: t("console:common.modals.editAvatarModal.content." +
-                                                "hostedAvatar.input.errors.http.content"),
-                                            header: t("console:common.modals.editAvatarModal.content." +
-                                                "hostedAvatar.input.errors.http.header")
-                                        },
-                                        invalid: {
-                                            content: t("console:common.modals.editAvatarModal.content." +
-                                                "hostedAvatar.input.errors.invalid.content"),
-                                            pointing: t("console:common.modals.editAvatarModal.content." +
-                                                "hostedAvatar.input.errors.invalid.pointing")
-                                        }
-                                    },
-                                    hint: t("console:common.modals.editAvatarModal.content.hostedAvatar.input.hint"),
-                                    placeholder: t("console:common.modals.editAvatarModal.content." +
-                                        "hostedAvatar.input.placeholder"),
-                                    warnings: {
-                                        dataURL: {
-                                            content: t("console:common.modals.editAvatarModal.content." +
-                                                "hostedAvatar.input.warnings.dataURL.content"),
-                                            header: t("console:common.modals.editAvatarModal.content." +
-                                                "hostedAvatar.input.warnings.dataURL.header")
-                                        }
+                                hint: t("console:common.modals.editAvatarModal.content.hostedAvatar.input.hint"),
+                                placeholder: t(
+                                    "console:common.modals.editAvatarModal.content." + "hostedAvatar.input.placeholder"
+                                ),
+                                warnings: {
+                                    dataURL: {
+                                        content: t(
+                                            "console:common.modals.editAvatarModal.content." +
+                                                "hostedAvatar.input.warnings.dataURL.content"
+                                        ),
+                                        header: t(
+                                            "console:common.modals.editAvatarModal.content." +
+                                                "hostedAvatar.input.warnings.dataURL.header"
+                                        )
                                     }
                                 }
-                            },
-                            systemGenAvatars: {
-                                heading: t("console:common.modals.editAvatarModal.content.systemGenAvatars.heading"),
-                                types: {
-                                    initials: t("console:common.modals.editAvatarModal.content.systemGenAvatars." +
-                                        "types.initials")
-                                }
                             }
-                        } }
-                        data-suppress=""
-                    />
-                )
-            }
+                        },
+                        systemGenAvatars: {
+                            heading: t("console:common.modals.editAvatarModal.content.systemGenAvatars.heading"),
+                            types: {
+                                initials: t(
+                                    "console:common.modals.editAvatarModal.content.systemGenAvatars." + "types.initials"
+                                )
+                            }
+                        }
+                    }}
+                    data-suppress=""
+                />
+            )}
         </TabPageLayout>
     );
 };

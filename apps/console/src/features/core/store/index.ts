@@ -40,19 +40,13 @@ export type AppActions = AnyAction;
  *
  * @return {Store<any, AnyAction> & Store<S & {}, A> & {dispatch: any}} Redux Store
  */
-const configureStore = (): Store<any, AnyAction> & Store<AppState & ComponentInterface, AppActions> &
-    { dispatch: any } => {
-
-    const middleware = [
-        thunk
-    ];
+const configureStore = (): Store<any, AnyAction> &
+    Store<AppState & ComponentInterface, AppActions> & { dispatch: any } => {
+    const middleware = [thunk];
 
     const middleWareEnhancer: StoreEnhancer<{ dispatch: any }> = applyMiddleware(...middleware);
 
-    return createStore(
-        reducers,
-        composeWithDevTools(middleWareEnhancer)
-    );
+    return createStore(reducers, composeWithDevTools(middleWareEnhancer));
 };
 
 export const store = configureStore();

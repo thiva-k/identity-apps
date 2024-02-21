@@ -21,13 +21,13 @@ import { CopyInputField, Heading, Message } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useSelector } from "react-redux";
 import { Divider, Icon } from "semantic-ui-react";
-import { store } from "../../../../../core";
+import { store } from "@wso2is/features/core";
 import { AppState, ConfigReducerStateInterface } from "../../../../../core";
 
 /**
  * Prop types of the component.
  */
-type CustomIdentityProviderCreateWizardHelpPropsInterface = TestableComponentInterface
+type CustomIdentityProviderCreateWizardHelpPropsInterface = TestableComponentInterface;
 
 /**
  * Help content for the custom IDP template creation wizard.
@@ -35,53 +35,51 @@ type CustomIdentityProviderCreateWizardHelpPropsInterface = TestableComponentInt
  * @param {CustomIdentityProviderCreateWizardHelpPropsInterface} props - Props injected into the component.
  * @return {React.ReactElement}
  */
-const CustomIdentityProviderCreateWizardHelp: FunctionComponent<CustomIdentityProviderCreateWizardHelpPropsInterface>
-    = ( props: CustomIdentityProviderCreateWizardHelpPropsInterface ): ReactElement => {
+const CustomIdentityProviderCreateWizardHelp: FunctionComponent<CustomIdentityProviderCreateWizardHelpPropsInterface> = (
+    props: CustomIdentityProviderCreateWizardHelpPropsInterface
+): ReactElement => {
+    const { ["data-testid"]: testId } = props;
 
-        const {
-            [ "data-testid" ]: testId
-        } = props;
+    const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
 
-        const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
-
-        return (
-            <div data-testid={ testId }>
-                <Message
-                    type="info"
-                    header="Prerequisite"
-                    content={
-                        <p>Before you begin, register an application in the Identity Provider, and obtain a
-                            <strong> client ID & secret</strong>. Use the following URL as the <strong>
-                                Authorized Redirect URL</strong>.
-                            <br />
-                            <br />
-                            <CopyInputField
-                                className="copy-input-dark"
-                                value={ config?.deployment?.customServerHost + "/commonauth" }
-                            />
-                            <br />
-                            <Icon name="info circle" />
-                            The URL to which the authorization code is sent upon authentication and where the
-                            user is redirected to upon logout.
-                        </p>
-                    }
-                />
-                <Heading as="h5">Client ID</Heading>
-                <p>Provide the client ID obtained from the identity provider.</p>
-                <Divider />
-                <Heading as="h5">Client secret</Heading>
-                <p>Provide the client secret obtained from the identity provider.</p>
-                <Divider />
-                <Heading as="h5">Authorization endpoint URL</Heading>
-                <p>Provide the standard authorization endpoint URL of the identity provider.</p>
-                <p>E.g., https://enterprise_domain/authorize</p>
-                <Divider />
-                <Heading as="h5">Token endpoint URL</Heading>
-                <p>Provide the standard token endpoint URL of the identity provider.</p>
-                <p>E.g., https://enterprise_domain/token</p>
-
-            </div>
-        );
+    return (
+        <div data-testid={testId}>
+            <Message
+                type="info"
+                header="Prerequisite"
+                content={
+                    <p>
+                        Before you begin, register an application in the Identity Provider, and obtain a
+                        <strong> client ID & secret</strong>. Use the following URL as the{" "}
+                        <strong>Authorized Redirect URL</strong>.
+                        <br />
+                        <br />
+                        <CopyInputField
+                            className="copy-input-dark"
+                            value={config?.deployment?.customServerHost + "/commonauth"}
+                        />
+                        <br />
+                        <Icon name="info circle" />
+                        The URL to which the authorization code is sent upon authentication and where the user is
+                        redirected to upon logout.
+                    </p>
+                }
+            />
+            <Heading as="h5">Client ID</Heading>
+            <p>Provide the client ID obtained from the identity provider.</p>
+            <Divider />
+            <Heading as="h5">Client secret</Heading>
+            <p>Provide the client secret obtained from the identity provider.</p>
+            <Divider />
+            <Heading as="h5">Authorization endpoint URL</Heading>
+            <p>Provide the standard authorization endpoint URL of the identity provider.</p>
+            <p>E.g., https://enterprise_domain/authorize</p>
+            <Divider />
+            <Heading as="h5">Token endpoint URL</Heading>
+            <p>Provide the standard token endpoint URL of the identity provider.</p>
+            <p>E.g., https://enterprise_domain/token</p>
+        </div>
+    );
 };
 
 /**

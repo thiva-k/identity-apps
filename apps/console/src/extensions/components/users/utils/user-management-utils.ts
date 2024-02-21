@@ -17,10 +17,8 @@
  */
 
 import { ProfileSchemaInterface } from "@wso2is/core/models";
-import { store } from "apps/console/src/features/core";
-import {
-    UserManagementConstants
-} from "../../../../features/users/constants/user-management-constants";
+import { store } from "@wso2is/features/core";
+import { UserManagementConstants } from "../../../../features/users/constants/user-management-constants";
 import { UserBasicInterface } from "../../../../features/users/models";
 import { UserManagementUtils as UserManagementUtilsExt } from "../../../../features/users/utils";
 
@@ -28,7 +26,6 @@ import { UserManagementUtils as UserManagementUtilsExt } from "../../../../featu
  * Utility class for user management operations.
  */
 export class UserManagementUtils extends UserManagementUtilsExt {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
@@ -46,8 +43,7 @@ export class UserManagementUtils extends UserManagementUtilsExt {
      * @returns Sub header of the user list item.
      */
     public static resolveUserListSubheader(user: UserBasicInterface): string {
-        if (UserManagementUtils.isDisplayNameEnabled(store.getState()
-            .profile.profileSchemas, user.displayName)) {
+        if (UserManagementUtils.isDisplayNameEnabled(store.getState().profile.profileSchemas, user.displayName)) {
             return user.displayName;
         }
 
@@ -71,8 +67,7 @@ export class UserManagementUtils extends UserManagementUtilsExt {
      * @returns Header of the user list item.
      */
     public static resolveUserListHeader(user: UserBasicInterface): string {
-        if (UserManagementUtils.isDisplayNameEnabled(store.getState()
-            .profile.profileSchemas, user.displayName)) {
+        if (UserManagementUtils.isDisplayNameEnabled(store.getState().profile.profileSchemas, user.displayName)) {
             return user.displayName;
         } else {
             if (user.name && user.name.givenName) {
@@ -84,19 +79,20 @@ export class UserManagementUtils extends UserManagementUtilsExt {
     }
 
     /**
-    * Checks if the display name attribute is enabled or not
-    *
-    * @returns boolean
-    * @param profileSchema - The schema
-    * @param displayName - displayName
-    */
+     * Checks if the display name attribute is enabled or not
+     *
+     * @returns boolean
+     * @param profileSchema - The schema
+     * @param displayName - displayName
+     */
     public static isDisplayNameEnabled(profileSchema: ProfileSchemaInterface[], displayName?: string): boolean {
         if (!displayName) {
             return false;
         }
 
-        return profileSchema
-            .some((schemaItem: ProfileSchemaInterface) =>
-                schemaItem.name === UserManagementConstants.SCIM2_SCHEMA_DICTIONARY.get("DISPLAY_NAME"));
+        return profileSchema.some(
+            (schemaItem: ProfileSchemaInterface) =>
+                schemaItem.name === UserManagementConstants.SCIM2_SCHEMA_DICTIONARY.get("DISPLAY_NAME")
+        );
     }
 }

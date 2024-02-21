@@ -26,7 +26,7 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { ApplicationManagementConstants } from "../constants";
 import {
     AdaptiveAuthTemplateCategoryListItemInterface,

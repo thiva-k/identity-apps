@@ -20,7 +20,7 @@ import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpCodes, HttpMethods } from "@wso2is/core/models";
 import { AxiosResponse } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import {
     CreateSecretTypeRequestModel,
     DeleteSecretTypeRequestModel,
@@ -37,14 +37,13 @@ const httpClient = AsgardeoSPAClient.getInstance().httpRequest.bind(AsgardeoSPAC
  * Create a secret type.
  * @param body {CreateSecretTypeRequestModel}
  */
-export const createSecretType = async (
-    { body }: CreateSecretTypeRequestModel
-): Promise<AxiosResponse<SecretTypeModel>> => {
-
+export const createSecretType = async ({
+    body
+}: CreateSecretTypeRequestModel): Promise<AxiosResponse<SecretTypeModel>> => {
     const requestConfig: Record<string, any> = {
         data: body,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -55,97 +54,90 @@ export const createSecretType = async (
     try {
         const response: AxiosResponse<SecretTypeModel> = await httpClient(requestConfig);
         if (response.status !== HttpCodes.CREATED) {
-            return Promise.reject(new IdentityAppsApiException(`Failed to create the secret type ${ body.name }.`));
+            return Promise.reject(new IdentityAppsApiException(`Failed to create the secret type ${body.name}.`));
         }
         return response;
     } catch (error) {
         return Promise.reject(error);
     }
-
 };
 
 /**
  * Get the created secret type.
  * @param secretType { secretType: string }
  */
-export const getSecretType = async (
-    { params }: GetSecretTypeRequestModel
-): Promise<AxiosResponse<GetSecretTypeResponseModel>> => {
-
+export const getSecretType = async ({
+    params
+}: GetSecretTypeRequestModel): Promise<AxiosResponse<GetSecretTypeResponseModel>> => {
     const requestConfig: Record<string, any> = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: store.getState().config.endpoints.getSecretType + `/${ params.secretType }`
+        url: store.getState().config.endpoints.getSecretType + `/${params.secretType}`
     };
 
     try {
         const response: AxiosResponse<SecretTypeModel> = await httpClient(requestConfig);
         if (response.status !== HttpCodes.OK) {
-            return Promise.reject(
-                new IdentityAppsApiException(`Failed to get the secret type ${ params.secretType }.`));
+            return Promise.reject(new IdentityAppsApiException(`Failed to get the secret type ${params.secretType}.`));
         }
         return response;
     } catch (error) {
         return Promise.reject(error);
     }
-
 };
 
-export const updateSecretType = async (
-    { body, params }: UpdateSecretTypeRequestModel
-): Promise<AxiosResponse<UpdateSecretTypeResponseModel>> => {
-
+export const updateSecretType = async ({
+    body,
+    params
+}: UpdateSecretTypeRequestModel): Promise<AxiosResponse<UpdateSecretTypeResponseModel>> => {
     const requestConfig: Record<string, any> = {
         data: body,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
-        url: store.getState().config.endpoints.updateSecretType + `/${ params.secretType }`
+        url: store.getState().config.endpoints.updateSecretType + `/${params.secretType}`
     };
 
     try {
         const response: AxiosResponse<SecretTypeModel> = await httpClient(requestConfig);
         if (response.status !== HttpCodes.OK) {
             return Promise.reject(
-                new IdentityAppsApiException(`Failed to update the secret type ${ params.secretType }.`));
+                new IdentityAppsApiException(`Failed to update the secret type ${params.secretType}.`)
+            );
         }
         return response;
     } catch (error) {
         return Promise.reject(error);
     }
-
 };
 
-export const deleteSecretType = async (
-    { params }: DeleteSecretTypeRequestModel
-): Promise<AxiosResponse<unknown>> => {
-
+export const deleteSecretType = async ({ params }: DeleteSecretTypeRequestModel): Promise<AxiosResponse<unknown>> => {
     const requestConfig: Record<string, any> = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
-        url: store.getState().config.endpoints.deleteSecretType + `/${ params.secretType }`
+        url: store.getState().config.endpoints.deleteSecretType + `/${params.secretType}`
     };
 
     try {
         const response: AxiosResponse<SecretTypeModel> = await httpClient(requestConfig);
         if (response.status !== HttpCodes.NO_CONTENT) {
             return Promise.reject(
-                new IdentityAppsApiException(`Failed to delete the secret type ${ params.secretType }.`));
+                new IdentityAppsApiException(`Failed to delete the secret type ${params.secretType}.`)
+            );
         }
         return response;
     } catch (error) {
         return Promise.reject(error);
     }
-
 };

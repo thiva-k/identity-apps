@@ -19,14 +19,15 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationDiscoveryCheckResponseInterface } from "../models/organization-discovery";
 
 /**
  * Get an axios instance.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Check whether a given email domain is available.
@@ -34,20 +35,18 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  * @param domain - Domain to be checked.
  * @returns Promise containing the response.
  */
-const checkEmailDomainAvailable = (
-    domain: string
-): Promise<OrganizationDiscoveryCheckResponseInterface> => {
+const checkEmailDomainAvailable = (domain: string): Promise<OrganizationDiscoveryCheckResponseInterface> => {
     const requestConfig: AxiosRequestConfig = {
         data: {
             type: "emailDomain",
             value: domain
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: `${ store.getState().config.endpoints.organizations }/organizations/check-discovery`
+        url: `${store.getState().config.endpoints.organizations}/organizations/check-discovery`
     };
 
     return httpClient(requestConfig)
@@ -57,7 +56,8 @@ const checkEmailDomainAvailable = (
             }
 
             return Promise.resolve(response?.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error?.response?.data);
         });
 };

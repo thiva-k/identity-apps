@@ -21,24 +21,28 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosResponse } from "axios";
 import { ServerConfigurationsInterface } from "./governance-connectors";
-import { store } from "../../core";
-import useRequest,
-{ RequestConfigInterface, RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
+import { store } from "@wso2is/features/core";
+import useRequest, {
+    RequestConfigInterface,
+    RequestErrorInterface,
+    RequestResultInterface
+} from "../../core/hooks/use-request";
 import { ServerConfigurationsConstants } from "../constants";
 
 /**
  * Initialize an axios Http client.
  *
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().
-    httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Retrieve server configurations.
  *
  * @returns a promise containing the server configurations.
  */
-export const getServerConfigs = () : Promise<ServerConfigurationsInterface> => {
+export const getServerConfigs = (): Promise<ServerConfigurationsInterface> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
@@ -57,7 +61,8 @@ export const getServerConfigs = () : Promise<ServerConfigurationsInterface> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -69,20 +74,19 @@ export const getServerConfigs = () : Promise<ServerConfigurationsInterface> => {
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
-
 };
 
 /**
  * Hook to get the server configurations.
- * 
+ *
  * @returns server configurations.
  */
-export const useServerConfigs = <Data = ServerConfigurationsInterface,
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean = true
-    ): RequestResultInterface<Data, Error> => {
+export const useServerConfigs = <Data = ServerConfigurationsInterface, Error = RequestErrorInterface>(
+    shouldFetch: boolean = true
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Content-Type": "application/json"

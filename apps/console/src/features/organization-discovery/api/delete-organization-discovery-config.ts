@@ -18,13 +18,14 @@
 
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Get an axios instance.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Delete organization discovery configurations.
@@ -38,7 +39,7 @@ export const deleteOrganizationDiscoveryConfig = (): Promise<string> => {
             "Content-Type": "application/json"
         },
         method: "DELETE",
-        url: `${ store.getState().config.endpoints.organizations }/organization-configs/discovery`
+        url: `${store.getState().config.endpoints.organizations}/organization-configs/discovery`
     };
 
     return httpClient(config)

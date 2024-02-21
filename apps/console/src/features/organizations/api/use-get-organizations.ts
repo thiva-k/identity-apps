@@ -22,7 +22,7 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationListInterface } from "../models/organizations";
 
 /**
@@ -37,17 +37,15 @@ import { OrganizationListInterface } from "../models/organizations";
  * @param isRoot - Is root organization.
  * @returns SWR response object containing the data, error, isValidating, mutate.
  */
-const useGetOrganizations = <
-    Data = OrganizationListInterface,
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean,
-        filter: string,
-        limit: number,
-        after: string,
-        before: string,
-        recursive: boolean,
-        isRoot: boolean = false
-    ): RequestResultInterface<Data, Error> => {
+const useGetOrganizations = <Data = OrganizationListInterface, Error = RequestErrorInterface>(
+    shouldFetch: boolean,
+    filter: string,
+    limit: number,
+    after: string,
+    before: string,
+    recursive: boolean,
+    isRoot: boolean = false
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
@@ -68,7 +66,7 @@ const useGetOrganizations = <
         }/organizations`
     };
 
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch? requestConfig : null, {
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig : null, {
         shouldRetryOnError: false
     });
 

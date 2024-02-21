@@ -24,13 +24,12 @@ import { AxiosError } from "axios";
 import { EventPublisher } from "./event-publisher";
 import { AppConstants } from "../constants";
 import { history } from "../helpers";
-import { store } from "../store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Utility class for http operations.
  */
 export class HttpUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
@@ -38,7 +37,7 @@ export class HttpUtils {
      * @hideconstructor
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Callback to be fired on every Http request start.
@@ -52,7 +51,7 @@ export class HttpUtils {
      */
     public static onHttpRequestSuccess(response: HttpResponse): void {
         // TODO: Handle any conditions required on request success.
-        const responseConfig: HttpRequestConfig  = response.config as HttpRequestConfig;
+        const responseConfig: HttpRequestConfig = response.config as HttpRequestConfig;
         const duration: number = new Date().getTime() - responseConfig?.startTimeInMs;
 
         EventPublisher.getInstance().record(
@@ -79,16 +78,16 @@ export class HttpUtils {
     public static onHttpRequestError(error: AxiosError | any): void {
         /**
          * Publish an event on the http request error.
-        */
-        const errorConfig: HttpRequestConfig  = error.config as HttpRequestConfig;
+         */
+        const errorConfig: HttpRequestConfig = error.config as HttpRequestConfig;
         let duration: number = null;
         let pathName: string | null = null;
 
         try {
-            //Whenever the resulting URL pathname and duration is undefined we explicityly assign null 
+            //Whenever the resulting URL pathname and duration is undefined we explicityly assign null
             pathName = new URL(error?.config?.url).pathname;
             duration = new Date().getTime() - errorConfig?.startTimeInMs;
-        } catch(e) {
+        } catch (e) {
             // Add debug logs here one a logger is added.
             // Tracked here https://github.com/wso2/product-is/issues/11650.
         }

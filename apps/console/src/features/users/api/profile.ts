@@ -22,7 +22,7 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, ProfileInfoInterface, ProfileSchemaInterface } from "@wso2is/core/models";
 import { AxiosError, AxiosResponse } from "axios";
 import { Config } from "../../core/configs";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Initialize an axios Http client.

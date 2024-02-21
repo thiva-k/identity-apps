@@ -18,12 +18,7 @@
 
 import { AsgardeoSPAClient, DecodedIDTokenPayload } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
-import {
-    AlertInterface,
-    AlertLevels,
-    ProfileInfoInterface,
-    ProfileSchemaInterface
-} from "@wso2is/core/models";
+import { AlertInterface, AlertLevels, ProfileInfoInterface, ProfileSchemaInterface } from "@wso2is/core/models";
 import {
     addAlert,
     setProfileInfo,
@@ -35,7 +30,7 @@ import { I18n } from "@wso2is/i18n";
 import isEmpty from "lodash-es/isEmpty";
 import { Dispatch } from "redux";
 import { Config } from "../../../core/configs";
-import { store } from "../../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { getProfileInfo, getProfileSchemas } from "../../../users/api";
 
 /**
@@ -46,13 +41,12 @@ export const getProfileInformation = (
     clientOrigin: string = window["AppUtils"].getConfig().clientOriginWithTenant,
     fetchProfileSchema: boolean = false
 ) => (dispatch: Dispatch): void => {
-
     dispatch(setProfileInfoRequestLoadingStatus(true));
 
-    const isSubOrg: boolean = window[ "AppUtils" ].getConfig().organizationName;
+    const isSubOrg: boolean = window["AppUtils"].getConfig().organizationName;
 
-    const getProfileInfoFromToken: boolean = store.getState().auth.isPrivilegedUser ||
-                                    (window[ "AppUtils" ].getConfig().getProfileInfoFromIDToken ?? false);
+    const getProfileInfoFromToken: boolean =
+        store.getState().auth.isPrivilegedUser || (window["AppUtils"].getConfig().getProfileInfoFromIDToken ?? false);
 
     const getProfileSchema = (): void => {
         if (!fetchProfileSchema && !isEmpty(store.getState().profile.profileSchemas)) {
@@ -70,8 +64,7 @@ export const getProfileInformation = (
                         addAlert<AlertInterface>({
                             description: error.response.data.description,
                             level: AlertLevels.ERROR,
-                            message: I18n.instance.t("console:manage.notifications.getProfileSchema." +
-                                "error.message")
+                            message: I18n.instance.t("console:manage.notifications.getProfileSchema." + "error.message")
                         })
                     );
                 }
@@ -82,9 +75,7 @@ export const getProfileInformation = (
                             "console:manage.notifications.getProfileSchema.genericError.description"
                         ),
                         level: AlertLevels.ERROR,
-                        message: I18n.instance.t(
-                            "console:manage.notifications.getProfileSchema.genericError.message"
-                        )
+                        message: I18n.instance.t("console:manage.notifications.getProfileSchema.genericError.message")
                     })
                 );
             })
@@ -93,23 +84,25 @@ export const getProfileInformation = (
             });
     };
 
-    if (getProfileInfoFromToken || isSubOrg && meEndpoint.includes("scim2/Me")) {
-        AsgardeoSPAClient.getInstance().getDecodedIDToken().then((decodedToken: DecodedIDTokenPayload) => {
-            const profileInfo: ProfileInfoInterface = {
-                emails: [ decodedToken.email ] ?? [],
-                id: decodedToken.sub,
-                name: {
-                    familyName: decodedToken.family_name ?? "",
-                    givenName: decodedToken.given_name ?? ""
-                },
-                profileUrl: decodedToken.profile,
-                userName: decodedToken.username
-            };
+    if (getProfileInfoFromToken || (isSubOrg && meEndpoint.includes("scim2/Me"))) {
+        AsgardeoSPAClient.getInstance()
+            .getDecodedIDToken()
+            .then((decodedToken: DecodedIDTokenPayload) => {
+                const profileInfo: ProfileInfoInterface = {
+                    emails: [decodedToken.email] ?? [],
+                    id: decodedToken.sub,
+                    name: {
+                        familyName: decodedToken.family_name ?? "",
+                        givenName: decodedToken.given_name ?? ""
+                    },
+                    profileUrl: decodedToken.profile,
+                    userName: decodedToken.username
+                };
 
-            dispatch(setProfileInfo(profileInfo));
-            dispatch(setProfileInfoRequestLoadingStatus(false));
-            getProfileSchema();
-        });
+                dispatch(setProfileInfo(profileInfo));
+                dispatch(setProfileInfoRequestLoadingStatus(false));
+                getProfileSchema();
+            });
     } else {
         // Get the profile info.
         // TODO: Add the function to handle SCIM disabled error.
@@ -138,9 +131,11 @@ export const getProfileInformation = (
                     dispatch(
                         addAlert({
                             description: I18n.instance.t(
-                                "console:manage.notifications.getProfileInfo.error.description", {
+                                "console:manage.notifications.getProfileInfo.error.description",
+                                {
                                     description: error.response.data.detail
-                                } ),
+                                }
+                            ),
                             level: AlertLevels.ERROR,
                             message: I18n.instance.t("console:manage.notifications.getProfileInfo.error.message")
                         })
@@ -151,8 +146,9 @@ export const getProfileInformation = (
 
                 dispatch(
                     addAlert({
-                        description: I18n.instance.t("console:manage.notifications.getProfileInfo.genericError." +
-                            "description"),
+                        description: I18n.instance.t(
+                            "console:manage.notifications.getProfileInfo.genericError." + "description"
+                        ),
                         level: AlertLevels.ERROR,
                         message: I18n.instance.t("console:manage.notifications.getProfileInfo.genericError.message")
                     })

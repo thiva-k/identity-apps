@@ -20,7 +20,7 @@ import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import { RemoteFetchConstants } from "../constants";
 import {
     InterfaceConfigDetails,
@@ -44,10 +44,9 @@ const httpClient = AsgardeoSPAClient.getInstance().httpRequest.bind(AsgardeoSPAC
  * @throws {IdentityAppsApiException}
  */
 export const getRemoteRepoConfigList = (): Promise<AxiosResponse<InterfaceRemoteRepoListResponse>> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -64,19 +63,21 @@ export const getRemoteRepoConfigList = (): Promise<AxiosResponse<InterfaceRemote
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 RemoteFetchConstants.GET_REPO_CONFIG_LIST_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -88,10 +89,9 @@ export const getRemoteRepoConfigList = (): Promise<AxiosResponse<InterfaceRemote
  * @throws {IdentityAppsApiException}
  */
 export const getRemoteRepoConfig = (id: string): Promise<AxiosResponse<InterfaceRemoteConfigDetails>> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -108,19 +108,21 @@ export const getRemoteRepoConfig = (id: string): Promise<AxiosResponse<Interface
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 RemoteFetchConstants.GET_REPO_CONFIG_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -132,10 +134,9 @@ export const getRemoteRepoConfig = (id: string): Promise<AxiosResponse<Interface
  * @throws {IdentityAppsApiException}
  */
 export const triggerConfigDeployment = (id: string): Promise<AxiosResponse> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -152,19 +153,21 @@ export const triggerConfigDeployment = (id: string): Promise<AxiosResponse> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 RemoteFetchConstants.TRIGGER_CONFIG_DEPLOYMENT_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -176,10 +179,9 @@ export const triggerConfigDeployment = (id: string): Promise<AxiosResponse> => {
  * @throws {IdentityAppsApiException}
  */
 export const getConfigDeploymentDetails = (id: string): Promise<AxiosResponse<InterfaceConfigDetails>> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -196,18 +198,20 @@ export const getConfigDeploymentDetails = (id: string): Promise<AxiosResponse<In
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 RemoteFetchConstants.GET_CONFIG_DEPLOYMENT_DETAILS_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -219,11 +223,10 @@ export const getConfigDeploymentDetails = (id: string): Promise<AxiosResponse<In
  * @throws {IdentityAppsApiException}
  */
 export const createRemoteRepoConfig = (configObj: InterfaceRemoteRepoConfigDetails): Promise<AxiosResponse> => {
-
     const requestConfig: AxiosRequestConfig = {
         data: configObj,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -240,19 +243,21 @@ export const createRemoteRepoConfig = (configObj: InterfaceRemoteRepoConfigDetai
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 RemoteFetchConstants.CREATE_REPO_CONFIG_CREATE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -265,11 +270,10 @@ export const createRemoteRepoConfig = (configObj: InterfaceRemoteRepoConfigDetai
  * @throws {IdentityAppsApiException}
  */
 export const updateRemoteRepoConfig = (id: string, configObj: InterfaceEditDetails): Promise<AxiosResponse> => {
-
     const requestConfig: AxiosRequestConfig = {
         data: configObj,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -281,14 +285,15 @@ export const updateRemoteRepoConfig = (id: string, configObj: InterfaceEditDetai
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 RemoteFetchConstants.UPDATE_REPO_CONFIG_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -300,10 +305,9 @@ export const updateRemoteRepoConfig = (id: string, configObj: InterfaceEditDetai
  * @throws {IdentityAppsApiException}
  */
 export const deleteRemoteRepoConfig = (id: string): Promise<AxiosResponse> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -315,13 +319,14 @@ export const deleteRemoteRepoConfig = (id: string): Promise<AxiosResponse> => {
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 RemoteFetchConstants.DELETE_REPO_CONFIG_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

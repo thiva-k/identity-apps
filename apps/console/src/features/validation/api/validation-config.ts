@@ -25,7 +25,7 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../../features/core/hooks/use-request";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import { ValidationManagementConstants } from "../constants/validation-config-constants";
 import { ValidationConfInterface, ValidationDataInterface, ValidationFormInterface } from "../models";
 

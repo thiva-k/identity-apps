@@ -22,7 +22,7 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { APIResourceCollectionResponseInterface } from "../models/console-roles";
 
 /**
@@ -33,13 +33,11 @@ import { APIResourceCollectionResponseInterface } from "../models/console-roles"
  * @param attributes - Required additional attributes.
  * @returns SWR response object containing the data, error, isValidating, mutate.
  */
-const useGetAPIResourceCollections = <
-    Data = APIResourceCollectionResponseInterface,
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean = true,
-        filter?: string,
-        attributes?: string
-    ): RequestResultInterface<Data, Error> => {
+const useGetAPIResourceCollections = <Data = APIResourceCollectionResponseInterface, Error = RequestErrorInterface>(
+    shouldFetch: boolean = true,
+    filter?: string,
+    attributes?: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
@@ -53,7 +51,7 @@ const useGetAPIResourceCollections = <
         url: store.getState().config.endpoints.apiResourceCollections
     };
 
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch? requestConfig : null, {
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig : null, {
         shouldRetryOnError: false
     });
 

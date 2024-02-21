@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { UserListInterface } from "../models";
-import { store } from "../store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Initialize an axios Http client.
@@ -34,8 +34,13 @@ const httpClient = AsgardeoSPAClient.getInstance()
  *
  * @returns {Promise<UserListInterface>} a promise containing the user list.
  */
-export const getUsersList = (count: number, startIndex: number, filter: string, attributes: string, domain: string):
-    Promise<UserListInterface> => {
+export const getUsersList = (
+    count: number,
+    startIndex: number,
+    filter: string,
+    attributes: string,
+    domain: string
+): Promise<UserListInterface> => {
     const requestConfig = {
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
@@ -53,10 +58,10 @@ export const getUsersList = (count: number, startIndex: number, filter: string, 
     };
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             return Promise.resolve(response.data as UserListInterface);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error);
         });
 };

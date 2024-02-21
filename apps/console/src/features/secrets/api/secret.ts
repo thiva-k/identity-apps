@@ -20,7 +20,7 @@ import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpCodes, HttpMethods } from "@wso2is/core/models";
 import { AxiosInstance, AxiosResponse } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
@@ -39,9 +39,7 @@ import {
 } from "../models/secret";
 import { SecretTypeModel } from "../models/secret-type";
 
-const httpClient: AxiosInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
-    AsgardeoSPAClient.getInstance()
-);
+const httpClient: AxiosInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(AsgardeoSPAClient.getInstance());
 
 export const createSecret = async ({
     body,

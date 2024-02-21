@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { UserStoreDetails } from "../models";
-import { store } from "../store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Initialize an axios Http client.
@@ -39,7 +39,7 @@ const httpClient = AsgardeoSPAClient.getInstance()
 export const getPrimaryUserStore = (): Promise<UserStoreDetails> => {
     const requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -48,14 +48,14 @@ export const getPrimaryUserStore = (): Promise<UserStoreDetails> => {
     };
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
 
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -70,7 +70,7 @@ export const getPrimaryUserStore = (): Promise<UserStoreDetails> => {
 export const getAUserStore = (id: string): Promise<any> => {
     const requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -79,14 +79,14 @@ export const getAUserStore = (id: string): Promise<any> => {
     };
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
 
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };

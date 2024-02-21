@@ -22,12 +22,12 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { IdentityProviderGroupInterface } from "../models/identity-provider";
 
 /**
  * Hook to get the list of groups associated with an Identity Provider.
- * 
+ *
  * @param idpID - Identity Provider ID.
  * @param shouldFetch - Whether to fetch the data or not.
  */
@@ -35,22 +35,15 @@ export const useGetIdentityProviderGroupList = <Data = IdentityProviderGroupInte
     idpID: string,
     shouldFetch?: boolean
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.identityProviders }/${ idpID }/groups`
+        url: `${store.getState().config.endpoints.identityProviders}/${idpID}/groups`
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate,
-        response
-    } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
+    const { data, error, isValidating, mutate, response } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
 
     return {
         data,

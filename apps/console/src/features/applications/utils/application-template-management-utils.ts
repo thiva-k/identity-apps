@@ -23,15 +23,13 @@ import { TemplateCardTagInterface } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import groupBy from "lodash-es/groupBy";
 import isObject from "lodash-es/isObject";
-import startCase  from "lodash-es/startCase";
+import startCase from "lodash-es/startCase";
 import { getTechnologyLogos } from "../../core/configs";
-import { store } from "../../core/store";
-import {
-    getApplicationTemplateList
-} from "../api";
+
+import { store } from "@wso2is/features/core";
+import { getApplicationTemplateList } from "../api";
 import { TemplateConfigInterface, getApplicationTemplatesConfig } from "../data/application-templates";
-import CustomApplicationTemplate
-    from "../data/application-templates/templates/custom-application/custom-application.json";
+import CustomApplicationTemplate from "../data/application-templates/templates/custom-application/custom-application.json";
 import {
     ApplicationTemplateCategoryInterface,
     ApplicationTemplateGroupInterface,
@@ -44,13 +42,12 @@ import { setApplicationTemplates } from "../store";
  * Utility class for Application Templates related operations.
  */
 export class ApplicationTemplateManagementUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Retrieve Application template list form the API and sets it in redux state.
@@ -60,47 +57,47 @@ export class ApplicationTemplateManagementUtils {
      * @param sort - Should the returning templates be sorted.
      * @returns application template list.
      */
-    public static getApplicationTemplates = (skipGrouping: boolean = false,
+    public static getApplicationTemplates = (
+        skipGrouping: boolean = false,
         useAPI: boolean = false,
-        sort: boolean = true): Promise<void> => {
-
+        sort: boolean = true
+    ): Promise<void> => {
         if (!useAPI) {
-            return ApplicationTemplateManagementUtils.loadLocalFileBasedTemplates()
-                .then((response: ApplicationTemplateInterface[]) => {
-
-                    let templates:  ApplicationTemplateInterface[] = ApplicationTemplateManagementUtils
-                        .resolveHelpContent(response);
+            return ApplicationTemplateManagementUtils.loadLocalFileBasedTemplates().then(
+                (response: ApplicationTemplateInterface[]) => {
+                    let templates: ApplicationTemplateInterface[] = ApplicationTemplateManagementUtils.resolveHelpContent(
+                        response
+                    );
 
                     // Group the templates if `skipGrouping` flag is false.
                     if (!skipGrouping) {
-                        ApplicationTemplateManagementUtils.groupTemplates(templates)
-                            .then((groups: ApplicationTemplateInterface[]) => {
-
+                        ApplicationTemplateManagementUtils.groupTemplates(templates).then(
+                            (groups: ApplicationTemplateInterface[]) => {
                                 // Generate the technologies icons array.
                                 groups.map((group: ApplicationTemplateInterface) => {
-                                    group.types = ApplicationTemplateManagementUtils
-                                        .buildSupportedTechnologies(group.types);
+                                    group.types = ApplicationTemplateManagementUtils.buildSupportedTechnologies(
+                                        group.types
+                                    );
                                 });
 
                                 if (sort) {
                                     templates = ApplicationTemplateManagementUtils.sortApplicationTemplates(templates);
-                                    groups = ApplicationTemplateManagementUtils
-                                        .sortApplicationTemplates(groups);
+                                    groups = ApplicationTemplateManagementUtils.sortApplicationTemplates(groups);
                                 }
 
                                 store.dispatch(setApplicationTemplates(templates));
                                 store.dispatch(setApplicationTemplates(groups, true));
 
                                 return Promise.resolve();
-                            });
+                            }
+                        );
 
                         return Promise.resolve();
                     }
 
                     // Generate the technologies array.
                     templates.map((template: ApplicationTemplateInterface) => {
-                        template.types = ApplicationTemplateManagementUtils
-                            .buildSupportedTechnologies(template.types);
+                        template.types = ApplicationTemplateManagementUtils.buildSupportedTechnologies(template.types);
                     });
 
                     if (sort) {
@@ -110,45 +107,46 @@ export class ApplicationTemplateManagementUtils {
                     store.dispatch(setApplicationTemplates(templates));
 
                     return Promise.resolve();
-                });
+                }
+            );
         }
 
         return getApplicationTemplateList()
             .then((response: ApplicationTemplateListInterface) => {
-
-                let templates: ApplicationTemplateInterface[] = ApplicationTemplateManagementUtils
-                    .addCustomTemplates(response.templates, [ CustomApplicationTemplate ]);
+                let templates: ApplicationTemplateInterface[] = ApplicationTemplateManagementUtils.addCustomTemplates(
+                    response.templates,
+                    [CustomApplicationTemplate]
+                );
 
                 // Group the templates if `skipGrouping` flag is false.
                 if (!skipGrouping) {
-                    ApplicationTemplateManagementUtils.groupTemplates(templates)
-                        .then((groups: ApplicationTemplateInterface[]) => {
-
+                    ApplicationTemplateManagementUtils.groupTemplates(templates).then(
+                        (groups: ApplicationTemplateInterface[]) => {
                             // Generate the technologies icons array.
                             groups.map((group: ApplicationTemplateInterface) => {
-                                group.types = ApplicationTemplateManagementUtils
-                                    .buildSupportedTechnologies(group.types);
+                                group.types = ApplicationTemplateManagementUtils.buildSupportedTechnologies(
+                                    group.types
+                                );
                             });
 
                             if (sort) {
                                 templates = ApplicationTemplateManagementUtils.sortApplicationTemplates(templates);
-                                groups = ApplicationTemplateManagementUtils
-                                    .sortApplicationTemplates(groups);
+                                groups = ApplicationTemplateManagementUtils.sortApplicationTemplates(groups);
                             }
 
                             store.dispatch(setApplicationTemplates(templates));
                             store.dispatch(setApplicationTemplates(groups, true));
 
                             return Promise.resolve();
-                        });
+                        }
+                    );
 
                     return Promise.resolve();
                 }
 
                 // Generate the technologies array.
                 templates.map((template: ApplicationTemplateInterface) => {
-                    template.types = ApplicationTemplateManagementUtils
-                        .buildSupportedTechnologies(template.types);
+                    template.types = ApplicationTemplateManagementUtils.buildSupportedTechnologies(template.types);
                 });
 
                 if (sort) {
@@ -161,23 +159,31 @@ export class ApplicationTemplateManagementUtils {
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    store.dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: I18n.instance.t("devPortal:components.applications.notifications.fetchTemplates" +
-                            ".error.message")
-                    }));
+                    store.dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: I18n.instance.t(
+                                "devPortal:components.applications.notifications.fetchTemplates" + ".error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                store.dispatch(addAlert({
-                    description: I18n.instance.t("devPortal:components.applications.notifications.fetchTemplates" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: I18n.instance.t("devPortal:components.applications.notifications.fetchTemplates" +
-                        ".genericError.message")
-                }));
+                store.dispatch(
+                    addAlert({
+                        description: I18n.instance.t(
+                            "devPortal:components.applications.notifications.fetchTemplates" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: I18n.instance.t(
+                            "devPortal:components.applications.notifications.fetchTemplates" + ".genericError.message"
+                        )
+                    })
+                );
             });
     };
 
@@ -189,16 +195,15 @@ export class ApplicationTemplateManagementUtils {
      * @returns Set of Technologies compatible for `TemplateCard`.
      */
     public static buildSupportedTechnologies(technologies: string[]): TemplateCardTagInterface[] {
-
         const _technologies: any = technologies?.map((technology: string) => {
-
             // If the technology is already resolved, return that istead of trying to resolve again.
             if (typeof technology !== "string") {
-                if (isObject(technology)
-                    && Object.prototype.hasOwnProperty.call(technology, "displayName")
-                    && Object.prototype.hasOwnProperty.call(technology, "logo")
-                    && Object.prototype.hasOwnProperty.call(technology, "name")) {
-                    
+                if (
+                    isObject(technology) &&
+                    Object.prototype.hasOwnProperty.call(technology, "displayName") &&
+                    Object.prototype.hasOwnProperty.call(technology, "logo") &&
+                    Object.prototype.hasOwnProperty.call(technology, "name")
+                ) {
                     return technology;
                 }
 
@@ -207,7 +212,7 @@ export class ApplicationTemplateManagementUtils {
 
             let logo: any = null;
 
-            for (const [ key, value ] of Object.entries(getTechnologyLogos())) {
+            for (const [key, value] of Object.entries(getTechnologyLogos())) {
                 if (key === technology) {
                     logo = value;
 
@@ -231,14 +236,15 @@ export class ApplicationTemplateManagementUtils {
      * @param templates - App templates.
      * @returns Sorted templates.
      */
-    private static sortApplicationTemplates(
-        templates: ApplicationTemplateInterface[]): ApplicationTemplateInterface[] {
-
-        const applicationTemplates: ApplicationTemplateInterface[] = [ ...templates ];
+    private static sortApplicationTemplates(templates: ApplicationTemplateInterface[]): ApplicationTemplateInterface[] {
+        const applicationTemplates: ApplicationTemplateInterface[] = [...templates];
 
         // Sort templates based  on displayOrder.
-        applicationTemplates.sort((a: ApplicationTemplateInterface, b:ApplicationTemplateInterface) =>
-            (a.displayOrder !== -1 ? a.displayOrder : Infinity) - (b.displayOrder !== -1 ? b.displayOrder : Infinity));
+        applicationTemplates.sort(
+            (a: ApplicationTemplateInterface, b: ApplicationTemplateInterface) =>
+                (a.displayOrder !== -1 ? a.displayOrder : Infinity) -
+                (b.displayOrder !== -1 ? b.displayOrder : Infinity)
+        );
 
         return applicationTemplates;
     }
@@ -250,9 +256,10 @@ export class ApplicationTemplateManagementUtils {
      * @param customTemplates - Set of custom templates to add.
      * @returns Updated templates list.
      */
-    private static addCustomTemplates(existingTemplates: ApplicationTemplateInterface[],
-        customTemplates: ApplicationTemplateInterface[]) {
-
+    private static addCustomTemplates(
+        existingTemplates: ApplicationTemplateInterface[],
+        customTemplates: ApplicationTemplateInterface[]
+    ) {
         return existingTemplates.concat(customTemplates);
     }
 
@@ -263,12 +270,12 @@ export class ApplicationTemplateManagementUtils {
      * @returns grouped templates.
      */
     private static groupTemplates = async (
-        templates: ApplicationTemplateInterface[]): Promise<ApplicationTemplateInterface[]> => {
-
+        templates: ApplicationTemplateInterface[]
+    ): Promise<ApplicationTemplateInterface[]> => {
         const groupedTemplates: ApplicationTemplateInterface[] = [];
 
-        return ApplicationTemplateManagementUtils.loadLocalFileBasedTemplateGroups()
-            .then((response: ApplicationTemplateGroupInterface[]) => {
+        return ApplicationTemplateManagementUtils.loadLocalFileBasedTemplateGroups().then(
+            (response: ApplicationTemplateGroupInterface[]) => {
                 templates.forEach((template: ApplicationTemplateInterface) => {
                     if (!template.templateGroup) {
                         groupedTemplates.push(template);
@@ -276,10 +283,11 @@ export class ApplicationTemplateManagementUtils {
                         return;
                     }
 
-                    const group: ApplicationTemplateGroupInterface = response
-                        .find((group: ApplicationTemplateGroupInterface) => {
+                    const group: ApplicationTemplateGroupInterface = response.find(
+                        (group: ApplicationTemplateGroupInterface) => {
                             return group.id === template.templateGroup;
-                        });
+                        }
+                    );
 
                     if (!group) {
                         groupedTemplates.push(template);
@@ -287,14 +295,17 @@ export class ApplicationTemplateManagementUtils {
                         return;
                     }
 
-                    if (groupedTemplates.some((groupedTemplate: ApplicationTemplateInterface) =>
-                        groupedTemplate.id === template.templateGroup)) {
-
+                    if (
+                        groupedTemplates.some(
+                            (groupedTemplate: ApplicationTemplateInterface) =>
+                                groupedTemplate.id === template.templateGroup
+                        )
+                    ) {
                         groupedTemplates.forEach((editingTemplate: ApplicationTemplateInterface, index: number) => {
                             if (editingTemplate.id === template.templateGroup) {
-                                groupedTemplates[ index ] = {
+                                groupedTemplates[index] = {
                                     ...group,
-                                    subTemplates: [ ...editingTemplate.subTemplates, template ]
+                                    subTemplates: [...editingTemplate.subTemplates, template]
                                 };
 
                                 return;
@@ -306,12 +317,13 @@ export class ApplicationTemplateManagementUtils {
 
                     groupedTemplates.push({
                         ...group,
-                        subTemplates: [ template ]
+                        subTemplates: [template]
                     });
                 });
 
                 return groupedTemplates;
-            });
+            }
+        );
     };
 
     /**
@@ -321,20 +333,19 @@ export class ApplicationTemplateManagementUtils {
      * @returns Categorized templates.
      */
     public static categorizeTemplates(
-        templates: ApplicationTemplateInterface[]): Promise<void | ApplicationTemplateCategoryInterface[]> {
-
+        templates: ApplicationTemplateInterface[]
+    ): Promise<void | ApplicationTemplateCategoryInterface[]> {
         let categorizedTemplates: ApplicationTemplateCategoryInterface[] = [];
 
         const groupedByCategory: Record<string, ApplicationTemplateInterface[]> = groupBy(templates, "category");
 
         return this.loadLocalFileBasedTemplateCategories()
             .then((categories: ApplicationTemplateCategoryInterface[]) => {
-
-                categorizedTemplates = [ ...categories ];
+                categorizedTemplates = [...categories];
 
                 categorizedTemplates.forEach((category: ApplicationTemplateCategoryInterface) => {
                     if (Object.prototype.hasOwnProperty.call(groupedByCategory, category.id)) {
-                        category.templates = groupedByCategory[ category.id ];
+                        category.templates = groupedByCategory[category.id];
                     }
                 });
 
@@ -350,71 +361,72 @@ export class ApplicationTemplateManagementUtils {
      *
      * @returns loaded templates.
      */
-    private static async loadLocalFileBasedTemplates(): Promise<(ApplicationTemplateInterface
-        | Promise<ApplicationTemplateInterface>)[]> {
-
+    private static async loadLocalFileBasedTemplates(): Promise<
+        (ApplicationTemplateInterface | Promise<ApplicationTemplateInterface>)[]
+    > {
         const templates: (ApplicationTemplateInterface | Promise<ApplicationTemplateInterface>)[] = [];
 
-        getApplicationTemplatesConfig().templates
-            .map(async (config: TemplateConfigInterface<ApplicationTemplateInterface>) => {
+        getApplicationTemplatesConfig().templates.map(
+            async (config: TemplateConfigInterface<ApplicationTemplateInterface>) => {
                 if (!config.enabled) {
                     return;
                 }
 
-                templates.push(
-                    config.resource as (ApplicationTemplateInterface | Promise<ApplicationTemplateInterface>)
-                );
-            });
+                templates.push(config.resource as ApplicationTemplateInterface | Promise<ApplicationTemplateInterface>);
+            }
+        );
 
-        return Promise.all([ ...templates ]);
+        return Promise.all([...templates]);
     }
 
     /**
      * Loads local file based application template groups.
      *
      */
-    private static async loadLocalFileBasedTemplateGroups(): Promise<(ApplicationTemplateGroupInterface
-            | Promise<ApplicationTemplateGroupInterface>)[]> {
-
+    private static async loadLocalFileBasedTemplateGroups(): Promise<
+        (ApplicationTemplateGroupInterface | Promise<ApplicationTemplateGroupInterface>)[]
+    > {
         const groups: (ApplicationTemplateGroupInterface | Promise<ApplicationTemplateGroupInterface>)[] = [];
 
-        getApplicationTemplatesConfig().groups
-            .forEach(async (config: TemplateConfigInterface<ApplicationTemplateGroupInterface>) => {
+        getApplicationTemplatesConfig().groups.forEach(
+            async (config: TemplateConfigInterface<ApplicationTemplateGroupInterface>) => {
                 if (!config.enabled) {
                     return;
                 }
 
                 groups.push(
-                    config.resource as (ApplicationTemplateGroupInterface | Promise<ApplicationTemplateGroupInterface>)
+                    config.resource as ApplicationTemplateGroupInterface | Promise<ApplicationTemplateGroupInterface>
                 );
-            });
+            }
+        );
 
-        return Promise.all([ ...groups ]);
+        return Promise.all([...groups]);
     }
 
     /**
      * Loads local file based application template categories.
      *
      */
-    private static async loadLocalFileBasedTemplateCategories(): Promise<(ApplicationTemplateCategoryInterface
-        | Promise<ApplicationTemplateCategoryInterface>)[]> {
-
+    private static async loadLocalFileBasedTemplateCategories(): Promise<
+        (ApplicationTemplateCategoryInterface | Promise<ApplicationTemplateCategoryInterface>)[]
+    > {
         const categories: (ApplicationTemplateCategoryInterface | Promise<ApplicationTemplateCategoryInterface>)[] = [];
 
-        getApplicationTemplatesConfig().categories
-            .forEach(async (config: TemplateConfigInterface<ApplicationTemplateCategoryInterface>) => {
+        getApplicationTemplatesConfig().categories.forEach(
+            async (config: TemplateConfigInterface<ApplicationTemplateCategoryInterface>) => {
                 if (!config.enabled) {
                     return;
                 }
 
                 categories.push(
-                    config.resource as (
-                        ApplicationTemplateCategoryInterface
-                        | Promise<ApplicationTemplateCategoryInterface>)
+                    config.resource as
+                        | ApplicationTemplateCategoryInterface
+                        | Promise<ApplicationTemplateCategoryInterface>
                 );
-            });
+            }
+        );
 
-        return Promise.all([ ...categories ]);
+        return Promise.all([...categories]);
     }
 
     /**
@@ -423,13 +435,12 @@ export class ApplicationTemplateManagementUtils {
      * @param templates - Input templates.
 \]     */
     private static resolveHelpContent(templates: ApplicationTemplateInterface[]): ApplicationTemplateInterface[] {
-
         templates.map((template: ApplicationTemplateInterface) => {
-            const config: TemplateConfigInterface<ApplicationTemplateInterface> = 
-            getApplicationTemplatesConfig().templates
-                .find((config: TemplateConfigInterface<ApplicationTemplateInterface>) => {
+            const config: TemplateConfigInterface<ApplicationTemplateInterface> = getApplicationTemplatesConfig().templates.find(
+                (config: TemplateConfigInterface<ApplicationTemplateInterface>) => {
                     return config.id === template.id;
-                });
+                }
+            );
 
             if (!config?.content) {
                 return;

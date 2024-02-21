@@ -18,14 +18,9 @@
 
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosRequestConfig } from "axios";
-import { store } from "../../core";
-import useRequest, {
-    RequestErrorInterface,
-    RequestResultInterface
-} from "../../core/hooks/use-request";
-import {
-    MultiFactorAuthenticatorInterface
-} from "../models/authenticators";
+import { store } from "@wso2is/features/core";
+import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
+import { MultiFactorAuthenticatorInterface } from "../models/authenticators";
 
 /**
  * Hook to get multi factor authenticator details.
@@ -34,19 +29,16 @@ import {
  *
  * @returns Response as a promise.
  */
-const useMultiFactorAuthenticatorDetails = <
-    Data = MultiFactorAuthenticatorInterface,
-    Error = RequestErrorInterface>(
-        id: string
-    ): RequestResultInterface<Data, Error> => {
-
+const useMultiFactorAuthenticatorDetails = <Data = MultiFactorAuthenticatorInterface, Error = RequestErrorInterface>(
+    id: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.multiFactorAuthenticators }/connectors/${ id }`
+        url: `${store.getState().config.endpoints.multiFactorAuthenticators}/connectors/${id}`
     };
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);

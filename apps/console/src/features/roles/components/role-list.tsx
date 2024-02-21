@@ -45,7 +45,7 @@ import { RoleDeleteErrorConfirmation } from "./wizard/role-delete-error-confirma
 import { getEmptyPlaceholderIllustrations } from "../../core/configs/ui";
 import { AppConstants } from "../../core/constants/app-constants";
 import { history } from "../../core/helpers/history";
-import { AppState } from "../../core/store/index";
+import { AppState } from "@wso2is/features/core/store/index";
 import { RoleAudienceTypes, RoleConstants } from "../constants/role-constants";
 
 interface RoleListProps extends LoadableComponentInterface, IdentifiableComponentInterface {
@@ -81,7 +81,6 @@ interface RoleListProps extends LoadableComponentInterface, IdentifiableComponen
  * @param props - contains the role list as a prop to populate
  */
 export const RoleList: React.FunctionComponent<RoleListProps> = (props: RoleListProps): ReactElement => {
-
     const {
         handleRoleDelete,
         isSubOrg,
@@ -89,30 +88,36 @@ export const RoleList: React.FunctionComponent<RoleListProps> = (props: RoleList
         onSearchQueryClear,
         roleList,
         searchQuery,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const featureConfig: FeatureAccessConfigInterface = useSelector(
-        (state: AppState) => state?.config?.ui?.features?.userRoles);
+        (state: AppState) => state?.config?.ui?.features?.userRoles
+    );
     const administratorRoleDisplayName: string = useSelector(
-        (state: AppState) => state?.config?.ui?.administratorRoleDisplayName);
+        (state: AppState) => state?.config?.ui?.administratorRoleDisplayName
+    );
 
     const isReadOnly: boolean = useMemo(() => {
-        return !isFeatureEnabled(featureConfig,
-            RoleConstants.FEATURE_DICTIONARY.get("ROLE_UPDATE")) ||
-            !hasRequiredScopes(featureConfig,
-                featureConfig?.scopes?.update, allowedScopes);
-    }, [ featureConfig, allowedScopes ]);
+        return (
+            !isFeatureEnabled(featureConfig, RoleConstants.FEATURE_DICTIONARY.get("ROLE_UPDATE")) ||
+            !hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes)
+        );
+    }, [featureConfig, allowedScopes]);
 
-    const [ showRoleDeleteConfirmation, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ currentDeletedRole, setCurrentDeletedRole ] = useState<RolesInterface>();
-    const [ showDeleteErrorConnectedAppsModal, setShowDeleteErrorConnectedAppsModal ] = useState<boolean>(false);
+    const [showRoleDeleteConfirmation, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [currentDeletedRole, setCurrentDeletedRole] = useState<RolesInterface>();
+    const [showDeleteErrorConnectedAppsModal, setShowDeleteErrorConnectedAppsModal] = useState<boolean>(false);
 
     const handleRoleEdit = (roleId: string) => {
-        history.push(AppConstants.getPaths().get("ROLE_EDIT").replace(":id", roleId));
+        history.push(
+            AppConstants.getPaths()
+                .get("ROLE_EDIT")
+                .replace(":id", roleId)
+        );
     };
 
     /**
@@ -139,23 +144,24 @@ export const RoleList: React.FunctionComponent<RoleListProps> = (props: RoleList
         if (searchQuery && roleList?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    data-componentid={ `${ componentId }-search-empty-placeholder` }
-                    action={ (
+                    data-componentid={`${componentId}-search-empty-placeholder`}
+                    action={
                         <LinkButton
-                            data-componentid={ `${ componentId }-search-empty-placeholder-clear-button` }
-                            onClick={ onSearchQueryClear }
+                            data-componentid={`${componentId}-search-empty-placeholder-clear-button`}
+                            onClick={onSearchQueryClear}
                         >
-                            { t("console:manage.features.roles.list.emptyPlaceholders.search.action") }
+                            {t("console:manage.features.roles.list.emptyPlaceholders.search.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.roles.list.emptyPlaceholders.search.title") }
-                    subtitle={ [
-                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0",
-                            { searchQuery: searchQuery }),
+                    title={t("console:manage.features.roles.list.emptyPlaceholders.search.title")}
+                    subtitle={[
+                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0", {
+                            searchQuery: searchQuery
+                        }),
                         t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -163,36 +169,46 @@ export const RoleList: React.FunctionComponent<RoleListProps> = (props: RoleList
         if (roleList?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    data-componentid={ `${ componentId }-empty-list-empty-placeholder` }
-                    action={ !isSubOrg && (
-                        <Show when={ AccessControlConstants.ROLE_WRITE }>
-                            <PrimaryButton
-                                data-componentid={ `${ componentId }-empty-list-empty-placeholder-add-button` }
-                                onClick={ onEmptyListPlaceholderActionClick }
-                            >
-                                <Icon name="add"/>
-                                { t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.action",
-                                    { type: "Role" }) }
-                            </PrimaryButton>
-                        </Show>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    data-componentid={`${componentId}-empty-list-empty-placeholder`}
+                    action={
+                        !isSubOrg && (
+                            <Show when={AccessControlConstants.ROLE_WRITE}>
+                                <PrimaryButton
+                                    data-componentid={`${componentId}-empty-list-empty-placeholder-add-button`}
+                                    onClick={onEmptyListPlaceholderActionClick}
+                                >
+                                    <Icon name="add" />
+                                    {t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.action", {
+                                        type: "Role"
+                                    })}
+                                </PrimaryButton>
+                            </Show>
+                        )
+                    }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    title={ !isSubOrg && t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.title",
-                        { type: "role" }) }
-                    subtitle={ isSubOrg
-                        ? [
-                            t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0",
-                                { type: "roles" })
-                        ]
-                        : [
-                            t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0",
-                                { type: "roles" }),
-                            t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.1",
-                                { type: "role" }),
-                            t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.2",
-                                { type: "role" })
-                        ]
+                    title={
+                        !isSubOrg &&
+                        t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.title", { type: "role" })
+                    }
+                    subtitle={
+                        isSubOrg
+                            ? [
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0", {
+                                      type: "roles"
+                                  })
+                              ]
+                            : [
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0", {
+                                      type: "roles"
+                                  }),
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.1", {
+                                      type: "role"
+                                  }),
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.2", {
+                                      type: "role"
+                                  })
+                              ]
                     }
                 />
             );
@@ -212,27 +228,20 @@ export const RoleList: React.FunctionComponent<RoleListProps> = (props: RoleList
                 id: "name",
                 key: "name",
                 render: (role: RolesInterface): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-componentid={ `${ componentId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-componentid={`${componentId}-item-heading`}>
                         <AppAvatar
-                            image={ (
+                            image={
                                 <AnimatedAvatar
-                                    name={ role?.displayName[ 0 ] }
+                                    name={role?.displayName[0]}
                                     size="mini"
-                                    data-componentid={ `${ componentId }-item-image-inner` }
+                                    data-componentid={`${componentId}-item-image-inner`}
                                 />
-                            ) }
+                            }
                             size="mini"
                             spaced="right"
-                            data-componentid={ `${ componentId }-item-image` }
+                            data-componentid={`${componentId}-item-image`}
                         />
-                        <Header.Content>
-                            { role?.displayName }
-                        </Header.Content>
+                        <Header.Content>{role?.displayName}</Header.Content>
                     </Header>
                 ),
                 title: t("console:manage.features.roles.list.columns.name")
@@ -242,23 +251,16 @@ export const RoleList: React.FunctionComponent<RoleListProps> = (props: RoleList
                 dataIndex: "audience",
                 id: "audience",
                 key: "audience",
-                render: (role: RolesInterface) => (
+                render: (role: RolesInterface) =>
                     role?.audience && (
                         <Label size="mini">
-                            { role.audience.type }
-                            {
-                                role.audience.type.toUpperCase() === RoleAudienceTypes.APPLICATION
-                                    ? ` | ${role.audience.display} `
-                                    : ""
-                            }
+                            {role.audience.type}
+                            {role.audience.type.toUpperCase() === RoleAudienceTypes.APPLICATION
+                                ? ` | ${role.audience.display} `
+                                : ""}
                         </Label>
-                    )
-                ),
-                title: (
-                    <div className="pl-3">
-                        { t("console:manage.features.roles.list.columns.audience") }
-                    </div>
-                )
+                    ),
+                title: <div className="pl-3">{t("console:manage.features.roles.list.columns.audience")}</div>
             },
             {
                 allowToggleVisibility: false,
@@ -277,33 +279,24 @@ export const RoleList: React.FunctionComponent<RoleListProps> = (props: RoleList
     const resolveTableActions = (): TableActionsInterface[] => {
         return [
             {
-                icon: (): SemanticICONS =>
-                    !isReadOnly
-                        ? "pencil alternate"
-                        : "eye",
-                onClick: (e: SyntheticEvent, role: RolesInterface): void =>
-                    !isReadOnly && handleRoleEdit(role?.id),
-                popupText: (): string =>
-                    !isReadOnly
-                        ? t("common:edit")
-                        : t("common:view"),
+                icon: (): SemanticICONS => (!isReadOnly ? "pencil alternate" : "eye"),
+                onClick: (e: SyntheticEvent, role: RolesInterface): void => !isReadOnly && handleRoleEdit(role?.id),
+                popupText: (): string => (!isReadOnly ? t("common:edit") : t("common:view")),
                 renderer: "semantic-icon"
             },
             {
-                hidden: (role: RolesInterface) => isSubOrg ||
-                    (role?.displayName === CommonRoleConstants.ADMIN_ROLE ||
+                hidden: (role: RolesInterface) =>
+                    isSubOrg ||
+                    role?.displayName === CommonRoleConstants.ADMIN_ROLE ||
                         role?.displayName === CommonRoleConstants.ADMIN_GROUP ||
-                        role?.displayName === administratorRoleDisplayName)
-                    || !isFeatureEnabled(featureConfig,
-                        RoleConstants.FEATURE_DICTIONARY.get("ROLE_DELETE"))
-                    || !hasRequiredScopes(featureConfig,
-                        featureConfig?.scopes?.delete, allowedScopes),
+                        role?.displayName === administratorRoleDisplayName ||
+                    !isFeatureEnabled(featureConfig, RoleConstants.FEATURE_DICTIONARY.get("ROLE_DELETE")) ||
+                    !hasRequiredScopes(featureConfig, featureConfig?.scopes?.delete, allowedScopes),
                 icon: (): SemanticICONS => "trash alternate",
                 onClick: (e: SyntheticEvent, role: RolesInterface): void => {
                     onRoleDeleteClicked(role);
                 },
-                popupText: (): string => t("console:manage.features.roles.list.popups.delete",
-                    { type: "Role" }),
+                popupText: (): string => t("console:manage.features.roles.list.popups.delete", { type: "Role" }),
                 renderer: "semantic-icon"
             }
         ];
@@ -312,63 +305,55 @@ export const RoleList: React.FunctionComponent<RoleListProps> = (props: RoleList
     return (
         <>
             <DataTable<RolesInterface>
-                loadingStateOptions={ { imageType: "square" } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ roleList?.Resources }
-                onRowClick={
-                    (e: SyntheticEvent, role: RolesInterface): void => {
-                        handleRoleEdit(role?.id);
-                    }
-                }
-                placeholders={ showPlaceholders() }
-                data-componentid={ componentId }
+                loadingStateOptions={{ imageType: "square" }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={roleList?.Resources}
+                onRowClick={(e: SyntheticEvent, role: RolesInterface): void => {
+                    handleRoleEdit(role?.id);
+                }}
+                placeholders={showPlaceholders()}
+                data-componentid={componentId}
             />
-            {
-                showRoleDeleteConfirmation && (
-                    <ConfirmationModal
-                        data-componentid={ `${ componentId }-delete-item-confirmation-modal` }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showRoleDeleteConfirmation }
-                        assertionHint={ t("console:manage.features.roles.list.confirmations.deleteItem.assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                        onPrimaryActionClick={ (): void => {
-                            handleRoleDelete(currentDeletedRole);
-                            setShowDeleteConfirmationModal(false);
-                        } }
-                        closeOnDimmerClick={ false }
-                    >
-                        <ConfirmationModal.Header>
-                            { t("console:manage.features.roles.list.confirmations.deleteItem.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message attached negative>
-                            { t("console:manage.features.roles.list.confirmations.deleteItem.message",
-                                { type: "role" }) }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content>
-                            { t("console:manage.features.roles.list.confirmations.deleteItem.content",
-                                { type: "role" }) }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
-            {
-                showDeleteErrorConnectedAppsModal && (
-                    <RoleDeleteErrorConfirmation
-                        isOpen={ showDeleteErrorConnectedAppsModal }
-                        onClose={ (): void => {
-                            setShowDeleteErrorConnectedAppsModal(false);
-                            setCurrentDeletedRole(undefined);
-                        } }
-                        selectedRole={ currentDeletedRole }
-                        data-componentid={ `${ componentId }-role-delete-error-confirmation-modal` }
-                    />
-                )
-            }
+            {showRoleDeleteConfirmation && (
+                <ConfirmationModal
+                    data-componentid={`${componentId}-delete-item-confirmation-modal`}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showRoleDeleteConfirmation}
+                    assertionHint={t("console:manage.features.roles.list.confirmations.deleteItem.assertionHint")}
+                    assertionType="checkbox"
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => {
+                        handleRoleDelete(currentDeletedRole);
+                        setShowDeleteConfirmationModal(false);
+                    }}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header>
+                        {t("console:manage.features.roles.list.confirmations.deleteItem.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message attached negative>
+                        {t("console:manage.features.roles.list.confirmations.deleteItem.message", { type: "role" })}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content>
+                        {t("console:manage.features.roles.list.confirmations.deleteItem.content", { type: "role" })}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
+            {showDeleteErrorConnectedAppsModal && (
+                <RoleDeleteErrorConfirmation
+                    isOpen={showDeleteErrorConnectedAppsModal}
+                    onClose={(): void => {
+                        setShowDeleteErrorConnectedAppsModal(false);
+                        setCurrentDeletedRole(undefined);
+                    }}
+                    selectedRole={currentDeletedRole}
+                    data-componentid={`${componentId}-role-delete-error-confirmation-modal`}
+                />
+            )}
         </>
     );
 };

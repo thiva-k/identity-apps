@@ -27,37 +27,37 @@ import configureStore from "redux-mock-store";
  * Test refactoring effort will be tracked in the following issue.
  *@see {@link https://github.com/wso2-enterprise/asgardeo-product/issues/1368}
  */
-describe("Test Suite - Integrate Extension Component.", () => { 
+describe("Test Suite - Integrate Extension Component.", () => {
     const mockStore: any = configureStore();
-    const store: any = mockStore({ 
+    const store: any = mockStore({
         helpPanel: {
-            "activeTabIndex": 0,
-            "docStructure": null,
-            "docURL": null,
-            "visibility": false
+            activeTabIndex: 0,
+            docStructure: null,
+            docURL: null,
+            visibility: false
         }
     });
 
     test.skip("Test proper rendering of Integrate Component", () => {
         render(
-            <Provider store={ store }>
-                { /*<IntegrateAppComponent
+            <Provider store={store}>
+                {/*<IntegrateAppComponent
                     application={ MockApplication }
                     applicationType={ "Single Page Application" }
                     data-testid="integrate"
-                />*/ }
+                />*/}
             </Provider>
         );
     });
 
     test.skip("Test react technology selection button is in document.", () => {
         render(
-            <Provider store={ store }>
-                { /*<IntegrateAppComponent
+            <Provider store={store}>
+                {/*<IntegrateAppComponent
                     application={ MockApplication }
                     applicationType={ "Single Page Application" }
                     data-testid="integrate"
-                />*/ }
+                />*/}
             </Provider>
         );
         expect(screen.getByTestId("integrate-technology-react")).toBeInTheDocument();
@@ -65,12 +65,12 @@ describe("Test Suite - Integrate Extension Component.", () => {
 
     test.skip("Test react technology selection button click.", () => {
         render(
-            <Provider store={ store }>
-                { /*<IntegrateAppComponent
+            <Provider store={store}>
+                {/*<IntegrateAppComponent
                     application={ MockApplication }
                     applicationType={ "Single Page Application" }
                     data-testid="integrate"
-                />*/ }
+                />*/}
             </Provider>
         );
         // userEvent.click(screen.getByTestId("integrate-technology-react"));

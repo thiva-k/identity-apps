@@ -23,14 +23,12 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationType } from "../../organizations/constants/organization-constants";
 import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
 import { CustomTextPreferenceConstants } from "../constants/custom-text-preference-constants";
 import { BrandingPreferenceTypes } from "../models/branding-preferences";
-import {
-    CustomTextPreferenceAPIResponseInterface
-} from "../models/custom-text-preference";
+import { CustomTextPreferenceAPIResponseInterface } from "../models/custom-text-preference";
 
 /**
  * Hook to get the branding preference text customizations from the API.
@@ -44,18 +42,18 @@ import {
  */
 const useGetCustomTextPreferenceResolve = <
     Data = CustomTextPreferenceAPIResponseInterface,
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean,
-        name: string,
-        screen: string,
-        locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE,
-        type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG
-    ): RequestResultInterface<Data, Error> => {
+    Error = RequestErrorInterface
+>(
+    shouldFetch: boolean,
+    name: string,
+    screen: string,
+    locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE,
+    type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG
+): RequestResultInterface<Data, Error> => {
     const { organizationType } = useGetCurrentOrganizationType();
 
-    const tenantDomain: string = organizationType === OrganizationType.SUBORGANIZATION
-        ? store.getState()?.organization?.organization?.id
-        : name;
+    const tenantDomain: string =
+        organizationType === OrganizationType.SUBORGANIZATION ? store.getState()?.organization?.organization?.id : name;
 
     const requestConfig: RequestConfigInterface = {
         headers: {
@@ -69,17 +67,20 @@ const useGetCustomTextPreferenceResolve = <
             screen,
             type
         },
-        url: organizationType === OrganizationType.SUBORGANIZATION
-            ? `${store.getState().config.endpoints.brandingTextPreferenceSubOrg}/resolve`
-            : `${store.getState().config.endpoints.brandingTextPreference}/resolve`
+        url:
+            organizationType === OrganizationType.SUBORGANIZATION
+                ? `${store.getState().config.endpoints.brandingTextPreferenceSubOrg}/resolve`
+                : `${store.getState().config.endpoints.brandingTextPreference}/resolve`
     };
 
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch? requestConfig : null, {
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig : null, {
         shouldRetryOnError: false
     });
 
-    if ((error?.response?.data as any)?.code
-        === CustomTextPreferenceConstants.CUSTOM_TEXT_PREFERENCE_NOT_CONFIGURED_ERROR_CODE) {
+    if (
+        (error?.response?.data as any)?.code ===
+        CustomTextPreferenceConstants.CUSTOM_TEXT_PREFERENCE_NOT_CONFIGURED_ERROR_CODE
+    ) {
         return {
             data: null,
             error,

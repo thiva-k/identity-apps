@@ -70,9 +70,9 @@ import {
     ModalWithSidePanel,
     getCORSOrigins,
     getTechnologyLogos,
-    history,
-    store
+    history
 } from "../../../core";
+import { store } from "@wso2is/features/core";
 import { TierLimitReachErrorModal } from "../../../core/components/tier-limit-reach-error-modal";
 import { OrganizationType } from "../../../organizations/constants";
 import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
@@ -80,12 +80,9 @@ import { RoleAudienceTypes, RoleConstants } from "../../../roles/constants/role-
 import { createApplication, getApplicationList, getApplicationTemplateData } from "../../api";
 import { getInboundProtocolLogos } from "../../configs/ui";
 import { ApplicationManagementConstants } from "../../constants";
-import CustomApplicationTemplate
-    from "../../data/application-templates/templates/custom-application/custom-application.json";
-import MobileApplicationTemplate
-    from "../../data/application-templates/templates/mobile-application/mobile-application.json";
-import SinglePageApplicationTemplate
-    from "../../data/application-templates/templates/single-page-application/single-page-application.json";
+import CustomApplicationTemplate from "../../data/application-templates/templates/custom-application/custom-application.json";
+import MobileApplicationTemplate from "../../data/application-templates/templates/mobile-application/mobile-application.json";
+import SinglePageApplicationTemplate from "../../data/application-templates/templates/single-page-application/single-page-application.json";
 import {
     ApplicationListInterface,
     ApplicationTemplateIdTypes,
@@ -145,7 +142,6 @@ interface MinimalApplicationCreateWizardPropsInterface extends TestableComponent
 export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateWizardPropsInterface> = (
     props: MinimalApplicationCreateWizardPropsInterface
 ): ReactElement => {
-
     const {
         title,
         closeWizard,
@@ -155,7 +151,7 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
         subTitle,
         templateLoadingStrategy,
         setIsApplicationSharingEnabled,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
@@ -166,51 +162,50 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
 
     const tenantName: string = store.getState().config.deployment.tenant;
 
-    const [ submit, setSubmit ] = useTrigger();
-    const [ submitProtocolForm, setSubmitProtocolForm ] = useTrigger();
+    const [submit, setSubmit] = useTrigger();
+    const [submitProtocolForm, setSubmitProtocolForm] = useTrigger();
     const { legacyAuthzRuntime } = useAuthorization();
 
     const reservedAppPattern: string = useSelector((state: AppState) => {
         return state.config?.deployment?.extensions?.asgardeoReservedAppRegex as string;
     });
-    const isClientSecretHashEnabled: boolean = useSelector((state: AppState) =>
-        state.config.ui.isClientSecretHashEnabled);
-    const orgType: OrganizationType = useSelector((state: AppState) =>
-        state?.organization?.organizationType);
-    const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state?.config?.ui?.features);
-    const isFAPIAppCreationEnabled: boolean = isFeatureEnabled(featureConfig?.applications,
-        ApplicationManagementConstants.FEATURE_DICTIONARY.get("FAPI_APP_CREATION"));
-    const isFirstLevelOrg: boolean = useSelector(
-        (state: AppState) => state.organization.isFirstLevelOrganization
+    const isClientSecretHashEnabled: boolean = useSelector(
+        (state: AppState) => state.config.ui.isClientSecretHashEnabled
     );
+    const orgType: OrganizationType = useSelector((state: AppState) => state?.organization?.organizationType);
+    const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state?.config?.ui?.features);
+    const isFAPIAppCreationEnabled: boolean = isFeatureEnabled(
+        featureConfig?.applications,
+        ApplicationManagementConstants.FEATURE_DICTIONARY.get("FAPI_APP_CREATION")
+    );
+    const isFirstLevelOrg: boolean = useSelector((state: AppState) => state.organization.isFirstLevelOrganization);
 
-    const [ templateSettings, setTemplateSettings ] = useState<ApplicationTemplateInterface>(null);
-    const [ protocolFormValues, setProtocolFormValues ] = useState<Record<string, any>>(undefined);
-    const [
-        customApplicationProtocol,
-        setCustomApplicationProtocol
-    ] = useState<SupportedAuthProtocolTypes>(SupportedAuthProtocolTypes.OAUTH2_OIDC);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ generalFormValues, setGeneralFormValues ] = useState<Map<string, FormValue>>(undefined);
-    const [ selectedTemplate, setSelectedTemplate ] = useState<ApplicationTemplateInterface>(template);
-    const [ allowedOrigins, setAllowedOrigins ] = useState([]);
-    const [ issuerError, setIssuerError ] = useState<boolean>(false);
-    const [ metaUrlError, setMetaUrlError ] = useState<boolean>(false);
-    const [ protocolValuesChange, setProtocolValuesChange ] = useState<boolean>(false);
-    const [ openLimitReachedModal, setOpenLimitReachedModal ] = useState<boolean>(false);
-    const [ isAppSharingEnabled, setIsAppSharingEnabled ] = useState<boolean>(false);
+    const [templateSettings, setTemplateSettings] = useState<ApplicationTemplateInterface>(null);
+    const [protocolFormValues, setProtocolFormValues] = useState<Record<string, any>>(undefined);
+    const [customApplicationProtocol, setCustomApplicationProtocol] = useState<SupportedAuthProtocolTypes>(
+        SupportedAuthProtocolTypes.OAUTH2_OIDC
+    );
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [generalFormValues, setGeneralFormValues] = useState<Map<string, FormValue>>(undefined);
+    const [selectedTemplate, setSelectedTemplate] = useState<ApplicationTemplateInterface>(template);
+    const [allowedOrigins, setAllowedOrigins] = useState([]);
+    const [issuerError, setIssuerError] = useState<boolean>(false);
+    const [metaUrlError, setMetaUrlError] = useState<boolean>(false);
+    const [protocolValuesChange, setProtocolValuesChange] = useState<boolean>(false);
+    const [openLimitReachedModal, setOpenLimitReachedModal] = useState<boolean>(false);
+    const [isAppSharingEnabled, setIsAppSharingEnabled] = useState<boolean>(false);
 
-    const [ showAppShareModal, setShowAppShareModal ] = useState(false);
-    const [ applicationId, setApplicationId ] = useState<string>(undefined);
+    const [showAppShareModal, setShowAppShareModal] = useState(false);
+    const [applicationId, setApplicationId] = useState<string>(undefined);
 
     const nameRef: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
     const issuerRef: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
-    const metaUrlRef: MutableRefObject<HTMLDivElement>  = useRef<HTMLDivElement>();
+    const metaUrlRef: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
 
     // Maintain SAML configuration mode
-    const [ samlConfigureMode, setSAMLConfigureMode ] = useState<string>(undefined);
+    const [samlConfigureMode, setSAMLConfigureMode] = useState<string>(undefined);
 
-    const [ alert, setAlert, notification ] = useWizardAlert();
+    const [alert, setAlert, notification] = useWizardAlert();
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -218,30 +213,27 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
         if (applicationId) {
             setShowAppShareModal(true);
         }
-    }, [ applicationId ]);
+    }, [applicationId]);
 
     useEffect(() => {
         // Stop fetching CORS origins if the selected template is `Expert Mode`.
-        if (!selectedTemplate
-            || selectedTemplate.id === CustomApplicationTemplate.id
-            || !isSuperOrganization()) {
+        if (!selectedTemplate || selectedTemplate.id === CustomApplicationTemplate.id || !isSuperOrganization()) {
             return;
         }
 
         const allowedCORSOrigins: string[] = [];
 
-        getCORSOrigins()
-            .then((response: CORSOriginsListInterface[]) => {
-                response.map((origin: CORSOriginsListInterface) => {
-                    allowedCORSOrigins.push(origin.url);
-                });
+        getCORSOrigins().then((response: CORSOriginsListInterface[]) => {
+            response.map((origin: CORSOriginsListInterface) => {
+                allowedCORSOrigins.push(origin.url);
             });
+        });
 
         setAllowedOrigins(allowedCORSOrigins);
 
         // Remove error alert on protocol switch
         setAlert(null);
-    }, [ selectedTemplate ]);
+    }, [selectedTemplate]);
 
     /**
      * On sub-template change set the selected template to the first,
@@ -263,18 +255,19 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
 
         setSelectedTemplate(subTemplates[0]);
         loadTemplateDetails(subTemplates[0].id, subTemplates[0]);
-    }, [ subTemplates ]);
+    }, [subTemplates]);
 
     /**
      * This where the form submission happens. When the submit is triggered on the
      * main form, it triggers the submit of the protocol form.
      */
     useEffect(() => {
-
         handleError("all", false);
 
-        if (selectedTemplate.id === CustomApplicationTemplate.id &&
-            customApplicationProtocol === SupportedAuthProtocolTypes.WS_FEDERATION) {
+        if (
+            selectedTemplate.id === CustomApplicationTemplate.id &&
+            customApplicationProtocol === SupportedAuthProtocolTypes.WS_FEDERATION
+        ) {
             return;
         }
 
@@ -320,26 +313,28 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
         const callbackURLs: [] = get(protocolFormValues, callbackURLsPathKey, []);
 
         if (!isEmpty(callbackURLs?.filter(Boolean))) {
-            set(templateSettingsClone, `application.${ callbackURLsPathKey }`, []);
-            set(templateSettingsClone, `application.${ allowedOriginsPathKey }`, []);
+            set(templateSettingsClone, `application.${callbackURLsPathKey}`, []);
+            set(templateSettingsClone, `application.${allowedOriginsPathKey}`, []);
         }
 
-        if(templateSettingsClone?.application?.inboundProtocolConfiguration?.saml?.templateConfiguration) {
+        if (templateSettingsClone?.application?.inboundProtocolConfiguration?.saml?.templateConfiguration) {
             delete templateSettingsClone?.application?.inboundProtocolConfiguration?.saml?.templateConfiguration;
         }
 
-        const application: MainApplicationInterface = cloneDeep(merge(templateSettingsClone?.application,
-            protocolFormValues));
+        const application: MainApplicationInterface = cloneDeep(
+            merge(templateSettingsClone?.application, protocolFormValues)
+        );
 
         application.name = generalFormValues.get("name").toString();
         application.templateId = selectedTemplate.id;
         // If the application is a OIDC standard-based application
-        if (legacyAuthzRuntime && customApplicationProtocol === SupportedAuthProtocolTypes.OAUTH2_OIDC
-            && (selectedTemplate?.templateId === "custom-application"
-                || selectedTemplate?.templateId === ApplicationTemplateIdTypes.M2M_APPLICATION)) {
-            application.isManagementApp = generalFormValues.get("isManagementApp").length >= 2
-                ? true
-                : false;
+        if (
+            legacyAuthzRuntime &&
+            customApplicationProtocol === SupportedAuthProtocolTypes.OAUTH2_OIDC &&
+            (selectedTemplate?.templateId === "custom-application" ||
+                selectedTemplate?.templateId === ApplicationTemplateIdTypes.M2M_APPLICATION)
+        ) {
+            application.isManagementApp = generalFormValues.get("isManagementApp").length >= 2 ? true : false;
         }
 
         // Adding `APPLICATION` as the default audience for the associated roles,
@@ -360,14 +355,11 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                 // Custom OAuth2/OIDC Apps are created with `client_credentials` grant by default.
                 application.inboundProtocolConfiguration = {
                     oidc: {
-                        grantTypes: [
-                            "client_credentials"
-                        ],
+                        grantTypes: ["client_credentials"],
                         isFAPIApplication: generalFormValues.get("isFAPIApp")?.length >= 2
                     }
                 };
             } else if (customApplicationProtocol === SupportedAuthProtocolTypes.SAML) {
-
                 application.templateId = ApplicationManagementConstants.CUSTOM_APPLICATION_SAML;
 
                 if (samlConfigureMode === SAMLConfigModes.MANUAL) {
@@ -375,8 +367,8 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                         application.inboundProtocolConfiguration.saml.manualConfiguration,
                         {
                             attributeProfile: {
-                                "alwaysIncludeAttributesInResponse": true,
-                                "enabled": true
+                                alwaysIncludeAttributesInResponse: true,
+                                enabled: true
                             }
                         }
                     );
@@ -388,17 +380,14 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
             // M2M Apps are created with `client_credentials` grant by default.
             application.inboundProtocolConfiguration = {
                 oidc: {
-                    grantTypes: [
-                        ApplicationManagementConstants.CLIENT_CREDENTIALS_GRANT
-                    ]
+                    grantTypes: [ApplicationManagementConstants.CLIENT_CREDENTIALS_GRANT]
                 }
             };
         }
 
         setIsSubmitting(true);
         createApp(application);
-
-    }, [ generalFormValues, protocolFormValues ]);
+    }, [generalFormValues, protocolFormValues]);
 
     useEffect(() => {
         if (!protocolFormValues) {
@@ -409,14 +398,13 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
             ...templateSettings?.application,
             ...protocolFormValues,
             name: generalFormValues.get("name").toString(),
-            templateId:  ApplicationManagementConstants.CUSTOM_APPLICATION_PASSIVE_STS
+            templateId: ApplicationManagementConstants.CUSTOM_APPLICATION_PASSIVE_STS
         });
 
         if (customApplicationProtocol === SupportedAuthProtocolTypes.WS_FEDERATION && protocolFormValues) {
             createApp(application);
         }
-
-    }, [ protocolFormValues ]);
+    }, [protocolFormValues]);
 
     const createApp = (application: MainApplicationInterface): void => {
         createApplication(application)
@@ -437,12 +425,11 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                     addAlert({
                         description: t(
                             "console:develop.features.applications.notifications." +
-                            "addApplication.success.description"
+                                "addApplication.success.description"
                         ),
                         level: AlertLevels.SUCCESS,
                         message: t(
-                            "console:develop.features.applications.notifications." +
-                            "addApplication.success.message"
+                            "console:develop.features.applications.notifications." + "addApplication.success.message"
                         )
                     })
                 );
@@ -457,17 +444,22 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                 }
             })
             .catch((error: AxiosError) => {
-
-                if (error?.response?.status === 403 &&
-                error?.response?.data?.code ===
-                ApplicationManagementConstants.ERROR_CREATE_LIMIT_REACHED.getErrorCode()) {
+                if (
+                    error?.response?.status === 403 &&
+                    error?.response?.data?.code ===
+                        ApplicationManagementConstants.ERROR_CREATE_LIMIT_REACHED.getErrorCode()
+                ) {
                     setOpenLimitReachedModal(true);
 
                     return;
                 }
 
-                if (error.response && error.response.data && error.response.data.code &&
-                    error.response.data.code === ApplicationManagementConstants.ERROR_CODE_ISSUER_EXISTS) {
+                if (
+                    error.response &&
+                    error.response.data &&
+                    error.response.data.code &&
+                    error.response.data.code === ApplicationManagementConstants.ERROR_CODE_ISSUER_EXISTS
+                ) {
                     if (protocolValuesChange) {
                         if (samlConfigureMode !== SAMLConfigModes.MANUAL) {
                             setAlert({
@@ -475,7 +467,7 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                                 level: AlertLevels.ERROR,
                                 message: t(
                                     "console:develop.features.applications.notifications." +
-                                    "addApplication.error.message"
+                                        "addApplication.error.message"
                                 )
                             });
                             scrollToNotification();
@@ -488,8 +480,12 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                     return;
                 }
 
-                if (error.response && error.response.data && error.response.data.code &&
-                    error.response.data.code === ApplicationManagementConstants.ERROR_CODE_INVALID_METADATA_URL) {
+                if (
+                    error.response &&
+                    error.response.data &&
+                    error.response.data.code &&
+                    error.response.data.code === ApplicationManagementConstants.ERROR_CODE_INVALID_METADATA_URL
+                ) {
                     if (protocolValuesChange) {
                         handleError("metaUrl", true);
                         scrollToInValidField("metaUrl");
@@ -503,8 +499,7 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                         description: error.response.data.description,
                         level: AlertLevels.ERROR,
                         message: t(
-                            "console:develop.features.applications.notifications." +
-                            "addApplication.error.message"
+                            "console:develop.features.applications.notifications." + "addApplication.error.message"
                         )
                     });
                     scrollToNotification();
@@ -515,12 +510,11 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                 setAlert({
                     description: t(
                         "console:develop.features.applications.notifications." +
-                        "addApplication.genericError.description"
+                            "addApplication.genericError.description"
                     ),
                     level: AlertLevels.ERROR,
                     message: t(
-                        "console:develop.features.applications.notifications." +
-                        "addApplication.genericError.message"
+                        "console:develop.features.applications.notifications." + "addApplication.genericError.message"
                     )
                 });
                 scrollToNotification();
@@ -539,11 +533,12 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
             let searchParams: string = "?";
             let defaultTabIndex: number = 0;
 
-            if (selectedTemplate.id !== SinglePageApplicationTemplate.id &&
+            if (
+                selectedTemplate.id !== SinglePageApplicationTemplate.id &&
                 selectedTemplate.id !== MobileApplicationTemplate.id &&
-                isClientSecretHashEnabled) {
-                searchParams = `${ searchParams }&${
-                    ApplicationManagementConstants.CLIENT_SECRET_HASH_ENABLED_URL_SEARCH_PARAM_KEY }=true`;
+                isClientSecretHashEnabled
+            ) {
+                searchParams = `${searchParams}&${ApplicationManagementConstants.CLIENT_SECRET_HASH_ENABLED_URL_SEARCH_PARAM_KEY}=true`;
             }
 
             if (selectedTemplate.id === CustomApplicationTemplate.id) {
@@ -552,7 +547,9 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
 
             history.push({
                 hash: `#${URLFragmentTypes.TAB_INDEX}${defaultTabIndex}`,
-                pathname: AppConstants.getPaths().get("APPLICATION_EDIT").replace(":id", createdAppID),
+                pathname: AppConstants.getPaths()
+                    .get("APPLICATION_EDIT")
+                    .replace(":id", createdAppID),
                 search: searchParams
             });
 
@@ -587,7 +584,6 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
      * Load application template data.
      */
     const loadTemplateDetails = (id: string, template: ApplicationTemplateInterface): void => {
-
         // If the loading strategy is `LOCAL`, stop making the GET request to fetch template details.
         if (templateLoadingStrategy === ApplicationTemplateLoadingStrategies.LOCAL) {
             setTemplateSettings(template);
@@ -617,7 +613,7 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                     addAlert({
                         description: t(
                             "console:develop.features.applications.notifications.fetchTemplate" +
-                            ".genericError.description"
+                                ".genericError.description"
                         ),
                         level: AlertLevels.ERROR,
                         message: t(
@@ -644,22 +640,20 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                 nameRef.current.scrollIntoView(options);
 
                 break;
-            case "issuer":
-            {
+            case "issuer": {
                 issuerRef.current.scrollIntoView(options);
-                const issuerElement: HTMLInputElement = issuerRef.current.children[0].children[1].children[0] as
-                    HTMLInputElement;
+                const issuerElement: HTMLInputElement = issuerRef.current.children[0].children[1]
+                    .children[0] as HTMLInputElement;
 
                 issuerElement.focus();
                 issuerElement.blur();
 
                 break;
             }
-            case "metaUrl":
-            {
+            case "metaUrl": {
                 metaUrlRef.current.scrollIntoView(options);
-                const metaUrlElement: HTMLInputElement = metaUrlRef.current.children[0].children[1].children[0] as
-                    HTMLInputElement;
+                const metaUrlElement: HTMLInputElement = metaUrlRef.current.children[0].children[1]
+                    .children[0] as HTMLInputElement;
 
                 metaUrlElement.focus();
                 metaUrlElement.blur();
@@ -689,8 +683,7 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                 setIssuerError(state);
 
                 break;
-            case "metaUrl":
-            {
+            case "metaUrl": {
                 setMetaUrlError(state);
 
                 break;
@@ -707,9 +700,7 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
      * @returns Minimal Protocol fields.
      */
     const resolveMinimalProtocolFormFields = (): ReactElement => {
-
-        let selectedProtocol: SupportedAuthProtocolTypes = selectedTemplate
-            .authenticationProtocol as SupportedAuthProtocolTypes;
+        let selectedProtocol: SupportedAuthProtocolTypes = selectedTemplate.authenticationProtocol as SupportedAuthProtocolTypes;
 
         if (selectedTemplate.id === CustomApplicationTemplate.id) {
             selectedProtocol = customApplicationProtocol;
@@ -720,23 +711,22 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
         if (selectedProtocol === SupportedAuthProtocolTypes.OIDC) {
             return (
                 <OauthProtocolSettingsWizardForm
-                    isProtocolConfig={ false }
-                    tenantDomain={ tenantName }
-                    allowedOrigins={ allowedOrigins }
-                    fields={ [ "callbackURLs" ] }
-                    hideFieldHints={ true }
-                    triggerSubmit={ submitProtocolForm }
-                    templateValues={ templateSettings?.application }
-                    onSubmit={ (values: Record<string, any>): void => setProtocolFormValues(values) }
-                    showCallbackURL={ true }
-                    addOriginByDefault={ selectedTemplate.id === SinglePageApplicationTemplate.id }
-                    isAllowEnabled={ !(selectedTemplate.id === SinglePageApplicationTemplate.id) }
-                    data-testid={ `${ testId }-oauth-protocol-settings-form` }
-                    selectedTemplate={ selectedTemplate }
+                    isProtocolConfig={false}
+                    tenantDomain={tenantName}
+                    allowedOrigins={allowedOrigins}
+                    fields={["callbackURLs"]}
+                    hideFieldHints={true}
+                    triggerSubmit={submitProtocolForm}
+                    templateValues={templateSettings?.application}
+                    onSubmit={(values: Record<string, any>): void => setProtocolFormValues(values)}
+                    showCallbackURL={true}
+                    addOriginByDefault={selectedTemplate.id === SinglePageApplicationTemplate.id}
+                    isAllowEnabled={!(selectedTemplate.id === SinglePageApplicationTemplate.id)}
+                    data-testid={`${testId}-oauth-protocol-settings-form`}
+                    selectedTemplate={selectedTemplate}
                 />
             );
         } else if (selectedProtocol === SupportedAuthProtocolTypes.SAML) {
-
             /**
              * Enable to have SAML wizard without config mode options.
              *
@@ -752,38 +742,37 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
              */
             return (
                 <SAMLProtocolAllSettingsWizardForm
-                    issuerRef={ issuerRef }
-                    issuerError={ issuerError }
-                    metaUrlRef={ metaUrlRef }
-                    metaUrlError={ metaUrlError }
-                    handleProtocolValueChange={ handleProtocolValueChange }
-                    fields={ [ "issuer", "assertionConsumerURLs" ] }
-                    hideFieldHints={ true }
-                    triggerSubmit={ submitProtocolForm }
-                    templateValues={ templateSettings?.application }
-                    onSubmit={ (values: Record<string, any>): void => setProtocolFormValues(values) }
-                    setSAMLConfigureMode={ setSAMLConfigureMode }
-                    data-testid={ `${ testId }-saml-protocol-settings-form` }
+                    issuerRef={issuerRef}
+                    issuerError={issuerError}
+                    metaUrlRef={metaUrlRef}
+                    metaUrlError={metaUrlError}
+                    handleProtocolValueChange={handleProtocolValueChange}
+                    fields={["issuer", "assertionConsumerURLs"]}
+                    hideFieldHints={true}
+                    triggerSubmit={submitProtocolForm}
+                    templateValues={templateSettings?.application}
+                    onSubmit={(values: Record<string, any>): void => setProtocolFormValues(values)}
+                    setSAMLConfigureMode={setSAMLConfigureMode}
+                    data-testid={`${testId}-saml-protocol-settings-form`}
                 />
             );
         } else if (selectedProtocol === SupportedAuthProtocolTypes.WS_FEDERATION) {
             return (
                 <PassiveStsProtocolSettingsWizardForm
-                    triggerSubmit={ submitProtocolForm }
-                    initialValues={ null }
-                    templateValues={ templateSettings }
-                    onSubmit={ (values: Record<string, any>): void => setProtocolFormValues(values) }
-                    data-testid={ `${ testId }-passive-sts-protocol-settings-form` }
+                    triggerSubmit={submitProtocolForm}
+                    initialValues={null}
+                    templateValues={templateSettings}
+                    onSubmit={(values: Record<string, any>): void => setProtocolFormValues(values)}
+                    data-testid={`${testId}-passive-sts-protocol-settings-form`}
                 />
             );
         }
     };
 
-    const renderDimmerOverlay = ( ): ReactNode => {
-
+    const renderDimmerOverlay = (): ReactNode => {
         return (
-            <Dimmer className="lighter" active={ true }>
-                { t("common:featureAvailable" ) }
+            <Dimmer className="lighter" active={true}>
+                {t("common:featureAvailable")}
             </Dimmer>
         );
     };
@@ -803,11 +792,14 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
         if (!isNameValid(appName)) {
             validation.isValid = false;
             validation.errorMessages.push(
-                t("console:develop.features.applications.forms." +
-                    "spaProtocolSettingsWizard.fields.name.validations.invalid", {
-                    appName: value.toString(),
-                    characterLimit: ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_NAME_MAX_LENGTH
-                })
+                t(
+                    "console:develop.features.applications.forms." +
+                        "spaProtocolSettingsWizard.fields.name.validations.invalid",
+                    {
+                        appName: value.toString(),
+                        characterLimit: ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_NAME_MAX_LENGTH
+                    }
+                )
             );
 
             return;
@@ -843,22 +835,32 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
             }
         } catch (error) {
             if (error.response && error.response.data && error.response.data.description) {
-                dispatch(addAlert({
-                    description: error.response.data.description,
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.fetchApplications.error.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: error.response.data.description,
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.fetchApplications.error.message"
+                        )
+                    })
+                );
 
                 return;
             }
 
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.notifications." +
-                    "fetchApplications.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.notifications." +
-                    "fetchApplications.genericError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.notifications." +
+                            "fetchApplications.genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "console:develop.features.applications.notifications." +
+                            "fetchApplications.genericError.message"
+                    )
+                })
+            );
         }
     };
 
@@ -867,7 +869,7 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
      * @param name - Name of the application
      */
     const isAppNameReserved = (name: string) => {
-        if(!reservedAppPattern) {
+        if (!reservedAppPattern) {
             return false;
         }
         const reservedAppRegex: RegExp = new RegExp(reservedAppPattern);
@@ -886,14 +888,14 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
      * @returns Supported Auth Protocol Types.
      */
     const getSupportedCustomProtocols = (filterProtocol?: string): SupportedAuthProtocolTypes[] => {
-
         let supportedProtocols: SupportedAuthProtocolTypes[] = Object.values(SupportedAuthProtocolTypes);
 
         // Filter out legacy and unsupported auth protocols.
         supportedProtocols = supportedProtocols.filter((protocol: string) => {
-
-            if (applicationConfig.customApplication.allowedProtocolTypes
-                && applicationConfig.customApplication.allowedProtocolTypes.length > 0) {
+            if (
+                applicationConfig.customApplication.allowedProtocolTypes &&
+                applicationConfig.customApplication.allowedProtocolTypes.length > 0
+            ) {
                 if (applicationConfig.customApplication.allowedProtocolTypes.includes(protocol)) {
                     return protocol;
                 } else {
@@ -901,11 +903,12 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
                 }
             }
 
-            if (protocol === SupportedAuthProtocolTypes.WS_TRUST
-                || protocol === SupportedAuthProtocolTypes.OIDC
-                || protocol === SupportedAuthProtocolTypes.CUSTOM
-                || (filterProtocol && protocol === filterProtocol)) {
-
+            if (
+                protocol === SupportedAuthProtocolTypes.WS_TRUST ||
+                protocol === SupportedAuthProtocolTypes.OIDC ||
+                protocol === SupportedAuthProtocolTypes.CUSTOM ||
+                (filterProtocol && protocol === filterProtocol)
+            ) {
                 return false;
             }
 
@@ -930,8 +933,7 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
      * @returns Sub Template Selection.
      */
     const renderSubTemplateSelection = (): ReactElement => {
-
-        const hasSubTemplates: boolean = (subTemplates && subTemplates instanceof Array && subTemplates.length > 0);
+        const hasSubTemplates: boolean = subTemplates && subTemplates instanceof Array && subTemplates.length > 0;
         const isCustom: boolean = selectedTemplate.id === CustomApplicationTemplate.id;
 
         if (!hasSubTemplates && !isCustom) {
@@ -948,87 +950,93 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
 
         return (
             <Grid.Row className="pt-0 mt-0">
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                <Grid.Column mobile={16} tablet={16} computer={14}>
                     <div className="sub-template-selection">
-                        <label className="sub-templates-label">{ subTemplatesSectionTitle }</label>
-                        <Card.Group itemsPerRow={ 3 } className="sub-templates">
-                            {
-                                templates
-                                    .map((subTemplate: SupportedAuthProtocolTypes | ApplicationTemplateInterface,
-                                        index: number) => {
+                        <label className="sub-templates-label">{subTemplatesSectionTitle}</label>
+                        <Card.Group itemsPerRow={3} className="sub-templates">
+                            {templates.map(
+                                (
+                                    subTemplate: SupportedAuthProtocolTypes | ApplicationTemplateInterface,
+                                    index: number
+                                ) => {
+                                    const id: string = isCustom
+                                        ? (subTemplate as SupportedAuthProtocolTypes)
+                                        : (subTemplate as ApplicationTemplateInterface).id;
+                                    const imageKey:
+                                        | SupportedAuthProtocolTypes
+                                        | ApplicationTemplateInterface["image"] = isCustom
+                                        ? (subTemplate as SupportedAuthProtocolTypes)
+                                        : (subTemplate as ApplicationTemplateInterface).image;
+                                    const header: ReactNode = isCustom ? (
+                                        subTemplate === SupportedAuthProtocolTypes.OAUTH2_OIDC ? (
+                                            <>
+                                                <div>OAuth2.0</div>
+                                                <div>OpenID Connect</div>
+                                            </>
+                                        ) : (
+                                            ApplicationManagementUtils.resolveProtocolDisplayName(
+                                                subTemplate as SupportedAuthProtocolTypes
+                                            )
+                                        )
+                                    ) : (
+                                        (subTemplate as ApplicationTemplateInterface).name
+                                    );
+                                    const isSelected: boolean = isCustom
+                                        ? customApplicationProtocol === subTemplate
+                                        : selectedTemplate.id === (subTemplate as ApplicationTemplateInterface).id;
+                                    const isDisabled: boolean = isCustom
+                                        ? false
+                                        : (subTemplate as ApplicationTemplateInterface).previewOnly;
+                                    const onClick = () => {
+                                        // If `previewOnly`, avoid click actions.
+                                        if ((subTemplate as ApplicationTemplateInterface).previewOnly) {
+                                            return;
+                                        }
 
-                                        const id: string = isCustom
-                                            ? subTemplate as SupportedAuthProtocolTypes
-                                            : (subTemplate as ApplicationTemplateInterface).id;
-                                        const imageKey: (SupportedAuthProtocolTypes
-                                            | ApplicationTemplateInterface["image"]) = isCustom
-                                            ? subTemplate as SupportedAuthProtocolTypes
-                                            : (subTemplate as ApplicationTemplateInterface).image;
-                                        const header: ReactNode = isCustom
-                                            ? subTemplate === SupportedAuthProtocolTypes.OAUTH2_OIDC
-                                                ? (
-                                                    <>
-                                                        <div>OAuth2.0</div>
-                                                        <div>OpenID Connect</div>
-                                                    </>
-                                                )
-                                                : ApplicationManagementUtils.resolveProtocolDisplayName(
-                                                        subTemplate as SupportedAuthProtocolTypes)
-                                            : (subTemplate as ApplicationTemplateInterface).name;
-                                        const isSelected: boolean = isCustom
-                                            ? customApplicationProtocol === subTemplate
-                                            : selectedTemplate.id === (subTemplate as ApplicationTemplateInterface).id;
-                                        const isDisabled: boolean = isCustom
-                                            ? false
-                                            : (subTemplate as ApplicationTemplateInterface).previewOnly;
-                                        const onClick = () => {
-                                            // If `previewOnly`, avoid click actions.
-                                            if ((subTemplate as ApplicationTemplateInterface).previewOnly) {
-                                                return;
-                                            }
+                                        if (isCustom) {
+                                            setCustomApplicationProtocol(subTemplate as SupportedAuthProtocolTypes);
 
-                                            if (isCustom) {
-                                                setCustomApplicationProtocol(subTemplate as SupportedAuthProtocolTypes);
+                                            return;
+                                        }
 
-                                                return;
-                                            }
-
-                                            setSelectedTemplate(subTemplate as ApplicationTemplateInterface);
-                                            loadTemplateDetails((subTemplate as ApplicationTemplateInterface).id,
-                                                subTemplate as ApplicationTemplateInterface);
-                                        };
-
-                                        return (
-                                            <SelectionCard
-                                                key={ index }
-                                                image={
-                                                    {
-                                                        ...getInboundProtocolLogos(),
-                                                        ...getTechnologyLogos()
-                                                    }[imageKey]
-                                                }
-                                                size="small"
-                                                className="sub-template-selection-card"
-                                                header={ header }
-                                                selected={ isSelected }
-                                                onClick={ onClick }
-                                                imageSize="x30"
-                                                imageOptions={ {
-                                                    relaxed: true,
-                                                    square: false,
-                                                    width: "auto"
-                                                } }
-                                                contentTopBorder={ false }
-                                                showTooltips={ false }
-                                                renderDisabledItemsAsGrayscale={ false }
-                                                disabled={ isDisabled }
-                                                overlay={ renderDimmerOverlay() }
-                                                overlayOpacity={ 0.6 }
-                                                data-testid={ `${ testId }-${ id }-card` }
-                                            />
+                                        setSelectedTemplate(subTemplate as ApplicationTemplateInterface);
+                                        loadTemplateDetails(
+                                            (subTemplate as ApplicationTemplateInterface).id,
+                                            subTemplate as ApplicationTemplateInterface
                                         );
-                                    })
-                            }
+                                    };
+
+                                    return (
+                                        <SelectionCard
+                                            key={index}
+                                            image={
+                                                {
+                                                    ...getInboundProtocolLogos(),
+                                                    ...getTechnologyLogos()
+                                                }[imageKey]
+                                            }
+                                            size="small"
+                                            className="sub-template-selection-card"
+                                            header={header}
+                                            selected={isSelected}
+                                            onClick={onClick}
+                                            imageSize="x30"
+                                            imageOptions={{
+                                                relaxed: true,
+                                                square: false,
+                                                width: "auto"
+                                            }}
+                                            contentTopBorder={false}
+                                            showTooltips={false}
+                                            renderDisabledItemsAsGrayscale={false}
+                                            disabled={isDisabled}
+                                            overlay={renderDimmerOverlay()}
+                                            overlayOpacity={0.6}
+                                            data-testid={`${testId}-${id}-card`}
+                                        />
+                                    );
+                                }
+                            )}
                         </Card.Group>
                         <Divider hidden />
                     </div>
@@ -1045,158 +1053,160 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
     const resolveContent = (): ReactElement => {
         return (
             <Forms
-                onSubmit={ (values: Map<string, FormValue>) => {
+                onSubmit={(values: Map<string, FormValue>) => {
                     setGeneralFormValues(values);
                     setSubmitProtocolForm();
-                } }
-                onSubmitError={ (requiredFields: Map<string, boolean>, validFields: Map<string, Validation>) => {
+                }}
+                onSubmitError={(requiredFields: Map<string, boolean>, validFields: Map<string, Validation>) => {
                     const iterator: IterableIterator<[string, boolean]> = requiredFields.entries();
                     let result: IteratorResult<[string, boolean]> = iterator.next();
 
                     while (!result.done) {
-                        if (!result.value[ 1 ] || !validFields.get(result.value[ 0 ]).isValid) {
-                            scrollToInValidField(result.value[ 0 ]);
+                        if (!result.value[1] || !validFields.get(result.value[0]).isValid) {
+                            scrollToInValidField(result.value[0]);
 
                             break;
                         } else {
                             result = iterator.next();
                         }
                     }
-                } }
-                submitState={ submit }
+                }}
+                submitState={submit}
                 id="name-input"
             >
                 <Grid>
-                    { alert && (
-                        <Grid.Row columns={ 1 } id="notification-div">
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
-                                { notification }
+                    {alert && (
+                        <Grid.Row columns={1} id="notification-div">
+                            <Grid.Column mobile={16} tablet={16} computer={14}>
+                                {notification}
                             </Grid.Column>
                         </Grid.Row>
-                    ) }
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                    )}
+                    <Grid.Row columns={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={14}>
                             <Field
                                 name="name"
-                                ref={ nameRef }
-                                label={ t(
+                                ref={nameRef}
+                                label={t(
                                     "console:develop.features.applications.forms.generalDetails.fields.name.label"
-                                ) }
-                                required={ true }
-                                requiredErrorMessage={ t(
+                                )}
+                                required={true}
+                                requiredErrorMessage={t(
                                     "console:develop.features.applications.forms.generalDetails.fields.name" +
-                                    ".validations.empty"
-                                ) }
-                                placeholder={ t(
+                                        ".validations.empty"
+                                )}
+                                placeholder={t(
                                     "console:develop.features.applications.forms.generalDetails.fields.name.placeholder"
-                                ) }
+                                )}
                                 type="text"
-                                data-testid={ `${ testId }-application-name-input` }
-                                validation={ validateApplicationName }
+                                data-testid={`${testId}-application-name-input`}
+                                validation={validateApplicationName}
                                 displayErrorOn="blur"
-                                maxLength={ ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_NAME_MAX_LENGTH }
+                                maxLength={ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_NAME_MAX_LENGTH}
                             />
                         </Grid.Column>
                     </Grid.Row>
-                    { renderSubTemplateSelection() }
+                    {renderSubTemplateSelection()}
                     <Grid.Row className="pt-0 mt-0">
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
-                            { resolveMinimalProtocolFormFields() }
+                        <Grid.Column mobile={16} tablet={16} computer={14}>
+                            {resolveMinimalProtocolFormFields()}
                         </Grid.Column>
                     </Grid.Row>
-                    {
-                        // The Management App checkbox is only present in OIDC Standard-Based apps
-                        (legacyAuthzRuntime && customApplicationProtocol === SupportedAuthProtocolTypes.OAUTH2_OIDC &&
-                            (selectedTemplate?.templateId === "custom-application" ||
-                            selectedTemplate?.templateId === ApplicationTemplateIdTypes.M2M_APPLICATION)
-                        ) && (
+                    {// The Management App checkbox is only present in OIDC Standard-Based apps
+                    legacyAuthzRuntime &&
+                        customApplicationProtocol === SupportedAuthProtocolTypes.OAUTH2_OIDC &&
+                        (selectedTemplate?.templateId === "custom-application" ||
+                            selectedTemplate?.templateId === ApplicationTemplateIdTypes.M2M_APPLICATION) && (
                             <div className="pt-0 mt-0">
                                 <Field
-                                    data-testid={ `${ testId }-management-app-checkbox` }
-                                    name={ "isManagementApp" }
-                                    required={ false }
-                                    requiredErrorMessage={ "is required" }
+                                    data-testid={`${testId}-management-app-checkbox`}
+                                    name={"isManagementApp"}
+                                    required={false}
+                                    requiredErrorMessage={"is required"}
                                     type="checkbox"
-                                    value={ [ "isManagementApp" ] }
-                                    children={ [
+                                    value={["isManagementApp"]}
+                                    children={[
                                         {
-                                            label: t("console:develop.features.applications.forms.generalDetails" +
-                                                ".fields.isManagementApp.label" ),
+                                            label: t(
+                                                "console:develop.features.applications.forms.generalDetails" +
+                                                    ".fields.isManagementApp.label"
+                                            ),
                                             value: "manageApp"
                                         }
-                                    ] }
+                                    ]}
                                 />
                                 <Hint compact>
-                                    { t("console:develop.features.applications.forms.generalDetails.fields" +
-                                            ".isManagementApp.hint" ) }
+                                    {t(
+                                        "console:develop.features.applications.forms.generalDetails.fields" +
+                                            ".isManagementApp.hint"
+                                    )}
                                 </Hint>
                             </div>
-                        )
-                    }
-                    {
-                        // The FAPI App creation checkbox is only present in OIDC Standard-Based apps
-                        customApplicationProtocol === SupportedAuthProtocolTypes.OAUTH2_OIDC
-                        && selectedTemplate?.name === ApplicationTemplateNames.STANDARD_BASED_APPLICATION
-                        && isFAPIAppCreationEnabled
-                        && (
+                        )}
+                    {// The FAPI App creation checkbox is only present in OIDC Standard-Based apps
+                    customApplicationProtocol === SupportedAuthProtocolTypes.OAUTH2_OIDC &&
+                        selectedTemplate?.name === ApplicationTemplateNames.STANDARD_BASED_APPLICATION &&
+                        isFAPIAppCreationEnabled && (
                             <div className="pt-0 mt-0">
                                 <Field
-                                    data-componentid={ `${ testId }-fapi-app-checkbox` }
-                                    name={ "isFAPIApp" }
-                                    required={ false }
+                                    data-componentid={`${testId}-fapi-app-checkbox`}
+                                    name={"isFAPIApp"}
+                                    required={false}
                                     type="checkbox"
-                                    value={ [ "isFAPIApp" ] }
-                                    children={ [
+                                    value={["isFAPIApp"]}
+                                    children={[
                                         {
-                                            label: t("console:develop.features.applications.forms.generalDetails" +
-                                                ".fields.isFapiApp.label" ),
+                                            label: t(
+                                                "console:develop.features.applications.forms.generalDetails" +
+                                                    ".fields.isFapiApp.label"
+                                            ),
                                             value: "fapiApp"
                                         }
-                                    ] }
+                                    ]}
                                 />
                                 <Hint compact>
-                                    { t("console:develop.features.applications.forms.generalDetails.fields" +
-                                        ".isFapiApp.hint" ) }
+                                    {t(
+                                        "console:develop.features.applications.forms.generalDetails.fields" +
+                                            ".isFapiApp.hint"
+                                    )}
                                 </Hint>
                             </div>
-                        )
-                    }
-                    {
-                        isOrganizationManagementEnabled
-                        && UIConfig?.legacyMode?.organizations
-                        && applicationConfig.editApplication.showApplicationShare
-                        && (isFirstLevelOrg || window[ "AppUtils" ].getConfig().organizationName)
-                        && orgType !== OrganizationType.SUBORGANIZATION
-                        && template?.id !== ApplicationTemplateIdTypes.M2M_APPLICATION
-                        && !isClientSecretHashEnabled
-                        && (
-                            <Show
-                                when={ AccessControlConstants.APPLICATION_EDIT }
-                            >
-                                <Grid.Row columns={ 1 }>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
+                        )}
+                    {isOrganizationManagementEnabled &&
+                        UIConfig?.legacyMode?.organizations &&
+                        applicationConfig.editApplication.showApplicationShare &&
+                        (isFirstLevelOrg || window["AppUtils"].getConfig().organizationName) &&
+                        orgType !== OrganizationType.SUBORGANIZATION &&
+                        template?.id !== ApplicationTemplateIdTypes.M2M_APPLICATION &&
+                        !isClientSecretHashEnabled && (
+                            <Show when={AccessControlConstants.APPLICATION_EDIT}>
+                                <Grid.Row columns={1}>
+                                    <Grid.Column mobile={16} tablet={16} computer={14}>
                                         <div className="pt-0 mt-0">
                                             <Checkbox
-                                                onChange={ (
+                                                onChange={(
                                                     event: React.FormEvent<HTMLInputElement>,
                                                     data: CheckboxProps
                                                 ) => {
                                                     setIsAppSharingEnabled(data.checked);
                                                     setIsApplicationSharingEnabled;
-                                                } }
-                                                label={ t("console:develop.features.applications.forms.generalDetails" +
-                                                    ".fields.isSharingEnabled.label") }
+                                                }}
+                                                label={t(
+                                                    "console:develop.features.applications.forms.generalDetails" +
+                                                        ".fields.isSharingEnabled.label"
+                                                )}
                                             />
                                             <Hint inline popup>
-                                                { t("console:develop.features.applications.forms.generalDetails" +
-                                                    ".fields.isSharingEnabled.hint") }
+                                                {t(
+                                                    "console:develop.features.applications.forms.generalDetails" +
+                                                        ".fields.isSharingEnabled.hint"
+                                                )}
                                             </Hint>
                                         </div>
                                     </Grid.Column>
                                 </Grid.Row>
                             </Show>
-                        )
-                    }
+                        )}
                 </Grid>
             </Forms>
         );
@@ -1208,23 +1218,26 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
      * @returns Help Panel.
      */
     const renderHelpPanel = (): ReactElement => {
-
         // Return null when `showHelpPanel` is false or `wizardHelp` is not defined in `selectedTemplate` object.
         if (!selectedTemplate?.content?.wizardHelp) {
             return null;
         }
 
-        let {
-            wizardHelp: WizardHelp
-        } = selectedTemplate.content;
+        let { wizardHelp: WizardHelp } = selectedTemplate.content;
 
-        if (selectedTemplate.authenticationProtocol === SupportedAuthProtocolTypes.SAML
-            && samlConfigureMode === SAMLConfigModes.META_FILE && selectedTemplate.content?.wizardHelp2) {
+        if (
+            selectedTemplate.authenticationProtocol === SupportedAuthProtocolTypes.SAML &&
+            samlConfigureMode === SAMLConfigModes.META_FILE &&
+            selectedTemplate.content?.wizardHelp2
+        ) {
             WizardHelp = selectedTemplate.content?.wizardHelp2;
         }
 
-        if (selectedTemplate.authenticationProtocol === SupportedAuthProtocolTypes.SAML
-            && samlConfigureMode === SAMLConfigModes.META_URL && selectedTemplate.content?.wizardHelp3) {
+        if (
+            selectedTemplate.authenticationProtocol === SupportedAuthProtocolTypes.SAML &&
+            samlConfigureMode === SAMLConfigModes.META_URL &&
+            selectedTemplate.content?.wizardHelp3
+        ) {
             WizardHelp = selectedTemplate.content?.wizardHelp3;
         }
 
@@ -1232,11 +1245,11 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
             <ModalWithSidePanel.SidePanel>
                 <ModalWithSidePanel.Header className="wizard-header help-panel-header muted">
                     <div className="help-panel-header-text">
-                        { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.heading") }
+                        {t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.heading")}
                     </div>
                 </ModalWithSidePanel.Header>
                 <ModalWithSidePanel.Content>
-                    <Suspense fallback={ <ContentLoader /> }>
+                    <Suspense fallback={<ContentLoader />}>
                         <WizardHelp />
                     </Suspense>
                 </ModalWithSidePanel.Content>
@@ -1250,7 +1263,6 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
      * @returns Document Link.
      */
     const resolveDocumentationLink = (): string => {
-
         if (selectedTemplate?.templateId === ApplicationTemplateIdTypes.SPA) {
             return getLink("develop.applications.newApplication.singlePageApplication.learnMore");
         }
@@ -1274,90 +1286,83 @@ export const MinimalAppCreateWizard: FunctionComponent<MinimalApplicationCreateW
 
     return (
         <>
-            { openLimitReachedModal && (
+            {openLimitReachedModal && (
                 <TierLimitReachErrorModal
-                    actionLabel={ t(
+                    actionLabel={t(
                         "console:develop.features.applications.notifications." +
-                        "tierLimitReachedError.emptyPlaceholder.action"
-                    ) }
-                    handleModalClose={ handleLimitReachedModalClose }
-                    header={ t(
-                        "console:develop.features.applications.notifications.tierLimitReachedError.heading"
-                    ) }
-                    description={ t(
+                            "tierLimitReachedError.emptyPlaceholder.action"
+                    )}
+                    handleModalClose={handleLimitReachedModalClose}
+                    header={t("console:develop.features.applications.notifications.tierLimitReachedError.heading")}
+                    description={t(
                         "console:develop.features.applications.notifications." +
-                        "tierLimitReachedError.emptyPlaceholder.subtitles"
-                    ) }
-                    message={ t(
+                            "tierLimitReachedError.emptyPlaceholder.subtitles"
+                    )}
+                    message={t(
                         "console:develop.features.applications.notifications." +
-                        "tierLimitReachedError.emptyPlaceholder.title"
-                    ) }
-                    openModal={ openLimitReachedModal }
+                            "tierLimitReachedError.emptyPlaceholder.title"
+                    )}
+                    openModal={openLimitReachedModal}
                 />
-            ) }
+            )}
             <ModalWithSidePanel
-                open={ !openLimitReachedModal && !showAppShareModal }
+                open={!openLimitReachedModal && !showAppShareModal}
                 className="wizard minimal-application-create-wizard"
                 dimmer="blurring"
-                onClose={ handleWizardClose }
-                closeOnDimmerClick={ false }
+                onClose={handleWizardClose}
+                closeOnDimmerClick={false}
                 closeOnEscape
-                data-testid={ `${ testId }-modal` }
+                data-testid={`${testId}-modal`}
             >
                 <ModalWithSidePanel.MainPanel>
                     <ModalWithSidePanel.Header className="wizard-header">
-                        { title }
-                        { subTitle && (
+                        {title}
+                        {subTitle && (
                             <Heading as="h6">
-                                { subTitle }
-                                <DocumentationLink
-                                    link={ resolveDocumentationLink() }
-                                >
-                                    { t("common:learnMore") }
+                                {subTitle}
+                                <DocumentationLink link={resolveDocumentationLink()}>
+                                    {t("common:learnMore")}
                                 </DocumentationLink>
                             </Heading>
-                        ) }
+                        )}
                     </ModalWithSidePanel.Header>
-                    <ModalWithSidePanel.Content>{ resolveContent() }</ModalWithSidePanel.Content>
+                    <ModalWithSidePanel.Content>{resolveContent()}</ModalWithSidePanel.Content>
                     <ModalWithSidePanel.Actions>
                         <Grid>
-                            <Grid.Row column={ 1 }>
-                                <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                    <LinkButton
-                                        floated="left"
-                                        onClick={ handleWizardClose }
-                                    >
-                                        { t("common:cancel") }
+                            <Grid.Row column={1}>
+                                <Grid.Column mobile={8} tablet={8} computer={8}>
+                                    <LinkButton floated="left" onClick={handleWizardClose}>
+                                        {t("common:cancel")}
                                     </LinkButton>
                                 </Grid.Column>
-                                <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                                <Grid.Column mobile={8} tablet={8} computer={8}>
                                     <PrimaryButton
                                         floated="right"
-                                        onClick={ () => {
+                                        onClick={() => {
                                             setIssuerError(false);
                                             setSubmit();
-                                        } }
-                                        data-testid={ `${ testId }-next-button` }
-                                        loading={ isSubmitting }
-                                        disabled={ isSubmitting }
+                                        }}
+                                        data-testid={`${testId}-next-button`}
+                                        loading={isSubmitting}
+                                        disabled={isSubmitting}
                                     >
-                                        { t("common:create") }
+                                        {t("common:create")}
                                     </PrimaryButton>
                                 </Grid.Column>
                             </Grid.Row>
                         </Grid>
                     </ModalWithSidePanel.Actions>
                 </ModalWithSidePanel.MainPanel>
-                { renderHelpPanel() }
+                {renderHelpPanel()}
             </ModalWithSidePanel>
-            { showAppShareModal && (
+            {showAppShareModal && (
                 <ApplicationShareModal
-                    open={ showAppShareModal }
-                    applicationId={ applicationId }
-                    onClose={ () => setShowAppShareModal(false) }
-                    onApplicationSharingCompleted={ handleApplicationSharingCompletion }
+                    open={showAppShareModal}
+                    applicationId={applicationId}
+                    onClose={() => setShowAppShareModal(false)}
+                    onApplicationSharingCompleted={handleApplicationSharingCompletion}
                 />
-            ) }
+            )}
         </>
     );
 };

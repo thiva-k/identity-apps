@@ -19,15 +19,15 @@
 import { AsgardeoSPAClient, HttpClientInstance, HttpError, HttpResponse } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosRequestConfig } from "axios";
-import { store } from "../store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Proptypes for bulk data.
  */
 interface BulkDataPropsInterface {
-    Operations?: any,
-    failOnErrors?: number,
-    schemas?: string[]
+    Operations?: any;
+    failOnErrors?: number;
+    schemas?: string[];
 }
 
 /**
@@ -35,7 +35,7 @@ interface BulkDataPropsInterface {
  */
 interface BulkResponseInterface {
     schemas?: string[];
-    Operations?: BulkResponseOperationInterface[]
+    Operations?: BulkResponseOperationInterface[];
 }
 
 /**
@@ -48,7 +48,7 @@ interface BulkResponseOperationInterface {
     location?: string;
     status: {
         code: number;
-    }
+    };
 }
 
 /**

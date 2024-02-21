@@ -20,7 +20,7 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { I18nConstants, store } from "../../core";
+import { I18nConstants, store } from "@wso2is/features/core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
@@ -40,24 +40,20 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  *
  * @returns Email templates list.
  */
-export const useEmailTemplatesList = <Data = EmailTemplateType[], Error = RequestErrorInterface>():
-    RequestResultInterface<Data, Error> => {
-
+export const useEmailTemplatesList = <
+    Data = EmailTemplateType[],
+    Error = RequestErrorInterface
+>(): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.emailManagement }/template-types`
+        url: `${store.getState().config.endpoints.emailManagement}/template-types`
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate
-    } = useRequest<Data, Error>(requestConfig);
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
 
     return {
         data,
@@ -84,27 +80,22 @@ export const useEmailTemplate = <Data = EmailTemplate, Error = RequestErrorInter
 
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: store.getState().config.endpoints.emailManagement
-            + `/template-types/${ templateType }/templates/${ emailLocale }`
+        url:
+            store.getState().config.endpoints.emailManagement +
+            `/template-types/${templateType}/templates/${emailLocale}`
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate
-    } = useRequest<Data, Error>(requestConfig,
-        {
-            onErrorRetry: (error: AxiosError) => {
-                if (error.response.status === 404) {
-                    return;
-                }
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig, {
+        onErrorRetry: (error: AxiosError) => {
+            if (error.response.status === 404) {
+                return;
             }
-        });
+        }
+    });
 
     return {
         data,
@@ -129,7 +120,6 @@ export const updateEmailTemplate = (
     emailTemplate: Partial<EmailTemplate>,
     locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE
 ): Promise<EmailTemplate> => {
-
     const emailLocale: string = locale.replace("-", "_");
 
     const requestConfig: AxiosRequestConfig = {
@@ -137,12 +127,13 @@ export const updateEmailTemplate = (
             ...emailTemplate
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
-        url: store.getState().config.endpoints.emailManagement +
-            `/template-types/${ templateType }/templates/${ emailLocale }`
+        url:
+            store.getState().config.endpoints.emailManagement +
+            `/template-types/${templateType}/templates/${emailLocale}`
     };
 
     return httpClient(requestConfig)
@@ -154,18 +145,21 @@ export const updateEmailTemplate = (
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as EmailTemplate);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 "Error occurred while updating the email template.",
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -177,22 +171,17 @@ export const updateEmailTemplate = (
  *
  * @returns Create new Email Template
  */
-export const createNewEmailTemplate = (
-    templateType: string,
-    emailTemplate: EmailTemplate
-): Promise<EmailTemplate> => {
-
+export const createNewEmailTemplate = (templateType: string, emailTemplate: EmailTemplate): Promise<EmailTemplate> => {
     const requestConfig: AxiosRequestConfig = {
         data: {
             ...emailTemplate
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: store.getState().config.endpoints.emailManagement +
-            `/template-types/${ templateType }`
+        url: store.getState().config.endpoints.emailManagement + `/template-types/${templateType}`
     };
 
     return httpClient(requestConfig)
@@ -204,18 +193,21 @@ export const createNewEmailTemplate = (
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as EmailTemplate);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 "Error occurred while creating the email template.",
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -227,21 +219,18 @@ export const createNewEmailTemplate = (
  *
  * @returns Delete Email Template
  */
-export const deleteEmailTemplate = (
-    templateType: string,
-    locale: string
-): Promise<AxiosResponse> => {
-
+export const deleteEmailTemplate = (templateType: string, locale: string): Promise<AxiosResponse> => {
     const emailLocale: string = locale.replace("-", "_");
 
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
-        url: store.getState().config.endpoints.emailManagement +
-            `/template-types/${ templateType }/templates/${ emailLocale }`
+        url:
+            store.getState().config.endpoints.emailManagement +
+            `/template-types/${templateType}/templates/${emailLocale}`
     };
 
     return httpClient(requestConfig)
@@ -253,17 +242,20 @@ export const deleteEmailTemplate = (
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return response;
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 "Error occurred while deleting the email template.",
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

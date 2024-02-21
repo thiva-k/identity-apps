@@ -21,20 +21,15 @@ import useResourceEndpoints from "@wso2is/common/src/hooks/use-resource-endpoint
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
 import { AuthenticatorManagementConstants } from "../constants/autheticator-constants";
-import {
-    ConnectionManagementConstants
-} from "../constants/connection-constants";
-import {
-    AuthenticatorInterface,
-    MultiFactorAuthenticatorInterface
-} from "../models/authenticators";
+import { ConnectionManagementConstants } from "../constants/connection-constants";
+import { AuthenticatorInterface, MultiFactorAuthenticatorInterface } from "../models/authenticators";
 import {
     ConnectionInterface,
     FederatedAuthenticatorListItemInterface,
@@ -60,12 +55,11 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
 export const useGetAuthenticators = <Data = AuthenticatorInterface[], Error = RequestErrorInterface>(
     filter?: string
 ): RequestResultInterface<Data, Error> => {
-
     const { resourceEndpoints } = useResourceEndpoints();
 
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -91,14 +85,15 @@ export const useGetAuthenticators = <Data = AuthenticatorInterface[], Error = Re
  *
  * @returns Response as a promise.
  */
-export const useGetAuthenticatorTags = <Data = string[], Error = RequestErrorInterface>(
-): RequestResultInterface<Data, Error> => {
-
+export const useGetAuthenticatorTags = <Data = string[], Error = RequestErrorInterface>(): RequestResultInterface<
+    Data,
+    Error
+> => {
     const { resourceEndpoints } = useResourceEndpoints();
 
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -128,18 +123,17 @@ export const updateMultiFactorAuthenticatorDetails = (
     id: string,
     payload: MultiFactorAuthenticatorInterface
 ): Promise<MultiFactorAuthenticatorInterface> => {
-
     const requestConfig: AxiosRequestConfig = {
         data: {
             operation: "UPDATE",
             properties: payload.properties
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PATCH,
-        url: `${ store.getState().config.endpoints.multiFactorAuthenticators }/connectors/${ id }`
+        url: `${store.getState().config.endpoints.multiFactorAuthenticators}/connectors/${id}`
     };
 
     return httpClient(requestConfig)
@@ -151,18 +145,21 @@ export const updateMultiFactorAuthenticatorDetails = (
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ConnectionManagementConstants.MULTI_FACTOR_AUTHENTICATOR_UPDATE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -174,14 +171,13 @@ export const updateMultiFactorAuthenticatorDetails = (
  * @throws IdentityAppsApiException
  */
 export const getLocalAuthenticator = (id: string): Promise<AuthenticatorInterface> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.localAuthenticators }/${ id }`
+        url: `${store.getState().config.endpoints.localAuthenticators}/${id}`
     };
 
     return httpClient(requestConfig)
@@ -193,18 +189,21 @@ export const getLocalAuthenticator = (id: string): Promise<AuthenticatorInterfac
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ConnectionManagementConstants.LOCAL_AUTHENTICATOR_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -216,14 +215,13 @@ export const getLocalAuthenticator = (id: string): Promise<AuthenticatorInterfac
  * @throws IdentityAppsApiException
  */
 export const getMultiFactorAuthenticatorDetails = (id: string): Promise<MultiFactorAuthenticatorInterface> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.multiFactorAuthenticators }/connectors/${ id }`
+        url: `${store.getState().config.endpoints.multiFactorAuthenticators}/connectors/${id}`
     };
 
     return httpClient(requestConfig)
@@ -235,18 +233,21 @@ export const getMultiFactorAuthenticatorDetails = (id: string): Promise<MultiFac
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 ConnectionManagementConstants.MULTI_FACTOR_AUTHENTICATOR_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -258,16 +259,19 @@ export const getMultiFactorAuthenticatorDetails = (id: string): Promise<MultiFac
  * @returns A promise containing the response.
  */
 export const getFederatedAuthenticatorDetails = (idpId: string, authenticatorId: string): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: store.getState().config.endpoints.identityProviders + "/" + idpId +
-            "/federated-authenticators/" + authenticatorId
+        url:
+            store.getState().config.endpoints.identityProviders +
+            "/" +
+            idpId +
+            "/federated-authenticators/" +
+            authenticatorId
     };
 
     return httpClient(requestConfig)
@@ -279,7 +283,8 @@ export const getFederatedAuthenticatorDetails = (idpId: string, authenticatorId:
             }
 
             return Promise.resolve(response.data as FederatedAuthenticatorListItemInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -291,10 +296,9 @@ export const getFederatedAuthenticatorDetails = (idpId: string, authenticatorId:
  * @returns A promise containing the response.
  */
 export const getFederatedAuthenticatorMeta = (id: string): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -311,19 +315,22 @@ export const getFederatedAuthenticatorMeta = (id: string): Promise<any> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as FederatedAuthenticatorMetaInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
-                error.response?.data?.message ?? AuthenticatorManagementConstants
-                    .ERROR_IN_FETCHING_FEDERATED_AUTHENTICATOR_META_DATA,
+                error.response?.data?.message ??
+                    AuthenticatorManagementConstants.ERROR_IN_FETCHING_FEDERATED_AUTHENTICATOR_META_DATA,
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -338,11 +345,10 @@ export const updateFederatedAuthenticators = (
     authenticatorList: FederatedAuthenticatorListResponseInterface,
     idpId: string
 ): Promise<any> => {
-
     const requestConfig: RequestConfigInterface = {
         data: authenticatorList,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -357,7 +363,8 @@ export const updateFederatedAuthenticators = (
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -373,19 +380,22 @@ export const updateFederatedAuthenticator = (
     idpId: string,
     authenticator: FederatedAuthenticatorListItemInterface
 ): Promise<any> => {
-
     const { authenticatorId, ...rest } = authenticator;
 
     const requestConfig: RequestConfigInterface = {
         data: rest,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
-        url: store.getState().config.endpoints.identityProviders + "/" + idpId +
-            "/federated-authenticators/" + authenticatorId
+        url:
+            store.getState().config.endpoints.identityProviders +
+            "/" +
+            idpId +
+            "/federated-authenticators/" +
+            authenticatorId
     };
 
     return httpClient(requestConfig)
@@ -395,7 +405,8 @@ export const updateFederatedAuthenticator = (
             }
 
             return Promise.resolve(response.data as ConnectionInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -406,10 +417,9 @@ export const updateFederatedAuthenticator = (
  * @returns A promise containing the response.
  */
 export const getFederatedAuthenticatorsList = (): Promise<FederatedAuthenticatorMetaInterface[]> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -424,7 +434,8 @@ export const getFederatedAuthenticatorsList = (): Promise<FederatedAuthenticator
             }
 
             return Promise.resolve(response.data as FederatedAuthenticatorMetaInterface[]);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };

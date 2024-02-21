@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import { EmailTemplate, EmailTemplateDetails, EmailTemplateType } from "../models";
 
 /**
@@ -44,10 +44,9 @@ export const getEmailTemplateTypes = (): Promise<AxiosResponse<EmailTemplateType
         .then((response: AxiosResponse<EmailTemplateType[]>) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error);
         });
-
 };
 
 /**
@@ -58,7 +57,7 @@ export const getEmailTemplateTypes = (): Promise<AxiosResponse<EmailTemplateType
 export const createNewTemplateType = (templateType: string): Promise<AxiosResponse<EmailTemplateType>> => {
     const requestConfig: AxiosRequestConfig = {
         data: {
-            "displayName": templateType
+            displayName: templateType
         },
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
@@ -72,7 +71,7 @@ export const createNewTemplateType = (templateType: string): Promise<AxiosRespon
         .then((response: AxiosResponse<EmailTemplateType>) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error);
         });
 };
@@ -96,7 +95,7 @@ export const deleteEmailTemplateType = (templateTypeId: string): Promise<AxiosRe
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error);
         });
 };
@@ -120,7 +119,7 @@ export const getEmailTemplate = (templateId: string): Promise<AxiosResponse<Emai
         .then((response: AxiosResponse<EmailTemplateDetails>) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error);
         });
 };
@@ -132,9 +131,9 @@ export const getEmailTemplate = (templateId: string): Promise<AxiosResponse<Emai
  * @param templateId - template id
  */
 export const getTemplateDetails = (
-    templateTypeId: string, templateId: string
+    templateTypeId: string,
+    templateId: string
 ): Promise<AxiosResponse<EmailTemplate>> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
@@ -148,10 +147,9 @@ export const getTemplateDetails = (
         .then((response: AxiosResponse<EmailTemplate>) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error);
         });
-
 };
 
 /**
@@ -161,9 +159,9 @@ export const getTemplateDetails = (
  * @param templateData - new template details
  */
 export const createLocaleTemplate = (
-    templateTypeId: string, templateData: EmailTemplate
+    templateTypeId: string,
+    templateData: EmailTemplate
 ): Promise<AxiosResponse<EmailTemplateType>> => {
-
     const requestConfig: AxiosRequestConfig = {
         data: templateData,
         headers: {
@@ -178,10 +176,9 @@ export const createLocaleTemplate = (
         .then((response: AxiosResponse<EmailTemplateType>) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error);
         });
-
 };
 
 /**
@@ -204,7 +201,7 @@ export const deleteLocaleTemplate = (templateTypeId: string, templateId: string)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error);
         });
 };
@@ -217,8 +214,10 @@ export const deleteLocaleTemplate = (templateTypeId: string, templateId: string)
  * @param templateData - replacable locale template data
  */
 export const replaceLocaleTemplateContent = (
-    templateTypeId: string, templateId: string, templateData: EmailTemplate): Promise<AxiosResponse> => {
-
+    templateTypeId: string,
+    templateId: string,
+    templateData: EmailTemplate
+): Promise<AxiosResponse> => {
     const requestConfig: AxiosRequestConfig = {
         data: templateData,
         headers: {
@@ -233,7 +232,7 @@ export const replaceLocaleTemplateContent = (
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error);
         });
 };

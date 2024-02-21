@@ -20,13 +20,13 @@ import { AsgardeoSPAClient, HttpClientInstance, HttpResponse } from "@asgardeo/a
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosRequestConfig } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import { OrgInsightsConstants } from "../constants/org-insights";
-import { 
-    DurationOption, 
-    GetInsightsParamsInterface, 
-    InsightsResponseInterface, 
-    ResourceType 
+import {
+    DurationOption,
+    GetInsightsParamsInterface,
+    InsightsResponseInterface,
+    ResourceType
 } from "../models/insights";
 import { getTimestamps } from "../utils/insights";
 
@@ -36,20 +36,19 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
 
 /**
  * Fetches the insights data for the given duration and resource type.
- * 
+ *
  * @param durationOption - Duration option.
  * @param resourceType - Resource type.
  * @param lastPeriod - Whether to fetch the insights for the last period.
- * 
+ *
  * @returns A promise containing the insights data.
  */
 export async function getInsights(
-    durationOption: DurationOption, 
+    durationOption: DurationOption,
     resourceType: ResourceType,
     filterQuery?: string,
     lastPeriod?: boolean
 ): Promise<InsightsResponseInterface> {
-
     const requestBody: GetInsightsParamsInterface = {
         ...getTimestamps(durationOption, { lastPeriod }),
         filter: filterQuery ?? "",
@@ -60,7 +59,7 @@ export async function getInsights(
     const requestConfig: AxiosRequestConfig = {
         data: requestBody,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
@@ -77,7 +76,8 @@ export async function getInsights(
                 response.status,
                 response.request,
                 response,
-                response.config);
+                response.config
+            );
         }
 
         return await Promise.resolve(response.data);
@@ -88,6 +88,7 @@ export async function getInsights(
             error.code,
             error.request,
             error.response,
-            error.config);
+            error.config
+        );
     }
 }

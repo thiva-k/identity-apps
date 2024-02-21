@@ -18,7 +18,7 @@
 
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
-import { store } from "../../../../features/core";
+import { store } from "@wso2is/features/core";
 import { UserInviteInterface } from "../models";
 import { getInviteResourceEndpoints } from "../configs";
 
@@ -38,11 +38,13 @@ export const getInvitedUserList = (): Promise<any> => {
         url: getInviteResourceEndpoints().inviteEndpoint
     };
 
-    return httpClient(requestConfig).then((response) => {
-        return Promise.resolve(response);
-    }).catch((error) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then(response => {
+            return Promise.resolve(response);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
 };
 
 export const sendInvite = (userInvite: UserInviteInterface): Promise<any> => {
@@ -56,11 +58,13 @@ export const sendInvite = (userInvite: UserInviteInterface): Promise<any> => {
         url: getInviteResourceEndpoints().inviteEndpoint
     };
 
-    return httpClient(requestConfig).then((response) => {
-        return Promise.resolve(response);
-    }).catch((error) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then(response => {
+            return Promise.resolve(response);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
 };
 
 export const deleteInvite = (traceID: string): Promise<any> => {
@@ -73,18 +77,20 @@ export const deleteInvite = (traceID: string): Promise<any> => {
         url: getInviteResourceEndpoints().inviteEndpoint + "/" + traceID
     };
 
-    return httpClient(requestConfig).then((response) => {
-        return Promise.resolve(response);
-    }).catch((error) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then(response => {
+            return Promise.resolve(response);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
 };
 
 export const updateInvite = (inviteID: string, inviteeData: any): Promise<any> => {
     const requestConfig = {
         data: inviteeData,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -92,11 +98,13 @@ export const updateInvite = (inviteID: string, inviteeData: any): Promise<any> =
         url: getInviteResourceEndpoints().inviteEndpoint + "/" + inviteID
     };
 
-    return httpClient(requestConfig).then((response) => {
-        return Promise.resolve(response);
-    }).catch((error) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then(response => {
+            return Promise.resolve(response);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
 };
 
 export const deleteUser = (traceID: string): Promise<any> => {
@@ -109,11 +117,13 @@ export const deleteUser = (traceID: string): Promise<any> => {
         url: getInviteResourceEndpoints().userEndpoint + "/" + traceID
     };
 
-    return httpClient(requestConfig).then((response) => {
-        return Promise.resolve(response);
-    }).catch((error) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then(response => {
+            return Promise.resolve(response);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
 };
 
 export const resendInvite = (traceID: string): Promise<any> => {
@@ -126,9 +136,11 @@ export const resendInvite = (traceID: string): Promise<any> => {
         url: getInviteResourceEndpoints().resendEndpoint.replace("{}", traceID)
     };
 
-    return httpClient(requestConfig).then((response) => {
-        return Promise.resolve(response);
-    }).catch((error) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then(response => {
+            return Promise.resolve(response);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
 };

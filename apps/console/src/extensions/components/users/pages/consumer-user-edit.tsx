@@ -19,12 +19,7 @@
 import Button from "@oxygen-ui/react/Button";
 import { UserstoreConstants } from "@wso2is/core/constants";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
-import {
-    hasRequiredScopes,
-    isFeatureEnabled,
-    resolveUserDisplayName,
-    resolveUserEmails
-} from "@wso2is/core/helpers";
+import { hasRequiredScopes, isFeatureEnabled, resolveUserDisplayName, resolveUserEmails } from "@wso2is/core/helpers";
 import {
     AlertInterface,
     AlertLevels,
@@ -59,9 +54,9 @@ import {
     FeatureConfigInterface,
     getEmptyPlaceholderIllustrations,
     getSidePanelIcons,
-    history,
-    store
+    history
 } from "../../../../features/core";
+import { store } from "@wso2is/features/core";
 import { getIdPIcons } from "../../../../features/identity-providers/configs/ui";
 import { PatchRoleDataInterface } from "../../../../features/roles/models/roles";
 import { getGovernanceConnectors } from "../../../../features/server-configurations/api";
@@ -86,7 +81,6 @@ import { UserAccountTypes, UsersConstants } from "../constants";
  * @returns user edit page component.
  */
 const ConsumerUserEditPage = (): ReactElement => {
-
     const { t } = useTranslation();
 
     const dispatch: ThunkDispatch<AppState, any, AnyAction> = useDispatch();
@@ -95,26 +89,27 @@ const ConsumerUserEditPage = (): ReactElement => {
     const profileInfo: ProfileInfoInterface = useSelector((state: AppState) => state.profile.profileInfo);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ user, setUserProfile ] = useState<ProfileInfoInterface>(emptyProfileInfo);
-    const [ isUserDetailsRequestLoading, setIsUserDetailsRequestLoading ] = useState<boolean>(true);
-    const [ readOnlyUserStoresList, setReadOnlyUserStoresList ] = useState<string[]>(undefined);
-    const [ showEditAvatarModal, setShowEditAvatarModal ] = useState<boolean>(false);
-    const [ connectorProperties, setConnectorProperties ] = useState<ConnectorPropertyInterface[]>(undefined);
-    const [ isReadOnly, setReadOnly ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ isReadOnlyUserStore, setReadOnlyUserStore ] = useState<boolean>(false);
-    const [ isDisplayNameEnabled, setIsDisplayNameEnabled ] = useState<boolean>(undefined);
-    const [ isUserNotFound, setIsUserNotFound ] = useState<boolean>(false);
-    const [ isUserDetailsFetchError, setIsUserDetailsFetchError ] = useState<boolean>(false);
+    const [user, setUserProfile] = useState<ProfileInfoInterface>(emptyProfileInfo);
+    const [isUserDetailsRequestLoading, setIsUserDetailsRequestLoading] = useState<boolean>(true);
+    const [readOnlyUserStoresList, setReadOnlyUserStoresList] = useState<string[]>(undefined);
+    const [showEditAvatarModal, setShowEditAvatarModal] = useState<boolean>(false);
+    const [connectorProperties, setConnectorProperties] = useState<ConnectorPropertyInterface[]>(undefined);
+    const [isReadOnly, setReadOnly] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [isReadOnlyUserStore, setReadOnlyUserStore] = useState<boolean>(false);
+    const [isDisplayNameEnabled, setIsDisplayNameEnabled] = useState<boolean>(undefined);
+    const [isUserNotFound, setIsUserNotFound] = useState<boolean>(false);
+    const [isUserDetailsFetchError, setIsUserDetailsFetchError] = useState<boolean>(false);
 
     useEffect(() => {
-        if(!user) {
+        if (!user) {
             return;
         }
 
-        const userStore: string = user?.userName?.split("/").length > 1
-            ? user?.userName?.split("/")[0]
-            : UserstoreConstants.PRIMARY_USER_STORE;
+        const userStore: string =
+            user?.userName?.split("/").length > 1
+                ? user?.userName?.split("/")[0]
+                : UserstoreConstants.PRIMARY_USER_STORE;
 
         if (readOnlyUserStoresList?.includes(userStore?.toString())) {
             setReadOnlyUserStore(true);
@@ -122,36 +117,39 @@ const ConsumerUserEditPage = (): ReactElement => {
             setReadOnlyUserStore(false);
         }
 
-        if (readOnlyUserStoresList?.includes(userStore?.toString())
-            || !isFeatureEnabled(featureConfig?.users, UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE"))
-            || !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.update, allowedScopes)
-            || user[ SCIMConfigs.scim.enterpriseSchema ]?.userSourceId
+        if (
+            readOnlyUserStoresList?.includes(userStore?.toString()) ||
+            !isFeatureEnabled(featureConfig?.users, UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")) ||
+            !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.update, allowedScopes) ||
+            user[SCIMConfigs.scim.enterpriseSchema]?.userSourceId
         ) {
             setReadOnly(true);
         } else {
             setReadOnly(false);
         }
-    }, [ user, readOnlyUserStoresList ]);
+    }, [user, readOnlyUserStoresList]);
 
     useEffect(() => {
         const properties: ConnectorPropertyInterface[] = [];
         const path: string[] = history.location.pathname.split("/");
-        const id: string = path[ path.length - 1 ];
+        const id: string = path[path.length - 1];
 
-        getGovernanceConnectors(ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID)
-            .then((response: GovernanceConnectorInterface[]) => {
+        getGovernanceConnectors(ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID).then(
+            (response: GovernanceConnectorInterface[]) => {
                 response.map((connector: GovernanceConnectorInterface) => {
-                    if (connector.id === ServerConfigurationsConstants.ACCOUNT_DISABLING_CONNECTOR_ID
-                        || connector.id === ServerConfigurationsConstants.ADMIN_FORCE_PASSWORD_RESET_CONNECTOR_ID
-                        || connector.id === ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID) {
+                    if (
+                        connector.id === ServerConfigurationsConstants.ACCOUNT_DISABLING_CONNECTOR_ID ||
+                        connector.id === ServerConfigurationsConstants.ADMIN_FORCE_PASSWORD_RESET_CONNECTOR_ID ||
+                        connector.id === ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID
+                    ) {
                         connector.properties.map((property: ConnectorPropertyInterface) => {
                             properties.push(property);
                         });
                     }
                 });
 
-                getGovernanceConnectors(ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID)
-                    .then((response: GovernanceConnectorInterface[]) => {
+                getGovernanceConnectors(ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID).then(
+                    (response: GovernanceConnectorInterface[]) => {
                         response.map((connector: GovernanceConnectorInterface) => {
                             if (connector.id === ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID) {
                                 connector.properties.map((property: ConnectorPropertyInterface) => {
@@ -163,24 +161,23 @@ const ConsumerUserEditPage = (): ReactElement => {
                         });
 
                         setConnectorProperties(properties);
-                    });
-            });
+                    }
+                );
+            }
+        );
 
         getUser(id);
 
-        UserStoreUtils.getReadOnlyUserStores()
-            .then((response: string[]) => {
-                setReadOnlyUserStoresList(response);
-            });
+        UserStoreUtils.getReadOnlyUserStores().then((response: string[]) => {
+            setReadOnlyUserStoresList(response);
+        });
     }, []);
 
     useEffect(() => {
         setIsDisplayNameEnabled(
-            UserUtils.isDisplayNameEnabled(
-                store.getState().profile.profileSchemas, user.displayName
-            )
+            UserUtils.isDisplayNameEnabled(store.getState().profile.profileSchemas, user.displayName)
         );
-    }, [ user ]);
+    }, [user]);
 
     const getUser = (id: string) => {
         setIsUserDetailsRequestLoading(true);
@@ -199,8 +196,9 @@ const ConsumerUserEditPage = (): ReactElement => {
                             addAlert<AlertInterface>({
                                 description: error.response.data.description,
                                 level: AlertLevels.ERROR,
-                                message: I18n.instance.t("console:manage.notifications.getProfileSchema." +
-                                    "error.message")
+                                message: I18n.instance.t(
+                                    "console:manage.notifications.getProfileSchema." + "error.message"
+                                )
                             })
                         );
                     }
@@ -285,50 +283,57 @@ const ConsumerUserEditPage = (): ReactElement => {
                     }
                 }
             ],
-            schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
 
         setIsSubmitting(true);
 
         updateUserInfo(user?.id, data)
             .then(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t(
-                        "console:manage.features.user.profile.notifications.updateProfileInfo.success.description"
-                    ),
-                    level: AlertLevels.SUCCESS,
-                    message: t(
-                        "console:manage.features.user.profile.notifications.updateProfileInfo.success.message"
-                    )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.user.profile.notifications.updateProfileInfo.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.user.profile.notifications.updateProfileInfo.success.message"
+                        )
+                    })
+                );
 
                 handleUserUpdate(user?.id);
             })
             .catch((error: AxiosError) => {
-                if (error.response
-                    && error.response.data
-                    && (error.response.data.description || error.response.data.detail)) {
-
-                    dispatch(addAlert<AlertInterface>({
-                        description: error.response.data.description || error.response.data.detail,
-                        level: AlertLevels.ERROR,
-                        message: t(
-                            "console:manage.features.user.profile.notifications.updateProfileInfo.error.message"
-                        )
-                    }));
+                if (
+                    error.response &&
+                    error.response.data &&
+                    (error.response.data.description || error.response.data.detail)
+                ) {
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: error.response.data.description || error.response.data.detail,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.user.profile.notifications.updateProfileInfo.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t(
-                        "console:manage.features.user.profile.notifications.updateProfileInfo.genericError.description"
-                    ),
-                    level: AlertLevels.ERROR,
-                    message: t(
-                        "console:manage.features.user.profile.notifications.updateProfileInfo.genericError.message"
-                    )
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.user.profile.notifications.updateProfileInfo.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.user.profile.notifications.updateProfileInfo.genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setShowEditAvatarModal(false);
@@ -345,8 +350,10 @@ const ConsumerUserEditPage = (): ReactElement => {
         let primaryEmail: string | MultiValueAttributeInterface = "";
 
         if (emails && Array.isArray(emails) && emails.length > 0) {
-            primaryEmail = emails.find((value: string | MultiValueAttributeInterface) => typeof value === "string"
-                && FormValidation.email(value));
+            primaryEmail = emails.find(
+                (value: string | MultiValueAttributeInterface) =>
+                    typeof value === "string" && FormValidation.email(value)
+            );
         }
 
         return primaryEmail as string;
@@ -380,7 +387,6 @@ const ConsumerUserEditPage = (): ReactElement => {
      * @returns the description of user
      */
     const resolveDescription = (): string | null => {
-
         const description: string = user.emails ? resolvePrimaryEmail(user?.emails) : user.userName.split("/")[1];
 
         if (isDisplayNameEnabled) {
@@ -403,261 +409,268 @@ const ConsumerUserEditPage = (): ReactElement => {
         if (isUserNotFound) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <Button variant="text" onClick={ handleBackButtonClick }>
-                            { t("console:manage.features.users.editUser.placeholders.undefinedUser.action") }
+                    action={
+                        <Button variant="text" onClick={handleBackButtonClick}>
+                            {t("console:manage.features.users.editUser.placeholders.undefinedUser.action")}
                         </Button>
-                    ) }
-                    subtitle={ [ t("console:manage.features.users.editUser.placeholders.undefinedUser.subtitles") ] }
-                    title={ t("console:manage.features.users.editUser.placeholders.undefinedUser.title") }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    subtitle={[t("console:manage.features.users.editUser.placeholders.undefinedUser.subtitles")]}
+                    title={t("console:manage.features.users.editUser.placeholders.undefinedUser.title")}
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
                 />
             );
         } else if (isUserDetailsFetchError) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <Button variant="text" onClick={ CommonUtils.refreshPage }>
-                            { t("console:common.placeholders.brokenPage.action") }
+                    action={
+                        <Button variant="text" onClick={CommonUtils.refreshPage}>
+                            {t("console:common.placeholders.brokenPage.action")}
                         </Button>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().brokenPage }
+                    }
+                    image={getEmptyPlaceholderIllustrations().brokenPage}
                     imageSize="tiny"
-                    subtitle={ [
+                    subtitle={[
                         t("console:common.placeholders.brokenPage.subtitles.0"),
                         t("console:common.placeholders.brokenPage.subtitles.1")
-                    ] }
-                    title={ t("console:common.placeholders.brokenPage.title") }
+                    ]}
+                    title={t("console:common.placeholders.brokenPage.title")}
                 />
             );
         }
     };
 
-    return isUserNotFound || isUserDetailsFetchError
-        ? getPlaceholder()
-        : (
-            <UserManagementProvider>
-                <TabPageLayout
-                    isLoading={ isUserDetailsRequestLoading }
-                    loadingStateOptions={ {
-                        count: 5,
-                        imageType: "circular"
-                    } }
-                    title={
-                        user?.active !== undefined
-                            ? (
-                                <>
-                                    {
-                                        user?.active
-                                            ? (
-                                                <Popup
-                                                    trigger={ (
-                                                        <Icon
-                                                            className="mr-2 ml-0 vertical-aligned-baseline"
-                                                            size="small"
-                                                            name="circle"
-                                                            color="green"
-                                                        />
-                                                    ) }
-                                                    content={ t("common:enabled") }
-                                                    inverted
-                                                />
-                                            ) : (
-                                                <Popup
-                                                    trigger={ (
-                                                        <Icon
-                                                            className="mr-2 ml-0 vertical-aligned-baseline"
-                                                            size="small"
-                                                            name="circle"
-                                                            color="orange"
-                                                        />
-                                                    ) }
-                                                    content={ t("common:disabled") }
-                                                    inverted
-                                                />
-                                            ) }
-                                    <>
-                                        {
-                                            isDisplayNameEnabled
-                                                ? user.displayName
-                                                : resolveUserDisplayName(user, null, UserAccountTypes.ADMINISTRATOR)
-                                        }
-                                    </>
-                                </>
-                            )
-                            : (
-                                <>
-                                    {
-                                        isDisplayNameEnabled
-                                            ? user.displayName
-                                            : resolveUserDisplayName(user, null, UserAccountTypes.ADMINISTRATOR)
+    return isUserNotFound || isUserDetailsFetchError ? (
+        getPlaceholder()
+    ) : (
+        <UserManagementProvider>
+            <TabPageLayout
+                isLoading={isUserDetailsRequestLoading}
+                loadingStateOptions={{
+                    count: 5,
+                    imageType: "circular"
+                }}
+                title={
+                    user?.active !== undefined ? (
+                        <>
+                            {user?.active ? (
+                                <Popup
+                                    trigger={
+                                        <Icon
+                                            className="mr-2 ml-0 vertical-aligned-baseline"
+                                            size="small"
+                                            name="circle"
+                                            color="green"
+                                        />
                                     }
-                                </>
-                            )
-
-                    }
-                    description={ (
-                        <div>
-                            { resolveDescription() }
-                            {
-                                user[ SCIMConfigs.scim.enterpriseSchema ]?.userSourceId && (
-                                    <Label className="profile-user-source-label">
-                                        <GenericIcon
-                                            className="mt-1 mb-0"
-                                            square
-                                            inline
-                                            size="default"
-                                            transparent
-                                            icon={ resolveIdpIcon(user[ SCIMConfigs.scim.enterpriseSchema ]?.idpType) }
-                                            verticalAlign="middle"
+                                    content={t("common:enabled")}
+                                    inverted
+                                />
+                            ) : (
+                                <Popup
+                                    trigger={
+                                        <Icon
+                                            className="mr-2 ml-0 vertical-aligned-baseline"
+                                            size="small"
+                                            name="circle"
+                                            color="orange"
                                         />
-                                        <Label.Detail className="mt-1 ml-0 mb-1">
-                                            { user[ SCIMConfigs.scim.enterpriseSchema ]?.userSourceId }
-                                        </Label.Detail>
-                                    </Label>
-                                )
-                            }
-                            {
-                                user[ SCIMConfigs.scim.enterpriseSchema ]?.userSource && (
-                                    <Label
-                                        className={ !resolveDescription()
-                                            ? "profile-user-source-label ml-0"
-                                            : "profile-user-source-label" }
-                                    >
-                                        <GenericIcon
-                                            className="mt-1 mb-0"
-                                            square
-                                            inline
-                                            size="default"
-                                            transparent
-                                            icon={ getSidePanelIcons().userStore }
-                                            verticalAlign="middle"
-                                        />
-                                        <Label.Detail className="mt-1 ml-0 mb-1">
-                                            { user[ SCIMConfigs.scim.enterpriseSchema ]?.userSource }
-                                        </Label.Detail>
-                                    </Label>
-                                )
-                            }
-                        </div>
-                    ) }
-                    image={ (
-                        <UserAvatar
-                            editable={ !isReadOnly && !user[ SCIMConfigs.scim.enterpriseSchema ]?.userSourceId }
-                            name={ isDisplayNameEnabled ? user.displayName : resolveUserDisplayName(user) }
-                            size="tiny"
-                            image={ user?.profileUrl }
-                            onClick={ () => { !isReadOnly && !user[ SCIMConfigs.scim.enterpriseSchema ]?.userSourceId
+                                    }
+                                    content={t("common:disabled")}
+                                    inverted
+                                />
+                            )}
+                            <>
+                                {isDisplayNameEnabled
+                                    ? user.displayName
+                                    : resolveUserDisplayName(user, null, UserAccountTypes.ADMINISTRATOR)}
+                            </>
+                        </>
+                    ) : (
+                        <>
+                            {isDisplayNameEnabled
+                                ? user.displayName
+                                : resolveUserDisplayName(user, null, UserAccountTypes.ADMINISTRATOR)}
+                        </>
+                    )
+                }
+                description={
+                    <div>
+                        {resolveDescription()}
+                        {user[SCIMConfigs.scim.enterpriseSchema]?.userSourceId && (
+                            <Label className="profile-user-source-label">
+                                <GenericIcon
+                                    className="mt-1 mb-0"
+                                    square
+                                    inline
+                                    size="default"
+                                    transparent
+                                    icon={resolveIdpIcon(user[SCIMConfigs.scim.enterpriseSchema]?.idpType)}
+                                    verticalAlign="middle"
+                                />
+                                <Label.Detail className="mt-1 ml-0 mb-1">
+                                    {user[SCIMConfigs.scim.enterpriseSchema]?.userSourceId}
+                                </Label.Detail>
+                            </Label>
+                        )}
+                        {user[SCIMConfigs.scim.enterpriseSchema]?.userSource && (
+                            <Label
+                                className={
+                                    !resolveDescription()
+                                        ? "profile-user-source-label ml-0"
+                                        : "profile-user-source-label"
+                                }
+                            >
+                                <GenericIcon
+                                    className="mt-1 mb-0"
+                                    square
+                                    inline
+                                    size="default"
+                                    transparent
+                                    icon={getSidePanelIcons().userStore}
+                                    verticalAlign="middle"
+                                />
+                                <Label.Detail className="mt-1 ml-0 mb-1">
+                                    {user[SCIMConfigs.scim.enterpriseSchema]?.userSource}
+                                </Label.Detail>
+                            </Label>
+                        )}
+                    </div>
+                }
+                image={
+                    <UserAvatar
+                        editable={!isReadOnly && !user[SCIMConfigs.scim.enterpriseSchema]?.userSourceId}
+                        name={isDisplayNameEnabled ? user.displayName : resolveUserDisplayName(user)}
+                        size="tiny"
+                        image={user?.profileUrl}
+                        onClick={() => {
+                            !isReadOnly && !user[SCIMConfigs.scim.enterpriseSchema]?.userSourceId
                                 ? setShowEditAvatarModal(true)
                                 : null;
-                            } }
-                            data-suppress=""
-                        />
-                    ) }
-                    backButton={ {
-                        "data-testid": "user-mgt-edit-user-back-button",
-                        onClick: handleBackButtonClick,
-                        text: t("console:manage.pages.usersEdit.backButton", { type: "Users" })
-                    } }
-                    titleTextAlign="left"
-                    bottomMargin={ false }
-                >
-                    <EditConsumerUser
-                        isUserProfileLoading={ isUserDetailsRequestLoading }
-                        featureConfig={ featureConfig }
-                        user={ user }
-                        handleUserUpdate={ handleUserUpdate }
-                        isReadOnly={ isReadOnly }
-                        isReadOnlyUserStore={ isReadOnlyUserStore }
-                        connectorProperties={ connectorProperties }
+                        }}
+                        data-suppress=""
                     />
-                    {
-                        showEditAvatarModal && (
-                            <EditAvatarModal
-                                open={ showEditAvatarModal }
-                                name={ isDisplayNameEnabled ? user.displayName : resolveUserDisplayName(user) }
-                                emails={ resolveUserEmails(user?.emails) }
-                                onClose={ () => setShowEditAvatarModal(false) }
-                                closeOnDimmerClick={ false }
-                                onCancel={ () => setShowEditAvatarModal(false) }
-                                onSubmit={ handleAvatarEditModalSubmit }
-                                imageUrl={ user?.profileUrl }
-                                isSubmitting={ isSubmitting }
-                                heading={ t("console:common.modals.editAvatarModal.heading") }
-                                submitButtonText={ t("console:common.modals.editAvatarModal.primaryButton") }
-                                cancelButtonText={ t("console:common.modals.editAvatarModal.secondaryButton") }
-                                translations={ {
-                                    gravatar: {
-                                        errors: {
-                                            noAssociation: {
-                                                content: (
-                                                    <Trans
-                                                        i18nKey={
-                                                            "console:common.modals.editAvatarModal.content.gravatar" +
-                                                            "errors.noAssociation.content"
-                                                        }
-                                                    >
-                                                        It seems like the selected email is not registered on Gravatar.
-                                                        Sign up for a Gravatar account by visiting
-                                                        <a href="https://www.gravatar.com">Gravatar Official
-                                                        Website</a> or use one of the following.
-                                                    </Trans>
-                                                ),
-                                                header: t("console:common.modals.editAvatarModal.content.gravatar" +
-                                                    ".errors.noAssociation.header")
-                                            }
+                }
+                backButton={{
+                    "data-testid": "user-mgt-edit-user-back-button",
+                    onClick: handleBackButtonClick,
+                    text: t("console:manage.pages.usersEdit.backButton", { type: "Users" })
+                }}
+                titleTextAlign="left"
+                bottomMargin={false}
+            >
+                <EditConsumerUser
+                    isUserProfileLoading={isUserDetailsRequestLoading}
+                    featureConfig={featureConfig}
+                    user={user}
+                    handleUserUpdate={handleUserUpdate}
+                    isReadOnly={isReadOnly}
+                    isReadOnlyUserStore={isReadOnlyUserStore}
+                    connectorProperties={connectorProperties}
+                />
+                {showEditAvatarModal && (
+                    <EditAvatarModal
+                        open={showEditAvatarModal}
+                        name={isDisplayNameEnabled ? user.displayName : resolveUserDisplayName(user)}
+                        emails={resolveUserEmails(user?.emails)}
+                        onClose={() => setShowEditAvatarModal(false)}
+                        closeOnDimmerClick={false}
+                        onCancel={() => setShowEditAvatarModal(false)}
+                        onSubmit={handleAvatarEditModalSubmit}
+                        imageUrl={user?.profileUrl}
+                        isSubmitting={isSubmitting}
+                        heading={t("console:common.modals.editAvatarModal.heading")}
+                        submitButtonText={t("console:common.modals.editAvatarModal.primaryButton")}
+                        cancelButtonText={t("console:common.modals.editAvatarModal.secondaryButton")}
+                        translations={{
+                            gravatar: {
+                                errors: {
+                                    noAssociation: {
+                                        content: (
+                                            <Trans
+                                                i18nKey={
+                                                    "console:common.modals.editAvatarModal.content.gravatar" +
+                                                    "errors.noAssociation.content"
+                                                }
+                                            >
+                                                It seems like the selected email is not registered on Gravatar. Sign up
+                                                for a Gravatar account by visiting
+                                                <a href="https://www.gravatar.com">Gravatar Official Website</a> or use
+                                                one of the following.
+                                            </Trans>
+                                        ),
+                                        header: t(
+                                            "console:common.modals.editAvatarModal.content.gravatar" +
+                                                ".errors.noAssociation.header"
+                                        )
+                                    }
+                                },
+                                heading: t("console:common.modals.editAvatarModal.content.gravatar.heading")
+                            },
+                            hostedAvatar: {
+                                heading: t("console:common.modals.editAvatarModal.content.hostedAvatar" + ".heading"),
+                                input: {
+                                    errors: {
+                                        http: {
+                                            content: t(
+                                                "console:common.modals.editAvatarModal.content." +
+                                                    "hostedAvatar.input.errors.http.content"
+                                            ),
+                                            header: t(
+                                                "console:common.modals.editAvatarModal.content." +
+                                                    "hostedAvatar.input.errors.http.header"
+                                            )
                                         },
-                                        heading: t("console:common.modals.editAvatarModal.content.gravatar.heading")
-                                    },
-                                    hostedAvatar: {
-                                        heading: t("console:common.modals.editAvatarModal.content.hostedAvatar" +
-                                            ".heading"),
-                                        input: {
-                                            errors: {
-                                                http: {
-                                                    content: t("console:common.modals.editAvatarModal.content." +
-                                                        "hostedAvatar.input.errors.http.content"),
-                                                    header: t("console:common.modals.editAvatarModal.content." +
-                                                        "hostedAvatar.input.errors.http.header")
-                                                },
-                                                invalid: {
-                                                    content: t("console:common.modals.editAvatarModal.content." +
-                                                        "hostedAvatar.input.errors.invalid.content"),
-                                                    pointing: t("console:common.modals.editAvatarModal.content." +
-                                                        "hostedAvatar.input.errors.invalid.pointing")
-                                                }
-                                            },
-                                            hint: t("console:common.modals.editAvatarModal.content.hostedAvatar." +
-                                                "input.hint"),
-                                            placeholder: t("console:common.modals.editAvatarModal.content." +
-                                                "hostedAvatar.input.placeholder"),
-                                            warnings: {
-                                                dataURL: {
-                                                    content: t("console:common.modals.editAvatarModal.content." +
-                                                        "hostedAvatar.input.warnings.dataURL.content"),
-                                                    header: t("console:common.modals.editAvatarModal.content." +
-                                                        "hostedAvatar.input.warnings.dataURL.header")
-                                                }
-                                            }
+                                        invalid: {
+                                            content: t(
+                                                "console:common.modals.editAvatarModal.content." +
+                                                    "hostedAvatar.input.errors.invalid.content"
+                                            ),
+                                            pointing: t(
+                                                "console:common.modals.editAvatarModal.content." +
+                                                    "hostedAvatar.input.errors.invalid.pointing"
+                                            )
                                         }
                                     },
-                                    systemGenAvatars: {
-                                        heading: t("console:common.modals.editAvatarModal.content.systemGenAvatars." +
-                                            "heading"),
-                                        types: {
-                                            initials: t("console:common.modals.editAvatarModal.content" +
-                                                ".systemGenAvatars.types.initials")
+                                    hint: t(
+                                        "console:common.modals.editAvatarModal.content.hostedAvatar." + "input.hint"
+                                    ),
+                                    placeholder: t(
+                                        "console:common.modals.editAvatarModal.content." +
+                                            "hostedAvatar.input.placeholder"
+                                    ),
+                                    warnings: {
+                                        dataURL: {
+                                            content: t(
+                                                "console:common.modals.editAvatarModal.content." +
+                                                    "hostedAvatar.input.warnings.dataURL.content"
+                                            ),
+                                            header: t(
+                                                "console:common.modals.editAvatarModal.content." +
+                                                    "hostedAvatar.input.warnings.dataURL.header"
+                                            )
                                         }
                                     }
-                                } }
-                                data-suppress=""
-                            />
-                        )
-                    }
-                </TabPageLayout>
-            </UserManagementProvider>
-        );
+                                }
+                            },
+                            systemGenAvatars: {
+                                heading: t(
+                                    "console:common.modals.editAvatarModal.content.systemGenAvatars." + "heading"
+                                ),
+                                types: {
+                                    initials: t(
+                                        "console:common.modals.editAvatarModal.content" +
+                                            ".systemGenAvatars.types.initials"
+                                    )
+                                }
+                            }
+                        }}
+                        data-suppress=""
+                    />
+                )}
+            </TabPageLayout>
+        </UserManagementProvider>
+    );
 };
 
 /**

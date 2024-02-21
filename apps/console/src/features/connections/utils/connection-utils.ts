@@ -24,7 +24,7 @@ import { I18n } from "@wso2is/i18n";
 import { AxiosError } from "axios";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
-import { AppConstants, store } from "../../core";
+import { AppConstants, store } from "@wso2is/features/core";
 import { getConnections } from "../api/connections";
 import { AuthenticatorManagementConstants } from "../constants/autheticator-constants";
 import { ConnectionManagementConstants } from "../constants/connection-constants";
@@ -38,46 +38,40 @@ import {
     OutboundProvisioningConnectorInterface,
     SupportedServices
 } from "../models/connection";
-import {
-    ReactComponent as ConnectionIcon
-} from "../resources/assets/images/icons/connection.svg";
-import {
-    ReactComponent as ProvisionIcon
-} from "../resources/assets/images/icons/provision.svg";
+import { ReactComponent as ConnectionIcon } from "../resources/assets/images/icons/connection.svg";
+import { ReactComponent as ProvisionIcon } from "../resources/assets/images/icons/provision.svg";
 
 /**
  * Utility class for connections operations.
  */
 export class ConnectionsManagementUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      */
-    private constructor() { }
+    private constructor() {}
 
-    public static updateConnnectorDetails = (connection: ConnectionInterface,
-        templateDescription: string): ConnectionInterface => {
-
+    public static updateConnnectorDetails = (
+        connection: ConnectionInterface,
+        templateDescription: string
+    ): ConnectionInterface => {
         const connector: OutboundProvisioningConnectorInterface =
-        connection?.provisioning?.outboundConnectors?.connectors[ 0 ];
+            connection?.provisioning?.outboundConnectors?.connectors[0];
 
-        const isGoogleConnector: boolean = get(connector,
-            ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME) ===
+        const isGoogleConnector: boolean =
+            get(connector, ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME) ===
             ConnectionManagementConstants.PROVISIONING_CONNECTOR_GOOGLE;
 
         // If the outbound connector is Google, remove the displayName from the connector.
         if (connector && isGoogleConnector) {
-            delete connector[
-                ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME
-            ];
+            delete connector[ConnectionManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME];
         }
 
         // Use description from template.
         connection.description = templateDescription;
 
         return connection;
-    }
+    };
 
     /**
      * Type-guard to check if the connector is an Identity Provider.
@@ -86,9 +80,9 @@ export class ConnectionsManagementUtils {
      *
      * @returns Whether the connector is IdentityProviderInterface.
      */
-    public static isConnectorIdentityProvider(connector: ConnectionInterface
-        | MultiFactorAuthenticatorInterface): connector is ConnectionInterface {
-
+    public static isConnectorIdentityProvider(
+        connector: ConnectionInterface | MultiFactorAuthenticatorInterface
+    ): connector is ConnectionInterface {
         return (connector as ConnectionInterface)?.federatedAuthenticators !== undefined;
     }
 
@@ -100,7 +94,6 @@ export class ConnectionsManagementUtils {
      * @returns Whether the connector is Organization SSO.
      */
     public static isOrganizationSSOConnection(id: string): boolean {
-
         return id === AuthenticatorManagementConstants.ORGANIZATION_ENTERPRISE_AUTHENTICATOR_ID;
     }
 
@@ -114,37 +107,32 @@ export class ConnectionsManagementUtils {
      * @returns Tags.
      */
     public static resolveConnectionTags(connections: FederatedAuthenticatorListResponseInterface): string[] {
-
-        if (!connections?.defaultAuthenticatorId
-            || !Array.isArray(connections.authenticators)) {
-
+        if (!connections?.defaultAuthenticatorId || !Array.isArray(connections.authenticators)) {
             return [];
         }
 
-        const found: FederatedAuthenticatorListItemInterface = connections.authenticators
-            .find((authenticator: FederatedAuthenticatorListItemInterface) => {
+        const found: FederatedAuthenticatorListItemInterface = connections.authenticators.find(
+            (authenticator: FederatedAuthenticatorListItemInterface) => {
                 return authenticator.authenticatorId === connections.defaultAuthenticatorId;
-            });
+            }
+        );
 
         return Array.isArray(found.tags) ? found.tags : [];
     }
 
     public static buildAuthenticatorsFilterQuery(searchQuery: string, filters: string[]): string {
-
         if (isEmpty(filters) || !Array.isArray(filters) || filters.length <= 0) {
             return searchQuery;
         }
 
-        let query: string = searchQuery
-            ? `${ searchQuery } and (`
-            : "(";
+        let query: string = searchQuery ? `${searchQuery} and (` : "(";
 
         if (filters.length > 1) {
             filters.map((filter: string, index: number) => {
-                query = `${ query }tag eq ${ filter }${ (index === filters.length - 1) ? ")" : " or " }`;
+                query = `${query}tag eq ${filter}${index === filters.length - 1 ? ")" : " or "}`;
             });
         } else {
-            query = `${ query }tag eq ${ filters[ 0 ] })`;
+            query = `${query}tag eq ${filters[0]})`;
         }
 
         return query.trim();
@@ -159,7 +147,6 @@ export class ConnectionsManagementUtils {
      * @returns Predefined image if available. If not, return input parameter.
      */
     public static resolveTemplateImage(image: string | any, icons: Record<string, any>): string | any {
-
         if (image) {
             if (typeof image !== "string") {
                 return image;
@@ -180,14 +167,14 @@ export class ConnectionsManagementUtils {
 
         const match: string = Object.keys(icons).find((key: string) => key.toString() === image);
 
-        return match ? icons[ match ] : icons[ "default" ] ?? image;
+        return match ? icons[match] : icons["default"] ?? image;
     }
 
     public static isTabEnabledForConnection(templateType: string, tabType: ConnectionTabTypes): boolean | undefined {
-
         const templateMapping: Map<string, Set<string>> = new Map<string, Set<string>>([
             [
-                ConnectionTabTypes.USER_ATTRIBUTES, new Set([
+                ConnectionTabTypes.USER_ATTRIBUTES,
+                new Set([
                     ConnectionManagementConstants.IDP_TEMPLATE_IDS.FACEBOOK,
                     ConnectionManagementConstants.IDP_TEMPLATE_IDS.GOOGLE,
                     ConnectionManagementConstants.IDP_TEMPLATE_IDS.GITHUB,
@@ -219,7 +206,7 @@ export class ConnectionsManagementUtils {
             return path;
         }
 
-        if ((URLUtils.isHttpsOrHttpUrl(path)) && ImageUtils.isValidImageExtension(path)) {
+        if (URLUtils.isHttpsOrHttpUrl(path) && ImageUtils.isValidImageExtension(path)) {
             return path;
         }
 
@@ -228,17 +215,14 @@ export class ConnectionsManagementUtils {
         }
 
         if (!isEmpty(externalURL)) {
-
             // If the connection resource url is set, append the given path to it.
             return externalURL + "/" + path;
         }
 
         if (AppConstants.getClientOrigin()) {
-
             const basename: string = AppConstants.getAppBasename() ? `/${AppConstants.getAppBasename()}` : "";
 
             if (path?.includes(AppConstants.getClientOrigin())) {
-
                 return path;
             }
 
@@ -250,7 +234,6 @@ export class ConnectionsManagementUtils {
      * Util to resolve connection doc links.
      */
     public static resolveConnectionDocLink(id: string): string {
-
         return ConnectionManagementConstants.DOC_LINK_DICTIONARY.get(id);
     }
 
@@ -287,12 +270,10 @@ export const resolveConnectionName = (name: string): string => {
     }
 };
 
-
 export const getIdPCapabilityIcons = (): any => {
-
     return {
-        [ SupportedServices.AUTHENTICATION ]: ConnectionIcon,
-        [ SupportedServices.PROVISIONING ]: ProvisionIcon
+        [SupportedServices.AUTHENTICATION]: ConnectionIcon,
+        [SupportedServices.PROVISIONING]: ProvisionIcon
     };
 };
 
@@ -539,7 +520,7 @@ export const handleUpdateOutboundProvisioningConnectorError = (error: AxiosError
                 level: AlertLevels.ERROR,
                 message: I18n.instance.t(
                     "console:develop.features.authenticationProvider.notifications." +
-                    "updateOutboundProvisioningConnector." +
+                        "updateOutboundProvisioningConnector." +
                         "error.message"
                 )
             })
@@ -660,7 +641,7 @@ export const handleGetFederatedAuthenticatorMetadataAPICallError = (error: Ident
             description: I18n.instance.t(
                 "console:develop.features.authenticationProvider.notifications" +
                     ".getFederatedAuthenticatorMetadata." +
-                        "genericError.description"
+                    "genericError.description"
             ),
             level: AlertLevels.ERROR,
             message: I18n.instance.t(
@@ -754,14 +735,12 @@ export const handleGetRoleListError = (error: AxiosError): void => {
         store.dispatch(
             addAlert({
                 description: I18n.instance.t(
-                    "console:develop.features.authenticationProvider" +
-                        ".notifications.getRolesList.error.description",
+                    "console:develop.features.authenticationProvider" + ".notifications.getRolesList.error.description",
                     { description: error.response.data.description }
                 ),
                 level: AlertLevels.ERROR,
                 message: I18n.instance.t(
-                    "console:develop.features.authenticationProvider" +
-                        ".notifications.getRolesList.error.message"
+                    "console:develop.features.authenticationProvider" + ".notifications.getRolesList.error.message"
                 )
             })
         );
@@ -777,8 +756,7 @@ export const handleGetRoleListError = (error: AxiosError): void => {
             ),
             level: AlertLevels.ERROR,
             message: I18n.instance.t(
-                "console:develop.features.authenticationProvider" +
-                    ".notifications.getRolesList.genericError.message"
+                "console:develop.features.authenticationProvider" + ".notifications.getRolesList.genericError.message"
             )
         })
     );
@@ -816,4 +794,3 @@ export const handleUpdateIDPRoleMappingsError = (error: AxiosError): void => {
         })
     );
 };
-

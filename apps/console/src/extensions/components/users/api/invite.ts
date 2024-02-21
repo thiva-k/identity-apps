@@ -22,7 +22,7 @@ import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { Config } from "../../../../features/core/configs";
 import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../../../features/core/hooks/use-request";
-import { store } from "../../../../features/core/store";
+import { store } from "@wso2is/features/core/store";
 import { UsersConstants } from "../constants";
 import { UserInviteInterface } from "../models";
 
@@ -31,7 +31,8 @@ import { UserInviteInterface } from "../models";
  *
  */
 const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
-    AsgardeoSPAClient.getInstance());
+    AsgardeoSPAClient.getInstance()
+);
 
 export const getInvitedUserList = (): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
@@ -43,23 +44,23 @@ export const getInvitedUserList = (): Promise<any> => {
         url: store.getState().config.endpoints.inviteEndpoint
     };
 
-    return httpClient(requestConfig).then((response: AxiosResponse) => {
-        return Promise.resolve(response);
-    }).catch((error: AxiosError) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
 };
 
 /**
  * Hook to get the invited users list.
- * 
+ *
  * @returns invited users list.
  */
-export const useInvitedUsersList = <Data = UserInviteInterface[],
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean = true
-    ): RequestResultInterface<Data, Error> => {
-
+export const useInvitedUsersList = <Data = UserInviteInterface[], Error = RequestErrorInterface>(
+    shouldFetch: boolean = true
+): RequestResultInterface<Data, Error> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
             "Content-Type": "application/json"
@@ -90,11 +91,13 @@ export const sendInvite = (userInvite: UserInviteInterface): Promise<any> => {
         url: store.getState().config.endpoints.inviteEndpoint
     };
 
-    return httpClient(requestConfig).then((response: AxiosResponse) => {
-        return Promise.resolve(response);
-    }).catch((error: AxiosError) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
 };
 
 export const deleteInvite = (traceID: string): Promise<any> => {
@@ -107,18 +110,20 @@ export const deleteInvite = (traceID: string): Promise<any> => {
         url: store.getState().config.endpoints.inviteEndpoint + "/" + traceID
     };
 
-    return httpClient(requestConfig).then((response: AxiosResponse) => {
-        return Promise.resolve(response);
-    }).catch((error: AxiosError) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
 };
 
 export const updateInvite = (inviteID: string, inviteeData: Record<string, unknown>): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         data: inviteeData,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -126,11 +131,13 @@ export const updateInvite = (inviteID: string, inviteeData: Record<string, unkno
         url: store.getState().config.endpoints.inviteEndpoint + "/" + inviteID
     };
 
-    return httpClient(requestConfig).then((response: AxiosResponse) => {
-        return Promise.resolve(response);
-    }).catch((error: AxiosError) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
 };
 
 export const deleteGuestUser = (traceID: string): Promise<any> => {
@@ -143,11 +150,13 @@ export const deleteGuestUser = (traceID: string): Promise<any> => {
         url: store.getState().config.endpoints.userEndpoint + "/" + traceID
     };
 
-    return httpClient(requestConfig).then((response: AxiosResponse) => {
-        return Promise.resolve(response);
-    }).catch((error: AxiosError) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
 };
 
 export const resendInvite = (traceID: string): Promise<any> => {
@@ -160,11 +169,13 @@ export const resendInvite = (traceID: string): Promise<any> => {
         url: store.getState().config.endpoints.resendEndpoint.replace("{}", traceID)
     };
 
-    return httpClient(requestConfig).then((response: AxiosResponse) => {
-        return Promise.resolve(response);
-    }).catch((error: AxiosError) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
 };
 
 /**
@@ -189,7 +200,7 @@ export const generateInviteLink = (username: string, domain: string): Promise<an
     };
 
     return httpClient(requestConfig)
-        .then((response: AxiosResponse) => {            
+        .then((response: AxiosResponse) => {
             if (response.status !== 201) {
                 throw new IdentityAppsApiException(
                     UsersConstants.INVALID_STATUS_CODE_ERROR,
@@ -197,17 +208,20 @@ export const generateInviteLink = (username: string, domain: string): Promise<an
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {            
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message ?? UsersConstants.RESOURCE_NOT_FOUND_ERROR_MESSAGE,
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

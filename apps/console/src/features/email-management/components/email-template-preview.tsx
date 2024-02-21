@@ -18,20 +18,14 @@
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import { Iframe } from "@wso2is/react-components";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    useEffect,
-    useMemo,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import useGetBrandingPreference from "../../branding/api/use-get-branding-preference";
 import { BrandingPreferencesConstants } from "../../branding/constants";
 import useBrandingPreference from "../../branding/hooks/use-branding-preference";
 import { BrandingPreferenceThemeInterface } from "../../branding/models";
 import { BrandingPreferenceUtils } from "../../branding/utils";
-import { AppState, store } from "../../core";
+import { AppState, store } from "@wso2is/features/core";
 import { EmailTemplate } from "../models";
 import { EmailCustomizationUtils } from "../utils";
 
@@ -52,27 +46,21 @@ interface EmailTemplatePreviewInterface extends IdentifiableComponentInterface {
 export const EmailTemplatePreview: FunctionComponent<EmailTemplatePreviewInterface> = (
     props: EmailTemplatePreviewInterface
 ): ReactElement => {
-
-    const {
-        emailTemplate,
-        ["data-componentid"]: testId
-    } = props;
+    const { emailTemplate, ["data-componentid"]: testId } = props;
 
     const { customText } = useBrandingPreference();
 
-    const [ , setIsIframeReady ] = useState(false);
-    const [
-        predefinedThemes,
-        setPredefinedThemes
-    ] = useState<BrandingPreferenceThemeInterface>(BrandingPreferencesConstants.DEFAULT_PREFERENCE.theme);
+    const [, setIsIframeReady] = useState(false);
+    const [predefinedThemes, setPredefinedThemes] = useState<BrandingPreferenceThemeInterface>(
+        BrandingPreferencesConstants.DEFAULT_PREFERENCE.theme
+    );
 
     const organizationName: string = store.getState().auth.tenantDomain;
     const theme: string = useSelector((state: AppState) => state.config.ui.theme?.name);
 
-    const {
-        data: brandingPreference,
-        isLoading: isBrandingPreferenceLoading
-    } = useGetBrandingPreference(organizationName);
+    const { data: brandingPreference, isLoading: isBrandingPreferenceLoading } = useGetBrandingPreference(
+        organizationName
+    );
 
     const emailTemplateBody: string = useMemo(() => {
         if (emailTemplate?.body) {
@@ -102,28 +90,26 @@ export const EmailTemplatePreview: FunctionComponent<EmailTemplatePreviewInterfa
             return;
         }
 
-        BrandingPreferenceUtils.getPredefinedThemePreferences(theme)
-            .then((response: BrandingPreferenceThemeInterface) => {
+        BrandingPreferenceUtils.getPredefinedThemePreferences(theme).then(
+            (response: BrandingPreferenceThemeInterface) => {
                 setPredefinedThemes({
                     ...predefinedThemes,
                     ...response
                 });
-            });
-    }, [ theme ]);
+            }
+        );
+    }, [theme]);
 
     return (
-        <div
-            className="email-template-preview"
-            data-componentid={ testId }
-        >
+        <div className="email-template-preview" data-componentid={testId}>
             <Iframe
-                isReady={ setIsIframeReady }
-                data-componentid={ `${ testId }-iframe` }
+                isReady={setIsIframeReady}
+                data-componentid={`${testId}-iframe`}
                 className="email-template-preview-iframe"
             >
                 <div
-                    dangerouslySetInnerHTML={ { __html: emailTemplateBody } }
-                    data-componentid={ `${ testId }-iframe-body-div` }
+                    dangerouslySetInnerHTML={{ __html: emailTemplateBody }}
+                    data-componentid={`${testId}-iframe-body-div`}
                 />
             </Iframe>
         </div>

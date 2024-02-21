@@ -19,14 +19,15 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationDiscoveryAttributeDataInterface } from "../models/organization-discovery";
 
 /**
  * Get an axios instance.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Update discovery attributes of an organization.
@@ -45,7 +46,7 @@ export const updateOrganizationDiscoveryAttributes = (
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
-        url: `${ store.getState().config.endpoints.organizations }/organizations/${ id }/discovery`
+        url: `${store.getState().config.endpoints.organizations}/organizations/${id}/discovery`
     };
 
     return httpClient(requestConfig)
@@ -55,7 +56,8 @@ export const updateOrganizationDiscoveryAttributes = (
             }
 
             return Promise.resolve(response?.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error?.response?.data);
         });
 };

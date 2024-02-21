@@ -21,30 +21,30 @@ import { AlertLevels } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { I18n } from "@wso2is/i18n";
 import camelCase from "lodash-es/camelCase";
-import { AppConstants, store } from "../../core";
+import { AppConstants, store } from "@wso2is/features/core";
 import { getConnectorCategories } from "../api";
 import { ServerConfigurationsConstants } from "../constants";
 import {
     ConnectorPropertyInterface,
-    GovernanceCategoryForOrgsInterface, GovernanceConnectorCategoryInterface,
+    GovernanceCategoryForOrgsInterface,
+    GovernanceConnectorCategoryInterface,
     GovernanceConnectorForOrgsInterface,
     GovernanceConnectorInterface,
     GovernanceConnectorsInterface
 } from "../models";
-import { SetGovernanceConnectorCategory } from "../store/actions";
+import { SetGovernanceConnectorCategory } from "@wso2is/features/server-configurations/store/actions";
 
 /**
  * Utility class for governance connectors.
  */
 export class GovernanceConnectorUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Clears the session related information and sign out from the session.
@@ -66,23 +66,35 @@ export class GovernanceConnectorUtils {
             })
             .catch((error: IdentityAppsApiException) => {
                 if (error.response && error.response.data && error.response.data.detail) {
-                    store.dispatch(addAlert({
-                        description: I18n.instance.t("console:manage.features.governanceConnectors.notifications." +
-                            "getConnectorCategories.error.description",
-                        { description: error.response.data.description }),
-                        level: AlertLevels.ERROR,
-                        message: I18n.instance.t("console:manage.features.governanceConnectors.notifications." +
-                            "getConfigurations.error.message")
-                    }));
+                    store.dispatch(
+                        addAlert({
+                            description: I18n.instance.t(
+                                "console:manage.features.governanceConnectors.notifications." +
+                                    "getConnectorCategories.error.description",
+                                { description: error.response.data.description }
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: I18n.instance.t(
+                                "console:manage.features.governanceConnectors.notifications." +
+                                    "getConfigurations.error.message"
+                            )
+                        })
+                    );
                 } else {
                     // Generic error message
-                    store.dispatch(addAlert({
-                        description: I18n.instance.t("console:manage.features.governanceConnectors.notifications." +
-                            "getConfigurations.genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: I18n.instance.t("console:manage.features.governanceConnectors.notifications." +
-                            "getConfigurations.genericError.message")
-                    }));
+                    store.dispatch(
+                        addAlert({
+                            description: I18n.instance.t(
+                                "console:manage.features.governanceConnectors.notifications." +
+                                    "getConfigurations.genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: I18n.instance.t(
+                                "console:manage.features.governanceConnectors.notifications." +
+                                    "getConfigurations.genericError.message"
+                            )
+                        })
+                    );
                 }
             });
     }
@@ -134,7 +146,7 @@ export class GovernanceConnectorUtils {
             id: "VXNlciBPbmJvYXJkaW5n",
             name: "User Onboarding"
         }
-    ]
+    ];
 
     /**
      * Filter governance categories of a connector for a sub organization.
@@ -143,14 +155,15 @@ export class GovernanceConnectorUtils {
      *
      * @returns Filtered categories as a list.
      */
-    public static filterGovernanceConnectorCategories
-    (governanceCategoryId: string, governanceConnectors: GovernanceConnectorInterface[])
-    : GovernanceConnectorInterface[] {
+    public static filterGovernanceConnectorCategories(
+        governanceCategoryId: string,
+        governanceConnectors: GovernanceConnectorInterface[]
+    ): GovernanceConnectorInterface[] {
         let showGovernanceConnectors: GovernanceConnectorForOrgsInterface[] = [];
 
-        showGovernanceConnectors  = this.SHOW_GOVERNANCE_CONNECTORS_FOR_SUBORGS
-            .filter((category:GovernanceCategoryForOrgsInterface) => category.id === governanceCategoryId)[0]
-            .connectors;
+        showGovernanceConnectors = this.SHOW_GOVERNANCE_CONNECTORS_FOR_SUBORGS.filter(
+            (category: GovernanceCategoryForOrgsInterface) => category.id === governanceCategoryId
+        )[0].connectors;
 
         const showGovernanceConnectorsIdOfSuborgs: string[] = [];
 
@@ -160,8 +173,10 @@ export class GovernanceConnectorUtils {
 
         return governanceConnectors.filter((connector: GovernanceConnectorInterface) => {
             if (showGovernanceConnectorsIdOfSuborgs.includes(connector.id)) {
-                const showProperties: string[] = this.getGovernanceConnectorsProperties(showGovernanceConnectors,
-                    connector.id);
+                const showProperties: string[] = this.getGovernanceConnectorsProperties(
+                    showGovernanceConnectors,
+                    connector.id
+                );
 
                 connector.properties = connector.properties.filter((property: ConnectorPropertyInterface) => {
                     if (showProperties.includes(property.name)) {
@@ -184,18 +199,15 @@ export class GovernanceConnectorUtils {
                         id: ServerConfigurationsConstants.MULTI_ATTRIBUTE_LOGIN_CONNECTOR_ID,
                         route: AppConstants.getPaths()
                             .get("GOVERNANCE_CONNECTOR_EDIT")
-                            .replace(":categoryId",
-                                ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID)
-                            .replace(":connectorId",
-                                ServerConfigurationsConstants.MULTI_ATTRIBUTE_LOGIN_CONNECTOR_ID),
+                            .replace(":categoryId", ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID)
+                            .replace(":connectorId", ServerConfigurationsConstants.MULTI_ATTRIBUTE_LOGIN_CONNECTOR_ID),
                         testId: "mutli-attribute-login-card"
                     },
                     {
                         description: "Configure alternative login identifier settings.",
                         header: "Alternative Login Identifier",
                         id: ServerConfigurationsConstants.ALTERNATIVE_LOGIN_IDENTIFIER,
-                        route: AppConstants.getPaths()
-                            .get("ALTERNATIVE_LOGIN_IDENTIFIER_EDIT"),
+                        route: AppConstants.getPaths().get("ALTERNATIVE_LOGIN_IDENTIFIER_EDIT"),
                         testId: "alternative-login-identifier-card"
                     },
                     {
@@ -220,8 +232,7 @@ export class GovernanceConnectorUtils {
                         testId: "password-validation-card"
                     },
                     {
-                        description: "Configure account lock on consecutive failed " +
-                            "login attempts.",
+                        description: "Configure account lock on consecutive failed " + "login attempts.",
                         header: "Login Attempts",
                         id: ServerConfigurationsConstants.LOGIN_ATTEMPT_SECURITY,
                         route: AppConstants.getPaths()
@@ -230,25 +241,20 @@ export class GovernanceConnectorUtils {
                                 ":categoryId",
                                 ServerConfigurationsConstants.LOGIN_ATTEMPT_SECURITY_CONNECTOR_CATEGORY_ID
                             )
-                            .replace(
-                                ":connectorId",
-                                ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID
-                            ),
+                            .replace(":connectorId", ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID),
                         testId: "login-attempts-card"
                     },
                     {
                         description: "Enable reCAPTCHA for the organization.",
                         header: "Bot Detection",
                         id: ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID,
-                        route: AppConstants.getPaths().get("GOVERNANCE_CONNECTOR_EDIT")
+                        route: AppConstants.getPaths()
+                            .get("GOVERNANCE_CONNECTOR_EDIT")
                             .replace(
                                 ":categoryId",
                                 ServerConfigurationsConstants.LOGIN_ATTEMPT_SECURITY_CONNECTOR_CATEGORY_ID
                             )
-                            .replace(
-                                ":connectorId",
-                                ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID
-                            ),
+                            .replace(":connectorId", ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID),
                         testId: "bot-detection-card"
                     },
                     {
@@ -283,15 +289,15 @@ export class GovernanceConnectorUtils {
                         testId: "self-registration-card"
                     },
                     {
-                        description: "Allow users to set their own passwords during admin-initiated onboarding " +
-                                    "and configure related settings",
+                        description:
+                            "Allow users to set their own passwords during admin-initiated onboarding " +
+                            "and configure related settings",
                         header: "Invite User to Set Password",
                         id: ServerConfigurationsConstants.ASK_PASSWORD_CONNECTOR_ID,
-                        route: AppConstants.getPaths().get("GOVERNANCE_CONNECTOR_EDIT")
+                        route: AppConstants.getPaths()
+                            .get("GOVERNANCE_CONNECTOR_EDIT")
                             .replace(":categoryId", ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID)
-                            .replace(
-                                ":connectorId",
-                                ServerConfigurationsConstants.ASK_PASSWORD_CONNECTOR_ID),
+                            .replace(":connectorId", ServerConfigurationsConstants.ASK_PASSWORD_CONNECTOR_ID),
                         testId: "invite-user-to-set-password-card"
                     }
                 ],
@@ -307,10 +313,11 @@ export class GovernanceConnectorUtils {
                         id: ServerConfigurationsConstants.PASSWORD_RECOVERY,
                         route: AppConstants.getPaths()
                             .get("GOVERNANCE_CONNECTOR_EDIT")
-                            .replace(":categoryId",
-                                ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CONNECTOR_CATEGORY_ID)
-                            .replace(":connectorId",
-                                ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID),
+                            .replace(
+                                ":categoryId",
+                                ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CONNECTOR_CATEGORY_ID
+                            )
+                            .replace(":connectorId", ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID),
                         testId: "password-recovery-card"
                     },
                     {
@@ -319,14 +326,12 @@ export class GovernanceConnectorUtils {
                         id: ServerConfigurationsConstants.USERNAME_RECOVERY,
                         route: AppConstants.getPaths()
                             .get("USERNAME_RECOVERY_CONNECTOR_EDIT")
+                            .replace(":type", "username")
                             .replace(
-                                ":type",
-                                "username"
+                                ":categoryId",
+                                ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CONNECTOR_CATEGORY_ID
                             )
-                            .replace(":categoryId",
-                                ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CONNECTOR_CATEGORY_ID)
-                            .replace(":connectorId",
-                                ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID),
+                            .replace(":connectorId", ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID),
                         testId: "username-recovery-card"
                     },
                     {
@@ -335,10 +340,8 @@ export class GovernanceConnectorUtils {
                         id: ServerConfigurationsConstants.ADMIN_FORCED_PASSWORD_RESET,
                         route: AppConstants.getPaths()
                             .get("GOVERNANCE_CONNECTOR_EDIT")
-                            .replace(":categoryId",
-                                ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID)
-                            .replace(":connectorId",
-                                ServerConfigurationsConstants.ADMIN_FORCED_PASSWORD_RESET),
+                            .replace(":categoryId", ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID)
+                            .replace(":connectorId", ServerConfigurationsConstants.ADMIN_FORCED_PASSWORD_RESET),
                         testId: "admin-initiated-password-reset-card"
                     }
                 ],
@@ -385,9 +388,11 @@ export class GovernanceConnectorUtils {
                 connectors: [
                     {
                         description: I18n.instance.t(
-                            "console:develop.features.applications.resident.provisioning.outbound.subHeading"),
+                            "console:develop.features.applications.resident.provisioning.outbound.subHeading"
+                        ),
                         header: I18n.instance.t(
-                            "console:develop.features.applications.resident.provisioning.outbound.heading"),
+                            "console:develop.features.applications.resident.provisioning.outbound.heading"
+                        ),
                         id: ServerConfigurationsConstants.OUTBOUND_PROVISIONING_SETTINGS_CONNECTOR_ID,
                         route: AppConstants.getPaths().get("OUTBOUND_PROVISIONING_SETTINGS"),
                         testId: "outbound-provisioning-settings-card"
@@ -401,9 +406,14 @@ export class GovernanceConnectorUtils {
     }
 
     public static resolveFieldLabel(category: string, name: string, displayName: string): string {
-        const fieldLabelKey: string = "console:manage.features.governanceConnectors.connectorCategories." +
-                camelCase(category) + ".connectors." + camelCase(name) +
-                ".properties." + camelCase(name) + ".label";
+        const fieldLabelKey: string =
+            "console:manage.features.governanceConnectors.connectorCategories." +
+            camelCase(category) +
+            ".connectors." +
+            camelCase(name) +
+            ".properties." +
+            camelCase(name) +
+            ".label";
 
         let fieldLabel: string = displayName;
 
@@ -415,9 +425,14 @@ export class GovernanceConnectorUtils {
     }
 
     public static resolveFieldHint(category: string, name: string, description: string): string {
-        const fieldHintKey: string = "console:manage.features.governanceConnectors.connectorCategories." +
-                camelCase(category) + ".connectors." + camelCase(name) +
-                ".properties." + camelCase(name) + ".hint";
+        const fieldHintKey: string =
+            "console:manage.features.governanceConnectors.connectorCategories." +
+            camelCase(category) +
+            ".connectors." +
+            camelCase(name) +
+            ".properties." +
+            camelCase(name) +
+            ".hint";
 
         let fieldHint: string = description;
 
@@ -435,12 +450,12 @@ export class GovernanceConnectorUtils {
      *
      * @returns governance connector properties as a list.
      */
-    private static getGovernanceConnectorsProperties
-    (showGovernanceConnectors: GovernanceConnectorForOrgsInterface[], governanceConnectorId: string) {
-
-        return showGovernanceConnectors
-            .filter((connector: GovernanceConnectorForOrgsInterface)=>connector.id===governanceConnectorId)[0]
-            .properties;
-
+    private static getGovernanceConnectorsProperties(
+        showGovernanceConnectors: GovernanceConnectorForOrgsInterface[],
+        governanceConnectorId: string
+    ) {
+        return showGovernanceConnectors.filter(
+            (connector: GovernanceConnectorForOrgsInterface) => connector.id === governanceConnectorId
+        )[0].properties;
     }
 }

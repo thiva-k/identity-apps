@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosResponse } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
@@ -36,8 +36,9 @@ import {
 /**
  * Initialize an axios Http client.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Retrieve the list of groups in the system.
@@ -46,7 +47,6 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  * @param excludedAttributes - Excluded Attributes.
  */
 export const getGroupList = (domain: string, excludedAttributes?: string): Promise<GroupListInterface | any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
@@ -86,30 +86,25 @@ export const useGroupList = <Data = GroupListInterface, Error = RequestErrorInte
     filter?: string,
     shouldFetch?: boolean
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        params: filter ? {
-            domain,
-            excludedAttributes,
-            filter
-        } : {
-            domain,
-            excludedAttributes
-        },
+        params: filter
+            ? {
+                  domain,
+                  excludedAttributes,
+                  filter
+              }
+            : {
+                  domain,
+                  excludedAttributes
+              },
         url: store.getState().config.endpoints.groups
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate,
-        response
-    } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
+    const { data, error, isValidating, mutate, response } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
 
     return {
         data,

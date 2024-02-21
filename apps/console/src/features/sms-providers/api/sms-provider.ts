@@ -25,12 +25,9 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { SMSProviderConstants } from "../constants";
-import {
-    SMSProviderAPIInterface,
-    SMSProviderAPIResponseInterface
-} from "../models";
+import { SMSProviderAPIInterface, SMSProviderAPIResponseInterface } from "../models";
 
 /**
  * Get an axios instance.
@@ -39,13 +36,13 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
     .httpRequest.bind(AsgardeoSPAClient.getInstance())
     .bind(AsgardeoSPAClient.getInstance());
 
-
-export const useSMSProviders = <Data = SMSProviderAPIResponseInterface[], Error = RequestErrorInterface> 
-    (): RequestResultInterface<Data, Error> => {
-
+export const useSMSProviders = <
+    Data = SMSProviderAPIResponseInterface[],
+    Error = RequestErrorInterface
+>(): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -63,14 +60,11 @@ export const useSMSProviders = <Data = SMSProviderAPIResponseInterface[], Error 
     };
 };
 
-export const createSMSProvider = (
-    smsProvider: SMSProviderAPIInterface
-): Promise<SMSProviderAPIResponseInterface> => {
-
+export const createSMSProvider = (smsProvider: SMSProviderAPIInterface): Promise<SMSProviderAPIResponseInterface> => {
     const requestConfig: AxiosRequestConfig = {
         data: smsProvider,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
@@ -81,35 +75,34 @@ export const createSMSProvider = (
         .then((response: AxiosResponse) => {
             if (response.status !== 200 && response.status !== 201) {
                 throw new IdentityAppsApiException(
-                    SMSProviderConstants.ErrorMessages.SMS_PROVIDER_CONFIG_FETCH_INVALID_STATUS_CODE_ERROR_CODE
-                        .getErrorMessage(),
+                    SMSProviderConstants.ErrorMessages.SMS_PROVIDER_CONFIG_FETCH_INVALID_STATUS_CODE_ERROR_CODE.getErrorMessage(),
                     null,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as SMSProviderAPIResponseInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 SMSProviderConstants.ErrorMessages.SMS_PROVIDER_CONFIG_UPDATE_ERROR_CODE.getErrorMessage(),
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
-export const updateSMSProvider = (
-    smsProvider: SMSProviderAPIInterface
-): Promise<SMSProviderAPIResponseInterface> => {
-
+export const updateSMSProvider = (smsProvider: SMSProviderAPIInterface): Promise<SMSProviderAPIResponseInterface> => {
     const requestConfig: AxiosRequestConfig = {
         data: smsProvider,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -120,31 +113,33 @@ export const updateSMSProvider = (
         .then((response: AxiosResponse) => {
             if (response.status !== 200 && response.status !== 201) {
                 throw new IdentityAppsApiException(
-                    SMSProviderConstants.ErrorMessages.SMS_PROVIDER_CONFIG_FETCH_INVALID_STATUS_CODE_ERROR_CODE
-                        .getErrorMessage(),
+                    SMSProviderConstants.ErrorMessages.SMS_PROVIDER_CONFIG_FETCH_INVALID_STATUS_CODE_ERROR_CODE.getErrorMessage(),
                     null,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as SMSProviderAPIResponseInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 SMSProviderConstants.ErrorMessages.SMS_PROVIDER_CONFIG_UPDATE_ERROR_CODE.getErrorMessage(),
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
 export const deleteSMSProviders = (): Promise<null | IdentityAppsApiException> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
@@ -155,24 +150,26 @@ export const deleteSMSProviders = (): Promise<null | IdentityAppsApiException> =
         .then((response: AxiosResponse) => {
             if (response.status !== 204) {
                 throw new IdentityAppsApiException(
-                    SMSProviderConstants.ErrorMessages.SMS_PROVIDER_CONFIG_FETCH_INVALID_STATUS_CODE_ERROR_CODE
-                        .getErrorMessage(),
+                    SMSProviderConstants.ErrorMessages.SMS_PROVIDER_CONFIG_FETCH_INVALID_STATUS_CODE_ERROR_CODE.getErrorMessage(),
                     null,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
-                error.response?.data?.message ?? SMSProviderConstants
-                    .ErrorMessages.SMS_PROVIDER_CONFIG_DELETE_ERROR_CODE.getErrorMessage(),
+                error.response?.data?.message ??
+                    SMSProviderConstants.ErrorMessages.SMS_PROVIDER_CONFIG_DELETE_ERROR_CODE.getErrorMessage(),
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

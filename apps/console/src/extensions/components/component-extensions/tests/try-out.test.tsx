@@ -33,21 +33,22 @@ describe("Test Suite - Try Out Extension Component.", () => {
 
     test.skip("Test proper rendering of Try Out Page", () => {
         render(
-            <Provider store={ store }>
-                { /*<TryOutComponent
+            <Provider store={store}>
+                {/*<TryOutComponent
                     application={MockApplication}
                     data-testid="try-out"
-                />*/ }
-            </Provider>);
+                />*/}
+            </Provider>
+        );
     });
 
     test.skip("Test download react sample button to be in the document", () => {
         render(
-            <Provider store={ store }>
-                { /*<TryOutComponent
+            <Provider store={store}>
+                {/*<TryOutComponent
                     application={MockApplication}
                     data-testid="try-out"
-                />*/ }
+                />*/}
             </Provider>
         );
         expect(screen.getByTestId("try-out-download-react-sample")).toBeInTheDocument();
@@ -55,11 +56,11 @@ describe("Test Suite - Try Out Extension Component.", () => {
 
     test.skip("Test download config button to be in the document", () => {
         render(
-            <Provider store={ store }>
-                { /* <TryOutComponent
+            <Provider store={store}>
+                {/* <TryOutComponent
                     application={MockApplication}
                     data-testid="try-out"
-                />*/ }
+                />*/}
             </Provider>
         );
         expect(screen.getByTestId("try-out-download-config")).toBeInTheDocument();
@@ -69,11 +70,11 @@ describe("Test Suite - Try Out Extension Component.", () => {
         const openSpy: any = jest.spyOn(window, "open");
 
         render(
-            <Provider store={ store }>
-                { /*<TryOutComponent
+            <Provider store={store}>
+                {/*<TryOutComponent
                     application={MockApplication}
                     data-testid="try-out"
-                />*/ }
+                />*/}
             </Provider>
         );
         fireEvent.click(screen.getByTestId("try-out-download-react-sample"));

@@ -20,14 +20,14 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { OrganizationType } from "@wso2is/common";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../../../features/core/store";
+import { store } from "@wso2is/features/core/store";
 import { getTenantResourceEndpoints } from "../configs";
 import { TenantRequestResponse } from "../models";
 
 export const getDomainQueryParam = (): string => {
     const tenantDomain: string = store.getState().auth.tenantDomain;
 
-    return `?domain=${ tenantDomain }`;
+    return `?domain=${tenantDomain}`;
 };
 
 const isPrivilegedUser = (): boolean => {
@@ -39,9 +39,9 @@ const isPrivilegedUser = (): boolean => {
 /**
  * Initialize an axios Http client.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
-
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Create new tenant.

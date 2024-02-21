@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { Certificate, HttpMethods } from "@wso2is/core/models";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Initialize an axios Http client.
@@ -48,21 +48,22 @@ export const listCertificateAliases = (filter?: string): Promise<any> => {
     };
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
 
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -88,13 +89,13 @@ export const retrieveCertificateAlias = (alias: string, encode?: boolean): Promi
         url: `${store.getState().config.endpoints.certificates}/${encodeURI(alias).replace(/#/g, "%23")}`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message,
                 error.stack,
@@ -122,18 +123,18 @@ export const retrievePublicCertificate = (encode?: boolean): Promise<any> => {
         },
         method: HttpMethods.GET,
         params: {
-            "encode-cert":encode
+            "encode-cert": encode
         },
         url: store.getState().config.endpoints.publicCertificates
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message,
                 error.stack,
@@ -166,13 +167,13 @@ export const listClientCertificates = (filter?: string): Promise<any> => {
         url: store.getState().config.endpoints.clientCertificates
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message,
                 error.stack,
@@ -201,18 +202,18 @@ export const retrieveClientCertificate = (alias: string, encode?: boolean): Prom
         },
         method: HttpMethods.GET,
         params: {
-            "encode-cert":encode
+            "encode-cert": encode
         },
         url: `${store.getState().config.endpoints.clientCertificates}/${alias}`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message,
                 error.stack,
@@ -242,13 +243,13 @@ export const deleteKeystoreCertificate = (alias: string): Promise<any> => {
         url: `${store.getState().config.endpoints.certificates}/${alias}`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 204) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message,
                 error.stack,
@@ -279,13 +280,13 @@ export const createKeystoreCertificate = (data: Certificate): Promise<any> => {
         url: store.getState().config.endpoints.certificates
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 201) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message,
                 error.stack,

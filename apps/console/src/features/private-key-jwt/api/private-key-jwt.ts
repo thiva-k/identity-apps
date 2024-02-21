@@ -24,7 +24,7 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../../features/core/hooks/use-request";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import { Config } from "../../core/configs";
 import { UpdateJWTAuthenticatorConfigInterface } from "../models/private-key-jwt-config";
 
@@ -32,20 +32,22 @@ import { UpdateJWTAuthenticatorConfigInterface } from "../models/private-key-jwt
  * Get an axios instance.
  *
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Call Get API to hook JWT Private-key Authentication configuration state
  *
  * @returns The response of the JWT Private-key Authentication configuration state.
  */
-export const useTokenReuseConfigData = <Data = any, Error = RequestErrorInterface>(
-): RequestResultInterface<Data, Error> => {
-
+export const useTokenReuseConfigData = <Data = any, Error = RequestErrorInterface>(): RequestResultInterface<
+    Data,
+    Error
+> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -69,15 +71,14 @@ export const useTokenReuseConfigData = <Data = any, Error = RequestErrorInterfac
 /**
  * Hook to update JWT Private-key Authentication config.
  *
- * @param data - UpdateJWTAuthenticatorConfigInterface /enableTokenReuse - TokenReuse is enabled/disabled. 
+ * @param data - UpdateJWTAuthenticatorConfigInterface /enableTokenReuse - TokenReuse is enabled/disabled.
  * @returns The response of the JWT Private-key Authentication configuration state.
  */
 export const updateJWTConfig = (data: UpdateJWTAuthenticatorConfigInterface): Promise<any> => {
-    
     const requestConfig: AxiosRequestConfig = {
-        data:[ data ],
+        data: [data],
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -85,9 +86,11 @@ export const updateJWTConfig = (data: UpdateJWTAuthenticatorConfigInterface): Pr
         url: Config.getServiceResourceEndpoints().jwtAuthenticationServiceMgt
     };
 
-    return httpClient(requestConfig).then((response : AxiosResponse) => {
-        return Promise.resolve(response);
-    }).catch((error : AxiosError) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
 };

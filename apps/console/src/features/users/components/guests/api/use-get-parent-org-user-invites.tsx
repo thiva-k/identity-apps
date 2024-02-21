@@ -18,17 +18,15 @@
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosRequestConfig } from "axios";
 import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../../../core/hooks/use-request";
-import { store } from "../../../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { InvitationsInterface } from "../models/invite";
 
 /**
  * Hook to get the parent org user invites list.
  */
-export const useGetParentOrgUserInvites = <Data = InvitationsInterface,
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean = true
-    ): RequestResultInterface<Data, Error> => {
-
+export const useGetParentOrgUserInvites = <Data = InvitationsInterface, Error = RequestErrorInterface>(
+    shouldFetch: boolean = true
+): RequestResultInterface<Data, Error> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
             "Content-Type": "application/json"

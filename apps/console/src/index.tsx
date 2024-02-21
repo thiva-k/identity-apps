@@ -28,7 +28,7 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { AsgardeoTheme } from "./branding/theme";
 import { AuthenticateUtils } from "./features/authentication";
-import { Config, PreLoader, store } from "./features/core";
+import { Config, PreLoader, store } from "@wso2is/features/core";
 import { UserPreferencesInterface } from "./features/core/models/user-preferences";
 import AppSettingsProvider from "./features/core/providers/app-settings-provider";
 import UserPreferencesProvider from "./features/core/providers/user-preferences-provider";
@@ -39,14 +39,15 @@ import { ProtectedApp } from "./protected-app";
 ContextUtils.setRuntimeConfig(Config.getDeploymentConfig());
 
 const getAuthParams = (): Promise<AuthParams> => {
-    if (!SPAUtils.hasAuthSearchParamsInURL()
-        && Config.getDeploymentConfig()?.idpConfigs?.responseMode === ResponseMode.formPost) {
-
-        const contextPath: string = window[ "AppUtils" ].getConfig().appBase
-            ? `/${ StringUtils.removeSlashesFromPath(window[ "AppUtils" ].getConfig().appBase) }`
+    if (
+        !SPAUtils.hasAuthSearchParamsInURL() &&
+        Config.getDeploymentConfig()?.idpConfigs?.responseMode === ResponseMode.formPost
+    ) {
+        const contextPath: string = window["AppUtils"].getConfig().appBase
+            ? `/${StringUtils.removeSlashesFromPath(window["AppUtils"].getConfig().appBase)}`
             : "";
 
-        return axios.get(contextPath + "/auth").then((response: AxiosResponse ) => {
+        return axios.get(contextPath + "/auth").then((response: AxiosResponse) => {
             return Promise.resolve({
                 authorizationCode: response?.data?.authCode,
                 sessionState: response?.data?.sessionState,
@@ -64,8 +65,7 @@ const getAuthParams = (): Promise<AuthParams> => {
  * @returns Root element with configs.
  */
 const RootWithConfig = (): ReactElement => {
-
-    const [ ready, setReady ] = React.useState(false);
+    const [ready, setReady] = React.useState(false);
 
     React.useEffect(() => {
         if (AuthenticateUtils.getInitializeConfig()?.baseUrl) {
@@ -75,7 +75,7 @@ const RootWithConfig = (): ReactElement => {
         }
 
         setReady(false);
-    }, [ AuthenticateUtils.getInitializeConfig()?.baseUrl ]);
+    }, [AuthenticateUtils.getInitializeConfig()?.baseUrl]);
 
     if (!ready) {
         return <PreLoader />;
@@ -83,14 +83,14 @@ const RootWithConfig = (): ReactElement => {
 
     return (
         <AppSettingsProvider>
-            <ThemeProvider theme={ AsgardeoTheme } defaultMode="light" modeStorageKey="console-oxygen-mode">
-                <Provider store={ store }>
+            <ThemeProvider theme={AsgardeoTheme} defaultMode="light" modeStorageKey="console-oxygen-mode">
+                <Provider store={store}>
                     <UserPreferencesProvider<UserPreferencesInterface>>
                         <BrowserRouter>
                             <AuthProvider
-                                config={ AuthenticateUtils.getInitializeConfig() }
-                                fallback={ <PreLoader /> }
-                                getAuthParams={ getAuthParams }
+                                config={AuthenticateUtils.getInitializeConfig()}
+                                fallback={<PreLoader />}
+                                getAuthParams={getAuthParams}
                             >
                                 <AppConfigProvider>
                                     <OrganizationsProvider>

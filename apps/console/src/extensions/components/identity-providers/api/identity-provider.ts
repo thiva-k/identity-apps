@@ -20,7 +20,7 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosResponse } from "axios";
-import { store } from "../../../../features/core";
+import { store } from "@wso2is/features/core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
@@ -29,20 +29,22 @@ import useRequest, {
 import { SMSOTPConstants } from "../constants";
 import { NotificationSenderSMSInterface } from "../models";
 
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest
-    .bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Hook to get all sms notification senders with name SMSPublisher.
  *
  * @returns  A promise containing the response.
  */
-export const useSMSNotificationSenders = <Data = NotificationSenderSMSInterface[], Error = RequestErrorInterface>():
-    RequestResultInterface<Data, Error> => {
-
+export const useSMSNotificationSenders = <
+    Data = NotificationSenderSMSInterface[],
+    Error = RequestErrorInterface
+>(): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -84,7 +86,7 @@ export const addSMSPublisher = (): Promise<NotificationSenderSMSInterface> => {
     const requestConfig: RequestConfigInterface = {
         data: smsProvider,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -101,18 +103,21 @@ export const addSMSPublisher = (): Promise<NotificationSenderSMSInterface> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as NotificationSenderSMSInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 SMSOTPConstants.ERROR_IN_CREATING_SMS_NOTIFICATION_SENDER,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -124,7 +129,7 @@ export const addSMSPublisher = (): Promise<NotificationSenderSMSInterface> => {
 export const deleteSMSPublisher = (): Promise<void> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -141,20 +146,28 @@ export const deleteSMSPublisher = (): Promise<void> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             let errorMessage: string = SMSOTPConstants.ERROR_IN_DELETING_SMS_NOTIFICATION_SENDER;
 
-            if (error.response?.data?.code ===
-                SMSOTPConstants.ErrorMessages.SMS_NOTIFICATION_SENDER_DELETION_ERROR_ACTIVE_SUBS.getErrorCode()) {
-                errorMessage = SMSOTPConstants.ErrorMessages.SMS_NOTIFICATION_SENDER_DELETION_ERROR_ACTIVE_SUBS
-                    .getErrorMessage();
+            if (
+                error.response?.data?.code ===
+                SMSOTPConstants.ErrorMessages.SMS_NOTIFICATION_SENDER_DELETION_ERROR_ACTIVE_SUBS.getErrorCode()
+            ) {
+                errorMessage = SMSOTPConstants.ErrorMessages.SMS_NOTIFICATION_SENDER_DELETION_ERROR_ACTIVE_SUBS.getErrorMessage();
             }
-            throw new IdentityAppsApiException(errorMessage, error.stack, error.response?.data?.code, error.request,
-                error.response, error.config);
-
+            throw new IdentityAppsApiException(
+                errorMessage,
+                error.stack,
+                error.response?.data?.code,
+                error.request,
+                error.response,
+                error.config
+            );
         });
 };

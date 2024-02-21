@@ -20,22 +20,22 @@ import { HttpMethods } from "@wso2is/core/models";
 import { AxiosRequestConfig } from "axios";
 import { ProvisioningConfigurationInterface } from "../../applications/models/application";
 import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Hook to get resident application outbound provisioning connectors.
  */
 export const useGetResidentApplicationOutboundProvisioningConnectors = <
-    Data = { provisioningConfigurations: ProvisioningConfigurationInterface }, Error = RequestErrorInterface
+    Data = { provisioningConfigurations: ProvisioningConfigurationInterface },
+    Error = RequestErrorInterface
 >(): RequestResultInterface<Data, Error> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.applications }/resident`
+        url: `${store.getState().config.endpoints.applications}/resident`
     };
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);

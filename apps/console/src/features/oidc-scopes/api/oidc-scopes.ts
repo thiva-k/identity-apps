@@ -21,7 +21,7 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosResponse } from "axios";
 import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { sortList } from "../../core/utils";
 import { OIDCScopesManagementConstants } from "../constants";
 import { OIDCScopesListInterface } from "../models";
@@ -41,7 +41,7 @@ const httpClient = AsgardeoSPAClient.getInstance().httpRequest.bind(AsgardeoSPAC
 export const getOIDCScopesList = <T = {}>(): Promise<T> => {
     const requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -58,18 +58,21 @@ export const getOIDCScopesList = <T = {}>(): Promise<T> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as T);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 OIDCScopesManagementConstants.OIDC_SCOPES_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -84,10 +87,9 @@ export const useOIDCScopesList = <Data = OIDCScopesListInterface, Error = Reques
     sortBy?: string,
     sortOrder?: "ASC" | "DESC"
 ): RequestResultInterface<Data[], Error> => {
-
     const requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -96,9 +98,7 @@ export const useOIDCScopesList = <Data = OIDCScopesListInterface, Error = Reques
 
     const { data: rawData, error, isValidating, mutate } = useRequest<Data[], Error>(requestConfig);
 
-    const moderatedData = (sortBy && sortOrder)
-        ? sortList(rawData, sortBy, sortOrder === "ASC")
-        : rawData;
+    const moderatedData = sortBy && sortOrder ? sortList(rawData, sortBy, sortOrder === "ASC") : rawData;
 
     return {
         data: moderatedData,
@@ -120,7 +120,7 @@ export const useOIDCScopesList = <Data = OIDCScopesListInterface, Error = Reques
 export const getOIDCScopeDetails = <T>(scope: string): Promise<T> => {
     const requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -137,18 +137,21 @@ export const getOIDCScopeDetails = <T>(scope: string): Promise<T> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as T);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 OIDCScopesManagementConstants.OIDC_SCOPE_DETAILS_FETCH_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -164,7 +167,7 @@ export const createOIDCScope = <T>(data: OIDCScopesListInterface): Promise<T> =>
     const requestConfig = {
         data,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -181,18 +184,21 @@ export const createOIDCScope = <T>(data: OIDCScopesListInterface): Promise<T> =>
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as T);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 OIDCScopesManagementConstants.OIDC_SCOPE_CREATE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -209,7 +215,7 @@ export const updateOIDCScopeDetails = <T>(scopeName: string, data: OIDCScopesLis
     const requestConfig = {
         data,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -226,18 +232,21 @@ export const updateOIDCScopeDetails = <T>(scopeName: string, data: OIDCScopesLis
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as T);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 OIDCScopesManagementConstants.OIDC_SCOPE_UPDATE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -252,7 +261,7 @@ export const updateOIDCScopeDetails = <T>(scopeName: string, data: OIDCScopesLis
 export const deleteOIDCScope = <T>(scope: string): Promise<T> => {
     const requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -269,17 +278,20 @@ export const deleteOIDCScope = <T>(scope: string): Promise<T> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as T);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 OIDCScopesManagementConstants.OIDC_SCOPE_DELETE_ERROR,
                 error.stack,
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

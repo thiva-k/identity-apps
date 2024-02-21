@@ -19,11 +19,11 @@ import { AlertLevels } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { I18n } from "@wso2is/i18n";
 import { AxiosError } from "axios";
-import { store } from "../../../core";
+import { store } from "@wso2is/features/core";
 
 const CANNOT_DELETE_IDP_DUE_TO_ASSOCIATIONS_ERROR_CODE: string = "IDP-65004";
 
-export const handleIDPDeleteError = (error: AxiosError): void  => {
+export const handleIDPDeleteError = (error: AxiosError): void => {
     if (
         error.response &&
         error.response.data &&
@@ -34,11 +34,13 @@ export const handleIDPDeleteError = (error: AxiosError): void  => {
             addAlert({
                 description: I18n.instance.t(
                     "console:develop.features.authenticationProvider.notifications.deleteIDPWithConnectedApps" +
-                    ".error.description"),
+                        ".error.description"
+                ),
                 level: AlertLevels.ERROR,
                 message: I18n.instance.t(
                     "console:develop.features.authenticationProvider.notifications.deleteIDPWithConnectedApps" +
-                    ".error.message")
+                        ".error.message"
+                )
             })
         );
 
@@ -250,7 +252,7 @@ export const handleUpdateOutboundProvisioningConnectorError = (error: AxiosError
                 level: AlertLevels.ERROR,
                 message: I18n.instance.t(
                     "console:develop.features.authenticationProvider.notifications." +
-                    "updateOutboundProvisioningConnector." +
+                        "updateOutboundProvisioningConnector." +
                         "error.message"
                 )
             })

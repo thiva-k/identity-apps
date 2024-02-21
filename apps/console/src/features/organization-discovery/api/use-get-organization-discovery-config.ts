@@ -22,7 +22,7 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationDiscoveryConfigConstants } from "../constants/organization-discovery-config-constants";
 import {
     OrganizationDiscoveryConfigInterface,
@@ -38,7 +38,9 @@ import {
 const useGetOrganizationDiscoveryConfig = <
     Data = OrganizationDiscoveryConfigInterface & { isOrganizationDiscoveryEnabled: boolean },
     Error = RequestErrorInterface
->(shouldFetch: boolean = true): RequestResultInterface<Data, Error> => {
+>(
+    shouldFetch: boolean = true
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
@@ -64,9 +66,10 @@ const useGetOrganizationDiscoveryConfig = <
         );
     }
 
-    if ((error?.response?.data as any)?.code
-        === OrganizationDiscoveryConfigConstants.ORGANIZATION_DISCOVERY_DOMAINS_NOT_CONFIGURED_ERROR_CODE) {
-
+    if (
+        (error?.response?.data as any)?.code ===
+        OrganizationDiscoveryConfigConstants.ORGANIZATION_DISCOVERY_DOMAINS_NOT_CONFIGURED_ERROR_CODE
+    ) {
         isOrganizationDiscoveryEnabled = false;
 
         return {

@@ -17,7 +17,7 @@
  */
 
 import { AcceptHeaderValues ,HttpMethods } from "@wso2is/core/models";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,

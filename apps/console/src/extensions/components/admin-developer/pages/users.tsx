@@ -36,9 +36,9 @@ import {
     UIConstants,
     UserBasicInterface,
     getAUserStore,
-    getEmptyPlaceholderIllustrations,
-    store
+    getEmptyPlaceholderIllustrations
 } from "../../../../features/core";
+import { store } from "@wso2is/features/core";
 import {
     RealmConfigInterface,
     ServerConfigurationsInterface,
@@ -58,7 +58,6 @@ import {
 import { UserStoreUtils } from "../../../utils/user-store-utils";
 import { CONSUMER_USERSTORE } from "../../users/constants";
 import { deleteUser } from "../api";
-
 
 interface UserStoreItem {
     key: number;
@@ -84,31 +83,29 @@ const TEMP_RESOURCE_LIST_ITEM_LIMIT_OFFSET: number = 1;
  * @returns Users page.
  */
 const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
-
-
     const { t } = useTranslation();
 
-    const dispatch:Dispatch = useDispatch();
+    const dispatch: Dispatch = useDispatch();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ usersList, setUsersList ] = useState<UserListInterface>({});
-    const [ rolesList ] = useState([]);
-    const [ isListUpdated, setListUpdated ] = useState(false);
-    const [ userListMetaContent, setUserListMetaContent ] = useState(undefined);
-    const [ userStoreOptions, setUserStoresList ] = useState([]);
-    const [ userStore ] = useState(undefined);
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ isUserListRequestLoading, setUserListRequestLoading ] = useState<boolean>(false);
-    const [ readOnlyUserStoresList, setReadOnlyUserStoresList ] = useState<string[]>(undefined);
-    const [ userStoreError, setUserStoreError ] = useState(false);
-    const [ emailVerificationEnabled, setEmailVerificationEnabled ] = useState<boolean>(undefined);
-    const [ isNextPageAvailable, setIsNextPageAvailable ] = useState<boolean>(undefined);
-    const [ realmConfigs, setRealmConfigs ] = useState<RealmConfigInterface>(undefined);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [usersList, setUsersList] = useState<UserListInterface>({});
+    const [rolesList] = useState([]);
+    const [isListUpdated, setListUpdated] = useState(false);
+    const [userListMetaContent, setUserListMetaContent] = useState(undefined);
+    const [userStoreOptions, setUserStoresList] = useState([]);
+    const [userStore] = useState(undefined);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [isUserListRequestLoading, setUserListRequestLoading] = useState<boolean>(false);
+    const [readOnlyUserStoresList, setReadOnlyUserStoresList] = useState<string[]>(undefined);
+    const [userStoreError, setUserStoreError] = useState(false);
+    const [emailVerificationEnabled, setEmailVerificationEnabled] = useState<boolean>(undefined);
+    const [isNextPageAvailable, setIsNextPageAvailable] = useState<boolean>(undefined);
+    const [realmConfigs, setRealmConfigs] = useState<RealmConfigInterface>(undefined);
 
     const init: MutableRefObject<boolean> = useRef(true);
 
@@ -126,9 +123,8 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
                 const data: UserListInterface = { ...response };
 
                 data.Resources = data?.Resources?.map((resource: UserBasicInterface) => {
-                    const userStore: string = resource.userName.split("/").length > 1
-                        ? resource.userName.split("/")[0]
-                        : "Primary";
+                    const userStore: string =
+                        resource.userName.split("/").length > 1 ? resource.userName.split("/")[0] : "Primary";
 
                     if (userStore !== CONSUMER_USERSTORE) {
                         let email: string = null;
@@ -143,11 +139,11 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
                             }
                         }
 
-                        resource.emails = [ email ];
+                        resource.emails = [email];
 
                         return resource;
                     } else {
-                        const resources: UserBasicInterface[] = [ ...data.Resources ];
+                        const resources: UserBasicInterface[] = [...data.Resources];
 
                         resources.splice(resources.indexOf(resource), 1);
                         data.Resources = resources;
@@ -156,25 +152,34 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
 
                 setUsersList(moderateUsersList(data, modifiedLimit, TEMP_RESOURCE_LIST_ITEM_LIMIT_OFFSET));
                 setUserStoreError(false);
-            }).catch((error: AxiosError) => {
+            })
+            .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? error?.response?.data?.detail
-                        ?? t("console:manage.features.users.notifications.fetchUsers.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message
-                        ?? t("console:manage.features.users.notifications.fetchUsers.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:manage.features.users.notifications.fetchUsers.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:manage.features.users.notifications.fetchUsers.error.message")
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:manage.features.users.notifications.fetchUsers.genericError." +
-                    "description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.users.notifications.fetchUsers.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.users.notifications.fetchUsers.genericError." + "description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.users.notifications.fetchUsers.genericError.message")
+                    })
+                );
 
                 setUserStoreError(true);
                 setUsersList({
@@ -198,13 +203,13 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
                 setShowWizard(true);
             }
         }
-    }, [ emailVerificationEnabled ]);
+    }, [emailVerificationEnabled]);
 
     useEffect(() => {
         UserStoreUtils.getReadOnlyUserStores().then((response: string[]) => {
             setReadOnlyUserStoresList(response);
         });
-    }, [ userStore ]);
+    }, [userStore]);
 
     useEffect(() => {
         if (CommonHelpers.lookupKey(tenantSettings, username) !== null) {
@@ -246,9 +251,11 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
      *
      * @returns User list.
      */
-    const moderateUsersList = (list: UserListInterface, requestedLimit: number,
-        popCount: number = 1): UserListInterface => {
-
+    const moderateUsersList = (
+        list: UserListInterface,
+        requestedLimit: number,
+        popCount: number = 1
+    ): UserListInterface => {
         const moderated: UserListInterface = list;
 
         if (moderated.itemsPerPage === requestedLimit) {
@@ -284,31 +291,30 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
             value: ""
         };
 
-        getUserStoreList()
-            .then((response: AxiosResponse<UserStoreListItem[]>) => {
-                if (storeOptions.length === 0) {
-                    storeOptions.push(storeOption);
-                }
-                response.data.map((store: UserStoreListItem, index: number) => {
-                    if (store.name !== CONSUMER_USERSTORE) {
-                        getAUserStore(store.id).then((response: UserStorePostData) => {
-                            const isDisabled: boolean = response.properties.find(
-                                (property: UserStoreProperty) => property.name === "Disabled")?.value === "true";
+        getUserStoreList().then((response: AxiosResponse<UserStoreListItem[]>) => {
+            if (storeOptions.length === 0) {
+                storeOptions.push(storeOption);
+            }
+            response.data.map((store: UserStoreListItem, index: number) => {
+                if (store.name !== CONSUMER_USERSTORE) {
+                    getAUserStore(store.id).then((response: UserStorePostData) => {
+                        const isDisabled: boolean =
+                            response.properties.find((property: UserStoreProperty) => property.name === "Disabled")
+                                ?.value === "true";
 
-                            if (!isDisabled) {
-                                storeOption = {
-                                    key: index,
-                                    text: store.name,
-                                    value: store.name
-                                };
-                                storeOptions.push(storeOption);
-                            }
-                        });
-                    }
+                        if (!isDisabled) {
+                            storeOption = {
+                                key: index,
+                                text: store.name,
+                                value: store.name
+                            };
+                            storeOptions.push(storeOption);
+                        }
+                    });
                 }
-                );
-                setUserStoresList(storeOptions);
             });
+            setUserStoresList(storeOptions);
+        });
 
         setUserStoresList(storeOptions);
     };
@@ -337,10 +343,9 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
      * Util method to get super admin
      */
     const getAdminUser = () => {
-        getServerConfigs()
-            .then((response: ServerConfigurationsInterface) => {
-                setRealmConfigs(response?.realmConfig);
-            });
+        getServerConfigs().then((response: ServerConfigurationsInterface) => {
+            setRealmConfigs(response?.realmConfig);
+        });
     };
 
     /**
@@ -355,7 +360,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
         const attributes: string = userListMetaContent ? generateAttributesString(userListMetaContent?.values()) : null;
 
         getList(listItemLimit, listOffset, null, attributes, userStore);
-    }, [ userStore ]);
+    }, [userStore]);
 
     useEffect(() => {
         if (userListMetaContent) {
@@ -363,7 +368,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
 
             getList(listItemLimit, listOffset, null, attributes, userStore);
         }
-    }, [ listOffset, listItemLimit ]);
+    }, [listOffset, listItemLimit]);
 
     useEffect(() => {
         if (!isListUpdated) {
@@ -373,7 +378,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
 
         getList(listItemLimit, listOffset, null, attributes, userStore);
         setListUpdated(false);
-    }, [ isListUpdated ]);
+    }, [isListUpdated]);
 
     /**
      * The following method set the user preferred columns to the local storage.
@@ -460,7 +465,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
     };
 
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setListOffset((data.activePage as number - 1) * listItemLimit);
+        setListOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     const handleItemsPerPageDropdownChange = (event: React.MouseEvent<HTMLAnchorElement>, data: DropdownProps) => {
@@ -468,186 +473,184 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (): ReactElement => {
     };
 
     const handleUserDelete = (userId: string): void => {
-        deleteUser(userId)
-            .then(() => {
-                handleAlerts({
-                    description: t(
-                        "console:manage.features.users.notifications.deleteUser.success.description"
-                    ),
-                    level: AlertLevels.SUCCESS,
-                    message: t(
-                        "console:manage.features.users.notifications.deleteUser.success.message"
-                    )
-                });
-                setListUpdated(true);
+        deleteUser(userId).then(() => {
+            handleAlerts({
+                description: t("console:manage.features.users.notifications.deleteUser.success.description"),
+                level: AlertLevels.SUCCESS,
+                message: t("console:manage.features.users.notifications.deleteUser.success.message")
             });
+            setListUpdated(true);
+        });
     };
 
     return (
         <ListLayout
             // TODO add sorting functionality.
-            advancedSearch={ (
+            advancedSearch={
                 <AdvancedSearchWithBasicFilters
-                    onFilter={ handleUserFilter }
-                    filterAttributeOptions={ [
+                    onFilter={handleUserFilter}
+                    filterAttributeOptions={[
                         {
                             key: 0,
-                            text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                "filterAttributeOptions.username"),
+                            text: t(
+                                "console:manage.features.users.advancedSearch.form.dropdown." +
+                                    "filterAttributeOptions.username"
+                            ),
                             value: "userName"
                         },
                         {
                             key: 1,
-                            text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                "filterAttributeOptions.email"),
+                            text: t(
+                                "console:manage.features.users.advancedSearch.form.dropdown." +
+                                    "filterAttributeOptions.email"
+                            ),
                             value: "emails"
                         }
-                    ] }
-                    filterAttributePlaceholder={
-                        t("console:manage.features.users.advancedSearch.form.inputs.filterAttribute.placeholder")
-                    }
-                    filterConditionsPlaceholder={
-                        t("console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
-                            ".placeholder")
-                    }
-                    filterValuePlaceholder={
-                        t("console:manage.features.users.advancedSearch.form.inputs.filterValue" +
-                            ".placeholder")
-                    }
-                    placeholder={ t("console:manage.features.users.advancedSearch.placeholder") }
+                    ]}
+                    filterAttributePlaceholder={t(
+                        "console:manage.features.users.advancedSearch.form.inputs.filterAttribute.placeholder"
+                    )}
+                    filterConditionsPlaceholder={t(
+                        "console:manage.features.users.advancedSearch.form.inputs.filterCondition" + ".placeholder"
+                    )}
+                    filterValuePlaceholder={t(
+                        "console:manage.features.users.advancedSearch.form.inputs.filterValue" + ".placeholder"
+                    )}
+                    placeholder={t("console:manage.features.users.advancedSearch.placeholder")}
                     defaultSearchAttribute="userName"
                     defaultSearchOperator="co"
-                    triggerClearQuery={ triggerClearQuery }
+                    triggerClearQuery={triggerClearQuery}
                 />
-            ) }
-            currentListSize={ usersList.itemsPerPage }
-            listItemLimit={ listItemLimit }
-            onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-            data-testid="user-mgt-user-list-layout"
-            onPageChange={ handlePaginationChange }
-            rightActionPanel={
-                (
-                    <>
-                        <Popup
-                            className={ "list-options-popup" }
-                            flowing
-                            basic
-                            content={
-                                (<UsersListOptionsComponent
-                                    data-testid="user-mgt-user-list-meta-columns"
-                                    handleMetaColumnChange={ handleMetaColumnChange }
-                                    userListMetaContent={ userListMetaContent }
-                                />)
-                            }
-                            position="bottom left"
-                            on="click"
-                            pinned
-                            trigger={
-                                (<Button
-                                    data-testid="user-mgt-user-list-meta-columns-button"
-                                    className="meta-columns-button"
-                                    basic
-                                >
-                                    <Icon name="columns"/>
-                                    { t("console:manage.features.users.buttons.metaColumnBtn") }
-                                </Button>)
-                            }
-                        />
-                        { /*<Dropdown*/ }
-                        { /*    data-testid="user-mgt-user-list-userstore-dropdown"*/ }
-                        { /*    selection*/ }
-                        { /*    options={ userStoreOptions && userStoreOptions }*/ }
-                        { /*    onChange={ handleDomainChange }*/ }
-                        { /*    defaultValue="all"*/ }
-                        { /*/>*/ }
-                    </>
-                )
             }
-            showPagination={ true }
-            showTopActionPanel={ isUserListRequestLoading
-            || !(!searchQuery
-                && !userStoreError
-                && userStoreOptions.length < 3
-                && usersList?.totalResults <= 0) }
-            totalPages={ Math.ceil(usersList.totalResults / listItemLimit) }
-            totalListSize={ usersList.totalResults }
-            paginationOptions={ {
+            currentListSize={usersList.itemsPerPage}
+            listItemLimit={listItemLimit}
+            onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+            data-testid="user-mgt-user-list-layout"
+            onPageChange={handlePaginationChange}
+            rightActionPanel={
+                <>
+                    <Popup
+                        className={"list-options-popup"}
+                        flowing
+                        basic
+                        content={
+                            <UsersListOptionsComponent
+                                data-testid="user-mgt-user-list-meta-columns"
+                                handleMetaColumnChange={handleMetaColumnChange}
+                                userListMetaContent={userListMetaContent}
+                            />
+                        }
+                        position="bottom left"
+                        on="click"
+                        pinned
+                        trigger={
+                            <Button
+                                data-testid="user-mgt-user-list-meta-columns-button"
+                                className="meta-columns-button"
+                                basic
+                            >
+                                <Icon name="columns" />
+                                {t("console:manage.features.users.buttons.metaColumnBtn")}
+                            </Button>
+                        }
+                    />
+                    {/*<Dropdown*/}
+                    {/*    data-testid="user-mgt-user-list-userstore-dropdown"*/}
+                    {/*    selection*/}
+                    {/*    options={ userStoreOptions && userStoreOptions }*/}
+                    {/*    onChange={ handleDomainChange }*/}
+                    {/*    defaultValue="all"*/}
+                    {/*/>*/}
+                </>
+            }
+            showPagination={true}
+            showTopActionPanel={
+                isUserListRequestLoading ||
+                !(!searchQuery && !userStoreError && userStoreOptions.length < 3 && usersList?.totalResults <= 0)
+            }
+            totalPages={Math.ceil(usersList.totalResults / listItemLimit)}
+            totalListSize={usersList.totalResults}
+            paginationOptions={{
                 disableNextButton: !isNextPageAvailable
-            } }
+            }}
         >
-            { userStoreError
-                ? (<EmptyPlaceholder
-                    subtitle={ [ t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
-                        t("console:manage.features.users.placeholders.userstoreError.subtitles.1") ] }
-                    title={ t("console:manage.features.users.placeholders.userstoreError.title") }
-                    image={ getEmptyPlaceholderIllustrations().genericError }
+            {userStoreError ? (
+                <EmptyPlaceholder
+                    subtitle={[
+                        t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
+                        t("console:manage.features.users.placeholders.userstoreError.subtitles.1")
+                    ]}
+                    title={t("console:manage.features.users.placeholders.userstoreError.title")}
+                    image={getEmptyPlaceholderIllustrations().genericError}
                     imageSize="tiny"
-                />)
-                : (<UsersList
-                    advancedSearch={ (
+                />
+            ) : (
+                <UsersList
+                    advancedSearch={
                         <AdvancedSearchWithBasicFilters
-                            onFilter={ handleUserFilter }
-                            filterAttributeOptions={ [
+                            onFilter={handleUserFilter}
+                            filterAttributeOptions={[
                                 {
                                     key: 0,
-                                    text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                        "filterAttributeOptions.username"),
+                                    text: t(
+                                        "console:manage.features.users.advancedSearch.form.dropdown." +
+                                            "filterAttributeOptions.username"
+                                    ),
                                     value: "userName"
                                 },
                                 {
                                     key: 1,
-                                    text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                                        "filterAttributeOptions.email"),
+                                    text: t(
+                                        "console:manage.features.users.advancedSearch.form.dropdown." +
+                                            "filterAttributeOptions.email"
+                                    ),
                                     value: "emails"
                                 }
-                            ] }
-                            filterAttributePlaceholder={
-                                t("console:manage.features.users.advancedSearch.form.inputs.filterAttribute" +
-                                    ".placeholder")
-                            }
-                            filterConditionsPlaceholder={
-                                t("console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
-                                    ".placeholder")
-                            }
-                            filterValuePlaceholder={
-                                t("console:manage.features.users.advancedSearch.form.inputs.filterValue" +
-                                    ".placeholder")
-                            }
-                            placeholder={ t("console:manage.features.users.advancedSearch.placeholder") }
+                            ]}
+                            filterAttributePlaceholder={t(
+                                "console:manage.features.users.advancedSearch.form.inputs.filterAttribute" +
+                                    ".placeholder"
+                            )}
+                            filterConditionsPlaceholder={t(
+                                "console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
+                                    ".placeholder"
+                            )}
+                            filterValuePlaceholder={t(
+                                "console:manage.features.users.advancedSearch.form.inputs.filterValue" + ".placeholder"
+                            )}
+                            placeholder={t("console:manage.features.users.advancedSearch.placeholder")}
                             defaultSearchAttribute="userName"
                             defaultSearchOperator="co"
-                            triggerClearQuery={ triggerClearQuery }
+                            triggerClearQuery={triggerClearQuery}
                         />
-                    ) }
-                    usersList={ usersList }
-                    handleUserDelete={ handleUserDelete }
-                    userMetaListContent={ userListMetaContent }
-                    isLoading={ isUserListRequestLoading }
-                    realmConfigs={ realmConfigs }
-                    onEmptyListPlaceholderActionClick={ () => setShowWizard(true) }
-                    onSearchQueryClear={ handleSearchQueryClear }
-                    searchQuery={ searchQuery }
+                    }
+                    usersList={usersList}
+                    handleUserDelete={handleUserDelete}
+                    userMetaListContent={userListMetaContent}
+                    isLoading={isUserListRequestLoading}
+                    realmConfigs={realmConfigs}
+                    onEmptyListPlaceholderActionClick={() => setShowWizard(true)}
+                    onSearchQueryClear={handleSearchQueryClear}
+                    searchQuery={searchQuery}
                     data-testid="user-mgt-user-list"
-                    readOnlyUserStores={ readOnlyUserStoresList }
-                    featureConfig={ featureConfig }
-                />)
-            }
-            {
-                showWizard && (
-                    <AddUserWizard
-                        data-testid="user-mgt-add-user-wizard-modal"
-                        closeWizard={ () => {
-                            setShowWizard(false);
-                            setEmailVerificationEnabled(undefined);
-                        } }
-                        listOffset={ listOffset }
-                        listItemLimit={ listItemLimit }
-                        updateList={ () => setListUpdated(true) }
-                        rolesList={ rolesList }
-                        emailVerificationEnabled={ emailVerificationEnabled }
-                    />
-                )
-            }
+                    readOnlyUserStores={readOnlyUserStoresList}
+                    featureConfig={featureConfig}
+                />
+            )}
+            {showWizard && (
+                <AddUserWizard
+                    data-testid="user-mgt-add-user-wizard-modal"
+                    closeWizard={() => {
+                        setShowWizard(false);
+                        setEmailVerificationEnabled(undefined);
+                    }}
+                    listOffset={listOffset}
+                    listItemLimit={listItemLimit}
+                    updateList={() => setListUpdated(true)}
+                    rolesList={rolesList}
+                    emailVerificationEnabled={emailVerificationEnabled}
+                />
+            )}
         </ListLayout>
     );
 };

@@ -18,7 +18,7 @@
 
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import { ApprovalStatus, ApprovalTaskDetails, ApprovalTaskListItemInterface, ApprovalTaskSummary } from "../models";
 
 /**
@@ -45,7 +45,7 @@ export const fetchPendingApprovals = (
 ): Promise<ApprovalTaskListItemInterface[]> => {
     let requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -71,11 +71,11 @@ export const fetchPendingApprovals = (
     }
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             return Promise.resolve(response.data as ApprovalTaskListItemInterface[]);
         })
-        .catch((error) => {
-            return Promise.reject(`Failed to retrieve the pending approvals - ${ error }`);
+        .catch(error => {
+            return Promise.reject(`Failed to retrieve the pending approvals - ${error}`);
         });
 };
 
@@ -88,7 +88,7 @@ export const fetchPendingApprovals = (
 export const fetchPendingApprovalDetails = (id: string): Promise<any> => {
     const requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -97,11 +97,11 @@ export const fetchPendingApprovalDetails = (id: string): Promise<any> => {
     };
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             return Promise.resolve(response.data as ApprovalTaskDetails);
         })
-        .catch((error) => {
-            return Promise.reject(`Failed to retrieve the pending approval details - ${ error }`);
+        .catch(error => {
+            return Promise.reject(`Failed to retrieve the pending approval details - ${error}`);
         });
 };
 
@@ -123,7 +123,7 @@ export const updatePendingApprovalStatus = (
             action: status
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -132,10 +132,10 @@ export const updatePendingApprovalStatus = (
     };
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             return Promise.resolve(response);
         })
-        .catch((error) => {
-            return Promise.reject(`Failed to update the pending approval status - ${ error }`);
+        .catch(error => {
+            return Promise.reject(`Failed to update the pending approval status - ${error}`);
         });
 };

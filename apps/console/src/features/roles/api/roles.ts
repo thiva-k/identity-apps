@@ -22,26 +22,22 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, RoleListInterface, RolesInterface } from "@wso2is/core/models";
 import { AxiosError, AxiosResponse } from "axios";
 import isLegacyAuthzRuntime from "../../authorization/utils/get-legacy-authz-runtime";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
 import { RoleAudienceTypes } from "../constants/role-constants";
-import {
-    CreateRoleInterface,
-    PatchRoleDataInterface,
-    RolesV2ResponseInterface,
-    SearchRoleInterface
-} from "../models";
+import { CreateRoleInterface, PatchRoleDataInterface, RolesV2ResponseInterface, SearchRoleInterface } from "../models";
 import { APIResourceInterface, APIResourceListInterface, AuthorizedAPIListItemInterface } from "../models/apiResources";
 
 /**
  * Initialize an axios Http client.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Get the application roles by audience.
@@ -60,11 +56,11 @@ export const getApplicationRolesByAudience = (
     after: string,
     limit: number,
     excludedAttributes?: string
-):Promise<RolesV2ResponseInterface> => {
-
-    const filter: string = audience === RoleAudienceTypes.APPLICATION
-        ? `audience.value eq ${ appId }`
-        : `audience.type eq ${ audience.toLowerCase() }`;
+): Promise<RolesV2ResponseInterface> => {
+    const filter: string =
+        audience === RoleAudienceTypes.APPLICATION
+            ? `audience.value eq ${appId}`
+            : `audience.type eq ${audience.toLowerCase()}`;
 
     const requestConfig: RequestConfigInterface = {
         method: HttpMethods.GET,
@@ -75,7 +71,7 @@ export const getApplicationRolesByAudience = (
             filter,
             limit
         },
-        url:  `${ store.getState().config.endpoints.rolesV2 }`
+        url: `${store.getState().config.endpoints.rolesV2}`
     };
 
     return httpClient(requestConfig)
@@ -104,9 +100,8 @@ export const getRoleByName = (
     before: string,
     after: string,
     limit: number
-):Promise<RolesV2ResponseInterface> => {
-
-    const filter: string = `audience.value eq ${ audienceId } and displayName eq ${ roleName }`;
+): Promise<RolesV2ResponseInterface> => {
+    const filter: string = `audience.value eq ${audienceId} and displayName eq ${roleName}`;
 
     const requestConfig: RequestConfigInterface = {
         method: HttpMethods.GET,
@@ -116,7 +111,7 @@ export const getRoleByName = (
             filter,
             limit
         },
-        url:  `${ store.getState().config.endpoints.rolesV2 }`
+        url: `${store.getState().config.endpoints.rolesV2}`
     };
 
     return httpClient(requestConfig)
@@ -141,14 +136,19 @@ export const getRoleById = (roleId: string): Promise<any> => {
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: (isLegacyAuthzRuntime() ?
-            store.getState().config.endpoints.roles : store.getState().config.endpoints.rolesV2) + "/" + roleId
+        url:
+            (isLegacyAuthzRuntime()
+                ? store.getState().config.endpoints.roles
+                : store.getState().config.endpoints.rolesV2) +
+            "/" +
+            roleId
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -170,13 +170,7 @@ export const useGetRoleById = <Data = RolesInterface, Error = RequestErrorInterf
         url: `${store.getState().config.endpoints.rolesV2}/${roleId}`
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate,
-        response
-    } = useRequest<Data, Error>(roleId ? requestConfig : null);
+    const { data, error, isValidating, mutate, response } = useRequest<Data, Error>(roleId ? requestConfig : null);
 
     return {
         data,
@@ -197,9 +191,11 @@ export const useGetRoleById = <Data = RolesInterface, Error = RequestErrorInterf
  */
 export const getAPIResourceDetailsBulk = (apiResourceIds: string[]): Promise<APIResourceInterface[]> => {
     // send the request for each ID and return the response.
-    return Promise.all(apiResourceIds.map((apiResourceId: string) => {
-        return getAPIResourceDetails(apiResourceId);
-    }));
+    return Promise.all(
+        apiResourceIds.map((apiResourceId: string) => {
+            return getAPIResourceDetails(apiResourceId);
+        })
+    );
 };
 
 /**
@@ -216,14 +212,19 @@ export const updateRoleDetails = (roleId: string, roleData: PatchRoleDataInterfa
             "Content-Type": "application/json"
         },
         method: HttpMethods.PATCH,
-        url: (isLegacyAuthzRuntime() ?
-            store.getState().config.endpoints.roles : store.getState().config.endpoints.rolesV2) + "/" + roleId
+        url:
+            (isLegacyAuthzRuntime()
+                ? store.getState().config.endpoints.roles
+                : store.getState().config.endpoints.rolesV2) +
+            "/" +
+            roleId
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -247,7 +248,8 @@ export const searchRoleList = (searchData: SearchRoleInterface): Promise<any> =>
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -272,7 +274,8 @@ export const deleteRoleById = (roleId: string): Promise<any> => {
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -297,7 +300,8 @@ export const createRole = (data: CreateRoleInterface): Promise<AxiosResponse> =>
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -322,7 +326,8 @@ export const updateRolePermissions = (roleId: string, data: unknown): Promise<an
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -345,7 +350,8 @@ export const getPermissionList = (): Promise<any> => {
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -368,7 +374,8 @@ export const getPermissionsForRole = (roleId: string): Promise<any> => {
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -383,7 +390,7 @@ export const getPermissionsForRole = (roleId: string): Promise<any> => {
 export const getAPIResourceDetails = (apiResourceId: string): Promise<APIResourceInterface> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -393,7 +400,8 @@ export const getAPIResourceDetails = (apiResourceId: string): Promise<APIResourc
     return httpClient(requestConfig)
         .then((response: AxiosResponse<APIResourceInterface>) => {
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -412,14 +420,19 @@ export const updateRole = (roleId: string, roleData: PatchRoleDataInterface): Pr
             "Content-Type": "application/json"
         },
         method: HttpMethods.PATCH,
-        url: (isLegacyAuthzRuntime() ?
-            store.getState().config.endpoints.roles : store.getState().config.endpoints.rolesV2) + "/" + roleId
+        url:
+            (isLegacyAuthzRuntime()
+                ? store.getState().config.endpoints.roles
+                : store.getState().config.endpoints.rolesV2) +
+            "/" +
+            roleId
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -433,9 +446,11 @@ export const updateRole = (roleId: string, roleData: PatchRoleDataInterface): Pr
  */
 export const updateRolesBulk = (roleIds: string[], roleData: PatchRoleDataInterface): Promise<any[]> => {
     // send the request for each ID and return the response.
-    return Promise.all(roleIds.map((roleId: string) => {
-        return updateRole(roleId, roleData);
-    }));
+    return Promise.all(
+        roleIds.map((roleId: string) => {
+            return updateRole(roleId, roleData);
+        })
+    );
 };
 
 /**
@@ -447,7 +462,6 @@ export const updateRolesBulk = (roleIds: string[], roleData: PatchRoleDataInterf
  * @throws `IdentityAppsApiException`
  */
 export const getRolesList = (domain: string): Promise<RoleListInterface | any> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             "Content-Type": "application/json"
@@ -456,8 +470,9 @@ export const getRolesList = (domain: string): Promise<RoleListInterface | any> =
         params: {
             domain
         },
-        url: isLegacyAuthzRuntime() ?
-            store.getState().config.endpoints.roles : store.getState().config.endpoints.rolesV2
+        url: isLegacyAuthzRuntime()
+            ? store.getState().config.endpoints.roles
+            : store.getState().config.endpoints.rolesV2
     };
 
     return httpClient(requestConfig)
@@ -469,7 +484,8 @@ export const getRolesList = (domain: string): Promise<RoleListInterface | any> =
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
@@ -481,7 +497,8 @@ export const getRolesList = (domain: string): Promise<RoleListInterface | any> =
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -501,7 +518,6 @@ export const useRolesList = <Data = RoleListInterface, Error = RequestErrorInter
     excludedAttributes?: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
@@ -517,13 +533,7 @@ export const useRolesList = <Data = RoleListInterface, Error = RequestErrorInter
         url: store.getState().config.endpoints.rolesV2
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate,
-        response
-    } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
+    const { data, error, isValidating, mutate, response } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
 
     return {
         data,
@@ -547,7 +557,6 @@ export const useAPIResourcesList = <Data = APIResourceListInterface, Error = Req
     filter?: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
@@ -560,13 +569,7 @@ export const useAPIResourcesList = <Data = APIResourceListInterface, Error = Req
         url: store.getState().config.endpoints.apiResources
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate,
-        response
-    } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
+    const { data, error, isValidating, mutate, response } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
 
     return {
         data,
@@ -589,10 +592,9 @@ export const useAPIResourceDetails = <Data = APIResourceInterface, Error = Reque
     apiResourceId: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -602,8 +604,9 @@ export const useAPIResourceDetails = <Data = APIResourceInterface, Error = Reque
     /**
      * Pass `null` if the `apiResourceId` is not available. This will prevent the request from being called.
      */
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>((apiResourceId && shouldFetch)
-        ? requestConfig : null);
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(
+        apiResourceId && shouldFetch ? requestConfig : null
+    );
 
     return {
         data,
@@ -627,7 +630,7 @@ export const useGetAuthorizedAPIList = <Data = AuthorizedAPIListItemInterface[],
 ): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.applications }/${ applicationId }/authorized-apis`
+        url: `${store.getState().config.endpoints.applications}/${applicationId}/authorized-apis`
     };
 
     /**
@@ -643,4 +646,3 @@ export const useGetAuthorizedAPIList = <Data = AuthorizedAPIListItemInterface[],
         mutate
     };
 };
-

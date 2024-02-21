@@ -19,14 +19,15 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationDiscoveryConfigInterface } from "../models/organization-discovery";
 
 /**
  * Get an axios instance.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Add organization discovery configurations
@@ -34,16 +35,14 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  * TODO: Use `IdentityAppsApiException` and avoid any.
  * @param properties - Data that needs to be updated.
  */
-export const addOrganizationDiscoveryConfig = (
-    properties: OrganizationDiscoveryConfigInterface
-): Promise<any> => {
+export const addOrganizationDiscoveryConfig = (properties: OrganizationDiscoveryConfigInterface): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         data: properties,
         headers: {
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: `${ store.getState().config.endpoints.organizations }/organization-configs/discovery`
+        url: `${store.getState().config.endpoints.organizations}/organization-configs/discovery`
     };
 
     return httpClient(requestConfig)
@@ -53,7 +52,8 @@ export const addOrganizationDiscoveryConfig = (
             }
 
             return Promise.resolve(response?.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error?.response?.data);
         });
 };

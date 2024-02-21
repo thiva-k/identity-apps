@@ -21,7 +21,7 @@ import { RoleConstants } from "@wso2is/core/constants";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods, RoleListInterface } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core";
+import { store } from "@wso2is/features/core";
 import { CreateRoleInterface, PatchRoleDataInterface, SearchRoleInterface } from "../models/roles";
 
 /**
@@ -49,7 +49,8 @@ export const getRoleById = (roleId: string): Promise<any> => {
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -74,7 +75,8 @@ export const updateRoleDetails = (roleId: string, roleData: PatchRoleDataInterfa
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -98,7 +100,8 @@ export const searchRoleList = (searchData: SearchRoleInterface): Promise<any> =>
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -122,7 +125,8 @@ export const deleteRoleById = (roleId: string): Promise<any> => {
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -146,7 +150,8 @@ export const createRole = (data: CreateRoleInterface): Promise<any> => {
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -171,7 +176,8 @@ export const updateRolePermissions = (roleId: string, data: unknown): Promise<an
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -194,7 +200,8 @@ export const getPermissionList = (): Promise<any> => {
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -217,7 +224,8 @@ export const getPermissionsForRole = (roleId: string): Promise<any> => {
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -242,7 +250,8 @@ export const updateRole = (roleId: string, roleData: PatchRoleDataInterface): Pr
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };
@@ -256,7 +265,6 @@ export const updateRole = (roleId: string, roleData: PatchRoleDataInterface): Pr
  * @throws Exception if any error occured while getting the roles list.
  */
 export const getRolesList = (domain: string): Promise<RoleListInterface | any> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
             "Content-Type": "application/json"
@@ -277,7 +285,8 @@ export const getRolesList = (domain: string): Promise<RoleListInterface | any> =
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
@@ -289,6 +298,7 @@ export const getRolesList = (domain: string): Promise<RoleListInterface | any> =
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

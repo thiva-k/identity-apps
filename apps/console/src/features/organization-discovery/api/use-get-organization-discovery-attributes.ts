@@ -22,7 +22,7 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationDiscoveryAttributeDataInterface } from "../models/organization-discovery";
 
 /**
@@ -34,20 +34,21 @@ import { OrganizationDiscoveryAttributeDataInterface } from "../models/organizat
  */
 const useGetOrganizationDiscoveryAttributes = <
     Data = OrganizationDiscoveryAttributeDataInterface,
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean = true,
-        id: string
-    ): RequestResultInterface<Data, Error> => {
+    Error = RequestErrorInterface
+>(
+    shouldFetch: boolean = true,
+    id: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.organizations }/organizations/${ id }/discovery`
+        url: `${store.getState().config.endpoints.organizations}/organizations/${id}/discovery`
     };
 
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch? requestConfig : null, {
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig : null, {
         shouldRetryOnError: false
     });
 

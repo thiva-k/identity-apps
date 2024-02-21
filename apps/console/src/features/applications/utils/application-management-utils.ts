@@ -24,7 +24,8 @@ import camelCase from "lodash-es/camelCase";
 import intersectionBy from "lodash-es/intersectionBy";
 import unionBy from "lodash-es/unionBy";
 import { FunctionComponent, SVGProps } from "react";
-import { DocPanelUICardInterface, store } from "../../core";
+import { DocPanelUICardInterface } from "../../core";
+import { store } from "@wso2is/features/core";
 import {
     getAvailableInboundProtocols,
     getOIDCApplicationConfigurations,
@@ -58,12 +59,11 @@ import {
  * Utility class for application(service provider) operations.
  */
 export class ApplicationManagementUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      */
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Gets the list of available inbound protocols list and sets them in the redux store.
@@ -73,37 +73,47 @@ export class ApplicationManagementUtils {
      */
     public static getInboundProtocols(meta: AuthProtocolMetaListItemInterface[], customOnly = false): Promise<void> {
         return getAvailableInboundProtocols(customOnly)
-            .then((response) => {
+            .then(response => {
                 // Filter meta based on the available protocols.
                 const filteredMeta = intersectionBy(meta, response, "name");
 
                 store.dispatch(
-                    setAvailableInboundAuthProtocolMeta(unionBy<AuthProtocolMetaListItemInterface>(filteredMeta,
-                        response, "name"))
+                    setAvailableInboundAuthProtocolMeta(
+                        unionBy<AuthProtocolMetaListItemInterface>(filteredMeta, response, "name")
+                    )
                 );
             })
-            .catch((error) => {
+            .catch(error => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    store.dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: I18n.instance.t("console:develop.features.applications.notifications" +
-                            ".fetchInboundProtocols.error.message")
-                    }));
+                    store.dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: I18n.instance.t(
+                                "console:develop.features.applications.notifications" +
+                                    ".fetchInboundProtocols.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                store.dispatch(addAlert({
-                    description: I18n.instance.t("console:develop.features.applications.notifications" +
-                        ".fetchInboundProtocols.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: I18n.instance.t("console:develop.features.applications.notifications" +
-                        ".fetchInboundProtocols.genericError.message")
-                }));
+                store.dispatch(
+                    addAlert({
+                        description: I18n.instance.t(
+                            "console:develop.features.applications.notifications" +
+                                ".fetchInboundProtocols.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: I18n.instance.t(
+                            "console:develop.features.applications.notifications" +
+                                ".fetchInboundProtocols.genericError.message"
+                        )
+                    })
+                );
             });
     }
-
 
     /**
      * Gets the list of available custom inbound protocols list and sets them in the redux store.
@@ -112,40 +122,50 @@ export class ApplicationManagementUtils {
      * @param customOnly - Whether to fetch just the custom protocols.
      */
     public static getCustomInboundProtocols(
-        meta: AuthProtocolMetaListItemInterface[], customOnly = true): Promise<void> {
+        meta: AuthProtocolMetaListItemInterface[],
+        customOnly = true
+    ): Promise<void> {
         return getAvailableInboundProtocols(customOnly)
-            .then((response) => {
+            .then(response => {
                 // Filter meta based on the available protocols.
                 const filteredMeta = intersectionBy(meta, response, "name");
 
                 store.dispatch(
-                    setAvailableCustomInboundAuthProtocolMeta(unionBy<AuthProtocolMetaListItemInterface>(
-                        filteredMeta,
-                        response,
-                        "name")
+                    setAvailableCustomInboundAuthProtocolMeta(
+                        unionBy<AuthProtocolMetaListItemInterface>(filteredMeta, response, "name")
                     )
                 );
                 store.dispatch(checkAvailableCustomInboundAuthProtocolMeta(true));
             })
-            .catch((error) => {
+            .catch(error => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    store.dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: I18n.instance.t("console:develop.features.applications.notifications" +
-                            ".fetchCustomInboundProtocols.error.message")
-                    }));
+                    store.dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: I18n.instance.t(
+                                "console:develop.features.applications.notifications" +
+                                    ".fetchCustomInboundProtocols.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                store.dispatch(addAlert({
-                    description: I18n.instance.t("console:develop.features.applications.notifications" +
-                        ".fetchCustomInboundProtocols.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: I18n.instance.t("console:develop.features.applications.notifications" +
-                        ".fetchCustomInboundProtocols.genericError.message")
-                }));
+                store.dispatch(
+                    addAlert({
+                        description: I18n.instance.t(
+                            "console:develop.features.applications.notifications" +
+                                ".fetchCustomInboundProtocols.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: I18n.instance.t(
+                            "console:develop.features.applications.notifications" +
+                                ".fetchCustomInboundProtocols.genericError.message"
+                        )
+                    })
+                );
             });
     }
 
@@ -156,11 +176,11 @@ export class ApplicationManagementUtils {
      * @param illustrationObject - Collection of images.
      * @returns The icon from the given object.
      */
-    public static findIcon(imageName: string,
+    public static findIcon(
+        imageName: string,
         illustrationObject: Record<string, FunctionComponent<SVGProps<SVGSVGElement>> | string>
     ): FunctionComponent<SVGProps<SVGSVGElement>> | string {
-
-        const key: string = Object.keys(illustrationObject).find((key) => key === imageName);
+        const key: string = Object.keys(illustrationObject).find(key => key === imageName);
 
         if (key) {
             return illustrationObject[key];
@@ -174,28 +194,38 @@ export class ApplicationManagementUtils {
      */
     public static getOIDCApplicationMeta = (): Promise<void> => {
         return getOIDCApplicationConfigurations()
-            .then((response) => {
+            .then(response => {
                 store.dispatch(setOIDCApplicationConfigs(response));
             })
-            .catch((error) => {
+            .catch(error => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    store.dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: I18n.instance.t("console:develop.features.applications.notifications." +
-                            "fetchOIDCIDPConfigs.error.message")
-                    }));
+                    store.dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: I18n.instance.t(
+                                "console:develop.features.applications.notifications." +
+                                    "fetchOIDCIDPConfigs.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                store.dispatch(addAlert({
-                    description: I18n.instance.t("console:develop.features.applications.notifications." +
-                        "fetchOIDCIDPConfigs.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: I18n.instance.t("console:develop.features.applications.notifications." +
-                        "fetchOIDCIDPConfigs.genericError.message")
-                }));
+                store.dispatch(
+                    addAlert({
+                        description: I18n.instance.t(
+                            "console:develop.features.applications.notifications." +
+                                "fetchOIDCIDPConfigs.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: I18n.instance.t(
+                            "console:develop.features.applications.notifications." +
+                                "fetchOIDCIDPConfigs.genericError.message"
+                        )
+                    })
+                );
             });
     };
 
@@ -204,28 +234,38 @@ export class ApplicationManagementUtils {
      */
     public static getSAMLApplicationMeta = (): Promise<void> => {
         return getSAMLApplicationConfigurations()
-            .then((response) => {
+            .then(response => {
                 store.dispatch(setSAMLApplicationConfigs(response));
             })
-            .catch((error) => {
+            .catch(error => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    store.dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: I18n.instance.t("console:develop.features.applications.notifications." +
-                            "fetchSAMLIDPConfigs.error.message")
-                    }));
+                    store.dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: I18n.instance.t(
+                                "console:develop.features.applications.notifications." +
+                                    "fetchSAMLIDPConfigs.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                store.dispatch(addAlert({
-                    description: I18n.instance.t("console:develop.features.applications.notifications." +
-                        "fetchSAMLIDPConfigs.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: I18n.instance.t("console:develop.features.applications.notifications." +
-                        "fetchSAMLIDPConfigs.genericError.message")
-                }));
+                store.dispatch(
+                    addAlert({
+                        description: I18n.instance.t(
+                            "console:develop.features.applications.notifications." +
+                                "fetchSAMLIDPConfigs.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: I18n.instance.t(
+                            "console:develop.features.applications.notifications." +
+                                "fetchSAMLIDPConfigs.genericError.message"
+                        )
+                    })
+                );
             });
     };
 
@@ -236,13 +276,12 @@ export class ApplicationManagementUtils {
         const samlConfigs: SAMLApplicationConfigurationInterface = emptySAMLAppConfiguration();
         let doc;
 
-        if(window.ActiveXObject) {
+        if (window.ActiveXObject) {
             // For IE6, IE5
             doc = new ActiveXObject("Microsoft.XMLDOM");
             doc.async = "false";
             doc.loadXML(strXML);
-        }
-        else {
+        } else {
             // For Firefox, Chrome etc
             const parser = new DOMParser();
 
@@ -263,8 +302,10 @@ export class ApplicationManagementUtils {
 
         for (let i: number = 0; i < childNodeArray.length; i++) {
             if (childNodeArray[i]?.nodeName === "SingleSignOnService") {
-                if (childNodeArray[i]?.attributes?.Binding?.nodeValue ===
-                        "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST") {
+                if (
+                    childNodeArray[i]?.attributes?.Binding?.nodeValue ===
+                    "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                ) {
                     destinationURLs.push(childNodeArray[i]?.attributes?.Location?.nodeValue);
                 }
             }
@@ -283,14 +324,13 @@ export class ApplicationManagementUtils {
      * @returns Generated application samples.
      */
     public static generateSamplesAndSDKDocs = (raw: Record<string, unknown>): DocPanelUICardInterface[] => {
-
         if (typeof raw !== "object") {
             return [];
         }
 
         const samples: DocPanelUICardInterface[] = [];
 
-        for (const [ key, value ] of Object.entries(raw)) {
+        for (const [key, value] of Object.entries(raw)) {
             samples.push({
                 displayName: key,
                 docs: value.toString(),
@@ -308,8 +348,8 @@ export class ApplicationManagementUtils {
      * @param template - Template id.
      * @returns The docs key of the SDK.
      */
-    public static getSDKDocsKey = (template: string): string => `${
-        ApplicationManagementConstants.APPLICATION_DOCS_KEY }["${ template }"].SDKs`;
+    public static getSDKDocsKey = (template: string): string =>
+        `${ApplicationManagementConstants.APPLICATION_DOCS_KEY}["${template}"].SDKs`;
 
     /**
      * Get the docs key for the Samples.
@@ -317,8 +357,8 @@ export class ApplicationManagementUtils {
      * @param template - Template id.
      * @returns The docs key of the Samples.
      */
-    public static getSampleDocsKey = (template: string): string => `${
-        ApplicationManagementConstants.APPLICATION_DOCS_KEY }["${ template }"].Samples`;
+    public static getSampleDocsKey = (template: string): string =>
+        `${ApplicationManagementConstants.APPLICATION_DOCS_KEY}["${template}"].Samples`;
 
     /**
      * Get the docs key for the Configurations.
@@ -326,8 +366,8 @@ export class ApplicationManagementUtils {
      * @param template - Template id.
      * @returns The docs key of Configuration.
      */
-    public static getConfigDocsKey = (template: string): string => `${
-        ApplicationManagementConstants.APPLICATION_DOCS_KEY }["${ template }"].Configurations`;
+    public static getConfigDocsKey = (template: string): string =>
+        `${ApplicationManagementConstants.APPLICATION_DOCS_KEY}["${template}"].Configurations`;
 
     /**
      * Separate out multiple origins in the passed string.
@@ -336,7 +376,6 @@ export class ApplicationManagementUtils {
      * @returns Resolved allowed origins.
      */
     public static resolveAllowedOrigins = (origins: string): string[] => {
-
         if (!origins) {
             return [];
         }
@@ -345,7 +384,7 @@ export class ApplicationManagementUtils {
             return origins.split(",");
         }
 
-        return origins && (origins !== "") ? [ origins ] : [];
+        return origins && origins !== "" ? [origins] : [];
     };
 
     /**
@@ -355,7 +394,6 @@ export class ApplicationManagementUtils {
      * @returns Prepared callback URL.
      */
     public static buildCallBackUrlWithRegExp = (urls: string): string => {
-
         let callbackURL = urls.replace(/['"]+/g, "");
 
         if (callbackURL.split(",").length > 1) {
@@ -372,7 +410,6 @@ export class ApplicationManagementUtils {
      * @returns Prepared callback URL.
      */
     public static buildCallBackURLWithSeparator = (url: string): string => {
-
         const regex: RegExp = /regexp=\((.*)\)/;
         const matches: RegExpMatchArray = url.match(regex);
 
@@ -392,8 +429,8 @@ export class ApplicationManagementUtils {
      * @returns Display name of auth protocol.
      */
     public static resolveProtocolDisplayName(
-        protocol: SupportedAuthProtocolTypes | SupportedCustomAuthProtocolTypes): string {
-
+        protocol: SupportedAuthProtocolTypes | SupportedCustomAuthProtocolTypes
+    ): string {
         return SupportedAuthProtocolTypeDisplayNames[protocol];
     }
 
@@ -404,7 +441,6 @@ export class ApplicationManagementUtils {
      * @returns The descriptions of auth protocols.
      */
     public static resolveProtocolDescription(protocol: SupportedAuthProtocolTypes): string {
-
         return SupportedAuthProtocolTypeDescriptions[protocol];
     }
 
@@ -415,7 +451,6 @@ export class ApplicationManagementUtils {
      * @returns Display name of SAML configuration mode.
      */
     public static resolveSAMLConfigModeDisplayName(mode: SAMLConfigModes): string {
-
         return SAMLConfigurationDisplayNames[mode];
     }
 
@@ -448,12 +483,14 @@ export class ApplicationManagementUtils {
 
         const choreoSpProperty: additionalSpProperty = additionalSpProperties?.find(
             (spProperty: additionalSpProperty) =>
-                spProperty.name === ApplicationManagementConstants.IS_CHOREO_APP_SP_PROPERTY
-                && spProperty.value === "true"
+                spProperty.name === ApplicationManagementConstants.IS_CHOREO_APP_SP_PROPERTY &&
+                spProperty.value === "true"
         );
 
         // Check whether the application is a choreo app using choreo app template ID or `isChoreoApp` SP property.
-        return application?.templateId === ApplicationManagementConstants.CHOREO_APP_TEMPLATE_ID
-            || choreoSpProperty?.name === ApplicationManagementConstants.IS_CHOREO_APP_SP_PROPERTY;
+        return (
+            application?.templateId === ApplicationManagementConstants.CHOREO_APP_TEMPLATE_ID ||
+            choreoSpProperty?.name === ApplicationManagementConstants.IS_CHOREO_APP_SP_PROPERTY
+        );
     }
 }

@@ -19,7 +19,7 @@
 import { AxiosRequestConfig } from "axios";
 import { HttpMethods } from "modules/core/src/models";
 import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { ApplicationInterface } from "../models/application";
 
 /**

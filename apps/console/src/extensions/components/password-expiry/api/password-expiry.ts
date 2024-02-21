@@ -20,7 +20,7 @@ import { AsgardeoSPAClient, HttpRequestConfig } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../../../features/core";
+import { store } from "@wso2is/features/core";
 import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
@@ -36,9 +36,7 @@ import {
  */
 const httpClient: (
     config: HttpRequestConfig
-) => Promise<AxiosResponse> = AsgardeoSPAClient.getInstance().httpRequest.bind(
-    AsgardeoSPAClient.getInstance()
-);
+) => Promise<AxiosResponse> = AsgardeoSPAClient.getInstance().httpRequest.bind(AsgardeoSPAClient.getInstance());
 
 export const useGetPasswordExpiryProperties = <
     Data = GovernanceConnectorInterface,
@@ -53,9 +51,7 @@ export const useGetPasswordExpiryProperties = <
         url: store.getState()?.config?.endpoints?.passwordExpiry
     };
 
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>(
-        requestConfig
-    );
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
 
     return {
         data,
@@ -66,9 +62,7 @@ export const useGetPasswordExpiryProperties = <
     };
 };
 
-export const updatePasswordExpiryProperties = (
-    data: UpdateGovernanceConnectorConfigInterface
-): Promise<any> => {
+export const updatePasswordExpiryProperties = (data: UpdateGovernanceConnectorConfigInterface): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         data,
         headers: {

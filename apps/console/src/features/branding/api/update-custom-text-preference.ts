@@ -21,7 +21,7 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { I18nConstants } from "../../core/constants/i18n-constants";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationType } from "../../organizations/constants/organization-constants";
 import { CustomTextPreferenceConstants } from "../constants/custom-text-preference-constants";
 import { BrandingPreferenceTypes } from "../models/branding-preferences";
@@ -56,9 +56,10 @@ const updateCustomTextPreference = (
     locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE,
     type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG
 ): Promise<CustomTextPreferenceAPIResponseInterface> => {
-    const tenantDomain: string = store.getState().organization.organizationType === OrganizationType.SUBORGANIZATION
-        ? store.getState()?.organization?.organization?.id
-        : name;
+    const tenantDomain: string =
+        store.getState().organization.organizationType === OrganizationType.SUBORGANIZATION
+            ? store.getState()?.organization?.organization?.id
+            : name;
 
     const requestConfig: AxiosRequestConfig = {
         data: {
@@ -69,7 +70,7 @@ const updateCustomTextPreference = (
             type
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: isAlreadyConfigured ? HttpMethods.PUT : HttpMethods.POST,
@@ -80,26 +81,26 @@ const updateCustomTextPreference = (
         .then((response: AxiosResponse) => {
             if (response.status !== 200 && response.status !== 201) {
                 throw new IdentityAppsApiException(
-                    CustomTextPreferenceConstants
-                        .ErrorMessages
-                        .CUSTOM_TEXT_PREFERENCE_UPDATE_INVALID_STATUS_CODE_ERROR
-                        .getErrorMessage(),
+                    CustomTextPreferenceConstants.ErrorMessages.CUSTOM_TEXT_PREFERENCE_UPDATE_INVALID_STATUS_CODE_ERROR.getErrorMessage(),
                     null,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as CustomTextPreferenceAPIResponseInterface);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 CustomTextPreferenceConstants.ErrorMessages.CUSTOM_TEXT_PREFERENCE_UPDATE_ERROR.getErrorMessage(),
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 

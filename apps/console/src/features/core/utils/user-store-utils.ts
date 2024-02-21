@@ -26,20 +26,19 @@ import { ValidationFormInterface } from "../../validation/models";
 import { getAUserStore, getPrimaryUserStore } from "../api";
 import { SharedUserStoreConstants } from "../constants";
 import { UserStoreDetails } from "../models";
-import { store } from "../store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Utility class for common user store operations.
  */
 export class SharedUserStoreUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * The following method get the username regEx for the selected user store.
@@ -50,19 +49,17 @@ export class SharedUserStoreUtils {
     public static async getUserStoreRegEx(userstore: string, regExName: string): Promise<string> {
         let usernameRegEx: UserStoreProperty = null;
 
-        return getUserStoreList()
-            .then((response: any) => {
-                const store: any = response?.data?.find((item: any) => item.name === userstore);
+        return getUserStoreList().then((response: any) => {
+            const store: any = response?.data?.find((item: any) => item.name === userstore);
 
-                if (!isEmpty(store)) {
-                    return getAUserStore(store.id)
-                        .then((resp: any) => {
-                            usernameRegEx = resp.properties.find((property: any) => property.name === regExName);
+            if (!isEmpty(store)) {
+                return getAUserStore(store.id).then((resp: any) => {
+                    usernameRegEx = resp.properties.find((property: any) => property.name === regExName);
 
-                            return usernameRegEx?.value;
-                        });
-                }
-            });
+                    return usernameRegEx?.value;
+                });
+            }
+        });
     }
 
     /**
@@ -88,70 +85,85 @@ export class SharedUserStoreUtils {
      * @param specialChrPattern - regex for special characters.
      * @param consecutiveChrPattern - regex for consecutive characters.
      */
-    public static validatePasswordAgainstRules(inputValue: string, passwordConfig: ValidationFormInterface,
-        upperCasePattern: string, lowerCasePattern: string, numberPattern: string, specialChrPattern: string,
+    public static validatePasswordAgainstRules(
+        inputValue: string,
+        passwordConfig: ValidationFormInterface,
+        upperCasePattern: string,
+        lowerCasePattern: string,
+        numberPattern: string,
+        specialChrPattern: string,
         consecutiveChrPattern: string
     ): boolean {
-
         if (passwordConfig === undefined || passwordConfig === null) {
             return true;
         }
         // Length check.
-        if (inputValue.length < Number(passwordConfig.minLength) ||
-            inputValue.length > Number(passwordConfig.maxLength)) {
+        if (
+            inputValue.length < Number(passwordConfig.minLength) ||
+            inputValue.length > Number(passwordConfig.maxLength)
+        ) {
             return false;
         }
 
         // Upper case check.
         if (Number(passwordConfig.minUpperCaseCharacters) > 0) {
-            if (!inputValue.match(upperCasePattern) ||
-                inputValue.match(upperCasePattern).length < Number(passwordConfig.minUpperCaseCharacters)) {
+            if (
+                !inputValue.match(upperCasePattern) ||
+                inputValue.match(upperCasePattern).length < Number(passwordConfig.minUpperCaseCharacters)
+            ) {
                 return false;
             }
         }
 
         // Lower case check.
         if (Number(passwordConfig.minLowerCaseCharacters) > 0) {
-            if (!inputValue.match(lowerCasePattern) ||
-                inputValue.match(lowerCasePattern).length < Number(passwordConfig.minLowerCaseCharacters)) {
+            if (
+                !inputValue.match(lowerCasePattern) ||
+                inputValue.match(lowerCasePattern).length < Number(passwordConfig.minLowerCaseCharacters)
+            ) {
                 return false;
             }
         }
 
         // Numeric check.
         if (Number(passwordConfig.minNumbers) > 0) {
-            if (!inputValue.match(numberPattern) ||
-                inputValue.match(numberPattern).length < Number(passwordConfig.minNumbers)) {
+            if (
+                !inputValue.match(numberPattern) ||
+                inputValue.match(numberPattern).length < Number(passwordConfig.minNumbers)
+            ) {
                 return false;
             }
         }
 
         // Special character check.
         if (Number(passwordConfig.minSpecialCharacters) > 0) {
-            if (!inputValue.match(specialChrPattern) ||
-                inputValue.match(specialChrPattern).length < Number(passwordConfig.minSpecialCharacters)) {
+            if (
+                !inputValue.match(specialChrPattern) ||
+                inputValue.match(specialChrPattern).length < Number(passwordConfig.minSpecialCharacters)
+            ) {
                 return false;
             }
         }
 
         // Unique character check.
         if (passwordConfig.uniqueCharacterValidatorEnabled) {
-            const unique : string[] = inputValue.split("");
-            const set : Set<string> = new Set(unique);
+            const unique: string[] = inputValue.split("");
+            const set: Set<string> = new Set(unique);
 
-            if (!(Number(passwordConfig.minUniqueCharacters) > 0 &&
-                set.size > Number(passwordConfig.minUniqueCharacters))) {
+            if (
+                !(
+                    Number(passwordConfig.minUniqueCharacters) > 0 &&
+                    set.size > Number(passwordConfig.minUniqueCharacters)
+                )
+            ) {
                 return false;
             }
         }
         // Repetitive character check.
-        if(passwordConfig.consecutiveCharacterValidatorEnabled &&
-            inputValue.match(consecutiveChrPattern)) {
-            const long: string = inputValue.match(consecutiveChrPattern).sort(
-                function(a: string, b: string) {
-                    return b.length - a.length;
-                }
-            ) [0];
+        if (passwordConfig.consecutiveCharacterValidatorEnabled && inputValue.match(consecutiveChrPattern)) {
+            const long: string = inputValue.match(consecutiveChrPattern).sort(function(a: string, b: string) {
+                return b.length - a.length;
+            })[0];
 
             if (long.length > Number(passwordConfig.maxConsecutiveCharacters)) {
                 return false;
@@ -168,7 +180,6 @@ export class SharedUserStoreUtils {
      * @returns userstores list
      */
     public static async getUserStoreIds(userstores?: UserStoreListItem[]): Promise<string[] | void> {
-
         const getIds = (_userstores: UserStoreListItem[]): string[] => {
             const userStoreIds: string[] = [];
 
@@ -197,17 +208,25 @@ export class SharedUserStoreUtils {
      * The following method will fetch the primary user store details.
      */
     public static async getPrimaryUserStore(): Promise<void | UserStoreDetails> {
-        return getPrimaryUserStore().then((response: any) => {
-            return response;
-        }).catch(() => {
-            store.dispatch(addAlert({
-                description: I18n.instance.t("console:develop.features.userstores.notifications.fetchUserstores." +
-                    "genericError.description"),
-                level: AlertLevels.INFO,
-                message: I18n.instance.t("console:develop.features.userstores.notifications.fetchUserstores." +
-                    "genericError.message")
-            }));
-        });
+        return getPrimaryUserStore()
+            .then((response: any) => {
+                return response;
+            })
+            .catch(() => {
+                store.dispatch(
+                    addAlert({
+                        description: I18n.instance.t(
+                            "console:develop.features.userstores.notifications.fetchUserstores." +
+                                "genericError.description"
+                        ),
+                        level: AlertLevels.INFO,
+                        message: I18n.instance.t(
+                            "console:develop.features.userstores.notifications.fetchUserstores." +
+                                "genericError.message"
+                        )
+                    })
+                );
+            });
     }
 
     /**
@@ -217,27 +236,28 @@ export class SharedUserStoreUtils {
      * @deprecated Write these functionalities seperately get the caching support from SWR.
      */
     public static async getReadOnlyUserStores(userstores?: UserStoreListItem[]): Promise<string[]> {
-        const ids: string[] = await SharedUserStoreUtils.getUserStoreIds(userstores) as string[];
+        const ids: string[] = (await SharedUserStoreUtils.getUserStoreIds(userstores)) as string[];
         const primaryUserStore: void | UserStoreDetails = await SharedUserStoreUtils.getPrimaryUserStore();
         const readOnlyUserStores: string[] = [];
 
         // Checks if the primary user store is readonly as well.
-        if ( primaryUserStore && primaryUserStore.properties.find((property: UserStoreProperty) => {
-            return property.name === SharedUserStoreConstants.READONLY_USER_STORE; }).value === "true"
+        if (
+            primaryUserStore &&
+            primaryUserStore.properties.find((property: UserStoreProperty) => {
+                return property.name === SharedUserStoreConstants.READONLY_USER_STORE;
+            }).value === "true"
         ) {
             readOnlyUserStores.push(primaryUserStore.name.toUpperCase());
         }
 
         for (const id of ids) {
-            await getAUserStore(id)
-                .then((res: any) => {
-                    res.properties.map((property: UserStoreProperty) => {
-                        if (property.name === SharedUserStoreConstants.READONLY_USER_STORE
-                            && property.value === "true") {
-                            readOnlyUserStores.push(res.name.toUpperCase());
-                        }
-                    });
+            await getAUserStore(id).then((res: any) => {
+                res.properties.map((property: UserStoreProperty) => {
+                    if (property.name === SharedUserStoreConstants.READONLY_USER_STORE && property.value === "true") {
+                        readOnlyUserStores.push(res.name.toUpperCase());
+                    }
                 });
+            });
         }
 
         return readOnlyUserStores;

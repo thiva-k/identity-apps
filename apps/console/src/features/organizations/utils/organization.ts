@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationManagementConstants, OrganizationType } from "../constants";
 import { GenericOrganization } from "../models";
 
@@ -24,7 +24,7 @@ export class OrganizationUtils {
     /**
      * Private constructor to prevent object instantiation.
      */
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Checks if the selected organization is the Super organization.
@@ -42,7 +42,7 @@ export class OrganizationUtils {
      *
      * @returns The type of the current organization.
      */
-    public static getOrganizationType(): OrganizationType{
+    public static getOrganizationType(): OrganizationType {
         return store.getState().organization?.organizationType;
     }
 }

@@ -16,29 +16,14 @@
  * under the License.
  */
 
-import {
-    BasicUserInfo,
-    DecodedIDTokenPayload,
-    Hooks,
-    SecureApp,
-    useAuthContext
-} from "@asgardeo/auth-react";
+import { BasicUserInfo, DecodedIDTokenPayload, Hooks, SecureApp, useAuthContext } from "@asgardeo/auth-react";
 import useUIConfig from "@wso2is/common/src/hooks/use-ui-configs";
-import {
-    AppConstants as CommonAppConstants } from "@wso2is/core/constants";
+import { AppConstants as CommonAppConstants } from "@wso2is/core/constants";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
-import {
-    setDeploymentConfigs,
-    setSupportedI18nLanguages,
-    setUIConfigs
-} from "@wso2is/core/store";
-import {
-    AuthenticateUtils as CommonAuthenticateUtils,
-    SessionStorageUtils,
-    StringUtils
-} from "@wso2is/core/utils";
+import { setDeploymentConfigs, setSupportedI18nLanguages, setUIConfigs } from "@wso2is/core/store";
+import { AuthenticateUtils as CommonAuthenticateUtils, SessionStorageUtils, StringUtils } from "@wso2is/core/utils";
 import {
     I18n,
     I18nInstanceInitException,
@@ -49,14 +34,7 @@ import {
 import { GovernanceConnectorProvider } from "@wso2is/react-components";
 import axios, { AxiosResponse } from "axios";
 import has from "lodash-es/has";
-import React, {
-    FunctionComponent,
-    LazyExoticComponent,
-    ReactElement,
-    lazy,
-    useEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, LazyExoticComponent, ReactElement, lazy, useEffect, useState } from "react";
 import { I18nextProvider } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
@@ -76,17 +54,14 @@ import {
     UIConfigInterface,
     getAppViewRoutes,
     setFilteredDevelopRoutes,
-    setSanitizedDevelopRoutes,
-    store
+    setSanitizedDevelopRoutes
 } from "./features/core";
+import { store } from "@wso2is/features/core";
 import { AppConstants } from "./features/core/constants";
 import { history } from "./features/core/helpers";
 import useRoutes from "./features/core/hooks/use-routes";
 import useOrganizationSwitch from "./features/organizations/hooks/use-organization-switch";
-import {
-    GovernanceCategoryForOrgsInterface,
-    useGovernanceConnectorCategories
-} from "./features/server-configurations";
+import { GovernanceCategoryForOrgsInterface, useGovernanceConnectorCategories } from "./features/server-configurations";
 
 const App: LazyExoticComponent<FunctionComponent> = lazy(() => import("./app"));
 
@@ -116,32 +91,29 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
 
     const { data: tenantTier } = useTenantTier();
 
-    const featureConfig: FeatureConfigInterface = useSelector(
-        (state: AppState) => state.config.ui.features
-    );
-    const isFirstLevelOrg: boolean = useSelector(
-        (state: AppState) => state.organization.isFirstLevelOrganization
-    );
+    const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
+    const isFirstLevelOrg: boolean = useSelector((state: AppState) => state.organization.isFirstLevelOrganization);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
     const {
         data: originalConnectorCategories,
         error: connectorCategoriesFetchRequestError
     } = useGovernanceConnectorCategories(
-        featureConfig?.server?.enabled && isFirstLevelOrg &&
-        hasRequiredScopes(featureConfig?.governanceConnectors, featureConfig?.governanceConnectors?.scopes?.read,
-            allowedScopes));
+        featureConfig?.server?.enabled &&
+            isFirstLevelOrg &&
+            hasRequiredScopes(
+                featureConfig?.governanceConnectors,
+                featureConfig?.governanceConnectors?.scopes?.read,
+                allowedScopes
+            )
+    );
 
-    const [ renderApp, setRenderApp ] = useState<boolean>(false);
-    const [ routesFiltered, setRoutesFiltered ] = useState<boolean>(false);
-    const [ governanceConnectors, setGovernanceConnectors ] = useState<GovernanceCategoryForOrgsInterface[]>([]);
+    const [renderApp, setRenderApp] = useState<boolean>(false);
+    const [routesFiltered, setRoutesFiltered] = useState<boolean>(false);
+    const [governanceConnectors, setGovernanceConnectors] = useState<GovernanceCategoryForOrgsInterface[]>([]);
 
     useEffect(() => {
-        dispatch(
-            setDeploymentConfigs<DeploymentConfigInterface>(
-                Config.getDeploymentConfig()
-            )
-        );
+        dispatch(setDeploymentConfigs<DeploymentConfigInterface>(Config.getDeploymentConfig()));
         dispatch(setUIConfigs<UIConfigInterface>(Config.getUIConfig()));
         setUIConfig(Config.getUIConfig());
     }, []);
@@ -149,7 +121,7 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
     useEffect(() => {
         dispatch(setFilteredDevelopRoutes(getAppViewRoutes(commonConfig.useExtendedRoutes)));
         dispatch(setSanitizedDevelopRoutes(getAppViewRoutes(commonConfig.useExtendedRoutes)));
-    }, [ dispatch ]);
+    }, [dispatch]);
 
     useEffect(() => {
         on(Hooks.HttpRequestError, HttpUtils.onHttpRequestError);
@@ -161,14 +133,15 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
             let response: BasicUserInfo = null;
 
             const getOrganizationName = () => {
-                const path: string = SessionStorageUtils.getItemFromSessionStorage("auth_callback_url_console")
-                    ?? window.location.pathname;
+                const path: string =
+                    SessionStorageUtils.getItemFromSessionStorage("auth_callback_url_console") ??
+                    window.location.pathname;
                 const pathChunks: string[] = path.split("/");
 
                 const orgPrefixIndex: number = pathChunks.indexOf(Config.getDeploymentConfig().organizationPrefix);
 
                 if (orgPrefixIndex !== -1) {
-                    return pathChunks[ orgPrefixIndex + 1 ];
+                    return pathChunks[orgPrefixIndex + 1];
                 }
 
                 return "";
@@ -188,21 +161,23 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
                     (idToken: DecodedIDTokenPayload) => loginSuccessRedirect(idToken),
                     () => setRenderApp(true)
                 );
-            } catch(e) {
+            } catch (e) {
                 // TODO: Handle error
             }
         });
     }, []);
 
     useEffect(() => {
-        if (!originalConnectorCategories ||
+        if (
+            !originalConnectorCategories ||
             originalConnectorCategories instanceof IdentityAppsApiException ||
-            connectorCategoriesFetchRequestError) {
+            connectorCategoriesFetchRequestError
+        ) {
             return;
         }
 
         setGovernanceConnectors(originalConnectorCategories);
-    }, [ originalConnectorCategories ]);
+    }, [originalConnectorCategories]);
 
     const loginSuccessRedirect = (idToken: DecodedIDTokenPayload): void => {
         const AuthenticationCallbackUrl: string = CommonAuthenticateUtils.getAuthenticationCallbackUrl(
@@ -213,32 +188,25 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
          * Prevent redirect to landing page when there is no association.
          */
         if (commonConfig?.enableOrganizationAssociations) {
-
             const isPrivilegedUser: boolean =
-                idToken?.amr?.length > 0
-                    ? idToken?.amr[ 0 ] === "EnterpriseIDPAuthenticator"
-                    : false;
+                idToken?.amr?.length > 0 ? idToken?.amr[0] === "EnterpriseIDPAuthenticator" : false;
 
             let isOrgSwitch: boolean = false;
 
             if (has(idToken, "org_id") && has(idToken, "user_org")) {
-                isOrgSwitch = (idToken?.org_id !== idToken?.user_org);
+                isOrgSwitch = idToken?.org_id !== idToken?.user_org;
             }
             if (has(idToken, "associated_tenants") || isPrivilegedUser || isOrgSwitch) {
                 // If there is an association, the user should be redirected to console landing page.
                 const location: string =
                     !AuthenticationCallbackUrl ||
-                    (AuthenticationCallbackUrl ===
-                        AppConstants.getAppLoginPath() ||
-                            AuthenticationCallbackUrl ===
-                            `${AppConstants.getAppLoginPath()}/`) ||
-                            AuthenticationCallbackUrl ===
-                            `${ window[ "AppUtils" ].getConfig()
-                                .appBaseWithTenant
-                            }/` ||
-                        AppUtils.isAuthCallbackURLFromAnotherTenant(
-                            AuthenticationCallbackUrl, CommonAuthenticateUtils.deriveTenantDomainFromSubject(
-                                idToken.sub))
+                    AuthenticationCallbackUrl === AppConstants.getAppLoginPath() ||
+                        AuthenticationCallbackUrl === `${AppConstants.getAppLoginPath()}/` ||
+                    AuthenticationCallbackUrl === `${window["AppUtils"].getConfig().appBaseWithTenant}/` ||
+                    AppUtils.isAuthCallbackURLFromAnotherTenant(
+                        AuthenticationCallbackUrl,
+                        CommonAuthenticateUtils.deriveTenantDomainFromSubject(idToken.sub)
+                    )
                         ? AppConstants.getAppHomePath()
                         : AuthenticationCallbackUrl;
 
@@ -246,24 +214,19 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
             } else {
                 // If there is no assocation, the user should be redirected to creation flow.
                 history.push({
-                    pathname: AppConstants.getPaths().get(
-                        "CREATE_TENANT"
-                    )
+                    pathname: AppConstants.getPaths().get("CREATE_TENANT")
                 });
             }
         } else {
             const location: string =
                 !AuthenticationCallbackUrl ||
-                    (AuthenticationCallbackUrl ===
-                        AppConstants.getAppLoginPath() ||
-                            AuthenticationCallbackUrl ===
-                            `${AppConstants.getAppLoginPath()}/`) ||
-                        AuthenticationCallbackUrl ===
-                        `${ window[ "AppUtils" ].getConfig().appBaseWithTenant }/` ||
-                    AppUtils.isAuthCallbackURLFromAnotherTenant(
-                        AuthenticationCallbackUrl,
-                        CommonAuthenticateUtils.deriveTenantDomainFromSubject(idToken.sub)
-                    )
+                AuthenticationCallbackUrl === AppConstants.getAppLoginPath() ||
+                    AuthenticationCallbackUrl === `${AppConstants.getAppLoginPath()}/` ||
+                AuthenticationCallbackUrl === `${window["AppUtils"].getConfig().appBaseWithTenant}/` ||
+                AppUtils.isAuthCallbackURLFromAnotherTenant(
+                    AuthenticationCallbackUrl,
+                    CommonAuthenticateUtils.deriveTenantDomainFromSubject(idToken.sub)
+                )
                     ? AppConstants.getAppHomePath()
                     : AuthenticationCallbackUrl;
 
@@ -277,19 +240,15 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
         }
 
         filterRoutes(() => setRoutesFiltered(true), isFirstLevelOrg);
-    }, [ filterRoutes, governanceConnectors, isAuthenticated, isFirstLevelOrg ]);
+    }, [filterRoutes, governanceConnectors, isAuthenticated, isFirstLevelOrg]);
 
     useEffect(() => {
-        const error: string = new URLSearchParams(location.search).get(
-            "error_description"
-        );
+        const error: string = new URLSearchParams(location.search).get("error_description");
 
         if (error === AppConstants.USER_DENIED_CONSENT_SERVER_ERROR) {
             history.push({
                 pathname: AppConstants.getPaths().get("UNAUTHORIZED"),
-                search:
-                    "?error=" +
-                    AppConstants.LOGIN_ERRORS.get("USER_DENIED_CONSENT")
+                search: "?error=" + AppConstants.LOGIN_ERRORS.get("USER_DENIED_CONSENT")
             });
 
             return;
@@ -308,21 +267,19 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
         const resolvedAppBaseNameWithoutTenant: string = StringUtils.removeSlashesFromPath(
             Config.getDeploymentConfig().appBaseNameWithoutTenant
         )
-            ? `/${ StringUtils.removeSlashesFromPath(
-                Config.getDeploymentConfig().appBaseNameWithoutTenant
-            ) }`
+            ? `/${StringUtils.removeSlashesFromPath(Config.getDeploymentConfig().appBaseNameWithoutTenant)}`
             : "";
 
         const metaFileNames: string[] = I18nModuleConstants.META_FILENAME.split(".");
-        const metaFileName: string = `${ metaFileNames[ 0 ] }.${ process.env.metaHash }.${ metaFileNames[ 1 ] }`;
+        const metaFileName: string = `${metaFileNames[0]}.${process.env.metaHash}.${metaFileNames[1]}`;
 
         // Since the portals are not deployed per tenant, looking for static resources in tenant qualified URLs
         // will fail. This constructs the path without the tenant, therefore it'll look for the file in
         // `https://localhost:9443/<PORTAL>/resources/i18n/meta.json` rather than looking for the file in
         // `https://localhost:9443/t/wso2.com/<PORTAL>/resources/i18n/meta.json`.
-        const metaPath: string = `${ resolvedAppBaseNameWithoutTenant }/${ StringUtils.removeSlashesFromPath(
+        const metaPath: string = `${resolvedAppBaseNameWithoutTenant}/${StringUtils.removeSlashesFromPath(
             Config.getI18nConfig().resourcePath
-        ) }/${ metaFileName }`;
+        )}/${metaFileName}`;
 
         // Fetch the meta file to get the supported languages and paths.
         axios
@@ -332,7 +289,7 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
                 I18n.init(
                     {
                         ...Config.getI18nConfig(response?.data)?.initOptions,
-                        debug: window[ "AppUtils" ].getConfig().debug
+                        debug: window["AppUtils"].getConfig().debug
                     },
                     Config.getI18nConfig()?.overrideOptions,
                     Config.getI18nConfig()?.langAutoDetectEnabled,
@@ -341,22 +298,13 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
                     // Set the supported languages in redux store.
                     store.dispatch(setSupportedI18nLanguages(response?.data));
 
-                    const isSupported: boolean = isLanguageSupported(
-                        I18n.instance.language,
-                        null,
-                        response?.data
-                    );
+                    const isSupported: boolean = isLanguageSupported(I18n.instance.language, null, response?.data);
 
                     if (!isSupported) {
                         I18n.instance
-                            .changeLanguage(
-                                I18nModuleConstants.DEFAULT_FALLBACK_LANGUAGE
-                            )
+                            .changeLanguage(I18nModuleConstants.DEFAULT_FALLBACK_LANGUAGE)
                             .catch((error: any) => {
-                                throw new LanguageChangeException(
-                                    I18nModuleConstants.DEFAULT_FALLBACK_LANGUAGE,
-                                    error
-                                );
+                                throw new LanguageChangeException(I18nModuleConstants.DEFAULT_FALLBACK_LANGUAGE, error);
                             });
                     }
                 });
@@ -364,12 +312,12 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
             .catch((error: any) => {
                 throw new I18nInstanceInitException(error);
             });
-    }, [ isAuthenticated ]);
+    }, [isAuthenticated]);
 
     return (
         <SecureApp
-            fallback={ <PreLoader /> }
-            overrideSignIn={ async () => {
+            fallback={<PreLoader />}
+            overrideSignIn={async () => {
                 // This is to prompt the SSO page if a user tries to sign in
                 // through a federated IdP using an existing email address.
                 if (new URL(location.href).searchParams.get("prompt")) {
@@ -377,12 +325,12 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
                 } else {
                     await signIn();
                 }
-            } }
+            }}
         >
-            <GovernanceConnectorProvider connectorCategories={ governanceConnectors }>
-                <I18nextProvider i18n={ I18n.instance }>
-                    <SubscriptionProvider tierName={ tenantTier?.tierName ?? TenantTier.FREE }>
-                        { renderApp && routesFiltered ? <App /> : <PreLoader /> }
+            <GovernanceConnectorProvider connectorCategories={governanceConnectors}>
+                <I18nextProvider i18n={I18n.instance}>
+                    <SubscriptionProvider tierName={tenantTier?.tierName ?? TenantTier.FREE}>
+                        {renderApp && routesFiltered ? <App /> : <PreLoader />}
                     </SubscriptionProvider>
                 </I18nextProvider>
             </GovernanceConnectorProvider>

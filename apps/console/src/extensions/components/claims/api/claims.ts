@@ -18,7 +18,7 @@
 
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
-import { store } from "../../../../features/core";
+import { store } from "@wso2is/features/core";
 
 /**
  * Get an axios instance.
@@ -37,13 +37,13 @@ export const getDialects = (): Promise<any> => {
         url: `${store.getState().config.endpoints.claims}/`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -59,13 +59,13 @@ export const getClaimsForDialect = (dialectID: string): Promise<any> => {
         url: `${store.getState().config.endpoints.externalClaims.replace("{}", dialectID)}/`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };

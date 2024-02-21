@@ -22,13 +22,12 @@ import { I18n } from "@wso2is/i18n";
 import cloneDeep from "lodash-es/cloneDeep";
 import isEmpty from "lodash-es/isEmpty";
 import { AppUtils } from "./app-utils";
-import { store } from "../store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Utility class for help panel operations..
  */
 export class HelpPanelUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
@@ -36,7 +35,7 @@ export class HelpPanelUtils {
      * @hideconstructor
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Checks if the side panel is pinned.
@@ -44,17 +43,17 @@ export class HelpPanelUtils {
      * @return {boolean}
      */
     public static isPanelPinned(): boolean {
-
         const userPreferences: StorageIdentityAppsSettingsInterface = AppUtils.getUserPreferences();
 
         if (isEmpty(userPreferences)) {
             return false;
         }
 
-        if (isEmpty(userPreferences)
-            || !userPreferences.identityAppsSettings?.devPortal?.helpPanel
-            || userPreferences.identityAppsSettings.devPortal.helpPanel.isPinned === undefined) {
-
+        if (
+            isEmpty(userPreferences) ||
+            !userPreferences.identityAppsSettings?.devPortal?.helpPanel ||
+            userPreferences.identityAppsSettings.devPortal.helpPanel.isPinned === undefined
+        ) {
             return false;
         }
 
@@ -65,7 +64,6 @@ export class HelpPanelUtils {
      * Persist the pin/unpin status of the help panel.
      */
     public static togglePanelPin(): void {
-
         const userPreferences: StorageIdentityAppsSettingsInterface = AppUtils.getUserPreferences();
 
         if (isEmpty(userPreferences)) {
@@ -84,12 +82,17 @@ export class HelpPanelUtils {
 
         AppUtils.setUserPreferences(newPref);
 
-        store.dispatch(addAlert({
-            description: I18n.instance.t("console:develop.features.helpPanel.notifications.pin.success.description",
-                { state: isPinned ? I18n.instance.t("common:unpinned") : I18n.instance.t("common:pinned") }),
-            level: AlertLevels.INFO,
-            message: I18n.instance.t("console:develop.features.helpPanel.notifications.pin.success.message",
-                { state: isPinned ? I18n.instance.t("common:unpinned") : I18n.instance.t("common:pinned") })
-        }));
+        store.dispatch(
+            addAlert({
+                description: I18n.instance.t(
+                    "console:develop.features.helpPanel.notifications.pin.success.description",
+                    { state: isPinned ? I18n.instance.t("common:unpinned") : I18n.instance.t("common:pinned") }
+                ),
+                level: AlertLevels.INFO,
+                message: I18n.instance.t("console:develop.features.helpPanel.notifications.pin.success.message", {
+                    state: isPinned ? I18n.instance.t("common:unpinned") : I18n.instance.t("common:pinned")
+                })
+            })
+        );
     }
 }

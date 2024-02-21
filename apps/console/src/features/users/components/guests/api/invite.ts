@@ -19,14 +19,15 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { ParentOrgUserInviteInterface } from "../models/invite";
 
 /**
  * Initialize an axios Http client.
  */
 const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
-    AsgardeoSPAClient.getInstance());
+    AsgardeoSPAClient.getInstance()
+);
 
 export const sendParentOrgUserInvite = (userInvite: ParentOrgUserInviteInterface): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
@@ -39,12 +40,13 @@ export const sendParentOrgUserInvite = (userInvite: ParentOrgUserInviteInterface
         url: store.getState().config.endpoints.guests
     };
 
-    return httpClient(requestConfig).then((response: AxiosResponse) => {
-
-        return Promise.resolve(response);
-    }).catch((error: AxiosError) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
 };
 
 /**
@@ -60,9 +62,11 @@ export const deleteParentOrgInvite = (traceID: string): Promise<any> => {
         url: store.getState().config.endpoints.guestsList + "/" + traceID
     };
 
-    return httpClient(requestConfig).then((response: AxiosResponse) => {
-        return Promise.resolve(response);
-    }).catch((error: AxiosError) => {
-        return Promise.reject(error);
-    });
+    return httpClient(requestConfig)
+        .then((response: AxiosResponse) => {
+            return Promise.resolve(response);
+        })
+        .catch((error: AxiosError) => {
+            return Promise.reject(error);
+        });
 };

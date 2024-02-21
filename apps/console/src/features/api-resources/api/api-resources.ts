@@ -20,19 +20,21 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import useRequest, {
-    RequestErrorInterface,
-    RequestResultInterface
-} from "../../core/hooks/use-request";
-import { store } from "../../core/store";
-import { APIResourceInterface, APIResourcePermissionInterface, APIResourcesListInterface, UpdatedAPIResourceInterface }
-    from "../models";
+import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
+import { store } from "@wso2is/features/core/store";
+import {
+    APIResourceInterface,
+    APIResourcePermissionInterface,
+    APIResourcesListInterface,
+    UpdatedAPIResourceInterface
+} from "../models";
 
 /**
  * Get an axios instance.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Get API resources for the identifier validation.
@@ -41,13 +43,10 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  * @param filter - filter.
  * @returns `Promise<APIResourcesListInterface | IdentityAppsApiException>`
  */
-export const getAPIResourcesForIdenitifierValidation = (
-    filter: string
-): Promise<APIResourcesListInterface> => {
-
+export const getAPIResourcesForIdenitifierValidation = (filter: string): Promise<APIResourcesListInterface> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -68,7 +67,8 @@ export const getAPIResourcesForIdenitifierValidation = (
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
         })
         .catch((error: AxiosError) => {
@@ -78,7 +78,8 @@ export const getAPIResourcesForIdenitifierValidation = (
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -98,10 +99,9 @@ export const useAPIResources = <Data = APIResourcesListInterface, Error = Reques
     filter?: string,
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -133,10 +133,9 @@ export const useAPIResources = <Data = APIResourcesListInterface, Error = Reques
 export const useAPIResourceDetails = <Data = APIResourceInterface, Error = RequestErrorInterface>(
     apiResourceId: string
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -165,12 +164,10 @@ export const useAPIResourceDetails = <Data = APIResourceInterface, Error = Reque
  * @returns `Promise<APIResourcePermissionInterface[]>`
  * @throws `IdentityAppsApiException`
  */
-export const getAPIResourcePermissions = (
-    filter: string
-): Promise<APIResourcePermissionInterface[]> => {
+export const getAPIResourcePermissions = (filter: string): Promise<APIResourcePermissionInterface[]> => {
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -189,7 +186,8 @@ export const getAPIResourcePermissions = (
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
         })
         .catch((error: AxiosError) => {
@@ -199,7 +197,8 @@ export const getAPIResourcePermissions = (
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -211,10 +210,9 @@ export const getAPIResourcePermissions = (
  * @throws `IdentityAppsApiException`
  */
 export const deleteAPIResource = (apiResourceId: string): Promise<null | IdentityAppsApiException> => {
-
     const requestConfig: AxiosRequestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.DELETE,
@@ -230,18 +228,21 @@ export const deleteAPIResource = (apiResourceId: string): Promise<null | Identit
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 error.message,
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -256,7 +257,6 @@ export const updateAPIResource = (
     apiResourceId: string,
     updateAPIResourceBody: UpdatedAPIResourceInterface
 ): Promise<null | IdentityAppsApiException> => {
-
     const requestConfig: AxiosRequestConfig = {
         data: updateAPIResourceBody,
         method: HttpMethods.PATCH,
@@ -274,7 +274,8 @@ export const updateAPIResource = (
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -284,10 +285,7 @@ export const updateAPIResource = (
  * @param apiResourceBody - Body of the API resource that needed to be created.
  * @returns `Promise<null | IdentityAppsApiException>`
  */
-export const createAPIResource = (
-    apiResourceBody: APIResourceInterface
-): Promise<APIResourceInterface | void> => {
-
+export const createAPIResource = (apiResourceBody: APIResourceInterface): Promise<APIResourceInterface | void> => {
     const requestConfig: AxiosRequestConfig = {
         data: apiResourceBody,
         method: HttpMethods.POST,
@@ -305,7 +303,8 @@ export const createAPIResource = (
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -320,7 +319,6 @@ export const deleteScopeFromAPIResource = (
     apiResourceId: string,
     deletingScopeName: string
 ): Promise<null | IdentityAppsApiException> => {
-
     const requestConfig: AxiosRequestConfig = {
         method: HttpMethods.DELETE,
         url: `${store.getState().config.endpoints.apiResources}/${apiResourceId}/scopes/${deletingScopeName}`
@@ -337,6 +335,7 @@ export const deleteScopeFromAPIResource = (
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

@@ -21,11 +21,12 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { Config } from "../../core/configs";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { UserManagementConstants } from "../constants";
 
 const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
-    AsgardeoSPAClient.getInstance());
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Get invitation link for each user.
@@ -49,7 +50,7 @@ export const generateInviteLink = (username: string, domain: string): Promise<an
     };
 
     return httpClient(requestConfig)
-        .then((response: AxiosResponse) => {            
+        .then((response: AxiosResponse) => {
             if (response.status !== 201) {
                 throw new IdentityAppsApiException(
                     UserManagementConstants.INVALID_STATUS_CODE_ERROR,
@@ -57,17 +58,20 @@ export const generateInviteLink = (username: string, domain: string): Promise<an
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {            
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 error.response?.data?.message ?? UserManagementConstants.RESOURCE_NOT_FOUND_ERROR_MESSAGE,
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };

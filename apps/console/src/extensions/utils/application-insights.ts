@@ -21,13 +21,12 @@ import { ReactPlugin } from "@microsoft/applicationinsights-react-js";
 import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { v4 as uuidv4 } from "uuid";
 import { history } from "../../features/core/helpers/history";
-import { store } from "../../features/core/store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * App Insights class to perform application insights related functions.
-*/
+ */
 export class AppInsights {
-
     private static appInsightsInstance: AppInsights;
     private isEnabled: boolean;
     private isInitialized: boolean;
@@ -36,25 +35,23 @@ export class AppInsights {
     private externalAppInsightsInstance: ApplicationInsights;
     private userId: string;
     private tenantId: string;
-    private isWSO2User: boolean|undefined;
+    private isWSO2User: boolean | undefined;
 
     private isDependencyTrackingEnabled: boolean;
 
     private telemetryInitializer: (item: ITelemetryItem) => boolean | void;
 
     /**
-     * Private constructor to avoid object initialization from 
+     * Private constructor to avoid object initialization from
      * outside the class.
-    */
+     */
     private constructor() {
-
         this.isEnabled = window["AppUtils"].getConfig().extensions?.applicationInsightsEnabled
             ? window["AppUtils"].getConfig().extensions.applicationInsightsEnabled
             : false;
         this.isInitialized = false;
 
-        this.isDependencyTrackingEnabled = window["AppUtils"].getConfig()
-            .analytics?.metrics?.dependencyTrackingEnabled
+        this.isDependencyTrackingEnabled = window["AppUtils"].getConfig().analytics?.metrics?.dependencyTrackingEnabled
             ? window["AppUtils"].getConfig().analytics.metrics.dependencyTrackingEnabled
             : false;
 
@@ -75,11 +72,10 @@ export class AppInsights {
 
     /**
      * Returns an instance of the App Insights class.
-     * 
+     *
      * @returns App Insights instance
-    */
+     */
     public static getInstance(): AppInsights {
-
         if (!this.appInsightsInstance) {
             this.appInsightsInstance = new AppInsights();
         }
@@ -89,11 +85,10 @@ export class AppInsights {
 
     /**
      * Initialize application insights and other needed common variables.
-     * 
+     *
      * @returns boolean - True if initialization successful. Else false.
-    */
+     */
     public init(): boolean {
-
         if (!this.isEnabled) {
             return false;
         }
@@ -109,8 +104,8 @@ export class AppInsights {
             const endpointUrl: string = window["AppUtils"].getConfig().extensions?.applicationInsightsProxyEndpoint
                 ? window["AppUtils"].getConfig().extensions.applicationInsightsProxyEndpoint
                 : "";
-            const instrumentationKey: string = window["AppUtils"].getConfig()
-                .extensions?.applicationInsightsInstrumentationKey
+            const instrumentationKey: string = window["AppUtils"].getConfig().extensions
+                ?.applicationInsightsInstrumentationKey
                 ? window["AppUtils"].getConfig().extensions.applicationInsightsInstrumentationKey
                 : "";
             const cookieDomain: string = window["AppUtils"].getConfig().extensions?.applicationInsightsCookieDomain
@@ -140,7 +135,7 @@ export class AppInsights {
                 extensionConfig: {
                     [this.reactPlugin.identifier]: { history: history }
                 },
-                extensions: [ this.reactPlugin ],
+                extensions: [this.reactPlugin],
                 instrumentationKey: instrumentationKey,
                 maxBatchInterval: 30000
             };
@@ -163,7 +158,6 @@ export class AppInsights {
             this.externalAppInsightsInstance.loadAppInsights();
 
             this.telemetryInitializer = (envelope: ITelemetryItem) => {
-                
                 envelope.data = {
                     ...envelope.data,
                     isWSO2User: this.isWSO2User,
@@ -171,11 +165,11 @@ export class AppInsights {
                 };
 
                 if (envelope.baseType === "ExceptionData") {
-                    const errMsg: any = envelope.baseData.properties?.message; 
-                
+                    const errMsg: any = envelope.baseData.properties?.message;
+
                     envelope.data = {
                         ...envelope.data,
-                        exceptionType: errMsg.substring(0,errMsg.indexOf(":")),
+                        exceptionType: errMsg.substring(0, errMsg.indexOf(":")),
                         pageTitle: document.title
                     };
                 }
@@ -188,16 +182,15 @@ export class AppInsights {
             this.externalAppInsightsInstance.trackPageView();
 
             // toogle cookie enabled option based on "cookie-pref-change" event
-            window.addEventListener("cookie-pref-change",function (e: any){
+            window.addEventListener("cookie-pref-change", function(e: any) {
                 const updatedPreferences: any = e["pref"];
 
-                if (updatedPreferences.includes("C0002")){
+                if (updatedPreferences.includes("C0002")) {
                     this.externalAppInsightsInstance.getCookieMgr().setEnabled(true);
                 } else {
                     this.externalAppInsightsInstance.getCookieMgr().setEnabled(false);
                 }
             });
-
         }
 
         this.isInitialized = true;
@@ -207,27 +200,27 @@ export class AppInsights {
 
     /**
      * Function to perform app insights related computations.
-     * 
+     *
      * @param computation - Computation to perform.
-    */
+     */
     public compute = (computation: () => void): void => {
-
         if (!this.isEnabled) {
             return;
         }
 
         computation();
-    }
+    };
 
     /**
      * Send custom event data to insights server.
-     * 
+     *
      * @param eventId - Event identifier string.
      * @param customProperties - Any custom properties (optional).
-    */
-    public trackEvent(eventId: string, customProperties?: { [key: string]: string | Record<string, unknown> |
-            number}): void {
-
+     */
+    public trackEvent(
+        eventId: string,
+        customProperties?: { [key: string]: string | Record<string, unknown> | number }
+    ): void {
         if (!this.isEnabled) {
             return;
         }
@@ -248,7 +241,7 @@ export class AppInsights {
         if (this.userId) {
             properties.UUID = this.userId;
         }
-        
+
         if (customProperties) {
             properties.data = customProperties;
         }
@@ -261,17 +254,22 @@ export class AppInsights {
 
     /**
      * Send dependency (network request) data to insights server.
-     * 
+     *
      * @param pathname - endpoint name
      * @param startTimeInMs - when the request started
      * @param duration - network request duration
      * @param responseCode - server response status
      * @param isSuccess - whether the reuqest was successful
      * @param customProperties - any custom properties (optional)
-    */
-    public trackDependency(pathname: string, startTimeInMs: number, duration: number, responseCode: number,
-        isSuccess: boolean, 
-        customProperties?: { [key: string]: any }): void{
+     */
+    public trackDependency(
+        pathname: string,
+        startTimeInMs: number,
+        duration: number,
+        responseCode: number,
+        isSuccess: boolean,
+        customProperties?: { [key: string]: any }
+    ): void {
         if (!this.isEnabled) {
             return;
         }
@@ -284,11 +282,11 @@ export class AppInsights {
             }
         }
 
-        if (!this.isDependencyTrackingEnabled && isSuccess){
+        if (!this.isDependencyTrackingEnabled && isSuccess) {
             return;
         }
-        
-        if (startTimeInMs){
+
+        if (startTimeInMs) {
             properties.startTime = new Date(startTimeInMs);
         }
 

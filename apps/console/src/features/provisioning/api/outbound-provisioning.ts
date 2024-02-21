@@ -20,13 +20,14 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { OutboundProvisioningConfigurationInterface } from "../../applications/models/application";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Get an axios instance.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 export const updateResidentApplicationOutboundProvisioningList = (
     outboundProvisioningList: OutboundProvisioningConfigurationInterface[]
@@ -36,7 +37,7 @@ export const updateResidentApplicationOutboundProvisioningList = (
             outboundProvisioningIdps: outboundProvisioningList
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -50,7 +51,8 @@ export const updateResidentApplicationOutboundProvisioningList = (
             }
 
             return Promise.resolve(response);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             return Promise.reject(error);
         });
 };

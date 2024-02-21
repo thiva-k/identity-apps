@@ -24,7 +24,8 @@ import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Button, Form, Grid, Icon } from "semantic-ui-react";
-import { AppState, FeatureConfigInterface, store } from "../../../core";
+import { AppState, FeatureConfigInterface } from "../../../core";
+import { store } from "@wso2is/features/core";
 import { getHelpPanelIcons } from "../../configs/ui";
 import { SAMLApplicationConfigurationInterface } from "../../models";
 
@@ -45,20 +46,15 @@ interface SAMLConfigurationsPropsInterface extends TestableComponentInterface {
 export const SAMLConfigurations: FunctionComponent<SAMLConfigurationsPropsInterface> = (
     props: SAMLConfigurationsPropsInterface
 ): ReactElement => {
-
-    const {
-        samlConfigurations,
-        [ "data-testid" ]: testId
-    } = props;
+    const { samlConfigurations, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     const tenantName: string = store.getState().config.deployment.tenant;
-    const featureConfig: FeatureConfigInterface = useSelector(
-        (state: AppState) => state.config.ui.features);
+    const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
     const exportMetadataFile = () => {
-        const blob: Blob = new Blob([ samlConfigurations?.metadata ], {
+        const blob: Blob = new Blob([samlConfigurations?.metadata], {
             type: "text/xml"
         });
 
@@ -68,10 +64,10 @@ export const SAMLConfigurations: FunctionComponent<SAMLConfigurationsPropsInterf
     return (
         <Form>
             <Grid verticalAlign="middle">
-                <Grid.Row columns={ 2 }>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 5 }>
+                <Grid.Row columns={2}>
+                    <Grid.Column mobile={8} tablet={8} computer={5}>
                         <GenericIcon
-                            icon={ getHelpPanelIcons().endpoints.issuer }
+                            icon={getHelpPanelIcons().endpoints.issuer}
                             size="micro"
                             square
                             transparent
@@ -80,22 +76,24 @@ export const SAMLConfigurations: FunctionComponent<SAMLConfigurationsPropsInterf
                             verticalAlign="middle"
                             spaced="right"
                         />
-                        <label data-testid={ `${ testId }-issuer-label` }>
-                            { t("console:develop.features.applications.helpPanel.tabs.start.content." +
-                                "samlConfigurations.labels.issuer") }
+                        <label data-testid={`${testId}-issuer-label`}>
+                            {t(
+                                "console:develop.features.applications.helpPanel.tabs.start.content." +
+                                    "samlConfigurations.labels.issuer"
+                            )}
                         </label>
                     </Grid.Column>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 11 }>
+                    <Grid.Column mobile={8} tablet={8} computer={11}>
                         <CopyInputField
-                            value={ samlConfigurations?.issuer }
-                            data-testid={ `${ testId }-issuer-readonly-input` }
+                            value={samlConfigurations?.issuer}
+                            data-testid={`${testId}-issuer-readonly-input`}
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 2 }>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 5 }>
+                <Grid.Row columns={2}>
+                    <Grid.Column mobile={8} tablet={8} computer={5}>
                         <GenericIcon
-                            icon={ <ArrowRightToBracketIcon className="icon" /> }
+                            icon={<ArrowRightToBracketIcon className="icon" />}
                             size="micro"
                             square
                             transparent
@@ -104,22 +102,24 @@ export const SAMLConfigurations: FunctionComponent<SAMLConfigurationsPropsInterf
                             verticalAlign="middle"
                             spaced="right"
                         />
-                        <label data-testid={ `${ testId }-sso-label` }>
-                            { t("console:develop.features.applications.helpPanel.tabs.start.content." +
-                                "samlConfigurations.labels.sso") }
+                        <label data-testid={`${testId}-sso-label`}>
+                            {t(
+                                "console:develop.features.applications.helpPanel.tabs.start.content." +
+                                    "samlConfigurations.labels.sso"
+                            )}
                         </label>
                     </Grid.Column>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 11 }>
+                    <Grid.Column mobile={8} tablet={8} computer={11}>
                         <CopyInputField
-                            value={ samlConfigurations?.ssoUrl }
-                            data-testid={ `${ testId }-sso-readonly-input` }
+                            value={samlConfigurations?.ssoUrl}
+                            data-testid={`${testId}-sso-readonly-input`}
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 2 }>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 5 }>
+                <Grid.Row columns={2}>
+                    <Grid.Column mobile={8} tablet={8} computer={5}>
                         <GenericIcon
-                            icon={ getHelpPanelIcons().endpoints.logout }
+                            icon={getHelpPanelIcons().endpoints.logout}
                             size="micro"
                             square
                             transparent
@@ -128,76 +128,80 @@ export const SAMLConfigurations: FunctionComponent<SAMLConfigurationsPropsInterf
                             verticalAlign="middle"
                             spaced="right"
                         />
-                        <label data-testid={ `${ testId }-slo-label` }>
-                            { t("console:develop.features.applications.helpPanel.tabs.start.content." +
-                                "samlConfigurations.labels.slo") }
+                        <label data-testid={`${testId}-slo-label`}>
+                            {t(
+                                "console:develop.features.applications.helpPanel.tabs.start.content." +
+                                    "samlConfigurations.labels.slo"
+                            )}
                         </label>
                     </Grid.Column>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 11 }>
+                    <Grid.Column mobile={8} tablet={8} computer={11}>
                         <CopyInputField
-                            value={ samlConfigurations?.sloUrl }
-                            data-testid={ `${ testId }-slo-readonly-input` }
+                            value={samlConfigurations?.sloUrl}
+                            data-testid={`${testId}-slo-readonly-input`}
                         />
                     </Grid.Column>
                 </Grid.Row>
-                {
-                    featureConfig?.server?.enabled && (
-                        <>
-                            <Grid.Row columns={ 2 }>
-                                <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 5 }>
-                                    <GenericIcon
-                                        icon={ getHelpPanelIcons().endpoints.destination }
-                                        size="micro"
-                                        square
-                                        transparent
-                                        inline
-                                        className="left-icon"
-                                        verticalAlign="middle"
-                                        spaced="right"
-                                    />
-                                    <label data-testid={ `${ testId }-destination-url-label` }>
-                                        { t("console:develop.features.applications.helpPanel.tabs.start.content." +
-                                            "samlConfigurations.labels.destinationURL") }
-                                    </label>
-                                </Grid.Column>
-                                <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 11 }>
-                                    <CopyInputField
-                                        value={ samlConfigurations?.destinationURLs?.toString()?.replace(/,/g, ", ") }
-                                        data-testid={ `${ testId }-destination-url-readonly-input` }
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>
-                            <Grid.Row columns={ 2 }>
-                                <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 5 }>
-                                    <GenericIcon
-                                        icon={ <CirclesOverlapIcon className="icon" /> }
-                                        size="micro"
-                                        square
-                                        transparent
-                                        inline
-                                        className="left-icon"
-                                        verticalAlign="middle"
-                                        spaced="right"
-                                    />
-                                    <label data-testid={ `${ testId }-artifact-resolution-url-label` }>
-                                        { t("console:develop.features.applications.helpPanel.tabs.start.content." +
-                                            "samlConfigurations.labels.artifactResolutionUrl") }
-                                    </label>
-                                </Grid.Column>
-                                <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 11 }>
-                                    <CopyInputField
-                                        value={ samlConfigurations?.artifactResolutionUrl }
-                                        data-testid={ `${ testId }-artifact-resolution-url-readonly-input` }
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>
-                        </>
-                    )
-                }
-                <Grid.Row columns={ 2 }>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 5 }>
+                {featureConfig?.server?.enabled && (
+                    <>
+                        <Grid.Row columns={2}>
+                            <Grid.Column mobile={8} tablet={8} computer={5}>
+                                <GenericIcon
+                                    icon={getHelpPanelIcons().endpoints.destination}
+                                    size="micro"
+                                    square
+                                    transparent
+                                    inline
+                                    className="left-icon"
+                                    verticalAlign="middle"
+                                    spaced="right"
+                                />
+                                <label data-testid={`${testId}-destination-url-label`}>
+                                    {t(
+                                        "console:develop.features.applications.helpPanel.tabs.start.content." +
+                                            "samlConfigurations.labels.destinationURL"
+                                    )}
+                                </label>
+                            </Grid.Column>
+                            <Grid.Column mobile={8} tablet={8} computer={11}>
+                                <CopyInputField
+                                    value={samlConfigurations?.destinationURLs?.toString()?.replace(/,/g, ", ")}
+                                    data-testid={`${testId}-destination-url-readonly-input`}
+                                />
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row columns={2}>
+                            <Grid.Column mobile={8} tablet={8} computer={5}>
+                                <GenericIcon
+                                    icon={<CirclesOverlapIcon className="icon" />}
+                                    size="micro"
+                                    square
+                                    transparent
+                                    inline
+                                    className="left-icon"
+                                    verticalAlign="middle"
+                                    spaced="right"
+                                />
+                                <label data-testid={`${testId}-artifact-resolution-url-label`}>
+                                    {t(
+                                        "console:develop.features.applications.helpPanel.tabs.start.content." +
+                                            "samlConfigurations.labels.artifactResolutionUrl"
+                                    )}
+                                </label>
+                            </Grid.Column>
+                            <Grid.Column mobile={8} tablet={8} computer={11}>
+                                <CopyInputField
+                                    value={samlConfigurations?.artifactResolutionUrl}
+                                    data-testid={`${testId}-artifact-resolution-url-readonly-input`}
+                                />
+                            </Grid.Column>
+                        </Grid.Row>
+                    </>
+                )}
+                <Grid.Row columns={2}>
+                    <Grid.Column mobile={8} tablet={8} computer={5}>
                         <GenericIcon
-                            icon={ getHelpPanelIcons().endpoints.certificate }
+                            icon={getHelpPanelIcons().endpoints.certificate}
                             size="micro"
                             square
                             transparent
@@ -206,31 +210,39 @@ export const SAMLConfigurations: FunctionComponent<SAMLConfigurationsPropsInterf
                             verticalAlign="middle"
                             spaced="right"
                         />
-                        <label data-testid={ `${ testId }-certificate-label` }>
-                            { t("console:develop.features.applications.helpPanel.tabs.start.content." +
-                                "samlConfigurations.labels.certificate") }
+                        <label data-testid={`${testId}-certificate-label`}>
+                            {t(
+                                "console:develop.features.applications.helpPanel.tabs.start.content." +
+                                    "samlConfigurations.labels.certificate"
+                            )}
                         </label>
                     </Grid.Column>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 11 }>
+                    <Grid.Column mobile={8} tablet={8} computer={11}>
                         <Button
-                            data-testid={ `${ testId }-certificate-button` }
+                            data-testid={`${testId}-certificate-button`}
                             className="idp-certificate-download-button"
                             basic
                             size="tiny"
                             color="orange"
-                            onClick={ () => CertificateManagementUtils.exportCertificate(
-                                tenantName, samlConfigurations?.certificate) }
+                            onClick={() =>
+                                CertificateManagementUtils.exportCertificate(
+                                    tenantName,
+                                    samlConfigurations?.certificate
+                                )
+                            }
                         >
                             <Icon name="download" />
-                            { t("console:develop.features.applications.helpPanel.tabs.start.content." +
-                                "samlConfigurations.buttons.certificate") }
+                            {t(
+                                "console:develop.features.applications.helpPanel.tabs.start.content." +
+                                    "samlConfigurations.buttons.certificate"
+                            )}
                         </Button>
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 2 }>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 5 }>
+                <Grid.Row columns={2}>
+                    <Grid.Column mobile={8} tablet={8} computer={5}>
                         <GenericIcon
-                            icon={ <DocumentIcon className="icon" /> }
+                            icon={<DocumentIcon className="icon" />}
                             size="micro"
                             square
                             transparent
@@ -239,22 +251,26 @@ export const SAMLConfigurations: FunctionComponent<SAMLConfigurationsPropsInterf
                             verticalAlign="middle"
                             spaced="right"
                         />
-                        <label data-testid={ `${ testId }-metadata-label` }>
-                            { t("console:develop.features.applications.helpPanel.tabs.start.content." +
-                                "samlConfigurations.labels.metadata") }
+                        <label data-testid={`${testId}-metadata-label`}>
+                            {t(
+                                "console:develop.features.applications.helpPanel.tabs.start.content." +
+                                    "samlConfigurations.labels.metadata"
+                            )}
                         </label>
                     </Grid.Column>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 11 }>
+                    <Grid.Column mobile={8} tablet={8} computer={11}>
                         <Button
-                            data-testid={ `${ testId }-metadata-button` }
+                            data-testid={`${testId}-metadata-button`}
                             basic
                             size="tiny"
                             color="orange"
-                            onClick={ exportMetadataFile }
+                            onClick={exportMetadataFile}
                         >
                             <Icon name="download" />
-                            { t("console:develop.features.applications.helpPanel.tabs.start.content." +
-                                "samlConfigurations.buttons.metadata") }
+                            {t(
+                                "console:develop.features.applications.helpPanel.tabs.start.content." +
+                                    "samlConfigurations.buttons.metadata"
+                            )}
                         </Button>
                     </Grid.Column>
                 </Grid.Row>

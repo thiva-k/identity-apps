@@ -23,7 +23,7 @@ import { I18n } from "@wso2is/i18n";
 import { EmptyPlaceholder } from "@wso2is/react-components";
 import React, { ReactElement } from "react";
 import { Trans } from "react-i18next";
-import { getEmptyPlaceholderIllustrations, store } from "../../../../../core";
+import { getEmptyPlaceholderIllustrations, store } from "@wso2is/features/core";
 
 /**
  * Handle error scenarios of getting all local claims.
@@ -33,22 +33,29 @@ import { getEmptyPlaceholderIllustrations, store } from "../../../../../core";
  */
 export const handleGetAllLocalClaimsError = (error: IdentityAppsApiException): void => {
     if (error?.response?.data?.description) {
-        store.dispatch(addAlert({
-            description: I18n.instance.t("console:develop.features.idvp.notifications.getAllLocalClaims." +
-                "error.description", { description: error.response.data.description }
-            ),
-            level: AlertLevels.ERROR,
-            message: I18n.instance.t("console:develop.features.idvp.notifications.getAllLocalClaims.error.message")
-        }));
+        store.dispatch(
+            addAlert({
+                description: I18n.instance.t(
+                    "console:develop.features.idvp.notifications.getAllLocalClaims." + "error.description",
+                    { description: error.response.data.description }
+                ),
+                level: AlertLevels.ERROR,
+                message: I18n.instance.t("console:develop.features.idvp.notifications.getAllLocalClaims.error.message")
+            })
+        );
     }
 
-    store.dispatch(addAlert({
-        description: I18n.instance.t("console:develop.features.idvp.notifications.getAllLocalClaims." +
-            "genericError.description"
-        ),
-        level: AlertLevels.ERROR,
-        message: I18n.instance.t("console:develop.features.idvp.notifications.getAllLocalClaims.genericError.message")
-    }));
+    store.dispatch(
+        addAlert({
+            description: I18n.instance.t(
+                "console:develop.features.idvp.notifications.getAllLocalClaims." + "genericError.description"
+            ),
+            level: AlertLevels.ERROR,
+            message: I18n.instance.t(
+                "console:develop.features.idvp.notifications.getAllLocalClaims.genericError.message"
+            )
+        })
+    );
 };
 
 /**
@@ -59,24 +66,22 @@ export const handleGetAllLocalClaimsError = (error: IdentityAppsApiException): v
 export const getEmptyAttributeMappingPlaceholder = (): ReactElement => {
     return (
         <EmptyPlaceholder
-            title={
-                I18n.instance.t("console:develop.features.idvp.forms.attributeSettings.attributeMapping." +
-                    "emptyPlaceholderCreate.title")
-            }
-            subtitle={
-                [
-                    <Trans
-                        key={ "no-attributes-configured" }
-                        i18nKey={
-                            "console:develop.features.idvp.forms.attributeSettings.attributeMapping" +
-                            ".emptyPlaceholderCreate.subtitle"
-                        }
-                    >
-                       Map attributes and click <strong>Add Attribute Mapping</strong> to get started.
-                    </Trans>
-                ]
-            }
-            image={ getEmptyPlaceholderIllustrations().emptyList }
+            title={I18n.instance.t(
+                "console:develop.features.idvp.forms.attributeSettings.attributeMapping." +
+                    "emptyPlaceholderCreate.title"
+            )}
+            subtitle={[
+                <Trans
+                    key={"no-attributes-configured"}
+                    i18nKey={
+                        "console:develop.features.idvp.forms.attributeSettings.attributeMapping" +
+                        ".emptyPlaceholderCreate.subtitle"
+                    }
+                >
+                    Map attributes and click <strong>Add Attribute Mapping</strong> to get started.
+                </Trans>
+            ]}
+            image={getEmptyPlaceholderIllustrations().emptyList}
             imageSize="tiny"
         />
     );

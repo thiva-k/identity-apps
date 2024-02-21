@@ -20,14 +20,15 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationDiscoveryConstants } from "../constants/organization-discovery-constants";
 
 /**
  * Get an axios instance.
  */
-const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
-    .httpRequest.bind(AsgardeoSPAClient.getInstance());
+const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Update the branding preference text customizations.
@@ -37,10 +38,7 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  * @returns Promise containing the response.
  * @throws Throws an IdentityAppsApiException if the request fails.
  */
-const addOrganizationEmailDomain = (
-    id: string,
-    domains: string[]
-): Promise<void> => {
+const addOrganizationEmailDomain = (id: string, domains: string[]): Promise<void> => {
     const requestConfig: AxiosRequestConfig = {
         data: {
             attributes: [
@@ -52,37 +50,37 @@ const addOrganizationEmailDomain = (
             organizationId: id
         },
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: `${ store.getState().config.endpoints.organizations }/organizations/discovery`
+        url: `${store.getState().config.endpoints.organizations}/organizations/discovery`
     };
 
     return httpClient(requestConfig)
         .then((response: AxiosResponse) => {
             if (response.status !== 200 && response.status !== 201) {
                 throw new IdentityAppsApiException(
-                    OrganizationDiscoveryConstants
-                        .ErrorMessages
-                        .ORGANIZATION_DOMAIN_ASSIGN_INVALID_STATUS_CODE_ERROR
-                        .getErrorMessage(),
+                    OrganizationDiscoveryConstants.ErrorMessages.ORGANIZATION_DOMAIN_ASSIGN_INVALID_STATUS_CODE_ERROR.getErrorMessage(),
                     null,
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
-        }).catch((error: AxiosError) => {
+        })
+        .catch((error: AxiosError) => {
             throw new IdentityAppsApiException(
                 OrganizationDiscoveryConstants.ErrorMessages.ORGANIZATION_DOMAIN_ASSIGN_ERROR.getErrorMessage(),
                 error.stack,
                 error.response?.data?.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 

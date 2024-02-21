@@ -26,7 +26,7 @@ import useRequest, {
 } from "../../core/hooks/use-request";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AxiosError, AxiosResponse } from "axios";
-import { store } from "../../core/store";
+import { store } from "../../../features/core/store";
 import {
     AttributeMapping,
     PatchData,
@@ -68,13 +68,13 @@ export const getUserStores = (params: QueryParams): Promise<any> => {
         url: store.getState().config.endpoints.userStores
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             if (error?.response?.data?.message !== RESOURCE_NOT_FOUND_ERROR_MESSAGE) {
                 return Promise.reject(error?.response?.data);
             }
@@ -89,7 +89,6 @@ export const getUserStores = (params: QueryParams): Promise<any> => {
  * @throws {IdentityAppsApiException}
  */
 export const getUserStoreList = (): Promise<UserstoreListResponseInterface[] | any> => {
-
     const requestConfig = {
         headers: {
             Accept: "application/json",
@@ -108,7 +107,8 @@ export const getUserStoreList = (): Promise<UserstoreListResponseInterface[] | a
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response);
@@ -120,7 +120,8 @@ export const getUserStoreList = (): Promise<UserstoreListResponseInterface[] | a
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -133,7 +134,6 @@ export const getUserStoreList = (): Promise<UserstoreListResponseInterface[] | a
 export const useUserStores = <Data = UserStoreListItem[], Error = RequestErrorInterface>(
     params: QueryParams
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
@@ -145,13 +145,7 @@ export const useUserStores = <Data = UserStoreListItem[], Error = RequestErrorIn
         url: store.getState().config.endpoints.userStores
     };
 
-    const {
-        data,
-        error,
-        isValidating,
-        mutate,
-        response
-    } = useRequest<Data, Error>(requestConfig);
+    const { data, error, isValidating, mutate, response } = useRequest<Data, Error>(requestConfig);
 
     return {
         data,
@@ -179,13 +173,13 @@ export const getUserstoreTypes = (): Promise<any> => {
         url: `${store.getState().config.endpoints.userStores}/meta/types`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -211,13 +205,13 @@ export const getAType = (id: string, params: QueryParams): Promise<any> => {
         url: `${store.getState().config.endpoints.userStores}/meta/types/${id}`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -241,13 +235,13 @@ export const getAUserStore = (id: string): Promise<any> => {
     };
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -270,13 +264,13 @@ export const deleteUserStore = (id: string): Promise<any> => {
         url: `${store.getState().config.endpoints.userStores}/${id}`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 204) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -300,13 +294,13 @@ export const patchUserStore = (id: string, data: PatchData[]): Promise<any> => {
         url: `${store.getState().config.endpoints.userStores}/${id}`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -330,13 +324,13 @@ export const addUserStore = (data: UserStorePostData): Promise<any> => {
         url: `${store.getState().config.endpoints.userStores}`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 201) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -361,13 +355,13 @@ export const updateUserStore = (id: string, data: UserStorePostData): Promise<an
         url: `${store.getState().config.endpoints.userStores}/${id}`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -391,13 +385,13 @@ export const testConnection = (data: TestConnection): Promise<any> => {
         url: `${store.getState().config.endpoints.userStores}/test-connection`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -423,13 +417,13 @@ export const getUserStoreAttributes = (id: string, params: QueryParams): Promise
         url: `${store.getState().config.endpoints.userStores}/meta/types/${id}/attributes`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };
@@ -454,13 +448,13 @@ export const updateUserStoreAttributeMappings = (userstoreId: string, data: Attr
         url: `${store.getState().config.endpoints.userStores}/${userstoreId}/attribute-mappings`
     };
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(`An error occurred. The server returned ${response.status}`);
             }
             return Promise.resolve(response.data);
         })
-        .catch((error) => {
+        .catch(error => {
             return Promise.reject(error?.response?.data);
         });
 };

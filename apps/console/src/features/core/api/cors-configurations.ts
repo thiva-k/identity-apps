@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { CORSOriginsListInterface } from "../models";
-import { store } from "../store";
+import { store } from "@wso2is/features/core/store";
 
 /**
  * Get an axios instance.
@@ -37,7 +37,7 @@ const httpClient = AsgardeoSPAClient.getInstance()
 export const getCORSOrigins = (): Promise<any> => {
     const requestConfig = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Access-Control-Allow-Origin": store.getState().config.deployment.clientHost,
             "Content-Type": "application/json"
         },
@@ -46,13 +46,14 @@ export const getCORSOrigins = (): Promise<any> => {
     };
 
     return httpClient(requestConfig)
-        .then((response) => {
+        .then(response => {
             if (response.status !== 200) {
                 return Promise.reject(new Error("Failed to fetch the CORS origins"));
             }
 
             return Promise.resolve(response.data as CORSOriginsListInterface[]);
-        }).catch((error) => {
+        })
+        .catch(error => {
             return Promise.reject(error);
         });
 };

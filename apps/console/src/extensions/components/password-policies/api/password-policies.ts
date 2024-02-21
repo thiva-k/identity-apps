@@ -20,23 +20,17 @@ import { AsgardeoSPAClient, HttpRequestConfig } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "../../../../features/core";
-import {
-    UpdateMultipleGovernanceConnectorsInterface
-} from "../../../../features/server-configurations";
+import { store } from "@wso2is/features/core";
+import { UpdateMultipleGovernanceConnectorsInterface } from "../../../../features/server-configurations";
 
 /**
  * Initialize an axios Http client.
  */
 const httpClient: (
     config: HttpRequestConfig
-) => Promise<AxiosResponse> = AsgardeoSPAClient.getInstance().httpRequest.bind(
-    AsgardeoSPAClient.getInstance()
-);
+) => Promise<AxiosResponse> = AsgardeoSPAClient.getInstance().httpRequest.bind(AsgardeoSPAClient.getInstance());
 
-export const updatePasswordPolicyProperties = (
-    data: UpdateMultipleGovernanceConnectorsInterface
-): Promise<void> => {
+export const updatePasswordPolicyProperties = (data: UpdateMultipleGovernanceConnectorsInterface): Promise<void> => {
     const requestConfig: AxiosRequestConfig = {
         data,
         headers: {

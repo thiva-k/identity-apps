@@ -40,24 +40,19 @@ const render = (
     ui: ReactElement,
     {
         allowedScopes = "internal_login",
-        featureConfig = window[ "AppUtils" ].getConfig().ui.features,
+        featureConfig = window["AppUtils"].getConfig().ui.features,
         initialState = ReduxStoreStateMock,
         store = mockStore(initialState),
         ...renderOptions
     } = {}
 ): RenderResult => {
-
     const Wrapper = (props: PropsWithChildren<ComponentType>): ReactElement => {
-        
         const { children } = props;
 
         return (
-            <Provider store={ store }>
-                <AccessControlProvider
-                    allowedScopes={ allowedScopes }
-                    featureConfig={ featureConfig }
-                >
-                    { children }
+            <Provider store={store}>
+                <AccessControlProvider allowedScopes={allowedScopes} featureConfig={featureConfig}>
+                    {children}
                 </AccessControlProvider>
             </Provider>
         );

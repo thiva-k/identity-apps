@@ -22,7 +22,7 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
 } from "../../core/hooks/use-request";
-import { store } from "../../core/store";
+import { store } from "@wso2is/features/core/store";
 import { OrganizationListWithDiscoveryInterface } from "../models/organization-discovery";
 
 /**
@@ -34,14 +34,12 @@ import { OrganizationListWithDiscoveryInterface } from "../models/organization-d
  * @param limit - List limit.
  * @returns SWR response object containing the data, error, isValidating, mutate.
  */
-const useGetOrganizationDiscovery = <
-    Data = OrganizationListWithDiscoveryInterface,
-    Error = RequestErrorInterface>(
-        shouldFetch: boolean = true,
-        filter: string,
-        offset?: number,
-        limit?: number
-    ): RequestResultInterface<Data, Error> => {
+const useGetOrganizationDiscovery = <Data = OrganizationListWithDiscoveryInterface, Error = RequestErrorInterface>(
+    shouldFetch: boolean = true,
+    filter: string,
+    offset?: number,
+    limit?: number
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
@@ -53,10 +51,10 @@ const useGetOrganizationDiscovery = <
             limit,
             offset
         },
-        url: `${ store.getState().config.endpoints.organizations }/organizations/discovery`
+        url: `${store.getState().config.endpoints.organizations}/organizations/discovery`
     };
 
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch? requestConfig : null, {
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig : null, {
         shouldRetryOnError: false
     });
 
