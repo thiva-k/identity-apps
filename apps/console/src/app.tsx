@@ -50,7 +50,7 @@ import { commonConfig } from "./extensions";
 import { useGetAllFeatures } from "./extensions/components/feature-gate/api/feature-gate";
 import { featureGateConfig } from "./extensions/configs/feature-gate";
 import { AccessControlUtils } from "./features/access-control/configs/access-control";
-import { EventPublisher, PreLoader } from "./features/core";
+import { EventPublisher, PreLoader } from "@wso2is/features/core";
 import { ProtectedRoute } from "@wso2is/features/core/components";
 import { Config, DocumentationLinks, getBaseRoutes } from "./features/core/configs";
 import { AppConstants } from "./features/core/constants";
