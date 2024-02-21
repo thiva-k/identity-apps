@@ -27,6 +27,7 @@ import useRequest, {
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { AxiosError, AxiosResponse } from "axios";
 import { store } from "../../../features/core/store";
+// import { store } from "@wso2is/features/core/store";
 import {
     AttributeMapping,
     PatchData,

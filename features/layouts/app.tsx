@@ -18,12 +18,7 @@
 
 import { RouteInterface } from "@wso2is/core/models";
 import { CommonUtils } from "@wso2is/core/utils";
-import {
-    CookieConsentBanner,
-    EmptyPlaceholder,
-    ErrorBoundary,
-    LinkButton
-} from "@wso2is/react-components";
+import { CookieConsentBanner, EmptyPlaceholder, ErrorBoundary, LinkButton } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -41,10 +36,9 @@ import { store } from "features/core/store";
  * @returns App Layout.
  */
 export const AppLayout: FunctionComponent<Record<string, unknown>> = (): ReactElement => {
-
     const { t } = useTranslation();
 
-    const [ appRoutes, setAppRoutes ] = useState<RouteInterface[]>(getAppLayoutRoutes());
+    const [appRoutes, setAppRoutes] = useState<RouteInterface[]>(getAppLayoutRoutes());
     const isCookieConsentBannerEnabled: boolean = useSelector((state: AppState) => {
         return state.config.ui.isCookieConsentBannerEnabled;
     });
@@ -54,88 +48,79 @@ export const AppLayout: FunctionComponent<Record<string, unknown>> = (): ReactEl
      */
     useEffect(() => {
         setAppRoutes(getAppLayoutRoutes());
-    }, [ AppConstants.getTenantQualifiedAppBasename() ]);
+    }, [AppConstants.getTenantQualifiedAppBasename()]);
 
     return (
         <>
             <ErrorBoundary
-                onChunkLoadError={ AppUtils.onChunkLoadError }
-                fallback={ (
+                onChunkLoadError={AppUtils.onChunkLoadError}
+                fallback={
                     <EmptyPlaceholder
-                        action={ (
-                            <LinkButton onClick={ () => CommonUtils.refreshPage() }>
-                                { t("console:common.placeholders.brokenPage.action") }
+                        action={
+                            <LinkButton onClick={() => CommonUtils.refreshPage()}>
+                                {t("console:common.placeholders.brokenPage.action")}
                             </LinkButton>
-                        ) }
-                        image={ getEmptyPlaceholderIllustrations().brokenPage }
+                        }
+                        image={getEmptyPlaceholderIllustrations().brokenPage}
                         imageSize="tiny"
-                        subtitle={ [
+                        subtitle={[
                             t("console:common.placeholders.brokenPage.subtitles.0"),
                             t("console:common.placeholders.brokenPage.subtitles.1")
-                        ] }
-                        title={ t("console:common.placeholders.brokenPage.title") }
+                        ]}
+                        title={t("console:common.placeholders.brokenPage.title")}
                     />
-                ) }
+                }
             >
-                <Suspense fallback={ <PreLoader /> }>
+                <Suspense fallback={<PreLoader />}>
                     <Switch>
-                        {
-                            appRoutes.map((route: RouteInterface, index: number) => (
-                                route.redirectTo
-                                    ? <Redirect to={ route.redirectTo } key={ index } />
-                                    : route.protected
-                                        ? (
-                                            <ProtectedRoute
-                                                component={ route.component ? route.component : null }
-                                                path={ route.path }
-                                                key={ index }
-                                                exact={ route.exact }
-                                            />
-                                        )
-                                        : (
-                                            <Route
-                                                path={ route.path }
-                                                render={ (renderProps: RouteComponentProps) =>
-                                                    route.component
-                                                        ? <route.component { ...renderProps } />
-                                                        : null
-                                                }
-                                                key={ index }
-                                                exact={ route.exact }
-                                            />
-                                        )
-                            ))
-                        }
+                        {appRoutes.map((route: RouteInterface, index: number) =>
+                            route.redirectTo ? (
+                                <Redirect to={route.redirectTo} key={index} />
+                            ) : route.protected ? (
+                                <ProtectedRoute
+                                    component={route.component ? route.component : null}
+                                    path={route.path}
+                                    key={index}
+                                    exact={route.exact}
+                                />
+                            ) : (
+                                <Route
+                                    path={route.path}
+                                    render={(renderProps: RouteComponentProps) =>
+                                        route.component ? <route.component {...renderProps} /> : null
+                                    }
+                                    key={index}
+                                    exact={route.exact}
+                                />
+                            )
+                        )}
                     </Switch>
                 </Suspense>
-                {
-                    isCookieConsentBannerEnabled && (
-                        <CookieConsentBanner
-                            inverted
-                            domainCookie
-                            title={ (
-                                <div className="title" data-testid="cookie-consent-banner-content-title">
-                                    <Trans
-                                        i18nKey={ t("console:common.cookieConsent.content") }
+                {isCookieConsentBannerEnabled && (
+                    <CookieConsentBanner
+                        inverted
+                        domainCookie
+                        title={
+                            <div className="title" data-testid="cookie-consent-banner-content-title">
+                                <Trans i18nKey={t("console:common.cookieConsent.content")}>
+                                    We use cookies to ensure that you get the best overall experience. These cookies are
+                                    used to maintain an uninterrupted continuous session whilst providing smooth and
+                                    personalized services. To learn more about how we use cookies, refer our{" "}
+                                    <a
+                                        href={store.getState()?.config?.ui?.cookiePolicyUrl ?? ""}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        data-testid="login-page-cookie-policy-link"
                                     >
-                                        We use cookies to ensure that you get the best overall experience.
-                                        These cookies are used to maintain an uninterrupted continuous
-                                        session whilst providing smooth and personalized services.
-                                        To learn more about how we use cookies, refer our <a
-                                            href={ store.getState()?.config?.ui?.cookiePolicyUrl ?? "" }
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            data-testid="login-page-cookie-policy-link"
-                                        >
                                         Cookie Policy
-                                        </a>.
-                                    </Trans>
-                                </div>
-                            ) }
-                            confirmButtonText={ t("console:common.cookieConsent.confirmButton") }
-                        />
-                    )
-                }
+                                    </a>
+                                    .
+                                </Trans>
+                            </div>
+                        }
+                        confirmButtonText={t("console:common.cookieConsent.confirmButton")}
+                    />
+                )}
             </ErrorBoundary>
         </>
     );
