@@ -213,7 +213,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         category: "console:develop.features.sidePanel.categories.application",
                         children: [
                             {
-                                component: lazy(() => import("../../applications/pages/application-template")),
+                                component: lazy(() => import("@wso2is/features/applications/pages/application-template")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -225,7 +225,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             },
                             {
-                                component: lazy(() => import("../../applications/pages/application-edit")),
+                                component: lazy(() => import("@wso2is/features/applications/pages/application-edit")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -237,7 +237,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../applications/pages/applications")),
+                        component: lazy(() => import("@wso2is/features/applications/pages/applications")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().applications
@@ -253,7 +253,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         category: "console:develop.features.sidePanel.categories.application",
                         children: [
                             {
-                                component: lazy(() => import("../../connections/pages/connection-templates")),
+                                component: lazy(() => import("@wso2is/features/connections/pages/connection-templates")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -265,7 +265,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             },
                             {
-                                component: lazy(() => import("../../connections/pages/connection-edit")),
+                                component: lazy(() => import("@wso2is/features/connections/pages/connection-edit")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -277,7 +277,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../connections/pages/connections")),
+                        component: lazy(() => import("@wso2is/features/connections/pages/connections")),
                         exact: true,
                         icon: {
                             icon: <NodesIcon />
@@ -297,7 +297,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             {
                                 component: lazy(() =>
                                     import(
-                                        "../../identity-verification-providers/pages/" +
+                                        "@wso2is/features/identity-verification-providers/pages/" +
                                             "identity-verification-provider-template"
                                     )
                                 ),
@@ -314,7 +314,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             {
                                 component: lazy(() =>
                                     import(
-                                        "../../identity-verification-providers/pages/identity-verification-provider-edit"
+                                        "@wso2is/features/identity-verification-providers/pages/identity-verification-provider-edit"
                                     )
                                 ),
                                 exact: true,
@@ -329,7 +329,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             }
                         ],
                         component: lazy(() =>
-                            import("../../identity-verification-providers/pages/identity-verification-providers")
+                            import("@wso2is/features/identity-verification-providers/pages/identity-verification-providers")
                         ),
                         exact: true,
                         icon: { icon: getSidePanelIcons().identityVerificationProviders },
@@ -344,7 +344,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         category: "extensions:manage.sidePanel.categories.attributeManagement",
                         children: [
                             {
-                                component: lazy(() => import("../../claims/pages/local-claims-edit")),
+                                component: lazy(() => import("@wso2is/features/claims/pages/local-claims-edit")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -356,7 +356,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             },
                             {
-                                component: lazy(() => import("../../claims/pages/local-claims")),
+                                component: lazy(() => import("@wso2is/features/claims/pages/local-claims")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -368,7 +368,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             },
                             {
-                                component: lazy(() => import("../../claims/pages/external-dialect-edit")),
+                                component: lazy(() => import("@wso2is/features/claims/pages/external-dialect-edit")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -380,7 +380,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             },
                             {
-                                component: lazy(() => import("../../claims/pages/attribute-mappings")),
+                                component: lazy(() => import("@wso2is/features/claims/pages/attribute-mappings")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -392,7 +392,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             },
                             {
-                                component: lazy(() => import("../../claims/pages/attribute-verification-settings")),
+                                component: lazy(() => import("@wso2is/features/claims/pages/attribute-verification-settings")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -404,7 +404,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../claims/pages/claim-dialects")),
+                        component: lazy(() => import("@wso2is/features/claims/pages/claim-dialects")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().claims
@@ -420,7 +420,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         category: "extensions:manage.sidePanel.categories.attributeManagement",
                         children: [
                             {
-                                component: lazy(() => import("../../oidc-scopes/pages/oidc-scopes-edit")),
+                                component: lazy(() => import("@wso2is/features/oidc-scopes/pages/oidc-scopes-edit")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -432,7 +432,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../oidc-scopes/pages/oidc-scopes")),
+                        component: lazy(() => import("@wso2is/features/oidc-scopes/pages/oidc-scopes")),
                         exact: true,
                         icon: {
                             icon: <UserCircleDotIcon fill="black" className="icon" />
@@ -526,7 +526,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     },
                     {
                         category: "extensions:develop.sidePanel.categories.branding",
-                        component: lazy(() => import("../../../features/branding/pages/branding")),
+                        component: lazy(() => import("@wso2is/features/branding/pages/branding")),
                         exact: true,
                         icon: {
                             icon: import("../../../extensions/assets/images/icons/paint-palette-and-brush-outline.svg")
@@ -541,7 +541,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     {
                         category: "extensions:develop.sidePanel.categories.branding",
                         component: lazy(() =>
-                            import("../../../features/email-management/" + "pages/email-customization")
+                            import("@wso2is/features/email-management/" + "pages/email-customization")
                         ),
                         exact: true,
                         icon: { icon: <EnvelopeIcon fill="black" className="icon" /> },
@@ -566,7 +566,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     },
                     {
                         category: "extensions:develop.sidePanel.categories.branding",
-                        component: lazy(() => import("../../../features/email-providers" + "/pages/email-providers")),
+                        component: lazy(() => import("@wso2is/features/email-providers" + "/pages/email-providers")),
                         exact: true,
                         icon: {
                             icon: <EnvelopeGearIcon fill="black" className="icon" />
@@ -580,7 +580,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     },
                     {
                         category: "extensions:develop.sidePanel.categories.smsProvider",
-                        component: lazy(() => import("../../../features/sms-providers" + "/pages/sms-providers")),
+                        component: lazy(() => import("@wso2is/features/sms-providers" + "/pages/sms-providers")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().sms
@@ -657,7 +657,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         children: [
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("@wso2is/features/server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -674,7 +674,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("@wso2is/features/server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -694,7 +694,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("@wso2is/features/server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -711,7 +711,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             }
                         ],
                         component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-listing-page")
+                            import("@wso2is/features/server-configurations/pages/connector-listing-page")
                         ),
                         exact: true,
                         icon: {
@@ -733,7 +733,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         children: [
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/pages/connector-edit-page")
+                                    import("@wso2is/features/server-configurations/pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -780,7 +780,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             }
                         ],
                         component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-listing-page")
+                            import("@wso2is/features/server-configurations/pages/connector-listing-page")
                         ),
                         exact: true,
                         icon: {
@@ -802,7 +802,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         children: [
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("@wso2is/features/server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -825,7 +825,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/pages/connector-edit-page")
+                                    import("@wso2is/features/server-configurations/pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -848,7 +848,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() =>
-                                    import("../../../features/validation/pages/validation-config-edit")
+                                    import("@wso2is/features/validation/pages/validation-config-edit")
                                 ),
                                 exact: true,
                                 icon: {
@@ -862,7 +862,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() =>
-                                    import("../../../features/private-key-jwt/pages/private-key-jwt-config-edit")
+                                    import("@wso2is/features/private-key-jwt/pages/private-key-jwt-config-edit")
                                 ),
                                 exact: true,
                                 icon: {
@@ -876,7 +876,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             }
                         ],
                         component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-listing-page")
+                            import("@wso2is/features/server-configurations/pages/connector-listing-page")
                         ),
                         exact: true,
                         icon: {
@@ -943,7 +943,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     {
                         category: "extensions:manage.sidePanel.categories.monitor",
                         component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-edit-page")
+                            import("@wso2is/features/server-configurations/pages/connector-edit-page")
                         ),
                         exact: true,
                         icon: {
@@ -961,7 +961,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     },
                     {
                         component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-edit-page")
+                            import("@wso2is/features/server-configurations/pages/connector-edit-page")
                         ),
                         exact: true,
                         icon: {
@@ -1080,7 +1080,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     {
                         children: [
                             {
-                                component: lazy(() => import("../../console-settings/pages/console-roles-edit-page")),
+                                component: lazy(() => import("@wso2is/features/console-settings/pages/console-roles-edit-page")),
                                 exact: false,
                                 icon: { icon: getSidePanelIcons().childIcon },
                                 id: "consoleRolesEdit",
@@ -1091,7 +1091,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() => {
-                                    return import("../../console-settings/pages/console-administrator-edit-page");
+                                    return import("@wso2is/features/console-settings/pages/console-administrator-edit-page");
                                 }),
                                 exact: false,
                                 icon: { icon: getSidePanelIcons().childIcon },
@@ -1102,7 +1102,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../console-settings/pages/console-settings-page")),
+                        component: lazy(() => import("@wso2is/features/console-settings/pages/console-settings-page")),
                         exact: true,
                         icon: {
                             icon: <GearIcon fill="black" className="icon" />
@@ -1296,7 +1296,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 category: "extensions:manage.sidePanel.categories.userManagement",
                 children: [
                     {
-                        component: lazy(() => import("../../application-roles/pages/application-role-edit")),
+                        component: lazy(() => import("@wso2is/features/application-roles/pages/application-role-edit")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1308,7 +1308,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../application-roles/pages/application-roles")),
+                component: lazy(() => import("@wso2is/features/application-roles/pages/application-roles")),
                 exact: true,
                 featureStatus: "NEW",
                 featureStatusLabel: "common:new",
@@ -1386,7 +1386,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 category: "extensions:manage.sidePanel.categories.userManagement",
                 children: [
                     {
-                        component: lazy(() => import("../../application-roles/pages/application-roles")),
+                        component: lazy(() => import("@wso2is/features/application-roles/pages/application-roles")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1398,7 +1398,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     },
                     {
-                        component: lazy(() => import("../../application-roles/pages/application-role-edit")),
+                        component: lazy(() => import("@wso2is/features/application-roles/pages/application-role-edit")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1434,7 +1434,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../parent-roles/parent-roles")),
+                component: lazy(() => import("@wso2is/features/parent-roles/parent-roles")),
                 exact: true,
                 featureStatus: "NEW",
                 featureStatusLabel: "common:new",
@@ -1455,7 +1455,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 category: "console:develop.features.sidePanel.categories.application",
                 children: [
                     {
-                        component: lazy(() => import("../../api-resources/pages/api-resource-edit")),
+                        component: lazy(() => import("@wso2is/features/api-resources/pages/api-resource-edit")),
                         exact: true,
                         id: "apiResources-edit",
                         name: "extensions:develop.sidePanel.apiResources",
@@ -1464,7 +1464,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     },
                     {
-                        component: lazy(() => import("../../api-resources/pages/api-resources-internal-list")),
+                        component: lazy(() => import("@wso2is/features/api-resources/pages/api-resources-internal-list")),
                         exact: true,
                         id: "apiResources-list",
                         name: "extensions:develop.sidePanel.apiResources",
@@ -1473,7 +1473,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../api-resources/pages/api-resources")),
+                component: lazy(() => import("@wso2is/features/api-resources/pages/api-resources")),
                 exact: true,
                 icon: {
                     icon: import("../../../extensions/assets/images/icons/api-resources-icon.svg")
@@ -1645,7 +1645,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 category: "extensions:manage.sidePanel.categories.userManagement",
                 children: [
                     {
-                        component: lazy(() => import("../../roles-v1/pages/role-edit")),
+                        component: lazy(() => import("@wso2is/features/roles-v1/pages/role-edit")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1657,7 +1657,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../roles-v1/pages/role")),
+                component: lazy(() => import("@wso2is/features/roles-v1/pages/role")),
                 exact: true,
                 icon: {
                     icon: getSidePanelIcons().applicationRoles
@@ -1675,7 +1675,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 category: "extensions:manage.sidePanel.categories.userManagement",
                 children: [
                     {
-                        component: lazy(() => import("../../roles/pages/role-edit")),
+                        component: lazy(() => import("@wso2is/features/roles/pages/role-edit")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1687,7 +1687,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     },
                     {
-                        component: lazy(() => import("../../roles/pages/create-role-wizard")),
+                        component: lazy(() => import("@wso2is/features/roles/pages/create-role-wizard")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1699,7 +1699,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     }
                 ],
-                component: lazy(() => import("../../roles/pages/role")),
+                component: lazy(() => import("@wso2is/features/roles/pages/role")),
                 exact: true,
                 icon: {
                     icon: getSidePanelIcons().applicationRoles
