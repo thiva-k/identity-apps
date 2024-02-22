@@ -27,7 +27,7 @@ import groupBy from "lodash-es/groupBy";
 import sortBy from "lodash-es/sortBy";
 import { FeatureGateConstants } from "../../../extensions/components/feature-gate/constants/feature-gate";
 import { AppConstants } from "../constants";
-import { history } from "../helpers";
+import { history } from "@wso2is/features/core";
 
 /**
  * Utility class for application routes related operations.

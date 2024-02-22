@@ -58,7 +58,7 @@ import {
 } from "./features/core";
 import { store } from "@wso2is/features/core";
 import { AppConstants } from "./features/core/constants";
-import { history } from "./features/core/helpers";
+import { history } from "@wso2is/features/core";
 import useRoutes from "./features/core/hooks/use-routes";
 import useOrganizationSwitch from "./features/organizations/hooks/use-organization-switch";
 import { GovernanceCategoryForOrgsInterface, useGovernanceConnectorCategories } from "./features/server-configurations";

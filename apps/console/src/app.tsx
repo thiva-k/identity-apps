@@ -54,7 +54,7 @@ import { EventPublisher, PreLoader } from "./features/core";
 import { ProtectedRoute } from "./features/core/components";
 import { Config, DocumentationLinks, getBaseRoutes } from "./features/core/configs";
 import { AppConstants } from "./features/core/constants";
-import { history } from "./features/core/helpers";
+import { history } from "@wso2is/features/core";
 import {
     ConfigReducerStateInterface,
     DocumentationLinksInterface,

@@ -33,7 +33,6 @@ import {
 } from "@oxygen-ui/react-icons";
 import { LegacyModeInterface, RouteInterface } from "@wso2is/core/models";
 import ApplicationsPage from "@wso2is/features/applications/pages/applications";
-import UsersPage from "@wso2is/features/users/pages/users";
 import compact from "lodash-es/compact";
 import keyBy from "lodash-es/keyBy";
 import merge from "lodash-es/merge";
@@ -87,26 +86,6 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         order: 0,
                         path: AppConstants.getPaths().get("GETTING_STARTED"),
                         protected: true,
-                        showOnSidePanel: true
-                    },
-                    {
-                        component: ApplicationsPage,
-                        exact: false,
-                        icon: {
-                            icon: getSidePanelIcons().home
-                        },
-                        id: "applications",
-                        name: "Applications",
-                        order: 1,
-                        path: "apptest",
-                        protected: true,
-                        showOnSidePanel: true
-                    },
-                    {
-                        component: UsersPage,
-                        id: "test",
-                        name: "Test",
-                        path: "testpath",
                         showOnSidePanel: true
                     },
                     {
@@ -1347,7 +1326,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 category: "extensions:manage.sidePanel.categories.userManagement",
                 children: [
                     {
-                        component: lazy(() => import("../../../features/userstores/pages/user-stores-edit")),
+                        component: lazy(() => import("@wso2is/features/userstores/pages/user-stores-edit")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1510,7 +1489,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 category: "extensions:manage.sidePanel.categories.userManagement",
                 children: [
                     {
-                        component: lazy(() => import("../../users/pages/user-edit")),
+                        component: lazy(() => import("@wso2is/features/users/pages/user-edit")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().childIcon
@@ -1538,7 +1517,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                 category: "extensions:manage.sidePanel.categories.userManagement",
                 children: [
                     {
-                        component: lazy(() => import("../../users/pages/user-edit")),
+                        component: lazy(() => import("@wso2is/features/users/pages/user-edit")),
                         exact: true,
                         icon: {
                             icon: import("../../../extensions/assets/images/icons/admin-icon.svg")

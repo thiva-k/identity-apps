@@ -77,8 +77,8 @@ import {
     UIConstants,
     getAppViewRoutes,
     getEmptyPlaceholderIllustrations,
-    history
 } from "../features/core";
+import { history } from "@wso2is/features/core"
 import { setActiveView } from "@wso2is/features/core/store/actions";
 import { CommonUtils as ConsoleCommonUtils } from "../features/core/utils";
 
