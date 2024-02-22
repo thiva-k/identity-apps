@@ -29,10 +29,10 @@ import { BrowserRouter } from "react-router-dom";
 import { AsgardeoTheme } from "./branding/theme";
 import { AuthenticateUtils } from "./features/authentication";
 import { Config, PreLoader, store } from "@wso2is/features/core";
-import { UserPreferencesInterface } from "./features/core/models/user-preferences";
+import { UserPreferencesInterface } from "@wso2is/features/core/models/user-preferences";
 import AppSettingsProvider from "./features/core/providers/app-settings-provider";
-import UserPreferencesProvider from "./features/core/providers/user-preferences-provider";
-import OrganizationsProvider from "./features/organizations/providers/organizations-provider";
+import UserPreferencesProvider from "@wso2is/features/core/providers/user-preferences-provider";
+import OrganizationsProvider from "@wso2is/features/organizations/providers/organizations-provider";
 import { ProtectedApp } from "./protected-app";
 
 // Set the runtime config in the context.

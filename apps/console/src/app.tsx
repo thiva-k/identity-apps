@@ -46,25 +46,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { StaticContext } from "react-router";
 import { Redirect, Route, RouteComponentProps, Router, Switch } from "react-router-dom";
 import { Dispatch } from "redux";
-import { commonConfig } from "./extensions";
-import { useGetAllFeatures } from "./extensions/components/feature-gate/api/feature-gate";
-import { featureGateConfig } from "./extensions/configs/feature-gate";
-import { AccessControlUtils } from "./features/access-control/configs/access-control";
-import { EventPublisher, PreLoader } from "./features/core";
-import { ProtectedRoute } from "./features/core/components";
+import { commonConfig } from "@wso2is/features/extensions";
+import { useGetAllFeatures } from "@wso2is/features/extensions/components/feature-gate/api/feature-gate";
+import { featureGateConfig } from "@wso2is/features/extensions/configs/feature-gate";
+import { AccessControlUtils } from "@wso2is/features/access-control/configs/access-control";
+import { EventPublisher, PreLoader } from "@wso2is/features/core";
+import { ProtectedRoute } from "@wso2is/features/core/components";
 import { Config, DocumentationLinks, getBaseRoutes } from "./features/core/configs";
-import { AppConstants } from "./features/core/constants";
+import { AppConstants } from "@wso2is/features/core/constants";
 import { history } from "@wso2is/features/core";
 import {
     ConfigReducerStateInterface,
     DocumentationLinksInterface,
     FeatureConfigInterface,
     ServiceResourceEndpointsInterface
-} from "./features/core/models";
+} from "@wso2is/features/core/models";
 import { AppState, store } from "@wso2is/features/core/store";
 import "moment/locale/si";
 import "moment/locale/fr";
-import { OrganizationUtils } from "./features/organizations/utils";
+import { OrganizationUtils } from "@wso2is/features/organizations/utils";
 
 /**
  * Main App component.

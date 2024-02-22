@@ -38,10 +38,10 @@ import React, { FunctionComponent, LazyExoticComponent, ReactElement, lazy, useE
 import { I18nextProvider } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { commonConfig } from "./extensions";
-import useTenantTier from "./extensions/components/subscription/api/subscription";
-import { TenantTier } from "./extensions/components/subscription/models/subscription";
-import { SubscriptionProvider } from "./extensions/components/subscription/providers/subscription-provider";
+import { commonConfig } from "@wso2is/features/extensions";
+import useTenantTier from "@wso2is/features/extensions/components/subscription/api/subscription";
+import { TenantTier } from "@wso2is/features/extensions/components/subscription/models/subscription";
+import { SubscriptionProvider } from "@wso2is/features/extensions/components/subscription/providers/subscription-provider";
 import useSignIn from "./features/authentication/hooks/use-sign-in";
 import {
     AppState,
@@ -52,16 +52,17 @@ import {
     HttpUtils,
     PreLoader,
     UIConfigInterface,
-    getAppViewRoutes,
     setFilteredDevelopRoutes,
-    setSanitizedDevelopRoutes
-} from "./features/core";
+    setSanitizedDevelopRoutes,
+    //getAppViewRoutes
+} from "@wso2is/features/core";
+import {getAppViewRoutes} from "./features/core"
 import { store } from "@wso2is/features/core";
-import { AppConstants } from "./features/core/constants";
+import { AppConstants } from "@wso2is/features/core/constants";
 import { history } from "@wso2is/features/core";
-import useRoutes from "./features/core/hooks/use-routes";
+import useRoutes from "@wso2is/features/core/hooks/use-routes";
 import useOrganizationSwitch from "./features/organizations/hooks/use-organization-switch";
-import { GovernanceCategoryForOrgsInterface, useGovernanceConnectorCategories } from "./features/server-configurations";
+import { GovernanceCategoryForOrgsInterface, useGovernanceConnectorCategories } from "@wso2is/features/server-configurations";
 
 const App: LazyExoticComponent<FunctionComponent> = lazy(() => import("./app"));
 

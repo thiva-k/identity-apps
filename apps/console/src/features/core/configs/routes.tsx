@@ -32,23 +32,22 @@ import {
     UserGroupIcon
 } from "@oxygen-ui/react-icons";
 import { LegacyModeInterface, RouteInterface } from "@wso2is/core/models";
-import ApplicationsPage from "@wso2is/features/applications/pages/applications";
 import compact from "lodash-es/compact";
 import keyBy from "lodash-es/keyBy";
 import merge from "lodash-es/merge";
 import values from "lodash-es/values";
 import React, { FunctionComponent, lazy } from "react";
 import { getSidePanelIcons } from "./ui";
-import { identityProviderConfig, userstoresConfig } from "../../../extensions";
-import { APIResourcesConstants as APIResourcesExtensionConstants } from "../../../extensions/components/api-resources/constants";
-import { FeatureGateConstants } from "../../../extensions/components/feature-gate/constants/feature-gate";
-import { RemoteUserStoreConstants } from "../../../extensions/components/user-stores/constants";
-import { UsersConstants } from "../../../extensions/components/users/constants";
+import { identityProviderConfig, userstoresConfig } from "@wso2is/features/extensions";
+import { APIResourcesConstants as APIResourcesExtensionConstants } from "@wso2is/features/extensions/components/api-resources/constants";
+import { FeatureGateConstants } from "@wso2is/features/extensions/components/feature-gate/constants/feature-gate";
+import { RemoteUserStoreConstants } from "@wso2is/features/extensions/components/user-stores/constants";
+import { UsersConstants } from "@wso2is/features/extensions/components/users/constants";
 import { AppLayout, AuthLayout, DefaultLayout, ErrorLayout } from "../../../layouts";
 import { AppView, FullScreenView } from "../../../views";
-import { APIResourcesConstants } from "../../api-resources/constants";
-import { ServerConfigurationsConstants } from "../../server-configurations";
-import { AppConstants } from "../constants";
+import { APIResourcesConstants } from "@wso2is/features/api-resources/constants";
+import { ServerConfigurationsConstants } from "@wso2is/features/server-configurations";
+import { AppConstants } from "@wso2is/features/core/constants";
 /**
  * Get App View Routes.
  *
