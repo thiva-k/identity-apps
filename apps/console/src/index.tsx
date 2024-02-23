@@ -27,7 +27,7 @@ import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { AsgardeoTheme } from "./branding/theme";
-import { AuthenticateUtils } from "./features/authentication";
+import { AuthenticateUtils } from "@wso2is/features/authentication";
 import { Config, PreLoader, store } from "@wso2is/features/core";
 import { UserPreferencesInterface } from "@wso2is/features/core/models/user-preferences";
 import AppSettingsProvider from "./features/core/providers/app-settings-provider";
