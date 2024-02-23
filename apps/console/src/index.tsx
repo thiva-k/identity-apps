@@ -30,7 +30,7 @@ import { AsgardeoTheme } from "./branding/theme";
 import { AuthenticateUtils } from "@wso2is/features/authentication";
 import { Config, PreLoader, store } from "@wso2is/features/core";
 import { UserPreferencesInterface } from "@wso2is/features/core/models/user-preferences";
-import AppSettingsProvider from "./features/core/providers/app-settings-provider";
+import AppSettingsProvider from "@wso2is/features/core/providers/app-settings-provider";
 import UserPreferencesProvider from "@wso2is/features/core/providers/user-preferences-provider";
 import OrganizationsProvider from "@wso2is/features/organizations/providers/organizations-provider";
 import { ProtectedApp } from "./protected-app";

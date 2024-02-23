@@ -42,7 +42,7 @@ import { commonConfig } from "@wso2is/features/extensions";
 import useTenantTier from "@wso2is/features/extensions/components/subscription/api/subscription";
 import { TenantTier } from "@wso2is/features/extensions/components/subscription/models/subscription";
 import { SubscriptionProvider } from "@wso2is/features/extensions/components/subscription/providers/subscription-provider";
-import useSignIn from "./features/authentication/hooks/use-sign-in";
+import useSignIn from "@wso2is/features/authentication/hooks/use-sign-in";
 import {
     AppState,
     AppUtils,
@@ -56,12 +56,12 @@ import {
     setSanitizedDevelopRoutes,
     //getAppViewRoutes
 } from "@wso2is/features/core";
-import {getAppViewRoutes} from "./features/core"
+import {getAppViewRoutes} from "@wso2is/features/core"
 import { store } from "@wso2is/features/core";
 import { AppConstants } from "@wso2is/features/core/constants";
 import { history } from "@wso2is/features/core";
 import useRoutes from "@wso2is/features/core/hooks/use-routes";
-import useOrganizationSwitch from "./features/organizations/hooks/use-organization-switch";
+import useOrganizationSwitch from "@wso2is/features/organizations/hooks/use-organization-switch";
 import { GovernanceCategoryForOrgsInterface, useGovernanceConnectorCategories } from "@wso2is/features/server-configurations";
 
 const App: LazyExoticComponent<FunctionComponent> = lazy(() => import("./app"));

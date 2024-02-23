@@ -43,8 +43,8 @@ import { APIResourcesConstants as APIResourcesExtensionConstants } from "@wso2is
 import { FeatureGateConstants } from "@wso2is/features/extensions/components/feature-gate/constants/feature-gate";
 import { RemoteUserStoreConstants } from "@wso2is/features/extensions/components/user-stores/constants";
 import { UsersConstants } from "@wso2is/features/extensions/components/users/constants";
-import { AppLayout, AuthLayout, DefaultLayout, ErrorLayout } from "../../../layouts";
-import { AppView, FullScreenView } from "../../../views";
+import { AppLayout, AuthLayout, DefaultLayout, ErrorLayout } from "@wso2is/features/layouts";
+import { AppView, FullScreenView } from "@wso2is/features/views";
 import { APIResourcesConstants } from "@wso2is/features/api-resources/constants";
 import { ServerConfigurationsConstants } from "@wso2is/features/server-configurations";
 import { AppConstants } from "@wso2is/features/core/constants";
