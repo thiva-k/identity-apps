@@ -56,11 +56,11 @@ import {
     setSanitizedDevelopRoutes,
     //getAppViewRoutes
 } from "@wso2is/features/core";
-import {getAppViewRoutes} from "@wso2is/features/core"
+import {getAppViewRoutes} from "./routes"
 import { store } from "@wso2is/features/core";
 import { AppConstants } from "@wso2is/features/core/constants";
 import { history } from "@wso2is/features/core";
-import useRoutes from "@wso2is/features/core/hooks/use-routes";
+import useRoutes from "./use-routes";
 import useOrganizationSwitch from "@wso2is/features/organizations/hooks/use-organization-switch";
 import { GovernanceCategoryForOrgsInterface, useGovernanceConnectorCategories } from "@wso2is/features/server-configurations";
 

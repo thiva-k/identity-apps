@@ -52,7 +52,7 @@ import { featureGateConfig } from "@wso2is/features/extensions/configs/feature-g
 import { AccessControlUtils } from "@wso2is/features/access-control/configs/access-control";
 import { EventPublisher, PreLoader } from "@wso2is/features/core";
 import { ProtectedRoute } from "@wso2is/features/core/components";
-import {  getBaseRoutes } from "@wso2is/features/core/configs";
+import {  getBaseRoutes } from "./routes";
 import { Config,DocumentationLinks} from "@wso2is/features/core/configs"
 import { AppConstants } from "@wso2is/features/core/constants";
 import { history } from "@wso2is/features/core";
