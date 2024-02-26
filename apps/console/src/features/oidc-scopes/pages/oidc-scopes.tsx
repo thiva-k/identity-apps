@@ -28,7 +28,8 @@ import { Dispatch } from "redux";
 import { DropdownItemProps, DropdownProps, Icon, Input } from "semantic-ui-react";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
 import { ClaimManagementConstants } from "../../claims/constants";
-import { AppConstants, AppState, FeatureConfigInterface, UIConstants, history, sortList } from "../../core";
+import { AppConstants, AppState, FeatureConfigInterface, UIConstants, sortList } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { useOIDCScopesList } from "../api";
 import { OIDCScopeCreateWizard, OIDCScopeList } from "../components";
 import { OIDCScopesListInterface } from "../models";
@@ -45,13 +46,8 @@ type OIDCScopesPageInterface = TestableComponentInterface;
  *
  * @returns OIDCScopesPage Component.
  */
-const OIDCScopesPage: FunctionComponent<OIDCScopesPageInterface> = (
-    props: OIDCScopesPageInterface
-): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+const OIDCScopesPage: FunctionComponent<OIDCScopesPageInterface> = (props: OIDCScopesPageInterface): ReactElement => {
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
@@ -75,12 +71,12 @@ const OIDCScopesPage: FunctionComponent<OIDCScopesPageInterface> = (
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ filteredScopeList, setFilteredScopeList ] = useState<OIDCScopesListInterface[]>(undefined);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ listItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ sortOrder, setSortOrder ] = useState<"ASC" | "DESC">("ASC");
-    const [ sortByStrategy, setSortByStrategy ] = useState<DropdownItemProps>(SORT_BY[ 0 ]);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
+    const [filteredScopeList, setFilteredScopeList] = useState<OIDCScopesListInterface[]>(undefined);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [listItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [sortOrder, setSortOrder] = useState<"ASC" | "DESC">("ASC");
+    const [sortByStrategy, setSortByStrategy] = useState<DropdownItemProps>(SORT_BY[0]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
     const {
         data: scopeList,
@@ -95,7 +91,7 @@ const OIDCScopesPage: FunctionComponent<OIDCScopesPageInterface> = (
      */
     useEffect(() => {
         setFilteredScopeList(sortList(filteredScopeList, sortByStrategy.value as string, sortOrder === "ASC"));
-    }, [ sortOrder, sortByStrategy ]);
+    }, [sortOrder, sortByStrategy]);
 
     /**
      * Show errors when the API request fails.
@@ -105,61 +101,73 @@ const OIDCScopesPage: FunctionComponent<OIDCScopesPageInterface> = (
             return;
         }
 
-        if (scopeListFetchRequestError.response
-            && scopeListFetchRequestError.response.data
-            && scopeListFetchRequestError.response.data.description) {
-            dispatch(addAlert({
-                description: scopeListFetchRequestError.response.data.description,
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.notifications.fetchApplications.error." +
-                    "message")
-            }));
+        if (
+            scopeListFetchRequestError.response &&
+            scopeListFetchRequestError.response.data &&
+            scopeListFetchRequestError.response.data.description
+        ) {
+            dispatch(
+                addAlert({
+                    description: scopeListFetchRequestError.response.data.description,
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "console:develop.features.applications.notifications.fetchApplications.error." + "message"
+                    )
+                })
+            );
 
             return;
         }
 
-        dispatch(addAlert({
-            description: t("console:develop.features.applications.notifications.fetchApplications" +
-                ".genericError.description"),
-            level: AlertLevels.ERROR,
-            message: t("console:develop.features.applications.notifications.fetchApplications.genericError." +
-                "message")
-        }));
-    }, [ scopeListFetchRequestError ]);
+        dispatch(
+            addAlert({
+                description: t(
+                    "console:develop.features.applications.notifications.fetchApplications" +
+                        ".genericError.description"
+                ),
+                level: AlertLevels.ERROR,
+                message: t(
+                    "console:develop.features.applications.notifications.fetchApplications.genericError." + "message"
+                )
+            })
+        );
+    }, [scopeListFetchRequestError]);
 
     /**
-    * Handles sort order change.
-    *
-    * @param isAscending - Sort order.
-    */
+     * Handles sort order change.
+     *
+     * @param isAscending - Sort order.
+     */
     const handleSortOrderChange = (isAscending: boolean) => {
         setSortOrder(isAscending === true ? "ASC" : "DESC");
     };
 
     /**
-    * Handle sort strategy change.
-    *
-    * @param event - Dropdown change event.
-    * @param data - Selected dropdown option.
-    */
+     * Handle sort strategy change.
+     *
+     * @param event - Dropdown change event.
+     * @param data - Selected dropdown option.
+     */
     const handleSortStrategyChange = (_event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
-        setSortByStrategy(SORT_BY.filter(
-            (option: { key: number; text: string; value: string; }) => option.value === data.value)[ 0 ]);
-    }; 
+        setSortByStrategy(
+            SORT_BY.filter((option: { key: number; text: string; value: string }) => option.value === data.value)[0]
+        );
+    };
 
     /**
-     * This the the function which is called when the user types 
+     * This the the function which is called when the user types
      * in the search box and hits enter.
-     * 
+     *
      * @param event - Keyboard event of the search input.
      */
     const handleEnterKeyInSearch = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Enter") {
             event.preventDefault();
-          
+
             if (searchQuery.length > 0) {
-                const result: OIDCScopesListInterface[] = scopeList.filter((item: OIDCScopesListInterface) =>
-                    item.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1);
+                const result: OIDCScopesListInterface[] = scopeList.filter(
+                    (item: OIDCScopesListInterface) => item.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1
+                );
 
                 setFilteredScopeList(result);
 
@@ -174,86 +182,83 @@ const OIDCScopesPage: FunctionComponent<OIDCScopesPageInterface> = (
         <PageLayout
             pageTitle="Scopes"
             action={
-                !isScopeListFetchRequestLoading &&
-                (
-                    <Show
-                        when={ AccessControlConstants.APPLICATION_WRITE }
-                    >
+                !isScopeListFetchRequestLoading && (
+                    <Show when={AccessControlConstants.APPLICATION_WRITE}>
                         <PrimaryButton
-                            disabled={ isScopeListFetchRequestLoading }
-                            loading={ isScopeListFetchRequestLoading }
-                            onClick={ () => setShowWizard(true) }
-                            data-testid={ `${ testId }-list-layout-add-button` }
+                            disabled={isScopeListFetchRequestLoading}
+                            loading={isScopeListFetchRequestLoading}
+                            onClick={() => setShowWizard(true)}
+                            data-testid={`${testId}-list-layout-add-button`}
                         >
-                            <Icon name="add"/>
-                            { t("console:manage.features.oidcScopes.buttons.addScope") }
+                            <Icon name="add" />
+                            {t("console:manage.features.oidcScopes.buttons.addScope")}
                         </PrimaryButton>
                     </Show>
                 )
             }
-            title={ t("console:manage.pages.oidcScopes.title") }
-            description={ t("console:manage.pages.oidcScopes.subTitle") }
-            data-testid={ `${ testId }-page-layout` }
-            backButton={ {
+            title={t("console:manage.pages.oidcScopes.title")}
+            description={t("console:manage.pages.oidcScopes.subTitle")}
+            data-testid={`${testId}-page-layout`}
+            backButton={{
                 onClick: () => {
-                    history.push(AppConstants.getPaths().get("ATTRIBUTE_MAPPINGS")
-                        .replace(":type", ClaimManagementConstants.OIDC)
-                        .replace(":customAttributeMappingID", "")
+                    history.push(
+                        AppConstants.getPaths()
+                            .get("ATTRIBUTE_MAPPINGS")
+                            .replace(":type", ClaimManagementConstants.OIDC)
+                            .replace(":customAttributeMappingID", "")
                     );
                 },
                 text: t("console:manage.features.claims.local.pageLayout.local.back")
-            } }
+            }}
         >
             <ListLayout
-                showTopActionPanel={ (!isScopeListFetchRequestLoading && !(scopeList?.length == 0)) }
-                listItemLimit={ listItemLimit }
-                showPagination={ false }
-                onPageChange={ () => null }
-                totalPages={ Math.ceil(scopeList?.length / listItemLimit) }
-                data-testid={ `${ testId }-list-layout` }
-                leftActionPanel={ (
+                showTopActionPanel={!isScopeListFetchRequestLoading && !(scopeList?.length == 0)}
+                listItemLimit={listItemLimit}
+                showPagination={false}
+                onPageChange={() => null}
+                totalPages={Math.ceil(scopeList?.length / listItemLimit)}
+                data-testid={`${testId}-list-layout`}
+                leftActionPanel={
                     <div className="advanced-search-wrapper aligned-left fill-default">
                         <Input
                             className="advanced-search with-add-on"
-                            data-testid={ `${ testId }-list-search-input` }
+                            data-testid={`${testId}-list-search-input`}
                             icon="search"
                             iconPosition="left"
-                            value={ searchQuery }
-                            onChange={ (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value) }
-                            placeholder={ t("console:manage.features.oidcScopes.list.searchPlaceholder") }
+                            value={searchQuery}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                            placeholder={t("console:manage.features.oidcScopes.list.searchPlaceholder")}
                             floated="right"
                             size="small"
-                            onKeyPress={ (e: React.KeyboardEvent<HTMLInputElement>) => handleEnterKeyInSearch(e) }
+                            onKeyPress={(e: React.KeyboardEvent<HTMLInputElement>) => handleEnterKeyInSearch(e)}
                         />
                     </div>
-                ) }
-                sortOptions={ SORT_BY }
-                sortStrategy={ sortBy }
-                onSortOrderChange={ handleSortOrderChange }
-                onSortStrategyChange={ handleSortStrategyChange }
-                isLoading={ isScopeListFetchRequestLoading }
+                }
+                sortOptions={SORT_BY}
+                sortStrategy={sortBy}
+                onSortOrderChange={handleSortOrderChange}
+                onSortStrategyChange={handleSortStrategyChange}
+                isLoading={isScopeListFetchRequestLoading}
             >
                 <OIDCScopeList
-                    featureConfig={ featureConfig }
-                    list={ filteredScopeList ?? scopeList }
-                    onScopeDelete={ () => mutateScopeListFetchRequest() }
-                    onEmptyListPlaceholderActionClick={ () => setShowWizard(true) }
-                    data-testid={ `${ testId }-list` }
-                    searchResult={ filteredScopeList?.length }
-                    clearSearchQuery={ () => { 
-                        setSearchQuery(""); 
+                    featureConfig={featureConfig}
+                    list={filteredScopeList ?? scopeList}
+                    onScopeDelete={() => mutateScopeListFetchRequest()}
+                    onEmptyListPlaceholderActionClick={() => setShowWizard(true)}
+                    data-testid={`${testId}-list`}
+                    searchResult={filteredScopeList?.length}
+                    clearSearchQuery={() => {
+                        setSearchQuery("");
                         setFilteredScopeList(undefined);
-                    } }
+                    }}
                 />
-                {
-                    showWizard && (
-                        <OIDCScopeCreateWizard
-                            data-testid="add-oidc-scope-wizard-modal"
-                            closeWizard={ () => setShowWizard(false) }
-                            onUpdate={ () => mutateScopeListFetchRequest() }
-                        />
-                    )
-                }
+                {showWizard && (
+                    <OIDCScopeCreateWizard
+                        data-testid="add-oidc-scope-wizard-modal"
+                        closeWizard={() => setShowWizard(false)}
+                        onUpdate={() => mutateScopeListFetchRequest()}
+                    />
+                )}
             </ListLayout>
         </PageLayout>
     );

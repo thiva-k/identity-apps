@@ -25,7 +25,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
-import { AppConstants, UIConstants, history } from "../../core";
+import { AppConstants, UIConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { deleteLocaleTemplate, getEmailTemplate } from "../api";
 import { EmailTemplateList } from "../components";
 import { EmailTemplate, EmailTemplateDetails } from "../models";
@@ -53,11 +54,7 @@ interface RouteParams {
 const EmailTemplatesPage: FunctionComponent<EmailTemplatesPagePropsInterface> = (
     props: EmailTemplatesPagePropsInterface & RouteComponentProps<RouteParams>
 ): ReactElement => {
-
-    const {
-        match,
-        [ "data-testid" ]: testId
-    } = props;
+    const { match, ["data-testid"]: testId } = props;
 
     const templateTypeId = match?.params?.templateTypeId;
 
@@ -65,13 +62,13 @@ const EmailTemplatesPage: FunctionComponent<EmailTemplatesPagePropsInterface> = 
 
     const { t } = useTranslation();
 
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ listOffset, setListOffset ] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [listOffset, setListOffset] = useState<number>(0);
 
-    const [ emailTemplateTypeDetails, setEmailTemplateTypeDetails ] = useState<EmailTemplateDetails>(undefined);
-    const [ emailTemplates, setEmailTemplates ] = useState<EmailTemplate[]>([]);
-    const [ paginatedEmailTemplates, setPaginatedEmailTemplates ] = useState<EmailTemplate[]>([]);
-    const [ isEmailTemplatesFetchRequestLoading, setIsEmailTemplatesFetchRequestLoading ] = useState<boolean>(false);
+    const [emailTemplateTypeDetails, setEmailTemplateTypeDetails] = useState<EmailTemplateDetails>(undefined);
+    const [emailTemplates, setEmailTemplates] = useState<EmailTemplate[]>([]);
+    const [paginatedEmailTemplates, setPaginatedEmailTemplates] = useState<EmailTemplate[]>([]);
+    const [isEmailTemplatesFetchRequestLoading, setIsEmailTemplatesFetchRequestLoading] = useState<boolean>(false);
 
     /**
      * Fetch the email templates when the template type id is available in the URL location.
@@ -82,7 +79,7 @@ const EmailTemplatesPage: FunctionComponent<EmailTemplatesPagePropsInterface> = 
         }
 
         getTemplates(templateTypeId, listItemLimit, listOffset);
-    }, [ listOffset, listItemLimit, templateTypeId ]);
+    }, [listOffset, listItemLimit, templateTypeId]);
 
     /**
      * Util method to get all locale templates.
@@ -103,32 +100,48 @@ const EmailTemplatesPage: FunctionComponent<EmailTemplatesPagePropsInterface> = 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:manage.features.emailTemplates.notifications.getTemplates" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.emailTemplates.notifications.getTemplates" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.emailTemplates.notifications.getTemplates" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.emailTemplates.notifications.getTemplates" +
+                                ".genericError.message"
+                        )
+                    })
+                );
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.emailTemplates.notifications.getTemplates.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.emailTemplates.notifications.getTemplates.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:manage.features.emailTemplates.notifications.getTemplates" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.emailTemplates.notifications.getTemplates" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.emailTemplates.notifications.getTemplates" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.emailTemplates.notifications.getTemplates" +
+                                ".genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsEmailTemplatesFetchRequestLoading(false);
@@ -142,7 +155,7 @@ const EmailTemplatesPage: FunctionComponent<EmailTemplatesPagePropsInterface> = 
      * @param data pagination page change data
      */
     const handlePaginationChange = (event: MouseEvent<HTMLAnchorElement>, data: PaginationProps): void => {
-        const offsetValue = (data.activePage as number - 1) * listItemLimit;
+        const offsetValue = ((data.activePage as number) - 1) * listItemLimit;
 
         setListOffset(offsetValue);
         paginate(emailTemplates, offsetValue, listItemLimit);
@@ -181,7 +194,11 @@ const EmailTemplatesPage: FunctionComponent<EmailTemplatesPagePropsInterface> = 
      * Util to handle back button event.
      */
     const handleAddNewTemplate = (): void => {
-        history.push(AppConstants.getPaths().get("EMAIL_TEMPLATE_ADD").replace(":templateTypeId", templateTypeId));
+        history.push(
+            AppConstants.getPaths()
+                .get("EMAIL_TEMPLATE_ADD")
+                .replace(":templateTypeId", templateTypeId)
+        );
     };
 
     /**
@@ -195,105 +212,119 @@ const EmailTemplatesPage: FunctionComponent<EmailTemplatesPagePropsInterface> = 
         deleteLocaleTemplate(templateTypeId, templateId)
             .then((response: AxiosResponse) => {
                 if (response.status === 204) {
-                    dispatch(addAlert<AlertInterface>({
-                        description: t(
-                            "console:manage.features.emailTemplates.notifications.deleteTemplate.success.description"
-                        ),
-                        level: AlertLevels.SUCCESS,
-                        message: t(
-                            "console:manage.features.emailTemplates.notifications.deleteTemplate.success.message"
-                        )
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t(
+                                "console:manage.features.emailTemplates.notifications.deleteTemplate.success.description"
+                            ),
+                            level: AlertLevels.SUCCESS,
+                            message: t(
+                                "console:manage.features.emailTemplates.notifications.deleteTemplate.success.message"
+                            )
+                        })
+                    );
 
                     getTemplates(templateTypeId, listItemLimit, listOffset);
 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:manage.features.emailTemplates.notifications.deleteTemplate" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.emailTemplates.notifications.deleteTemplate" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.emailTemplates.notifications.deleteTemplate" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.emailTemplates.notifications.deleteTemplate" +
+                                ".genericError.message"
+                        )
+                    })
+                );
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert<AlertInterface>({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t(
-                            "console:manage.features.emailTemplates.notifications.deleteTemplate.error.message"
-                        )
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.emailTemplates.notifications.deleteTemplate.error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:manage.features.emailTemplates.notifications.deleteTemplate" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.emailTemplates.notifications.deleteTemplate" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.emailTemplates.notifications.deleteTemplate" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.emailTemplates.notifications.deleteTemplate" +
+                                ".genericError.message"
+                        )
+                    })
+                );
             });
     };
 
     return (
         <PageLayout
             action={
-                (isEmailTemplatesFetchRequestLoading || emailTemplates?.length > 0)
-                && (
-                    <PrimaryButton
-                        onClick={ handleAddNewTemplate }
-                        data-testid={ `${ testId }-list-layout-add-button` }
-                    >
-                        <Icon name="add"/>
-                        { t("console:manage.features.emailTemplates.buttons.newTemplate") }
+                (isEmailTemplatesFetchRequestLoading || emailTemplates?.length > 0) && (
+                    <PrimaryButton onClick={handleAddNewTemplate} data-testid={`${testId}-list-layout-add-button`}>
+                        <Icon name="add" />
+                        {t("console:manage.features.emailTemplates.buttons.newTemplate")}
                     </PrimaryButton>
                 )
             }
-            isLoading={ isEmailTemplatesFetchRequestLoading }
+            isLoading={isEmailTemplatesFetchRequestLoading}
             title={
-                (emailTemplateTypeDetails && emailTemplateTypeDetails.displayName)
-                    ? t("console:manage.pages.emailTemplatesWithDisplayName.title",
-                        { displayName: emailTemplateTypeDetails.displayName })
+                emailTemplateTypeDetails && emailTemplateTypeDetails.displayName
+                    ? t("console:manage.pages.emailTemplatesWithDisplayName.title", {
+                          displayName: emailTemplateTypeDetails.displayName
+                      })
                     : t("console:manage.pages.emailTemplates.title")
             }
             pageTitle={
-                (emailTemplateTypeDetails && emailTemplateTypeDetails.displayName)
-                    ? t("console:manage.pages.emailTemplatesWithDisplayName.title",
-                        { displayName: emailTemplateTypeDetails.displayName })
+                emailTemplateTypeDetails && emailTemplateTypeDetails.displayName
+                    ? t("console:manage.pages.emailTemplatesWithDisplayName.title", {
+                          displayName: emailTemplateTypeDetails.displayName
+                      })
                     : t("console:manage.pages.emailTemplates.title")
             }
-            backButton={ {
+            backButton={{
                 onClick: handleBackButtonClick,
                 text: t("console:manage.pages.emailTemplates.backButton")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            data-testid={ `${ testId }-page-layout` }
+            bottomMargin={false}
+            data-testid={`${testId}-page-layout`}
         >
             <ListLayout
-                currentListSize={ listItemLimit }
-                listItemLimit={ listItemLimit }
-                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                onPageChange={ handlePaginationChange }
-                showPagination={ true }
-                totalPages={ Math.ceil(emailTemplates?.length / listItemLimit) }
-                totalListSize={ emailTemplates?.length }
-                data-testid={ `${ testId }-list-layout` }
-                showTopActionPanel={ false }
+                currentListSize={listItemLimit}
+                listItemLimit={listItemLimit}
+                onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                onPageChange={handlePaginationChange}
+                showPagination={true}
+                totalPages={Math.ceil(emailTemplates?.length / listItemLimit)}
+                totalListSize={emailTemplates?.length}
+                data-testid={`${testId}-list-layout`}
+                showTopActionPanel={false}
             >
                 <EmailTemplateList
-                    isLoading={ isEmailTemplatesFetchRequestLoading }
-                    onEmptyListPlaceholderActionClick={ () => handleAddNewTemplate() }
-                    onDelete={ deleteTemplateType }
-                    templateTypeId={ templateTypeId }
-                    templateList={ paginatedEmailTemplates }
-                    data-testid={ `${ testId }-list` }
+                    isLoading={isEmailTemplatesFetchRequestLoading}
+                    onEmptyListPlaceholderActionClick={() => handleAddNewTemplate()}
+                    onDelete={deleteTemplateType}
+                    templateTypeId={templateTypeId}
+                    templateList={paginatedEmailTemplates}
+                    data-testid={`${testId}-list`}
                 />
             </ListLayout>
         </PageLayout>

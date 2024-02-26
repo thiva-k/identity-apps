@@ -27,13 +27,16 @@ import { DropdownProps, Grid, Modal, ModalProps, PaginationProps } from "semanti
 import { getApplicationList } from "../../../features/applications/api";
 import { ApplicationList } from "../../../features/applications/components/application-list";
 import { ApplicationListInterface } from "../../../features/applications/models";
-import { AppConstants, UIConstants, history } from "../../../features/core";
+import { AppConstants, UIConstants } from "../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 
 /**
  * Proptypes for the application selection modal component.
  */
-interface ApplicationSelectionModalInterface extends ModalProps, 
-    TestableComponentInterface, IdentifiableComponentInterface {
+interface ApplicationSelectionModalInterface
+    extends ModalProps,
+        TestableComponentInterface,
+        IdentifiableComponentInterface {
     /**
      * Heading for the modal.
      */
@@ -54,31 +57,23 @@ interface ApplicationSelectionModalInterface extends ModalProps,
 const ApplicationSelectionModal: FunctionComponent<ApplicationSelectionModalInterface> = (
     props: ApplicationSelectionModalInterface
 ): ReactElement => {
-
-    const {
-        open,
-        onClose,
-        heading,
-        subHeading,
-        [ "data-testid" ]: testId,
-        ["data-componentid"]: componentId
-    } = props;
+    const { open, onClose, heading, subHeading, ["data-testid"]: testId, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ appList, setAppList ] = useState<ApplicationListInterface>({});
-    const [ isApplicationListRequestLoading, setApplicationListRequestLoading ] = useState<boolean>(false);
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [appList, setAppList] = useState<ApplicationListInterface>({});
+    const [isApplicationListRequestLoading, setApplicationListRequestLoading] = useState<boolean>(false);
 
     /**
      * Called on every `listOffset` & `listItemLimit` change.
      */
     useEffect(() => {
         getAppLists(listItemLimit, listOffset, null);
-    }, [ listOffset, listItemLimit ]);
+    }, [listOffset, listItemLimit]);
 
     /**
      * Retrieves the list of applications.
@@ -88,7 +83,6 @@ const ApplicationSelectionModal: FunctionComponent<ApplicationSelectionModalInte
      * @param filter - Search query.
      */
     const getAppLists = (limit: number, offset: number, filter: string): void => {
-
         setApplicationListRequestLoading(true);
 
         getApplicationList(limit, offset, filter)
@@ -97,23 +91,33 @@ const ApplicationSelectionModal: FunctionComponent<ApplicationSelectionModalInte
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.fetchApplications" +
-                            ".error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.fetchApplications" +
+                                    ".error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.fetchApplications" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.fetchApplications." +
-                        "genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.fetchApplications" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.fetchApplications." +
+                                "genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setApplicationListRequestLoading(false);
@@ -127,7 +131,6 @@ const ApplicationSelectionModal: FunctionComponent<ApplicationSelectionModalInte
      * @param data - Dropdown data.
      */
     const handleItemsPerPageDropdownChange = (event: MouseEvent<HTMLAnchorElement>, data: DropdownProps): void => {
-
         setListItemLimit(data.value as number);
     };
 
@@ -138,64 +141,61 @@ const ApplicationSelectionModal: FunctionComponent<ApplicationSelectionModalInte
      * @param data - Pagination component data.
      */
     const handlePaginationChange = (event: MouseEvent<HTMLAnchorElement>, data: PaginationProps): void => {
-
-        setListOffset((data.activePage as number - 1) * listItemLimit);
+        setListOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     return (
         <Modal
-            data-testid={ testId }
-            open={ open }
+            data-testid={testId}
+            open={open}
             className="wizard application-create-wizard"
             dimmer="blurring"
             size="large"
-            onClose={ onClose }
-            closeOnDimmerClick={ false }
+            onClose={onClose}
+            closeOnDimmerClick={false}
             closeOnEscape
         >
             <Modal.Header className="wizard-header">
-                { heading }
-                <Heading as="h6">
-                    { subHeading }
-                </Heading>
+                {heading}
+                <Heading as="h6">{subHeading}</Heading>
             </Modal.Header>
             <Modal.Content className="content-container" scrolling>
                 <ListLayout
-                    currentListSize={ appList.count }
-                    listItemLimit={ listItemLimit }
-                    onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                    onPageChange={ handlePaginationChange }
-                    showPagination={ appList?.totalResults !== 0 }
-                    totalPages={ Math.ceil(appList.totalResults / listItemLimit) }
-                    totalListSize={ appList.totalResults }
-                    data-testid={ `${ testId }-list-layout` }
-                    showTopActionPanel={ false }
+                    currentListSize={appList.count}
+                    listItemLimit={listItemLimit}
+                    onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                    onPageChange={handlePaginationChange}
+                    showPagination={appList?.totalResults !== 0}
+                    totalPages={Math.ceil(appList.totalResults / listItemLimit)}
+                    totalListSize={appList.totalResults}
+                    data-testid={`${testId}-list-layout`}
+                    showTopActionPanel={false}
                 >
                     <ApplicationList
                         isSetStrongerAuth
-                        isLoading={ isApplicationListRequestLoading }
-                        list={ appList }
-                        onEmptyListPlaceholderActionClick={ () => {
+                        isLoading={isApplicationListRequestLoading}
+                        list={appList}
+                        onEmptyListPlaceholderActionClick={() => {
                             history.push(AppConstants.getPaths().get("APPLICATION_TEMPLATES"));
-                        } }
-                        isRenderedOnPortal={ true }
-                        data-testid={ `${ testId }-list` }
-                        data-componentid={ componentId }
+                        }}
+                        isRenderedOnPortal={true}
+                        data-testid={`${testId}-list`}
+                        data-componentid={componentId}
                     />
                 </ListLayout>
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
-                                data-testid={ `${ testId }-cancel-button` }
+                                data-testid={`${testId}-cancel-button`}
                                 floated="left"
-                                onClick={ (e: React.MouseEvent<HTMLButtonElement>) => {
+                                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                                     onClose(e, null);
-                                } }
+                                }}
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
                     </Grid.Row>

@@ -23,7 +23,8 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { AppState, FeatureConfigInterface,getEmptyPlaceholderIllustrations, history } from "../../core";
+import { AppState, FeatureConfigInterface, getEmptyPlaceholderIllustrations } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { useAPIResourceDetails } from "../api";
 import { EditAPIResource } from "../components";
 import { APIResourceType, APIResourcesConstants } from "../constants";
@@ -43,17 +44,14 @@ type APIResourcesEditPageInterface = IdentifiableComponentInterface;
 const APIResourcesEditPage: FunctionComponent<APIResourcesEditPageInterface> = (
     props: APIResourcesEditPageInterface
 ): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ isReadOnly, setReadOnly ] = useState<boolean>(false);
-    const [ apiResourceId, setAPIResourceId ] = useState<string>(null);
+    const [isReadOnly, setReadOnly] = useState<boolean>(false);
+    const [apiResourceId, setAPIResourceId] = useState<string>(null);
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
@@ -88,22 +86,24 @@ const APIResourcesEditPage: FunctionComponent<APIResourcesEditPageInterface> = (
         if (updateForbidden || isSytemAPIResource) {
             setReadOnly(true);
         }
-    }, [ apiResourceData ]);
+    }, [apiResourceData]);
 
     /**
      * The following useEffect is used to handle if any error occurs while fetching the API resource
      */
     useEffect(() => {
-        if(apiResourceDataFetchRequestError) {
-            dispatch(addAlert<AlertInterface>({
-                description: t("extensions:develop.apiResource.notifications.getAPIResource" +
-                    ".genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("extensions:develop.apiResource.notifications.getAPIResource" +
-                    ".genericError.message")
-            }));
+        if (apiResourceDataFetchRequestError) {
+            dispatch(
+                addAlert<AlertInterface>({
+                    description: t(
+                        "extensions:develop.apiResource.notifications.getAPIResource" + ".genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t("extensions:develop.apiResource.notifications.getAPIResource" + ".genericError.message")
+                })
+            );
         }
-    }, [ apiResourceDataFetchRequestError ]);
+    }, [apiResourceDataFetchRequestError]);
 
     /**
      * set API resource id from the URL path
@@ -120,53 +120,58 @@ const APIResourcesEditPage: FunctionComponent<APIResourcesEditPageInterface> = (
      */
     const handleBackButtonClick = () => {
         if (categoryId === APIResourceType.MANAGEMENT || categoryId === APIResourceType.ORGANIZATION) {
-            history.push(APIResourcesConstants.getPaths().get("API_RESOURCES_CATEGORY")
-                .replace(":categoryId", categoryId));
+            history.push(
+                APIResourcesConstants.getPaths()
+                    .get("API_RESOURCES_CATEGORY")
+                    .replace(":categoryId", categoryId)
+            );
         } else {
             history.push(APIResourcesConstants.getPaths().get("API_RESOURCES"));
         }
     };
 
-    return (
-        (!isAPIResourceDatatLoading && !apiResourceData) || apiResourceDataFetchRequestError
-            ? (<EmptyPlaceholder
-                subtitle={ [ t("extensions:develop.apiResource.tabs.apiResourceError.subtitles.0"),
-                    t("extensions:develop.apiResource.tabs.apiResourceError.subtitles.1") ] }
-                title={ t("extensions:develop.apiResource.tabs.apiResourceError.title") }
-                image={ getEmptyPlaceholderIllustrations().emptySearch }
-                imageSize="tiny"
-            />)
-            : (<TabPageLayout
-                isLoading={ isAPIResourceDatatLoading }
-                title={ apiResourceData?.name }
-                pageTitle={ t("extensions:develop.apiResource.tabs.title") }
-                loadingStateOptions={ {
-                    count: 5,
-                    imageType: "circular"
-                } }
-                backButton={ {
-                    "data-testid": `${componentId}-back-button`,
-                    onClick: handleBackButtonClick,
-                    text: categoryId === APIResourceType.MANAGEMENT
+    return (!isAPIResourceDatatLoading && !apiResourceData) || apiResourceDataFetchRequestError ? (
+        <EmptyPlaceholder
+            subtitle={[
+                t("extensions:develop.apiResource.tabs.apiResourceError.subtitles.0"),
+                t("extensions:develop.apiResource.tabs.apiResourceError.subtitles.1")
+            ]}
+            title={t("extensions:develop.apiResource.tabs.apiResourceError.title")}
+            image={getEmptyPlaceholderIllustrations().emptySearch}
+            imageSize="tiny"
+        />
+    ) : (
+        <TabPageLayout
+            isLoading={isAPIResourceDatatLoading}
+            title={apiResourceData?.name}
+            pageTitle={t("extensions:develop.apiResource.tabs.title")}
+            loadingStateOptions={{
+                count: 5,
+                imageType: "circular"
+            }}
+            backButton={{
+                "data-testid": `${componentId}-back-button`,
+                onClick: handleBackButtonClick,
+                text:
+                    categoryId === APIResourceType.MANAGEMENT
                         ? t("console:manage.pages.rolesEdit.backButton", { type: "Management APIs" })
                         : categoryId === APIResourceType.ORGANIZATION
-                            ? t("console:manage.pages.rolesEdit.backButton", { type: "Organization APIs" })
-                            : t("console:manage.pages.rolesEdit.backButton", { type: "APIs" })
-                } }
-                titleTextAlign="left"
-                bottomMargin={ false }
-                pageHeaderMaxWidth={ true }
-            >
-                <EditAPIResource
-                    apiResourceData={ apiResourceData }
-                    isAPIResourceDataLoading={ isAPIResourceDatatLoading }
-                    featureConfig={ featureConfig }
-                    isReadOnly={ isReadOnly }
-                    mutateAPIResource={ updateAPIResource }
-                />
-            </TabPageLayout>)
+                        ? t("console:manage.pages.rolesEdit.backButton", { type: "Organization APIs" })
+                        : t("console:manage.pages.rolesEdit.backButton", { type: "APIs" })
+            }}
+            titleTextAlign="left"
+            bottomMargin={false}
+            pageHeaderMaxWidth={true}
+        >
+            <EditAPIResource
+                apiResourceData={apiResourceData}
+                isAPIResourceDataLoading={isAPIResourceDatatLoading}
+                featureConfig={featureConfig}
+                isReadOnly={isReadOnly}
+                mutateAPIResource={updateAPIResource}
+            />
+        </TabPageLayout>
     );
-
 };
 
 /**

@@ -39,14 +39,7 @@ import {
     useDocumentation
 } from "@wso2is/react-components";
 import { AxiosError } from "axios";
-import React, {
-    FunctionComponent,
-    HTMLAttributes,
-    ReactElement,
-    SyntheticEvent,
-    useEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, HTMLAttributes, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
@@ -56,7 +49,7 @@ import { ApplicationRoleWizard } from "./wizard-updated/application-role-wizard"
 import { updateApplicationDetails } from "../../applications/api";
 import { useGetApplication } from "../../applications/api/use-get-application";
 import { ApplicationInterface } from "../../applications/models";
-import { history } from "../../core/helpers/history";
+import { history } from "@wso2is/features/core/helpers";
 import { FeatureConfigInterface } from "../../core/models";
 import { AppState } from "../../core/store";
 import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
@@ -64,10 +57,10 @@ import { getApplicationRolesByAudience } from "../api/roles";
 import { RoleAudienceTypes } from "../constants/role-constants";
 import {
     AssociatedRolesPatchObjectInterface,
-    BasicRoleInterface, RolesV2Interface,
+    BasicRoleInterface,
+    RolesV2Interface,
     RolesV2ResponseInterface
 } from "../models/roles";
-
 
 interface ApplicationRolesSettingsInterface extends IdentifiableComponentInterface {
     /**
@@ -88,12 +81,7 @@ interface ApplicationRolesSettingsInterface extends IdentifiableComponentInterfa
 export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterface> = (
     props: ApplicationRolesSettingsInterface
 ): ReactElement => {
-
-    const {
-        onUpdate,
-        readOnly,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { onUpdate, readOnly, ["data-componentid"]: componentId } = props;
 
     const path: string[] = history.location.pathname.split("/");
     const appId: string = path[path.length - 1].split("#")[0];
@@ -104,24 +92,26 @@ export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterfa
     const { organizationType } = useGetCurrentOrganizationType();
     const { data: application } = useGetApplication(appId, !!appId);
 
-    const [ isLoading, setIsLoading ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ shouldUpdateRoleAudience, setShouldUpdateRoleAudience ] = useState<boolean>(false);
-    const [ showSwitchAudienceWarning, setShowSwitchAudienceWarning ] = useState<boolean>(false);
-    const [ roleAudience, setRoleAudience ] =
-        useState<RoleAudienceTypes>(application?.associatedRoles?.allowedAudience ?? RoleAudienceTypes.ORGANIZATION);
-    const [ tempRoleAudience, setTempRoleAudience ] =
-        useState<RoleAudienceTypes>(application?.associatedRoles?.allowedAudience ?? RoleAudienceTypes.ORGANIZATION);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [shouldUpdateRoleAudience, setShouldUpdateRoleAudience] = useState<boolean>(false);
+    const [showSwitchAudienceWarning, setShowSwitchAudienceWarning] = useState<boolean>(false);
+    const [roleAudience, setRoleAudience] = useState<RoleAudienceTypes>(
+        application?.associatedRoles?.allowedAudience ?? RoleAudienceTypes.ORGANIZATION
+    );
+    const [tempRoleAudience, setTempRoleAudience] = useState<RoleAudienceTypes>(
+        application?.associatedRoles?.allowedAudience ?? RoleAudienceTypes.ORGANIZATION
+    );
 
-    const [ roleList, setRoleList ] = useState<BasicRoleInterface[]>([]);
-    const [ selectedRoles, setSelectedRoles ] =
-        useState<BasicRoleInterface[]>(application?.associatedRoles?.roles ?? []);
-    const [ initialSelectedRoles, setInitialSelectedRoles ] =
-        useState<BasicRoleInterface[]>(application?.associatedRoles?.roles ?? []);
-    const [ activeOption, setActiveOption ] = useState<BasicRoleInterface>(undefined);
+    const [roleList, setRoleList] = useState<BasicRoleInterface[]>([]);
+    const [selectedRoles, setSelectedRoles] = useState<BasicRoleInterface[]>(application?.associatedRoles?.roles ?? []);
+    const [initialSelectedRoles, setInitialSelectedRoles] = useState<BasicRoleInterface[]>(
+        application?.associatedRoles?.roles ?? []
+    );
+    const [activeOption, setActiveOption] = useState<BasicRoleInterface>(undefined);
 
     const isReadOnly: boolean = readOnly || organizationType === OrganizationType.SUBORGANIZATION;
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state?.config?.ui?.features);
@@ -138,19 +128,18 @@ export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterfa
             setSelectedRoles([]);
             setInitialSelectedRoles([]);
         }
-    }, [ roleAudience ]);
+    }, [roleAudience]);
 
     /**
      * Send a request to update roles when one of the role audience radio buttons is selected.
      */
     useEffect(() => {
-
         if (!shouldUpdateRoleAudience) {
             return;
         }
 
         updateRoles();
-    }, [ shouldUpdateRoleAudience, roleAudience ]);
+    }, [shouldUpdateRoleAudience, roleAudience]);
 
     /**
      * Handles the click event of the New Role button.
@@ -163,8 +152,14 @@ export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterfa
      * Fetch application roles.
      */
     const getApplicationRoles = (shouldUpdateSelectedRolesList?: boolean): void => {
-        getApplicationRolesByAudience(roleAudience, appId, null, null, null,
-            "users,groups,permissions,associatedApplications")
+        getApplicationRolesByAudience(
+            roleAudience,
+            appId,
+            null,
+            null,
+            null,
+            "users,groups,permissions,associatedApplications"
+        )
             .then((response: RolesV2ResponseInterface) => {
                 const rolesArray: BasicRoleInterface[] = [];
 
@@ -180,28 +175,43 @@ export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterfa
                 if (shouldUpdateSelectedRolesList) {
                     setSelectedRoles(rolesArray);
                 }
-            }).catch((error: AxiosError) => {
+            })
+            .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ??
-                            error?.response?.data?.detail ??
-                            t("extensions:develop.applications.edit.sections.roles.notifications." +
-                                "fetchApplicationRoles.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message ??
-                            t("extensions:develop.applications.edit.sections.roles.notifications." +
-                                "fetchApplicationRoles.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t(
+                                    "extensions:develop.applications.edit.sections.roles.notifications." +
+                                        "fetchApplicationRoles.error.description"
+                                ),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t(
+                                    "extensions:develop.applications.edit.sections.roles.notifications." +
+                                        "fetchApplicationRoles.error.message"
+                                )
+                        })
+                    );
 
                     return;
                 }
-                dispatch(addAlert({
-                    description: t("extensions:develop.applications.edit.sections.roles.notifications." +
-                        "fetchApplicationRoles.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:develop.applications.edit.sections.roles.notifications." +
-                        "fetchApplicationRoles.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "extensions:develop.applications.edit.sections.roles.notifications." +
+                                "fetchApplicationRoles.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "extensions:develop.applications.edit.sections.roles.notifications." +
+                                "fetchApplicationRoles.genericError.message"
+                        )
+                    })
+                );
 
                 setRoleList([]);
             })
@@ -218,13 +228,14 @@ export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterfa
         const isRoleAudienceChanged: boolean = roleAudience !== application?.associatedRoles?.allowedAudience;
         const data: AssociatedRolesPatchObjectInterface = {
             allowedAudience: roleAudience,
-            roles: (isRoleAudienceChanged || !selectedRoles)
-                ? []
-                : selectedRoles.map((role: BasicRoleInterface) => {
-                    return {
-                        id: role.id
-                    };
-                })
+            roles:
+                isRoleAudienceChanged || !selectedRoles
+                    ? []
+                    : selectedRoles.map((role: BasicRoleInterface) => {
+                          return {
+                              id: role.id
+                          };
+                      })
         };
 
         const updatedApplication: ApplicationInterface = {
@@ -235,34 +246,50 @@ export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterfa
 
         updateApplicationDetails(updatedApplication)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.updateApplication.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.notifications.updateApplication.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.updateApplication.success" +
+                                ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.applications.notifications.updateApplication.success.message"
+                        )
+                    })
+                );
 
                 onUpdate(appId);
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.updateApplication.error" +
-                            ".message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.updateApplication.error" +
+                                    ".message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.updateApplication" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.updateApplication.genericError" +
-                        ".message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.updateApplication" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.updateApplication.genericError" +
+                                ".message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsSubmitting(false);
@@ -290,86 +317,82 @@ export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterfa
 
     return (
         <>
-            <EmphasizedSegment
-                loading={ isLoading }
-                padded="very"
-                data-componentid={ componentId }
-            >
+            <EmphasizedSegment loading={isLoading} padded="very" data-componentid={componentId}>
                 <Grid>
                     <Grid.Row>
-                        <Grid.Column className="heading-wrapper" width={ 10 }>
+                        <Grid.Column className="heading-wrapper" width={10}>
                             <Heading as="h4">
-                                { t("extensions:develop.applications.edit.sections.rolesV2.heading") }
+                                {t("extensions:develop.applications.edit.sections.rolesV2.heading")}
                             </Heading>
                             <Heading subHeading ellipsis as="h6">
-                                { t("extensions:develop.applications.edit.sections.rolesV2.subHeading") }
-                                <DocumentationLink
-                                    link={ getLink("develop.applications.roles.learnMore") }
-                                >
-                                    { t("extensions:common.learnMore") }
+                                {t("extensions:develop.applications.edit.sections.rolesV2.subHeading")}
+                                <DocumentationLink link={getLink("develop.applications.roles.learnMore")}>
+                                    {t("extensions:common.learnMore")}
                                 </DocumentationLink>
                             </Heading>
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
-                        <Grid.Column width={ 16 }>
+                        <Grid.Column width={16}>
                             <Heading as="h5" className="mb-2">
-                                { t("extensions:develop.applications.edit.sections.rolesV2.roleAudience") }
+                                {t("extensions:develop.applications.edit.sections.rolesV2.roleAudience")}
                             </Heading>
                         </Grid.Column>
-                        <Grid.Column width={ 10 }>
+                        <Grid.Column width={10}>
                             <FormGroup>
                                 <Grid>
-                                    <Grid.Row columns={ 2 } className="pb-0">
-                                        <Grid.Column width={ 4 }>
+                                    <Grid.Row columns={2} className="pb-0">
+                                        <Grid.Column width={4}>
                                             <FormControlLabel
-                                                checked={ roleAudience === RoleAudienceTypes.APPLICATION }
-                                                control={ <Radio size="small" /> }
-                                                onChange={ () =>
-                                                    promptAudienceSwitchWarning(RoleAudienceTypes.APPLICATION) }
-                                                label={
-                                                    t("extensions:develop.applications.edit.sections." +
-                                                    "rolesV2.application")
+                                                checked={roleAudience === RoleAudienceTypes.APPLICATION}
+                                                control={<Radio size="small" />}
+                                                onChange={() =>
+                                                    promptAudienceSwitchWarning(RoleAudienceTypes.APPLICATION)
                                                 }
-                                                data-componentid={ `${ componentId }-application-audience-checkbox` }
-                                                disabled={ isReadOnly }
+                                                label={t(
+                                                    "extensions:develop.applications.edit.sections." +
+                                                        "rolesV2.application"
+                                                )}
+                                                data-componentid={`${componentId}-application-audience-checkbox`}
+                                                disabled={isReadOnly}
                                             />
                                         </Grid.Column>
-                                        <Grid.Column width={ 6 }>
-                                            {
-                                                roleAudience === RoleAudienceTypes.APPLICATION &&
-                                                hasRequiredScopes(featureConfig?.userRoles,
-                                                    featureConfig?.userRoles?.scopes?.create, allowedScopes)
-                                                    && (
-                                                        <LinkButton
-                                                            fluid
-                                                            data-componentid="create-application-role-button"
-                                                            onClick={ handleAddNewRoleWizardClick }
-                                                            disabled={ isReadOnly }
-                                                        >
-                                                            <Icon name="plus"/>
-                                                            {
-                                                                t("console:develop.features.applications.edit." +
-                                                                "sections.roles.createApplicationRoleWizard.button")
-                                                            }
-                                                        </LinkButton>
-                                                    )
-                                            }
+                                        <Grid.Column width={6}>
+                                            {roleAudience === RoleAudienceTypes.APPLICATION &&
+                                                hasRequiredScopes(
+                                                    featureConfig?.userRoles,
+                                                    featureConfig?.userRoles?.scopes?.create,
+                                                    allowedScopes
+                                                ) && (
+                                                    <LinkButton
+                                                        fluid
+                                                        data-componentid="create-application-role-button"
+                                                        onClick={handleAddNewRoleWizardClick}
+                                                        disabled={isReadOnly}
+                                                    >
+                                                        <Icon name="plus" />
+                                                        {t(
+                                                            "console:develop.features.applications.edit." +
+                                                                "sections.roles.createApplicationRoleWizard.button"
+                                                        )}
+                                                    </LinkButton>
+                                                )}
                                         </Grid.Column>
                                     </Grid.Row>
                                     <Grid.Row className="pt-0">
-                                        <Grid.Column width={ 6 }>
+                                        <Grid.Column width={6}>
                                             <FormControlLabel
-                                                checked={ roleAudience === RoleAudienceTypes.ORGANIZATION }
-                                                control={ <Radio size="small"/> }
-                                                onChange={ () =>
-                                                    promptAudienceSwitchWarning(RoleAudienceTypes.ORGANIZATION) }
-                                                label={
-                                                    t("extensions:develop.applications.edit.sections." +
-                                                    "rolesV2.organization")
+                                                checked={roleAudience === RoleAudienceTypes.ORGANIZATION}
+                                                control={<Radio size="small" />}
+                                                onChange={() =>
+                                                    promptAudienceSwitchWarning(RoleAudienceTypes.ORGANIZATION)
                                                 }
-                                                data-componentid={ `${ componentId }-organization-audience-checkbox` }
-                                                disabled={ isReadOnly }
+                                                label={t(
+                                                    "extensions:develop.applications.edit.sections." +
+                                                        "rolesV2.organization"
+                                                )}
+                                                data-componentid={`${componentId}-organization-audience-checkbox`}
+                                                disabled={isReadOnly}
                                             />
                                         </Grid.Column>
                                     </Grid.Row>
@@ -378,12 +401,12 @@ export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterfa
                         </Grid.Column>
                     </Grid.Row>
                     <Grid.Row>
-                        <Grid.Column width={ 16 }>
+                        <Grid.Column width={16}>
                             <Heading as="h5">
-                                { t("extensions:develop.applications.edit.sections.rolesV2.assignedRoles") }
+                                {t("extensions:develop.applications.edit.sections.rolesV2.assignedRoles")}
                             </Heading>
                         </Grid.Column>
-                        { /* {
+                        {/* {
                             // Will be enabled once the feature is completed.
                             roleAudience === RoleAudienceTypes.APPLICATION
                                 && (
@@ -396,152 +419,158 @@ export const ApplicationRoles: FunctionComponent<ApplicationRolesSettingsInterfa
                                         </Button>
                                     </Grid.Column>
                                 )
-                        } */ }
-                        <Grid.Column width={ 8 }>
+                        } */}
+                        <Grid.Column width={8}>
                             <Autocomplete
                                 multiple
                                 disableCloseOnSelect
-                                loading={ isLoading }
-                                options={ roleList }
-                                value={ selectedRoles ?? [] }
-                                disabled = { isReadOnly }
-                                getOptionLabel={
-                                    (role: BasicRoleInterface) => role.name
-                                }
-                                renderInput={ (params: AutocompleteRenderInputParams) => (
+                                loading={isLoading}
+                                options={roleList}
+                                value={selectedRoles ?? []}
+                                disabled={isReadOnly}
+                                getOptionLabel={(role: BasicRoleInterface) => role.name}
+                                renderInput={(params: AutocompleteRenderInputParams) => (
                                     <TextField
-                                        { ...params }
-                                        placeholder={ !isReadOnly && t("extensions:develop.applications.edit." +
-                                            "sections.rolesV2.searchPlaceholder") }
-                                    />
-                                ) }
-                                onChange={ (event: SyntheticEvent, roles: BasicRoleInterface[]) => {
-                                    setSelectedRoles(roles);
-                                } }
-                                isOptionEqualToValue={
-                                    (option: BasicRoleInterface, value: BasicRoleInterface) =>
-                                        option.id === value.id
-                                }
-                                renderTags={ (
-                                    value: BasicRoleInterface[],
-                                    getTagProps: AutocompleteRenderGetTagProps
-                                ) => value.map((option: BasicRoleInterface, index: number) => (
-                                    <Chip
-                                        { ...getTagProps({ index }) }
-                                        key={ index }
-                                        label={ option.name }
-                                        activeOption={ activeOption }
-                                        setActiveOption={ setActiveOption }
-                                        variant={
-                                            initialSelectedRoles?.find(
-                                                (role: BasicRoleInterface) => role.id === option.id
+                                        {...params}
+                                        placeholder={
+                                            !isReadOnly &&
+                                            t(
+                                                "extensions:develop.applications.edit." +
+                                                    "sections.rolesV2.searchPlaceholder"
                                             )
-                                                ? "solid"
-                                                : "outlined"
                                         }
                                     />
-                                )) }
-                                renderOption={ (
+                                )}
+                                onChange={(event: SyntheticEvent, roles: BasicRoleInterface[]) => {
+                                    setSelectedRoles(roles);
+                                }}
+                                isOptionEqualToValue={(option: BasicRoleInterface, value: BasicRoleInterface) =>
+                                    option.id === value.id
+                                }
+                                renderTags={(value: BasicRoleInterface[], getTagProps: AutocompleteRenderGetTagProps) =>
+                                    value.map((option: BasicRoleInterface, index: number) => (
+                                        <Chip
+                                            {...getTagProps({ index })}
+                                            key={index}
+                                            label={option.name}
+                                            activeOption={activeOption}
+                                            setActiveOption={setActiveOption}
+                                            variant={
+                                                initialSelectedRoles?.find(
+                                                    (role: BasicRoleInterface) => role.id === option.id
+                                                )
+                                                    ? "solid"
+                                                    : "outlined"
+                                            }
+                                        />
+                                    ))
+                                }
+                                renderOption={(
                                     props: HTMLAttributes<HTMLLIElement>,
                                     option: BasicRoleInterface,
                                     { selected }: { selected: boolean }
                                 ) => (
                                     <AutoCompleteRenderOption
-                                        selected={ selected }
-                                        displayName={ option.name }
-                                        renderOptionProps={ props }
+                                        selected={selected}
+                                        displayName={option.name}
+                                        renderOptionProps={props}
                                     />
-                                ) }
+                                )}
                             />
                         </Grid.Column>
                     </Grid.Row>
-                    {
-                        !isReadOnly && (
-                            <Grid.Row className="mt-4">
-                                <Grid.Column width={ 16 }>
-                                    <PrimaryButton
-                                        size="small"
-                                        loading={ isSubmitting }
-                                        onClick={ () => updateRoles() }
-                                        ariaLabel="Roles update button"
-                                        data-componentid={ `${ componentId }-update-button` }
-                                    >
-                                        { t("common:update") }
-                                    </PrimaryButton>
-                                </Grid.Column>
-                            </Grid.Row>
-                        )
-                    }
+                    {!isReadOnly && (
+                        <Grid.Row className="mt-4">
+                            <Grid.Column width={16}>
+                                <PrimaryButton
+                                    size="small"
+                                    loading={isSubmitting}
+                                    onClick={() => updateRoles()}
+                                    ariaLabel="Roles update button"
+                                    data-componentid={`${componentId}-update-button`}
+                                >
+                                    {t("common:update")}
+                                </PrimaryButton>
+                            </Grid.Column>
+                        </Grid.Row>
+                    )}
                 </Grid>
             </EmphasizedSegment>
             <ConfirmationModal
-                onClose={ (): void => setShowSwitchAudienceWarning(false) }
+                onClose={(): void => setShowSwitchAudienceWarning(false)}
                 type="negative"
-                open={ showSwitchAudienceWarning }
-                assertionHint={ t("extensions:develop.applications.edit.sections." +
-                    "rolesV2.switchRoleAudience.applicationConfirmationModal.assertionHint") }
+                open={showSwitchAudienceWarning}
+                assertionHint={t(
+                    "extensions:develop.applications.edit.sections." +
+                        "rolesV2.switchRoleAudience.applicationConfirmationModal.assertionHint"
+                )}
                 assertionType="checkbox"
-                primaryAction={ t("common:confirm") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={ (): void => {
+                primaryAction={t("common:confirm")}
+                secondaryAction={t("common:cancel")}
+                onSecondaryActionClick={(): void => {
                     setShowSwitchAudienceWarning(false);
-                } }
-                onPrimaryActionClick={ (): void => {
+                }}
+                onPrimaryActionClick={(): void => {
                     setRoleAudience(tempRoleAudience);
                     setShouldUpdateRoleAudience(true);
                     setShowSwitchAudienceWarning(false);
-                } }
-                data-componentid={ `${ componentId }-switch-role-audience-confirmation-modal` }
-                closeOnDimmerClick={ false }
+                }}
+                data-componentid={`${componentId}-switch-role-audience-confirmation-modal`}
+                closeOnDimmerClick={false}
             >
                 <ConfirmationModal.Header
-                    data-componentid={ `${ componentId }-switch-role-audience-confirmation-modal-header` }
+                    data-componentid={`${componentId}-switch-role-audience-confirmation-modal-header`}
                 >
-                    { tempRoleAudience === RoleAudienceTypes.APPLICATION
-                        ? t("extensions:develop.applications.edit.sections." +
-                        "rolesV2.switchRoleAudience.applicationConfirmationModal.header")
-                        : t("extensions:develop.applications.edit.sections." +
-                        "rolesV2.switchRoleAudience.organizationConfirmationModal.header")
-                    }
+                    {tempRoleAudience === RoleAudienceTypes.APPLICATION
+                        ? t(
+                              "extensions:develop.applications.edit.sections." +
+                                  "rolesV2.switchRoleAudience.applicationConfirmationModal.header"
+                          )
+                        : t(
+                              "extensions:develop.applications.edit.sections." +
+                                  "rolesV2.switchRoleAudience.organizationConfirmationModal.header"
+                          )}
                 </ConfirmationModal.Header>
                 <ConfirmationModal.Message
                     attached
                     negative
-                    data-componentid={ `${ componentId }-switch-role-audience-confirmation-modal-message` }
+                    data-componentid={`${componentId}-switch-role-audience-confirmation-modal-message`}
                 >
-                    { tempRoleAudience === RoleAudienceTypes.APPLICATION
-                        ? t("extensions:develop.applications.edit.sections." +
-                        "rolesV2.switchRoleAudience.applicationConfirmationModal.message")
-                        : t("extensions:develop.applications.edit.sections." +
-                        "rolesV2.switchRoleAudience.organizationConfirmationModal.message")
-                    }
+                    {tempRoleAudience === RoleAudienceTypes.APPLICATION
+                        ? t(
+                              "extensions:develop.applications.edit.sections." +
+                                  "rolesV2.switchRoleAudience.applicationConfirmationModal.message"
+                          )
+                        : t(
+                              "extensions:develop.applications.edit.sections." +
+                                  "rolesV2.switchRoleAudience.organizationConfirmationModal.message"
+                          )}
                 </ConfirmationModal.Message>
                 <ConfirmationModal.Content
-                    data-componentid={ `${ componentId }-switch-role-audience-confirmation-modal-content` }
+                    data-componentid={`${componentId}-switch-role-audience-confirmation-modal-content`}
                 >
-                    { tempRoleAudience === RoleAudienceTypes.APPLICATION
-                        ? t("extensions:develop.applications.edit.sections." +
-                        "rolesV2.switchRoleAudience.applicationConfirmationModal.content")
-                        : t("extensions:develop.applications.edit.sections." +
-                        "rolesV2.switchRoleAudience.organizationConfirmationModal.content")
-                    }
+                    {tempRoleAudience === RoleAudienceTypes.APPLICATION
+                        ? t(
+                              "extensions:develop.applications.edit.sections." +
+                                  "rolesV2.switchRoleAudience.applicationConfirmationModal.content"
+                          )
+                        : t(
+                              "extensions:develop.applications.edit.sections." +
+                                  "rolesV2.switchRoleAudience.organizationConfirmationModal.content"
+                          )}
                 </ConfirmationModal.Content>
             </ConfirmationModal>
-            {
-                showWizard
-                && roleAudience === RoleAudienceTypes.APPLICATION
-                && (
-                    <ApplicationRoleWizard
-                        setUserListRequestLoading={ null }
-                        data-testid="user-mgt-add-user-wizard-modal"
-                        closeWizard={ () => {
-                            setShowWizard(false);
-                        } }
-                        application={ application }
-                        onRoleCreated={ onRoleCreated }
-                    />
-                )
-            }
+            {showWizard && roleAudience === RoleAudienceTypes.APPLICATION && (
+                <ApplicationRoleWizard
+                    setUserListRequestLoading={null}
+                    data-testid="user-mgt-add-user-wizard-modal"
+                    closeWizard={() => {
+                        setShowWizard(false);
+                    }}
+                    application={application}
+                    onRoleCreated={onRoleCreated}
+                />
+            )}
         </>
     );
 };

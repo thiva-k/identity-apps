@@ -40,15 +40,16 @@ import {
     AppState,
     FeatureConfigInterface,
     UIConstants,
-    getEmptyPlaceholderIllustrations,
-    history
+    getEmptyPlaceholderIllustrations
 } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { GroupConstants } from "../constants";
 import { GroupsInterface } from "../models";
 
-interface GroupListProps extends SBACInterface<FeatureConfigInterface>,
-    LoadableComponentInterface, TestableComponentInterface {
-
+interface GroupListProps
+    extends SBACInterface<FeatureConfigInterface>,
+        LoadableComponentInterface,
+        TestableComponentInterface {
     /**
      * Advanced Search component.
      */
@@ -111,7 +112,6 @@ interface GroupListProps extends SBACInterface<FeatureConfigInterface>,
  * @returns Groups list component.
  */
 export const GroupList: React.FunctionComponent<GroupListProps> = (props: GroupListProps): ReactElement => {
-
     const {
         advancedSearch,
         defaultListItemLimit,
@@ -128,18 +128,22 @@ export const GroupList: React.FunctionComponent<GroupListProps> = (props: GroupL
         showListItemActions,
         showMetaContent,
         isReadOnlyUserStore,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ showGroupDeleteConfirmation, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ currentDeletedGroup, setCurrentDeletedGroup ] = useState<GroupsInterface>();
+    const [showGroupDeleteConfirmation, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [currentDeletedGroup, setCurrentDeletedGroup] = useState<GroupsInterface>();
 
     const handleGroupEdit = (groupId: string): void => {
-        history.push(AppConstants.getPaths().get("GROUP_EDIT").replace(":id", groupId));
+        history.push(
+            AppConstants.getPaths()
+                .get("GROUP_EDIT")
+                .replace(":id", groupId)
+        );
     };
 
     /**
@@ -150,30 +154,30 @@ export const GroupList: React.FunctionComponent<GroupListProps> = (props: GroupL
      * @returns - React element if containing a prefix or the string
      */
     const generateHeaderContent = (displayName: string): ReactElement | string => {
-        if (displayName.indexOf("/") !== -1){
+        if (displayName.indexOf("/") !== -1) {
             return (
                 <>
                     <Label
-                        data-testid={ `${ testId }-group-${ displayName.split("/")[0] }-label` }
-                        content={ displayName.split("/")[0] }
+                        data-testid={`${testId}-group-${displayName.split("/")[0]}-label`}
+                        content={displayName.split("/")[0]}
                         size="mini"
                         color="olive"
-                        className={ "group-label" }
+                        className={"group-label"}
                     />
-                    { " / " + displayName.split("/")[1] }
+                    {" / " + displayName.split("/")[1]}
                 </>
             );
         } else {
             return (
                 <>
                     <Label
-                        data-testid={ `${ testId }-group-${ displayName }-label` }
-                        content={ "Primary" }
+                        data-testid={`${testId}-group-${displayName}-label`}
+                        content={"Primary"}
                         size="mini"
                         color="teal"
-                        className={ "primary-label" }
+                        className={"primary-label"}
                     />
-                    { " / " + displayName }
+                    {" / " + displayName}
                 </>
             );
         }
@@ -189,23 +193,24 @@ export const GroupList: React.FunctionComponent<GroupListProps> = (props: GroupL
         if (searchQuery) {
             return (
                 <EmptyPlaceholder
-                    data-testid={ `${ testId }-search-empty-placeholder` }
-                    action={ (
+                    data-testid={`${testId}-search-empty-placeholder`}
+                    action={
                         <LinkButton
-                            data-testid={ `${ testId }-search-empty-placeholder-clear-button` }
-                            onClick={ onSearchQueryClear }
+                            data-testid={`${testId}-search-empty-placeholder-clear-button`}
+                            onClick={onSearchQueryClear}
                         >
-                            { t("console:manage.features.roles.list.emptyPlaceholders.search.action") }
+                            {t("console:manage.features.roles.list.emptyPlaceholders.search.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.roles.list.emptyPlaceholders.search.title") }
-                    subtitle={ [
-                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0",
-                            { searchQuery: searchQuery }),
+                    title={t("console:manage.features.roles.list.emptyPlaceholders.search.title")}
+                    subtitle={[
+                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0", {
+                            searchQuery: searchQuery
+                        }),
                         t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -213,42 +218,51 @@ export const GroupList: React.FunctionComponent<GroupListProps> = (props: GroupL
         if (!groupList || groupList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    data-testid={ `${ testId }-empty-list-empty-placeholder` }
-                    action={ !isReadOnlyUserStore && (
-                        <Show when={ AccessControlConstants.GROUP_WRITE }>
-                            <PrimaryButton
-                                data-testid={ `${ testId }-empty-list-empty-placeholder-add-button` }
-                                onClick={ onEmptyListPlaceholderActionClick }
-                            >
-                                <Icon name="add"/>
-                                { t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.action",
-                                    { type: "Group" }) }
-                            </PrimaryButton>
-                        </Show>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    data-testid={`${testId}-empty-list-empty-placeholder`}
+                    action={
+                        !isReadOnlyUserStore && (
+                            <Show when={AccessControlConstants.GROUP_WRITE}>
+                                <PrimaryButton
+                                    data-testid={`${testId}-empty-list-empty-placeholder-add-button`}
+                                    onClick={onEmptyListPlaceholderActionClick}
+                                >
+                                    <Icon name="add" />
+                                    {t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.action", {
+                                        type: "Group"
+                                    })}
+                                </PrimaryButton>
+                            </Show>
+                        )
+                    }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
                     title={
                         isReadOnlyUserStore
-                            ? t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.emptyRoles",
-                                { type: "groups" })
-                            : t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.title",
-                                { type: "group" })
+                            ? t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.emptyRoles", {
+                                  type: "groups"
+                              })
+                            : t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.title", {
+                                  type: "group"
+                              })
                     }
                     subtitle={
                         isReadOnlyUserStore
                             ? [
-                                t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0",
-                                    { type: "groups" })
-                            ]
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0", {
+                                      type: "groups"
+                                  })
+                              ]
                             : [
-                                t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0",
-                                    { type: "groups" }),
-                                t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.1",
-                                    { type: "group" }),
-                                t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.2",
-                                    { type: "group" })
-                            ]
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0", {
+                                      type: "groups"
+                                  }),
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.1", {
+                                      type: "group"
+                                  }),
+                                  t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.2", {
+                                      type: "group"
+                                  })
+                              ]
                     }
                 />
             );
@@ -270,27 +284,20 @@ export const GroupList: React.FunctionComponent<GroupListProps> = (props: GroupL
                 id: "name",
                 key: "name",
                 render: (group: GroupsInterface): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ testId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                         <AppAvatar
-                            image={ (
+                            image={
                                 <AnimatedAvatar
-                                    name={ group.displayName }
+                                    name={group.displayName}
                                     size="mini"
-                                    data-testid={ `${ testId }-item-image-inner` }
+                                    data-testid={`${testId}-item-image-inner`}
                                 />
-                            ) }
+                            }
                             size="mini"
                             spaced="right"
-                            data-testid={ `${ testId }-item-image` }
+                            data-testid={`${testId}-item-image`}
                         />
-                        <Header.Content>
-                            { generateHeaderContent(group.displayName) }
-                        </Header.Content>
+                        <Header.Content>{generateHeaderContent(group.displayName)}</Header.Content>
                     </Header>
                 ),
                 title: t("console:manage.features.groups.list.columns.name")
@@ -334,31 +341,40 @@ export const GroupList: React.FunctionComponent<GroupListProps> = (props: GroupL
 
         const actions: TableActionsInterface[] = [
             {
-                hidden: (): boolean => !isFeatureEnabled(featureConfig?.groups,
-                    GroupConstants.FEATURE_DICTIONARY.get("GROUP_READ")),
+                hidden: (): boolean =>
+                    !isFeatureEnabled(featureConfig?.groups, GroupConstants.FEATURE_DICTIONARY.get("GROUP_READ")),
                 icon: (group: GroupsInterface): SemanticICONS => {
-                    const userStore: string = group?.displayName?.split("/").length > 1
-                        ? group?.displayName?.split("/")[0]
-                        : "PRIMARY";
+                    const userStore: string =
+                        group?.displayName?.split("/").length > 1 ? group?.displayName?.split("/")[0] : "PRIMARY";
 
-                    return !isFeatureEnabled(featureConfig?.groups,
-                        GroupConstants.FEATURE_DICTIONARY.get("GROUP_UPDATE"))
-                    || !hasRequiredScopes(featureConfig?.groups, featureConfig?.groups?.scopes?.update, allowedScopes)
-                    || readOnlyUserStores?.includes(userStore.toString())
+                    return !isFeatureEnabled(
+                        featureConfig?.groups,
+                        GroupConstants.FEATURE_DICTIONARY.get("GROUP_UPDATE")
+                    ) ||
+                        !hasRequiredScopes(
+                            featureConfig?.groups,
+                            featureConfig?.groups?.scopes?.update,
+                            allowedScopes
+                        ) ||
+                        readOnlyUserStores?.includes(userStore.toString())
                         ? "eye"
                         : "pencil alternate";
                 },
-                onClick: (e: SyntheticEvent, group: GroupsInterface): void =>
-                    handleGroupEdit(group.id),
+                onClick: (e: SyntheticEvent, group: GroupsInterface): void => handleGroupEdit(group.id),
                 popupText: (group: GroupsInterface): string => {
-                    const userStore: string = group?.displayName?.split("/").length > 1
-                        ? group?.displayName?.split("/")[0]
-                        : "PRIMARY";
+                    const userStore: string =
+                        group?.displayName?.split("/").length > 1 ? group?.displayName?.split("/")[0] : "PRIMARY";
 
-                    return !isFeatureEnabled(featureConfig?.groups,
-                        GroupConstants.FEATURE_DICTIONARY.get("GROUP_UPDATE"))
-                    || !hasRequiredScopes(featureConfig?.groups, featureConfig?.groups?.scopes?.update, allowedScopes)
-                    || readOnlyUserStores?.includes(userStore.toString())
+                    return !isFeatureEnabled(
+                        featureConfig?.groups,
+                        GroupConstants.FEATURE_DICTIONARY.get("GROUP_UPDATE")
+                    ) ||
+                        !hasRequiredScopes(
+                            featureConfig?.groups,
+                            featureConfig?.groups?.scopes?.update,
+                            allowedScopes
+                        ) ||
+                        readOnlyUserStores?.includes(userStore.toString())
                         ? t("common:view")
                         : t("common:edit");
                 },
@@ -368,12 +384,13 @@ export const GroupList: React.FunctionComponent<GroupListProps> = (props: GroupL
 
         actions.push({
             hidden: (group: GroupsInterface): boolean => {
-                const userStore: string = group?.displayName?.split("/").length > 1
-                    ? group?.displayName?.split("/")[0]
-                    : "PRIMARY";
+                const userStore: string =
+                    group?.displayName?.split("/").length > 1 ? group?.displayName?.split("/")[0] : "PRIMARY";
 
-                return !hasRequiredScopes(featureConfig?.groups, featureConfig?.groups?.scopes?.delete, allowedScopes)
-                    || readOnlyUserStores?.includes(userStore.toString());
+                return (
+                    !hasRequiredScopes(featureConfig?.groups, featureConfig?.groups?.scopes?.delete, allowedScopes) ||
+                    readOnlyUserStores?.includes(userStore.toString())
+                );
             },
             icon: (): SemanticICONS => "trash alternate",
             onClick: (e: SyntheticEvent, group: GroupsInterface): void => {
@@ -391,58 +408,53 @@ export const GroupList: React.FunctionComponent<GroupListProps> = (props: GroupL
         <>
             <DataTable<GroupsInterface>
                 className="groups-list"
-                externalSearch={ advancedSearch }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                externalSearch={advancedSearch}
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ groupList }
-                onRowClick={
-                    (e: SyntheticEvent, group: GroupsInterface): void => {
-                        handleGroupEdit(group?.id);
-                        onListItemClick && onListItemClick(e, group);
-                    }
-                }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ false }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-testid={ testId }
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={groupList}
+                onRowClick={(e: SyntheticEvent, group: GroupsInterface): void => {
+                    handleGroupEdit(group?.id);
+                    onListItemClick && onListItemClick(e, group);
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={false}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-testid={testId}
             />
-            {
-                showGroupDeleteConfirmation &&
-                    (<ConfirmationModal
-                        data-testid={ `${ testId }-delete-item-confirmation-modal` }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showGroupDeleteConfirmation }
-                        assertionHint={ t("console:manage.features.roles.list.confirmations.deleteItem.assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction="Confirm"
-                        secondaryAction="Cancel"
-                        onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                        onPrimaryActionClick={ (): void => {
-                            handleGroupDelete(currentDeletedGroup);
-                            setShowDeleteConfirmationModal(false);
-                        } }
-                        closeOnDimmerClick={ false }
-                    >
-                        <ConfirmationModal.Header>
-                            { t("console:manage.features.roles.list.confirmations.deleteItem.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message attached negative>
-                            { t("console:manage.features.roles.list.confirmations.deleteItem.message",
-                                { type: "group" }) }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content>
-                            { t("console:manage.features.roles.list.confirmations.deleteItem.content",
-                                { type: "group" }) }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>)
-            }
+            {showGroupDeleteConfirmation && (
+                <ConfirmationModal
+                    data-testid={`${testId}-delete-item-confirmation-modal`}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showGroupDeleteConfirmation}
+                    assertionHint={t("console:manage.features.roles.list.confirmations.deleteItem.assertionHint")}
+                    assertionType="checkbox"
+                    primaryAction="Confirm"
+                    secondaryAction="Cancel"
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => {
+                        handleGroupDelete(currentDeletedGroup);
+                        setShowDeleteConfirmationModal(false);
+                    }}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header>
+                        {t("console:manage.features.roles.list.confirmations.deleteItem.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message attached negative>
+                        {t("console:manage.features.roles.list.confirmations.deleteItem.message", { type: "group" })}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content>
+                        {t("console:manage.features.roles.list.confirmations.deleteItem.content", { type: "group" })}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

@@ -22,10 +22,8 @@ import React, { FunctionComponent, MouseEvent, ReactElement, useEffect, useState
 import { Trans, useTranslation } from "react-i18next";
 import { ModalProps } from "semantic-ui-react";
 import { AppConstants } from "../../../core/constants/app-constants";
-import { history } from "../../../core/helpers/history";
-import {
-    AuthenticatorCreateWizardFactory
-} from "../../../identity-providers/components/wizards/authenticator-create-wizard-factory";
+import { history } from "@wso2is/features/core/helpers";
+import { AuthenticatorCreateWizardFactory } from "../../../identity-providers/components/wizards/authenticator-create-wizard-factory";
 import useAuthenticationFlow from "../../hooks/use-authentication-flow";
 
 /**
@@ -50,9 +48,7 @@ export interface MissingSocialAuthenticatorSelectionModalPropsInterface
  * @param props - Props injected to the component.
  * @returns Social authenticator selection modal.
  */
-const MissingSocialAuthenticatorSelectionModal: FunctionComponent<
-    MissingSocialAuthenticatorSelectionModalPropsInterface
-> = (
+const MissingSocialAuthenticatorSelectionModal: FunctionComponent<MissingSocialAuthenticatorSelectionModalPropsInterface> = (
     props: MissingSocialAuthenticatorSelectionModalPropsInterface
 ) => {
     const {
@@ -66,11 +62,10 @@ const MissingSocialAuthenticatorSelectionModal: FunctionComponent<
 
     const { refetchAuthenticators } = useAuthenticationFlow();
 
-    const [
-        showMissingSocialAuthenticatorModal,
-        setShowMissingSocialAuthenticatorModal
-    ] = useState<boolean>(missingSocialAuthenticatorModalOpen);
-    const [ showAuthenticatorCreateWizard, setShowAuthenticatorCreateWizard ] = useState<boolean>(false);
+    const [showMissingSocialAuthenticatorModal, setShowMissingSocialAuthenticatorModal] = useState<boolean>(
+        missingSocialAuthenticatorModalOpen
+    );
+    const [showAuthenticatorCreateWizard, setShowAuthenticatorCreateWizard] = useState<boolean>(false);
 
     const { t } = useTranslation();
 
@@ -79,7 +74,7 @@ const MissingSocialAuthenticatorSelectionModal: FunctionComponent<
      */
     useEffect(() => {
         setShowMissingSocialAuthenticatorModal(missingSocialAuthenticatorModalOpen);
-    }, [ open ]);
+    }, [open]);
 
     /**
      * Renders the IDP create wizard.
@@ -87,23 +82,22 @@ const MissingSocialAuthenticatorSelectionModal: FunctionComponent<
      * @returns React element.
      */
     const renderIDPCreateWizard = (): ReactElement => {
-
         if (!authenticatorCategoryTemplate) {
             return;
         }
 
         return (
             <AuthenticatorCreateWizardFactory
-                open={ showAuthenticatorCreateWizard }
-                type={ authenticatorCategoryTemplate }
-                selectedTemplate={ null }
-                onIDPCreate={ () => {
+                open={showAuthenticatorCreateWizard}
+                type={authenticatorCategoryTemplate}
+                selectedTemplate={null}
+                onIDPCreate={() => {
                     refetchAuthenticators();
-                } }
-                onWizardClose={ () => {
+                }}
+                onWizardClose={() => {
                     setShowAuthenticatorCreateWizard(false);
                     missingSocialAuthenticatorModalOnClose(null, null);
-                } }
+                }}
             />
         );
     };
@@ -111,65 +105,73 @@ const MissingSocialAuthenticatorSelectionModal: FunctionComponent<
     return (
         <>
             <ConfirmationModal
-                open={ showMissingSocialAuthenticatorModal }
+                open={showMissingSocialAuthenticatorModal}
                 type="info"
-                onClose={ (event: MouseEvent<HTMLElement>, data: ModalProps): void => {
+                onClose={(event: MouseEvent<HTMLElement>, data: ModalProps): void => {
                     missingSocialAuthenticatorModalOnClose(event, data);
-                } }
-                primaryAction={
-                    t("console:develop.features.applications.edit.sections.signOnMethod.sections.landing." +
-                    "flowBuilder.addMissingSocialAuthenticatorModal.primaryButton")
-                }
-                secondaryAction={
-                    t("console:develop.features.applications.edit.sections.signOnMethod.sections.landing." +
-                    "flowBuilder.addMissingSocialAuthenticatorModal.secondaryButton")
-                }
-                onSecondaryActionClick={ (event: MouseEvent<HTMLElement>): void => {
+                }}
+                primaryAction={t(
+                    "console:develop.features.applications.edit.sections.signOnMethod.sections.landing." +
+                        "flowBuilder.addMissingSocialAuthenticatorModal.primaryButton"
+                )}
+                secondaryAction={t(
+                    "console:develop.features.applications.edit.sections.signOnMethod.sections.landing." +
+                        "flowBuilder.addMissingSocialAuthenticatorModal.secondaryButton"
+                )}
+                onSecondaryActionClick={(event: MouseEvent<HTMLElement>): void => {
                     missingSocialAuthenticatorModalOnClose(event, null);
-                } }
-                onPrimaryActionClick={ (): void => {
+                }}
+                onPrimaryActionClick={(): void => {
                     setShowAuthenticatorCreateWizard(true);
                     setShowMissingSocialAuthenticatorModal(false);
-                } }
-                data-componentid={ componentId }
-                closeOnDimmerClick={ false }
-                { ...rest }
+                }}
+                data-componentid={componentId}
+                closeOnDimmerClick={false}
+                {...rest}
             >
                 <ConfirmationModal.Header>
-                    {
-                        t("console:develop.features.applications.edit.sections.signOnMethod.sections.landing." +
-                        "flowBuilder.addMissingSocialAuthenticatorModal.heading",
-                        { authenticator: authenticatorCategoryDisplayName })
-                    }
+                    {t(
+                        "console:develop.features.applications.edit.sections.signOnMethod.sections.landing." +
+                            "flowBuilder.addMissingSocialAuthenticatorModal.heading",
+                        { authenticator: authenticatorCategoryDisplayName }
+                    )}
                 </ConfirmationModal.Header>
                 <ConfirmationModal.Message attached info>
-                    {
-                        t("console:develop.features.applications.edit.sections.signOnMethod.sections.landing." +
-                        "flowBuilder.addMissingSocialAuthenticatorModal.content.message",
-                        { authenticator: authenticatorCategoryDisplayName })
-                    }
+                    {t(
+                        "console:develop.features.applications.edit.sections.signOnMethod.sections.landing." +
+                            "flowBuilder.addMissingSocialAuthenticatorModal.content.message",
+                        { authenticator: authenticatorCategoryDisplayName }
+                    )}
                 </ConfirmationModal.Message>
                 <ConfirmationModal.Content>
                     <Trans
                         i18nKey={
                             "console:develop.features.applications.edit.sections.signOnMethod.sections.landing." +
-                        "flowBuilder.addMissingSocialAuthenticatorModal.content.body"
+                            "flowBuilder.addMissingSocialAuthenticatorModal.content.body"
                         }
-                        tOptions={ { authenticator: authenticatorCategoryDisplayName } }
+                        tOptions={{ authenticator: authenticatorCategoryDisplayName }}
                     >
                         You do not have an active Social Connection configured with
-                        <Code> { authenticatorCategoryDisplayName }
-                        Authenticator</Code>. Click on the <strong>Configure</strong> button to register a new
-                        <Code>{ authenticatorCategoryDisplayName } Social Connection</Code> or navigate to the <a
-                            onClick={ () => {
+                        <Code>
+                            {" "}
+                            {authenticatorCategoryDisplayName}
+                            Authenticator
+                        </Code>
+                        . Click on the <strong>Configure</strong> button to register a new
+                        <Code>{authenticatorCategoryDisplayName} Social Connection</Code> or navigate to the{" "}
+                        <a
+                            onClick={() => {
                                 history.push(AppConstants.getPaths().get("IDP"));
-                            } }
+                            }}
                             className="external-link link pointing primary"
-                        >Connections</a> section manually.
+                        >
+                            Connections
+                        </a>{" "}
+                        section manually.
                     </Trans>
                 </ConfirmationModal.Content>
             </ConfirmationModal>
-            { showAuthenticatorCreateWizard && renderIDPCreateWizard() }
+            {showAuthenticatorCreateWizard && renderIDPCreateWizard()}
         </>
     );
 };

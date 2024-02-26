@@ -16,29 +16,17 @@
  * under the License.
  */
 
-import {
-    AlertLevels, IdentifiableComponentInterface
-} from "@wso2is/core/models";
+import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import {
-    DocumentationLink,
-    GridLayout,
-    PageLayout,
-    useDocumentation
-} from "@wso2is/react-components";
+import { DocumentationLink, GridLayout, PageLayout, useDocumentation } from "@wso2is/react-components";
 import { AxiosError } from "axios";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    SyntheticEvent,
-    useEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Checkbox, CheckboxProps, Grid, Icon, Message } from "semantic-ui-react";
-import { AppConstants, history } from "../../core";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { updateJWTConfig, useTokenReuseConfigData } from "../api";
 
 /**
@@ -50,23 +38,20 @@ import { updateJWTConfig, useTokenReuseConfigData } from "../api";
 export const PrivateKeyJWTConfigEditPage: FunctionComponent<IdentifiableComponentInterface> = (
     props: IdentifiableComponentInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
-    const [ enableTokenReuse, setEnableTokenReuse ] = useState<boolean>(true);
+    const [enableTokenReuse, setEnableTokenReuse] = useState<boolean>(true);
 
-    const {
-        data: tokenReuseData,
-        isLoading: isLoading
-    } = useTokenReuseConfigData();
+    const { data: tokenReuseData, isLoading: isLoading } = useTokenReuseConfigData();
 
     useEffect(() => {
         if (tokenReuseData) {
             setEnableTokenReuse(tokenReuseData?.enableTokenReuse);
         }
-    }, [ tokenReuseData ]);
+    }, [tokenReuseData]);
 
     /**
      * Handles back button click event
@@ -76,11 +61,9 @@ export const PrivateKeyJWTConfigEditPage: FunctionComponent<IdentifiableComponen
     };
 
     const resolveConnectorUpdateErrorMessage = (error: AxiosError): string => {
-        
-        return (
-            t("console:manage.features.jwtPrivateKeyConfiguration.notifications.error.description",
-                { description: error.response.data.description })
-        );
+        return t("console:manage.features.jwtPrivateKeyConfiguration.notifications.error.description", {
+            description: error.response.data.description
+        });
     };
 
     const handleUpdateSuccess = () => {
@@ -88,10 +71,7 @@ export const PrivateKeyJWTConfigEditPage: FunctionComponent<IdentifiableComponen
             addAlert({
                 description: t("console:manage.features.jwtPrivateKeyConfiguration.notifications.success.description"),
                 level: AlertLevels.SUCCESS,
-                message: t(
-                    "console:manage.features.jwtPrivateKeyConfiguration.notifications." +
-                    "success.message"
-                )
+                message: t("console:manage.features.jwtPrivateKeyConfiguration.notifications." + "success.message")
             })
         );
     };
@@ -102,9 +82,7 @@ export const PrivateKeyJWTConfigEditPage: FunctionComponent<IdentifiableComponen
                 addAlert({
                     description: resolveConnectorUpdateErrorMessage(error),
                     level: AlertLevels.ERROR,
-                    message: t(
-                        "console:manage.features.jwtPrivateKeyConfiguration.notifications.error.message"
-                    )
+                    message: t("console:manage.features.jwtPrivateKeyConfiguration.notifications.error.message")
                 })
             );
         } else {
@@ -112,13 +90,11 @@ export const PrivateKeyJWTConfigEditPage: FunctionComponent<IdentifiableComponen
             dispatch(
                 addAlert({
                     description: t(
-                        "console:manage.features.jwtPrivateKeyConfiguration.notifications." +
-                        "genericError.description"
+                        "console:manage.features.jwtPrivateKeyConfiguration.notifications." + "genericError.description"
                     ),
                     level: AlertLevels.ERROR,
                     message: t(
-                        "console:manage.features.jwtPrivateKeyConfiguration.notifications." +
-                        ".genericError.message"
+                        "console:manage.features.jwtPrivateKeyConfiguration.notifications." + ".genericError.message"
                     )
                 })
             );
@@ -136,11 +112,13 @@ export const PrivateKeyJWTConfigEditPage: FunctionComponent<IdentifiableComponen
             value: data.checked
         };
 
-        updateJWTConfig(updateData).then(() => {
-            handleUpdateSuccess();
-        }).catch((error: AxiosError) => {
-            handleUpdateError(error);
-        });
+        updateJWTConfig(updateData)
+            .then(() => {
+                handleUpdateSuccess();
+            })
+            .catch((error: AxiosError) => {
+                handleUpdateError(error);
+            });
     };
 
     /**
@@ -150,70 +128,64 @@ export const PrivateKeyJWTConfigEditPage: FunctionComponent<IdentifiableComponen
         return (
             <>
                 <Checkbox
-                    label={ enableTokenReuse 
-                        ? t("console:manage.features.jwtPrivateKeyConfiguration.tokenReuseEnabled") 
-                        : t("console:manage.features.jwtPrivateKeyConfiguration.tokenReuseDisabled") }
+                    label={
+                        enableTokenReuse
+                            ? t("console:manage.features.jwtPrivateKeyConfiguration.tokenReuseEnabled")
+                            : t("console:manage.features.jwtPrivateKeyConfiguration.tokenReuseDisabled")
+                    }
                     toggle
-                    onChange={ handleToggle }
-                    checked={ enableTokenReuse }
-                    readOnly={ false }
-                    data-componentid={ `${ componentId }-enable-toggle` }
+                    onChange={handleToggle}
+                    checked={enableTokenReuse}
+                    readOnly={false}
+                    data-componentid={`${componentId}-enable-toggle`}
                 />
             </>
         );
     };
 
-    return (!isLoading ? (
+    return !isLoading ? (
         <PageLayout
             pageTitle="Private Key JWT Client Authentication for OIDC"
-            title={ t(
-                "console:manage.features.jwtPrivateKeyConfiguration.pageTitle"
-            ) }
-            description={ (
+            title={t("console:manage.features.jwtPrivateKeyConfiguration.pageTitle")}
+            description={
                 <>
-                    { t("console:manage.features.jwtPrivateKeyConfiguration.description" ) }
-                    <DocumentationLink
-                        link={ getLink("manage.privateKeyJWT.learnMore") }
-                    >
-                        { t("common:learnMore") }
+                    {t("console:manage.features.jwtPrivateKeyConfiguration.description")}
+                    <DocumentationLink link={getLink("manage.privateKeyJWT.learnMore")}>
+                        {t("common:learnMore")}
                     </DocumentationLink>
                 </>
-            ) }
-            data-componentid={ `${ componentId }-page-layout` }
-            backButton={ {
-                "data-componentid": `${ componentId }-page-back-button`,
+            }
+            data-componentid={`${componentId}-page-layout`}
+            backButton={{
+                "data-componentid": `${componentId}-page-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:manage.features.governanceConnectors.goBackLoginAndRegistration")
-            } }
-            bottomMargin={ false }
-            contentTopMargin={ true }
-            pageHeaderMaxWidth={ true }
+            }}
+            bottomMargin={false}
+            contentTopMargin={true}
+            pageHeaderMaxWidth={true}
         >
+            {connectorToggle()}
             {
-                connectorToggle()
-            }
-            {
-                <Grid className={ "mt-2" } >
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 10 }>
+                <Grid className={"mt-2"}>
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={10}>
                             <Message
                                 info
-                                content={ (
+                                content={
                                     <>
-                                        <Icon name="info circle"/>
-                                        { t("console:manage.features.jwtPrivateKeyConfiguration.messageInfo") }
+                                        <Icon name="info circle" />
+                                        {t("console:manage.features.jwtPrivateKeyConfiguration.messageInfo")}
                                     </>
-                                ) }
+                                }
                             />
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
             }
-        </PageLayout> ) : (
-        <GridLayout
-            isLoading={ isLoading }
-            className={ "pt-5" }
-        />)
+        </PageLayout>
+    ) : (
+        <GridLayout isLoading={isLoading} className={"pt-5"} />
     );
 };
 

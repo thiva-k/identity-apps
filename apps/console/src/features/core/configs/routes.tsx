@@ -32,8 +32,6 @@ import {
     UserGroupIcon
 } from "@oxygen-ui/react-icons";
 import { LegacyModeInterface, RouteInterface } from "@wso2is/core/models";
-import ApplicationsPage from "@wso2is/features/applications/pages/applications";
-import UsersPage from "@wso2is/features/users/pages/users";
 import compact from "lodash-es/compact";
 import keyBy from "lodash-es/keyBy";
 import merge from "lodash-es/merge";
@@ -87,26 +85,6 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         order: 0,
                         path: AppConstants.getPaths().get("GETTING_STARTED"),
                         protected: true,
-                        showOnSidePanel: true
-                    },
-                    {
-                        component: ApplicationsPage,
-                        exact: false,
-                        icon: {
-                            icon: getSidePanelIcons().home
-                        },
-                        id: "applications",
-                        name: "Applications",
-                        order: 1,
-                        path: "apptest",
-                        protected: true,
-                        showOnSidePanel: true
-                    },
-                    {
-                        component: UsersPage,
-                        id: "test",
-                        name: "Test",
-                        path: "testpath",
                         showOnSidePanel: true
                     },
                     {
@@ -468,9 +446,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     {
                         children: [
                             {
-                                component: lazy(() =>
-                                    import("../../../features/organizations/pages/organization-edit")
-                                ),
+                                component: lazy(() => import("@wso2is/features/organizations/pages/organization-edit")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().organization
@@ -482,7 +458,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../../features/organizations/pages/organizations")),
+                        component: lazy(() => import("@wso2is/features/organizations/pages/organizations")),
                         exact: true,
                         icon: {
                             icon: <BuildingIcon />
@@ -500,7 +476,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 component: lazy(() => {
                                     // eslint-disable-next-line max-len
                                     return import(
-                                        "../../organization-discovery/pages/assign-organization-discovery-domains-page"
+                                        "@wso2is/features/organization-discovery/pages/assign-organization-discovery-domains-page"
                                     );
                                 }),
                                 exact: true,
@@ -517,7 +493,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 component: lazy(() => {
                                     // eslint-disable-next-line max-len
                                     return import(
-                                        "../../organization-discovery/pages/edit-organization-discovery-domains-page"
+                                        "@wso2is/features/organization-discovery/pages/edit-organization-discovery-domains-page"
                                     );
                                 }),
                                 exact: true,
@@ -1431,7 +1407,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     },
                     {
-                        component: lazy(() => import("../../../features/organizations/pages/organization-roles")),
+                        component: lazy(() => import("@wso2is/features/organizations/pages/organization-roles")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().roles
@@ -1443,7 +1419,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     },
                     {
-                        component: lazy(() => import("../../../features/organizations/pages/organization-roles-edit")),
+                        component: lazy(() => import("@wso2is/features/organizations/pages/organization-roles-edit")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().roles

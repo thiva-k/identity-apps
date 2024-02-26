@@ -16,30 +16,25 @@
  * under the License.
  */
 
-import {
-    DatabaseDocumentIcon,
-    PaletteIcon,
-    SquareUserIcon
-} from "@oxygen-ui/react-icons";
+import { DatabaseDocumentIcon, PaletteIcon, SquareUserIcon } from "@oxygen-ui/react-icons";
 import { FeatureStatus } from "@wso2is/access-control";
 import { NavCategory, NavRouteInterface, RouteInterface } from "@wso2is/core/models";
 import groupBy from "lodash-es/groupBy";
 import sortBy from "lodash-es/sortBy";
 import { FeatureGateConstants } from "../../../extensions/components/feature-gate/constants/feature-gate";
 import { AppConstants } from "../constants";
-import { history } from "../helpers";
+import { history } from "@wso2is/features/core/helpers";
 
 /**
  * Utility class for application routes related operations.
  */
 export class RouteUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
-    private constructor() { }
+    private constructor() {}
 
     /*
      * Gracefully handles application routing to avoid less privileged users from
@@ -50,11 +45,12 @@ export class RouteUtils {
      * @param {string} pathname - Current path from location.
      * @param {boolean} navigateToUnAuthorized - Should navigate to un-authorized page.
      */
-    public static gracefullyHandleRouting(routes: RouteInterface[],
+    public static gracefullyHandleRouting(
+        routes: RouteInterface[],
         view: string,
         pathname: string,
-        navigateToUnAuthorized: boolean = true): void {
-
+        navigateToUnAuthorized: boolean = true
+    ): void {
         if (RouteUtils.isOnlyPageNotFoundPresent(routes)) {
             if (RouteUtils.isHomePath(view)) {
                 if (view === AppConstants.getDeveloperViewBasePath()) {
@@ -127,13 +123,16 @@ export class RouteUtils {
                 return "";
             }
 
-            return path.split("/").map((fragment: string) => {
-                if (fragment && fragment.startsWith(":")) {
-                    return /[\w~\-\\.!*'(), ]+/.source;
-                }
+            return path
+                .split("/")
+                .map((fragment: string) => {
+                    if (fragment && fragment.startsWith(":")) {
+                        return /[\w~\-\\.!*'(), ]+/.source;
+                    }
 
-                return fragment ?? "";
-            }).join("/");
+                    return fragment ?? "";
+                })
+                .join("/");
         };
 
         /**
@@ -151,7 +150,7 @@ export class RouteUtils {
          */
         for (const route of routes) {
             if (route) {
-                const expression: RegExp = RegExp(`^${ pathToARegex(route.path)}`);
+                const expression: RegExp = RegExp(`^${pathToARegex(route.path)}`);
                 const match: RegExpExecArray = expression.exec(pathname);
 
                 if (match && match.length > 0) {
@@ -167,7 +166,6 @@ export class RouteUtils {
          * the requested URL is present in the application.
          */
         return qualifiedPaths.length > 0;
-
     }
 
     /**
@@ -177,7 +175,6 @@ export class RouteUtils {
      * @returns Is home path or not.
      */
     public static isHomePath(path: string): boolean {
-
         if (path === AppConstants.getAppHomePath()) {
             return true;
         }
@@ -193,7 +190,7 @@ export class RouteUtils {
      */
     public static isOnlyPageNotFoundPresent(routes: RouteInterface[]): boolean {
         if (routes && Array.isArray(routes) && routes.length === 1) {
-            if (routes[ 0 ].redirectTo === AppConstants.getPaths().get("PAGE_NOT_FOUND")) {
+            if (routes[0].redirectTo === AppConstants.getPaths().get("PAGE_NOT_FOUND")) {
                 return true;
             }
         }
@@ -209,11 +206,11 @@ export class RouteUtils {
      * @returns
      */
     public static isViewPresentable(routes: RouteInterface[], pathsToSkip?: string[]): boolean {
-
         const presentableRoutes: RouteInterface[] = RouteUtils.filterPresentableRoutes(routes, pathsToSkip);
 
-        return !(((presentableRoutes && Array.isArray(presentableRoutes)) && presentableRoutes.length === 0)
-            || RouteUtils.isOnlyPageNotFoundPresent(presentableRoutes)
+        return !(
+            (presentableRoutes && Array.isArray(presentableRoutes) && presentableRoutes.length === 0) ||
+            RouteUtils.isOnlyPageNotFoundPresent(presentableRoutes)
         );
     }
 
@@ -225,7 +222,6 @@ export class RouteUtils {
      * @returns
      */
     public static filterPresentableRoutes(routes: RouteInterface[], pathsToSkip?: string[]): RouteInterface[] {
-
         return routes.filter((route: RouteInterface) => {
             if (!route.showOnSidePanel) {
                 return false;
@@ -253,7 +249,6 @@ export class RouteUtils {
     }
 
     public static groupNavbarRoutes(routes: RouteInterface[], saasFeatureStatus?: FeatureStatus): NavRouteInterface[] {
-
         const userManagement: Omit<RouteInterface, "showOnSidePanel"> = {
             icon: SquareUserIcon,
             id: "userManagement",
@@ -435,7 +430,8 @@ export class RouteUtils {
             {
                 category: preferences,
                 id: "notificationChannels",
-                selected: history.location.pathname === AppConstants.getPaths().get("EMAIL_PROVIDER") ||
+                selected:
+                    history.location.pathname === AppConstants.getPaths().get("EMAIL_PROVIDER") ||
                     history.location.pathname === AppConstants.getPaths().get("SMS_PROVIDER") ||
                     history.location.pathname === AppConstants.getPaths().get("EMAIL_AND_SMS")
             },
@@ -466,27 +462,32 @@ export class RouteUtils {
             }
         ];
 
-        const itemsWithCategory: NavRouteInterface[] = routes?.filter((route: RouteInterface) => {
-            const saasFeatureIsEnabled: boolean = route.featureGateIds?.
-                includes(FeatureGateConstants.SAAS_FEATURES_IDENTIFIER) && saasFeatureStatus !== FeatureStatus.ENABLED;
+        const itemsWithCategory: NavRouteInterface[] = routes
+            ?.filter((route: RouteInterface) => {
+                const saasFeatureIsEnabled: boolean =
+                    route.featureGateIds?.includes(FeatureGateConstants.SAAS_FEATURES_IDENTIFIER) &&
+                    saasFeatureStatus !== FeatureStatus.ENABLED;
 
-            return !saasFeatureIsEnabled;
-        }).map((route: RouteInterface) => {
-            const categoryMappedRoute: Omit<RouteInterface, "showOnSidePanel">
-                = CategoryMappedRoutes.find((item: RouteInterface) => item.id === route.id);
+                return !saasFeatureIsEnabled;
+            })
+            .map((route: RouteInterface) => {
+                const categoryMappedRoute: Omit<RouteInterface, "showOnSidePanel"> = CategoryMappedRoutes.find(
+                    (item: RouteInterface) => item.id === route.id
+                );
 
-            return {
-                ...route,
-                navCategory: categoryMappedRoute?.category,
-                order: categoryMappedRoute?.order,
-                parent: categoryMappedRoute?.parent,
-                selected: categoryMappedRoute?.selected
-            };
-        });
+                return {
+                    ...route,
+                    navCategory: categoryMappedRoute?.category,
+                    order: categoryMappedRoute?.order,
+                    parent: categoryMappedRoute?.parent,
+                    selected: categoryMappedRoute?.selected
+                };
+            });
 
         const groupedByParent: Record<string, NavRouteInterface[]> = groupBy(
-            itemsWithCategory.filter(
-                (item: NavRouteInterface) => item.parent), (item: NavRouteInterface) => item.parent?.id);
+            itemsWithCategory.filter((item: NavRouteInterface) => item.parent),
+            (item: NavRouteInterface) => item.parent?.id
+        );
 
         const updatedGroupedItems: NavRouteInterface[] = Object.values(groupedByParent).map(
             (group: NavRouteInterface[]) => ({
@@ -497,12 +498,13 @@ export class RouteUtils {
                 navCategory: group[0]?.navCategory,
                 order: group[0]?.parent?.order,
                 showOnSidePanel: group[0]?.parent?.showOnSidePanel || true
-            }));
+            })
+        );
 
         const ungroupedItems: NavRouteInterface[] = itemsWithCategory.filter((item: NavRouteInterface) => !item.parent);
 
         return sortBy(
-            sortBy([ ...updatedGroupedItems, ...ungroupedItems ], (item: NavRouteInterface) => item.order),
+            sortBy([...updatedGroupedItems, ...ungroupedItems], (item: NavRouteInterface) => item.order),
             (item: NavRouteInterface) => item.navCategory?.order
         );
     }

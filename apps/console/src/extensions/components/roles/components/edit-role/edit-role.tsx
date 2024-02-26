@@ -24,7 +24,8 @@ import { useTranslation } from "react-i18next";
 import { BasicRoleDetails } from "./edit-role-basic";
 import { RolePermissionDetails } from "./edit-role-permission";
 import { RoleUserDetails } from "./edit-role-users";
-import { FeatureConfigInterface, history } from "../../../../../features/core";
+import { FeatureConfigInterface } from "../../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 
 /**
  * Captures props needed for edit role component
@@ -42,54 +43,49 @@ interface EditRoleProps extends SBACInterface<FeatureConfigInterface> {
  * @param props - contains role details to be edited.
  */
 export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps): ReactElement => {
-
-    const {
-        roleObject,
-        onRoleUpdate
-    } = props;
+    const { roleObject, onRoleUpdate } = props;
 
     const { t } = useTranslation();
 
-    const [ isGroup, setIsGroup ] = useState<boolean>(false);
-    const [ isAdminRole, setIsAdminRole ] = useState<boolean>(false);
+    const [isGroup, setIsGroup] = useState<boolean>(false);
+    const [isAdminRole, setIsAdminRole] = useState<boolean>(false);
 
     /**
      * Get is groups url to proceed as groups
      */
     useEffect(() => {
-        if(!roleObject) {
+        if (!roleObject) {
             return;
         }
 
         setIsGroup(history.location.pathname.includes("/groups/"));
-
-    }, [ roleObject ]);
+    }, [roleObject]);
 
     /**
      * Set the if the role is `Internal/admin`.
      */
     useEffect(() => {
-        if(!roleObject) {
+        if (!roleObject) {
             return;
         }
 
-        setIsAdminRole(roleObject.displayName === RoleConstants.ADMIN_ROLE ||
-            roleObject.displayName === RoleConstants.ADMIN_GROUP);
-
-    }, [ roleObject ]);
+        setIsAdminRole(
+            roleObject.displayName === RoleConstants.ADMIN_ROLE || roleObject.displayName === RoleConstants.ADMIN_GROUP
+        );
+    }, [roleObject]);
 
     const resolveResourcePanes = () => {
         const panes: any[] = [
             {
                 menuItem: "General",
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <BasicRoleDetails
-                            isReadOnly={ isAdminRole }
+                            isReadOnly={isAdminRole}
                             data-testid="role-mgt-edit-role-basic"
-                            isGroup={ isGroup }
-                            roleObject={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            isGroup={isGroup}
+                            roleObject={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
@@ -97,13 +93,13 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.permissions"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RolePermissionDetails
-                            isReadOnly={ isAdminRole }
+                            isReadOnly={isAdminRole}
                             data-testid="role-mgt-edit-role-permissions"
-                            isGroup={ false }
-                            roleObject={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            isGroup={false}
+                            roleObject={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
@@ -111,12 +107,12 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.users"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RoleUserDetails
                             data-testid="role-mgt-edit-role-users"
-                            isGroup={ false }
-                            roleObject={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            isGroup={false}
+                            roleObject={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
@@ -126,7 +122,5 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
         return panes;
     };
 
-    return (
-        <ResourceTab panes={ resolveResourcePanes() } />
-    );
+    return <ResourceTab panes={resolveResourcePanes()} />;
 };

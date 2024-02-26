@@ -60,10 +60,10 @@ import {
     UIConstants,
     UserBasicInterface,
     UserRoleInterface,
-    UserStoreDetails,
-    history
+    UserStoreDetails
 } from "../../../../features/core";
 import { store } from "@wso2is/features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { getRoleById, searchRoleList } from "../../../../features/roles/api/roles";
 import { SearchRoleInterface } from "../../../../features/roles/models/roles";
 import { useServerConfigs } from "../../../../features/server-configurations";

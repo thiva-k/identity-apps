@@ -41,12 +41,8 @@ import CustomSMSProvider from "./custom-sms-provider";
 import TwilioSMSProvider from "./twilio-sms-provider";
 import VonageSMSProvider from "./vonage-sms-provider";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
-import {
-    AppConstants,
-    AppState,
-    FeatureConfigInterface
-} from "../../core";
-import { history } from "../../core/helpers";
+import { AppConstants, AppState, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { createSMSProvider, deleteSMSProviders, updateSMSProvider, useSMSProviders } from "../api";
 import { providerCards } from "../configs/provider-cards";
 import { SMSProviderConstants } from "../constants";
@@ -64,21 +60,16 @@ import "./sms-providers.scss";
 
 type SMSProviderPageInterface = IdentifiableComponentInterface;
 
-const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
-    props: SMSProviderPageInterface
-): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId
-    } = props;
+const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (props: SMSProviderPageInterface): ReactElement => {
+    const { ["data-componentid"]: componentId } = props;
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ isOpenRevertConfigModal, setOpenRevertConfigModal ] = useState<boolean>(false);
+    const [isOpenRevertConfigModal, setOpenRevertConfigModal] = useState<boolean>(false);
     const { getLink } = useDocumentation();
     const { t } = useTranslation();
     const dispatch: Dispatch<any> = useDispatch();
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ isDeleting, setIsDeleting ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [isDeleting, setIsDeleting] = useState<boolean>(false);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const defaultProviderParams: {
         [key: string]: SMSProviderInterface;
@@ -105,17 +96,16 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
             vonageSecret: "",
             vonageSender: ""
         }
-
     };
-    const [ smsProviderSettings, setSmsProviderSettings ] = useState<SMSProviderSettingsState>({
+    const [smsProviderSettings, setSmsProviderSettings] = useState<SMSProviderSettingsState>({
         providerParams: defaultProviderParams,
         selectedProvider: null
     });
-    const isReadOnly: boolean = useMemo(() => !hasRequiredScopes(
-        featureConfig?.smsProviders,
-        featureConfig?.smsProviders?.scopes?.update,
-        allowedScopes
-    ), [ featureConfig, allowedScopes ]);
+    const isReadOnly: boolean = useMemo(
+        () =>
+            !hasRequiredScopes(featureConfig?.smsProviders, featureConfig?.smsProviders?.scopes?.update, allowedScopes),
+        [featureConfig, allowedScopes]
+    );
 
     const {
         data: originalSMSProviderConfig,
@@ -123,9 +113,9 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
         mutate: mutateSMSProviderConfig,
         error: smsProviderConfigFetchRequestError
     } = useSMSProviders();
-    const [ isLoading, setIsLoading ] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
 
-    const [ existingSMSProviders, setExistingSMSProviders ] = useState<string[]>([]);
+    const [existingSMSProviders, setExistingSMSProviders] = useState<string[]>([]);
 
     useEffect(() => {
         if (!isSMSProviderConfigFetchRequestLoading && originalSMSProviderConfig?.length > 0) {
@@ -137,7 +127,7 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
 
             setExistingSMSProviders(existingSMSProviderNames);
         }
-    },[ isSMSProviderConfigFetchRequestLoading ]);
+    }, [isSMSProviderConfigFetchRequestLoading]);
 
     useEffect(() => {
         if (!originalSMSProviderConfig) {
@@ -149,47 +139,51 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
             return;
         }
         let configuredProvider: string = SMSProviderConstants.TWILIO_SMS_PROVIDER;
-        const providersObject: { [key: string]: SMSProviderInterface } =
-            originalSMSProviderConfig.reduce(
-                (acc: { [key: string]: SMSProviderInterface }, provider: SMSProviderAPIInterface) => {
-                    if (provider.provider === SMSProviderConstants.TWILIO) {
-                        configuredProvider = SMSProviderConstants.TWILIO_SMS_PROVIDER;
-                    } else if (provider.provider === SMSProviderConstants.VONAGE) {
-                        configuredProvider = SMSProviderConstants.VONAGE_SMS_PROVIDER;
-                    } else {
-                        configuredProvider = SMSProviderConstants.CUSTOM_SMS_PROVIDER;
-                    }
-                    const configuredSMSProvider: SMSProviderInterface = {
-                        contentType: provider.contentType as ContentType,
-                        headers: provider.properties.find(
-                            (property: SMSProviderPropertiesInterface) => property.key === "http.headers")?.value,
-                        httpMethod: provider.properties.find(
-                            (property: SMSProviderPropertiesInterface) => property.key === "http.method")?.value,
+        const providersObject: { [key: string]: SMSProviderInterface } = originalSMSProviderConfig.reduce(
+            (acc: { [key: string]: SMSProviderInterface }, provider: SMSProviderAPIInterface) => {
+                if (provider.provider === SMSProviderConstants.TWILIO) {
+                    configuredProvider = SMSProviderConstants.TWILIO_SMS_PROVIDER;
+                } else if (provider.provider === SMSProviderConstants.VONAGE) {
+                    configuredProvider = SMSProviderConstants.VONAGE_SMS_PROVIDER;
+                } else {
+                    configuredProvider = SMSProviderConstants.CUSTOM_SMS_PROVIDER;
+                }
+                const configuredSMSProvider: SMSProviderInterface = {
+                    contentType: provider.contentType as ContentType,
+                    headers: provider.properties.find(
+                        (property: SMSProviderPropertiesInterface) => property.key === "http.headers"
+                    )?.value,
+                    httpMethod: provider.properties.find(
+                        (property: SMSProviderPropertiesInterface) => property.key === "http.method"
+                    )?.value,
 
-                        name: provider.name,
-                        payload: provider.properties.find(
-                            (property: SMSProviderPropertiesInterface) => property.key === "body")?.value,
-                        provider: provider.provider,
-                        providerURL: provider?.providerURL
-                    };
+                    name: provider.name,
+                    payload: provider.properties.find(
+                        (property: SMSProviderPropertiesInterface) => property.key === "body"
+                    )?.value,
+                    provider: provider.provider,
+                    providerURL: provider?.providerURL
+                };
 
-                    if (configuredProvider === SMSProviderConstants.TWILIO_SMS_PROVIDER) {
-                        configuredSMSProvider.twilioKey = provider.key;
-                        configuredSMSProvider.twilioSecret = provider.secret;
-                        configuredSMSProvider.twilioSender = provider.sender;
-                    } else if (configuredProvider === SMSProviderConstants.VONAGE_SMS_PROVIDER) {
-                        configuredSMSProvider.vonageKey = provider.key;
-                        configuredSMSProvider.vonageSecret = provider.secret;
-                        configuredSMSProvider.vonageSender = provider.sender;
-                    } else {
-                        configuredSMSProvider.key = provider.key;
-                        configuredSMSProvider.secret = provider.secret;
-                        configuredSMSProvider.sender = provider.sender;
-                    }
-                    acc[configuredProvider] = configuredSMSProvider;
+                if (configuredProvider === SMSProviderConstants.TWILIO_SMS_PROVIDER) {
+                    configuredSMSProvider.twilioKey = provider.key;
+                    configuredSMSProvider.twilioSecret = provider.secret;
+                    configuredSMSProvider.twilioSender = provider.sender;
+                } else if (configuredProvider === SMSProviderConstants.VONAGE_SMS_PROVIDER) {
+                    configuredSMSProvider.vonageKey = provider.key;
+                    configuredSMSProvider.vonageSecret = provider.secret;
+                    configuredSMSProvider.vonageSender = provider.sender;
+                } else {
+                    configuredSMSProvider.key = provider.key;
+                    configuredSMSProvider.secret = provider.secret;
+                    configuredSMSProvider.sender = provider.sender;
+                }
+                acc[configuredProvider] = configuredSMSProvider;
 
-                    return acc;
-                }, {});
+                return acc;
+            },
+            {}
+        );
 
         setSmsProviderSettings({
             providerParams: {
@@ -199,8 +193,7 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
             selectedProvider: configuredProvider
         });
         setIsLoading(false);
-
-    }, [ originalSMSProviderConfig ]);
+    }, [originalSMSProviderConfig]);
 
     /**
      * Displays the error banner when unable to fetch sms provider configuration.
@@ -208,11 +201,9 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
     const handleRetrieveError = (): void => {
         dispatch(
             addAlert({
-                description: t("extensions:develop.smsProviders." +
-                    "notifications.getConfiguration.error.description"),
+                description: t("extensions:develop.smsProviders." + "notifications.getConfiguration.error.description"),
                 level: AlertLevels.ERROR,
-                message: t("extensions:develop.smsProviders." +
-                    "notifications.getConfiguration.error.message")
+                message: t("extensions:develop.smsProviders." + "notifications.getConfiguration.error.message")
             })
         );
     };
@@ -223,11 +214,11 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
     const handleUpdateSuccess = () => {
         dispatch(
             addAlert({
-                description: t("extensions:develop.smsProviders." +
-                    "notifications.updateConfiguration.success.description"),
+                description: t(
+                    "extensions:develop.smsProviders." + "notifications.updateConfiguration.success.description"
+                ),
                 level: AlertLevels.SUCCESS,
-                message: t("extensions:develop.smsProviders." +
-                    "notifications.updateConfiguration.success.message")
+                message: t("extensions:develop.smsProviders." + "notifications.updateConfiguration.success.message")
             })
         );
     };
@@ -238,11 +229,11 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
     const handleUpdateError = () => {
         dispatch(
             addAlert({
-                description: t("extensions:develop.smsProviders." +
-                    "notifications.updateConfiguration.error.description"),
+                description: t(
+                    "extensions:develop.smsProviders." + "notifications.updateConfiguration.error.description"
+                ),
                 level: AlertLevels.ERROR,
-                message: t("extensions:develop.smsProviders." +
-                    "notifications.updateConfiguration.error.message")
+                message: t("extensions:develop.smsProviders." + "notifications.updateConfiguration.error.message")
             })
         );
     };
@@ -253,11 +244,11 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
     const handleDeleteSuccess = () => {
         dispatch(
             addAlert({
-                description: t("extensions:develop.smsProviders." +
-                    "notifications.deleteConfiguration.success.description"),
+                description: t(
+                    "extensions:develop.smsProviders." + "notifications.deleteConfiguration.success.description"
+                ),
                 level: AlertLevels.SUCCESS,
-                message: t("extensions:develop.smsProviders." +
-                    "notifications.deleteConfiguration.success.message")
+                message: t("extensions:develop.smsProviders." + "notifications.deleteConfiguration.success.message")
             })
         );
     };
@@ -291,17 +282,26 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
         const contentType: ContentType = values.contentType ?? ContentType.JSON;
         const submittingValues: SMSProviderAPIInterface = {
             contentType: contentType,
-            key: selectedProvider === SMSProviderConstants.TWILIO_SMS_PROVIDER ?
-                values?.twilioKey : selectedProvider === SMSProviderConstants.VONAGE_SMS_PROVIDER ?
-                    values.vonageKey : values.key,
+            key:
+                selectedProvider === SMSProviderConstants.TWILIO_SMS_PROVIDER
+                    ? values?.twilioKey
+                    : selectedProvider === SMSProviderConstants.VONAGE_SMS_PROVIDER
+                    ? values.vonageKey
+                    : values.key,
             properties: properties,
             provider: provider,
-            secret: selectedProvider === SMSProviderConstants.TWILIO_SMS_PROVIDER ?
-                values?.twilioSecret : selectedProvider === SMSProviderConstants.VONAGE_SMS_PROVIDER ?
-                    values.vonageSecret : values.secret,
-            sender: selectedProvider === SMSProviderConstants.TWILIO_SMS_PROVIDER ?
-                values?.twilioSender : selectedProvider === SMSProviderConstants.VONAGE_SMS_PROVIDER ?
-                    values.vonageSender : values.sender
+            secret:
+                selectedProvider === SMSProviderConstants.TWILIO_SMS_PROVIDER
+                    ? values?.twilioSecret
+                    : selectedProvider === SMSProviderConstants.VONAGE_SMS_PROVIDER
+                    ? values.vonageSecret
+                    : values.secret,
+            sender:
+                selectedProvider === SMSProviderConstants.TWILIO_SMS_PROVIDER
+                    ? values?.twilioSender
+                    : selectedProvider === SMSProviderConstants.VONAGE_SMS_PROVIDER
+                    ? values.vonageSender
+                    : values.sender
         };
 
         if (values.providerURL) {
@@ -313,33 +313,40 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
                 ? updateSMSProvider(submittingValues)
                 : createSMSProvider(submittingValues);
 
-        handleSMSConfigValues.then((updatedData: SMSProviderAPIInterface) => {
-            const updatedSMSProvider: SMSProviderInterface = {
-                contentType: updatedData.contentType as ContentType,
-                headers: updatedData.properties.find(
-                    (property: SMSProviderPropertiesInterface) => property.key === "http.headers")?.value,
-                httpMethod: updatedData.properties.find(
-                    (property: SMSProviderPropertiesInterface) => property.key === "http.method")?.value,
-                key: updatedData.key,
-                name: updatedData.name,
-                payload: updatedData.properties.find(
-                    (property: SMSProviderPropertiesInterface) => property.key === "body")?.value,
-                provider: updatedData.provider,
-                providerURL: updatedData.providerURL,
-                secret: updatedData.secret,
-                sender: updatedData.sender
-            };
-            const updatedParams: { [key: string]: SMSProviderInterface } =
-                        { ...defaultProviderParams, [selectedProvider as string]: updatedSMSProvider };
+        handleSMSConfigValues
+            .then((updatedData: SMSProviderAPIInterface) => {
+                const updatedSMSProvider: SMSProviderInterface = {
+                    contentType: updatedData.contentType as ContentType,
+                    headers: updatedData.properties.find(
+                        (property: SMSProviderPropertiesInterface) => property.key === "http.headers"
+                    )?.value,
+                    httpMethod: updatedData.properties.find(
+                        (property: SMSProviderPropertiesInterface) => property.key === "http.method"
+                    )?.value,
+                    key: updatedData.key,
+                    name: updatedData.name,
+                    payload: updatedData.properties.find(
+                        (property: SMSProviderPropertiesInterface) => property.key === "body"
+                    )?.value,
+                    provider: updatedData.provider,
+                    providerURL: updatedData.providerURL,
+                    secret: updatedData.secret,
+                    sender: updatedData.sender
+                };
+                const updatedParams: { [key: string]: SMSProviderInterface } = {
+                    ...defaultProviderParams,
+                    [selectedProvider as string]: updatedSMSProvider
+                };
 
-            setSmsProviderSettings({ ...smsProviderSettings, providerParams: updatedParams });
-            setIsSubmitting(false);
-            handleUpdateSuccess();
-            setExistingSMSProviders([ provider + "SMSProvider" ]);
-        })
+                setSmsProviderSettings({ ...smsProviderSettings, providerParams: updatedParams });
+                setIsSubmitting(false);
+                handleUpdateSuccess();
+                setExistingSMSProviders([provider + "SMSProvider"]);
+            })
             .catch(() => {
                 handleUpdateError();
-            }).finally(() => {
+            })
+            .finally(() => {
                 setIsSubmitting(false);
                 mutateSMSProviderConfig();
             });
@@ -361,9 +368,7 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
         return properties;
     };
 
-    const validateForm = (
-        values: SMSProviderInterface
-    ): SMSProviderConfigFormErrorValidationsInterface => {
+    const validateForm = (values: SMSProviderInterface): SMSProviderConfigFormErrorValidationsInterface => {
         const error: SMSProviderConfigFormErrorValidationsInterface = {
             contentType: undefined,
             key: undefined,
@@ -382,51 +387,33 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
 
         if (smsProviderSettings.selectedProvider === "TwilioSMSProvider") {
             if (!values?.twilioKey) {
-                error.twilioKey = t(
-                    "extensions:develop.smsProviders.form.twilio.validations.required"
-                );
+                error.twilioKey = t("extensions:develop.smsProviders.form.twilio.validations.required");
             }
             if (!values?.twilioSecret) {
-                error.twilioSecret = t(
-                    "extensions:develop.smsProviders.form.twilio.validations.required"
-                );
+                error.twilioSecret = t("extensions:develop.smsProviders.form.twilio.validations.required");
             }
             if (!values?.twilioSender) {
-                error.twilioSender = t(
-                    "extensions:develop.smsProviders.form.twilio.validations.required"
-                );
+                error.twilioSender = t("extensions:develop.smsProviders.form.twilio.validations.required");
             }
         } else if (smsProviderSettings.selectedProvider === "VonageSMSProvider") {
             if (!values?.vonageKey) {
-                error.vonageKey = t(
-                    "extensions:develop.smsProviders.form.vonage.validations.required"
-                );
+                error.vonageKey = t("extensions:develop.smsProviders.form.vonage.validations.required");
             }
             if (!values?.vonageSecret) {
-                error.vonageSecret = t(
-                    "extensions:develop.smsProviders.form.vonage.validations.required"
-                );
+                error.vonageSecret = t("extensions:develop.smsProviders.form.vonage.validations.required");
             }
             if (!values?.vonageSender) {
-                error.vonageSender = t(
-                    "extensions:develop.smsProviders.form.vonage.validations.required"
-                );
+                error.vonageSender = t("extensions:develop.smsProviders.form.vonage.validations.required");
             }
         } else {
             if (!values?.providerURL) {
-                error.providerURL = t(
-                    "extensions:develop.smsProviders.form.custom.validations.required"
-                );
+                error.providerURL = t("extensions:develop.smsProviders.form.custom.validations.required");
             }
             if (!values?.contentType) {
-                error.contentType = t(
-                    "extensions:develop.smsProviders.form.custom.validations.required"
-                );
+                error.contentType = t("extensions:develop.smsProviders.form.custom.validations.required");
             }
             if (!values?.payload) {
-                error.payload = t(
-                    "extensions:develop.smsProviders.form.custom.validations.required"
-                );
+                error.payload = t("extensions:develop.smsProviders.form.custom.validations.required");
             }
         }
 
@@ -439,8 +426,10 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
         return deleteSMSProviders()
             .then(() => {
                 handleDeleteSuccess();
-                setSmsProviderSettings({ providerParams: {},
-                    selectedProvider: SMSProviderConstants.TWILIO_SMS_PROVIDER });
+                setSmsProviderSettings({
+                    providerParams: {},
+                    selectedProvider: SMSProviderConstants.TWILIO_SMS_PROVIDER
+                });
                 mutateSMSProviderConfig();
 
                 return true;
@@ -449,18 +438,20 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
                 handleDeleteError(e);
 
                 return false;
-            }).finally(() => {
+            })
+            .finally(() => {
                 setIsDeleting(false);
             });
     };
 
-
     const handleDeleteError = (error?: IdentityAppsApiException) => {
-        let errorMessage: string = t("extensions:develop.smsProviders." +
-        "notifications.deleteConfiguration.error.message");
+        let errorMessage: string = t(
+            "extensions:develop.smsProviders." + "notifications.deleteConfiguration.error.message"
+        );
 
-        let errorDescription: string = t("extensions:develop.smsProviders." +
-        "notifications.deleteConfiguration.error.description");
+        let errorDescription: string = t(
+            "extensions:develop.smsProviders." + "notifications.deleteConfiguration.error.description"
+        );
 
         // If the SMS provider is being used by SMS OTP connection and it is
         // configured for one or more applications
@@ -479,28 +470,25 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
     };
 
     /**
-    * Renders the loading placeholder.
-    */
+     * Renders the loading placeholder.
+     */
     const renderLoadingPlaceholder = () => {
         return (
-            <div data-componentid={ `${componentId}-form-loading` }>
-                {
-                    [ ...Array(3) ].map((key: number) => {
-                        return (
-                            <Placeholder key={ key }>
-                                <Placeholder.Line length="very short" />
-                                <div>
-                                    <Placeholder.Line length="long" />
-                                    <Placeholder.Line length="medium" />
-                                </div>
-                            </Placeholder>
-                        );
-                    })
-                }
+            <div data-componentid={`${componentId}-form-loading`}>
+                {[...Array(3)].map((key: number) => {
+                    return (
+                        <Placeholder key={key}>
+                            <Placeholder.Line length="very short" />
+                            <div>
+                                <Placeholder.Line length="long" />
+                                <Placeholder.Line length="medium" />
+                            </div>
+                        </Placeholder>
+                    );
+                })}
             </div>
         );
     };
-
 
     /**
      * Resolves the page description.
@@ -508,14 +496,10 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
     const resolvePageDescription = (): ReactElement => {
         return (
             <div>
-                <div style={ { whiteSpace: "pre-line" } }>
-                    {
-                        t("extensions:develop.smsProviders.subHeading")
-                    }
-                    <DocumentationLink
-                        link={ getLink("develop.smsProviders.learnMore") }
-                    >
-                        { t("extensions:common.learnMore") }
+                <div style={{ whiteSpace: "pre-line" }}>
+                    {t("extensions:develop.smsProviders.subHeading")}
+                    <DocumentationLink link={getLink("develop.smsProviders.learnMore")}>
+                        {t("extensions:common.learnMore")}
                     </DocumentationLink>
                 </div>
             </div>
@@ -528,170 +512,151 @@ const SMSProviders: FunctionComponent<SMSProviderPageInterface> = (
 
     return (
         <PageLayout
-            title={ t("extensions:develop.smsProviders.heading") }
-            pageTitle={ t("extensions:develop.smsProviders.heading") }
-            description={ resolvePageDescription() }
-            bottomMargin={ false }
-            contentTopMargin={ false }
-            pageHeaderMaxWidth={ true }
-            backButton={ {
+            title={t("extensions:develop.smsProviders.heading")}
+            pageTitle={t("extensions:develop.smsProviders.heading")}
+            description={resolvePageDescription()}
+            bottomMargin={false}
+            contentTopMargin={false}
+            pageHeaderMaxWidth={true}
+            backButton={{
                 onClick: handleBackButtonClick,
                 text: t("extensions:develop.smsProviders.goBack")
-            } }
-            data-componentid={ `${componentId}-form-layout` }
+            }}
+            data-componentid={`${componentId}-form-layout`}
         >
-            { isSMSProviderConfigFetchRequestLoading || isDeleting || isLoading ? (
+            {isSMSProviderConfigFetchRequestLoading || isDeleting || isLoading ? (
                 renderLoadingPlaceholder()
             ) : (
-                <EmphasizedSegment className="form-wrapper" padded={ "very" }>
-                    <Grid className={ "mt-2" } >
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column >
+                <EmphasizedSegment className="form-wrapper" padded={"very"}>
+                    <Grid className={"mt-2"}>
+                        <Grid.Row columns={1}>
+                            <Grid.Column>
                                 <FinalForm
-                                    onSubmit={ handleSubmit }
-                                    validate={ validateForm }
+                                    onSubmit={handleSubmit}
+                                    validate={validateForm}
                                     initialValues={
                                         smsProviderSettings?.selectedProvider
-                                            ? smsProviderSettings
-                                                ?.providerParams[smsProviderSettings?.selectedProvider]
-                                            :  {}
+                                            ? smsProviderSettings?.providerParams[smsProviderSettings?.selectedProvider]
+                                            : {}
                                     }
-                                    render={ ({ handleSubmit }: FormRenderProps) => (
-                                        <form className="sms-provider-config-form" onSubmit={ handleSubmit } noValidate>
+                                    render={({ handleSubmit }: FormRenderProps) => (
+                                        <form className="sms-provider-config-form" onSubmit={handleSubmit} noValidate>
                                             <div className="card-list">
                                                 <Grid>
-                                                    <Grid.Row columns={ 3 }>
-                                                        { providerCards.map(
-                                                            (provider: SMSProviderCardInterface) => (
-                                                                <Grid.Column width={ 5 } key={ provider.id }>
-                                                                    <InfoCard
-                                                                        fluid
-                                                                        data-componentid=
-                                                                            { `${componentId}
-                                                                                -sms-provider-info-card` }
-                                                                        image={ provider.icon }
-                                                                        imageSize="x30"
-                                                                        header={
-                                                                            provider.name
-                                                                        }
-                                                                        className=
-                                                                            {  smsProviderSettings?.selectedProvider ===
-                                                                                provider?.key
-                                                                                ? "sms-provider-info-card selected"
-                                                                                : "sms-provider-info-card"
-                                                                            }
-                                                                        key={ provider.id }
-                                                                        onClick={ () =>
-                                                                            handleProviderChange(provider?.key)
-                                                                        }
-                                                                        showSetupGuideButton={ false }
-                                                                        showCardAction={ false }
-                                                                    />
-                                                                </Grid.Column>
-                                                            )) }
+                                                    <Grid.Row columns={3}>
+                                                        {providerCards.map((provider: SMSProviderCardInterface) => (
+                                                            <Grid.Column width={5} key={provider.id}>
+                                                                <InfoCard
+                                                                    fluid
+                                                                    data-componentid={`${componentId}
+                                                                                -sms-provider-info-card`}
+                                                                    image={provider.icon}
+                                                                    imageSize="x30"
+                                                                    header={provider.name}
+                                                                    className={
+                                                                        smsProviderSettings?.selectedProvider ===
+                                                                        provider?.key
+                                                                            ? "sms-provider-info-card selected"
+                                                                            : "sms-provider-info-card"
+                                                                    }
+                                                                    key={provider.id}
+                                                                    onClick={() => handleProviderChange(provider?.key)}
+                                                                    showSetupGuideButton={false}
+                                                                    showCardAction={false}
+                                                                />
+                                                            </Grid.Column>
+                                                        ))}
                                                     </Grid.Row>
                                                 </Grid>
                                             </div>
-                                            { smsProviderSettings.selectedProvider && (
+                                            {smsProviderSettings.selectedProvider && (
                                                 <>
-                                                    { smsProviderSettings?.selectedProvider ===
+                                                    {smsProviderSettings?.selectedProvider ===
                                                         SMSProviderConstants.CUSTOM_SMS_PROVIDER && (
                                                         <CustomSMSProvider
-                                                            isReadOnly={ isReadOnly }
-                                                            onSubmit={ handleSubmit }
+                                                            isReadOnly={isReadOnly}
+                                                            onSubmit={handleSubmit}
                                                         />
-                                                    ) }
-                                                    { smsProviderSettings?.selectedProvider ===
+                                                    )}
+                                                    {smsProviderSettings?.selectedProvider ===
                                                         SMSProviderConstants.TWILIO_SMS_PROVIDER && (
                                                         <TwilioSMSProvider
-                                                            isReadOnly={ isReadOnly }
-                                                            onSubmit={ handleSubmit }
+                                                            isReadOnly={isReadOnly}
+                                                            onSubmit={handleSubmit}
                                                         />
-                                                    ) }
-                                                    { smsProviderSettings?.selectedProvider ===
+                                                    )}
+                                                    {smsProviderSettings?.selectedProvider ===
                                                         SMSProviderConstants.VONAGE_SMS_PROVIDER && (
                                                         <VonageSMSProvider
-                                                            isReadOnly={ isReadOnly }
-                                                            onSubmit={ handleSubmit }
+                                                            isReadOnly={isReadOnly}
+                                                            onSubmit={handleSubmit}
                                                         />
-                                                    ) }
+                                                    )}
                                                 </>
-                                            ) }
+                                            )}
                                         </form>
-                                    ) }
+                                    )}
                                 />
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
                 </EmphasizedSegment>
-
-            ) }
-            {
-                !isLoading && !isSMSProviderConfigFetchRequestLoading && (
-                    <Show
-                        when={ AccessControlConstants.NOTIFICATION_SENDERS_DELETE }
+            )}
+            {!isLoading && !isSMSProviderConfigFetchRequestLoading && (
+                <Show when={AccessControlConstants.NOTIFICATION_SENDERS_DELETE}>
+                    <Divider hidden />
+                    <DangerZoneGroup sectionHeader={t("extensions:develop.smsProviders.dangerZoneGroup" + ".header")}>
+                        <DangerZone
+                            data-componentid={`${componentId}-revert-sms-provider-config`}
+                            actionTitle={t(
+                                "extensions:develop.smsProviders.dangerZoneGroup" + ".revertConfig.actionTitle"
+                            )}
+                            header={t("extensions:develop.smsProviders.dangerZoneGroup" + ".revertConfig.heading")}
+                            subheader={t(
+                                "extensions:develop.smsProviders.dangerZoneGroup" + ".revertConfig.subHeading"
+                            )}
+                            onActionClick={(): void => {
+                                setOpenRevertConfigModal(true);
+                            }}
+                        />
+                    </DangerZoneGroup>
+                    <ConfirmationModal
+                        primaryActionLoading={isSubmitting}
+                        data-componentid={`${componentId}-revert-confirmation-modal`}
+                        onClose={(): void => setOpenRevertConfigModal(false)}
+                        type="negative"
+                        open={isOpenRevertConfigModal}
+                        assertionHint={t("extensions:develop.smsProviders.confirmationModal" + ".assertionHint")}
+                        assertionType="checkbox"
+                        primaryAction={t("common:confirm")}
+                        secondaryAction={t("common:cancel")}
+                        onSecondaryActionClick={(): void => setOpenRevertConfigModal(false)}
+                        onPrimaryActionClick={(): void => {
+                            setIsSubmitting(true);
+                            handleConfigurationDelete().finally(() => {
+                                setIsSubmitting(false);
+                                setOpenRevertConfigModal(false);
+                                setExistingSMSProviders([]);
+                            });
+                        }}
+                        closeOnDimmerClick={false}
                     >
-                        <Divider hidden />
-                        <DangerZoneGroup
-                            sectionHeader={ t("extensions:develop.smsProviders.dangerZoneGroup" +
-                                ".header") }
+                        <ConfirmationModal.Header data-componentid={`${componentId}-revert-confirmation-modal-header`}>
+                            {t("extensions:develop.smsProviders.confirmationModal.header")}
+                        </ConfirmationModal.Header>
+                        <ConfirmationModal.Message
+                            data-componentid={`${componentId}revert-confirmation-modal-message`}
+                            attached
+                            negative
                         >
-                            <DangerZone
-                                data-componentid={ `${componentId}-revert-sms-provider-config` }
-                                actionTitle={ t("extensions:develop.smsProviders.dangerZoneGroup" +
-                                    ".revertConfig.actionTitle") }
-                                header={ t("extensions:develop.smsProviders.dangerZoneGroup" +
-                                    ".revertConfig.heading") }
-                                subheader={ t("extensions:develop.smsProviders.dangerZoneGroup" +
-                                    ".revertConfig.subHeading") }
-                                onActionClick={ (): void => {
-                                    setOpenRevertConfigModal(true);
-                                } }
-                            />
-                        </DangerZoneGroup>
-                        <ConfirmationModal
-                            primaryActionLoading={ isSubmitting }
-                            data-componentid={ `${ componentId}-revert-confirmation-modal` }
-                            onClose={ (): void => setOpenRevertConfigModal(false) }
-                            type="negative"
-                            open={ isOpenRevertConfigModal }
-                            assertionHint={ t("extensions:develop.smsProviders.confirmationModal" +
-                                ".assertionHint") }
-                            assertionType="checkbox"
-                            primaryAction={ t("common:confirm") }
-                            secondaryAction={ t("common:cancel") }
-                            onSecondaryActionClick={ (): void => setOpenRevertConfigModal(false) }
-                            onPrimaryActionClick={ (): void => {
-                                setIsSubmitting(true);
-                                handleConfigurationDelete().finally(() => {
-                                    setIsSubmitting(false);
-                                    setOpenRevertConfigModal(false);
-                                    setExistingSMSProviders([]);
-                                });
-
-                            } }
-                            closeOnDimmerClick={ false }
-                        >
-                            <ConfirmationModal.Header
-                                data-componentid={ `${componentId}-revert-confirmation-modal-header` }
-                            >
-                                { t("extensions:develop.smsProviders.confirmationModal.header") }
-                            </ConfirmationModal.Header>
-                            <ConfirmationModal.Message
-                                data-componentid={
-                                    `${componentId}revert-confirmation-modal-message`
-                                }
-                                attached
-                                negative
-                            >
-                                { t("extensions:develop.smsProviders.confirmationModal.message") }
-                            </ConfirmationModal.Message>
-                            <ConfirmationModal.Content>
-                                { t("extensions:develop.smsProviders.confirmationModal.content") }
-                            </ConfirmationModal.Content>
-                        </ConfirmationModal>
-                    </Show>
-                ) }
+                            {t("extensions:develop.smsProviders.confirmationModal.message")}
+                        </ConfirmationModal.Message>
+                        <ConfirmationModal.Content>
+                            {t("extensions:develop.smsProviders.confirmationModal.content")}
+                        </ConfirmationModal.Content>
+                    </ConfirmationModal>
+                </Show>
+            )}
         </PageLayout>
     );
 };

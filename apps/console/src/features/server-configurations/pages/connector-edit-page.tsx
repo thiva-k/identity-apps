@@ -42,7 +42,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Checkbox, CheckboxProps, Grid, Icon, Message, Ref } from "semantic-ui-react";
 import { serverConfigurationConfig } from "../../../extensions/configs/server-configuration";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
+import { AppConstants, AppState, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getConnectorDetails, updateGovernanceConnector } from "../api/governance-connectors";
 import { ServerConfigurationsConstants } from "../constants/server-configurations-constants";
 import { ConnectorFormFactory } from "../forms";
@@ -69,7 +70,7 @@ type ConnectorEditPageInterface = TestableComponentInterface;
 export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = (
     props: ConnectorEditPageInterface
 ): ReactElement => {
-    const { [ "data-testid" ]: testId } = props;
+    const { ["data-testid"]: testId } = props;
 
     const dispatch: Dispatch = useDispatch();
     const pageContextRef: MutableRefObject<HTMLElement> = useRef(null);
@@ -80,13 +81,13 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ isConnectorRequestLoading, setConnectorRequestLoading ] = useState<boolean>(false);
-    const [ connector, setConnector ] = useState<GovernanceConnectorInterface>(undefined);
-    const [ categoryId, setCategoryId ] = useState<string>(undefined);
-    const [ connectorId, setConnectorId ] = useState<string>(undefined);
-    const [ enableForm, setEnableForm ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ enableBackButton, setEnableBackButton ] = useState<boolean>(true);
+    const [isConnectorRequestLoading, setConnectorRequestLoading] = useState<boolean>(false);
+    const [connector, setConnector] = useState<GovernanceConnectorInterface>(undefined);
+    const [categoryId, setCategoryId] = useState<string>(undefined);
+    const [connectorId, setConnectorId] = useState<string>(undefined);
+    const [enableForm, setEnableForm] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [enableBackButton, setEnableBackButton] = useState<boolean>(true);
 
     const isReadOnly: boolean = useMemo(
         () =>
@@ -95,11 +96,11 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
                 featureConfig?.governanceConnectors?.scopes?.update,
                 allowedScopes
             ),
-        [ featureConfig, allowedScopes ]
+        [featureConfig, allowedScopes]
     );
 
     const path: string[] = history.location.pathname.split("/");
-    const type: string = path[ path.length - 3 ];
+    const type: string = path[path.length - 3];
 
     useEffect(() => {
         // If Governance Connector read permission is not available, prevent from trying to load the connectors.
@@ -123,7 +124,7 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
         history.push(AppConstants.getPaths().get("LOGIN_AND_REGISTRATION"));
     };
 
-    const resolveBackButtonState = (connectorID:string) => {
+    const resolveBackButtonState = (connectorID: string) => {
         if (serverConfigurationConfig.backButtonDisabledConnectorIDs.includes(connectorID)) {
             setEnableBackButton(false);
         }
@@ -158,12 +159,12 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
                 addAlert({
                     description: t(
                         "console:manage.features.governanceConnectors.notifications." +
-                        "updateConnector.genericError.description"
+                            "updateConnector.genericError.description"
                     ),
                     level: AlertLevels.ERROR,
                     message: t(
                         "console:manage.features.governanceConnectors.notifications." +
-                        "updateConnector.genericError.message"
+                            "updateConnector.genericError.message"
                     )
                 })
             );
@@ -190,7 +191,7 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
         } else {
             updateData.properties.push({
                 name: GovernanceConnectorUtils.decodeConnectorPropertyName(
-                    serverConfigurationConfig.connectorToggleName[ connector?.name ] ?? connector?.name
+                    serverConfigurationConfig.connectorToggleName[connector?.name] ?? connector?.name
                 ),
                 value: data.checked.toString()
             });
@@ -227,7 +228,7 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
         // Update reCaptcha settings for single sign-on.
         updateSSOCaptchaData.properties.push({
             name: GovernanceConnectorUtils.decodeConnectorPropertyName(
-                serverConfigurationConfig.connectorToggleName[ connector?.name ] ?? connector?.name
+                serverConfigurationConfig.connectorToggleName[connector?.name] ?? connector?.name
             ),
             value: data.checked.toString()
         });
@@ -278,17 +279,17 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
         for (const key in values) {
             data.properties.push({
                 name: GovernanceConnectorUtils.decodeConnectorPropertyName(key),
-                value: values[ key ]
+                value: values[key]
             });
         }
 
         if (
-            serverConfigurationConfig.connectorToggleName[ connector?.name ] &&
+            serverConfigurationConfig.connectorToggleName[connector?.name] &&
             serverConfigurationConfig.autoEnableConnectorToggleProperty
         ) {
             data.properties.push({
                 name: GovernanceConnectorUtils.decodeConnectorPropertyName(
-                    serverConfigurationConfig.connectorToggleName[ connector?.name ]
+                    serverConfigurationConfig.connectorToggleName[connector?.name]
                 ),
                 value: "true"
             });
@@ -310,8 +311,8 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
     };
 
     const loadConnectorDetails = () => {
-        const categoryId: string = path[ path.length - 2 ];
-        const connectorId: string = path[ path.length - 1 ];
+        const categoryId: string = path[path.length - 2];
+        const connectorId: string = path[path.length - 1];
 
         setCategoryId(categoryId);
         setConnectorId(connectorId);
@@ -333,13 +334,13 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.description",
+                                    "getConnector.error.description",
                                 { description: error.response.data.description }
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.message"
+                                    "getConnector.error.message"
                             )
                         })
                     );
@@ -349,12 +350,12 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.description"
+                                    "getConnector.genericError.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.message"
+                                    "getConnector.genericError.message"
                             )
                         })
                     );
@@ -393,17 +394,17 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
             case ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID:
                 return t("extensions:manage.serverConfigurations.accountSecurity.loginAttemptSecurity.subHeading");
             case ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID:
-                return type === "username"
-                    ? "Enable self-service username recovery for users on the login page." +
+                return type === "username" ? (
+                    "Enable self-service username recovery for users on the login page." +
                         " The user will receive a username reset link via email upon request."
-                    : (
-                        <div style={ { whiteSpace: "pre-line" } }>
-                            { t("extensions:manage.serverConfigurations.accountRecovery.passwordRecovery.subHeading") }
-                            <DocumentationLink link={ getLink("manage.accountRecovery.passwordRecovery.learnMore") }>
-                                { t("extensions:common.learnMore") }
-                            </DocumentationLink>
-                        </div>
-                    );
+                ) : (
+                    <div style={{ whiteSpace: "pre-line" }}>
+                        {t("extensions:manage.serverConfigurations.accountRecovery.passwordRecovery.subHeading")}
+                        <DocumentationLink link={getLink("manage.accountRecovery.passwordRecovery.learnMore")}>
+                            {t("extensions:common.learnMore")}
+                        </DocumentationLink>
+                    </div>
+                );
             case ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID:
                 return t("extensions:manage.serverConfigurations.accountSecurity.botDetection.subHeading");
             case ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID:
@@ -415,32 +416,36 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
                             }
                         >
                             When self registration is enabled, users can register via the
-                            <strong>
-                                Create an account
-                            </strong> link on the application’s Login page. This creates a new{ " " }
+                            <strong>Create an account</strong> link on the application’s Login page. This creates a new{" "}
                             <strong>user</strong> account in the organization.
                         </Trans>
-                        <DocumentationLink link={ getLink("manage.selfRegistration.learnMore") }>
-                            { t("extensions:common.learnMore") }
+                        <DocumentationLink link={getLink("manage.selfRegistration.learnMore")}>
+                            {t("extensions:common.learnMore")}
                         </DocumentationLink>
                     </>
                 );
             case ServerConfigurationsConstants.USERNAME_RECOVERY:
-                return "Enable self-service username recovery for users on the login page." +
-                    "The user will receive a usernmae reset link via email upon request.";
+                return (
+                    "Enable self-service username recovery for users on the login page." +
+                    "The user will receive a usernmae reset link via email upon request."
+                );
             case ServerConfigurationsConstants.MULTI_ATTRIBUTE_LOGIN_CONNECTOR_ID:
-                return "Manage and configure settings related configuring "
-                    + "multiple attributes as the login identifier.";
+                return (
+                    "Manage and configure settings related configuring " +
+                    "multiple attributes as the login identifier."
+                );
             case ServerConfigurationsConstants.ASK_PASSWORD_CONNECTOR_ID:
-                return "Allow users to set their own passwords during admin-initiated onboarding" +
-                    " and configure related settings.";
+                return (
+                    "Allow users to set their own passwords during admin-initiated onboarding" +
+                    " and configure related settings."
+                );
             default:
                 return connector?.description
                     ? connector.description
                     : connector?.friendlyName &&
-                    t("console:manage.features.governanceConnectors.connectorSubHeading", {
-                        name: connector?.friendlyName
-                    });
+                          t("console:manage.features.governanceConnectors.connectorSubHeading", {
+                              name: connector?.friendlyName
+                          });
         }
     };
 
@@ -449,34 +454,31 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
             case ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID:
                 return t(
                     "extensions:manage.serverConfigurations.accountSecurity.loginAttemptSecurity." +
-                    "notification.success.description"
+                        "notification.success.description"
                 );
             case ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID:
                 return t(
                     "extensions:manage.serverConfigurations.accountSecurity.botDetection." +
-                    "notification.success.description"
+                        "notification.success.description"
                 );
             case ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID:
                 return t(
                     "extensions:manage.serverConfigurations.userOnboarding.selfRegistration." +
-                    "notification.success.description"
+                        "notification.success.description"
                 );
             case ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID:
                 return type === "username"
                     ? "Successfully updated the username recovery configuration."
                     : t(
-                        "extensions:manage.serverConfigurations.accountRecovery.passwordRecovery." +
-                        "notification.success.description"
-                    );
+                          "extensions:manage.serverConfigurations.accountRecovery.passwordRecovery." +
+                              "notification.success.description"
+                      );
             case ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID:
-                return t(
-                    "extensions:manage.serverConfigurations.analytics.form." +
-                    "notification.success.description"
-                );
+                return t("extensions:manage.serverConfigurations.analytics.form." + "notification.success.description");
             case ServerConfigurationsConstants.ASK_PASSWORD_CONNECTOR_ID:
                 return t(
                     "extensions:manage.serverConfigurations.userOnboarding.inviteUserToSetPassword." +
-                    "notification.success.description"
+                        "notification.success.description"
                 );
             default:
                 return t(
@@ -491,30 +493,27 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
             case ServerConfigurationsConstants.ACCOUNT_LOCKING_CONNECTOR_ID:
                 return t(
                     "extensions:manage.serverConfigurations.accountSecurity.loginAttemptSecurity." +
-                    "notification.error.description"
+                        "notification.error.description"
                 );
             case ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID:
                 return t(
                     "extensions:manage.serverConfigurations.accountSecurity.botDetection." +
-                    "notification.error.description"
+                        "notification.error.description"
                 );
             case ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID:
                 return t(
                     "extensions:manage.serverConfigurations.userOnboarding.selfRegistration." +
-                    "notification.error.description"
+                        "notification.error.description"
                 );
             case ServerConfigurationsConstants.ACCOUNT_RECOVERY_CONNECTOR_ID:
                 return type === "username"
                     ? "Error occurred while updating the username recovery configuration."
                     : t(
-                        "extensions:manage.serverConfigurations.accountRecovery.passwordRecovery." +
-                        "notification.error.description"
-                    );
+                          "extensions:manage.serverConfigurations.accountRecovery.passwordRecovery." +
+                              "notification.error.description"
+                      );
             case ServerConfigurationsConstants.ANALYTICS_ENGINE_CONNECTOR_ID:
-                return t(
-                    "extensions:manage.serverConfigurations.analytics.form." +
-                    "notification.error.description"
-                );
+                return t("extensions:manage.serverConfigurations.analytics.form." + "notification.error.description");
             default:
                 return t(
                     "console:manage.features.governanceConnectors.notifications.updateConnector.error.description",
@@ -542,10 +541,10 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
                             : t("extensions:manage.serverConfigurations.generalDisabledLabel")
                     }
                     toggle
-                    onChange={ ssoLoginConnectorId ? handleBotDetectionToggle : handleToggle }
-                    checked={ enableForm }
-                    readOnly={ isReadOnly }
-                    data-testId={ `${ testId }-${ connectorId }-enable-toggle` }
+                    onChange={ssoLoginConnectorId ? handleBotDetectionToggle : handleToggle}
+                    checked={enableForm}
+                    readOnly={isReadOnly}
+                    data-testId={`${testId}-${connectorId}-enable-toggle`}
                 />
             </>
         );
@@ -587,25 +586,25 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
             case ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID:
                 content = (
                     <>
-                        { t("extensions:manage.serverConfigurations.accountSecurity." + "botDetection.info.heading") }
+                        {t("extensions:manage.serverConfigurations.accountSecurity." + "botDetection.info.heading")}
                         <ul>
                             <li>
-                                { t(
+                                {t(
                                     "extensions:manage.serverConfigurations.accountSecurity." +
-                                    "botDetection.info.subSection1"
-                                ) }
+                                        "botDetection.info.subSection1"
+                                )}
                             </li>
                             <li>
-                                { t(
+                                {t(
                                     "extensions:manage.serverConfigurations.accountSecurity." +
-                                    "botDetection.info.subSection2"
-                                ) }
+                                        "botDetection.info.subSection2"
+                                )}
                             </li>
                             <li>
-                                { t(
+                                {t(
                                     "extensions:manage.serverConfigurations.accountSecurity." +
-                                    "botDetection.info.subSection3"
-                                ) }
+                                        "botDetection.info.subSection3"
+                                )}
                             </li>
                         </ul>
                     </>
@@ -615,15 +614,15 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
         }
 
         return content ? (
-            <Grid className={ "mt-2" }>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column width={ 10 }>
+            <Grid className={"mt-2"}>
+                <Grid.Row columns={1}>
+                    <Grid.Column width={10}>
                         <Message
                             info
                             content={
-                                (<>
-                                    <Icon name="info circle" /> { content }{ " " }
-                                </>)
+                                <>
+                                    <Icon name="info circle" /> {content}{" "}
+                                </>
                             }
                         />
                     </Grid.Column>
@@ -634,42 +633,44 @@ export const ConnectorEditPage: FunctionComponent<ConnectorEditPageInterface> = 
 
     return !isConnectorRequestLoading && connectorId ? (
         <PageLayout
-            title={ resolveConnectorTitle(connector) }
-            description={ resolveConnectorDescription(connector) }
-            backButton={ enableBackButton && {
-                "data-testid": `${ testId }-${ connectorId }-page-back-button`,
-                onClick: () => handleBackButtonClick(),
-                text: t("console:manage.features.governanceConnectors.goBackLoginAndRegistration")
-            } }
-            bottomMargin={ false }
-            contentTopMargin={ true }
-            pageHeaderMaxWidth={ true }
-            data-testid={ `${ testId }-${ connectorId }-page-layout` }
+            title={resolveConnectorTitle(connector)}
+            description={resolveConnectorDescription(connector)}
+            backButton={
+                enableBackButton && {
+                    "data-testid": `${testId}-${connectorId}-page-back-button`,
+                    onClick: () => handleBackButtonClick(),
+                    text: t("console:manage.features.governanceConnectors.goBackLoginAndRegistration")
+                }
+            }
+            bottomMargin={false}
+            contentTopMargin={true}
+            pageHeaderMaxWidth={true}
+            data-testid={`${testId}-${connectorId}-page-layout`}
         >
-            { resolveConnectorToggleProperty(connector) ? connectorToggle() : null }
-            { pageInfo(connector) }
-            { !(connectorId === ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID) ? (
-                <Ref innerRef={ pageContextRef }>
-                    <Grid className={ "mt-3" }>
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column width={ 16 }>
-                                <EmphasizedSegment className="form-wrapper" padded={ "very" }>
+            {resolveConnectorToggleProperty(connector) ? connectorToggle() : null}
+            {pageInfo(connector)}
+            {!(connectorId === ServerConfigurationsConstants.CAPTCHA_FOR_SSO_LOGIN_CONNECTOR_ID) ? (
+                <Ref innerRef={pageContextRef}>
+                    <Grid className={"mt-3"}>
+                        <Grid.Row columns={1}>
+                            <Grid.Column width={16}>
+                                <EmphasizedSegment className="form-wrapper" padded={"very"}>
                                     <ConnectorFormFactory
-                                        onSubmit={ handleSubmit }
-                                        initialValues={ connector }
-                                        connectorId={ connectorId ? connectorId : connector?.categoryId }
-                                        isConnectorEnabled={ enableForm }
-                                        isSubmitting={ isSubmitting }
+                                        onSubmit={handleSubmit}
+                                        initialValues={connector}
+                                        connectorId={connectorId ? connectorId : connector?.categoryId}
+                                        isConnectorEnabled={enableForm}
+                                        isSubmitting={isSubmitting}
                                     />
                                 </EmphasizedSegment>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
                 </Ref>
-            ) : null }
+            ) : null}
         </PageLayout>
     ) : (
-        <GridLayout isLoading={ isConnectorRequestLoading } className={ "pt-5" } />
+        <GridLayout isLoading={isConnectorRequestLoading} className={"pt-5"} />
     );
 };
 

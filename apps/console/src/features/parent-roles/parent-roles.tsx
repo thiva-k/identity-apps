@@ -23,7 +23,8 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Grid } from "semantic-ui-react";
 import { ExtendedFeatureConfigInterface } from "../../extensions/configs/models";
-import { AppConstants, AppState, history } from "../core";
+import { AppConstants, AppState } from "../core";
+import { history } from "@wso2is/features/core/helpers";
 
 /**
  * Parent role page props interface
@@ -34,69 +35,62 @@ type ParentRolePagePropsInterface = IdentifiableComponentInterface;
  * Parent role page react component
  */
 const ParentRolePage = (props: ParentRolePagePropsInterface): ReactElement => {
-    const {
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
     const extendedFeatureConfig: ExtendedFeatureConfigInterface = useSelector(
-        (state: AppState) => state.config.ui.features);
-    const isSubOrg: boolean = window[ "AppUtils" ].getConfig().organizationName;
+        (state: AppState) => state.config.ui.features
+    );
+    const isSubOrg: boolean = window["AppUtils"].getConfig().organizationName;
 
     const navigateToApplicationRoles = () => history.push(AppConstants.getPaths().get("APPLICATION_ROLES_SUB"));
 
     const navigateToOrganizationRoles = () => history.push(AppConstants.getPaths().get("ORGANIZATION_ROLES"));
 
-    return(
+    return (
         <PageLayout
-            pageTitle={ t("extensions:console.applicationRoles.roles.heading") }
-            title={ t("extensions:console.applicationRoles.roles.heading") }
-            description={ t("extensions:console.applicationRoles.roles.subHeading") }
-            data-testid={ `${ componentId }-page-layout` }
+            pageTitle={t("extensions:console.applicationRoles.roles.heading")}
+            title={t("extensions:console.applicationRoles.roles.heading")}
+            description={t("extensions:console.applicationRoles.roles.subHeading")}
+            data-testid={`${componentId}-page-layout`}
         >
-            <GridLayout
-                showTopActionPanel={ false }
-            >
-                {
-                    extendedFeatureConfig?.applicationRoles?.enabled && (
-                        <>
-                            <Grid.Row columns={ 1 }>
-                                <Grid.Column width={ 12 }>
-                                    <Section
-                                        data-componentid={ `${componentId}-application-roles` }
-                                        description={ t("extensions:console.applicationRoles.subHeading") }
-                                        icon={ null }
-                                        header={ t("extensions:console.applicationRoles.heading") }
-                                        onPrimaryActionClick={ navigateToApplicationRoles }
-                                        primaryAction={ t("common:configure") }
-                                    >
-                                        <Divider hidden/>
-                                    </Section>      
-                                </Grid.Column>
-                            </Grid.Row>
-                            <Divider hidden/>
-                        </>
-                    )
-                }
-                {
-                    isSubOrg && (
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column width={ 12 }>
+            <GridLayout showTopActionPanel={false}>
+                {extendedFeatureConfig?.applicationRoles?.enabled && (
+                    <>
+                        <Grid.Row columns={1}>
+                            <Grid.Column width={12}>
                                 <Section
-                                    data-componentid={ `${componentId}-organization-roles` }
-                                    description={ t("extensions:console.applicationRoles.roles.orgRoles.subHeading") }
-                                    icon={ null }
-                                    header={ t("extensions:console.applicationRoles.roles.orgRoles.heading") }
-                                    onPrimaryActionClick={ navigateToOrganizationRoles }
-                                    primaryAction={ t("common:configure") }
+                                    data-componentid={`${componentId}-application-roles`}
+                                    description={t("extensions:console.applicationRoles.subHeading")}
+                                    icon={null}
+                                    header={t("extensions:console.applicationRoles.heading")}
+                                    onPrimaryActionClick={navigateToApplicationRoles}
+                                    primaryAction={t("common:configure")}
                                 >
-                                    <Divider hidden/>
-                                </Section>      
+                                    <Divider hidden />
+                                </Section>
                             </Grid.Column>
                         </Grid.Row>
-                    )
-                }
+                        <Divider hidden />
+                    </>
+                )}
+                {isSubOrg && (
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={12}>
+                            <Section
+                                data-componentid={`${componentId}-organization-roles`}
+                                description={t("extensions:console.applicationRoles.roles.orgRoles.subHeading")}
+                                icon={null}
+                                header={t("extensions:console.applicationRoles.roles.orgRoles.heading")}
+                                onPrimaryActionClick={navigateToOrganizationRoles}
+                                primaryAction={t("common:configure")}
+                            >
+                                <Divider hidden />
+                            </Section>
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
             </GridLayout>
         </PageLayout>
     );

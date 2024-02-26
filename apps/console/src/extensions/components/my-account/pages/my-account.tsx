@@ -24,7 +24,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid, Placeholder, Ref } from "semantic-ui-react";
-import { AppConstants, history } from "../../../../features/core";
+import { AppConstants } from "../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { useMyAccountStatus } from "../api";
 
 /**
@@ -41,15 +42,15 @@ type MyAccountSettingsPageInterface = IdentifiableComponentInterface;
 export const MyAccountSettingsPage: FunctionComponent<MyAccountSettingsPageInterface> = (
     props: MyAccountSettingsPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const dispatch: Dispatch = useDispatch();
     const pageContextRef: MutableRefObject<any> = useRef(null);
 
     const { t } = useTranslation();
 
-    const [ isLoadingForTheFirstTime, setIsLoadingForTheFirstTime ] = useState<boolean>(true);
-    const [ isMyAccountEnabled, setMyAccountEnabled ] = useState<boolean>(AppConstants.DEFAULT_MY_ACCOUNT_STATUS);
+    const [isLoadingForTheFirstTime, setIsLoadingForTheFirstTime] = useState<boolean>(true);
+    const [isMyAccountEnabled, setMyAccountEnabled] = useState<boolean>(AppConstants.DEFAULT_MY_ACCOUNT_STATUS);
 
     const {
         data: myAccountStatus,
@@ -61,43 +62,50 @@ export const MyAccountSettingsPage: FunctionComponent<MyAccountSettingsPageInter
      * Handles the my account status fetch request error.
      */
     useEffect(() => {
-
         if (!myAccountStatusFetchRequestError) {
             return;
         }
 
-        if (myAccountStatusFetchRequestError.response
-            && myAccountStatusFetchRequestError.response.data
-            && myAccountStatusFetchRequestError.response.data.description) {
+        if (
+            myAccountStatusFetchRequestError.response &&
+            myAccountStatusFetchRequestError.response.data &&
+            myAccountStatusFetchRequestError.response.data.description
+        ) {
             if (myAccountStatusFetchRequestError.response.status === 404) {
                 return;
             }
-            dispatch(addAlert({
-                description: myAccountStatusFetchRequestError.response.data.description ??
-                    t("console:develop.features.applications.myaccount.fetchMyAccountStatus.error.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.myaccount.fetchMyAccountStatus.error.message")
-            }));
+            dispatch(
+                addAlert({
+                    description:
+                        myAccountStatusFetchRequestError.response.data.description ??
+                        t("console:develop.features.applications.myaccount.fetchMyAccountStatus.error.description"),
+                    level: AlertLevels.ERROR,
+                    message: t("console:develop.features.applications.myaccount.fetchMyAccountStatus.error.message")
+                })
+            );
 
             return;
         }
 
-        dispatch(addAlert({
-            description: t("console:develop.features.applications.myaccount.fetchMyAccountStatus" +
-                ".genericError.description"),
-            level: AlertLevels.ERROR,
-            message: t("console:develop.features.applications.myaccount.fetchMyAccountStatus" +
-                ".genericError.message")
-        }));
-    }, [ myAccountStatusFetchRequestError ]);
+        dispatch(
+            addAlert({
+                description: t(
+                    "console:develop.features.applications.myaccount.fetchMyAccountStatus" + ".genericError.description"
+                ),
+                level: AlertLevels.ERROR,
+                message: t(
+                    "console:develop.features.applications.myaccount.fetchMyAccountStatus" + ".genericError.message"
+                )
+            })
+        );
+    }, [myAccountStatusFetchRequestError]);
 
     /**
      * Sets the initial spinner.
      * TODO: Remove this once the loaders are finalized.
      */
     useEffect(() => {
-        if (isMyAccountStatusLoading === false
-            && isLoadingForTheFirstTime === true) {
+        if (isMyAccountStatusLoading === false && isLoadingForTheFirstTime === true) {
             let status: boolean = AppConstants.DEFAULT_MY_ACCOUNT_STATUS;
 
             if (myAccountStatus) {
@@ -110,7 +118,7 @@ export const MyAccountSettingsPage: FunctionComponent<MyAccountSettingsPageInter
             setMyAccountEnabled(status);
             setIsLoadingForTheFirstTime(false);
         }
-    }, [ isMyAccountStatusLoading, isLoadingForTheFirstTime ]);
+    }, [isMyAccountStatusLoading, isLoadingForTheFirstTime]);
 
     /**
      * Handle connector advance setting selection.
@@ -124,12 +132,9 @@ export const MyAccountSettingsPage: FunctionComponent<MyAccountSettingsPageInter
      */
     const renderLoadingPlaceholder = (): ReactElement => {
         return (
-            <Grid.Row columns={ 1 }>
+            <Grid.Row columns={1}>
                 <div>
-                    <div
-                        className="ui card fluid settings-card"
-                        data-testid={ `${componentId}-loading-card` }
-                    >
+                    <div className="ui card fluid settings-card" data-testid={`${componentId}-loading-card`}>
                         <div className="content no-padding">
                             <div className="header-section">
                                 <Placeholder>
@@ -149,7 +154,7 @@ export const MyAccountSettingsPage: FunctionComponent<MyAccountSettingsPageInter
                             </div>
                         </div>
                     </div>
-                    <Divider hidden/>
+                    <Divider hidden />
                 </div>
             </Grid.Row>
         );
@@ -157,36 +162,32 @@ export const MyAccountSettingsPage: FunctionComponent<MyAccountSettingsPageInter
 
     return (
         <PageLayout
-            pageTitle={ t("extensions:manage.myAccount.pageTitle") }
-            title={ t("extensions:manage.myAccount.pageTitle") }
-            description={ t("extensions:manage.myAccount.description") }
-            data-componentid={ `${ componentId }-page-layout` }
+            pageTitle={t("extensions:manage.myAccount.pageTitle")}
+            title={t("extensions:manage.myAccount.pageTitle")}
+            description={t("extensions:manage.myAccount.description")}
+            data-componentid={`${componentId}-page-layout`}
         >
-            <Ref innerRef={ pageContextRef }>
-                <GridLayout
-                    showTopActionPanel={ false }
-                >
-                    {
-                        isMyAccountStatusLoading || isLoadingForTheFirstTime
-                            ? renderLoadingPlaceholder()
-                            : (
-                                <Grid.Row columns={ 1 }>
-                                    <Grid.Column width={ 12 }>
-                                        <Section
-                                            data-componentid={ `${componentId}-settings-section` }
-                                            description={ "Self-service portal for your users." }
-                                            icon={ null }
-                                            header={ "My Account" }
-                                            onPrimaryActionClick={ handleSelection }
-                                            primaryAction={ "Configure" }
-                                            connectorEnabled={ isMyAccountEnabled }
-                                        >
-                                            <Divider hidden/>
-                                        </Section>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            )
-                    }
+            <Ref innerRef={pageContextRef}>
+                <GridLayout showTopActionPanel={false}>
+                    {isMyAccountStatusLoading || isLoadingForTheFirstTime ? (
+                        renderLoadingPlaceholder()
+                    ) : (
+                        <Grid.Row columns={1}>
+                            <Grid.Column width={12}>
+                                <Section
+                                    data-componentid={`${componentId}-settings-section`}
+                                    description={"Self-service portal for your users."}
+                                    icon={null}
+                                    header={"My Account"}
+                                    onPrimaryActionClick={handleSelection}
+                                    primaryAction={"Configure"}
+                                    connectorEnabled={isMyAccountEnabled}
+                                >
+                                    <Divider hidden />
+                                </Section>
+                            </Grid.Column>
+                        </Grid.Row>
+                    )}
                 </GridLayout>
             </Ref>
         </PageLayout>

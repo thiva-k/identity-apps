@@ -24,31 +24,15 @@ import React, { MutableRefObject, ReactElement, useEffect, useRef, useState } fr
 import { Trans, useTranslation } from "react-i18next";
 import { Dropdown, DropdownItemProps, DropdownProps, Form, Grid, Menu, Message, Radio } from "semantic-ui-react";
 import { AppConstants, SharedUserStoreConstants } from "../../../../core/constants";
-import { history } from "../../../../core/helpers/history";
+import { history } from "@wso2is/features/core/helpers";
 import { EventPublisher, SharedUserStoreUtils } from "../../../../core/utils";
-import {
-    ServerConfigurationsConstants
-} from "../../../../server-configurations/constants/server-configurations-constants";
-import {
-    PRIMARY_USERSTORE,
-    USERSTORE_REGEX_PROPERTIES
-} from "../../../../userstores/constants/user-store-constants";
+import { ServerConfigurationsConstants } from "../../../../server-configurations/constants/server-configurations-constants";
+import { PRIMARY_USERSTORE, USERSTORE_REGEX_PROPERTIES } from "../../../../userstores/constants/user-store-constants";
 import { ValidationDataInterface, ValidationFormInterface } from "../../../../validation/models";
 import { getUsersList } from "../../../api/users";
-import {
-    AskPasswordOptionTypes,
-    HiddenFieldNames,
-    PasswordOptionTypes
-} from "../../../constants";
-import {
-    BasicUserDetailsInterface,
-    UserListInterface
-} from "../../../models/user";
-import {
-    generatePassword,
-    getConfiguration,
-    getUsernameConfiguration
-} from "../../../utils";
+import { AskPasswordOptionTypes, HiddenFieldNames, PasswordOptionTypes } from "../../../constants";
+import { BasicUserDetailsInterface, UserListInterface } from "../../../models/user";
+import { generatePassword, getConfiguration, getUsernameConfiguration } from "../../../utils";
 
 /**
  * Proptypes for the add user component.
@@ -58,7 +42,7 @@ export interface AddUserProps {
     triggerSubmit: boolean;
     emailVerificationEnabled: boolean;
     onSubmit: (values: BasicUserDetailsInterface) => void;
-    hiddenFields?: (HiddenFieldNames)[];
+    hiddenFields?: HiddenFieldNames[];
     requestedPasswordOption?: PasswordOptionTypes;
     isFirstNameRequired?: boolean;
     isLastNameRequired?: boolean;
@@ -79,9 +63,7 @@ export interface AddUserProps {
  *
  * @returns ReactElement
  */
-export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
-    props: AddUserProps): ReactElement => {
-
+export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (props: AddUserProps): ReactElement => {
     const {
         initialValues,
         triggerSubmit,
@@ -102,17 +84,17 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
         readWriteUserStoresList
     } = props;
 
-    const [ passwordOption, setPasswordOption ] = useState<PasswordOptionTypes>(PasswordOptionTypes.CREATE_PASSWORD);
-    const [ askPasswordOption, setAskPasswordOption ] = useState<string>(AskPasswordOptionTypes.OFFLINE);
-    const [ password, setPassword ] = useState<string>(initialValues?.newPassword ?? "");
-    const [ userStoreRegex, setUserStoreRegex ] = useState<string>("");
-    const [ passwordConfig, setPasswordConfig ] = useState<ValidationFormInterface>(undefined);
-    const [ usernameConfig, setUsernameConfig ] = useState<ValidationFormInterface>(undefined);
-    const [ isValidPassword, setIsValidPassword ] = useState<boolean>(true);
-    const [ randomPassword, setRandomPassword ] = useState<string>(undefined);
-    const [ userStore, setUserStore ] = useState<string>(PRIMARY_USERSTORE);
-    const [ isValidEmail, setIsValidEmail ] = useState<boolean>(false);
-    const [ isEmailFilled, setIsEmailFilled ] = useState<boolean>(false);
+    const [passwordOption, setPasswordOption] = useState<PasswordOptionTypes>(PasswordOptionTypes.CREATE_PASSWORD);
+    const [askPasswordOption, setAskPasswordOption] = useState<string>(AskPasswordOptionTypes.OFFLINE);
+    const [password, setPassword] = useState<string>(initialValues?.newPassword ?? "");
+    const [userStoreRegex, setUserStoreRegex] = useState<string>("");
+    const [passwordConfig, setPasswordConfig] = useState<ValidationFormInterface>(undefined);
+    const [usernameConfig, setUsernameConfig] = useState<ValidationFormInterface>(undefined);
+    const [isValidPassword, setIsValidPassword] = useState<boolean>(true);
+    const [randomPassword, setRandomPassword] = useState<string>(undefined);
+    const [userStore, setUserStore] = useState<string>(PRIMARY_USERSTORE);
+    const [isValidEmail, setIsValidEmail] = useState<boolean>(false);
+    const [isEmailFilled, setIsEmailFilled] = useState<boolean>(false);
 
     const formBottomRef: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
     const emailRef: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
@@ -122,12 +104,15 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
     const { UIConfig } = useUIConfig();
 
     // Username input validation error messages.
-    const USER_ALREADY_EXIST_ERROR_MESSAGE: string = t("console:manage.features.users.consumerUsers.fields." +
-        "username.validations.invalid");
-    const USERNAME_REGEX_VIOLATION_ERROR_MESSAGE: string = t("console:manage.features.users.consumerUsers.fields." +
-        "username.validations.regExViolation");
-    const USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE: string = t("console:manage.features.users.consumerUsers.fields." +
-        "username.validations.invalidCharacters");
+    const USER_ALREADY_EXIST_ERROR_MESSAGE: string = t(
+        "console:manage.features.users.consumerUsers.fields." + "username.validations.invalid"
+    );
+    const USERNAME_REGEX_VIOLATION_ERROR_MESSAGE: string = t(
+        "console:manage.features.users.consumerUsers.fields." + "username.validations.regExViolation"
+    );
+    const USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE: string = t(
+        "console:manage.features.users.consumerUsers.fields." + "username.validations.invalidCharacters"
+    );
     // const USERNAME_HAS_INVALID_SYMBOLS_ERROR_MESSAGE: string =
     // t("extensions:manage.features.user.addUser.validation." +
     //     "usernameSymbols");
@@ -160,7 +145,7 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
             setAskPasswordFromUser(false);
             setOfflineUser(false);
         }
-    }, [ passwordOption, askPasswordOption ]);
+    }, [passwordOption, askPasswordOption]);
 
     /**
      * This sets the username and password validation rules.
@@ -170,14 +155,14 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
             setPasswordConfig(getConfiguration(validationConfig));
             setUsernameConfig(getUsernameConfiguration(validationConfig));
         }
-    }, [ validationConfig ]);
+    }, [validationConfig]);
 
     /**
      * This gets regex for each userstore.
      */
     useEffect(() => {
         getUserStoreRegex();
-    }, [ userStore ]);
+    }, [userStore]);
 
     useEffect(() => {
         if (!isAlphanumericUsernameEnabled()) {
@@ -185,7 +170,7 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
         } else {
             setIsValidEmail(false);
         }
-    }, [ usernameConfig ]);
+    }, [usernameConfig]);
 
     /**
      * Check whether the alphanumeric usernames are enabled.
@@ -208,11 +193,12 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
      * The following function gets the user store regex that validates user name.
      */
     const getUserStoreRegex = async () => {
-        await SharedUserStoreUtils.getUserStoreRegEx(userStore,
-            SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.UsernameRegEx)
-            .then((response: string) => {
-                setUserStoreRegex(response);
-            });
+        await SharedUserStoreUtils.getUserStoreRegEx(
+            userStore,
+            SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.UsernameRegEx
+        ).then((response: string) => {
+            setUserStoreRegex(response);
+        });
     };
 
     const askPasswordOptionData: any = {
@@ -261,13 +247,12 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
             email: values.get("email")?.toString(),
             firstName: values.get("firstName")?.toString(),
             lastName: values.get("lastName")?.toString(),
-            newPassword: values.get("newPassword") && values.get("newPassword") !== undefined
-                ? values.get("newPassword").toString()
-                : "",
+            newPassword:
+                values.get("newPassword") && values.get("newPassword") !== undefined
+                    ? values.get("newPassword").toString()
+                    : "",
             passwordOption: passwordOption,
-            userName: UIConfig?.enableEmailDomain
-                ? values.get("email")?.toString()
-                : values.get("username")?.toString()
+            userName: UIConfig?.enableEmailDomain ? values.get("email")?.toString() : values.get("username")?.toString()
         };
     };
 
@@ -305,7 +290,8 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
         }
         const passwordRegex: string = await SharedUserStoreUtils.getUserStoreRegEx(
             userStore,
-            USERSTORE_REGEX_PROPERTIES.PasswordRegEx);
+            USERSTORE_REGEX_PROPERTIES.PasswordRegEx
+        );
 
         return SharedUserStoreUtils.validateInputAgainstRegEx(password, passwordRegex);
     };
@@ -317,14 +303,13 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
      * @param validation - The validation object.
      */
     const validateNewPassword = async (value: string, validation: Validation) => {
-        if (!await isNewPasswordValid(value)) {
+        if (!(await isNewPasswordValid(value))) {
             validation.isValid = false;
-            validation.errorMessages.push(passwordConfig ?
-                t(
-                    "extensions:manage.features.user.addUser.validation.error.passwordValidation"
-                ) : t(
-                    "extensions:manage.features.user.addUser.validation.password"
-                ));
+            validation.errorMessages.push(
+                passwordConfig
+                    ? t("extensions:manage.features.user.addUser.validation.error.passwordValidation")
+                    : t("extensions:manage.features.user.addUser.validation.password")
+            );
         }
         scrollToInValidField("formBottom");
     };
@@ -332,23 +317,28 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
     const resolveAskPasswordOptionPopupContent = (): ReactElement => {
         if (!emailVerificationEnabled) {
             return (
-                <Trans
-                    i18nKey="console:manage.features.user.modals.addUserWizard.askPassword.emailVerificationDisabled"
-                >
-                    To invite users to set the password, enable email invitations for user password setup from <Link
-                        onClick={ () => history.push(AppConstants.getPaths().get("GOVERNANCE_CONNECTOR_EDIT")
-                            .replace(":categoryId", ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID)
-                            .replace(":connectorId", ServerConfigurationsConstants.ASK_PASSWORD_CONNECTOR_ID)) }
-                        external={ false }
-                    >Login & Registration settings</Link>.
+                <Trans i18nKey="console:manage.features.user.modals.addUserWizard.askPassword.emailVerificationDisabled">
+                    To invite users to set the password, enable email invitations for user password setup from{" "}
+                    <Link
+                        onClick={() =>
+                            history.push(
+                                AppConstants.getPaths()
+                                    .get("GOVERNANCE_CONNECTOR_EDIT")
+                                    .replace(":categoryId", ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID)
+                                    .replace(":connectorId", ServerConfigurationsConstants.ASK_PASSWORD_CONNECTOR_ID)
+                            )
+                        }
+                        external={false}
+                    >
+                        Login & Registration settings
+                    </Link>
+                    .
                 </Trans>
             );
         }
 
         if (!isEmailFilled || !isValidEmail) {
-            return t(
-                "console:manage.features.user.modals.addUserWizard.askPassword.emailInvalid"
-            );
+            return t("console:manage.features.user.modals.addUserWizard.askPassword.emailInvalid");
         }
 
         return null;
@@ -357,48 +347,40 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
     const renderAskPasswordOption = (): ReactElement => {
         return (
             <div className="mt-4 mb-4 ml-4">
-                <Menu
-                    compact={ true }
-                    size="small"
-                    className="mb-4"
-                >
-                    {
-                        !emailVerificationEnabled? (
-                            <Popup
-                                basic
-                                inverted
-                                position="top center"
-                                content={ resolveAskPasswordOptionPopupContent() }
-                                hoverable
-                                trigger={
-                                    (
-                                        <Menu.Item
-                                            name={ t("console:manage.features.user.modals.addUserWizard" +
-                                                ".askPassword.inviteViaEmail") }
-                                            disabled
-                                        />
-                                    )
-                                }
-                            />
-                        ) : (
-                            <Menu.Item
-                                name={ t("console:manage.features.user.modals.addUserWizard" +
-                                    ".askPassword.inviteViaEmail") }
-                                active={ askPasswordOption === AskPasswordOptionTypes.EMAIL }
-                                onClick={ () => setAskPasswordOption(AskPasswordOptionTypes.EMAIL) }
-                            />
-                        )
-                    }
+                <Menu compact={true} size="small" className="mb-4">
+                    {!emailVerificationEnabled ? (
+                        <Popup
+                            basic
+                            inverted
+                            position="top center"
+                            content={resolveAskPasswordOptionPopupContent()}
+                            hoverable
+                            trigger={
+                                <Menu.Item
+                                    name={t(
+                                        "console:manage.features.user.modals.addUserWizard" +
+                                            ".askPassword.inviteViaEmail"
+                                    )}
+                                    disabled
+                                />
+                            }
+                        />
+                    ) : (
+                        <Menu.Item
+                            name={t(
+                                "console:manage.features.user.modals.addUserWizard" + ".askPassword.inviteViaEmail"
+                            )}
+                            active={askPasswordOption === AskPasswordOptionTypes.EMAIL}
+                            onClick={() => setAskPasswordOption(AskPasswordOptionTypes.EMAIL)}
+                        />
+                    )}
                     <Menu.Item
-                        name={ t("console:manage.features.user.modals.addUserWizard" +
-                            ".askPassword.inviteOffline") }
-                        active={ askPasswordOption === AskPasswordOptionTypes.OFFLINE }
-                        onClick={ () => setAskPasswordOption(AskPasswordOptionTypes.OFFLINE) }
+                        name={t("console:manage.features.user.modals.addUserWizard" + ".askPassword.inviteOffline")}
+                        active={askPasswordOption === AskPasswordOptionTypes.OFFLINE}
+                        onClick={() => setAskPasswordOption(AskPasswordOptionTypes.OFFLINE)}
                     />
                 </Menu>
-                {
-                    resolveAskPasswordOption()
-                }
+                {resolveAskPasswordOption()}
             </div>
         );
     };
@@ -406,13 +388,11 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
     const resolveAskPasswordOption = (): ReactElement => {
         if (askPasswordOption === AskPasswordOptionTypes.EMAIL) {
             return (
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={10}>
                         <Message
                             icon="mail"
-                            content={ t(
-                                "extensions:manage.features.user.addUser.inviteUserTooltip"
-                            ) }
+                            content={t("extensions:manage.features.user.addUser.inviteUserTooltip")}
                             size="small"
                         />
                     </Grid.Column>
@@ -422,13 +402,11 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
 
         if (askPasswordOption === AskPasswordOptionTypes.OFFLINE) {
             return (
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={10}>
                         <Message
                             icon="copy"
-                            content={ t(
-                                "extensions:manage.features.user.addUser.inviteUserOfflineTooltip"
-                            ) }
+                            content={t("extensions:manage.features.user.addUser.inviteUserOfflineTooltip")}
                             size="small"
                         />
                     </Grid.Column>
@@ -442,36 +420,33 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
     const renderCreatePasswordOption = (): ReactElement => {
         return (
             <>
-                <Grid.Row columns={ 2 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                        <div className={ "generate-password" }>
+                <Grid.Row columns={2}>
+                    <Grid.Column mobile={16} tablet={16} computer={10}>
+                        <div className={"generate-password"}>
                             <Field
                                 data-testid="user-mgt-add-user-form-newPassword-input"
                                 className="addon-field-wrapper full-width"
-                                hidePassword={ t("common:hidePassword") }
-                                label={ t(
-                                    "console:manage.features.user.forms.addUserForm.inputs.newPassword.label"
-                                ) }
+                                hidePassword={t("common:hidePassword")}
+                                label={t("console:manage.features.user.forms.addUserForm.inputs.newPassword.label")}
                                 name="newPassword"
-                                placeholder={ t(
-                                    "console:manage.features.user.forms.addUserForm.inputs." +
-                                    "newPassword.placeholder"
-                                ) }
-                                required={ true }
-                                requiredErrorMessage={ t(
+                                placeholder={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs." + "newPassword.placeholder"
+                                )}
+                                required={true}
+                                requiredErrorMessage={t(
                                     "console:manage.features.user.forms.addUserForm." +
-                                    "inputs.newPassword.validations.empty"
-                                ) }
-                                showPassword={ t("common:showPassword") }
+                                        "inputs.newPassword.validations.empty"
+                                )}
+                                showPassword={t("common:showPassword")}
                                 type="password"
-                                value={ randomPassword ? randomPassword : initialValues?.newPassword }
-                                validation={ validateNewPassword }
-                                tabIndex={ 5 }
-                                enableReinitialize={ true }
-                                listen={ handlePasswordChange }
-                                maxWidth={ 60 }
+                                value={randomPassword ? randomPassword : initialValues?.newPassword}
+                                validation={validateNewPassword}
+                                tabIndex={5}
+                                enableReinitialize={true}
+                                listen={handlePasswordChange}
+                                maxWidth={60}
                             />
-                            { passwordConfig && (
+                            {passwordConfig && (
                                 <Button
                                     basic
                                     primary
@@ -479,8 +454,9 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                                     data-testid="user-mgt-password-generate-button"
                                     type="button"
                                     className="info add-user-step-button"
-                                    onClick={ () => {
-                                        const randomPass: string = generatePassword(Number(passwordConfig.minLength),
+                                    onClick={() => {
+                                        const randomPass: string = generatePassword(
+                                            Number(passwordConfig.minLength),
                                             Number(passwordConfig.minLowerCaseCharacters) > 0,
                                             Number(passwordConfig.minUpperCaseCharacters) > 0,
                                             Number(passwordConfig.minNumbers) > 0,
@@ -489,68 +465,75 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                                             Number(passwordConfig.minUpperCaseCharacters),
                                             Number(passwordConfig.minNumbers),
                                             Number(passwordConfig.minSpecialCharacters),
-                                            Number(passwordConfig.minUniqueCharacters));
+                                            Number(passwordConfig.minUniqueCharacters)
+                                        );
 
                                         setRandomPassword(randomPass);
                                         setPassword(randomPass);
-                                    } }
+                                    }}
                                 >
                                     Generate
                                 </Button>
-                            ) }
+                            )}
                         </div>
-                        { passwordConfig && (
+                        {passwordConfig && (
                             <PasswordValidation
-                                password={ password }
-                                minLength={ Number(passwordConfig.minLength) }
-                                maxLength={ Number(passwordConfig.maxLength) }
-                                minNumbers={ Number(passwordConfig.minNumbers) }
-                                minUpperCase={ Number(passwordConfig.minUpperCaseCharacters) }
-                                minLowerCase={ Number(passwordConfig.minLowerCaseCharacters) }
-                                minSpecialChr={ Number(passwordConfig.minSpecialCharacters) }
-                                minUniqueChr={ Number(passwordConfig.minUniqueCharacters) }
-                                maxConsecutiveChr={ Number(passwordConfig.maxConsecutiveCharacters) }
-                                onPasswordValidate={ onPasswordValidate }
-                                translations={ {
-                                    case: (Number(passwordConfig?.minUpperCaseCharacters) > 0 &&
-                                        Number(passwordConfig?.minLowerCaseCharacters) > 0) ?
-                                        t("extensions:manage.features.user.addUser.validation.passwordCase", {
-                                            minLowerCase: passwordConfig.minLowerCaseCharacters,
-                                            minUpperCase: passwordConfig.minUpperCaseCharacters
-                                        }) : (
-                                            Number(passwordConfig?.minUpperCaseCharacters) > 0 ?
-                                                t("extensions:manage.features.user.addUser.validation.upperCase", {
-                                                    minUpperCase: passwordConfig.minUpperCaseCharacters
-                                                }) : t("extensions:manage.features.user.addUser.validation" +
-                                                    ".lowerCase", {
-                                                    minLowerCase: passwordConfig.minLowerCaseCharacters
-                                                })
-                                        ),
-                                    consecutiveChr:
-                                        t("extensions:manage.features.user.addUser.validation.consecutiveCharacters", {
+                                password={password}
+                                minLength={Number(passwordConfig.minLength)}
+                                maxLength={Number(passwordConfig.maxLength)}
+                                minNumbers={Number(passwordConfig.minNumbers)}
+                                minUpperCase={Number(passwordConfig.minUpperCaseCharacters)}
+                                minLowerCase={Number(passwordConfig.minLowerCaseCharacters)}
+                                minSpecialChr={Number(passwordConfig.minSpecialCharacters)}
+                                minUniqueChr={Number(passwordConfig.minUniqueCharacters)}
+                                maxConsecutiveChr={Number(passwordConfig.maxConsecutiveCharacters)}
+                                onPasswordValidate={onPasswordValidate}
+                                translations={{
+                                    case:
+                                        Number(passwordConfig?.minUpperCaseCharacters) > 0 &&
+                                        Number(passwordConfig?.minLowerCaseCharacters) > 0
+                                            ? t("extensions:manage.features.user.addUser.validation.passwordCase", {
+                                                  minLowerCase: passwordConfig.minLowerCaseCharacters,
+                                                  minUpperCase: passwordConfig.minUpperCaseCharacters
+                                              })
+                                            : Number(passwordConfig?.minUpperCaseCharacters) > 0
+                                            ? t("extensions:manage.features.user.addUser.validation.upperCase", {
+                                                  minUpperCase: passwordConfig.minUpperCaseCharacters
+                                              })
+                                            : t("extensions:manage.features.user.addUser.validation" + ".lowerCase", {
+                                                  minLowerCase: passwordConfig.minLowerCaseCharacters
+                                              }),
+                                    consecutiveChr: t(
+                                        "extensions:manage.features.user.addUser.validation.consecutiveCharacters",
+                                        {
                                             repeatedChr: passwordConfig.maxConsecutiveCharacters
-                                        }),
+                                        }
+                                    ),
                                     length: t("extensions:manage.features.user.addUser.validation.passwordLength", {
-                                        max: passwordConfig.maxLength, min: passwordConfig.minLength
+                                        max: passwordConfig.maxLength,
+                                        min: passwordConfig.minLength
                                     }),
-                                    numbers:
-                                        t("extensions:manage.features.user.addUser.validation.passwordNumeric", {
-                                            min: passwordConfig.minNumbers
-                                        }),
-                                    specialChr:
-                                        t("extensions:manage.features.user.addUser.validation.specialCharacter", {
+                                    numbers: t("extensions:manage.features.user.addUser.validation.passwordNumeric", {
+                                        min: passwordConfig.minNumbers
+                                    }),
+                                    specialChr: t(
+                                        "extensions:manage.features.user.addUser.validation.specialCharacter",
+                                        {
                                             specialChr: passwordConfig.minSpecialCharacters
-                                        }),
-                                    uniqueChr:
-                                        t("extensions:manage.features.user.addUser.validation.uniqueCharacters", {
+                                        }
+                                    ),
+                                    uniqueChr: t(
+                                        "extensions:manage.features.user.addUser.validation.uniqueCharacters",
+                                        {
                                             uniqueChr: passwordConfig.minUniqueCharacters
-                                        })
-                                } }
+                                        }
+                                    )
+                                }}
                             />
-                        ) }
+                        )}
                     </Grid.Column>
                 </Grid.Row>
-                <div ref={ formBottomRef } />
+                <div ref={formBottomRef} />
             </>
         );
     };
@@ -560,31 +543,28 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
         if (UIConfig?.enableEmailDomain) {
             return (
                 <Grid.Row>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                        <div ref={ emailRef } />
+                    <Grid.Column mobile={16} tablet={16} computer={10}>
+                        <div ref={emailRef} />
                         <Field
-                            loading={ isBasicDetailsLoading }
+                            loading={isBasicDetailsLoading}
                             data-testid="user-mgt-add-user-form-email-input"
-                            label={ t("extensions:manage.features.user.addUser.inputLabel" +
-                                ".emailUsername") }
+                            label={t("extensions:manage.features.user.addUser.inputLabel" + ".emailUsername")}
                             name="email"
-                            placeholder={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs." +
-                            "email.placeholder"
-                            ) }
-                            required={ true }
-                            requiredErrorMessage={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs.email." +
-                                    "validations.empty"
-                            ) }
-                            validation={ async (value: string, validation: Validation) => {
+                            placeholder={t(
+                                "console:manage.features.user.forms.addUserForm.inputs." + "email.placeholder"
+                            )}
+                            required={true}
+                            requiredErrorMessage={t(
+                                "console:manage.features.user.forms.addUserForm.inputs.email." + "validations.empty"
+                            )}
+                            validation={async (value: string, validation: Validation) => {
                                 setBasicDetailsLoading(true);
 
                                 // Check username validity against userstore regex.
-                                if (value && (
-                                    !SharedUserStoreUtils.validateInputAgainstRegEx(
-                                        value, userStoreRegex))
-                                        || !FormValidation.email(value)) {
+                                if (
+                                    (value && !SharedUserStoreUtils.validateInputAgainstRegEx(value, userStoreRegex)) ||
+                                    !FormValidation.email(value)
+                                ) {
                                     validation.isValid = false;
                                     validation.errorMessages.push(USERNAME_REGEX_VIOLATION_ERROR_MESSAGE);
                                     scrollToInValidField("email");
@@ -598,10 +578,13 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                                     // Therefore, existence of duplicates is
                                     // -checked only post regex validation success.
                                     if (value && validation.isValid === true) {
-                                        const usersList: UserListInterface
-                                        = await getUsersList(null, null,
-                                            "userName eq " + value, null,
-                                            userStore);
+                                        const usersList: UserListInterface = await getUsersList(
+                                            null,
+                                            null,
+                                            "userName eq " + value,
+                                            null,
+                                            userStore
+                                        );
 
                                         if (usersList?.totalResults > 0) {
                                             validation.isValid = false;
@@ -620,53 +603,48 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                                     // 10190#issuecomment-719760318
                                     if (error?.response?.status === 500) {
                                         validation.isValid = false;
-                                        validation.errorMessages.push(
-                                            USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE);
+                                        validation.errorMessages.push(USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE);
                                         scrollToInValidField("email");
                                     }
 
                                     setBasicDetailsLoading(false);
                                 }
-                            } }
+                            }}
                             type="email"
-                            value={ initialValues && initialValues.email }
-                            tabIndex={ 1 }
-                            maxLength={ 60 }
+                            value={initialValues && initialValues.email}
+                            tabIndex={1}
+                            maxLength={60}
                         />
                     </Grid.Column>
                 </Grid.Row>
             );
         }
 
-        if (!hiddenFields.includes(HiddenFieldNames.USERNAME)
-            && !isAlphanumericUsernameEnabled()) {
+        if (!hiddenFields.includes(HiddenFieldNames.USERNAME) && !isAlphanumericUsernameEnabled()) {
             return (
                 <Grid.Row>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                        <div ref={ emailRef } />
+                    <Grid.Column mobile={16} tablet={16} computer={10}>
+                        <div ref={emailRef} />
                         <Field
-                            loading={ isBasicDetailsLoading }
+                            loading={isBasicDetailsLoading}
                             data-testid="user-mgt-add-user-form-email-input"
-                            label={ t("extensions:manage.features.user.addUser.inputLabel" +
-                                ".emailUsername") }
+                            label={t("extensions:manage.features.user.addUser.inputLabel" + ".emailUsername")}
                             name="email"
-                            placeholder={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs." +
-                            "email.placeholder"
-                            ) }
-                            required={ true }
-                            requiredErrorMessage={ t(
-                                "console:manage.features.user.forms.addUserForm.inputs.email." +
-                                    "validations.empty"
-                            ) }
-                            validation={ async (value: string, validation: Validation) => {
+                            placeholder={t(
+                                "console:manage.features.user.forms.addUserForm.inputs." + "email.placeholder"
+                            )}
+                            required={true}
+                            requiredErrorMessage={t(
+                                "console:manage.features.user.forms.addUserForm.inputs.email." + "validations.empty"
+                            )}
+                            validation={async (value: string, validation: Validation) => {
                                 setBasicDetailsLoading(true);
 
                                 // Check username validity against userstore regex.
-                                if (value && (
-                                    !SharedUserStoreUtils.validateInputAgainstRegEx(
-                                        value, userStoreRegex))
-                                        || !FormValidation.email(value)) {
+                                if (
+                                    (value && !SharedUserStoreUtils.validateInputAgainstRegEx(value, userStoreRegex)) ||
+                                    !FormValidation.email(value)
+                                ) {
                                     validation.isValid = false;
                                     validation.errorMessages.push(USERNAME_REGEX_VIOLATION_ERROR_MESSAGE);
                                     scrollToInValidField("email");
@@ -680,10 +658,13 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                                     // Therefore, existence of duplicates is
                                     // -checked only post regex validation success.
                                     if (value && validation.isValid === true) {
-                                        const usersList: UserListInterface
-                                        = await getUsersList(null, null,
-                                            "userName eq " + value, null,
-                                            userStore);
+                                        const usersList: UserListInterface = await getUsersList(
+                                            null,
+                                            null,
+                                            "userName eq " + value,
+                                            null,
+                                            userStore
+                                        );
 
                                         if (usersList?.totalResults > 0) {
                                             validation.isValid = false;
@@ -702,18 +683,17 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                                     // 10190#issuecomment-719760318
                                     if (error?.response?.status === 500) {
                                         validation.isValid = false;
-                                        validation.errorMessages.push(
-                                            USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE);
+                                        validation.errorMessages.push(USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE);
                                         scrollToInValidField("email");
                                     }
 
                                     setBasicDetailsLoading(false);
                                 }
-                            } }
+                            }}
                             type="email"
-                            value={ initialValues && initialValues.email }
-                            tabIndex={ 1 }
-                            maxLength={ 60 }
+                            value={initialValues && initialValues.email}
+                            tabIndex={1}
+                            maxLength={60}
                         />
                     </Grid.Column>
                 </Grid.Row>
@@ -722,22 +702,21 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
 
         return (
             <Grid.Row>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                    <div ref={ emailRef } />
+                <Grid.Column mobile={16} tablet={16} computer={10}>
+                    <div ref={emailRef} />
                     <Field
-                        loading={ isBasicDetailsLoading }
+                        loading={isBasicDetailsLoading}
                         data-testid="user-mgt-add-user-form-username-input"
-                        label={ t("extensions:manage.features.user.addUser.inputLabel" +
-                            ".alphanumericUsername") }
+                        label={t("extensions:manage.features.user.addUser.inputLabel" + ".alphanumericUsername")}
                         name="username"
-                        placeholder={ t("extensions:manage.features.user.addUser.inputLabel" +
-                            ".alphanumericUsernamePlaceholder") }
-                        required={ true }
-                        requiredErrorMessage={ t(
-                            "console:manage.features.user.forms.addUserForm.inputs.email." +
-                            "validations.empty"
-                        ) }
-                        validation={ async (value: string, validation: Validation) => {
+                        placeholder={t(
+                            "extensions:manage.features.user.addUser.inputLabel" + ".alphanumericUsernamePlaceholder"
+                        )}
+                        required={true}
+                        requiredErrorMessage={t(
+                            "console:manage.features.user.forms.addUserForm.inputs.email." + "validations.empty"
+                        )}
+                        validation={async (value: string, validation: Validation) => {
                             // TODO: Fix the validation issues and re-enable the validation.
                             // Tracker: https://github.com/wso2/product-is/issues/18010
                             // /// Regular expression to validate having alphanumeric characters.
@@ -765,10 +744,13 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                                 // Therefore, existence of duplicates is
                                 // -checked only post regex validation success.
                                 if (value && validation.isValid === true) {
-                                    const usersList: UserListInterface
-                                    = await getUsersList(null, null,
-                                        "userName eq " + value, null,
-                                        userStore);
+                                    const usersList: UserListInterface = await getUsersList(
+                                        null,
+                                        null,
+                                        "userName eq " + value,
+                                        null,
+                                        userStore
+                                    );
 
                                     if (usersList?.totalResults > 0) {
                                         validation.isValid = false;
@@ -787,46 +769,41 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                                 // 10190#issuecomment-719760318
                                 if (error?.response?.status === 500) {
                                     validation.isValid = false;
-                                    validation.errorMessages.push(
-                                        USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE);
+                                    validation.errorMessages.push(USERNAME_HAS_INVALID_CHARS_ERROR_MESSAGE);
                                     scrollToInValidField("email");
                                 }
 
                                 setBasicDetailsLoading(false);
                             }
-                        } }
+                        }}
                         type="text"
-                        value={ initialValues && initialValues.userName }
-                        tabIndex={ 1 }
-                        maxLength={ 60 }
+                        value={initialValues && initialValues.userName}
+                        tabIndex={1}
+                        maxLength={60}
                     />
-                    { /* <Hint>
+                    {/* <Hint>
                         { t("extensions:manage.features.user.addUser.validation.usernameHint", {
                             maxLength: usernameConfig?.maxLength,
                             minLength: usernameConfig?.minLength
                         }) }
-                    </Hint> */ }
+                    </Hint> */}
                     <Field
                         data-testid="user-mgt-add-user-form-alphanumeric-email-input"
-                        label={ "Email" }
+                        label={"Email"}
                         name="email"
-                        placeholder={ t(
-                            "console:manage.features.user.forms.addUserForm.inputs." +
-                            "email.placeholder"
-                        ) }
-                        required={ isEmailRequired }
-                        requiredErrorMessage={ t(
-                            "console:manage.features.user.forms.addUserForm.inputs.email." +
-                            "validations.empty"
-                        ) }
-                        validation={ async (value: string, validation: Validation) => {
+                        placeholder={t("console:manage.features.user.forms.addUserForm.inputs." + "email.placeholder")}
+                        required={isEmailRequired}
+                        requiredErrorMessage={t(
+                            "console:manage.features.user.forms.addUserForm.inputs.email." + "validations.empty"
+                        )}
+                        validation={async (value: string, validation: Validation) => {
                             setBasicDetailsLoading(true);
 
                             // Check username validity against userstore regex.
-                            if (value && (
-                                !SharedUserStoreUtils.validateInputAgainstRegEx(
-                                    value, userStoreRegex))
-                                    || !FormValidation.email(value)) {
+                            if (
+                                (value && !SharedUserStoreUtils.validateInputAgainstRegEx(value, userStoreRegex)) ||
+                                !FormValidation.email(value)
+                            ) {
                                 validation.isValid = false;
                                 validation.errorMessages.push(USERNAME_REGEX_VIOLATION_ERROR_MESSAGE);
                                 scrollToInValidField("email");
@@ -835,12 +812,12 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
                                 setIsValidEmail(true);
                             }
                             setBasicDetailsLoading(false);
-                        } }
+                        }}
                         type="email"
-                        value={ initialValues && initialValues.email }
-                        tabIndex={ 1 }
-                        maxLength={ 60 }
-                        listen={ handleEmailEmpty }
+                        value={initialValues && initialValues.email}
+                        tabIndex={1}
+                        maxLength={60}
+                        listen={handleEmailEmpty}
                     />
                 </Grid.Column>
             </Grid.Row>
@@ -850,179 +827,147 @@ export const AddUserUpdated: React.FunctionComponent<AddUserProps> = (
     return (
         <Forms
             data-testid="user-mgt-add-user-form"
-            onSubmit={ async (values: Map<string, FormValue>) => {
+            onSubmit={async (values: Map<string, FormValue>) => {
                 if (passwordOption === PasswordOptionTypes.CREATE_PASSWORD) {
                     // Check whether the new password is valid
-                    if (await isNewPasswordValid(values.get("newPassword")
-                        ? values.get("newPassword").toString()
-                        : "")) {
+                    if (
+                        await isNewPasswordValid(values.get("newPassword") ? values.get("newPassword").toString() : "")
+                    ) {
                         onSubmit(getFormValues(values));
                     }
-                }
-                else {
+                } else {
                     onSubmit(getFormValues(values));
                 }
-            } }
-            submitState={ triggerSubmit }
+            }}
+            submitState={triggerSubmit}
         >
             <Grid>
-                {
-                    !hiddenFields.includes(HiddenFieldNames.USERSTORE) &&
-                        !isUserStoreError && (
-                        <Grid.Row>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                <div ref={ emailRef }/>
-                                <Form.Field required={ true }>
-                                    <label>
-                                        { t("console:manage.features.user.forms.addUserForm.inputs."+
-                                        "domain.placeholder") }
-                                    </label>
-                                    <Dropdown
-                                        fluid
-                                        selection
-                                        labeled
-                                        options={ readWriteUserStoresList }
-                                        data-testid="user-mgt-add-user-form-userstore-dropdown"
-                                        name="userstore"
-                                        disabled={ false }
-                                        value={ userStore }
-                                        onChange={
-                                            (e: React.ChangeEvent<HTMLInputElement>, data: DropdownProps) => {
-                                                setUserStore(data.value.toString());
-                                                setSelectedUserStore(data.value.toString());
-                                            }
-                                        }
-                                        tabIndex={ 1 }
-                                        maxLength={ 60 }
-                                    />
-                                </Form.Field>
-                            </Grid.Column>
-                        </Grid.Row>
-                    )
-                }
-                {
-                    resolveUsernamePasswordFields()
-                }
-                {
-                    !hiddenFields.includes(HiddenFieldNames.FIRSTNAME) && (
-                        <Grid.Row>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                <Field
-                                    data-testid="user-mgt-add-user-form-firstName-input"
-                                    label={ t(
-                                        "console:manage.features.user.forms.addUserForm.inputs.firstName.label"
-                                    ) }
-                                    name="firstName"
-                                    placeholder={ t(
-                                        "console:manage.features.user.forms.addUserForm.inputs." +
-                                        "firstName.placeholder"
-                                    ) }
-                                    required={ isFirstNameRequired }
-                                    requiredErrorMessage={ t(
-                                        "console:manage.features.user.forms.addUserForm." +
+                {!hiddenFields.includes(HiddenFieldNames.USERSTORE) && !isUserStoreError && (
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <div ref={emailRef} />
+                            <Form.Field required={true}>
+                                <label>
+                                    {t("console:manage.features.user.forms.addUserForm.inputs." + "domain.placeholder")}
+                                </label>
+                                <Dropdown
+                                    fluid
+                                    selection
+                                    labeled
+                                    options={readWriteUserStoresList}
+                                    data-testid="user-mgt-add-user-form-userstore-dropdown"
+                                    name="userstore"
+                                    disabled={false}
+                                    value={userStore}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>, data: DropdownProps) => {
+                                        setUserStore(data.value.toString());
+                                        setSelectedUserStore(data.value.toString());
+                                    }}
+                                    tabIndex={1}
+                                    maxLength={60}
+                                />
+                            </Form.Field>
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
+                {resolveUsernamePasswordFields()}
+                {!hiddenFields.includes(HiddenFieldNames.FIRSTNAME) && (
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <Field
+                                data-testid="user-mgt-add-user-form-firstName-input"
+                                label={t("console:manage.features.user.forms.addUserForm.inputs.firstName.label")}
+                                name="firstName"
+                                placeholder={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs." + "firstName.placeholder"
+                                )}
+                                required={isFirstNameRequired}
+                                requiredErrorMessage={t(
+                                    "console:manage.features.user.forms.addUserForm." +
                                         "inputs.firstName.validations.empty"
-                                    ) }
-                                    type="text"
-                                    value={ initialValues && initialValues.firstName }
-                                    tabIndex={ 2 }
-                                    maxLength={ 30 }
-                                    validation={ async (value: string, validation: Validation) => {
-                                        if (value.includes("/")) {
-                                            validation.isValid = false;
-                                            validation.errorMessages.push("First Name cannot contain" +
-                                                " the forward slash (/) character.");
-                                        }
-                                    } }
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    )
-                }
-                {
-                    !hiddenFields.includes(HiddenFieldNames.LASTNAME) && (
-                        <Grid.Row>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                <Field
-                                    data-testid="user-mgt-add-user-form-lastName-input"
-                                    label={ t(
-                                        "console:manage.features.user.forms.addUserForm.inputs.lastName.label"
-                                    ) }
-                                    name="lastName"
-                                    placeholder={ t(
-                                        "console:manage.features.user.forms.addUserForm.inputs." +
-                                        "lastName.placeholder"
-                                    ) }
-                                    required={ isLastNameRequired }
-                                    requiredErrorMessage={ t(
-                                        "console:manage.features.user.forms.addUserForm." +
+                                )}
+                                type="text"
+                                value={initialValues && initialValues.firstName}
+                                tabIndex={2}
+                                maxLength={30}
+                                validation={async (value: string, validation: Validation) => {
+                                    if (value.includes("/")) {
+                                        validation.isValid = false;
+                                        validation.errorMessages.push(
+                                            "First Name cannot contain" + " the forward slash (/) character."
+                                        );
+                                    }
+                                }}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
+                {!hiddenFields.includes(HiddenFieldNames.LASTNAME) && (
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <Field
+                                data-testid="user-mgt-add-user-form-lastName-input"
+                                label={t("console:manage.features.user.forms.addUserForm.inputs.lastName.label")}
+                                name="lastName"
+                                placeholder={t(
+                                    "console:manage.features.user.forms.addUserForm.inputs." + "lastName.placeholder"
+                                )}
+                                required={isLastNameRequired}
+                                requiredErrorMessage={t(
+                                    "console:manage.features.user.forms.addUserForm." +
                                         "inputs.lastName.validations.empty"
-                                    ) }
-                                    type="text"
-                                    value={ initialValues && initialValues.lastName }
-                                    tabIndex={ 3 }
-                                    maxLength={ 30 }
-                                    validation={ async (value: string, validation: Validation) => {
-                                        if (value.includes("/")) {
-                                            validation.isValid = false;
-                                            validation.errorMessages.push("Last Name cannot contain" +
-                                                " the forward slash (/) character.");
-                                        }
-                                    } }
+                                )}
+                                type="text"
+                                value={initialValues && initialValues.lastName}
+                                tabIndex={3}
+                                maxLength={30}
+                                validation={async (value: string, validation: Validation) => {
+                                    if (value.includes("/")) {
+                                        validation.isValid = false;
+                                        validation.errorMessages.push(
+                                            "Last Name cannot contain" + " the forward slash (/) character."
+                                        );
+                                    }
+                                }}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
+                {!hiddenFields.includes(HiddenFieldNames.PASSWORD) ? (
+                    <Grid.Row columns={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={10}>
+                            <Form.Field>
+                                <label className="mb-3">
+                                    {t("console:manage.features.user.forms.addUserForm" + ".buttons.radioButton.label")}
+                                </label>
+                                <Radio
+                                    label={askPasswordOptionData.label}
+                                    data-testId={askPasswordOptionData["data-testid"]}
+                                    name="handlePasswordGroup"
+                                    value={askPasswordOptionData.value}
+                                    checked={passwordOption === askPasswordOptionData.value}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>, item: any) =>
+                                        setPasswordOption(item?.value)
+                                    }
                                 />
-                            </Grid.Column>
-                        </Grid.Row>
-                    )
-                }
-                {
-                    !hiddenFields.includes(HiddenFieldNames.PASSWORD)
-                        ? (
-                            <Grid.Row columns={ 1 }>
-                                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 10 }>
-                                    <Form.Field
-                                    >
-                                        <label className="mb-3">
-                                            { t("console:manage.features.user.forms.addUserForm" +
-                                                ".buttons.radioButton.label") }
-                                        </label>
-                                        <Radio
-                                            label={ askPasswordOptionData.label }
-                                            data-testId={ askPasswordOptionData["data-testid"] }
-                                            name="handlePasswordGroup"
-                                            value={ askPasswordOptionData.value }
-                                            checked={ passwordOption === askPasswordOptionData.value }
-                                            onChange={
-                                                (e: React.ChangeEvent<HTMLInputElement>, item: any) =>
-                                                    setPasswordOption(item?.value)
-                                            }
-                                        />
-                                    </Form.Field>
-                                    {
-                                        passwordOption === askPasswordOptionData.value
-                                            ? renderAskPasswordOption()
-                                            : null
+                            </Form.Field>
+                            {passwordOption === askPasswordOptionData.value ? renderAskPasswordOption() : null}
+                            <Form.Field>
+                                <Radio
+                                    label={createPasswordOptionData.label}
+                                    data-testId={createPasswordOptionData["data-testid"]}
+                                    name="handlePasswordGroup"
+                                    value={createPasswordOptionData.value}
+                                    checked={passwordOption === createPasswordOptionData.value}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>, item: any) =>
+                                        setPasswordOption(item?.value)
                                     }
-                                    <Form.Field>
-                                        <Radio
-                                            label={ createPasswordOptionData.label }
-                                            data-testId={ createPasswordOptionData["data-testid"] }
-                                            name="handlePasswordGroup"
-                                            value={ createPasswordOptionData.value }
-                                            checked={ passwordOption === createPasswordOptionData.value }
-                                            onChange={
-                                                (e: React.ChangeEvent<HTMLInputElement>, item: any) =>
-                                                    setPasswordOption(item?.value)
-                                            }
-                                        />
-                                    </Form.Field>
-                                    {
-                                        passwordOption === createPasswordOptionData.value
-                                            ? renderCreatePasswordOption()
-                                            : null
-                                    }
-                                </Grid.Column>
-                            </Grid.Row>
-                        ) : null
-                }
+                                />
+                            </Form.Field>
+                            {passwordOption === createPasswordOptionData.value ? renderCreatePasswordOption() : null}
+                        </Grid.Column>
+                    </Grid.Row>
+                ) : null}
             </Grid>
         </Forms>
     );

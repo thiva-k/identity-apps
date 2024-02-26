@@ -25,7 +25,8 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { RouteComponentProps } from "react-router";
-import { AppConstants, history } from "../../core";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getEmailTemplate } from "../api";
 import { AddEmailTemplateForm } from "../components";
 import { EmailTemplateDetails, EmailTemplateFormModes } from "../models";
@@ -53,11 +54,7 @@ interface RouteParams {
 const EmailTemplateEditPage: FunctionComponent<EmailTemplateEditPagePropsInterface> = (
     props: EmailTemplateEditPagePropsInterface & RouteComponentProps<RouteParams>
 ): ReactElement => {
-
-    const {
-        match,
-        [ "data-testid" ]: testId
-    } = props;
+    const { match, ["data-testid"]: testId } = props;
 
     const templateTypeId = match?.params?.templateTypeId;
     const templateId = match?.params?.templateId;
@@ -66,10 +63,10 @@ const EmailTemplateEditPage: FunctionComponent<EmailTemplateEditPagePropsInterfa
 
     const { t } = useTranslation();
 
-    const [ localeName, setLocaleName ] = useState<string>("");
-    const [ formMode, setFormMode ] = useState<EmailTemplateFormModes>(EmailTemplateFormModes.ADD);
-    const [ emailTemplateTypeDetails, setEmailTemplateTypeDetails ] = useState<EmailTemplateDetails>(undefined);
-    const [ emailTemplateName, setEmailTemplateName ] = useState<string>("");
+    const [localeName, setLocaleName] = useState<string>("");
+    const [formMode, setFormMode] = useState<EmailTemplateFormModes>(EmailTemplateFormModes.ADD);
+    const [emailTemplateTypeDetails, setEmailTemplateTypeDetails] = useState<EmailTemplateDetails>(undefined);
+    const [emailTemplateName, setEmailTemplateName] = useState<string>("");
 
     useEffect(() => {
         // Return if the path doesn't have the template type id or template id URL params.
@@ -93,8 +90,8 @@ const EmailTemplateEditPage: FunctionComponent<EmailTemplateEditPagePropsInterfa
         let languageCode = "";
 
         if (templateId.indexOf("_") !== -1) {
-            countryCode = templateId.split("_")[ 1 ];
-            languageCode = templateId.split("_")[ 0 ];
+            countryCode = templateId.split("_")[1];
+            languageCode = templateId.split("_")[0];
         }
 
         const language = CountryLanguage.getLanguage(languageCode).name;
@@ -111,76 +108,93 @@ const EmailTemplateEditPage: FunctionComponent<EmailTemplateEditPagePropsInterfa
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:manage.features.emailTemplates.notifications.getTemplateDetails" +
-                        ".genericError.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.emailTemplates.notifications.getTemplateDetails" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.emailTemplates.notifications.getTemplateDetails" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.emailTemplates.notifications.getTemplateDetails" +
+                                ".genericError.message"
+                        )
+                    })
+                );
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert<AlertInterface>({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.emailTemplates.notifications.getTemplateDetails" +
-                            ".error.message")
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.emailTemplates.notifications.getTemplateDetails" +
+                                    ".error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert<AlertInterface>({
-                    description: t("console:manage.features.emailTemplates.notifications.getTemplateDetails" +
-                        ".genericError.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.emailTemplates.notifications.getTemplateDetails" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.emailTemplates.notifications.getTemplateDetails" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.emailTemplates.notifications.getTemplateDetails" +
+                                ".genericError.message"
+                        )
+                    })
+                );
             });
-    }, [ templateTypeId, templateId ]);
+    }, [templateTypeId, templateId]);
 
     /**
      * Util to handle back button event.
      */
     const handleBackButtonClick = (): void => {
-        history.push(AppConstants.getPaths().get("EMAIL_TEMPLATES").replace(":templateTypeId", templateTypeId));
+        history.push(
+            AppConstants.getPaths()
+                .get("EMAIL_TEMPLATES")
+                .replace(":templateTypeId", templateTypeId)
+        );
     };
 
     return (
         <PageLayout
             title={
                 formMode === EmailTemplateFormModes.EDIT
-                    ? t("console:manage.pages.editTemplate.title",
-                        { template: emailTemplateTypeDetails?.displayName })
+                    ? t("console:manage.pages.editTemplate.title", { template: emailTemplateTypeDetails?.displayName })
                     : t("console:manage.pages.addEmailTemplate.title")
             }
             pageTitle={
                 formMode === EmailTemplateFormModes.EDIT
-                    ? t("console:manage.pages.editTemplate.title",
-                        { template: emailTemplateTypeDetails?.displayName })
+                    ? t("console:manage.pages.editTemplate.title", { template: emailTemplateTypeDetails?.displayName })
                     : t("console:manage.pages.addEmailTemplate.title")
             }
-            backButton={ {
+            backButton={{
                 onClick: handleBackButtonClick,
-                text: formMode === EmailTemplateFormModes.EDIT
-                    ? t("console:manage.pages.editTemplate.backButton", { name: emailTemplateName })
-                    : t("console:manage.pages.addEmailTemplate.backButton", { name: emailTemplateName })
-            } }
+                text:
+                    formMode === EmailTemplateFormModes.EDIT
+                        ? t("console:manage.pages.editTemplate.backButton", { name: emailTemplateName })
+                        : t("console:manage.pages.addEmailTemplate.backButton", { name: emailTemplateName })
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
+            bottomMargin={false}
             data-testid={
-                formMode === EmailTemplateFormModes.EDIT
-                    ? `${ testId }-edit-page-layout`
-                    : `${ testId }-add-page-layout`
+                formMode === EmailTemplateFormModes.EDIT ? `${testId}-edit-page-layout` : `${testId}-add-page-layout`
             }
         >
             <AddEmailTemplateForm
-                mode={ formMode }
-                templateId={ templateId }
-                templateTypeId={ templateTypeId }
-                data-testid={ `${ testId }-form` }
+                mode={formMode}
+                templateId={templateId}
+                templateTypeId={templateTypeId}
+                data-testid={`${testId}-form`}
             />
         </PageLayout>
     );

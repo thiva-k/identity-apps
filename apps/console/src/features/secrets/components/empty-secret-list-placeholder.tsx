@@ -22,7 +22,8 @@ import { EmptyPlaceholder, LinkButton, PrimaryButton } from "@wso2is/react-compo
 import React, { FC, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { Icon } from "semantic-ui-react";
-import { AppConstants, getEmptyPlaceholderIllustrations, history } from "../../core";
+import { AppConstants, getEmptyPlaceholderIllustrations } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { FEATURE_BASE_PATH } from "../constants/secrets.common";
 
 /**
@@ -44,12 +45,7 @@ export type EmptySecretListPlaceholderProps = {
 export const EmptySecretListPlaceholder: FC<EmptySecretListPlaceholderProps> = (
     props: EmptySecretListPlaceholderProps
 ): ReactElement => {
-
-    const {
-        onAddNewSecret,
-        resourceNotFound,
-        ["data-componentid"]: testId
-    } = props;
+    const { onAddNewSecret, resourceNotFound, ["data-componentid"]: testId } = props;
 
     const { t } = useTranslation();
 
@@ -65,20 +61,22 @@ export const EmptySecretListPlaceholder: FC<EmptySecretListPlaceholderProps> = (
             <EmptyPlaceholder
                 action={
                     <LinkButton
-                        aria-label={ t("console:develop.features.secrets.emptyPlaceholders" +
-                            ".buttons.backToSecrets.ariaLabel") }
-                        onClick={ whenTheRequestedResourceIsNotFound }>
-                        <Icon name="backward"/>
-                        { t("console:develop.features.secrets.emptyPlaceholders.buttons.backToSecrets.label") }
+                        aria-label={t(
+                            "console:develop.features.secrets.emptyPlaceholders" + ".buttons.backToSecrets.ariaLabel"
+                        )}
+                        onClick={whenTheRequestedResourceIsNotFound}
+                    >
+                        <Icon name="backward" />
+                        {t("console:develop.features.secrets.emptyPlaceholders.buttons.backToSecrets.label")}
                     </LinkButton>
                 }
-                image={ getEmptyPlaceholderIllustrations().pageNotFound }
+                image={getEmptyPlaceholderIllustrations().pageNotFound}
                 imageSize="tiny"
-                subtitle={ [
+                subtitle={[
                     t("console:develop.features.secrets.emptyPlaceholders.resourceNotFound.messages.0"),
                     t("console:develop.features.secrets.emptyPlaceholders.resourceNotFound.messages.1")
-                ] }
-                data-testid={ testId }
+                ]}
+                data-testid={testId}
             />
         );
     }
@@ -86,24 +84,22 @@ export const EmptySecretListPlaceholder: FC<EmptySecretListPlaceholderProps> = (
     return (
         <EmptyPlaceholder
             action={
-                <Show when={ AccessControlConstants.SECRET_WRITE }>
+                <Show when={AccessControlConstants.SECRET_WRITE}>
                     <PrimaryButton
-                        aria-label={
-                            t("console:develop.features.secrets.emptyPlaceholders.buttons.addSecret.ariaLabel")
-                        }
-                        onClick={ onAddNewSecret }>
-                        <Icon name="add"/>
-                        { t("console:develop.features.secrets.emptyPlaceholders.buttons.addSecret.label") }
+                        aria-label={t("console:develop.features.secrets.emptyPlaceholders.buttons.addSecret.ariaLabel")}
+                        onClick={onAddNewSecret}
+                    >
+                        <Icon name="add" />
+                        {t("console:develop.features.secrets.emptyPlaceholders.buttons.addSecret.label")}
                     </PrimaryButton>
                 </Show>
             }
-            image={ getEmptyPlaceholderIllustrations().newList }
+            image={getEmptyPlaceholderIllustrations().newList}
             imageSize="tiny"
-            subtitle={ [ t("console:develop.features.secrets.emptyPlaceholders.emptyListOfSecrets.messages.0") ] }
-            data-testid={ testId }
+            subtitle={[t("console:develop.features.secrets.emptyPlaceholders.emptyListOfSecrets.messages.0")]}
+            data-testid={testId}
         />
     );
-
 };
 
 /**

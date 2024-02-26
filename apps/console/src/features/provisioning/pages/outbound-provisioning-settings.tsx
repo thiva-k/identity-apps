@@ -21,33 +21,19 @@ import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { EmptyPlaceholder, PageLayout, PrimaryButton } from "@wso2is/react-components";
-import React, {
-    FunctionComponent,
-    MouseEvent,
-    ReactElement,
-    useEffect,
-    useMemo,
-    useState
-} from "react";
+import React, { FunctionComponent, MouseEvent, ReactElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { AccordionTitleProps, Divider, Icon, Segment } from "semantic-ui-react";
 import { OutboundProvisioningConfigurationInterface } from "../../applications/models/application";
 import { OutboundProvisioningConnectorInterface } from "../../connections/models/connection";
-import {
-    AppConstants,
-    AppState,
-    AuthenticatorAccordion,
-    FeatureConfigInterface,
-    history
-} from "../../core";
+import { AppConstants, AppState, AuthenticatorAccordion, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { useIdentityProviderList } from "../../identity-providers/api/identity-provider";
 import { IdentityProviderInterface } from "../../identity-providers/models/identity-provider";
 import { updateResidentApplicationOutboundProvisioningList } from "../api/outbound-provisioning";
-import {
-    useGetResidentApplicationOutboundProvisioningConnectors
-} from "../api/use-get-resident-outbound-provisioning-connectors";
+import { useGetResidentApplicationOutboundProvisioningConnectors } from "../api/use-get-resident-outbound-provisioning-connectors";
 import { OutboundProvisioningConnectorDeleteWizard } from "../components/outbound-provisioning-connector-delete-wizard";
 import { OutboundProvisioningConnectorSetupForm } from "../components/outbound-provisioning-connector-setup-form";
 import { OutboundProvisioningConnectorSetupWizard } from "../components/outbound-provisioning-connector-setup-wizard";
@@ -66,7 +52,7 @@ type OutboundProvisioningSettingsPageInterface = IdentifiableComponentInterface;
 const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSettingsPageInterface> = (
     props: OutboundProvisioningSettingsPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
@@ -84,15 +70,15 @@ const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSe
                 featureConfig?.residentOutboundProvisioning?.scopes?.update,
                 allowedScopes
             ),
-        [ featureConfig, allowedScopes ]
+        [featureConfig, allowedScopes]
     );
 
-    const [ isShowCreateWizard, setIsShowCreateWizard ] = useState(false);
-    const [ accordionActiveIndexes, setAccordionActiveIndexes ] = useState<number[]>([]);
-    const [ filteredIdpList, setFilteredIdpList ] = useState<IdentityProviderInterface[]>([]);
-    const [ deletingIdp, setDeletingIdp ] = useState<OutboundProvisioningConfigurationInterface>(null);
-    const [ isShowDeleteConfirmationModal, setIsShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [isShowCreateWizard, setIsShowCreateWizard] = useState(false);
+    const [accordionActiveIndexes, setAccordionActiveIndexes] = useState<number[]>([]);
+    const [filteredIdpList, setFilteredIdpList] = useState<IdentityProviderInterface[]>([]);
+    const [deletingIdp, setDeletingIdp] = useState<OutboundProvisioningConfigurationInterface>(null);
+    const [isShowDeleteConfirmationModal, setIsShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const {
         data: residentProvisioningConfiguration,
@@ -112,32 +98,40 @@ const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSe
      */
     useEffect(() => {
         if (!isIdentityProviderListFetching && !identityProviderFetchError) {
-            const filteredList: IdentityProviderInterface[] = identityProviderList?.identityProviders?.
-                filter((idp: IdentityProviderInterface) => {
-                    return idp.provisioning?.outboundConnectors?.connectors?.
-                        some((connector: OutboundProvisioningConnectorInterface) => {
+            const filteredList: IdentityProviderInterface[] = identityProviderList?.identityProviders?.filter(
+                (idp: IdentityProviderInterface) => {
+                    return idp.provisioning?.outboundConnectors?.connectors?.some(
+                        (connector: OutboundProvisioningConnectorInterface) => {
                             return connector.isEnabled;
-                        });
-                });
+                        }
+                    );
+                }
+            );
 
             setFilteredIdpList(filteredList);
         }
-    }, [ isIdentityProviderListFetching, identityProviderFetchError, identityProviderList ]);
+    }, [isIdentityProviderListFetching, identityProviderFetchError, identityProviderList]);
 
     /**
      * Show error if something went wrong while fetching resident provisioning configuration.
      */
     useEffect(() => {
         if (!isLoadingResidentProvisioningConfiguration && residentProvisioningConfigurationFetchError) {
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.resident.provisioning.outbound." +
-                    "notifications.fetch.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.resident.provisioning.outbound." +
-                    "notifications.fetch.genericError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.resident.provisioning.outbound." +
+                            "notifications.fetch.genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "console:develop.features.applications.resident.provisioning.outbound." +
+                            "notifications.fetch.genericError.message"
+                    )
+                })
+            );
         }
-    }, [ residentProvisioningConfigurationFetchError ]);
+    }, [residentProvisioningConfigurationFetchError]);
 
     /**
      * Handle back button click.
@@ -154,24 +148,30 @@ const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSe
     const onConnectorAdded = async (configuration: OutboundProvisioningConfigurationInterface, isUpdating: boolean) => {
         setIsSubmitting(true);
 
-        const isConnectorExists: boolean = residentProvisioningConfiguration?.
-            provisioningConfigurations?.outboundProvisioningIdps?.
-            some((idp: OutboundProvisioningConfigurationInterface) => {
+        const isConnectorExists: boolean = residentProvisioningConfiguration?.provisioningConfigurations?.outboundProvisioningIdps?.some(
+            (idp: OutboundProvisioningConfigurationInterface) => {
                 return idp.idp === configuration.idp && idp.connector === configuration.connector;
-            });
+            }
+        );
 
         // Block the user from adding the same connector twice.
         if (!isUpdating && isConnectorExists) {
             setIsSubmitting(false);
             setIsShowCreateWizard(false);
 
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.resident.provisioning.outbound." +
-                    "notifications.create.error.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.resident.provisioning.outbound." +
-                    "notifications.create.error.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.resident.provisioning.outbound." +
+                            "notifications.create.error.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "console:develop.features.applications.resident.provisioning.outbound." +
+                            "notifications.create.error.message"
+                    )
+                })
+            );
 
             return;
         }
@@ -180,11 +180,11 @@ const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSe
             ...residentProvisioningConfiguration?.provisioningConfigurations?.outboundProvisioningIdps
         ];
 
-        const connectionExistsIndex: number = residentProvisioningConfiguration?.
-            provisioningConfigurations?.outboundProvisioningIdps?.
-            findIndex((idp: OutboundProvisioningConfigurationInterface) => {
+        const connectionExistsIndex: number = residentProvisioningConfiguration?.provisioningConfigurations?.outboundProvisioningIdps?.findIndex(
+            (idp: OutboundProvisioningConfigurationInterface) => {
                 return idp.idp === configuration.idp;
-            });
+            }
+        );
 
         if (connectionExistsIndex > -1) {
             // Delete the existing outbound provisioning IDP.
@@ -197,40 +197,64 @@ const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSe
             await updateResidentApplicationOutboundProvisioningList(updatedOutboundProvisioningIdps);
             setIsShowCreateWizard(false);
             if (isUpdating) {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.resident.provisioning.outbound." +
-                        "notifications.update.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.resident.provisioning.outbound." +
-                        "notifications.update.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.resident.provisioning.outbound." +
+                                "notifications.update.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.applications.resident.provisioning.outbound." +
+                                "notifications.update.success.message"
+                        )
+                    })
+                );
             } else {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.resident.provisioning.outbound." +
-                        "notifications.create.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.resident.provisioning.outbound." +
-                        "notifications.create.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.resident.provisioning.outbound." +
+                                "notifications.create.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.applications.resident.provisioning.outbound." +
+                                "notifications.create.success.message"
+                        )
+                    })
+                );
             }
             mutateResidentProvisioningConfiguration();
         } catch (error) {
             if (isUpdating) {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.resident.provisioning.outbound." +
-                        "notifications.update.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.resident.provisioning.outbound." +
-                        "notifications.update.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.resident.provisioning.outbound." +
+                                "notifications.update.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.resident.provisioning.outbound." +
+                                "notifications.update.genericError.message"
+                        )
+                    })
+                );
             } else {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.resident.provisioning.outbound." +
-                        "notifications.create.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.resident.provisioning.outbound." +
-                        "notifications.create.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.resident.provisioning.outbound." +
+                                "notifications.create.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.resident.provisioning.outbound." +
+                                "notifications.create.genericError.message"
+                        )
+                    })
+                );
             }
         } finally {
             setIsSubmitting(false);
@@ -246,11 +270,11 @@ const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSe
             ...residentProvisioningConfiguration?.provisioningConfigurations?.outboundProvisioningIdps
         ];
 
-        const connectionExistsIndex: number = residentProvisioningConfiguration?.
-            provisioningConfigurations?.outboundProvisioningIdps?.
-            findIndex((idp: OutboundProvisioningConfigurationInterface) => {
+        const connectionExistsIndex: number = residentProvisioningConfiguration?.provisioningConfigurations?.outboundProvisioningIdps?.findIndex(
+            (idp: OutboundProvisioningConfigurationInterface) => {
                 return idp.idp === configuration.idp;
-            });
+            }
+        );
 
         if (connectionExistsIndex > -1) {
             // Delete the existing outbound provisioning IDP.
@@ -260,22 +284,34 @@ const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSe
         try {
             await updateResidentApplicationOutboundProvisioningList(updatedOutboundProvisioningIdps);
             setIsShowDeleteConfirmationModal(false);
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.resident.provisioning.outbound." +
-                    "notifications.delete.success.description"),
-                level: AlertLevels.SUCCESS,
-                message: t("console:develop.features.applications.resident.provisioning.outbound." +
-                    "notifications.delete.success.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.resident.provisioning.outbound." +
+                            "notifications.delete.success.description"
+                    ),
+                    level: AlertLevels.SUCCESS,
+                    message: t(
+                        "console:develop.features.applications.resident.provisioning.outbound." +
+                            "notifications.delete.success.message"
+                    )
+                })
+            );
             mutateResidentProvisioningConfiguration();
         } catch (error) {
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.resident.provisioning.outbound." +
-                    "notifications.delete.genericError.description"),
-                level: AlertLevels.SUCCESS,
-                message: t("console:develop.features.applications.resident.provisioning.outbound." +
-                    "notifications.delete.genericError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.resident.provisioning.outbound." +
+                            "notifications.delete.genericError.description"
+                    ),
+                    level: AlertLevels.SUCCESS,
+                    message: t(
+                        "console:develop.features.applications.resident.provisioning.outbound." +
+                            "notifications.delete.genericError.message"
+                    )
+                })
+            );
         }
     };
 
@@ -285,12 +321,14 @@ const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSe
      * @param e - Click event.
      * @param SegmentedAuthenticatedAccordion - Clicked title.
      */
-    const handleAccordionOnClick = (e: MouseEvent<HTMLDivElement>,
-        SegmentedAuthenticatedAccordion: AccordionTitleProps): void => {
+    const handleAccordionOnClick = (
+        e: MouseEvent<HTMLDivElement>,
+        SegmentedAuthenticatedAccordion: AccordionTitleProps
+    ): void => {
         if (!SegmentedAuthenticatedAccordion) {
             return;
         }
-        const newIndexes: number[] = [ ...accordionActiveIndexes ];
+        const newIndexes: number[] = [...accordionActiveIndexes];
 
         if (newIndexes.includes(SegmentedAuthenticatedAccordion.accordionIndex)) {
             const removingIndex: number = newIndexes.indexOf(SegmentedAuthenticatedAccordion.accordionIndex);
@@ -305,137 +343,131 @@ const OutboundProvisioningSettingsPage: FunctionComponent<OutboundProvisioningSe
 
     return (
         <PageLayout
-            pageTitle={ t("console:develop.features.applications.resident.provisioning.outbound.heading") }
-            title={ t("console:develop.features.applications.resident.provisioning.outbound.heading") }
-            description={ t("console:develop.features.applications.resident.provisioning.outbound.subHeading") }
-            data-componentid={ `${ componentId }-layout` }
-            backButton={ {
-                "data-componentid": `${ componentId }-back-button`,
+            pageTitle={t("console:develop.features.applications.resident.provisioning.outbound.heading")}
+            title={t("console:develop.features.applications.resident.provisioning.outbound.heading")}
+            description={t("console:develop.features.applications.resident.provisioning.outbound.subHeading")}
+            data-componentid={`${componentId}-layout`}
+            backButton={{
+                "data-componentid": `${componentId}-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:manage.features.governanceConnectors.goBackLoginAndRegistration")
-            } }
-            action={ residentProvisioningConfiguration?.
-                provisioningConfigurations?.outboundProvisioningIdps?.length > 0
-                && ( !isReadOnly
-                    && (
-                        <PrimaryButton
-                            onClick={ () => setIsShowCreateWizard(true) }
-                            data-componentid={ `${ componentId }-add-button` }
-                        >
-                            <Icon name="add"/>
-                            { t("console:develop.features.applications.resident." +
-                                "provisioning.outbound.emptyPlaceholder.action") }
-                        </PrimaryButton>
-                    )
-                ) }
+            }}
+            action={
+                residentProvisioningConfiguration?.provisioningConfigurations?.outboundProvisioningIdps?.length > 0 &&
+                !isReadOnly && (
+                    <PrimaryButton
+                        onClick={() => setIsShowCreateWizard(true)}
+                        data-componentid={`${componentId}-add-button`}
+                    >
+                        <Icon name="add" />
+                        {t(
+                            "console:develop.features.applications.resident." +
+                                "provisioning.outbound.emptyPlaceholder.action"
+                        )}
+                    </PrimaryButton>
+                )
+            }
         >
             <Divider hidden />
             <>
-                { residentProvisioningConfiguration?.provisioningConfigurations?.outboundProvisioningIdps?.length > 0
-                    ? (
-                        <>
-                            {
-                                residentProvisioningConfiguration?.
-                                    provisioningConfigurations?.outboundProvisioningIdps?.map(
-                                        (provisioningIdp: OutboundProvisioningConfigurationInterface,
-                                            index: number) => {
-                                            return (
-                                                <AuthenticatorAccordion
-                                                    key={ provisioningIdp.idp }
-                                                    globalActions={ [
-                                                        !isReadOnly && {
-                                                            icon: "trash alternate",
-                                                            onClick: (): void => {
-                                                                setIsShowDeleteConfirmationModal(true);
-                                                                setDeletingIdp(provisioningIdp);
-                                                            },
-                                                            type: "icon"
-                                                        }
-                                                    ] }
-                                                    authenticators={
-                                                        [
-                                                            {
-                                                                content: (
-                                                                    <OutboundProvisioningConnectorSetupForm
-                                                                        initialValues={ provisioningIdp }
-                                                                        triggerSubmit={ null }
-                                                                        onSubmit={ (
-                                                                            // eslint-disable-next-line max-len
-                                                                            values: OutboundProvisioningConfigurationInterface
-                                                                        ) => onConnectorAdded(values, true) }
-                                                                        idpList={ filteredIdpList }
-                                                                        // eslint-disable-next-line max-len
-                                                                        data-componentid={ `${ componentId }-${provisioningIdp.idp}-form` }
-                                                                        isSubmitting={ isSubmitting }
-                                                                        isReadOnly={ isReadOnly }
-                                                                        isEdit
-                                                                    />
-                                                                ),
-                                                                id: provisioningIdp?.idp,
-                                                                title: provisioningIdp?.idp
-                                                            }
-                                                        ]
-                                                    }
-                                                    accordionActiveIndexes = { accordionActiveIndexes }
-                                                    accordionIndex = { index }
-                                                    handleAccordionOnClick = { handleAccordionOnClick }
-                                                    data-componentid={
-                                                        `${ componentId }-${provisioningIdp.idp}-
-                                                            outbound-connector-accordion`
-                                                    }
-                                                />
-                                            );
-                                        })
+                {residentProvisioningConfiguration?.provisioningConfigurations?.outboundProvisioningIdps?.length > 0 ? (
+                    <>
+                        {residentProvisioningConfiguration?.provisioningConfigurations?.outboundProvisioningIdps?.map(
+                            (provisioningIdp: OutboundProvisioningConfigurationInterface, index: number) => {
+                                return (
+                                    <AuthenticatorAccordion
+                                        key={provisioningIdp.idp}
+                                        globalActions={[
+                                            !isReadOnly && {
+                                                icon: "trash alternate",
+                                                onClick: (): void => {
+                                                    setIsShowDeleteConfirmationModal(true);
+                                                    setDeletingIdp(provisioningIdp);
+                                                },
+                                                type: "icon"
+                                            }
+                                        ]}
+                                        authenticators={[
+                                            {
+                                                content: (
+                                                    <OutboundProvisioningConnectorSetupForm
+                                                        initialValues={provisioningIdp}
+                                                        triggerSubmit={null}
+                                                        onSubmit={(
+                                                            // eslint-disable-next-line max-len
+                                                            values: OutboundProvisioningConfigurationInterface
+                                                        ) => onConnectorAdded(values, true)}
+                                                        idpList={filteredIdpList}
+                                                        // eslint-disable-next-line max-len
+                                                        data-componentid={`${componentId}-${provisioningIdp.idp}-form`}
+                                                        isSubmitting={isSubmitting}
+                                                        isReadOnly={isReadOnly}
+                                                        isEdit
+                                                    />
+                                                ),
+                                                id: provisioningIdp?.idp,
+                                                title: provisioningIdp?.idp
+                                            }
+                                        ]}
+                                        accordionActiveIndexes={accordionActiveIndexes}
+                                        accordionIndex={index}
+                                        handleAccordionOnClick={handleAccordionOnClick}
+                                        data-componentid={`${componentId}-${provisioningIdp.idp}-
+                                                            outbound-connector-accordion`}
+                                    />
+                                );
                             }
-                        </>
-                    ) : (
-                        <Segment>
-                            <EmptyPlaceholder
-                                title={
-                                    t("console:develop.features.applications.resident." +
-                                        "provisioning.outbound.emptyPlaceholder.title")
-                                }
-                                image={ getEmptyPlaceholderIllustrations().emptyList }
-                                subtitle={ [
-                                    t("console:develop.features.applications.resident." +
-                                        "provisioning.outbound.emptyPlaceholder.subtitles")
-                                ] }
-                                imageSize="tiny"
-                                action={ (
-                                    <PrimaryButton
-                                        onClick={ () => setIsShowCreateWizard(true) }
-                                        data-componentid={ `${ componentId }-add-button` }
-                                    >
-                                        <Icon name="add"/>
-                                        { t("console:develop.features.applications.resident." +
-                                            "provisioning.outbound.emptyPlaceholder.action") }
-                                    </PrimaryButton>
-                                ) }
-                            />
-                        </Segment>
-                    )
-                }
+                        )}
+                    </>
+                ) : (
+                    <Segment>
+                        <EmptyPlaceholder
+                            title={t(
+                                "console:develop.features.applications.resident." +
+                                    "provisioning.outbound.emptyPlaceholder.title"
+                            )}
+                            image={getEmptyPlaceholderIllustrations().emptyList}
+                            subtitle={[
+                                t(
+                                    "console:develop.features.applications.resident." +
+                                        "provisioning.outbound.emptyPlaceholder.subtitles"
+                                )
+                            ]}
+                            imageSize="tiny"
+                            action={
+                                <PrimaryButton
+                                    onClick={() => setIsShowCreateWizard(true)}
+                                    data-componentid={`${componentId}-add-button`}
+                                >
+                                    <Icon name="add" />
+                                    {t(
+                                        "console:develop.features.applications.resident." +
+                                            "provisioning.outbound.emptyPlaceholder.action"
+                                    )}
+                                </PrimaryButton>
+                            }
+                        />
+                    </Segment>
+                )}
             </>
 
-            { isShowCreateWizard && (
+            {isShowCreateWizard && (
                 <OutboundProvisioningConnectorSetupWizard
-                    closeWizard={ () => setIsShowCreateWizard(false) }
-                    onUpdate={ (
-                        values: OutboundProvisioningConfigurationInterface
-                    ) => onConnectorAdded(values , false) }
-                    isSubmitting={ isSubmitting }
-                    availableIdpList={ filteredIdpList }
+                    closeWizard={() => setIsShowCreateWizard(false)}
+                    onUpdate={(values: OutboundProvisioningConfigurationInterface) => onConnectorAdded(values, false)}
+                    isSubmitting={isSubmitting}
+                    availableIdpList={filteredIdpList}
                 />
-            ) }
+            )}
 
-            { isShowDeleteConfirmationModal && (
+            {isShowDeleteConfirmationModal && (
                 <OutboundProvisioningConnectorDeleteWizard
-                    isOpen={ isShowDeleteConfirmationModal }
-                    onClose={ () => setIsShowDeleteConfirmationModal(false) }
-                    deletingIdp={ deletingIdp }
-                    onConfirm={ onConnectorDeleted }
+                    isOpen={isShowDeleteConfirmationModal}
+                    onClose={() => setIsShowDeleteConfirmationModal(false)}
+                    deletingIdp={deletingIdp}
+                    onConfirm={onConnectorDeleted}
                 />
-            ) }
+            )}
         </PageLayout>
     );
 };

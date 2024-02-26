@@ -42,15 +42,7 @@ import {
 } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import isEmpty from "lodash-es/isEmpty";
-import React, {
-    FunctionComponent,
-    MutableRefObject,
-    ReactElement,
-    useEffect,
-    useMemo,
-    useRef,
-    useState
-} from "react";
+import React, { FunctionComponent, MutableRefObject, ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
@@ -58,12 +50,14 @@ import { Divider, Grid, Icon, Form as SemanticForm } from "semantic-ui-react";
 import { attributeConfig } from "../../../../../extensions";
 import { SCIMConfigs } from "../../../../../extensions/configs/scim";
 import { AccessControlConstants } from "../../../../access-control/constants/access-control";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../../../core";
+import { AppConstants, AppState, FeatureConfigInterface } from "../../../../core";
+import { history } from "@wso2is/features/core/helpers";
 import {
     ConnectorPropertyInterface,
     GovernanceConnectorInterface,
     ServerConfigurationsConstants,
-    getConnectorDetails } from "../../../../server-configurations";
+    getConnectorDetails
+} from "../../../../server-configurations";
 import { getProfileSchemas } from "../../../../users/api";
 import { getUsernameConfiguration } from "../../../../users/utils/user-management-utils";
 import { useValidationConfigData } from "../../../../validation/api";
@@ -103,21 +97,16 @@ const READONLY_CLAIM_CONFIGS: string[] = [
 export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLocalClaimsPropsInterface> = (
     props: EditBasicDetailsLocalClaimsPropsInterface
 ): ReactElement => {
+    const { claim, update, ["data-testid"]: testId } = props;
 
-    const {
-        claim,
-        update,
-        [ "data-testid" ]: testId
-    } = props;
-
-    const dispatch: Dispatch= useDispatch();
-    const [ shouldShowOnProfile, isSupportedByDefault ] = useState<boolean>(false);
-    const [ isShowDisplayOrder, setIsShowDisplayOrder ] = useState(false);
-    const [ confirmDelete, setConfirmDelete ] = useState(false);
-    const [ isClaimReadOnly, setIsClaimReadOnly ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ hasMapping, setHasMapping ] = useState<boolean>(false);
-    const [ mappingChecked, setMappingChecked ] = useState<boolean>(false);
+    const dispatch: Dispatch = useDispatch();
+    const [shouldShowOnProfile, isSupportedByDefault] = useState<boolean>(false);
+    const [isShowDisplayOrder, setIsShowDisplayOrder] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);
+    const [isClaimReadOnly, setIsClaimReadOnly] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [hasMapping, setHasMapping] = useState<boolean>(false);
+    const [mappingChecked, setMappingChecked] = useState<boolean>(false);
 
     const nameField: MutableRefObject<HTMLElement> = useRef<HTMLElement>(null);
     const regExField: MutableRefObject<HTMLElement> = useRef<HTMLElement>(null);
@@ -126,11 +115,11 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
-    const [ hideSpecialClaims, setHideSpecialClaims ] = useState<boolean>(true);
-    const [ usernameConfig, setUsernameConfig ] = useState<ValidationFormInterface>(undefined);
-    const [ connector, setConnector ] = useState<GovernanceConnectorInterface>(undefined);
-    const [ accountVerificationEnabled, setAccountVerificationEnabled ] = useState<boolean>(false);
-    const [ selfRegistrationEnabled, setSelfRegistrationEnabledEnabled ] = useState<boolean>(false);
+    const [hideSpecialClaims, setHideSpecialClaims] = useState<boolean>(true);
+    const [usernameConfig, setUsernameConfig] = useState<ValidationFormInterface>(undefined);
+    const [connector, setConnector] = useState<GovernanceConnectorInterface>(undefined);
+    const [accountVerificationEnabled, setAccountVerificationEnabled] = useState<boolean>(false);
+    const [selfRegistrationEnabled, setSelfRegistrationEnabledEnabled] = useState<boolean>(false);
 
     const { t } = useTranslation();
 
@@ -143,7 +132,7 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
         if (validationData) {
             setUsernameConfig(getUsernameConfiguration(validationData));
         }
-    }, [ validationData ]);
+    }, [validationData]);
 
     /**
      * Get username configuration.
@@ -151,21 +140,21 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
     useEffect(() => {
         // If the alpha-numeric username validator is enabled, remove the email claim from the system claims.
         if (
-            usernameConfig?.enableValidator === "true"
-            && attributeConfig?.systemClaims.includes(ClaimManagementConstants.EMAIL_CLAIM_URI)
-        ){
-            const emailClaimIndex: number
-                = attributeConfig?.systemClaims.indexOf(ClaimManagementConstants.EMAIL_CLAIM_URI);
+            usernameConfig?.enableValidator === "true" &&
+            attributeConfig?.systemClaims.includes(ClaimManagementConstants.EMAIL_CLAIM_URI)
+        ) {
+            const emailClaimIndex: number = attributeConfig?.systemClaims.indexOf(
+                ClaimManagementConstants.EMAIL_CLAIM_URI
+            );
 
             attributeConfig?.systemClaims.splice(emailClaimIndex, 1);
         } else if (
-            usernameConfig?.enableValidator === "false"
-             && !attributeConfig?.systemClaims.includes(ClaimManagementConstants.EMAIL_CLAIM_URI)
-        )
-        {
+            usernameConfig?.enableValidator === "false" &&
+            !attributeConfig?.systemClaims.includes(ClaimManagementConstants.EMAIL_CLAIM_URI)
+        ) {
             attributeConfig?.systemClaims.push(ClaimManagementConstants.EMAIL_CLAIM_URI);
         }
-    }, [ usernameConfig, attributeConfig ]);
+    }, [usernameConfig, attributeConfig]);
 
     useEffect(() => {
         if (claim?.supportedByDefault) {
@@ -174,70 +163,76 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
         if (claim?.readOnly) {
             setIsClaimReadOnly(true);
         }
-        if (claim
-            && (
-                attributeConfig?.systemClaims.length <= 0
-                || attributeConfig?.systemClaims.indexOf(claim?.claimURI) === -1
-            )
+        if (
+            claim &&
+            (attributeConfig?.systemClaims.length <= 0 || attributeConfig?.systemClaims.indexOf(claim?.claimURI) === -1)
         ) {
             setHideSpecialClaims(false);
-        }
-        else {
+        } else {
             setHideSpecialClaims(true);
         }
-    }, [ claim, usernameConfig ]);
+    }, [claim, usernameConfig]);
 
     useEffect(() => {
         const dialectID: string[] = getDialectID();
 
-        if(claim) {
+        if (claim) {
             const externalClaimRequest: Promise<ExternalClaim[]>[] = [];
 
             dialectID.forEach((dialectId: string) => {
                 externalClaimRequest.push(getExternalClaims(dialectId));
             });
 
-            Promise.allSettled(externalClaimRequest).then((
-                results: PromiseSettledResult<ExternalClaim[]>[]
-            ) => {
-                const resolvedResults: PromiseSettledResult<ExternalClaim[]>[] = results.filter(
-                    (result: PromiseSettledResult<ExternalClaim[]>) => {
-                        if (result.status === "fulfilled") {
-                            return true;
-                        } else {
-                            const error: IdentityAppsApiException = result.reason;
+            Promise.allSettled(externalClaimRequest)
+                .then((results: PromiseSettledResult<ExternalClaim[]>[]) => {
+                    const resolvedResults: PromiseSettledResult<ExternalClaim[]>[] = results.filter(
+                        (result: PromiseSettledResult<ExternalClaim[]>) => {
+                            if (result.status === "fulfilled") {
+                                return true;
+                            } else {
+                                const error: IdentityAppsApiException = result.reason;
 
-                            if (error.code !== 404) {
-                                dispatch(
-                                    addAlert({
-                                        description: error?.response?.data?.description,
-                                        level: AlertLevels.ERROR,
-                                        message: t("console:manage.features.claims.dialects"
-                                            + ".notifications.fetchExternalClaims.genericError.message")
-                                    })
-                                );
+                                if (error.code !== 404) {
+                                    dispatch(
+                                        addAlert({
+                                            description: error?.response?.data?.description,
+                                            level: AlertLevels.ERROR,
+                                            message: t(
+                                                "console:manage.features.claims.dialects" +
+                                                    ".notifications.fetchExternalClaims.genericError.message"
+                                            )
+                                        })
+                                    );
+                                }
+
+                                return false;
                             }
-
-                            return false;
                         }
-                    });
+                    );
 
-                const claims: ExternalClaim[] = resolvedResults.flatMap(
-                    (result: PromiseSettledResult<ExternalClaim[]>) => {
-                        return result.status === "fulfilled" ? result.value : [];
-                    });
+                    const claims: ExternalClaim[] = resolvedResults.flatMap(
+                        (result: PromiseSettledResult<ExternalClaim[]>) => {
+                            return result.status === "fulfilled" ? result.value : [];
+                        }
+                    );
 
-                if (claims.find((externalClaim: ExternalClaim) =>
-                    externalClaim.mappedLocalClaimURI === claim.claimURI)) {
-                    setHasMapping(true);
-                }
-            }).finally(() => setMappingChecked(true));
+                    if (
+                        claims.find(
+                            (externalClaim: ExternalClaim) => externalClaim.mappedLocalClaimURI === claim.claimURI
+                        )
+                    ) {
+                        setHasMapping(true);
+                    }
+                })
+                .finally(() => setMappingChecked(true));
         }
-    }, [ claim ]);
+    }, [claim]);
 
     useEffect(() => {
-        getConnectorDetails(ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID,
-            ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID)
+        getConnectorDetails(
+            ServerConfigurationsConstants.USER_ONBOARDING_CONNECTOR_ID,
+            ServerConfigurationsConstants.SELF_SIGN_UP_CONNECTOR_ID
+        )
             .then((response: GovernanceConnectorInterface) => {
                 setConnector(response);
             })
@@ -247,13 +242,13 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.description",
+                                    "getConnector.error.description",
                                 { description: error.response.data.description }
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.message"
+                                    "getConnector.error.message"
                             )
                         })
                     );
@@ -262,12 +257,12 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.description"
+                                    "getConnector.genericError.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.message"
+                                    "getConnector.genericError.message"
                             )
                         })
                     );
@@ -276,7 +271,6 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
     }, []);
 
     useEffect(() => {
-
         if (isEmpty(connector?.properties)) {
             return;
         }
@@ -297,11 +291,10 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
                     setSelfRegistrationEnabledEnabled(true);
                 }
             }
-
         });
-    }, [ connector ]);
+    }, [connector]);
 
-    const getDialectID = (): string[]  => {
+    const getDialectID = (): string[] => {
         const dialectID: string[] = [];
 
         dialectID.push(ClaimManagementConstants.ATTRIBUTE_DIALECT_IDS.get("SCIM2_SCHEMAS_CORE"));
@@ -320,32 +313,35 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
             return true;
         } else {
             return !hasRequiredScopes(
-                featureConfig?.attributeDialects, featureConfig?.attributeDialects?.scopes?.update, allowedScopes);
+                featureConfig?.attributeDialects,
+                featureConfig?.attributeDialects?.scopes?.update,
+                allowedScopes
+            );
         }
-    }, [ featureConfig, allowedScopes, hideSpecialClaims ]);
+    }, [featureConfig, allowedScopes, hideSpecialClaims]);
 
     const deleteConfirmation = (): ReactElement => (
         <ConfirmationModal
-            onClose={ (): void => setConfirmDelete(false) }
+            onClose={(): void => setConfirmDelete(false)}
             type="negative"
-            open={ confirmDelete }
-            assertionHint={ t("console:manage.features.claims.local.confirmation.hint") }
+            open={confirmDelete}
+            assertionHint={t("console:manage.features.claims.local.confirmation.hint")}
             assertionType="checkbox"
-            primaryAction={ t("console:manage.features.claims.local.confirmation.primaryAction") }
-            secondaryAction={ t("common:cancel") }
-            onSecondaryActionClick={ (): void => setConfirmDelete(false) }
-            onPrimaryActionClick={ (): void => deleteLocalClaim(claim.id) }
-            data-testid={ `${ testId }-delete-confirmation-modal` }
-            closeOnDimmerClick={ false }
+            primaryAction={t("console:manage.features.claims.local.confirmation.primaryAction")}
+            secondaryAction={t("common:cancel")}
+            onSecondaryActionClick={(): void => setConfirmDelete(false)}
+            onPrimaryActionClick={(): void => deleteLocalClaim(claim.id)}
+            data-testid={`${testId}-delete-confirmation-modal`}
+            closeOnDimmerClick={false}
         >
             <ConfirmationModal.Header>
-                { t("console:manage.features.claims.local.confirmation.header") }
+                {t("console:manage.features.claims.local.confirmation.header")}
             </ConfirmationModal.Header>
             <ConfirmationModal.Message attached negative>
-                { t("console:manage.features.claims.local.confirmation.message") }
+                {t("console:manage.features.claims.local.confirmation.message")}
             </ConfirmationModal.Message>
             <ConfirmationModal.Content>
-                { t("console:manage.features.claims.local.confirmation.content") }
+                {t("console:manage.features.claims.local.confirmation.content")}
             </ConfirmationModal.Content>
         </ConfirmationModal>
     );
@@ -356,29 +352,37 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
      * @param id - Claim id.
      */
     const deleteLocalClaim = (id: string): void => {
-        deleteAClaim(id).then(() => {
-            history.push(AppConstants.getPaths().get("LOCAL_CLAIMS"));
-            dispatch(addAlert(
-                {
-                    description: t("console:manage.features.claims.local.notifications.deleteClaim.success." +
-                        "description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.claims.local.notifications.deleteClaim.success.message")
-                }
-            ));
-        }).catch((error: IdentityAppsError) => {
-            dispatch(addAlert(
-                {
-                    description: error?.description
-                        || t("console:manage.features.claims.local.notifications.deleteClaim.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.claims.local.notifications.deleteClaim.genericError.message")
-                }
-            ));
-        }).finally(() => {
-            setConfirmDelete(false);
-        });
+        deleteAClaim(id)
+            .then(() => {
+                history.push(AppConstants.getPaths().get("LOCAL_CLAIMS"));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.claims.local.notifications.deleteClaim.success." + "description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:manage.features.claims.local.notifications.deleteClaim.success.message")
+                    })
+                );
+            })
+            .catch((error: IdentityAppsError) => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.claims.local.notifications.deleteClaim.genericError.description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t("console:manage.features.claims.local.notifications.deleteClaim.genericError.message")
+                    })
+                );
+            })
+            .finally(() => {
+                setConfirmDelete(false);
+            });
     };
 
     /**
@@ -393,23 +397,20 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
             })
             .catch((error: IdentityAppsApiException) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.notifications.getProfileSchema.error.message")
-                    })
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.notifications.getProfileSchema.error.message")
+                        })
                     );
                 }
 
                 dispatch(
                     addAlert<AlertInterface>({
-                        description: t(
-                            "console:manage.notifications.getProfileSchema.genericError.description"
-                        ),
+                        description: t("console:manage.notifications.getProfileSchema.genericError.description"),
                         level: AlertLevels.ERROR,
-                        message: t(
-                            "console:manage.notifications.getProfileSchema.genericError.message"
-                        )
+                        message: t("console:manage.notifications.getProfileSchema.genericError.message")
                     })
                 );
             })
@@ -425,42 +426,54 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
             description: values?.description !== undefined ? values.description?.toString() : claim?.description,
             displayName: values?.name !== undefined ? values.name?.toString() : claim?.displayName,
             displayOrder: attributeConfig.editAttributes.getDisplayOrder(
-                claim.displayOrder, values.displayOrder?.toString()),
+                claim.displayOrder,
+                values.displayOrder?.toString()
+            ),
             properties: claim.properties,
             readOnly: values?.readOnly !== undefined ? !!values.readOnly : claim?.readOnly,
-            regEx:  values?.regularExpression !== undefined ? values.regularExpression?.toString() : claim?.regEx,
+            regEx: values?.regularExpression !== undefined ? values.regularExpression?.toString() : claim?.regEx,
             required: values?.required !== undefined && !values?.readOnly ? !!values.required : false,
-            supportedByDefault: values?.supportedByDefault !== undefined
-                ? !!values.supportedByDefault : claim?.supportedByDefault
+            supportedByDefault:
+                values?.supportedByDefault !== undefined ? !!values.supportedByDefault : claim?.supportedByDefault
         };
 
         setIsSubmitting(true);
 
-        updateAClaim(claim.id, data).then(() => {
-            dispatch(addAlert(
-                {
-                    description: t("console:manage.features.claims.local.notifications." +
-                        "updateClaim.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.claims.local.notifications." +
-                        "updateClaim.success.message")
-                }
-            ));
-            update();
-            fetchUpdatedSchemaList();
-        }).catch((error: IdentityAppsError) => {
-            dispatch(addAlert(
-                {
-                    description: error?.description
-                        || t("console:manage.features.claims.local.notifications.updateClaim." +
-                            "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.claims.local.notifications." +
-                            "updateClaim.genericError.description")
-                }
-            ));
-        })
+        updateAClaim(claim.id, data)
+            .then(() => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.claims.local.notifications." + "updateClaim.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.claims.local.notifications." + "updateClaim.success.message"
+                        )
+                    })
+                );
+                update();
+                fetchUpdatedSchemaList();
+            })
+            .catch((error: IdentityAppsError) => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.claims.local.notifications.updateClaim." +
+                                    "genericError.description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t(
+                                "console:manage.features.claims.local.notifications." +
+                                    "updateClaim.genericError.description"
+                            )
+                    })
+                );
+            })
             .finally(() => {
                 setIsSubmitting(false);
             });
@@ -468,17 +481,15 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
 
     return (
         <>
-            { confirmDelete && deleteConfirmation() }
+            {confirmDelete && deleteConfirmation()}
             <EmphasizedSegment padded="very">
                 <Grid>
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column tablet={ 16 } computer={ 12 } largeScreen={ 9 } widescreen={ 6 } mobile={ 16 }>
+                    <Grid.Row columns={1}>
+                        <Grid.Column tablet={16} computer={12} largeScreen={9} widescreen={6} mobile={16}>
                             <SemanticForm>
-                                <SemanticForm.Field
-                                    data-testid={ `${ testId }-form-attribute-uri-readonly-input` }
-                                >
-                                    <label>{ t("console:manage.features.claims.local.attributes.attributeURI") }</label>
-                                    <CopyInputField value={ claim ? claim.claimURI : "" } />
+                                <SemanticForm.Field data-testid={`${testId}-form-attribute-uri-readonly-input`}>
+                                    <label>{t("console:manage.features.claims.local.attributes.attributeURI")}</label>
+                                    <CopyInputField value={claim ? claim.claimURI : ""} />
                                     <Hint>Unique identifier of the attribute.</Hint>
                                 </SemanticForm.Field>
                             </SemanticForm>
@@ -486,296 +497,268 @@ export const EditBasicDetailsLocalClaims: FunctionComponent<EditBasicDetailsLoca
                     </Grid.Row>
                 </Grid>
                 <Form
-                    id={ FORM_ID }
-                    uncontrolledForm={ true }
-                    onSubmit={ (values: Record<string, unknown>): void => {
+                    id={FORM_ID}
+                    uncontrolledForm={true}
+                    onSubmit={(values: Record<string, unknown>): void => {
                         onSubmit(values as Record<string, unknown>);
-                    } }
-                    data-testid={ testId }
+                    }}
+                    data-testid={testId}
                 >
                     <Field.Input
                         ariaLabel="name"
                         inputType="name"
                         name="name"
-                        label={ t("console:manage.features.claims.local.forms.name.label") }
-                        required={ true }
-                        message={ t("console:manage.features.claims.local.forms." +
-                            "name.requiredErrorMessage") }
-                        placeholder={ t("console:manage.features.claims.local.forms.name.placeholder") }
-                        value={ claim?.displayName }
-                        ref={ nameField }
-                        validation={ (value: string) => {
+                        label={t("console:manage.features.claims.local.forms.name.label")}
+                        required={true}
+                        message={t("console:manage.features.claims.local.forms." + "name.requiredErrorMessage")}
+                        placeholder={t("console:manage.features.claims.local.forms.name.placeholder")}
+                        value={claim?.displayName}
+                        ref={nameField}
+                        validation={(value: string) => {
                             if (!value.toString().match(/^[A-za-z0-9#+._\-\s]{1,30}$/)) {
-                                return t("console:manage.features.claims.local" +
-                                    ".forms.name.validationErrorMessages.invalidName");
+                                return t(
+                                    "console:manage.features.claims.local" +
+                                        ".forms.name.validationErrorMessages.invalidName"
+                                );
                             }
-                        } }
-                        data-testid={ `${ testId }-form-name-input` }
-                        maxLength={ 30 }
-                        minLength={ 1 }
-                        hint={ t("console:manage.features.claims.local.forms.nameHint") }
-                        readOnly={ isReadOnly }
-
+                        }}
+                        data-testid={`${testId}-form-name-input`}
+                        maxLength={30}
+                        minLength={1}
+                        hint={t("console:manage.features.claims.local.forms.nameHint")}
+                        readOnly={isReadOnly}
                     />
                     <Field.Textarea
                         ariaLabel="description"
                         inputType="description"
                         name="description"
-                        label={ t("console:manage.features.claims.local.forms.description.label") }
-                        required={ false }
+                        label={t("console:manage.features.claims.local.forms.description.label")}
+                        required={false}
                         requiredErrorMessage=""
-                        placeholder={
-                            t("console:manage.features.claims.local.forms.description.placeholder")
-                        }
-                        ref={ descriptionField }
-                        value={ claim?.description }
-                        maxLength={ 255 }
-                        minLength={ 3 }
-                        data-testid={ `${ testId }-form-description-input` }
-                        hint={ t("console:manage.features.claims.local.forms.descriptionHint") }
-                        readOnly={ isReadOnly }
+                        placeholder={t("console:manage.features.claims.local.forms.description.placeholder")}
+                        ref={descriptionField}
+                        value={claim?.description}
+                        maxLength={255}
+                        minLength={3}
+                        data-testid={`${testId}-form-description-input`}
+                        hint={t("console:manage.features.claims.local.forms.descriptionHint")}
+                        readOnly={isReadOnly}
                     />
 
-                    { !attributeConfig.localAttributes.createWizard.showRegularExpression && !hideSpecialClaims
-                        && (
-                            <Field.Input
-                                ariaLabel="regularExpression"
-                                inputType="default"
-                                name="regularExpression"
-                                label={ t("console:manage.features.claims.local.forms.regEx.label") }
-                                required={ false }
-                                requiredErrorMessage=""
-                                placeholder={ t("console:manage.features.claims.local.forms.regEx.placeholder") }
-                                value={ claim?.regEx }
-                                ref={ regExField }
-                                data-testid={ `${ testId }-form-regex-input` }
-                                maxLength={ ClaimManagementConstants.REGEX_FIELD_MAX_LENGTH }
-                                minLength={ ClaimManagementConstants.REGEX_FIELD_MIN_LENGTH }
-                                hint={ t("console:manage.features.claims.local.forms.regExHint") }
-                                readOnly={ isReadOnly }
-                            />
-                        )
-                    }
-                    { !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI) &&  mappingChecked
-                        ? (
-                            !hideSpecialClaims &&
-                            (<Grid.Row columns={ 1 } >
-                                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 14 }>
-                                    <Message
-                                        type="info"
-                                        content={
-                                            !hasMapping ? (
-                                                <>
-                                                    { t("console:manage.features.claims.local.forms.infoMessages." +
-                                                        "disabledConfigInfo") }
-                                                    <div>
-                                                        Add SCIM mapping from
-                                                        <Link
-                                                            external={ false }
-                                                            onClick={ () =>
-                                                                history.push(
-                                                                    AppConstants.getPaths().get("SCIM_MAPPING")
-                                                                )
-                                                            }
-                                                        > here
-                                                        </Link>.
-                                                    </div>
-                                                </>
-                                            ):(
-                                                t("console:manage.features.claims.local.forms.infoMessages." +
-                                                    "configApplicabilityInfo")
-                                            )
-                                        }
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>)
-                        )
-                        : null
-                    }
-                    {
-                        //Hides on user_id, username and groups claims
-                        claim && !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI)
-                            && claim.claimURI !== ClaimManagementConstants.USER_ID_CLAIM_URI
-                            && claim.claimURI !== ClaimManagementConstants.USER_NAME_CLAIM_URI
-                            && claim.claimURI !== ClaimManagementConstants.GROUPS_CLAIM_URI
-                            && !hideSpecialClaims && mappingChecked &&
-                        (
+                    {!attributeConfig.localAttributes.createWizard.showRegularExpression && !hideSpecialClaims && (
+                        <Field.Input
+                            ariaLabel="regularExpression"
+                            inputType="default"
+                            name="regularExpression"
+                            label={t("console:manage.features.claims.local.forms.regEx.label")}
+                            required={false}
+                            requiredErrorMessage=""
+                            placeholder={t("console:manage.features.claims.local.forms.regEx.placeholder")}
+                            value={claim?.regEx}
+                            ref={regExField}
+                            data-testid={`${testId}-form-regex-input`}
+                            maxLength={ClaimManagementConstants.REGEX_FIELD_MAX_LENGTH}
+                            minLength={ClaimManagementConstants.REGEX_FIELD_MIN_LENGTH}
+                            hint={t("console:manage.features.claims.local.forms.regExHint")}
+                            readOnly={isReadOnly}
+                        />
+                    )}
+                    {!READONLY_CLAIM_CONFIGS.includes(claim?.claimURI) && mappingChecked
+                        ? !hideSpecialClaims && (
+                              <Grid.Row columns={1}>
+                                  <Grid.Column mobile={16} tablet={16} computer={14}>
+                                      <Message
+                                          type="info"
+                                          content={
+                                              !hasMapping ? (
+                                                  <>
+                                                      {t(
+                                                          "console:manage.features.claims.local.forms.infoMessages." +
+                                                              "disabledConfigInfo"
+                                                      )}
+                                                      <div>
+                                                          Add SCIM mapping from
+                                                          <Link
+                                                              external={false}
+                                                              onClick={() =>
+                                                                  history.push(
+                                                                      AppConstants.getPaths().get("SCIM_MAPPING")
+                                                                  )
+                                                              }
+                                                          >
+                                                              {" "}
+                                                              here
+                                                          </Link>
+                                                          .
+                                                      </div>
+                                                  </>
+                                              ) : (
+                                                  t(
+                                                      "console:manage.features.claims.local.forms.infoMessages." +
+                                                          "configApplicabilityInfo"
+                                                  )
+                                              )
+                                          }
+                                      />
+                                  </Grid.Column>
+                              </Grid.Row>
+                          )
+                        : null}
+                    {//Hides on user_id, username and groups claims
+                    claim &&
+                        !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI) &&
+                        claim.claimURI !== ClaimManagementConstants.USER_ID_CLAIM_URI &&
+                        claim.claimURI !== ClaimManagementConstants.USER_NAME_CLAIM_URI &&
+                        claim.claimURI !== ClaimManagementConstants.GROUPS_CLAIM_URI &&
+                        !hideSpecialClaims &&
+                        mappingChecked && (
                             <Field.Checkbox
                                 ariaLabel="supportedByDefault"
                                 name="supportedByDefault"
-                                label={ t("console:manage.features.claims.local.forms.supportedByDefault.label") }
-                                required={ false }
-                                defaultValue={ claim?.supportedByDefault }
-                                listen={ (values: Claim) => {
+                                label={t("console:manage.features.claims.local.forms.supportedByDefault.label")}
+                                required={false}
+                                defaultValue={claim?.supportedByDefault}
+                                listen={(values: Claim) => {
                                     setIsShowDisplayOrder(!!values?.supportedByDefault);
-                                } }
-                                data-testid={ `${testId}-form-supported-by-default-input` }
-                                readOnly={ isReadOnly }
+                                }}
+                                data-testid={`${testId}-form-supported-by-default-input`}
+                                readOnly={isReadOnly}
                                 disabled={
-                                    !hasMapping
-                                    || (
-                                        accountVerificationEnabled
-                                        && selfRegistrationEnabled
-                                        && claim?.claimURI === ClaimManagementConstants.EMAIL_CLAIM_URI
-                                        && usernameConfig?.enableValidator === "true"
-                                    )
+                                    !hasMapping ||
+                                    (accountVerificationEnabled &&
+                                        selfRegistrationEnabled &&
+                                        claim?.claimURI === ClaimManagementConstants.EMAIL_CLAIM_URI &&
+                                        usernameConfig?.enableValidator === "true")
                                 }
-                                {
-                                    ...( shouldShowOnProfile
-                                        ? { checked: true }
-                                        : { defaultValue : claim?.supportedByDefault }
-                                    )
-                                }
+                                {...(shouldShowOnProfile
+                                    ? { checked: true }
+                                    : { defaultValue: claim?.supportedByDefault })}
                             />
-                        )
-                    }
-                    {
-                        attributeConfig.editAttributes.showDisplayOrderInput
-                        && !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI)
-                        && isShowDisplayOrder
-                        && !hideSpecialClaims
-                        && (
+                        )}
+                    {attributeConfig.editAttributes.showDisplayOrderInput &&
+                        !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI) &&
+                        isShowDisplayOrder &&
+                        !hideSpecialClaims && (
                             <Field.Input
                                 ariaLabel="displayOrder"
                                 inputType="default"
                                 name="displayOrder"
                                 type="number"
                                 min="0"
-                                label={ t("console:manage.features.claims.local.forms.displayOrder" +
-                                    ".label") }
-                                required={ false }
-                                placeholder={ t("console:manage.features.claims.local.forms." +
-                                    "displayOrder.placeholder") }
-                                value={ claim?.displayOrder.toString() || 0 }
-                                maxLength={ 50 }
-                                minLength={ 1 }
-                                ref={ displayOrderField }
-                                data-testid={ `${ testId }-form-display-order-input` }
-                                hint={ t("console:manage.features.claims.local.forms.displayOrderHint") }
-                                readOnly={ isReadOnly }
+                                label={t("console:manage.features.claims.local.forms.displayOrder" + ".label")}
+                                required={false}
+                                placeholder={t(
+                                    "console:manage.features.claims.local.forms." + "displayOrder.placeholder"
+                                )}
+                                value={claim?.displayOrder.toString() || 0}
+                                maxLength={50}
+                                minLength={1}
+                                ref={displayOrderField}
+                                data-testid={`${testId}-form-display-order-input`}
+                                hint={t("console:manage.features.claims.local.forms.displayOrderHint")}
+                                readOnly={isReadOnly}
                             />
-                        )
-                    }
-                    {
-                        claim && !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI)
-                            && attributeConfig.editAttributes.showRequiredCheckBox
-                            && claim.claimURI !== ClaimManagementConstants.GROUPS_CLAIM_URI
-                            && !hideSpecialClaims && mappingChecked && (
+                        )}
+                    {claim &&
+                        !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI) &&
+                        attributeConfig.editAttributes.showRequiredCheckBox &&
+                        claim.claimURI !== ClaimManagementConstants.GROUPS_CLAIM_URI &&
+                        !hideSpecialClaims &&
+                        mappingChecked && (
                             <Field.Checkbox
                                 ariaLabel="required"
                                 name="required"
-                                required={ false }
+                                required={false}
                                 requiredErrorMessage=""
-                                label={ t("console:manage.features.claims.local.forms.required.label") }
-                                data-testid={ `${ testId }-form-required-checkbox` }
-                                readOnly={ isReadOnly }
-                                hint={ t("console:manage.features.claims.local.forms.requiredHint") }
-                                listen ={ (value: boolean) => {
+                                label={t("console:manage.features.claims.local.forms.required.label")}
+                                data-testid={`${testId}-form-required-checkbox`}
+                                readOnly={isReadOnly}
+                                hint={t("console:manage.features.claims.local.forms.requiredHint")}
+                                listen={(value: boolean) => {
                                     isSupportedByDefault(value);
-                                } }
+                                }}
                                 disabled={
-                                    isClaimReadOnly
-                                    || !hasMapping
-                                    || (
-                                        accountVerificationEnabled
-                                        && selfRegistrationEnabled
-                                        && claim?.claimURI === ClaimManagementConstants.EMAIL_CLAIM_URI
-                                        && usernameConfig?.enableValidator === "true"
-                                    )
+                                    isClaimReadOnly ||
+                                    !hasMapping ||
+                                    (accountVerificationEnabled &&
+                                        selfRegistrationEnabled &&
+                                        claim?.claimURI === ClaimManagementConstants.EMAIL_CLAIM_URI &&
+                                        usernameConfig?.enableValidator === "true")
                                 }
-                                {
-                                    ...( isClaimReadOnly
-                                        ? { value: false }
-                                        : { defaultValue : claim?.required }
-                                    )
-                                }
+                                {...(isClaimReadOnly ? { value: false } : { defaultValue: claim?.required })}
                             />
-                        )
-                    }
-                    {
-                        accountVerificationEnabled
-                        && !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI)
-                        && selfRegistrationEnabled
-                        && usernameConfig?.enableValidator === "true"
-                        && claim?.claimURI === ClaimManagementConstants.EMAIL_CLAIM_URI
-                        && (
+                        )}
+                    {accountVerificationEnabled &&
+                        !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI) &&
+                        selfRegistrationEnabled &&
+                        usernameConfig?.enableValidator === "true" &&
+                        claim?.claimURI === ClaimManagementConstants.EMAIL_CLAIM_URI && (
                             <Message info>
                                 <Icon name="info circle" />
-                                { t("console:manage.features.claims.local.forms.requiredWarning") }
+                                {t("console:manage.features.claims.local.forms.requiredWarning")}
                             </Message>
-                        )
-                    }
-                    {
-                        //Hides on user_id, username and groups claims
-                        claim && !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI)
-                            && claim.claimURI !== ClaimManagementConstants.USER_ID_CLAIM_URI
-                            && claim.claimURI !== ClaimManagementConstants.USER_NAME_CLAIM_URI
-                            && claim.claimURI !== ClaimManagementConstants.GROUPS_CLAIM_URI
-                            && claim.claimURI !== ClaimManagementConstants.EMAIL_CLAIM_URI
-                            && !hideSpecialClaims
-                            && mappingChecked
-                            &&  (
-                                <Field.Checkbox
-                                    ariaLabel="readOnly"
-                                    name="readOnly"
-                                    required={ false }
-                                    label={ t("console:manage.features.claims.local.forms.readOnly.label") }
-                                    requiredErrorMessage=""
-                                    defaultValue={ claim?.readOnly }
-                                    data-testid={ `${ testId }-form-readonly-checkbox` }
-                                    readOnly={ isReadOnly }
-                                    hint={ t("console:manage.features.claims.local.forms.readOnlyHint") }
-                                    listen={ (value: boolean) => {
-                                        setIsClaimReadOnly(value);
-                                    } }
-                                    disabled={ !hasMapping }
-                                />
-                            )
-                    }
-                    {
+                        )}
+                    {//Hides on user_id, username and groups claims
+                    claim &&
+                        !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI) &&
+                        claim.claimURI !== ClaimManagementConstants.USER_ID_CLAIM_URI &&
+                        claim.claimURI !== ClaimManagementConstants.USER_NAME_CLAIM_URI &&
+                        claim.claimURI !== ClaimManagementConstants.GROUPS_CLAIM_URI &&
+                        claim.claimURI !== ClaimManagementConstants.EMAIL_CLAIM_URI &&
                         !hideSpecialClaims &&
-                        (
-                            <Show
-                                when={ AccessControlConstants.ATTRIBUTE_EDIT }
-                            >
-                                <Field.Button
-                                    form={ FORM_ID }
-                                    ariaLabel="submit"
-                                    size="small"
-                                    buttonType="primary_btn"
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
-                                    label={ t("common:update") }
-                                    name="submit"
-                                />
-                            </Show>
-                        )
-                    }
+                        mappingChecked && (
+                            <Field.Checkbox
+                                ariaLabel="readOnly"
+                                name="readOnly"
+                                required={false}
+                                label={t("console:manage.features.claims.local.forms.readOnly.label")}
+                                requiredErrorMessage=""
+                                defaultValue={claim?.readOnly}
+                                data-testid={`${testId}-form-readonly-checkbox`}
+                                readOnly={isReadOnly}
+                                hint={t("console:manage.features.claims.local.forms.readOnlyHint")}
+                                listen={(value: boolean) => {
+                                    setIsClaimReadOnly(value);
+                                }}
+                                disabled={!hasMapping}
+                            />
+                        )}
+                    {!hideSpecialClaims && (
+                        <Show when={AccessControlConstants.ATTRIBUTE_EDIT}>
+                            <Field.Button
+                                form={FORM_ID}
+                                ariaLabel="submit"
+                                size="small"
+                                buttonType="primary_btn"
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
+                                label={t("common:update")}
+                                name="submit"
+                            />
+                        </Show>
+                    )}
                 </Form>
             </EmphasizedSegment>
             <Divider hidden />
-            {
-                attributeConfig.editAttributes.showDangerZone
-                && !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI)
-                && !hideSpecialClaims
-                && claim.claimURI !== ClaimManagementConstants.EMAIL_CLAIM_URI
-                && (
-                    <Show when={ AccessControlConstants.ATTRIBUTE_DELETE }>
+            {attributeConfig.editAttributes.showDangerZone &&
+                !READONLY_CLAIM_CONFIGS.includes(claim?.claimURI) &&
+                !hideSpecialClaims &&
+                claim.claimURI !== ClaimManagementConstants.EMAIL_CLAIM_URI && (
+                    <Show when={AccessControlConstants.ATTRIBUTE_DELETE}>
                         <DangerZoneGroup
-                            sectionHeader={ t("common:dangerZone") }
-                            data-testid={ `${ testId }-danger-zone-group` }
+                            sectionHeader={t("common:dangerZone")}
+                            data-testid={`${testId}-danger-zone-group`}
                         >
                             <DangerZone
-                                actionTitle={ t("console:manage.features.claims.local.dangerZone.actionTitle") }
-                                header={ t("console:manage.features.claims.local.dangerZone.header") }
-                                subheader={ t("console:manage.features.claims.local.dangerZone.subheader") }
-                                onActionClick={ () => setConfirmDelete(true) }
-                                data-testid={ `${ testId }-local-claim-delete-danger-zone` }
+                                actionTitle={t("console:manage.features.claims.local.dangerZone.actionTitle")}
+                                header={t("console:manage.features.claims.local.dangerZone.header")}
+                                subheader={t("console:manage.features.claims.local.dangerZone.subheader")}
+                                onActionClick={() => setConfirmDelete(true)}
+                                data-testid={`${testId}-local-claim-delete-danger-zone`}
                             />
                         </DangerZoneGroup>
                     </Show>
-                )
-            }
+                )}
         </>
     );
 };

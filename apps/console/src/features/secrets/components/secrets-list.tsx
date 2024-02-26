@@ -45,9 +45,9 @@ import {
     AppState,
     FeatureConfigInterface,
     getEmptyPlaceholderIllustrations,
-    getSecretManagementIllustrations,
-    history
+    getSecretManagementIllustrations
 } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { deleteSecret } from "../api/secret";
 import { ADAPTIVE_SCRIPT_SECRETS, FEATURE_EDIT_PATH } from "../constants/secrets.common";
 import { SecretModel } from "../models/secret";
@@ -99,7 +99,6 @@ export type SecretsListProps = {
  * @returns Secrets list component.
  */
 const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElement => {
-
     const {
         onSearchQueryClear,
         advancedSearch,
@@ -115,25 +114,24 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingSecret, setDeletingSecret ] = useState<SecretModel>(undefined);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingSecret, setDeletingSecret] = useState<SecretModel>(undefined);
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
-    const [ filteredSecrets, setFilteredSecrets ] = useState([]);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ listSortingStrategy, setListSortingStrategy ] = useState<DropdownItemProps>(
-        SECRETS_LIST_SORTING_OPTIONS[ 0 ]
-    );
+    const [filteredSecrets, setFilteredSecrets] = useState([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [listSortingStrategy, setListSortingStrategy] = useState<DropdownItemProps>(SECRETS_LIST_SORTING_OPTIONS[0]);
 
     const onSecretEditClick = (event: React.SyntheticEvent, item: SecretModel) => {
         event?.preventDefault();
-        if (hasRequiredScopes(
-            featureConfig?.secretsManagement,
-            featureConfig?.secretsManagement?.scopes?.update,
-            allowedScopes
-        )) {
-            const pathname = AppConstants
-                .getPaths()
+        if (
+            hasRequiredScopes(
+                featureConfig?.secretsManagement,
+                featureConfig?.secretsManagement?.scopes?.update,
+                allowedScopes
+            )
+        ) {
+            const pathname = AppConstants.getPaths()
                 .get(FEATURE_EDIT_PATH)
                 .replace(":type", item?.type)
                 .replace(":name", item?.secretName);
@@ -143,19 +141,22 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
     };
 
     useEffect(() => {
-        setFilteredSecrets([ ...secretList ].reverse());
-    }, [ secretList ]);
+        setFilteredSecrets([...secretList].reverse());
+    }, [secretList]);
 
     /**
      * This will be only called when user gives their consent.
      * @see {@link SecretDeleteConfirmationModal}
      */
     const onSecretDeleteClick = async (): Promise<void> => {
-        if (deletingSecret && hasRequiredScopes(
-            featureConfig?.secretsManagement,
-            featureConfig?.secretsManagement?.scopes?.delete,
-            allowedScopes
-        )) {
+        if (
+            deletingSecret &&
+            hasRequiredScopes(
+                featureConfig?.secretsManagement,
+                featureConfig?.secretsManagement?.scopes?.delete,
+                allowedScopes
+            )
+        ) {
             try {
                 await deleteSecret({
                     params: {
@@ -163,29 +164,35 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
                         secretType: deletingSecret.type
                     }
                 });
-                dispatch(addAlert({
-                    description: t("console:develop.features.secrets.alerts.deleteSecret.description", {
-                        secretName: deletingSecret.secretName,
-                        secretType: deletingSecret.type
-                    }),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.secrets.alerts.deleteSecret.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t("console:develop.features.secrets.alerts.deleteSecret.description", {
+                            secretName: deletingSecret.secretName,
+                            secretType: deletingSecret.type
+                        }),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:develop.features.secrets.alerts.deleteSecret.message")
+                    })
+                );
             } catch (error) {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: error.response.data.message
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: error.response.data.message
+                        })
+                    );
 
                     return;
                 }
-                dispatch(addAlert({
-                    description: t("console:develop.features.secrets.errors.generic.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.secrets.errors.generic.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t("console:develop.features.secrets.errors.generic.description"),
+                        level: AlertLevels.ERROR,
+                        message: t("console:develop.features.secrets.errors.generic.message")
+                    })
+                );
             } finally {
                 const refreshSecretList = true;
 
@@ -205,32 +212,29 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
                 key: "data-column-secret-name",
                 render(data: SecretModel) {
                     return (
-                        <Header
-                            image
-                            as="h6"
-                            className="header-with-icon"
-                            data-testid={ `${ testId }-first-column` }>
+                        <Header image as="h6" className="header-with-icon" data-testid={`${testId}-first-column`}>
                             <AppAvatar
-                                image={ (
+                                image={
                                     <GenericIcon
                                         size="mini"
                                         shape="rounded"
                                         colored
-                                        background={ true }
-                                        hoverable={ false }
-                                        icon={ getSecretManagementIllustrations().editingSecretIcon }
+                                        background={true}
+                                        hoverable={false}
+                                        icon={getSecretManagementIllustrations().editingSecretIcon}
                                     />
-                                ) }
+                                }
                                 size="mini"
                                 spaced="right"
-                                data-testid={ `${ testId }-item-image` }
+                                data-testid={`${testId}-item-image`}
                             />
-                            <Header.Content data-testid={ `${ testId }-first-column-item-header` }>
-                                { data.secretName }
+                            <Header.Content data-testid={`${testId}-first-column-item-header`}>
+                                {data.secretName}
                                 <Header.Subheader
                                     className="truncate ellipsis"
-                                    data-testid={ `${ testId }-item-sub-heading` }>
-                                    { data.description }
+                                    data-testid={`${testId}-item-sub-heading`}
+                                >
+                                    {data.description}
                                 </Header.Subheader>
                             </Header.Content>
                         </Header>
@@ -245,9 +249,9 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
                 key: "data-column-created-at",
                 render(data: SecretModel) {
                     return (
-                        <Header as="h6" data-testid={ `${ testId }-second-column` }>
-                            <Header.Content data-testid={ `${ testId }-second-column-data` }>
-                                { formatDateString(data.created) }
+                        <Header as="h6" data-testid={`${testId}-second-column`}>
+                            <Header.Content data-testid={`${testId}-second-column-data`}>
+                                {formatDateString(data.created)}
                             </Header.Content>
                         </Header>
                     );
@@ -261,9 +265,9 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
                 key: "data-column-last-modified",
                 render(data: SecretModel) {
                     return (
-                        <Header as="h6" data-testid={ `${ testId }-third-column` }>
-                            <Header.Content data-testid={ `${ testId }-third-column-data` }>
-                                { humanizeDateString(data.lastModified) }
+                        <Header as="h6" data-testid={`${testId}-third-column`}>
+                            <Header.Content data-testid={`${testId}-third-column-data`}>
+                                {humanizeDateString(data.lastModified)}
                             </Header.Content>
                         </Header>
                     );
@@ -284,7 +288,7 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
     const createDatatableActions = (): TableActionsInterface[] => {
         return [
             {
-                "data-componentid": `${ testId }-item-edit-button`,
+                "data-componentid": `${testId}-item-edit-button`,
                 hidden: () => {
                     return !hasRequiredScopes(
                         featureConfig?.secretsManagement,
@@ -298,7 +302,7 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
                 renderer: "semantic-icon"
             },
             {
-                "data-componentid": `${ testId }-item-delete-button`,
+                "data-componentid": `${testId}-item-delete-button`,
                 hidden: () => {
                     return !hasRequiredScopes(
                         featureConfig?.secretsManagement,
@@ -328,19 +332,19 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
         if (searchQuery && filteredSecrets?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:develop.placeholders.emptySearchResult.action") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:develop.placeholders.emptySearchResult.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:develop.placeholders.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("console:develop.placeholders.emptySearchResult.title")}
+                    subtitle={[
                         t("console:develop.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                         t("console:develop.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder` }
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder`}
                 />
             );
         }
@@ -354,14 +358,13 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
      * @param query - Search query.
      */
     const handleSecretsFilter = (query: string) => {
-
         setSearchQuery(query);
 
         if (!query) {
             setFilteredSecrets(secretList.reverse());
         }
 
-        const records =  query?.split(" ");
+        const records = query?.split(" ");
 
         if (!records) {
             return;
@@ -372,7 +375,7 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
         const keyWords = records.splice(2).join("");
         const filteredArray = [];
 
-        secretList.forEach((val) => {
+        secretList.forEach(val => {
             if (operator === "co" && val?.secretName.includes(keyWords)) {
                 filteredArray.push(val);
             }
@@ -387,7 +390,6 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
             }
         });
         setFilteredSecrets(filteredArray.reverse());
-
     };
 
     /**
@@ -396,122 +398,111 @@ const SecretsList: FC<SecretsListProps> = (props: SecretsListProps): ReactElemen
      * @param event - The event.
      * @param data - Dropdown data.
      */
-    const handleListSortingStrategyOnChange = (
-        event: SyntheticEvent<HTMLElement>,
-        data: DropdownProps
-    ): void => {
-        setListSortingStrategy(find(SECRETS_LIST_SORTING_OPTIONS, (option) => {
-            return data.value === option.value;
-        }));
+    const handleListSortingStrategyOnChange = (event: SyntheticEvent<HTMLElement>, data: DropdownProps): void => {
+        setListSortingStrategy(
+            find(SECRETS_LIST_SORTING_OPTIONS, option => {
+                return data.value === option.value;
+            })
+        );
     };
 
     const SecretDeleteConfirmationModal: ReactElement = (
         <ConfirmationModal
-            onClose={ (): void => {
+            onClose={(): void => {
                 setShowDeleteConfirmationModal(false);
                 setDeletingSecret(undefined);
-            } }
-            onSecondaryActionClick={ (): void => {
+            }}
+            onSecondaryActionClick={(): void => {
                 setShowDeleteConfirmationModal(false);
                 setDeletingSecret(undefined);
-            } }
-            onPrimaryActionClick={ onSecretDeleteClick }
-            open={ showDeleteConfirmationModal }
+            }}
+            onPrimaryActionClick={onSecretDeleteClick}
+            open={showDeleteConfirmationModal}
             type="negative"
-            assertionHint={ t("console:develop.features.secrets.modals.deleteSecret.assertionHint") }
+            assertionHint={t("console:develop.features.secrets.modals.deleteSecret.assertionHint")}
             assertionType="checkbox"
-            primaryAction={ t("console:develop.features.secrets.modals.deleteSecret.primaryActionButtonText") }
-            secondaryAction={ t("console:develop.features.secrets.modals.deleteSecret.secondaryActionButtonText") }
-            data-testid={ `${ testId }-delete-confirmation-modal` }
-            closeOnDimmerClick={ false }>
-            <ConfirmationModal.Header data-testid={ `${ testId }-delete-confirmation-modal-header` }>
-                { t("console:develop.features.secrets.modals.deleteSecret.title") }
+            primaryAction={t("console:develop.features.secrets.modals.deleteSecret.primaryActionButtonText")}
+            secondaryAction={t("console:develop.features.secrets.modals.deleteSecret.secondaryActionButtonText")}
+            data-testid={`${testId}-delete-confirmation-modal`}
+            closeOnDimmerClick={false}
+        >
+            <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                {t("console:develop.features.secrets.modals.deleteSecret.title")}
             </ConfirmationModal.Header>
-            <ConfirmationModal.Message
-                attached
-                negative
-                data-testid={ `${ testId }-delete-confirmation-modal-message` }>
-                { t("console:develop.features.secrets.modals.deleteSecret.warningMessage") }
+            <ConfirmationModal.Message attached negative data-testid={`${testId}-delete-confirmation-modal-message`}>
+                {t("console:develop.features.secrets.modals.deleteSecret.warningMessage")}
             </ConfirmationModal.Message>
-            <ConfirmationModal.Content data-testid={ `${ testId }-delete-confirmation-modal-content` }>
-                { t("console:develop.features.secrets.modals.deleteSecret.content") }
+            <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                {t("console:develop.features.secrets.modals.deleteSecret.content")}
             </ConfirmationModal.Content>
         </ConfirmationModal>
     );
 
     return (
-        <GridLayout isLoading={ isSecretListLoading } showTopActionPanel={ false }>
-            {
-                showAdaptiveAuthSecretBanner && selectedSecretType === ADAPTIVE_SCRIPT_SECRETS && (
-                    <Message
-                        type="info"
-                        data-componentid={ `${ testId }-page-message` }
-                        header={ t("console:develop.features.secrets.banners.adaptiveAuthSecretType.title") }
-                        content={ t("console:develop.features.secrets.banners.adaptiveAuthSecretType.content") }
-                    />
-                )
-            }
-            { secretList?.length > 0
-                ? (
-                    <ListLayout
-                        advancedSearch={ (
-                            <AdvancedSearchWithBasicFilters
-                                onFilter={ handleSecretsFilter }
-                                filterAttributeOptions={ [
-                                    {
-                                        key: 0,
-                                        text: t("common:name"),
-                                        value: "name"
-                                    }
-                                ] }
-                                filterAttributePlaceholder={
-                                    t("console:develop.features.secrets.advancedSearch.form" +
-                                        ".inputs.filterAttribute.placeholder")
+        <GridLayout isLoading={isSecretListLoading} showTopActionPanel={false}>
+            {showAdaptiveAuthSecretBanner && selectedSecretType === ADAPTIVE_SCRIPT_SECRETS && (
+                <Message
+                    type="info"
+                    data-componentid={`${testId}-page-message`}
+                    header={t("console:develop.features.secrets.banners.adaptiveAuthSecretType.title")}
+                    content={t("console:develop.features.secrets.banners.adaptiveAuthSecretType.content")}
+                />
+            )}
+            {secretList?.length > 0 ? (
+                <ListLayout
+                    advancedSearch={
+                        <AdvancedSearchWithBasicFilters
+                            onFilter={handleSecretsFilter}
+                            filterAttributeOptions={[
+                                {
+                                    key: 0,
+                                    text: t("common:name"),
+                                    value: "name"
                                 }
-                                filterConditionsPlaceholder={
-                                    t("console:develop.features.secrets.advancedSearch.form" +
-                                        ".inputs.filterCondition.placeholder")
-                                }
-                                filterValuePlaceholder={
-                                    t("console:develop.features.secrets.advancedSearch.form.inputs.filterValue" +
-                                    ".placeholder")
-                                }
-                                placeholder={ t("console:develop.features.secrets.advancedSearch.placeholder") }
-                                defaultSearchAttribute="name"
-                                defaultSearchOperator="co"
-                                data-testid={ `${ testId }-list-advanced-search` }
-                            />
-                        ) }
-                        currentListSize={ secretList.length }
-                        onPageChange={ () => void 0 }
-                        onSortStrategyChange={ handleListSortingStrategyOnChange }
-                        showPagination={ false }
-                        sortOptions={ SECRETS_LIST_SORTING_OPTIONS }
-                        sortStrategy={ listSortingStrategy }
-                        totalPages={ 1 }
-                        data-testid={ `${ testId }-list-layout` }
-                    >
-                        <DataTable<SecretModel>
-                            externalSearch={ advancedSearch }
-                            data={ filteredSecrets }
-                            showHeader={ false }
-                            onRowClick={ onSecretEditClick }
-                            actions={ createDatatableActions() }
-                            columns={ createDatatableColumns() }
-                            placeholders={ showPlaceholders() }>
-                        </DataTable>
-                        { showDeleteConfirmationModal && SecretDeleteConfirmationModal }
-                    </ListLayout>
-                )
-                : (
-                    <EmptySecretListPlaceholder
-                        onAddNewSecret={ onAddNewSecretButtonClick }
-                    />
-                )
-            }
+                            ]}
+                            filterAttributePlaceholder={t(
+                                "console:develop.features.secrets.advancedSearch.form" +
+                                    ".inputs.filterAttribute.placeholder"
+                            )}
+                            filterConditionsPlaceholder={t(
+                                "console:develop.features.secrets.advancedSearch.form" +
+                                    ".inputs.filterCondition.placeholder"
+                            )}
+                            filterValuePlaceholder={t(
+                                "console:develop.features.secrets.advancedSearch.form.inputs.filterValue" +
+                                    ".placeholder"
+                            )}
+                            placeholder={t("console:develop.features.secrets.advancedSearch.placeholder")}
+                            defaultSearchAttribute="name"
+                            defaultSearchOperator="co"
+                            data-testid={`${testId}-list-advanced-search`}
+                        />
+                    }
+                    currentListSize={secretList.length}
+                    onPageChange={() => void 0}
+                    onSortStrategyChange={handleListSortingStrategyOnChange}
+                    showPagination={false}
+                    sortOptions={SECRETS_LIST_SORTING_OPTIONS}
+                    sortStrategy={listSortingStrategy}
+                    totalPages={1}
+                    data-testid={`${testId}-list-layout`}
+                >
+                    <DataTable<SecretModel>
+                        externalSearch={advancedSearch}
+                        data={filteredSecrets}
+                        showHeader={false}
+                        onRowClick={onSecretEditClick}
+                        actions={createDatatableActions()}
+                        columns={createDatatableColumns()}
+                        placeholders={showPlaceholders()}
+                    ></DataTable>
+                    {showDeleteConfirmationModal && SecretDeleteConfirmationModal}
+                </ListLayout>
+            ) : (
+                <EmptySecretListPlaceholder onAddNewSecret={onAddNewSecretButtonClick} />
+            )}
         </GridLayout>
     );
-
 };
 
 /**

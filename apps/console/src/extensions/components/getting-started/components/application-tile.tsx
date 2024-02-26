@@ -22,27 +22,24 @@ import React, { FC, MutableRefObject, ReactElement, useEffect, useRef, useState 
 import { Icon } from "semantic-ui-react";
 import { DynamicTile, DynamicTilePropsInterface } from "./dynamic-tile";
 import { ApplicationListItemInterface } from "../../../../features/applications/models";
-import { AppConstants, EventPublisher, getSidePanelIcons, history } from "../../../../features/core";
+import { AppConstants, EventPublisher, getSidePanelIcons } from "../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 
 export type ApplicationTilePropsInterface = {
     application?: ApplicationListItemInterface;
-} & DynamicTilePropsInterface & IdentifiableComponentInterface;
+} & DynamicTilePropsInterface &
+    IdentifiableComponentInterface;
 
 export const ApplicationTile: FC<ApplicationTilePropsInterface> = (
     props: ApplicationTilePropsInterface
 ): ReactElement => {
-
-    const {
-        application,
-        ["data-componentid"]: testId,
-        ...rest
-    } = props;
+    const { application, ["data-componentid"]: testId, ...rest } = props;
 
     const appNameElement: MutableRefObject<HTMLHeadingElement> = useRef<HTMLHeadingElement>(null);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
-    const [ isPlaceholder, setIsPlaceholder ] = useState<boolean>(false);
-    const [ isTruncated, setIsTruncated ] = useState<boolean>(false);
+    const [isPlaceholder, setIsPlaceholder] = useState<boolean>(false);
+    const [isTruncated, setIsTruncated] = useState<boolean>(false);
 
     useEffect(() => {
         if (appNameElement) {
@@ -60,7 +57,7 @@ export const ApplicationTile: FC<ApplicationTilePropsInterface> = (
          * a placeholder object without any behaviour.
          */
         setIsPlaceholder(!application);
-    }, [ application ]);
+    }, [application]);
 
     /**
      * Redirects to the applications edit page when
@@ -81,71 +78,34 @@ export const ApplicationTile: FC<ApplicationTilePropsInterface> = (
 
     return (
         <DynamicTile
-            { ...rest }
-            data-componentid={ testId }
-            onClick={ isPlaceholder ? () => void 0 : handleApplicationEdit }
-            outlined={ isPlaceholder }
-            reduceOpacity={ isPlaceholder }
+            {...rest}
+            data-componentid={testId}
+            onClick={isPlaceholder ? () => void 0 : handleApplicationEdit}
+            outlined={isPlaceholder}
+            reduceOpacity={isPlaceholder}
             header={
-                isPlaceholder
-                    ? null
-                    : (
-                        application?.description
-                            ? (
-                                <Popup
-                                    disabled={ !isTruncated }
-                                    content={ application?.name }
-                                    trigger={ (
-                                        <h1 ref={ appNameElement }>
-                                            { application?.name }
-                                        </h1>
-                                    ) } />
-                            )
-                            : null
-                    )
+                isPlaceholder ? null : application?.description ? (
+                    <Popup
+                        disabled={!isTruncated}
+                        content={application?.name}
+                        trigger={<h1 ref={appNameElement}>{application?.name}</h1>}
+                    />
+                ) : null
             }
-            bodyAlignment={
-                isPlaceholder ? "center" : "start"
-            }
+            bodyAlignment={isPlaceholder ? "center" : "start"}
             body={
-                isPlaceholder
-                    ? (
-                        <GenericIcon
-                            transparent
-                            size="mini"
-                            icon={ getSidePanelIcons().applications }
-                            fill="secondary" />
-                    )
-                    : (
-                        application?.description
-                            ? (
-                                <p className="content">
-                                    { application?.description }
-                                </p>
-                            )
-                            : (
-                                <Popup
-                                    content={ application?.name }
-                                    trigger={ (
-                                        <h1>{ application?.name }</h1>
-                                    ) } />
-                            )
-                    )
+                isPlaceholder ? (
+                    <GenericIcon transparent size="mini" icon={getSidePanelIcons().applications} fill="secondary" />
+                ) : application?.description ? (
+                    <p className="content">{application?.description}</p>
+                ) : (
+                    <Popup content={application?.name} trigger={<h1>{application?.name}</h1>} />
+                )
             }
             justifyFooter="end"
-            footer={
-                isPlaceholder
-                    ? null
-                    : (
-                        <Icon
-                            name="angle right"
-                            size="large"
-                            className="p-0 m-0" />
-                    )
-            }
+            footer={isPlaceholder ? null : <Icon name="angle right" size="large" className="p-0 m-0" />}
         />
     );
-
 };
 
 /**

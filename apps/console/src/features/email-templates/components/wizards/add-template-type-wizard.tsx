@@ -25,7 +25,8 @@ import React, { FunctionComponent, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Grid, Modal } from "semantic-ui-react";
-import { AppConstants, history } from "../../../core";
+import { AppConstants } from "../../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { createNewTemplateType } from "../../api";
 import { getAddEmailTemplateTypeWizardStepIcons } from "../../configs";
 import { AddEmailTemplateTypeForm } from "../forms";
@@ -47,113 +48,123 @@ interface AddEmailTemplateTypeWizardPropsInterface extends TestableComponentInte
 export const AddEmailTemplateTypeWizard: FunctionComponent<AddEmailTemplateTypeWizardPropsInterface> = (
     props: AddEmailTemplateTypeWizardPropsInterface
 ): ReactElement => {
-
-    const {
-        onCloseHandler,
-        [ "data-testid" ]: testId
-    } = props;
+    const { onCloseHandler, ["data-testid"]: testId } = props;
 
     const dispatch = useDispatch();
 
     const { t } = useTranslation();
 
-    const [ currentStep, setCurrentWizardStep ] = useState<number>(0);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [currentStep, setCurrentWizardStep] = useState<number>(0);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const [ finishSubmit, setFinishSubmit ] = useTrigger();
+    const [finishSubmit, setFinishSubmit] = useTrigger();
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     const handleFormSubmit = (values: any): void => {
         createTemplateType(values.templateType);
     };
 
-    const WIZARD_STEPS = [ {
-        content: (
-            <AddEmailTemplateTypeForm
-                onSubmit={ (values) => handleFormSubmit(values) }
-                triggerSubmit={ finishSubmit }
-                data-testid={ `${ testId }-form` }
-            />
-        ),
-        icon: getAddEmailTemplateTypeWizardStepIcons().general,
-        title: t("console:manage.features.emailTemplateTypes.wizards.addTemplateType.steps.templateType.heading")
-    } ];
+    const WIZARD_STEPS = [
+        {
+            content: (
+                <AddEmailTemplateTypeForm
+                    onSubmit={values => handleFormSubmit(values)}
+                    triggerSubmit={finishSubmit}
+                    data-testid={`${testId}-form`}
+                />
+            ),
+            icon: getAddEmailTemplateTypeWizardStepIcons().general,
+            title: t("console:manage.features.emailTemplateTypes.wizards.addTemplateType.steps.templateType.heading")
+        }
+    ];
 
     const createTemplateType = (templateTypeName: string): void => {
         setIsSubmitting(true);
         createNewTemplateType(templateTypeName)
             .then((response: AxiosResponse) => {
                 if (response.status === 201) {
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("console:manage.features.emailTemplateTypes.notifications.createTemplateType" +
-                            ".success.description"),
-                        level: AlertLevels.SUCCESS,
-                        message: t("console:manage.features.emailTemplateTypes.notifications.createTemplateType" +
-                            ".success.message")
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t(
+                                "console:manage.features.emailTemplateTypes.notifications.createTemplateType" +
+                                    ".success.description"
+                            ),
+                            level: AlertLevels.SUCCESS,
+                            message: t(
+                                "console:manage.features.emailTemplateTypes.notifications.createTemplateType" +
+                                    ".success.message"
+                            )
+                        })
+                    );
                 }
 
                 history.push(
-                    AppConstants.getPaths().get("EMAIL_TEMPLATES").replace(":templateTypeId", response.data?.id));
+                    AppConstants.getPaths()
+                        .get("EMAIL_TEMPLATES")
+                        .replace(":templateTypeId", response.data?.id)
+                );
                 onCloseHandler();
             })
             .catch(error => {
                 setAlert({
                     description: error.response.data.description,
                     level: AlertLevels.ERROR,
-                    message: t("console:manage.features.emailTemplateTypes.notifications.createTemplateType" +
-                        ".genericError.message")
+                    message: t(
+                        "console:manage.features.emailTemplateTypes.notifications.createTemplateType" +
+                            ".genericError.message"
+                    )
                 });
-            }).finally(() => {
+            })
+            .finally(() => {
                 setIsSubmitting(false);
             });
     };
 
     return (
         <Modal
-            open={ true }
+            open={true}
             className="wizard create-template-type-wizard"
             dimmer="blurring"
             size="small"
-            onClose={ onCloseHandler }
-            closeOnDimmerClick={ false }
-            closeOnEscape={ false }
-            data-testid={ testId }
+            onClose={onCloseHandler}
+            closeOnDimmerClick={false}
+            closeOnEscape={false}
+            data-testid={testId}
         >
             <Modal.Header className="wizard-header template-type-wizard">
-                { t("console:manage.features.emailTemplateTypes.wizards.addTemplateType.heading") }
+                {t("console:manage.features.emailTemplateTypes.wizards.addTemplateType.heading")}
                 <Heading as="h6">
-                    { t("console:manage.features.emailTemplateTypes.wizards.addTemplateType.subHeading") }
+                    {t("console:manage.features.emailTemplateTypes.wizards.addTemplateType.subHeading")}
                 </Heading>
             </Modal.Header>
             <Modal.Content className="content-container" scrolling>
-                { alert && alertComponent }
-                { WIZARD_STEPS[ currentStep ].content }
+                {alert && alertComponent}
+                {WIZARD_STEPS[currentStep].content}
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
                                 floated="left"
-                                onClick={ () => {
+                                onClick={() => {
                                     onCloseHandler();
-                                } }
-                                data-testid={ `${ testId }-cancel-button` }
+                                }}
+                                data-testid={`${testId}-cancel-button`}
                             >
-                                { t("cancel") }
+                                {t("cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <PrimaryButton
                                 floated="right"
-                                onClick={ setFinishSubmit }
-                                data-testid={ `${ testId }-create-button` }
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
+                                onClick={setFinishSubmit}
+                                data-testid={`${testId}-create-button`}
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
                             >
-                                { t("console:manage.features.emailTemplateTypes.buttons.createTemplateType") }
+                                {t("console:manage.features.emailTemplateTypes.buttons.createTemplateType")}
                             </PrimaryButton>
                         </Grid.Column>
                     </Grid.Row>

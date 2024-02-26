@@ -22,56 +22,49 @@ import { GenericIcon, Heading, PrimaryButton, Text } from "@wso2is/react-compone
 import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
 import Tour, { ReactourStep } from "reactour";
 import { AppConstants } from "../../../features/core/constants";
-import { history } from "../../../features/core/helpers";
-import {
-    ReactComponent as AsgardioTourWelcomeIllustration
-} from "../../assets/illustrations/asgardio-tour-welcome-illustration.svg";
-import {
-    ReactComponent as AsgardioMiniLogo
-} from "../../assets/mini-asgardio-logo.svg";
+import { history } from "@wso2is/features/core/helpers";
+import { ReactComponent as AsgardioTourWelcomeIllustration } from "../../assets/illustrations/asgardio-tour-welcome-illustration.svg";
+import { ReactComponent as AsgardioMiniLogo } from "../../assets/mini-asgardio-logo.svg";
 
 const MiniLogo = () => (
-    <div style={ { left: "50%", position: "absolute" } }>
-        <div style={ { left: "-50%", position: "relative" } }>
+    <div style={{ left: "50%", position: "absolute" }}>
+        <div style={{ left: "-50%", position: "relative" }}>
             <GenericIcon
                 transparent
-                style={ {
+                style={{
                     left: "-17px",
                     position: "absolute",
                     top: "-110px"
-                } }
+                }}
                 size="mini"
                 className="mini-logo"
-                icon={ AsgardioMiniLogo }
+                icon={AsgardioMiniLogo}
             />
         </div>
     </div>
 );
 
-const steps: ReactourStep[] = [ {
-    content: () => {
-        return (
-            <>
-                <MiniLogo/>
-                <div>
-                    <Heading as="h1">Hello!</Heading>
-                    <GenericIcon
-                        transparent
-                        size="small"
-                        icon={ AsgardioTourWelcomeIllustration }
-                    />
-                    <Text className="console-welcome-tour-step-description" muted>
-                        Securing your applications and its users takes just a few minutes with Asgardeo. 
-                        We&apos;ll handle the hassle of authentication & access management, 
-                        so you can focus on your business.
-                    </Text>
-                </div>
-            </>
-        );
-    },
-    position: "center",
-    selector: "[data-tut=\"tour-get-started-step\"]"
-} ];
+const steps: ReactourStep[] = [
+    {
+        content: () => {
+            return (
+                <>
+                    <MiniLogo />
+                    <div>
+                        <Heading as="h1">Hello!</Heading>
+                        <GenericIcon transparent size="small" icon={AsgardioTourWelcomeIllustration} />
+                        <Text className="console-welcome-tour-step-description" muted>
+                            Securing your applications and its users takes just a few minutes with Asgardeo. We&apos;ll
+                            handle the hassle of authentication & access management, so you can focus on your business.
+                        </Text>
+                    </div>
+                </>
+            );
+        },
+        position: "center",
+        selector: '[data-tut="tour-get-started-step"]'
+    }
+];
 
 /**
  * Proptypes for the tour page component.
@@ -87,67 +80,59 @@ const WELCOME_TOUR_SHOWN_LOCALSTORAGE_KEY: string = "is_welcome_tour_shown";
  *
  * @returns the console app tour page.
  */
-const TourPage: FunctionComponent<TourPageInterface> = (
-    props: TourPageInterface
-): ReactElement => {
+const TourPage: FunctionComponent<TourPageInterface> = (props: TourPageInterface): ReactElement => {
+    const { ["data-testid"]: testId } = props;
 
-    const {
-        [ "data-testid" ]: testId
-    } = props;
-
-    const [ isTourOpen, setIsTourOpen ] = useState<boolean>(true);
-    const [ , setCurrentStep ] = useState<number>(undefined);
-    const [ welcomeTourDoneState, setWelcomeTourDoneState ] = useState<boolean>(false);
+    const [isTourOpen, setIsTourOpen] = useState<boolean>(true);
+    const [, setCurrentStep] = useState<number>(undefined);
+    const [welcomeTourDoneState, setWelcomeTourDoneState] = useState<boolean>(false);
 
     const getWelcomeTourState = () => {
         return JSON.parse(LocalStorageUtils.getValueFromLocalStorage(WELCOME_TOUR_SHOWN_LOCALSTORAGE_KEY)) || "";
     };
 
     useEffect(() => {
-
         if (getWelcomeTourState()) {
             history.push(AppConstants.getDeveloperViewHomePath());
         }
-    }, [ welcomeTourDoneState ]);
+    }, [welcomeTourDoneState]);
 
     const skipTour = (): void => {
-
         setWelcomeTourDoneState(true);
         LocalStorageUtils.setValueInLocalStorage(WELCOME_TOUR_SHOWN_LOCALSTORAGE_KEY, "true");
     };
 
     const handleGetStartedFlow = (): void => {
-
         skipTour();
         history.push(AppConstants.getDeveloperViewHomePath());
     };
 
     return (
-        <div className="background page-background" data-testid={ testId }>
-            <Suspense fallback={ <></> }>
+        <div className="background page-background" data-testid={testId}>
+            <Suspense fallback={<></>}>
                 <Tour
-                    steps={ steps }
-                    isOpen={ isTourOpen }
-                    rounded={ 3 }
+                    steps={steps}
+                    isOpen={isTourOpen}
+                    rounded={3}
                     className="console-welcome-tour"
                     maskClassName="console-welcome-tour-wrapper"
-                    showNumber={ false }
-                    showCloseButton={ false }
-                    showNavigationNumber={ false }
-                    showNavigation={ false }
-                    onRequestClose={ () => {
+                    showNumber={false}
+                    showCloseButton={false}
+                    showNavigationNumber={false}
+                    showNavigation={false}
+                    onRequestClose={() => {
                         setIsTourOpen(false);
                         handleGetStartedFlow();
-                    } }
-                    closeWithMask = { false }
-                    nextButton={
-                        <PrimaryButton className="m-0">Next</PrimaryButton>
-                    }
+                    }}
+                    closeWithMask={false}
+                    nextButton={<PrimaryButton className="m-0">Next</PrimaryButton>}
                     lastStepNextButton={
-                        <PrimaryButton onClick={ handleGetStartedFlow } className="m-0">Get Started</PrimaryButton>
+                        <PrimaryButton onClick={handleGetStartedFlow} className="m-0">
+                            Get Started
+                        </PrimaryButton>
                     }
-                    prevButton={ <></> }
-                    getCurrentStep={ (step: number) => setCurrentStep(step) }
+                    prevButton={<></>}
+                    getCurrentStep={(step: number) => setCurrentStep(step)}
                 />
             </Suspense>
         </div>

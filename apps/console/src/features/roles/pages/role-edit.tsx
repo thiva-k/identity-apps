@@ -29,7 +29,7 @@ import { Dispatch } from "redux";
 import { Label } from "semantic-ui-react";
 import { getEmptyPlaceholderIllustrations } from "../../core/configs/ui";
 import { AppConstants } from "../../core/constants/app-constants";
-import { history } from "../../core/helpers/history";
+import { history } from "@wso2is/features/core/helpers";
 import { FeatureConfigInterface } from "../../core/models/config";
 import { AppState } from "@wso2is/features/core/store/index";
 import { useGetRoleById } from "../api";

@@ -23,12 +23,12 @@ import React, { ReactElement, SyntheticEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Icon, Placeholder } from "semantic-ui-react";
 import { organizationConfigs } from "../../../../extensions";
-import { AppConstants, getMiscellaneousIcons, history } from "../../../core";
+import { AppConstants, getMiscellaneousIcons } from "../../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { GenericOrganization } from "../../models";
 import { OrganizationUtils } from "../../utils";
 
-interface OrganizationListItemPropsTypesInterface
-    extends IdentifiableComponentInterface {
+interface OrganizationListItemPropsTypesInterface extends IdentifiableComponentInterface {
     organization: GenericOrganization;
     isClickable: boolean;
     showSwitch: boolean;
@@ -39,9 +39,7 @@ interface OrganizationListItemPropsTypesInterface
     showEdit?: boolean;
 }
 
-const OrganizationListItem = (
-    props: OrganizationListItemPropsTypesInterface
-): ReactElement => {
+const OrganizationListItem = (props: OrganizationListItemPropsTypesInterface): ReactElement => {
     const {
         organization,
         isClickable,
@@ -58,105 +56,91 @@ const OrganizationListItem = (
 
     return (
         <Grid.Row
-            columns={ showGravatar ? 3 : 2 }
-            key={ `${ organization?.name }-organization-item` }
-            onClick={ () =>
-                organizationConfigs.allowNavigationInDropdown &&
-                handleOrgRowClick &&
-                handleOrgRowClick(organization)
+            columns={showGravatar ? 3 : 2}
+            key={`${organization?.name}-organization-item`}
+            onClick={() =>
+                organizationConfigs.allowNavigationInDropdown && handleOrgRowClick && handleOrgRowClick(organization)
             }
-            className={
-                isClickable && organizationConfigs.allowNavigationInDropdown
-                    ? "organization-list-row"
-                    : ""
-            }
-            data-componentid={ `${ componentId }-organization-item` }
+            className={isClickable && organizationConfigs.allowNavigationInDropdown ? "organization-list-row" : ""}
+            data-componentid={`${componentId}-organization-item`}
         >
-            { showGravatar && (
-                <Grid.Column width={ 3 } verticalAlign="middle" textAlign="left">
+            {showGravatar && (
+                <Grid.Column width={3} verticalAlign="middle" textAlign="left">
                     <GenericIcon
-                        icon={ getMiscellaneousIcons().tenantLegacyIcon }
+                        icon={getMiscellaneousIcons().tenantLegacyIcon}
                         size="micro"
                         relaxed="very"
                         fill="white"
-                        background={ "grey" }
+                        background={"grey"}
                         shape="rounded"
                     />
                 </Grid.Column>
-            ) }
+            )}
             <Grid.Column
-                width={ showGravatar ? 9 : 12 }
+                width={showGravatar ? 9 : 12}
                 verticalAlign="middle"
-                data-componentid={ `${ componentId }-organization-name` }
+                data-componentid={`${componentId}-organization-name`}
                 className="ellipsis organization-name"
             >
-                { organization?.name ?? (
+                {organization?.name ?? (
                     <Placeholder>
                         <Placeholder.Line />
                     </Placeholder>
-                ) }
+                )}
             </Grid.Column>
-            { showSwitch && (
-                <Grid.Column width={ 2 } verticalAlign="middle" textAlign="right">
+            {showSwitch && (
+                <Grid.Column width={2} verticalAlign="middle" textAlign="right">
                     <Popup
                         trigger={
-                            (<Icon
+                            <Icon
                                 link
                                 className="list-icon"
                                 size="small"
                                 color="grey"
                                 name="exchange"
-                                onClick={ (event: SyntheticEvent) => {
+                                onClick={(event: SyntheticEvent) => {
                                     event.stopPropagation();
-                                    handleOrganizationSwitch &&
-                                        handleOrganizationSwitch(organization);
-                                } }
-                                data-componentid={ `${ componentId }-organization-switch` }
-                            />)
+                                    handleOrganizationSwitch && handleOrganizationSwitch(organization);
+                                }}
+                                data-componentid={`${componentId}-organization-switch`}
+                            />
                         }
                         position="top center"
-                        content={ t("common:switch") }
+                        content={t("common:switch")}
                         inverted
                     />
                 </Grid.Column>
-            ) }
-            { !OrganizationUtils.isSuperOrganization(organization) && showEdit && (
-                <Show when={ AccessControlConstants.ORGANIZATION_EDIT }>
-                    <Grid.Column
-                        width={ 2 }
-                        verticalAlign="middle"
-                        textAlign="right"
-                    >
+            )}
+            {!OrganizationUtils.isSuperOrganization(organization) && showEdit && (
+                <Show when={AccessControlConstants.ORGANIZATION_EDIT}>
+                    <Grid.Column width={2} verticalAlign="middle" textAlign="right">
                         <Popup
                             trigger={
-                                (<Icon
+                                <Icon
                                     link
                                     className="list-icon"
                                     size="small"
                                     color="grey"
                                     name="pencil alternate"
-                                    onClick={ (event: SyntheticEvent) => {
+                                    onClick={(event: SyntheticEvent) => {
                                         event.stopPropagation();
                                         history.push({
                                             pathname: AppConstants.getPaths()
                                                 .get("ORGANIZATION_UPDATE")
-                                                .replace(
-                                                    ":id",
-                                                    organization?.id
-                                                )
+                                                .replace(":id", organization?.id)
                                         });
                                         setShowDropdown(false);
-                                    } }
-                                    data-componentid={ `${ componentId }-organization-edit` }
-                                />)
+                                    }}
+                                    data-componentid={`${componentId}-organization-edit`}
+                                />
                             }
                             position="top center"
-                            content={ t("common:edit") }
+                            content={t("common:edit")}
                             inverted
                         />
                     </Grid.Column>
                 </Show>
-            ) }
+            )}
         </Grid.Row>
     );
 };

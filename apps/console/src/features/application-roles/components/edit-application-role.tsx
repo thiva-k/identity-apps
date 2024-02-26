@@ -16,7 +16,7 @@
  * under the License.
  */
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
-import {  ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
+import { ResourceTab, ResourceTabPaneInterface } from "@wso2is/react-components";
 import React, { ReactElement, SyntheticEvent, useState } from "react";
 import { useSelector } from "react-redux";
 import { TabProps } from "semantic-ui-react";
@@ -25,7 +25,8 @@ import ApplicationRoleInvitedUserGroups from "./application-role-invited-user-gr
 import ApplicationRoleAuthenticatorGroups from "./authenticator-groups/application-role-authenticator-groups";
 import { ExtendedFeatureConfigInterface } from "../../../extensions";
 import { URLFragmentTypes } from "../../applications/models";
-import { AppState, history } from "../../core";
+import { AppState } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 
 interface EditApplicationRolesProps extends IdentifiableComponentInterface {
     appId: string;
@@ -33,18 +34,15 @@ interface EditApplicationRolesProps extends IdentifiableComponentInterface {
 }
 
 const EditApplicationRoles = (props: EditApplicationRolesProps): ReactElement => {
-    const {
-        appId,
-        roleId,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { appId, roleId, ["data-componentid"]: componentId } = props;
 
-    const [ activeTabIndex, setActiveTabIndex ] = useState<number>(undefined);
+    const [activeTabIndex, setActiveTabIndex] = useState<number>(undefined);
     const defaultActiveIndex: number = 0;
-    
+
     const extendedFeatureConfig: ExtendedFeatureConfigInterface = useSelector(
-        (state: AppState) => state.config.ui.features);
-    const isSubOrg: boolean = window[ "AppUtils" ].getConfig().organizationName;
+        (state: AppState) => state.config.ui.features
+    );
+    const isSubOrg: boolean = window["AppUtils"].getConfig().organizationName;
 
     /**
      * Handles the tab change.
@@ -61,9 +59,9 @@ const EditApplicationRoles = (props: EditApplicationRolesProps): ReactElement =>
      *
      * @param tabIndex - Active tab index.
      */
-    const handleActiveTabIndexChange = (tabIndex:number): void => {
+    const handleActiveTabIndexChange = (tabIndex: number): void => {
         history.push({
-            hash: `#${ URLFragmentTypes.TAB_INDEX }${ tabIndex }`,
+            hash: `#${URLFragmentTypes.TAB_INDEX}${tabIndex}`,
             pathname: window.location.pathname
         });
         setActiveTabIndex(tabIndex);
@@ -84,34 +82,30 @@ const EditApplicationRoles = (props: EditApplicationRolesProps): ReactElement =>
         ];
 
         if (extendedFeatureConfig?.identityProviderGroups?.enabled) {
-            panes.push(
-                {
-                    componentId: "authenticator-groups",
-                    menuItem: "External Groups",
-                    render: ApplicationRoleAuthenticatorGroupsPane
-                }
-            );
+            panes.push({
+                componentId: "authenticator-groups",
+                menuItem: "External Groups",
+                render: ApplicationRoleAuthenticatorGroupsPane
+            });
         }
 
         if (isSubOrg) {
-            panes.push(
-                {
-                    componentId: "invited-user-groups",
-                    menuItem: "Invited User Groups",
-                    render: ApplicationRoleInvitedUserGroupsPane
-                }
-            );
+            panes.push({
+                componentId: "invited-user-groups",
+                menuItem: "Invited User Groups",
+                render: ApplicationRoleInvitedUserGroupsPane
+            });
         }
-    
+
         return panes;
     };
 
     const ApplicationRoleGroupsPane = (): ReactElement => (
         <ResourceTab.Pane controlledSegmentation>
             <ApplicationRoleGroups
-                appId={ appId }
-                roleId={ roleId }
-                data-componentid={ `${ componentId }-application-role-groups` }
+                appId={appId}
+                roleId={roleId}
+                data-componentid={`${componentId}-application-role-groups`}
             />
         </ResourceTab.Pane>
     );
@@ -119,9 +113,9 @@ const EditApplicationRoles = (props: EditApplicationRolesProps): ReactElement =>
     const ApplicationRoleInvitedUserGroupsPane = (): ReactElement => (
         <ResourceTab.Pane controlledSegmentation>
             <ApplicationRoleInvitedUserGroups
-                appId={ appId }
-                roleId={ roleId }
-                data-componentid={ `${ componentId }-application-role-invited-user-groups` }
+                appId={appId}
+                roleId={roleId}
+                data-componentid={`${componentId}-application-role-invited-user-groups`}
             />
         </ResourceTab.Pane>
     );
@@ -129,9 +123,9 @@ const EditApplicationRoles = (props: EditApplicationRolesProps): ReactElement =>
     const ApplicationRoleAuthenticatorGroupsPane = (): ReactElement => (
         <ResourceTab.Pane controlledSegmentation>
             <ApplicationRoleAuthenticatorGroups
-                appId={ appId }
-                roleId={ roleId }
-                data-componentid={ `${ componentId }-application-role-authenticator-groups` }
+                appId={appId}
+                roleId={roleId}
+                data-componentid={`${componentId}-application-role-authenticator-groups`}
             />
         </ResourceTab.Pane>
     );
@@ -139,11 +133,11 @@ const EditApplicationRoles = (props: EditApplicationRolesProps): ReactElement =>
     return (
         <>
             <ResourceTab
-                activeIndex={ activeTabIndex }
-                data-testid={ `${ componentId }-resource-tabs` }
-                defaultActiveIndex={ defaultActiveIndex }
-                onTabChange={ handleTabChange }
-                panes={ resolveTabPanes() }
+                activeIndex={activeTabIndex}
+                data-testid={`${componentId}-resource-tabs`}
+                defaultActiveIndex={defaultActiveIndex}
+                onTabChange={handleTabChange}
+                panes={resolveTabPanes()}
             />
         </>
     );

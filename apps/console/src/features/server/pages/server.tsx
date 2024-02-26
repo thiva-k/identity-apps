@@ -17,11 +17,7 @@
  */
 
 import CardContent from "@mui/material/CardContent";
-import {
-    ArrowLoopRightUserIcon,
-    UserBannerIcon,
-    UserIcon
-} from "@oxygen-ui/react-icons";
+import { ArrowLoopRightUserIcon, UserBannerIcon, UserIcon } from "@oxygen-ui/react-icons";
 import Avatar from "@oxygen-ui/react/Avatar";
 import Card from "@oxygen-ui/react/Card";
 import Grid from "@oxygen-ui/react/Grid";
@@ -31,7 +27,8 @@ import { GenericIcon, PageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, MutableRefObject, ReactElement, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Ref } from "semantic-ui-react";
-import { AppConstants, history } from "../../core";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import "./server.scss";
 
 /**
@@ -48,7 +45,7 @@ type ServerSettingsListingPageInterface = IdentifiableComponentInterface;
 export const ServerSettingsListingPage: FunctionComponent<ServerSettingsListingPageInterface> = (
     props: ServerSettingsListingPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const pageContextRef: MutableRefObject<any> = useRef(null);
 
@@ -56,25 +53,25 @@ export const ServerSettingsListingPage: FunctionComponent<ServerSettingsListingP
 
     return (
         <PageLayout
-            pageTitle={ t("console:manage.features.serverConfigs.server.title") }
-            title={ t("console:manage.features.serverConfigs.server.title") }
-            description={ t("console:manage.features.serverConfigs.server.description") }
-            data-componentid={ `${ componentId }-page-layout` }
+            pageTitle={t("console:manage.features.serverConfigs.server.title")}
+            title={t("console:manage.features.serverConfigs.server.title")}
+            description={t("console:manage.features.serverConfigs.server.description")}
+            data-componentid={`${componentId}-page-layout`}
         >
-            <Ref innerRef={ pageContextRef }>
-                <Grid container rowSpacing={ 3 } columnSpacing={ 3 }>
-                    <Grid xs={ 12 } md={ 6 } lg={ 4 }>
+            <Ref innerRef={pageContextRef}>
+                <Grid container rowSpacing={3} columnSpacing={3}>
+                    <Grid xs={12} md={6} lg={4}>
                         <Card
                             key="admin-advisory-page-section"
                             className="server-configuration"
                             data-componentid="admin-advisory-page-section"
-                            onClick={ () => history.push(AppConstants.getPaths().get("ADMIN_ADVISORY_BANNER_EDIT")) }
+                            onClick={() => history.push(AppConstants.getPaths().get("ADMIN_ADVISORY_BANNER_EDIT"))}
                         >
                             <CardContent className="server-configuration-header">
                                 <div>
                                     <GenericIcon
                                         size="micro"
-                                        icon={ (
+                                        icon={
                                             <Avatar
                                                 variant="square"
                                                 randomBackgroundColor
@@ -83,37 +80,41 @@ export const ServerSettingsListingPage: FunctionComponent<ServerSettingsListingP
                                             >
                                                 <UserBannerIcon className="icon" />
                                             </Avatar>
-                                        ) }
+                                        }
                                         inline
                                         transparent
                                         shape="square"
                                     />
                                 </div>
                                 <Typography variant="h6">
-                                    { t("console:manage.features.serverConfigs.adminAdvisory." +
-                                        "configurationSection.heading") }
+                                    {t(
+                                        "console:manage.features.serverConfigs.adminAdvisory." +
+                                            "configurationSection.heading"
+                                    )}
                                 </Typography>
                             </CardContent>
                             <CardContent>
                                 <Typography variant="body2" color="text.secondary">
-                                    {  t("console:manage.features.serverConfigs.adminAdvisory." +
-                                        "configurationSection.description") }
+                                    {t(
+                                        "console:manage.features.serverConfigs.adminAdvisory." +
+                                            "configurationSection.description"
+                                    )}
                                 </Typography>
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid xs={ 12 } md={ 6 } lg={ 4 }>
+                    <Grid xs={12} md={6} lg={4}>
                         <Card
                             key="remote-logging-page-section"
                             data-componentid="remote-logging-page-section"
                             className="server-configuration"
-                            onClick={ () => history.push(AppConstants.getPaths().get("REMOTE_LOGGING")) }
+                            onClick={() => history.push(AppConstants.getPaths().get("REMOTE_LOGGING"))}
                         >
                             <CardContent className="server-configuration-header">
                                 <div>
                                     <GenericIcon
                                         size="micro"
-                                        icon={ (
+                                        icon={
                                             <Avatar
                                                 variant="square"
                                                 randomBackgroundColor
@@ -122,37 +123,35 @@ export const ServerSettingsListingPage: FunctionComponent<ServerSettingsListingP
                                             >
                                                 <UserIcon className="icon" />
                                             </Avatar>
-                                        ) }
+                                        }
                                         inline
                                         transparent
                                         shape="square"
                                     />
                                 </div>
                                 <Typography variant="h6">
-                                    { t("console:manage.features.serverConfigs.remoteLogPublishing" +
-                                        ".title")  }
+                                    {t("console:manage.features.serverConfigs.remoteLogPublishing" + ".title")}
                                 </Typography>
                             </CardContent>
                             <CardContent>
                                 <Typography variant="body2" color="text.secondary">
-                                    { t("console:manage.features.serverConfigs.remoteLogPublishing" +
-                                        ".description")  }
+                                    {t("console:manage.features.serverConfigs.remoteLogPublishing" + ".description")}
                                 </Typography>
                             </CardContent>
                         </Card>
                     </Grid>
-                    <Grid xs={ 12 } md={ 6 } lg={ 4 }>
+                    <Grid xs={12} md={6} lg={4}>
                         <Card
                             key="manage-notifications-sending-page-section"
                             data-componentid="manage-notifications-sending-page-section"
                             className="server-configuration"
-                            onClick={ () => history.push(AppConstants.getPaths().get("INTERNAL_NOTIFICATION_SENDING")) }
+                            onClick={() => history.push(AppConstants.getPaths().get("INTERNAL_NOTIFICATION_SENDING"))}
                         >
                             <CardContent className="server-configuration-header">
                                 <div>
                                     <GenericIcon
                                         size="micro"
-                                        icon={ (
+                                        icon={
                                             <Avatar
                                                 variant="square"
                                                 randomBackgroundColor
@@ -161,7 +160,7 @@ export const ServerSettingsListingPage: FunctionComponent<ServerSettingsListingP
                                             >
                                                 <ArrowLoopRightUserIcon className="icon" />
                                             </Avatar>
-                                        ) }
+                                        }
                                         inline
                                         transparent
                                         shape="square"
@@ -169,15 +168,19 @@ export const ServerSettingsListingPage: FunctionComponent<ServerSettingsListingP
                                 </div>
                                 <div>
                                     <Typography variant="h6">
-                                        { t("console:manage.features.serverConfigs." +
-                                            "manageNotificationSendingInternally.title")  }
+                                        {t(
+                                            "console:manage.features.serverConfigs." +
+                                                "manageNotificationSendingInternally.title"
+                                        )}
                                     </Typography>
                                 </div>
                             </CardContent>
                             <CardContent>
                                 <Typography variant="body2" color="text.secondary">
-                                    { t("console:manage.features.serverConfigs." +
-                                        "manageNotificationSendingInternally.description")  }
+                                    {t(
+                                        "console:manage.features.serverConfigs." +
+                                            "manageNotificationSendingInternally.description"
+                                    )}
                                 </Typography>
                             </CardContent>
                         </Card>

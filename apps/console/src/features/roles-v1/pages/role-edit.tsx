@@ -23,31 +23,32 @@ import { AxiosResponse } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppConstants, AppState, history } from "../../core";
+import { AppConstants, AppState } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getRoleById } from "../api/roles";
 import { EditRole } from "../components/edit-role/edit-role";
 import { RoleConstants } from "../constants/role-constants";
 
 const RoleEditPage: FunctionComponent<any> = (): ReactElement => {
-
     const { t } = useTranslation();
 
     const featureConfig: FeatureAccessConfigInterface = useSelector(
-        (state: AppState) => state?.config?.ui?.features?.userV1Roles);
+        (state: AppState) => state?.config?.ui?.features?.userV1Roles
+    );
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
     const isReadOnly: boolean = useMemo(() => {
-        return !isFeatureEnabled(featureConfig,
-            RoleConstants.FEATURE_DICTIONARY.get("ROLE_UPDATE")) ||
-            !hasRequiredScopes(featureConfig,
-                featureConfig?.scopes?.update, allowedScopes);
-    }, [ featureConfig, allowedScopes ]);
+        return (
+            !isFeatureEnabled(featureConfig, RoleConstants.FEATURE_DICTIONARY.get("ROLE_UPDATE")) ||
+            !hasRequiredScopes(featureConfig, featureConfig?.scopes?.update, allowedScopes)
+        );
+    }, [featureConfig, allowedScopes]);
 
-    const [ roleId, setRoleId ] = useState<string>(undefined);
-    const [ roleObject, setRoleObject ] = useState<RolesInterface>();
-    const [ isRoleDetailsRequestLoading, setIsRoleDetailsRequestLoading ] = useState<boolean>(false);
+    const [roleId, setRoleId] = useState<string>(undefined);
+    const [roleObject, setRoleObject] = useState<RolesInterface>();
+    const [isRoleDetailsRequestLoading, setIsRoleDetailsRequestLoading] = useState<boolean>(false);
 
-    const getRoleDetails = (roleId: string ): void => {
+    const getRoleDetails = (roleId: string): void => {
         setIsRoleDetailsRequestLoading(true);
 
         getRoleById(roleId)
@@ -55,7 +56,8 @@ const RoleEditPage: FunctionComponent<any> = (): ReactElement => {
                 if (response.status === 200) {
                     setRoleObject(response.data);
                 }
-            }).catch(() => {
+            })
+            .catch(() => {
                 // TODO: handle error
             })
             .finally(() => {
@@ -72,7 +74,7 @@ const RoleEditPage: FunctionComponent<any> = (): ReactElement => {
      */
     useEffect(() => {
         const path: string[] = history.location.pathname.split("/");
-        const roleId: string = path[ path.length - 1 ];
+        const roleId: string = path[path.length - 1];
 
         setRoleId(roleId);
         getRoleDetails(roleId);
@@ -84,26 +86,26 @@ const RoleEditPage: FunctionComponent<any> = (): ReactElement => {
 
     return (
         <TabPageLayout
-            isLoading={ isRoleDetailsRequestLoading }
+            isLoading={isRoleDetailsRequestLoading}
             title={
-                roleObject && roleObject?.displayName ?
-                    roleObject?.displayName :
-                    t("console:manage.pages.rolesEdit.title")
+                roleObject && roleObject?.displayName
+                    ? roleObject?.displayName
+                    : t("console:manage.pages.rolesEdit.title")
             }
-            pageTitle={ t("console:manage.pages.rolesEdit.title") }
-            backButton={ {
+            pageTitle={t("console:manage.pages.rolesEdit.title")}
+            backButton={{
                 onClick: handleBackButtonClick,
                 text: t("console:manage.pages.rolesEdit.backButton", { type: "roles" })
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
+            bottomMargin={false}
         >
             <EditRole
-                isLoading={ isRoleDetailsRequestLoading }
-                roleObject={ roleObject }
-                roleId={ roleId }
-                onRoleUpdate={ onRoleUpdate }
-                readOnly={ isReadOnly }
+                isLoading={isRoleDetailsRequestLoading}
+                roleObject={roleObject}
+                roleId={roleId}
+                onRoleUpdate={onRoleUpdate}
+                readOnly={isReadOnly}
             />
         </TabPageLayout>
     );

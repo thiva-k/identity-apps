@@ -26,7 +26,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Ref } from "semantic-ui-react";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
+import { AppConstants, AppState, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getConnectorDetails } from "../api/governance-connectors";
 import { DynamicGovernanceConnector } from "../components/governance-connectors/dynamic-governance-connector";
 import { ServerConfigurationsConstants } from "../constants/server-configurations-constants";
@@ -46,7 +47,7 @@ type GovernanceConnectorsPageInterface = TestableComponentInterface;
 export const MultiAttributeLoginEdit: FunctionComponent<GovernanceConnectorsPageInterface> = (
     props: GovernanceConnectorsPageInterface
 ): ReactElement => {
-    const { [ "data-testid" ]: testId } = props;
+    const { ["data-testid"]: testId } = props;
 
     const dispatch: Dispatch = useDispatch();
     const pageContextRef: MutableRefObject<HTMLElement> = useRef(null);
@@ -58,15 +59,18 @@ export const MultiAttributeLoginEdit: FunctionComponent<GovernanceConnectorsPage
     const categoryId: string = ServerConfigurationsConstants.ACCOUNT_MANAGEMENT_CATEGORY_ID;
     const connectorId: string = ServerConfigurationsConstants.MULTI_ATTRIBUTE_LOGIN_CONNECTOR_ID;
 
-    const [ connector, setConnector ] = useState<GovernanceConnectorInterface>(undefined);
-    const [ isConnectorRequestLoading, setConnectorRequestLoading ] = useState<boolean>(false);
+    const [connector, setConnector] = useState<GovernanceConnectorInterface>(undefined);
+    const [isConnectorRequestLoading, setConnectorRequestLoading] = useState<boolean>(false);
 
     useEffect(() => {
         // If Governance Connector read permission is not available, prevent from trying to load the connectors.
-        if (!hasRequiredScopes(featureConfig?.governanceConnectors,
-            featureConfig?.governanceConnectors?.scopes?.read,
-            allowedScopes)) {
-
+        if (
+            !hasRequiredScopes(
+                featureConfig?.governanceConnectors,
+                featureConfig?.governanceConnectors?.scopes?.read,
+                allowedScopes
+            )
+        ) {
             return;
         }
 
@@ -77,13 +81,9 @@ export const MultiAttributeLoginEdit: FunctionComponent<GovernanceConnectorsPage
      * Load multi attribute login connector.
      */
     const loadConnectorDetails = () => {
-
         setConnectorRequestLoading(true);
 
-        getConnectorDetails(
-            categoryId,
-            connectorId
-        )
+        getConnectorDetails(categoryId, connectorId)
             .then((response: GovernanceConnectorInterface) => {
                 response.categoryId = categoryId;
                 setConnector(response);
@@ -94,13 +94,13 @@ export const MultiAttributeLoginEdit: FunctionComponent<GovernanceConnectorsPage
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.description",
+                                    "getConnector.error.description",
                                 { description: error.response.data.description }
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.message"
+                                    "getConnector.error.message"
                             )
                         })
                     );
@@ -110,12 +110,12 @@ export const MultiAttributeLoginEdit: FunctionComponent<GovernanceConnectorsPage
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.description"
+                                    "getConnector.genericError.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.message"
+                                    "getConnector.genericError.message"
                             )
                         })
                     );
@@ -136,29 +136,27 @@ export const MultiAttributeLoginEdit: FunctionComponent<GovernanceConnectorsPage
 
     return (
         <PageLayout
-            title={ connector?.friendlyName }
-            pageTitle={ connector?.friendlyName }
-            description={
-                t("console:manage.features.governanceConnectors.connectorSubHeading", {
-                    name: connector?.friendlyName
-                })
-            }
-            backButton={ {
+            title={connector?.friendlyName}
+            pageTitle={connector?.friendlyName}
+            description={t("console:manage.features.governanceConnectors.connectorSubHeading", {
+                name: connector?.friendlyName
+            })}
+            backButton={{
                 onClick: () => onBackButtonClick(),
                 text: t("console:manage.features.governanceConnectors.goBackLoginAndRegistration")
-            } }
-            data-testid={ `${testId}-page-layout` }
+            }}
+            data-testid={`${testId}-page-layout`}
         >
-            <Ref innerRef={ pageContextRef }>
+            <Ref innerRef={pageContextRef}>
                 <Grid>
-                    <Grid.Row columns={ 2 }>
-                        <Grid.Column width={ 16 }>
+                    <Grid.Row columns={2}>
+                        <Grid.Column width={16}>
                             <Grid>
                                 <Grid.Row>
                                     <DynamicGovernanceConnector
-                                        connector={ connector }
-                                        data-testid={ `${testId}-` + connector?.id }
-                                        onUpdate={ () => loadConnectorDetails() }
+                                        connector={connector}
+                                        data-testid={`${testId}-` + connector?.id}
+                                        onUpdate={() => loadConnectorDetails()}
                                     />
                                 </Grid.Row>
                             </Grid>

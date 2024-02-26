@@ -35,7 +35,8 @@ import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Icon } from "semantic-ui-react";
 import { getProfileInformation } from "../../../../features/authentication/store";
-import { FeatureConfigInterface, history } from "../../../../features/core";
+import { FeatureConfigInterface } from "../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { AppState, store } from "@wso2is/features/core";
 import { PatchRoleDataInterface } from "../../../../features/roles/models/roles";
 import {

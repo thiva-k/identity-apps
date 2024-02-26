@@ -45,13 +45,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, SemanticICONS } from "semantic-ui-react";
 import { ApplicationManagementConstants } from "../../applications/constants";
-import {
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    getEmptyPlaceholderIllustrations,
-    history
-} from "../../core";
+import { AppConstants, AppState, FeatureConfigInterface, getEmptyPlaceholderIllustrations } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { deleteOIDCScope } from "../api";
 import { OIDCScopesManagementConstants } from "../constants";
 import { OIDCScopesListInterface } from "../models";
@@ -60,9 +55,10 @@ import { OIDCScopesListInterface } from "../models";
  *
  * Proptypes for the OIDC scopes list component.
  */
-interface OIDCScopesListPropsInterface extends SBACInterface<FeatureConfigInterface>, LoadableComponentInterface,
-    TestableComponentInterface {
-
+interface OIDCScopesListPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        LoadableComponentInterface,
+        TestableComponentInterface {
     /**
      * Advanced Search component.
      */
@@ -126,7 +122,6 @@ interface OIDCScopesListPropsInterface extends SBACInterface<FeatureConfigInterf
 export const OIDCScopeList: FunctionComponent<OIDCScopesListPropsInterface> = (
     props: OIDCScopesListPropsInterface
 ): ReactElement => {
-
     const {
         advancedSearch,
         defaultListItemLimit,
@@ -140,15 +135,15 @@ export const OIDCScopeList: FunctionComponent<OIDCScopesListPropsInterface> = (
         onEmptyListPlaceholderActionClick,
         selection,
         showListItemActions,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingScope, setDeletingScope ] = useState<OIDCScopesListInterface>(undefined);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingScope, setDeletingScope] = useState<OIDCScopesListInterface>(undefined);
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
@@ -158,7 +153,11 @@ export const OIDCScopeList: FunctionComponent<OIDCScopesListPropsInterface> = (
      * @param scopeName - The Scope name.
      */
     const handleOIDCScopesEdit = (scopeName: string): void => {
-        history.push(AppConstants.getPaths().get("OIDC_SCOPES_EDIT").replace(":id", scopeName));
+        history.push(
+            AppConstants.getPaths()
+                .get("OIDC_SCOPES_EDIT")
+                .replace(":id", scopeName)
+        );
     };
 
     /**
@@ -171,34 +170,45 @@ export const OIDCScopeList: FunctionComponent<OIDCScopesListPropsInterface> = (
             .then(() => {
                 setDeletingScope(undefined);
                 onScopeDelete();
-                dispatch(addAlert({
-                    description: t("console:manage.features.oidcScopes.notifications.deleteOIDCScope.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.oidcScopes.notifications.deleteOIDCScope.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.oidcScopes.notifications.deleteOIDCScope.success" + ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:manage.features.oidcScopes.notifications.deleteOIDCScope.success.message")
+                    })
+                );
 
                 setShowDeleteConfirmationModal(false);
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.oidcScopes.notifications.deleteOIDCScope.error" +
-                            ".message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.oidcScopes.notifications.deleteOIDCScope.error" + ".message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:manage.features.oidcScopes.notifications.deleteOIDCScope" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.oidcScopes.notifications.deleteOIDCScope.genericError" +
-                        ".message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.oidcScopes.notifications.deleteOIDCScope" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.oidcScopes.notifications.deleteOIDCScope.genericError" + ".message"
+                        )
+                    })
+                );
             });
     };
 
@@ -215,29 +225,24 @@ export const OIDCScopeList: FunctionComponent<OIDCScopesListPropsInterface> = (
                 id: "name",
                 key: "name",
                 render: (scope: OIDCScopesListInterface): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ testId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                         <AppAvatar
-                            image={ (
+                            image={
                                 <AnimatedAvatar
-                                    name={ scope.displayName }
+                                    name={scope.displayName}
                                     size="mini"
-                                    data-testid={ `${ testId }-item-image-inner` }
+                                    data-testid={`${testId}-item-image-inner`}
                                 />
-                            ) }
+                            }
                             size="mini"
                             spaced="right"
-                            data-testid={ `${ testId }-item-image` }
+                            data-testid={`${testId}-item-image`}
                         />
                         <Header.Content>
-                            { scope.displayName }
+                            {scope.displayName}
                             <Header.Subheader>
-                                <Code withBackground>{ scope.name }</Code>
-                                { " " + (scope.description ?? "") }
+                                <Code withBackground>{scope.name}</Code>
+                                {" " + (scope.description ?? "")}
                             </Header.Subheader>
                         </Header.Content>
                     </Header>
@@ -267,31 +272,43 @@ export const OIDCScopeList: FunctionComponent<OIDCScopesListPropsInterface> = (
 
         const actions: TableActionsInterface[] = [
             {
-                hidden: (): boolean => !isFeatureEnabled(
-                    featureConfig?.applications,
-                    ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT")),
+                hidden: (): boolean =>
+                    !isFeatureEnabled(
+                        featureConfig?.applications,
+                        ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT")
+                    ),
                 icon: (): SemanticICONS =>
                     hasRequiredScopes(
-                        featureConfig?.oidcScopes, featureConfig?.oidcScopes?.scopes?.update, allowedScopes)
+                        featureConfig?.oidcScopes,
+                        featureConfig?.oidcScopes?.scopes?.update,
+                        allowedScopes
+                    )
                         ? "pencil alternate"
                         : "eye",
-                onClick: (e: SyntheticEvent, scope: OIDCScopesListInterface): void =>
-                    handleOIDCScopesEdit(scope?.name),
-                popupText: (): string => hasRequiredScopes(
-                    featureConfig?.oidcScopes, featureConfig?.oidcScopes?.scopes?.update, allowedScopes)
-                    ? t("common:edit")
-                    : t("common:view"),
+                onClick: (e: SyntheticEvent, scope: OIDCScopesListInterface): void => handleOIDCScopesEdit(scope?.name),
+                popupText: (): string =>
+                    hasRequiredScopes(
+                        featureConfig?.oidcScopes,
+                        featureConfig?.oidcScopes?.scopes?.update,
+                        allowedScopes
+                    )
+                        ? t("common:edit")
+                        : t("common:view"),
                 renderer: "semantic-icon"
             }
         ];
 
         actions.push({
             hidden: (item: TableDataInterface<OIDCScopesListInterface>): boolean => {
-                return !hasRequiredScopes(
-                    featureConfig?.applications,
-                    featureConfig?.applications?.scopes?.delete, allowedScopes)
-                    || item.name === OIDCScopesManagementConstants.OPEN_ID_SCOPE
-                    || OIDCScopesManagementConstants.OIDC_READONLY_SCOPES.includes(item.name);
+                return (
+                    !hasRequiredScopes(
+                        featureConfig?.applications,
+                        featureConfig?.applications?.scopes?.delete,
+                        allowedScopes
+                    ) ||
+                    item.name === OIDCScopesManagementConstants.OPEN_ID_SCOPE ||
+                    OIDCScopesManagementConstants.OIDC_READONLY_SCOPES.includes(item.name)
+                );
             },
             icon: (): SemanticICONS => "trash alternate",
             onClick: (e: SyntheticEvent, scope: OIDCScopesListInterface): void => {
@@ -311,23 +328,22 @@ export const OIDCScopeList: FunctionComponent<OIDCScopesListPropsInterface> = (
      * @returns The placeholders.
      */
     const showPlaceholders = (): ReactElement => {
-
         if (searchResult === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ () => clearSearchQuery() }>
-                            { t("console:manage.features.oidcScopes.placeholders.emptySearch.action") }
+                    action={
+                        <LinkButton onClick={() => clearSearchQuery()}>
+                            {t("console:manage.features.oidcScopes.placeholders.emptySearch.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.oidcScopes.placeholders.emptySearch.title") }
-                    subtitle={ [
+                    title={t("console:manage.features.oidcScopes.placeholders.emptySearch.title")}
+                    subtitle={[
                         t("console:manage.features.oidcScopes.placeholders.emptySearch.subtitles.0"),
                         t("console:manage.features.oidcScopes.placeholders.emptySearch.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder` }
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder`}
                 />
             );
         }
@@ -335,23 +351,25 @@ export const OIDCScopeList: FunctionComponent<OIDCScopesListPropsInterface> = (
         if (!isLoading && list?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ onEmptyListPlaceholderActionClick && (
-                        <Show when={ AccessControlConstants.SCOPE_WRITE }>
-                            <PrimaryButton onClick={ onEmptyListPlaceholderActionClick }>
-                                <Icon name="add"/>
-                                { t("console:manage.features.oidcScopes.placeholders.emptyList.action") }
-                            </PrimaryButton>
-                        </Show>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations()?.newList }
+                    action={
+                        onEmptyListPlaceholderActionClick && (
+                            <Show when={AccessControlConstants.SCOPE_WRITE}>
+                                <PrimaryButton onClick={onEmptyListPlaceholderActionClick}>
+                                    <Icon name="add" />
+                                    {t("console:manage.features.oidcScopes.placeholders.emptyList.action")}
+                                </PrimaryButton>
+                            </Show>
+                        )
+                    }
+                    image={getEmptyPlaceholderIllustrations()?.newList}
                     imageSize="tiny"
-                    title={ t("console:manage.features.oidcScopes.placeholders.emptyList.title") }
-                    subtitle={ [
+                    title={t("console:manage.features.oidcScopes.placeholders.emptyList.title")}
+                    subtitle={[
                         t("console:manage.features.oidcScopes.placeholders.emptyList.subtitles.0"),
                         t("console:manage.features.oidcScopes.placeholders.emptyList.subtitles.1"),
                         t("console:manage.features.oidcScopes.placeholders.emptyList.subtitles.2")
-                    ] }
-                    data-testid={ `${ testId }-empty-placeholder` }
+                    ]}
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             );
         }
@@ -364,65 +382,58 @@ export const OIDCScopeList: FunctionComponent<OIDCScopesListPropsInterface> = (
             {
                 <DataTable<OIDCScopesListInterface>
                     className="oidc-scopes-table"
-                    externalSearch={ advancedSearch }
-                    isLoading={ isLoading }
-                    loadingStateOptions={ {
+                    externalSearch={advancedSearch}
+                    isLoading={isLoading}
+                    loadingStateOptions={{
                         count: defaultListItemLimit,
                         imageType: "square"
-                    } }
-                    actions={ resolveTableActions() }
-                    columns={ resolveTableColumns() }
-                    data={ list }
-                    onRowClick={
-                        (e: SyntheticEvent, scope: OIDCScopesListInterface): void => {
-                            handleOIDCScopesEdit(scope?.name);
-                            onListItemClick(e, scope);
-                        }
-                    }
-                    placeholders={ showPlaceholders() }
-                    transparent={ !isLoading && (showPlaceholders() !== null) }
-                    selectable={ selection }
-                    showHeader={ false }
-                    data-testid={ testId }
+                    }}
+                    actions={resolveTableActions()}
+                    columns={resolveTableColumns()}
+                    data={list}
+                    onRowClick={(e: SyntheticEvent, scope: OIDCScopesListInterface): void => {
+                        handleOIDCScopesEdit(scope?.name);
+                        onListItemClick(e, scope);
+                    }}
+                    placeholders={showPlaceholders()}
+                    transparent={!isLoading && showPlaceholders() !== null}
+                    selectable={selection}
+                    showHeader={false}
+                    data-testid={testId}
                 />
             }
-            {
-                deletingScope && (
-                    <ConfirmationModal
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertion={ deletingScope.name }
-                        assertionHint={ t("console:manage.features.oidcScopes.confirmationModals.deleteScope" +
-                        ".assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                        onPrimaryActionClick={ (): void => handleOIDCScopeDelete(deletingScope.name) }
-                        data-testid={ `${ testId }-delete-confirmation-modal` }
-                        closeOnDimmerClick={ false }
+            {deletingScope && (
+                <ConfirmationModal
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertion={deletingScope.name}
+                    assertionHint={t(
+                        "console:manage.features.oidcScopes.confirmationModals.deleteScope" + ".assertionHint"
+                    )}
+                    assertionType="checkbox"
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => handleOIDCScopeDelete(deletingScope.name)}
+                    data-testid={`${testId}-delete-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                        {t("console:manage.features.oidcScopes.confirmationModals.deleteScope.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        attached
+                        negative
+                        data-testid={`${testId}-delete-confirmation-modal-message`}
                     >
-                        <ConfirmationModal.Header
-                            data-testid={ `${ testId }-delete-confirmation-modal-header` }
-                        >
-                            { t("console:manage.features.oidcScopes.confirmationModals.deleteScope.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${ testId }-delete-confirmation-modal-message` }
-                        >
-                            { t("console:manage.features.oidcScopes.confirmationModals.deleteScope.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content
-                            data-testid={ `${ testId }-delete-confirmation-modal-content` }
-                        >
-                            { t("console:manage.features.oidcScopes.confirmationModals.deleteScope.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+                        {t("console:manage.features.oidcScopes.confirmationModals.deleteScope.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                        {t("console:manage.features.oidcScopes.confirmationModals.deleteScope.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

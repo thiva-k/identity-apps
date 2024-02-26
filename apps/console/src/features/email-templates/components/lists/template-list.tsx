@@ -29,7 +29,8 @@ import * as CountryLanguage from "country-language";
 import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Flag, FlagNameValues, Icon, SemanticICONS } from "semantic-ui-react";
-import { AppConstants, UIConstants, getEmptyPlaceholderIllustrations, history } from "../../../core";
+import { AppConstants, UIConstants, getEmptyPlaceholderIllustrations } from "../../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { EmailTemplate } from "../../models";
 import { ViewLocaleTemplate } from "../wizards";
 
@@ -58,7 +59,7 @@ interface EmailTemplateListPropsInterface extends LoadableComponentInterface, Te
      * @param {string} templateTypeId - Deleting template's type ID.
      * @param {string} templateId - Deleting template's ID.
      */
-    onDelete: (templateTypeId: string, templateId: string,) => void;
+    onDelete: (templateTypeId: string, templateId: string) => void;
     /**
      * Callback to be fired when clicked on the empty list placeholder action.
      */
@@ -82,7 +83,6 @@ interface EmailTemplateListPropsInterface extends LoadableComponentInterface, Te
 export const EmailTemplateList: FunctionComponent<EmailTemplateListPropsInterface> = (
     props: EmailTemplateListPropsInterface
 ): ReactElement => {
-
     const {
         advancedSearch,
         defaultListItemLimit,
@@ -93,21 +93,24 @@ export const EmailTemplateList: FunctionComponent<EmailTemplateListPropsInterfac
         templateTypeId,
         selection,
         showListItemActions,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ showViewLocaleWizArd, setShowViewLocaleWizard ] = useState<boolean>(false);
-    const [ currentViewTemplate, setCurrentViewTemplate ] = useState<string>("");
+    const [showViewLocaleWizArd, setShowViewLocaleWizard] = useState<boolean>(false);
+    const [currentViewTemplate, setCurrentViewTemplate] = useState<string>("");
 
-    const [ showTemplateDeleteConfirmation, setShowTemplateDeleteConfirmation ] = useState<boolean>(false);
-    const [ currentDeletingTemplate, setCurrentDeletingTemplate ] = useState<EmailTemplate>(undefined);
+    const [showTemplateDeleteConfirmation, setShowTemplateDeleteConfirmation] = useState<boolean>(false);
+    const [currentDeletingTemplate, setCurrentDeletingTemplate] = useState<EmailTemplate>(undefined);
 
     const handleEditTemplate = (templateTypeId: string, templateId: string) => {
-        history.push(AppConstants.getPaths().get("EMAIL_TEMPLATE")
-            .replace(":templateTypeId", templateTypeId)
-            .replace(":templateId",  templateId));
+        history.push(
+            AppConstants.getPaths()
+                .get("EMAIL_TEMPLATE")
+                .replace(":templateTypeId", templateTypeId)
+                .replace(":templateId", templateId)
+        );
     };
 
     /**
@@ -119,21 +122,21 @@ export const EmailTemplateList: FunctionComponent<EmailTemplateListPropsInterfac
         if (templateList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <PrimaryButton onClick={ onEmptyListPlaceholderActionClick }>
-                            <Icon name="add"/>
-                            { t("console:manage.features.emailTemplates.placeholders.emptyList.action") }
+                    action={
+                        <PrimaryButton onClick={onEmptyListPlaceholderActionClick}>
+                            <Icon name="add" />
+                            {t("console:manage.features.emailTemplates.placeholders.emptyList.action")}
                         </PrimaryButton>
-                    ) }
-                    title={ t("console:manage.features.emailTemplates.placeholders.emptyList.title") }
-                    subtitle={ [
+                    }
+                    title={t("console:manage.features.emailTemplates.placeholders.emptyList.title")}
+                    subtitle={[
                         t("console:manage.features.emailTemplates.placeholders.emptyList.subtitles.0"),
                         t("console:manage.features.emailTemplates.placeholders.emptyList.subtitles.1"),
                         t("console:manage.features.emailTemplates.placeholders.emptyList.subtitles.2")
-                    ] }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    ]}
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    data-testid={ `${ testId }-empty-placeholder` }
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             );
         }
@@ -158,24 +161,24 @@ export const EmailTemplateList: FunctionComponent<EmailTemplateListPropsInterfac
                     let languageCode = "";
 
                     if (template.id.indexOf("_") !== -1) {
-                        countryCode = template.id.split("_")[ 1 ];
-                        languageCode = template.id.split("_")[ 0 ];
+                        countryCode = template.id.split("_")[1];
+                        languageCode = template.id.split("_")[0];
                     } else {
-                        countryCode = template.id.split("-")[ 1 ];
-                        languageCode = template.id.split("-")[ 0 ];
+                        countryCode = template.id.split("-")[1];
+                        languageCode = template.id.split("-")[0];
                     }
 
                     const language: string = CountryLanguage.getLanguage(languageCode).name;
                     const country: string = CountryLanguage.getCountry(countryCode).name;
 
                     return (
-                        <div data-testid={ `${ testId }-item-heading` }>
+                        <div data-testid={`${testId}-item-heading`}>
                             <Flag
                                 className="email-template-flag"
-                                name={ countryCode.toLowerCase() as FlagNameValues }
-                                data-testid={ `${ testId }-flag-image` }
+                                name={countryCode.toLowerCase() as FlagNameValues}
+                                data-testid={`${testId}-flag-image`}
                             />
-                            { country ? language + " (" + country + ")" : language }
+                            {country ? language + " (" + country + ")" : language}
                         </div>
                     );
                 },
@@ -204,7 +207,7 @@ export const EmailTemplateList: FunctionComponent<EmailTemplateListPropsInterfac
 
         return [
             {
-                "data-testid": `${ testId }-item-view-button`,
+                "data-testid": `${testId}-item-view-button`,
                 icon: (): SemanticICONS => "eye",
                 onClick: (e: SyntheticEvent, template: EmailTemplate) => {
                     setCurrentViewTemplate(template.id);
@@ -214,7 +217,7 @@ export const EmailTemplateList: FunctionComponent<EmailTemplateListPropsInterfac
                 renderer: "semantic-icon"
             },
             {
-                "data-testid": `${ testId }-item-edit-button`,
+                "data-testid": `${testId}-item-edit-button`,
                 icon: (): SemanticICONS => "pencil alternate",
                 onClick: (e: SyntheticEvent, template: EmailTemplate) =>
                     handleEditTemplate(templateTypeId, template.id),
@@ -222,7 +225,7 @@ export const EmailTemplateList: FunctionComponent<EmailTemplateListPropsInterfac
                 renderer: "semantic-icon"
             },
             {
-                "data-testid": `${ testId }-item-delete-button`,
+                "data-testid": `${testId}-item-delete-button`,
                 icon: (): SemanticICONS => "trash alternate",
                 onClick: (e: SyntheticEvent, template: EmailTemplate) => {
                     setCurrentDeletingTemplate(template);
@@ -238,84 +241,78 @@ export const EmailTemplateList: FunctionComponent<EmailTemplateListPropsInterfac
         <>
             <DataTable<EmailTemplate>
                 className="email-templates-table"
-                externalSearch={ advancedSearch }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                externalSearch={advancedSearch}
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ templateList }
-                onRowClick={ (e: SyntheticEvent, template: EmailTemplate): void => {
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={templateList}
+                onRowClick={(e: SyntheticEvent, template: EmailTemplate): void => {
                     handleEditTemplate(templateTypeId, template.id);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ false }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-testid={ testId }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={false}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-testid={testId}
             />
-            {
-                showViewLocaleWizArd && (
-                    <ViewLocaleTemplate
-                        templateTypeId={ templateTypeId }
-                        templateId={ currentViewTemplate }
-                        onCloseHandler={ () => setShowViewLocaleWizard(false) }
-                        onEditHandler={ () => handleEditTemplate(templateTypeId, currentViewTemplate) }
-                        data-testid={ `${ testId }-view-locale-template` }
-                    />
-                )
-            }
-            {
-                showTemplateDeleteConfirmation && (
-                    <ConfirmationModal
-                        onClose={ (): void => setShowTemplateDeleteConfirmation(false) }
-                        type="negative"
-                        open={ showTemplateDeleteConfirmation }
-                        assertion={ currentDeletingTemplate.id }
-                        assertionHint={ (
-                            <p>
-                                <Trans
-                                    i18nKey={ "console:manage.features.emailTemplates.confirmations.deleteTemplate" +
-                                    ".assertionHint" }
-                                    tOptions={ { id: currentDeletingTemplate.id } }
-                                >
-                                    Please type <strong>{ currentDeletingTemplate.id }</strong> to confirm.
-                                </Trans>
-                            </p>
-                        ) }
-                        assertionType="input"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setShowTemplateDeleteConfirmation(false) }
-                        onPrimaryActionClick={ (): void => {
-                            onDelete(templateTypeId, currentDeletingTemplate.id);
-                            setShowTemplateDeleteConfirmation(false);
-                        } }
-                        data-testid={ `${ testId }-delete-confirmation-modal` }
-                        closeOnDimmerClick={ false }
+            {showViewLocaleWizArd && (
+                <ViewLocaleTemplate
+                    templateTypeId={templateTypeId}
+                    templateId={currentViewTemplate}
+                    onCloseHandler={() => setShowViewLocaleWizard(false)}
+                    onEditHandler={() => handleEditTemplate(templateTypeId, currentViewTemplate)}
+                    data-testid={`${testId}-view-locale-template`}
+                />
+            )}
+            {showTemplateDeleteConfirmation && (
+                <ConfirmationModal
+                    onClose={(): void => setShowTemplateDeleteConfirmation(false)}
+                    type="negative"
+                    open={showTemplateDeleteConfirmation}
+                    assertion={currentDeletingTemplate.id}
+                    assertionHint={
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "console:manage.features.emailTemplates.confirmations.deleteTemplate" +
+                                    ".assertionHint"
+                                }
+                                tOptions={{ id: currentDeletingTemplate.id }}
+                            >
+                                Please type <strong>{currentDeletingTemplate.id}</strong> to confirm.
+                            </Trans>
+                        </p>
+                    }
+                    assertionType="input"
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => setShowTemplateDeleteConfirmation(false)}
+                    onPrimaryActionClick={(): void => {
+                        onDelete(templateTypeId, currentDeletingTemplate.id);
+                        setShowTemplateDeleteConfirmation(false);
+                    }}
+                    data-testid={`${testId}-delete-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                        {t("console:manage.features.emailTemplates.confirmations.deleteTemplate.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        attached
+                        negative
+                        data-testid={`${testId}-delete-confirmation-modal-message`}
                     >
-                        <ConfirmationModal.Header
-                            data-testid={ `${ testId }-delete-confirmation-modal-header` }
-                        >
-                            { t("console:manage.features.emailTemplates.confirmations.deleteTemplate.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${ testId }-delete-confirmation-modal-message` }
-                        >
-                            { t("console:manage.features.emailTemplates.confirmations.deleteTemplate.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content
-                            data-testid={ `${ testId }-delete-confirmation-modal-content` }
-                        >
-                            { t("console:manage.features.emailTemplates.confirmations.deleteTemplate.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+                        {t("console:manage.features.emailTemplates.confirmations.deleteTemplate.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                        {t("console:manage.features.emailTemplates.confirmations.deleteTemplate.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

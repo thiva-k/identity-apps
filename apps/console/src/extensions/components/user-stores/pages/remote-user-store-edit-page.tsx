@@ -30,7 +30,8 @@ import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Icon, TabProps } from "semantic-ui-react";
 import { URLFragmentTypes } from "../../../../features/applications/models";
-import { AppConstants, history } from "../../../../features/core";
+import { AppConstants } from "../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { getAType, getAUserStore } from "../../../../features/userstores/api/user-stores";
 import { getDatabaseAvatarGraphic } from "../../../../features/userstores/configs/ui";
 import { DISABLED } from "../../../../features/userstores/constants/user-store-constants";
@@ -49,7 +50,7 @@ import { AgentConnectionInterface } from "../models";
 /**
  * Props for the Remote user store edit page.
  */
-interface RemoteUserStoreEditPageInterface extends TestableComponentInterface, RouteComponentProps { }
+interface RemoteUserStoreEditPageInterface extends TestableComponentInterface, RouteComponentProps {}
 
 /**
  * This renders the userstore edit page.
@@ -61,24 +62,23 @@ interface RemoteUserStoreEditPageInterface extends TestableComponentInterface, R
 const RemoteUserStoreEditPage: FunctionComponent<RemoteUserStoreEditPageInterface> = (
     props: RemoteUserStoreEditPageInterface
 ): ReactElement => {
-
-    const { match, [ "data-testid" ]: testId } = props;
+    const { match, ["data-testid"]: testId } = props;
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
 
-    const userStoreId: string = match.params[ "id" ];
+    const userStoreId: string = match.params["id"];
 
-    const [ userStore, setUserStore ] = useState<UserStore>(null);
-    const [ userStoreType, setUserStoreType ] = useState<UserstoreType>(null);
-    const [ userStoreProperties, setUserStoreProperties ] = useState<CategorizedProperties>(null);
-    const [ activeTabIndex, setActiveTabIndex ] = useState<number>(undefined);
-    const [ defaultActiveIndex ] = useState<number>(undefined);
-    const [ totalTabs, setTotalTabs ] = useState<number>(undefined);
-    const [ disabled, setDisabled ] = useState<string>("");
-    const [ isUserStoreLoading, setIsUserStoreLoading ] = useState<boolean>(false);
-    const [ isAgentConnectionsRequestLoading, setIsAgentConnectionsRequestLoading ] = useState<boolean>(false);
-    const [ , setAgentConnections ] = useState<AgentConnectionInterface[]>([]);
+    const [userStore, setUserStore] = useState<UserStore>(null);
+    const [userStoreType, setUserStoreType] = useState<UserstoreType>(null);
+    const [userStoreProperties, setUserStoreProperties] = useState<CategorizedProperties>(null);
+    const [activeTabIndex, setActiveTabIndex] = useState<number>(undefined);
+    const [defaultActiveIndex] = useState<number>(undefined);
+    const [totalTabs, setTotalTabs] = useState<number>(undefined);
+    const [disabled, setDisabled] = useState<string>("");
+    const [isUserStoreLoading, setIsUserStoreLoading] = useState<boolean>(false);
+    const [isAgentConnectionsRequestLoading, setIsAgentConnectionsRequestLoading] = useState<boolean>(false);
+    const [, setAgentConnections] = useState<AgentConnectionInterface[]>([]);
 
     useEffect(() => {
         if (window.location.hash) {
@@ -97,16 +97,14 @@ const RemoteUserStoreEditPage: FunctionComponent<RemoteUserStoreEditPageInterfac
             .finally(() => {
                 setIsAgentConnectionsRequestLoading(false);
             });
-    }, [ userStoreId ]);
+    }, [userStoreId]);
 
     useEffect(() => {
-
         if (!window.location.hash) {
             return;
         }
 
         if (!userStore) {
-
             setIsUserStoreLoading(true);
 
             delay(() => {
@@ -114,37 +112,37 @@ const RemoteUserStoreEditPage: FunctionComponent<RemoteUserStoreEditPageInterfac
                 setIsUserStoreLoading(false);
             }, 12000);
         }
-
-    }, [ userStore ]);
+    }, [userStore]);
 
     useEffect(() => {
-        getAType(RemoteUserStoreConstants.OUTBOUND_USER_STORE_TYPE_ID, null)
-            .then((response: UserstoreType) => {
-                setUserStoreType(response);
-            });
+        getAType(RemoteUserStoreConstants.OUTBOUND_USER_STORE_TYPE_ID, null).then((response: UserstoreType) => {
+            setUserStoreType(response);
+        });
     }, []);
 
     useEffect(() => {
         if (userStoreType) {
             setUserStoreProperties(reOrganizeProperties(userStoreType?.properties, userStore?.properties));
         }
-    }, [ userStoreType ]);
+    }, [userStoreType]);
 
     useEffect(() => {
         if (userStore) {
-            setDisabled(userStore?.properties?.find(
-                (property: UserStoreProperty) => property.name === DISABLED)?.value);
+            setDisabled(
+                userStore?.properties?.find((property: UserStoreProperty) => property.name === DISABLED)?.value
+            );
         }
-    }, [ userStore ]);
+    }, [userStore]);
 
     /**
      * Called when the URL fragment updates.
      */
-    useEffect( () => {
-
-        if(totalTabs === undefined || window.location.hash.includes(URLFragmentTypes.VIEW) ||
-            isEmpty(window.location.hash)) {
-
+    useEffect(() => {
+        if (
+            totalTabs === undefined ||
+            window.location.hash.includes(URLFragmentTypes.VIEW) ||
+            isEmpty(window.location.hash)
+        ) {
             if (isEmpty(window.location.hash)) {
                 handleActiveTabIndexChange(1);
 
@@ -158,7 +156,6 @@ const RemoteUserStoreEditPage: FunctionComponent<RemoteUserStoreEditPageInterfac
             const urlFragment: string[] = window.location.hash.split("#" + URLFragmentTypes.TAB_INDEX);
 
             if (urlFragment.length === 2 && isEmpty(urlFragment[0]) && /^\d+$/.test(urlFragment[1])) {
-
                 const tabIndex: number = parseInt(urlFragment[1], 10);
 
                 if (inRange(tabIndex, 0, totalTabs)) {
@@ -175,17 +172,16 @@ const RemoteUserStoreEditPage: FunctionComponent<RemoteUserStoreEditPageInterfac
                 handleDefaultTabIndexChange(defaultActiveIndex);
             }
         }
-    }, [ window.location.hash, totalTabs ]);
+    }, [window.location.hash, totalTabs]);
 
     /**
      * Handles the activeTabIndex change.
      *
      * @param tabIndex - Active tab index.
      */
-    const handleActiveTabIndexChange = (tabIndex:number): void => {
-
+    const handleActiveTabIndexChange = (tabIndex: number): void => {
         history.push({
-            hash: `#${ URLFragmentTypes.TAB_INDEX }${ tabIndex }`,
+            hash: `#${URLFragmentTypes.TAB_INDEX}${tabIndex}`,
             pathname: window.location.pathname
         });
         setActiveTabIndex(tabIndex);
@@ -213,46 +209,54 @@ const RemoteUserStoreEditPage: FunctionComponent<RemoteUserStoreEditPageInterfac
      * Fetches the user store by its id
      */
     const getUserStore = () => {
-        getAUserStore(userStoreId).then((response: UserStore) => {
-            setUserStore(response);
-            //TODO: Add interface for error
-        }).catch((error: IdentityAppsError ) => {
-            dispatch(addAlert(
-                {
-                    description: error?.description
-                        || t("console:manage.features.userstores.notifications.fetchUserstores.genericError" +
-                            ".description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.userstores.notifications.fetchUserstores.genericError" +
-                            ".message")
-                }
-            ));
-        });
+        getAUserStore(userStoreId)
+            .then((response: UserStore) => {
+                setUserStore(response);
+                //TODO: Add interface for error
+            })
+            .catch((error: IdentityAppsError) => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.userstores.notifications.fetchUserstores.genericError" +
+                                    ".description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t(
+                                "console:manage.features.userstores.notifications.fetchUserstores.genericError" +
+                                    ".message"
+                            )
+                    })
+                );
+            });
     };
 
     /**
      * The tab panes
      */
-    const panes: TabProps [ "panes" ] = [
+    const panes: TabProps["panes"] = [
         {
             menuItem: "Setup Guide",
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
-                    <SetupGuideTab isUserStoreLoading={ isUserStoreLoading } userStoreId={ userStoreId } />
+                <ResourceTab.Pane controlledSegmentation attached={false}>
+                    <SetupGuideTab isUserStoreLoading={isUserStoreLoading} userStoreId={userStoreId} />
                 </ResourceTab.Pane>
             )
         },
         {
             menuItem: "General",
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <UserStoreGeneralSettings
-                        userStoreProperties={ userStoreProperties }
-                        isDisabled={ disabled }
-                        userStore={ userStore }
-                        userStoreId={ userStoreId }
-                        handleUserStoreDisabled={ (value: string) => setDisabled(value) }
+                        userStoreProperties={userStoreProperties}
+                        isDisabled={disabled}
+                        userStore={userStore}
+                        userStoreId={userStoreId}
+                        handleUserStoreDisabled={(value: string) => setDisabled(value)}
                     />
                 </ResourceTab.Pane>
             )
@@ -260,8 +264,8 @@ const RemoteUserStoreEditPage: FunctionComponent<RemoteUserStoreEditPageInterfac
         {
             menuItem: "Attribute Mappings",
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
-                    <AttributeMappings userStore={ userStore } userStoreId={ userStoreId } />
+                <ResourceTab.Pane controlledSegmentation attached={false}>
+                    <AttributeMappings userStore={userStore} userStoreId={userStoreId} />
                 </ResourceTab.Pane>
             )
         }
@@ -269,76 +273,70 @@ const RemoteUserStoreEditPage: FunctionComponent<RemoteUserStoreEditPageInterfac
 
     return (
         <TabPageLayout
-            image={ (
+            image={
                 <GenericIcon
                     bordered
                     defaultIcon
                     size="x60"
                     relaxed="very"
                     shape="rounded"
-                    hoverable={ false }
-                    icon={ getDatabaseAvatarGraphic() }
+                    hoverable={false}
+                    icon={getDatabaseAvatarGraphic()}
                 />
-            ) }
-            title={
-                (
-                    <>
-                        {
-                            disabled === "false"
-                                ? (
-                                    <Popup
-                                        trigger={ (
-                                            <Icon
-                                                className="mr-2 ml-0 vertical-aligned-baseline"
-                                                size="small"
-                                                name="circle"
-                                                color="green"
-                                            />
-                                        ) }
-                                        content={ t("common:enabled") }
-                                        inverted
-                                    />
-                                )
-                                : (
-                                    <Popup
-                                        trigger={ (
-                                            <Icon
-                                                className="mr-2 ml-0 vertical-aligned-baseline"
-                                                size="small"
-                                                name="circle"
-                                                color="orange"
-                                            />
-                                        ) }
-                                        content={ t("common:disabled") }
-                                        inverted
-                                    />
-                                )
-                        }
-                        { userStore?.name }
-                    </>
-                )
             }
-            backButton={ {
+            title={
+                <>
+                    {disabled === "false" ? (
+                        <Popup
+                            trigger={
+                                <Icon
+                                    className="mr-2 ml-0 vertical-aligned-baseline"
+                                    size="small"
+                                    name="circle"
+                                    color="green"
+                                />
+                            }
+                            content={t("common:enabled")}
+                            inverted
+                        />
+                    ) : (
+                        <Popup
+                            trigger={
+                                <Icon
+                                    className="mr-2 ml-0 vertical-aligned-baseline"
+                                    size="small"
+                                    name="circle"
+                                    color="orange"
+                                />
+                            }
+                            content={t("common:disabled")}
+                            inverted
+                        />
+                    )}
+                    {userStore?.name}
+                </>
+            }
+            backButton={{
                 onClick: () => {
                     history.push(AppConstants.getPaths().get("USERSTORES"));
                 },
                 text: t("console:manage.features.userstores.pageLayout.edit.back")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            isLoading={ isUserStoreLoading || isAgentConnectionsRequestLoading }
-            data-testid={ `${ testId }-page-layout` }
+            bottomMargin={false}
+            isLoading={isUserStoreLoading || isAgentConnectionsRequestLoading}
+            data-testid={`${testId}-page-layout`}
         >
             <ResourceTab
                 className="remote-user-store-edit-section"
-                panes={ panes }
-                onTabChange={ handleTabChange }
-                data-testid={ `${ testId }-tabs` }
-                onInitialize={ ({ panesLength }: { panesLength: number; }) => {
+                panes={panes}
+                onTabChange={handleTabChange}
+                data-testid={`${testId}-tabs`}
+                onInitialize={({ panesLength }: { panesLength: number }) => {
                     setTotalTabs(panesLength);
-                } }
-                activeIndex= { activeTabIndex }
-                defaultActiveIndex={ defaultActiveIndex }
+                }}
+                activeIndex={activeTabIndex}
+                defaultActiveIndex={defaultActiveIndex}
             />
         </TabPageLayout>
     );

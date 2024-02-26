@@ -27,7 +27,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Checkbox, CheckboxProps } from "semantic-ui-react";
-import { AppConstants, history } from "../../core";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { updateAdminAdvisoryBannerConfiguration, useAdminAdvisoryBannerConfigs } from "../api/server";
 import { AdminAdvisoryBannerConfigurationInterface } from "../models/server";
 
@@ -58,16 +59,14 @@ const FORM_ID: string = "governance-connectors-self-registration-form";
 export const AdminSessionAdvisoryBannerEditPage: FC<AdmindvisoryBannerEditPageInterface> = (
     props: AdmindvisoryBannerEditPageInterface
 ): ReactElement => {
-
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
-    const [
-        adminAdvisoryBannerConfigs,
-        setAdminAdvisoryBannerConfigs
-    ] = useState<AdminAdvisoryBannerConfigurationInterface>(undefined);
+    const [adminAdvisoryBannerConfigs, setAdminAdvisoryBannerConfigs] = useState<
+        AdminAdvisoryBannerConfigurationInterface
+    >(undefined);
 
     const {
         data: adminAdvisoryConfigs,
@@ -77,25 +76,25 @@ export const AdminSessionAdvisoryBannerEditPage: FC<AdmindvisoryBannerEditPageIn
 
     useEffect(() => {
         if (!adminAdvisoryConfigs) {
-
             return;
         }
 
         setAdminAdvisoryBannerConfigs(adminAdvisoryConfigs);
-    }, [ adminAdvisoryConfigs ]);
+    }, [adminAdvisoryConfigs]);
 
     useEffect(() => {
         if (!adminAdvisoryConfigsGetRequestError) {
-
             return;
         }
 
-        dispatch(addAlert<AlertInterface>({
-            description: t("extensions:develop.branding.notifications.fetch.genericError.description"),
-            level: AlertLevels.ERROR,
-            message: t("extensions:develop.branding.notifications.fetch.genericError.message")
-        }));
-    }, [ adminAdvisoryConfigsGetRequestError ]);
+        dispatch(
+            addAlert<AlertInterface>({
+                description: t("extensions:develop.branding.notifications.fetch.genericError.description"),
+                level: AlertLevels.ERROR,
+                message: t("extensions:develop.branding.notifications.fetch.genericError.message")
+            })
+        );
+    }, [adminAdvisoryConfigsGetRequestError]);
 
     /**
      * Handles the back button click event.
@@ -124,129 +123,166 @@ export const AdminSessionAdvisoryBannerEditPage: FC<AdmindvisoryBannerEditPageIn
         updateAdminAdvisoryBannerConfig(configs, false);
     };
 
-    const updateAdminAdvisoryBannerConfig = (configs: AdminAdvisoryConfigurationInterface,
-        isFeatureStatus: boolean): void => {
+    const updateAdminAdvisoryBannerConfig = (
+        configs: AdminAdvisoryConfigurationInterface,
+        isFeatureStatus: boolean
+    ): void => {
+        updateAdminAdvisoryBannerConfiguration(configs)
+            .then(() => {
+                setAdminAdvisoryBannerConfigs(configs);
 
-        updateAdminAdvisoryBannerConfiguration(configs).then(() => {
-            setAdminAdvisoryBannerConfigs(configs);
+                if (isFeatureStatus) {
+                    if (configs.enableBanner) {
+                        dispatch(
+                            addAlert<AlertInterface>({
+                                description: t(
+                                    "console:manage.features.serverConfigs.adminAdvisory.notifications." +
+                                        "enableAdminAdvisoryBanner.success.description"
+                                ),
+                                level: AlertLevels.SUCCESS,
+                                message: t(
+                                    "console:manage.features.serverConfigs.adminAdvisory.notifications." +
+                                        "enableAdminAdvisoryBanner.success.message"
+                                )
+                            })
+                        );
+                    } else {
+                        dispatch(
+                            addAlert<AlertInterface>({
+                                description: t(
+                                    "console:manage.features.serverConfigs.adminAdvisory.notifications." +
+                                        "disbleAdminAdvisoryBanner.success.description"
+                                ),
+                                level: AlertLevels.SUCCESS,
+                                message: t(
+                                    "console:manage.features.serverConfigs.adminAdvisory.notifications." +
+                                        "disbleAdminAdvisoryBanner.success.message"
+                                )
+                            })
+                        );
+                    }
 
-            if (isFeatureStatus) {
-                if (configs.enableBanner) {
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("console:manage.features.serverConfigs.adminAdvisory.notifications." +
-                        "enableAdminAdvisoryBanner.success.description"),
-                        level: AlertLevels.SUCCESS,
-                        message: t("console:manage.features.serverConfigs.adminAdvisory.notifications." +
-                        "enableAdminAdvisoryBanner.success.message")
-                    }));
-                } else {
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("console:manage.features.serverConfigs.adminAdvisory.notifications." +
-                        "disbleAdminAdvisoryBanner.success.description"),
-                        level: AlertLevels.SUCCESS,
-                        message: t("console:manage.features.serverConfigs.adminAdvisory.notifications." +
-                        "disbleAdminAdvisoryBanner.success.message")
-                    }));
+                    return;
                 }
 
-                return;
-            }
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.serverConfigs.adminAdvisory.notifications." +
+                                "updateConfigurations.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.serverConfigs.adminAdvisory.notifications." +
+                                "updateConfigurations.success.message"
+                        )
+                    })
+                );
+            })
+            .catch((error: IdentityAppsApiException) => {
+                if (error.response && error.response.data && error.response.data.description) {
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.serverConfigs.adminAdvisory.notifications." +
+                                    "updateConfigurations.error.message"
+                            )
+                        })
+                    );
+                }
 
-            dispatch(addAlert<AlertInterface>({
-                description: t("console:manage.features.serverConfigs.adminAdvisory.notifications." +
-                    "updateConfigurations.success.description"),
-                level: AlertLevels.SUCCESS,
-                message: t("console:manage.features.serverConfigs.adminAdvisory.notifications." +
-                "updateConfigurations.success.message")
-            }));
-        }).catch((error: IdentityAppsApiException) => {
-            if (error.response && error.response.data && error.response.data.description) {
-                dispatch(addAlert<AlertInterface>({
-                    description: error.response.data.description,
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.serverConfigs.adminAdvisory.notifications." +
-                    "updateConfigurations.error.message")
-                }));
-            }
-
-            dispatch(addAlert<AlertInterface>({
-                description: t("console:manage.features.serverConfigs.adminAdvisory.notifications." +
-                    "updateConfigurations.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:manage.features.serverConfigs.adminAdvisory.notifications." +
-                    "updateConfigurations.genericError.message")
-            }));
-        });
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "console:manage.features.serverConfigs.adminAdvisory.notifications." +
+                                "updateConfigurations.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.serverConfigs.adminAdvisory.notifications." +
+                                "updateConfigurations.genericError.message"
+                        )
+                    })
+                );
+            });
     };
 
     return (
         <PageLayout
-            title={ t("console:manage.features.serverConfigs.adminAdvisory." +
-                "configurationEditSection.pageHeading") }
-            pageTitle={ t("console:manage.features.serverConfigs.adminAdvisory." +
-                "configurationEditSection.pageHeading") }
-            description={ t("console:manage.features.serverConfigs.adminAdvisory." +
-                "configurationEditSection.pageSubheading") }
-            data-componentid={ `${ componentId }-page-layout` }
-            backButton={ {
-                "data-testid": `${ componentId }-page-back-button`,
+            title={t("console:manage.features.serverConfigs.adminAdvisory." + "configurationEditSection.pageHeading")}
+            pageTitle={t(
+                "console:manage.features.serverConfigs.adminAdvisory." + "configurationEditSection.pageHeading"
+            )}
+            description={t(
+                "console:manage.features.serverConfigs.adminAdvisory." + "configurationEditSection.pageSubheading"
+            )}
+            data-componentid={`${componentId}-page-layout`}
+            backButton={{
+                "data-testid": `${componentId}-page-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:manage.pages.rolesEdit.backButton", { type: "Server" })
-            } }
-            bottomMargin={ false }
-            contentTopMargin={ true }
-            pageHeaderMaxWidth={ true }
-            isLoading={ isAdminAdvisoryConfigsGetRequestLoading }
+            }}
+            bottomMargin={false}
+            contentTopMargin={true}
+            pageHeaderMaxWidth={true}
+            isLoading={isAdminAdvisoryConfigsGetRequestLoading}
         >
             <Checkbox
-                label={ adminAdvisoryBannerConfigs?.enableBanner
-                    ? t("console:manage.features.serverConfigs.adminAdvisory.configurationSection.enabled")
-                    : t("console:manage.features.serverConfigs.adminAdvisory.configurationSection.enabled")
+                label={
+                    adminAdvisoryBannerConfigs?.enableBanner
+                        ? t("console:manage.features.serverConfigs.adminAdvisory.configurationSection.enabled")
+                        : t("console:manage.features.serverConfigs.adminAdvisory.configurationSection.enabled")
                 }
                 toggle
-                onChange={ handleToggleChange }
-                checked={ adminAdvisoryBannerConfigs?.enableBanner }
-                readOnly={ null }
-                data-componentid={ `${ componentId }-enable-toggle` }
+                onChange={handleToggleChange}
+                checked={adminAdvisoryBannerConfigs?.enableBanner}
+                readOnly={null}
+                data-componentid={`${componentId}-enable-toggle`}
             />
-            <Grid className={ "mt-5" }>
+            <Grid className={"mt-5"}>
                 <Grid>
-                    <EmphasizedSegment className="form-wrapper" padded={ "very" }>
+                    <EmphasizedSegment className="form-wrapper" padded={"very"}>
                         <Form
-                            id={ FORM_ID }
-                            initialValues={ adminAdvisoryBannerConfigs }
-                            uncontrolledForm={ false }
-                            validate={ null }
-                            onSubmit={ (values: Record<string, unknown>) => handleBannerContentUpdate(values) }
+                            id={FORM_ID}
+                            initialValues={adminAdvisoryBannerConfigs}
+                            uncontrolledForm={false}
+                            validate={null}
+                            onSubmit={(values: Record<string, unknown>) => handleBannerContentUpdate(values)}
                         >
                             <Field.Textarea
                                 ariaLabel="Admin Advisory Banner Content"
                                 name="bannerContent"
-                                label={ t("console:manage.features.serverConfigs.adminAdvisory" +
-                                    ".configurationEditSection.form.bannerContent.label") }
-                                required={ false }
-                                placeholder={
-                                    t("console:manage.features.serverConfigs.adminAdvisory" +
-                                        ".configurationEditSection.form.bannerContent.placeholder")
-                                }
-                                initialValue={ adminAdvisoryBannerConfigs?.bannerContent }
-                                readOnly={ !adminAdvisoryBannerConfigs?.enableBanner }
-                                maxLength={ 300 }
-                                minLength={ 3 }
-                                data-componentid={ `${ componentId }-content` }
-                                width={ 16 }
-                                hint={ t("console:manage.features.serverConfigs.adminAdvisory" +
-                                    ".configurationEditSection.form.bannerContent.hint") }
+                                label={t(
+                                    "console:manage.features.serverConfigs.adminAdvisory" +
+                                        ".configurationEditSection.form.bannerContent.label"
+                                )}
+                                required={false}
+                                placeholder={t(
+                                    "console:manage.features.serverConfigs.adminAdvisory" +
+                                        ".configurationEditSection.form.bannerContent.placeholder"
+                                )}
+                                initialValue={adminAdvisoryBannerConfigs?.bannerContent}
+                                readOnly={!adminAdvisoryBannerConfigs?.enableBanner}
+                                maxLength={300}
+                                minLength={3}
+                                data-componentid={`${componentId}-content`}
+                                width={16}
+                                hint={t(
+                                    "console:manage.features.serverConfigs.adminAdvisory" +
+                                        ".configurationEditSection.form.bannerContent.hint"
+                                )}
                             />
                             <Field.Button
-                                form={ FORM_ID }
+                                form={FORM_ID}
                                 size="small"
                                 buttonType="primary_btn"
                                 ariaLabel="Update button"
                                 name="update-button"
-                                data-componentid={ `${ componentId }-update-button` }
-                                label={ t("common:update") }
-                                hidden={ !adminAdvisoryBannerConfigs?.enableBanner }
+                                data-componentid={`${componentId}-update-button`}
+                                label={t("common:update")}
+                                hidden={!adminAdvisoryBannerConfigs?.enableBanner}
                             />
                         </Form>
                     </EmphasizedSegment>

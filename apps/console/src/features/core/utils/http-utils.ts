@@ -23,7 +23,7 @@ import { AuthenticateUtils } from "@wso2is/core/utils";
 import { AxiosError } from "axios";
 import { EventPublisher } from "./event-publisher";
 import { AppConstants } from "../constants";
-import { history } from "../helpers";
+import { history } from "@wso2is/features/core/helpers";
 import { store } from "@wso2is/features/core/store";
 
 /**

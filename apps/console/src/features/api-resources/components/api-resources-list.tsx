@@ -34,7 +34,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
-import { AppState, FeatureConfigInterface, UIConstants, getEmptyPlaceholderIllustrations, history } from "../../core";
+import { AppState, FeatureConfigInterface, UIConstants, getEmptyPlaceholderIllustrations } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { deleteAPIResource } from "../api";
 import { APIResourcesConstants } from "../constants";
 import { APIResourceInterface } from "../models";
@@ -67,7 +68,7 @@ interface APIResourcesListProps extends SBACInterface<FeatureConfigInterface>, I
     /**
      * API Category
      */
-    categoryId: string
+    categoryId: string;
     /**
      * Search query for the list.
      */
@@ -88,7 +89,8 @@ interface APIResourcesListProps extends SBACInterface<FeatureConfigInterface>, I
  * @returns The users list table.
  */
 export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
-    props: APIResourcesListProps): ReactElement => {
+    props: APIResourcesListProps
+): ReactElement => {
     const {
         apiResourcesList,
         categoryId,
@@ -106,9 +108,9 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ loading, setLoading ] = useState<boolean>(false);
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingAPIResource, setDeletingAPIResource ] = useState<APIResourceInterface>(undefined);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingAPIResource, setDeletingAPIResource] = useState<APIResourceInterface>(undefined);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
     /**
@@ -124,7 +126,6 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
                 id: "name",
                 key: "name",
                 render: (apiResource: APIResourceInterface): ReactNode => {
-
                     const displayName: string = apiResource ? apiResource.name : "";
                     let shownName: string;
 
@@ -135,26 +136,20 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
                     }
 
                     return (
-                        <Header
-                            as="h6"
-                            className="header-with-icon"
-                            data-testid={ `${componentId}-item-heading` }
-                        >
+                        <Header as="h6" className="header-with-icon" data-testid={`${componentId}-item-heading`}>
                             <AppAvatar
-                                image={ (
+                                image={
                                     <AnimatedAvatar
-                                        name={ shownName }
+                                        name={shownName}
                                         size="mini"
-                                        data-testid={ `${componentId}-item-display-name-avatar` }
+                                        data-testid={`${componentId}-item-display-name-avatar`}
                                     />
-                                ) }
+                                }
                                 size="mini"
                                 spaced="right"
-                                data-testid={ `${componentId}-item-display-name` }
+                                data-testid={`${componentId}-item-display-name`}
                             />
-                            <Header.Content>
-                                { shownName }
-                            </Header.Content>
+                            <Header.Content>{shownName}</Header.Content>
                         </Header>
                     );
                 },
@@ -175,21 +170,15 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
                     }
 
                     return (
-                        <Header as="h6" data-testid={ `${componentId}-col-2-item-heading` }>
+                        <Header as="h6" data-testid={`${componentId}-col-2-item-heading`}>
                             <Header.Content>
-                                <Header.Subheader data-testid={ `${componentId}-col-2-item-sub-heading` }>
-                                    { shownIdentifier }
-                                    {
-                                        shownIdentifier && (
-                                            <Label
-                                                pointing="left"
-                                                size="mini"
-                                                className={ shownIdentifierClass }
-                                            >
-                                                { t("extensions:develop.apiResource.table.identifier.label") }
-                                            </Label>
-                                        )
-                                    }
+                                <Header.Subheader data-testid={`${componentId}-col-2-item-sub-heading`}>
+                                    {shownIdentifier}
+                                    {shownIdentifier && (
+                                        <Label pointing="left" size="mini" className={shownIdentifierClass}>
+                                            {t("extensions:develop.apiResource.table.identifier.label")}
+                                        </Label>
+                                    )}
                                 </Header.Subheader>
                             </Header.Content>
                         </Header>
@@ -223,15 +212,21 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
                 "data-componentid": `${componentId}-item-edit-button`,
                 hidden: () => {
                     const readForbidden: boolean = !APIResourceUtils.isAPIResourceReadAllowed(
-                        featureConfig, allowedScopes);
+                        featureConfig,
+                        allowedScopes
+                    );
                     const updateForbidden: boolean = !APIResourceUtils.isAPIResourceUpdateAllowed(
-                        featureConfig, allowedScopes);
+                        featureConfig,
+                        allowedScopes
+                    );
 
                     return readForbidden && updateForbidden;
                 },
                 icon: (apiResource: APIResourceInterface): SemanticICONS => {
                     const updateAllowed: boolean = APIResourceUtils.isAPIResourceUpdateAllowed(
-                        featureConfig, allowedScopes);
+                        featureConfig,
+                        allowedScopes
+                    );
                     const isSystemAPIResource: boolean = APIResourceUtils.isSystemAPI(apiResource?.type);
                     const canUpdate: boolean = !isSystemAPIResource && updateAllowed;
 
@@ -242,7 +237,9 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
                 },
                 popupText: (apiResource: APIResourceInterface): string => {
                     const updateAllowed: boolean = APIResourceUtils.isAPIResourceUpdateAllowed(
-                        featureConfig, allowedScopes);
+                        featureConfig,
+                        allowedScopes
+                    );
                     const isSystemAPIResource: boolean = APIResourceUtils.isSystemAPI(apiResource?.type);
                     const canUpdate: boolean = !isSystemAPIResource && updateAllowed;
 
@@ -254,7 +251,9 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
                 "data-componentid": `${componentId}-item-delete-button`,
                 hidden: (apiResource: APIResourceInterface) => {
                     const deleteForbidden: boolean = !APIResourceUtils.isAPIResourceDeleteAllowed(
-                        featureConfig, allowedScopes);
+                        featureConfig,
+                        allowedScopes
+                    );
                     const isSystemAPIResource: boolean = APIResourceUtils.isSystemAPI(apiResource?.type);
 
                     return deleteForbidden || isSystemAPIResource;
@@ -277,44 +276,45 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
      */
     const showPlaceholders = (): ReactElement => {
         // When the search returns empty.
-        if (searchQuery && (apiResourcesList && apiResourcesList.length === 0)) {
+        if (searchQuery && apiResourcesList && apiResourcesList.length === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:develop.placeholders.emptySearchResult.action") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:develop.placeholders.emptySearchResult.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:develop.placeholders.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("console:develop.placeholders.emptySearchResult.title")}
+                    subtitle={[
                         t("console:develop.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                         t("console:develop.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-testid={ `${ componentId }-empty-search-placeholder-icon` }
+                    ]}
+                    data-testid={`${componentId}-empty-search-placeholder-icon`}
                 />
             );
         }
 
-        if ((!apiResourcesList) || (apiResourcesList && apiResourcesList.length === 0)) {
+        if (!apiResourcesList || (apiResourcesList && apiResourcesList.length === 0)) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().emptyList }
+                    image={getEmptyPlaceholderIllustrations().emptyList}
                     imageSize="tiny"
-                    subtitle={ [ t("extensions:develop.apiResource.empty") ] }
-                    data-testid={ `${ componentId }-empty-search-placeholder-icon` }
-                    action={ APIResourceUtils.isAPIResourceCreateAllowed(featureConfig, allowedScopes) &&
-                        onEmptyListPlaceholderActionClicked
-                        ? (
+                    subtitle={[t("extensions:develop.apiResource.empty")]}
+                    data-testid={`${componentId}-empty-search-placeholder-icon`}
+                    action={
+                        APIResourceUtils.isAPIResourceCreateAllowed(featureConfig, allowedScopes) &&
+                        onEmptyListPlaceholderActionClicked ? (
                             <PrimaryButton
-                                onClick={ () => onEmptyListPlaceholderActionClicked() }
-                                data-testid={ `${componentId}-add-api-resources-button` }
+                                onClick={() => onEmptyListPlaceholderActionClicked()}
+                                data-testid={`${componentId}-add-api-resources-button`}
                             >
                                 <Icon name="add" />
-                                { t("extensions:develop.apiResource.addApiResourceButton") }
+                                {t("extensions:develop.apiResource.addApiResourceButton")}
                             </PrimaryButton>
-                        ) : null }
+                        ) : null
+                    }
                 />
             );
         }
@@ -328,16 +328,18 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
      * @param apiResourceId - API resource ID.
      */
     const handleAPIResourceDelete = (apiResourceId: string): void => {
-
         setLoading(true);
         deleteAPIResource(apiResourceId)
             .then(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.apiResource.notifications.deleteAPIResource.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("extensions:develop.apiResource.notifications.deleteAPIResource.success.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.apiResource.notifications.deleteAPIResource.success" + ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t("extensions:develop.apiResource.notifications.deleteAPIResource.success.message")
+                    })
+                );
 
                 setShowDeleteConfirmationModal(false);
                 if (onAPIResourceDelete) {
@@ -345,13 +347,18 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
                 }
             })
             .catch(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: t("extensions:develop.apiResource.notifications.deleteAPIResource" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:develop.apiResource.notifications.deleteAPIResource" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: t(
+                            "extensions:develop.apiResource.notifications.deleteAPIResource" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "extensions:develop.apiResource.notifications.deleteAPIResource" + ".genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setLoading(false);
@@ -364,9 +371,12 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
      *
      */
     const handleAPIResourceEdit = (apiResource: APIResourceInterface, e: SyntheticEvent<Element, Event>): void => {
-        history.push(APIResourcesConstants.getPaths().get("API_RESOURCE_EDIT")
-            .replace(":categoryId", categoryId)
-            .replace(":id", apiResource.id));
+        history.push(
+            APIResourcesConstants.getPaths()
+                .get("API_RESOURCE_EDIT")
+                .replace(":categoryId", categoryId)
+                .replace(":id", apiResource.id)
+        );
         onListItemClick && onListItemClick(e, apiResource);
     };
 
@@ -374,62 +384,57 @@ export const APIResourcesList: FunctionComponent<APIResourcesListProps> = (
         <>
             <DataTable<APIResourceInterface>
                 className="api-resources-table"
-                loadingStateOptions={ {
+                loadingStateOptions={{
                     count: UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "circular"
-                } }
-                showHeader={ false }
-                data-componentid={ componentId }
-                data-testid={ componentId }
-                columns={ resolveTableColumns() }
-                placeholders={ showPlaceholders() }
-                actions={ resolveTableActions() }
-                data={ apiResourcesList }
-                transparent={ isAPIResourcesListLoading || showPlaceholders() !== null }
-                isLoading={ isAPIResourcesListLoading }
-                onRowClick={ function (e: SyntheticEvent<Element, Event>, apiResource: APIResourceInterface): void {
+                }}
+                showHeader={false}
+                data-componentid={componentId}
+                data-testid={componentId}
+                columns={resolveTableColumns()}
+                placeholders={showPlaceholders()}
+                actions={resolveTableActions()}
+                data={apiResourcesList}
+                transparent={isAPIResourcesListLoading || showPlaceholders() !== null}
+                isLoading={isAPIResourcesListLoading}
+                onRowClick={function(e: SyntheticEvent<Element, Event>, apiResource: APIResourceInterface): void {
                     handleAPIResourceEdit(apiResource, e);
-                } }
+                }}
             />
-            {
-                deletingAPIResource && (
-                    <ConfirmationModal
-                        primaryActionLoading={ loading }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertionHint={ t("extensions:develop.apiResource.confirmations.deleteAPIResource." +
-                            "assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => {
-                            setShowDeleteConfirmationModal(false);
-                        } }
-                        onPrimaryActionClick={ (): void => handleAPIResourceDelete(deletingAPIResource.id) }
-                        data-testid={ `${componentId}-delete-confirmation-modal` }
-                        closeOnDimmerClick={ false }
+            {deletingAPIResource && (
+                <ConfirmationModal
+                    primaryActionLoading={loading}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertionHint={t(
+                        "extensions:develop.apiResource.confirmations.deleteAPIResource." + "assertionHint"
+                    )}
+                    assertionType="checkbox"
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => {
+                        setShowDeleteConfirmationModal(false);
+                    }}
+                    onPrimaryActionClick={(): void => handleAPIResourceDelete(deletingAPIResource.id)}
+                    data-testid={`${componentId}-delete-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${componentId}-delete-confirmation-modal-header`}>
+                        {t("extensions:develop.apiResource.confirmations.deleteAPIResource.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        attached
+                        negative
+                        data-testid={`${componentId}-delete-confirmation-modal-message`}
                     >
-                        <ConfirmationModal.Header
-                            data-testid={ `${componentId}-delete-confirmation-modal-header` }
-                        >
-                            { t("extensions:develop.apiResource.confirmations.deleteAPIResource.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${componentId}-delete-confirmation-modal-message` }
-                        >
-                            { t("extensions:develop.apiResource.confirmations.deleteAPIResource.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content
-                            data-testid={ `${componentId}-delete-confirmation-modal-content` }
-                        >
-                            { t("extensions:develop.apiResource.confirmations.deleteAPIResource.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+                        {t("extensions:develop.apiResource.confirmations.deleteAPIResource.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${componentId}-delete-confirmation-modal-content`}>
+                        {t("extensions:develop.apiResource.confirmations.deleteAPIResource.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

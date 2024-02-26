@@ -19,7 +19,8 @@
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import React, { FunctionComponent, ReactElement, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { AppConstants, history } from "../../core";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getSettingsSectionIcons } from "../../server-configurations";
 import { SettingsSection } from "../../server-configurations/settings/settings-section";
 import { useTokenReuseConfigData } from "../api";
@@ -38,19 +39,16 @@ type PrivateKeyJWTConfigPageInterface = IdentifiableComponentInterface;
 export const PrivateKeyJWTConfig: FunctionComponent<PrivateKeyJWTConfigPageInterface> = (
     props: PrivateKeyJWTConfigPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
     const { t } = useTranslation();
 
-    const {
-        data: tokenReuseData,
-        isLoading: isLoading
-    } = useTokenReuseConfigData();
+    const { data: tokenReuseData, isLoading: isLoading } = useTokenReuseConfigData();
 
     useEffect(() => {
         if (isLoading) {
             return;
         }
-    }, [ isLoading ]);
+    }, [isLoading]);
 
     /**
      * Handle connector advance setting selection.
@@ -59,22 +57,17 @@ export const PrivateKeyJWTConfig: FunctionComponent<PrivateKeyJWTConfigPageInter
         history.push(AppConstants.getPaths().get("PRIVATE_KEY_JWT_CONFIG_EDIT"));
     };
 
-    return ( tokenReuseData
-        ? (
-            <SettingsSection
-                data-componentid={ `${componentId}-settings-section` }
-                data-testid={ `${componentId}-settings-section` }
-                description={ t("console:manage.features.jwtPrivateKeyConfiguration.description") }
-                icon={ getSettingsSectionIcons().jwtPrivateKeyValidation }
-                header={ t(
-                    "console:manage.features.jwtPrivateKeyConfiguration.pageTitle" 
-                ) }
-                onPrimaryActionClick={ handleSelection }
-                primaryAction={ t("common:configure") }
-            />
-        )
-        : null
-    );
+    return tokenReuseData ? (
+        <SettingsSection
+            data-componentid={`${componentId}-settings-section`}
+            data-testid={`${componentId}-settings-section`}
+            description={t("console:manage.features.jwtPrivateKeyConfiguration.description")}
+            icon={getSettingsSectionIcons().jwtPrivateKeyValidation}
+            header={t("console:manage.features.jwtPrivateKeyConfiguration.pageTitle")}
+            onPrimaryActionClick={handleSelection}
+            primaryAction={t("common:configure")}
+        />
+    ) : null;
 };
 
 /**

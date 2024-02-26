@@ -40,9 +40,9 @@ import {
     AppState,
     FeatureConfigInterface,
     UIConstants,
-    getEmptyPlaceholderIllustrations,
-    history
+    getEmptyPlaceholderIllustrations
 } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { deleteIDVP } from "../api";
 import { IDVPListResponseInterface, IDVPTemplateItemInterface, IdentityVerificationProviderInterface } from "../models";
 import { handleIDVPDeleteError, handleIDVPDeleteSuccess } from "../utils";
@@ -50,8 +50,9 @@ import { handleIDVPDeleteError, handleIDVPDeleteSuccess } from "../utils";
 /**
  * Proptypes for the identity verification provider list component.
  */
-interface IdentityVerificationProviderListPropsInterface extends LoadableComponentInterface,
-    IdentifiableComponentInterface {
+interface IdentityVerificationProviderListPropsInterface
+    extends LoadableComponentInterface,
+        IdentifiableComponentInterface {
     /**
      * Identity verification providers list.
      */
@@ -98,7 +99,6 @@ interface IdentityVerificationProviderListPropsInterface extends LoadableCompone
 export const IdentityVerificationProviderList: FunctionComponent<IdentityVerificationProviderListPropsInterface> = (
     props: IdentityVerificationProviderListPropsInterface
 ): ReactElement => {
-
     const {
         defaultListItemLimit,
         isLoading,
@@ -112,10 +112,11 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
         ["data-componentid"]: componentId
     } = props;
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ selectedIdvpToBeDeleted, setSelectedIdvpToBeDeleted ] =
-        useState<IdentityVerificationProviderInterface>(undefined);
-    const [ loading, setLoading ] = useState<boolean>(false);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [selectedIdvpToBeDeleted, setSelectedIdvpToBeDeleted] = useState<IdentityVerificationProviderInterface>(
+        undefined
+    );
+    const [loading, setLoading] = useState<boolean>(false);
 
     const { t } = useTranslation();
 
@@ -129,7 +130,11 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
      * @returns void
      */
     const handleIdentityVerificationProviderEdit = (idvpId: string): void => {
-        history.push(AppConstants.getPaths().get("IDVP_EDIT").replace(":id", idvpId));
+        history.push(
+            AppConstants.getPaths()
+                .get("IDVP_EDIT")
+                .replace(":id", idvpId)
+        );
     };
 
     /**
@@ -139,8 +144,9 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
      * @returns void
      */
     const showIDVPDeleteConfirmationModal = (idvpId: string): void => {
-        const selectedIDVP: IdentityVerificationProviderInterface = idvpList.identityVerificationProviders
-            .find((idvp: IdentityVerificationProviderInterface) => idvp.id === idvpId);
+        const selectedIDVP: IdentityVerificationProviderInterface = idvpList.identityVerificationProviders.find(
+            (idvp: IdentityVerificationProviderInterface) => idvp.id === idvpId
+        );
 
         setSelectedIdvpToBeDeleted(selectedIDVP);
         setShowDeleteConfirmationModal(true);
@@ -153,7 +159,6 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
      * @returns void
      */
     const handleIdvpDeletion = (idvpId: string): void => {
-
         setLoading(true);
         deleteIDVP(idvpId)
             .then(handleIDVPDeleteSuccess)
@@ -174,27 +179,24 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
      * @returns Placeholder.
      */
     const showPlaceholders = (): ReactElement => {
-
         if (idvpList?.totalResults === 0) {
             return (
                 <EmptyPlaceholder
                     className="list-placeholder"
-                    action={ onEmptyListPlaceholderActionClick && (
-                        <Show when={ AccessControlConstants.IDVP_WRITE }>
-                            <PrimaryButton
-                                onClick={ onEmptyListPlaceholderActionClick }
-                            >
-                                <Icon name="add"/>
-                                { t("console:develop.features.idvp.buttons.addIDVP") }
-                            </PrimaryButton>
-                        </Show>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    action={
+                        onEmptyListPlaceholderActionClick && (
+                            <Show when={AccessControlConstants.IDVP_WRITE}>
+                                <PrimaryButton onClick={onEmptyListPlaceholderActionClick}>
+                                    <Icon name="add" />
+                                    {t("console:develop.features.idvp.buttons.addIDVP")}
+                                </PrimaryButton>
+                            </Show>
+                        )
+                    }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    subtitle={ [
-                        t("console:develop.features.idvp.placeholders.emptyIDVPList.subtitles.0")
-                    ] }
-                    data-testid={ `${ componentId }-empty-placeholder` }
+                    subtitle={[t("console:develop.features.idvp.placeholders.emptyIDVPList.subtitles.0")]}
+                    data-testid={`${componentId}-empty-placeholder`}
                 />
             );
         }
@@ -215,47 +217,38 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
                 id: "name",
                 key: "name",
                 render: (idvp: IdentityVerificationProviderInterface): ReactNode => {
-                    const templateType: IDVPTemplateItemInterface= idvpTemplateTypeList?.find(
-                        (template:IDVPTemplateItemInterface) => template.id === idvp.Type
+                    const templateType: IDVPTemplateItemInterface = idvpTemplateTypeList?.find(
+                        (template: IDVPTemplateItemInterface) => template.id === idvp.Type
                     );
 
                     return (
-                        <Header
-                            image
-                            as="h6"
-                            className="header-with-icon"
-                            data-testid={ `${ componentId }-item-heading` }
-                        >
-                            {
-                                templateType?.image
-                                    ? (
-                                        <AppAvatar
+                        <Header image as="h6" className="header-with-icon" data-testid={`${componentId}-item-heading`}>
+                            {templateType?.image ? (
+                                <AppAvatar
+                                    size="mini"
+                                    name={idvp.Name}
+                                    image={templateType.image}
+                                    spaced="right"
+                                    data-testid={`${componentId}-item-image`}
+                                />
+                            ) : (
+                                <AppAvatar
+                                    image={
+                                        <AnimatedAvatar
+                                            name={idvp.Name}
                                             size="mini"
-                                            name={ idvp.Name }
-                                            image={ templateType.image }
-                                            spaced="right"
-                                            data-testid={ `${ componentId }-item-image` }
+                                            data-testid={`${componentId}-item-image-inner`}
                                         />
-                                    )
-                                    : (
-                                        <AppAvatar
-                                            image={ (
-                                                <AnimatedAvatar
-                                                    name={ idvp.Name }
-                                                    size="mini"
-                                                    data-testid={ `${componentId}-item-image-inner` }
-                                                />
-                                            ) }
-                                            size="mini"
-                                            spaced="right"
-                                            data-testid={ `${componentId}-item-image` }
-                                        />
-                                    )
-                            }
+                                    }
+                                    size="mini"
+                                    spaced="right"
+                                    data-testid={`${componentId}-item-image`}
+                                />
+                            )}
                             <Header.Content>
-                                { idvp.Name }
-                                <Header.Subheader data-testid={ `${componentId}-item-sub-heading` }>
-                                    { idvp.description }
+                                {idvp.Name}
+                                <Header.Subheader data-testid={`${componentId}-item-sub-heading`}>
+                                    {idvp.description}
                                 </Header.Subheader>
                             </Header.Content>
                         </Header>
@@ -286,7 +279,7 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
 
         return [
             {
-                "data-componentid": `${ componentId }-item-edit-button`,
+                "data-componentid": `${componentId}-item-edit-button`,
                 hidden: (): boolean => false,
                 icon: (): SemanticICONS => {
                     const hasUpdateScopes: boolean = hasRequiredScopes(
@@ -312,7 +305,7 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
                 renderer: "semantic-icon"
             },
             {
-                "data-componentid": `${ componentId }-item-delete-button`,
+                "data-componentid": `${componentId}-item-delete-button`,
                 hidden: (): boolean => {
                     return !hasRequiredScopes(
                         featureConfig?.identityVerificationProviders,
@@ -338,32 +331,32 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
     const getIdvpDeleteConfirmationModal = (): ReactElement => {
         return (
             <ConfirmationModal
-                primaryActionLoading={ loading }
-                onClose={ (): void => setShowDeleteConfirmationModal(false) }
+                primaryActionLoading={loading}
+                onClose={(): void => setShowDeleteConfirmationModal(false)}
                 type="negative"
-                open={ showDeleteConfirmationModal }
-                assertion={ selectedIdvpToBeDeleted?.Name }
-                assertionHint={ t("console:develop.features.idvp.confirmations.deleteIDVP.assertionHint") }
+                open={showDeleteConfirmationModal}
+                assertion={selectedIdvpToBeDeleted?.Name}
+                assertionHint={t("console:develop.features.idvp.confirmations.deleteIDVP.assertionHint")}
                 assertionType="checkbox"
-                primaryAction={ t("common:confirm") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                onPrimaryActionClick={ (): void => handleIdvpDeletion(selectedIdvpToBeDeleted.id) }
-                data-componentid={ `${ componentId }-delete-confirmation-modal` }
-                closeOnDimmerClick={ false }
+                primaryAction={t("common:confirm")}
+                secondaryAction={t("common:cancel")}
+                onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                onPrimaryActionClick={(): void => handleIdvpDeletion(selectedIdvpToBeDeleted.id)}
+                data-componentid={`${componentId}-delete-confirmation-modal`}
+                closeOnDimmerClick={false}
             >
-                <ConfirmationModal.Header data-componentid={ `${ componentId }-delete-confirmation-modal-header` }>
-                    { t("console:develop.features.idvp.confirmations.deleteIDVP.header") }
+                <ConfirmationModal.Header data-componentid={`${componentId}-delete-confirmation-modal-header`}>
+                    {t("console:develop.features.idvp.confirmations.deleteIDVP.header")}
                 </ConfirmationModal.Header>
                 <ConfirmationModal.Message
                     attached
                     negative
-                    data-componentid={ `${ componentId }-delete-confirmation-modal-message` }
+                    data-componentid={`${componentId}-delete-confirmation-modal-message`}
                 >
-                    { t("console:develop.features.idvp.confirmations.deleteIDVP.message") }
+                    {t("console:develop.features.idvp.confirmations.deleteIDVP.message")}
                 </ConfirmationModal.Message>
-                <ConfirmationModal.Content data-componentid={ `${ componentId }-delete-confirmation-modal-content` }>
-                    { t("console:develop.features.idvp.confirmations.deleteIDVP.content") }
+                <ConfirmationModal.Content data-componentid={`${componentId}-delete-confirmation-modal-content`}>
+                    {t("console:develop.features.idvp.confirmations.deleteIDVP.content")}
                 </ConfirmationModal.Content>
             </ConfirmationModal>
         );
@@ -373,25 +366,25 @@ export const IdentityVerificationProviderList: FunctionComponent<IdentityVerific
         <>
             <DataTable<IdentityVerificationProviderInterface>
                 className="identity-providers-table"
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ idvpList?.identityVerificationProviders }
-                onRowClick={ (e: SyntheticEvent, idvp: IdentityVerificationProviderInterface): void => {
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={idvpList?.identityVerificationProviders}
+                onRowClick={(e: SyntheticEvent, idvp: IdentityVerificationProviderInterface): void => {
                     handleIdentityVerificationProviderEdit(idvp.id);
                     onListItemClick && onListItemClick(e, idvp);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ false }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-testid={ componentId }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={false}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-testid={componentId}
             />
-            { selectedIdvpToBeDeleted && getIdvpDeleteConfirmationModal() }
+            {selectedIdvpToBeDeleted && getIdvpDeleteConfirmationModal()}
         </>
     );
 };

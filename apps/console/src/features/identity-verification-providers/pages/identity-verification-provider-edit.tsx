@@ -17,28 +17,15 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
-import {
-    AnimatedAvatar,
-    AppAvatar,
-    TabPageLayout
-} from "@wso2is/react-components";
+import { AnimatedAvatar, AppAvatar, TabPageLayout } from "@wso2is/react-components";
 import { hasRequiredScopes } from "modules/core/helpers";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    useEffect,
-    useMemo,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
-import {
-    useIDVPTemplateTypeMetadata,
-    useIdentityVerificationProvider,
-    useUIMetadata
-} from "../api";
+import { AppConstants, AppState, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
+import { useIDVPTemplateTypeMetadata, useIdentityVerificationProvider, useUIMetadata } from "../api";
 import { EditIdentityVerificationProvider } from "../components";
 import { IdentityVerificationProviderConstants } from "../constants";
 import { IDVPTemplateItemInterface } from "../models";
@@ -58,21 +45,16 @@ type IDVPEditPagePropsInterface = IdentifiableComponentInterface;
 const IdentityVerificationProviderEditPage: FunctionComponent<IDVPEditPagePropsInterface> = (
     props: IDVPEditPagePropsInterface & RouteComponentProps
 ): ReactElement => {
-
-    const {
-        location,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { location, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
-    const [ tabIdentifier, setTabIdentifier ] = useState<string>();
-    const [ isAutomaticTabRedirectionEnabled, setIsAutomaticTabRedirectionEnabled ] = useState<boolean>(false);
+    const [tabIdentifier, setTabIdentifier] = useState<string>();
+    const [isAutomaticTabRedirectionEnabled, setIsAutomaticTabRedirectionEnabled] = useState<boolean>(false);
 
-    const getIDVPId = (pathname : string): string => {
-
+    const getIDVPId = (pathname: string): string => {
         const path: string[] = pathname.split("/");
 
-        return path[ path.length - 1 ];
+        return path[path.length - 1];
     };
 
     const {
@@ -82,11 +64,7 @@ const IdentityVerificationProviderEditPage: FunctionComponent<IDVPEditPagePropsI
         mutate: refetchIDVP
     } = useIdentityVerificationProvider(getIDVPId(location.pathname));
 
-    const {
-        data: uiMetaData,
-        error: uiMetaDataLoadError,
-        isLoading: isUIMetadataLoading
-    } = useUIMetadata(idvp?.Type);
+    const { data: uiMetaData, error: uiMetaDataLoadError, isLoading: isUIMetadataLoading } = useUIMetadata(idvp?.Type);
 
     const {
         data: idvpTemplateTypeMetadata,
@@ -102,7 +80,7 @@ const IdentityVerificationProviderEditPage: FunctionComponent<IDVPEditPagePropsI
             featureConfig?.identityVerificationProviders?.scopes?.update,
             allowedScopes
         );
-    }, [ featureConfig, allowedScopes ]);
+    }, [featureConfig, allowedScopes]);
 
     const isDeletePermitted: boolean = useMemo(() => {
         return hasRequiredScopes(
@@ -110,13 +88,13 @@ const IdentityVerificationProviderEditPage: FunctionComponent<IDVPEditPagePropsI
             featureConfig?.identityVerificationProviders?.scopes?.delete,
             allowedScopes
         );
-    }, [ featureConfig, allowedScopes ]);
+    }, [featureConfig, allowedScopes]);
 
     /**
      * Checks if the user needs to go to a specific tab index.
      */
     useEffect(() => {
-        const tabName: string =  location.state as string;
+        const tabName: string = location.state as string;
 
         if (!tabName) {
             return;
@@ -134,27 +112,27 @@ const IdentityVerificationProviderEditPage: FunctionComponent<IDVPEditPagePropsI
             return;
         }
         handleIDVPFetchRequestError(idvpFetchError);
-    }, [ idvpFetchError ]);
+    }, [idvpFetchError]);
 
     /**
      * Show error notification if the API encounters an error while fetching the UI metadata for IDVP.
      */
     useEffect(() => {
-        if(!uiMetaDataLoadError){
+        if (!uiMetaDataLoadError) {
             return;
         }
         handleUIMetadataLoadError(uiMetaDataLoadError);
-    }, [ uiMetaDataLoadError ]);
+    }, [uiMetaDataLoadError]);
 
     /**
      * Show error notification if the API encounters an error while fetching the IDVP template types.
      */
     useEffect(() => {
-        if(!idvpTemplateTypeMetadataLoadError){
+        if (!idvpTemplateTypeMetadataLoadError) {
             return;
         }
         handleIDVPTemplateTypesLoadError(idvpTemplateTypeMetadataLoadError);
-    }, [ idvpTemplateTypeMetadataLoadError ]);
+    }, [idvpTemplateTypeMetadataLoadError]);
 
     /**
      * Handles the back button click event.
@@ -162,7 +140,6 @@ const IdentityVerificationProviderEditPage: FunctionComponent<IDVPEditPagePropsI
      * @returns void
      */
     const handleBackButtonClick = (): void => {
-
         history.push(AppConstants.getPaths().get(IdentityVerificationProviderConstants.IDVP_PATH));
     };
 
@@ -172,7 +149,6 @@ const IdentityVerificationProviderEditPage: FunctionComponent<IDVPEditPagePropsI
      * @returns void
      */
     const onIdentityVerificationProviderDelete = (): void => {
-
         history.push(AppConstants.getPaths().get(IdentityVerificationProviderConstants.IDVP_PATH));
     };
 
@@ -192,73 +168,52 @@ const IdentityVerificationProviderEditPage: FunctionComponent<IDVPEditPagePropsI
      * @returns React element containing IDVP image.
      */
     const resolveIDVPImage = (idvpTemplateType: IDVPTemplateItemInterface): ReactElement => {
-
         if (!idvpTemplateType) {
-            return (
-                <AppAvatar
-                    hoverable={ false }
-                    isLoading={ true }
-                    size="tiny"
-                />
-            );
+            return <AppAvatar hoverable={false} isLoading={true} size="tiny" />;
         }
 
         if (idvpTemplateType.image) {
             return (
-                <AppAvatar
-                    hoverable={ false }
-                    name={ idvpTemplateType.name }
-                    image={ idvpTemplateType.image }
-                    size="tiny"
-                />
+                <AppAvatar hoverable={false} name={idvpTemplateType.name} image={idvpTemplateType.image} size="tiny" />
             );
         }
 
-        return (
-            <AnimatedAvatar
-                hoverable={ false }
-                name={ idvpTemplateType.name }
-                size="tiny"
-                floated="left"
-            />
-        );
-
-
+        return <AnimatedAvatar hoverable={false} name={idvpTemplateType.name} size="tiny" floated="left" />;
     };
 
     return (
         <TabPageLayout
             pageTitle="Edit Identity Verification Provider"
-            isLoading={ isIDVPFetchInProgress || isIDVPTemplateTypeMetadataLoading }
-            loadingStateOptions={ {
+            isLoading={isIDVPFetchInProgress || isIDVPTemplateTypeMetadataLoading}
+            loadingStateOptions={{
                 count: 5,
                 imageType: "square"
-            } }
-            title={ idvp?.Name }
-            contentTopMargin={ true }
-            description={ idvp?.description }
-            image={ resolveIDVPImage(idvpTemplateTypeMetadata) }
-            backButton={ {
-                "data-componentid": `${ componentId }-page-back-button`,
+            }}
+            title={idvp?.Name}
+            contentTopMargin={true}
+            description={idvp?.description}
+            image={resolveIDVPImage(idvpTemplateTypeMetadata)}
+            backButton={{
+                "data-componentid": `${componentId}-page-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:develop.pages.idvpTemplate.backButton")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            data-componentid={ `${ componentId }-page-layout` }
+            bottomMargin={false}
+            data-componentid={`${componentId}-page-layout`}
         >
             {
                 <EditIdentityVerificationProvider
-                    identityVerificationProvider={ idvp }
-                    isLoading={ isIDVPFetchInProgress || isUIMetadataLoading }
-                    onDelete={ onIdentityVerificationProviderDelete }
-                    onUpdate={ onIdentityVerificationProviderUpdate }
-                    data-testid={ componentId }
-                    isReadOnly={ isReadOnly }
-                    isDeletePermitted={ isDeletePermitted }
-                    isAutomaticTabRedirectionEnabled={ isAutomaticTabRedirectionEnabled }
-                    tabIdentifier={ tabIdentifier }
-                    uiMetaData={ uiMetaData }
+                    identityVerificationProvider={idvp}
+                    isLoading={isIDVPFetchInProgress || isUIMetadataLoading}
+                    onDelete={onIdentityVerificationProviderDelete}
+                    onUpdate={onIdentityVerificationProviderUpdate}
+                    data-testid={componentId}
+                    isReadOnly={isReadOnly}
+                    isDeletePermitted={isDeletePermitted}
+                    isAutomaticTabRedirectionEnabled={isAutomaticTabRedirectionEnabled}
+                    tabIdentifier={tabIdentifier}
+                    uiMetaData={uiMetaData}
                 />
             }
         </TabPageLayout>

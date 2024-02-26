@@ -18,11 +18,7 @@
 
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import {
-    EmptyPlaceholder,
-    ListLayout,
-    PageLayout
-} from "@wso2is/react-components";
+import { EmptyPlaceholder, ListLayout, PageLayout } from "@wso2is/react-components";
 import { AxiosError } from "axios";
 import find from "lodash-es/find";
 import isEmpty from "lodash-es/isEmpty";
@@ -35,7 +31,8 @@ import { getAllApplicationRolesList } from "../../../extensions/components/group
 import { ApplicationRoleInterface } from "../../../extensions/components/groups/models";
 import { getApplicationList } from "../../applications/api";
 import { ApplicationListInterface, ApplicationListItemInterface } from "../../applications/models";
-import { AppConstants, UIConstants, getEmptyPlaceholderIllustrations, history } from "../../core";
+import { AppConstants, UIConstants, getEmptyPlaceholderIllustrations } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { ApplicationRolesList } from "../components";
 
 type ApplicationRolesPageInterface = IdentifiableComponentInterface;
@@ -46,28 +43,25 @@ type ApplicationRolesPageInterface = IdentifiableComponentInterface;
  * @returns Application Roles page.
  */
 const ApplicationRolesPage = (props: ApplicationRolesPageInterface): ReactElement => {
-    const {
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
 
-    const isSubOrg: boolean = window[ "AppUtils" ].getConfig().organizationName;
+    const isSubOrg: boolean = window["AppUtils"].getConfig().organizationName;
 
-    const [ isListUpdated, setListUpdated ] = useState<boolean>(false);
-    const [ isError, setError ] = useState<boolean>(false);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ isApplicationRolesFetchRequestLoading, setIsApplicationRolesFetchRequestLoading ] = 
-        useState<boolean>(true);
-    const [ initialApplicationRolesList, setInitialApplicationRolesList ] = useState<ApplicationRoleInterface[]>([]);
-    const [ paginatedApplicationRoles, setPaginatedApplicationRoles ] = useState<ApplicationRoleInterface[]>([]);
-    
+    const [isListUpdated, setListUpdated] = useState<boolean>(false);
+    const [isError, setError] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [isApplicationRolesFetchRequestLoading, setIsApplicationRolesFetchRequestLoading] = useState<boolean>(true);
+    const [initialApplicationRolesList, setInitialApplicationRolesList] = useState<ApplicationRoleInterface[]>([]);
+    const [paginatedApplicationRoles, setPaginatedApplicationRoles] = useState<ApplicationRoleInterface[]>([]);
+
     const listItemLimit: number = UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT;
 
     useEffect(() => {
         setListUpdated(false);
-    }, [ isListUpdated ]);
+    }, [isListUpdated]);
 
     useEffect(() => {
         getAllApplicationRoles();
@@ -82,36 +76,53 @@ const ApplicationRolesPage = (props: ApplicationRolesPageInterface): ReactElemen
             .then((response: ApplicationRoleInterface[]) => {
                 filterApplicationsList(response);
                 setError(false);
-            }).catch((error: AxiosError) => {
+            })
+            .catch((error: AxiosError) => {
                 setError(true);
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? error?.response?.data?.detail ?? 
-                            t("extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." + 
-                                "error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message ??
-                            t("extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." +
-                                "error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t(
+                                    "extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." +
+                                        "error.description"
+                                ),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t(
+                                    "extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." +
+                                        "error.message"
+                                )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." + 
-                        "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." + 
-                        "genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." +
+                                "genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." +
+                                "genericError.message"
+                        )
+                    })
+                );
                 setIsApplicationRolesFetchRequestLoading(false);
             });
     };
 
     /**
      * Fetch the list of applications if there are roles.
-     */ 
+     */
+
     const filterApplicationsList = (roles: ApplicationRoleInterface[]) => {
         if (isEmpty(roles)) {
             setIsApplicationRolesFetchRequestLoading(false);
@@ -127,22 +138,32 @@ const ApplicationRolesPage = (props: ApplicationRolesPageInterface): ReactElemen
             .catch((error: AxiosError) => {
                 setError(true);
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.fetchApplications." +
-                            "error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.fetchApplications." +
+                                    "error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.fetchApplications" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.fetchApplications." +
-                        "genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.fetchApplications" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.fetchApplications." +
+                                "genericError.message"
+                        )
+                    })
+                );
                 setIsApplicationRolesFetchRequestLoading(false);
             });
     };
@@ -150,14 +171,17 @@ const ApplicationRolesPage = (props: ApplicationRolesPageInterface): ReactElemen
     /**
      * Map application list with application roles.
      */
-    const mapApplicationListWithApplicationRoles = (applications: ApplicationListItemInterface[],
-        roles: ApplicationRoleInterface[]) => {
-        
+    const mapApplicationListWithApplicationRoles = (
+        applications: ApplicationListItemInterface[],
+        roles: ApplicationRoleInterface[]
+    ) => {
         const filteredRoles: ApplicationRoleInterface[] = roles.filter((role: ApplicationRoleInterface) => {
-            const application: ApplicationListItemInterface = 
-                find(applications, (application: ApplicationListItemInterface) => {
+            const application: ApplicationListItemInterface = find(
+                applications,
+                (application: ApplicationListItemInterface) => {
                     return application.id === role?.app;
-                });
+                }
+            );
 
             if (application) {
                 role.appName = application?.name;
@@ -175,9 +199,9 @@ const ApplicationRolesPage = (props: ApplicationRolesPageInterface): ReactElemen
         setSearchQuery(query);
         const filteredRoles: ApplicationRoleInterface[] = initialApplicationRolesList.filter(
             (role: ApplicationRoleInterface) => {
-
                 return role.appName.toLowerCase().includes(query.toLowerCase());
-            });
+            }
+        );
 
         setPaginatedApplicationRoles(filteredRoles);
     };
@@ -185,14 +209,14 @@ const ApplicationRolesPage = (props: ApplicationRolesPageInterface): ReactElemen
     const advancedSearchFilter = (): ReactElement => (
         <Input
             className="m-3"
-            data-componentid={ `${ componentId }-search-input` }
-            icon={ <Icon name="search" /> }
+            data-componentid={`${componentId}-search-input`}
+            icon={<Icon name="search" />}
             iconPosition="left"
-            onChange={ (e: ChangeEvent<HTMLInputElement>) => searchApplications(e.target.value) }
-            value={ searchQuery }
-            placeholder={ t("extensions:console.applicationRoles.searchApplication") }
+            onChange={(e: ChangeEvent<HTMLInputElement>) => searchApplications(e.target.value)}
+            value={searchQuery}
+            placeholder={t("extensions:console.applicationRoles.searchApplication")}
             floated="left"
-            style={ { width: 300 } }
+            style={{ width: 300 }}
             transparent
         />
     );
@@ -211,51 +235,55 @@ const ApplicationRolesPage = (props: ApplicationRolesPageInterface): ReactElemen
 
     return (
         <PageLayout
-            title={ t("extensions:console.applicationRoles.heading") }
-            description={ t("extensions:console.applicationRoles.subHeading") }
-            pageTitle={ t("extensions:console.applicationRoles.heading") }
-            backButton={ isSubOrg 
-                ? {
-                    onClick: handleBackButtonClick,
-                    text: t("extensions:console.applicationRoles.roles.goBackToRoles")
-                }: null 
+            title={t("extensions:console.applicationRoles.heading")}
+            description={t("extensions:console.applicationRoles.subHeading")}
+            pageTitle={t("extensions:console.applicationRoles.heading")}
+            backButton={
+                isSubOrg
+                    ? {
+                          onClick: handleBackButtonClick,
+                          text: t("extensions:console.applicationRoles.roles.goBackToRoles")
+                      }
+                    : null
             }
         >
-            {
-                isError
-                    ? (
-                        <EmptyPlaceholder
-                            subtitle={ [ t("extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." + 
-                                "genericError.description") ] }
-                            title={ t("extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." + 
-                                "genericError.message") }
-                            image={ getEmptyPlaceholderIllustrations().genericError }
-                            imageSize="tiny"
-                        />
-                    )
-                    : (
-                        <ListLayout
-                            advancedSearch={ advancedSearchFilter() }
-                            onPageChange={ null }
-                            showPagination={ false }
-                            showTopActionPanel={
-                                !isApplicationRolesFetchRequestLoading && 
-                                !(!searchQuery && paginatedApplicationRoles?.length <= 0)
-                            }
-                            totalPages={ Math.ceil(initialApplicationRolesList?.length / listItemLimit) }
-                            totalListSize={ initialApplicationRolesList?.length }
-                            isLoading={ isApplicationRolesFetchRequestLoading }
-                        >
-                            <ApplicationRolesList
-                                data-componentid={ `${ componentId }-application-list` }
-                                isLoading={ isApplicationRolesFetchRequestLoading }
-                                onSearchQueryClear={ handleSearchQueryClear }
-                                roleList={ paginatedApplicationRoles }
-                                searchQuery={ searchQuery }
-                            />
-                        </ListLayout>
-                    )
-            }
+            {isError ? (
+                <EmptyPlaceholder
+                    subtitle={[
+                        t(
+                            "extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." +
+                                "genericError.description"
+                        )
+                    ]}
+                    title={t(
+                        "extensions:manage.groups.edit.roles.notifications.fetchApplicationRoles." +
+                            "genericError.message"
+                    )}
+                    image={getEmptyPlaceholderIllustrations().genericError}
+                    imageSize="tiny"
+                />
+            ) : (
+                <ListLayout
+                    advancedSearch={advancedSearchFilter()}
+                    onPageChange={null}
+                    showPagination={false}
+                    showTopActionPanel={
+                        !isApplicationRolesFetchRequestLoading &&
+                        !(!searchQuery && paginatedApplicationRoles?.length <= 0)
+                    }
+                    totalPages={Math.ceil(initialApplicationRolesList?.length / listItemLimit)}
+                    totalListSize={initialApplicationRolesList?.length}
+                    isLoading={isApplicationRolesFetchRequestLoading}
+                >
+                    <ApplicationRolesList
+                        data-componentid={`${componentId}-application-list`}
+                        isLoading={isApplicationRolesFetchRequestLoading}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        roleList={paginatedApplicationRoles}
+                        searchQuery={searchQuery}
+                    />
+                </ListLayout>
+            )}
         </PageLayout>
     );
 };

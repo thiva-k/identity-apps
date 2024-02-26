@@ -24,19 +24,9 @@ import Chip from "@oxygen-ui/react/Chip";
 import FormHelperText from "@oxygen-ui/react/FormHelperText";
 import InputLabel from "@oxygen-ui/react/InputLabel";
 import TextField from "@oxygen-ui/react/TextField";
-import {
-    AlertLevels,
-    IdentifiableComponentInterface,
-    SBACInterface
-} from "@wso2is/core/models";
+import { AlertLevels, IdentifiableComponentInterface, SBACInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import {
-    AutocompleteFieldAdapter,
-    FinalForm,
-    FinalFormField,
-    FormRenderProps,
-    FormSpy
-} from "@wso2is/form";
+import { AutocompleteFieldAdapter, FinalForm, FinalFormField, FormRenderProps, FormSpy } from "@wso2is/form";
 import { EmphasizedSegment, Hint, PrimaryButton } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
 import isEmpty from "lodash-es/isEmpty";
@@ -45,7 +35,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { AppConstants } from "../../core/constants/app-constants";
-import { history } from "../../core/helpers/history";
+import { history } from "@wso2is/features/core/helpers";
 import { FeatureConfigInterface } from "../../core/models/config";
 import useGetOrganizations from "../../organizations/api/use-get-organizations";
 import { OrganizationInterface } from "../../organizations/models/organizations";
@@ -95,10 +85,7 @@ const FORM_ID: string = "edit-organization-email-domains-form";
 const AddOrganizationDiscoveryDomains: FunctionComponent<AddOrganizationDiscoveryDomainsPropsInterface> = (
     props: AddOrganizationDiscoveryDomainsPropsInterface
 ): ReactElement => {
-    const {
-        isReadOnly,
-        ["data-componentid"]: componentId
-    } = props;
+    const { isReadOnly, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
@@ -108,22 +95,24 @@ const AddOrganizationDiscoveryDomains: FunctionComponent<AddOrganizationDiscover
 
     const { data: discoverableOrganizations } = useGetOrganizationDiscovery(true, null, null, null);
 
-    const [ emailDomains, setEmailDomains ] = useState<string[]>([]);
-    const [ isEmailDomainDataError, setIsEmailDomainDataError ] = useState<boolean>(false);
-    const [ isEmailDomainAvailableError, setIsEmailDomainAvailableError ] = useState<boolean>(false);
+    const [emailDomains, setEmailDomains] = useState<string[]>([]);
+    const [isEmailDomainDataError, setIsEmailDomainDataError] = useState<boolean>(false);
+    const [isEmailDomainAvailableError, setIsEmailDomainAvailableError] = useState<boolean>(false);
 
     /**
      * Filter the already configured organizations from the list of organizations.
      */
     const filteredDiscoverableOrganizations: OrganizationInterface[] = useMemo(() => {
-        return organizations?.organizations?.filter((organization: OrganizationInterface) => {
-            return !discoverableOrganizations?.organizations?.some(
-                (discoverableOrganization: OrganizationDiscoveryInterface) => {
-                    return discoverableOrganization.organizationId === organization.id;
-                }
-            );
-        }) ?? [];
-    }, [ discoverableOrganizations, organizations ]);
+        return (
+            organizations?.organizations?.filter((organization: OrganizationInterface) => {
+                return !discoverableOrganizations?.organizations?.some(
+                    (discoverableOrganization: OrganizationDiscoveryInterface) => {
+                        return discoverableOrganization.organizationId === organization.id;
+                    }
+                );
+            }) ?? []
+        );
+    }, [discoverableOrganizations, organizations]);
 
     const optionsArray: string[] = [];
 
@@ -182,7 +171,6 @@ const AddOrganizationDiscoveryDomains: FunctionComponent<AddOrganizationDiscover
      * @param values - Email domains.
      */
     const checkEmailDomainAvailability = async (emailDomain: string): Promise<boolean> => {
-
         let available: boolean = true;
 
         await checkEmailDomainAvailable(emailDomain)
@@ -214,8 +202,7 @@ const AddOrganizationDiscoveryDomains: FunctionComponent<AddOrganizationDiscover
      * @param emailDomainList - Email domains.
      */
     const validateEmailDomain = async (emailDomainList: string[]) => {
-
-        const isEmailDomainValid: boolean = FormValidation.domain(emailDomainList[emailDomainList.length-1]);
+        const isEmailDomainValid: boolean = FormValidation.domain(emailDomainList[emailDomainList.length - 1]);
 
         if (!isEmailDomainValid) {
             setIsEmailDomainDataError(true);
@@ -224,8 +211,9 @@ const AddOrganizationDiscoveryDomains: FunctionComponent<AddOrganizationDiscover
             return;
         }
 
-        const isEmailDomainAvailable: boolean = await checkEmailDomainAvailability(emailDomainList[
-            emailDomainList.length-1]);
+        const isEmailDomainAvailable: boolean = await checkEmailDomainAvailability(
+            emailDomainList[emailDomainList.length - 1]
+        );
 
         if (!isEmailDomainAvailable) {
             setIsEmailDomainAvailableError(true);
@@ -236,78 +224,72 @@ const AddOrganizationDiscoveryDomains: FunctionComponent<AddOrganizationDiscover
     return (
         <EmphasizedSegment padded="very">
             <FinalForm
-                initialValues={ null }
-                keepDirtyOnReinitialize={ true }
-                onSubmit={ (values: AddOrganizationDiscoveryDomainsFormValuesInterface) => {
+                initialValues={null}
+                keepDirtyOnReinitialize={true}
+                onSubmit={(values: AddOrganizationDiscoveryDomainsFormValuesInterface) => {
                     handleSubmit(values);
-                } }
-                render={ ({ handleSubmit, submitting }: FormRenderProps) => {
+                }}
+                render={({ handleSubmit, submitting }: FormRenderProps) => {
                     return (
-                        <form
-                            id={ FORM_ID }
-                            onSubmit={ handleSubmit }
-                            className="add-organization-email-domain-form"
-                        >
+                        <form id={FORM_ID} onSubmit={handleSubmit} className="add-organization-email-domain-form">
                             <FinalFormField
                                 displayEmpty
                                 fullWidth
-                                FormControlProps={ {
+                                FormControlProps={{
                                     margin: "dense"
-                                } }
+                                }}
                                 ariaLabel="Organization name field"
-                                data-componentid={ `${componentId}-form-organization-name-field` }
+                                data-componentid={`${componentId}-form-organization-name-field`}
                                 name="organizationName"
                                 type="text"
-                                label={ t(
+                                label={t(
                                     "console:manage.features.organizationDiscovery.assign.form." +
-                                    "fields.organizationName.label"
-                                ) }
+                                        "fields.organizationName.label"
+                                )}
                                 placeholder={
                                     isEmpty(organizations?.organizations)
                                         ? t(
-                                            "console:manage.features.organizationDiscovery.assign.form." +
-                                            "fields.organizationName.emptyPlaceholder.0"
-                                        )
-                                        : (
-                                            isEmpty(filteredDiscoverableOrganizations)
-                                                ? t(
-                                                    "console:manage.features.organizationDiscovery.assign.form." +
-                                                    "fields.organizationName.emptyPlaceholder.1"
-                                                ): t(
-                                                    "console:manage.features.organizationDiscovery.assign.form." +
-                                                    "fields.organizationName.placeholder"
-                                                ))
+                                              "console:manage.features.organizationDiscovery.assign.form." +
+                                                  "fields.organizationName.emptyPlaceholder.0"
+                                          )
+                                        : isEmpty(filteredDiscoverableOrganizations)
+                                        ? t(
+                                              "console:manage.features.organizationDiscovery.assign.form." +
+                                                  "fields.organizationName.emptyPlaceholder.1"
+                                          )
+                                        : t(
+                                              "console:manage.features.organizationDiscovery.assign.form." +
+                                                  "fields.organizationName.placeholder"
+                                          )
                                 }
-                                helperText={ (
+                                helperText={
                                     <Hint>
-                                        { t(
+                                        {t(
                                             "console:manage.features.organizationDiscovery.assign.form." +
-                                            "fields.organizationName.hint"
-                                        ) }
+                                                "fields.organizationName.hint"
+                                        )}
                                     </Hint>
-                                ) }
-                                component={ AutocompleteFieldAdapter }
-                                options={
-                                    filteredDiscoverableOrganizations?.map((organization: OrganizationInterface) => {
-                                        return organization.name;
-                                    })
                                 }
-                                renderValue={ (selected: string) => {
+                                component={AutocompleteFieldAdapter}
+                                options={filteredDiscoverableOrganizations?.map(
+                                    (organization: OrganizationInterface) => {
+                                        return organization.name;
+                                    }
+                                )}
+                                renderValue={(selected: string) => {
                                     if (!selected) {
                                         return (
                                             <em>
-                                                {
-                                                    t(
-                                                        "console:manage.features.organizationDiscovery.assign.form." +
+                                                {t(
+                                                    "console:manage.features.organizationDiscovery.assign.form." +
                                                         "fields.organizationName.placeholder"
-                                                    )
-                                                }
+                                                )}
                                             </em>
                                         );
                                     }
 
                                     return selected;
-                                } }
+                                }}
                                 required
                             />
                             <Autocomplete
@@ -317,91 +299,86 @@ const AddOrganizationDiscoveryDomains: FunctionComponent<AddOrganizationDiscover
                                 disableCloseOnSelect
                                 size="small"
                                 id="tags-filled"
-                                options={ optionsArray.map((option: string) => option) }
-                                renderTags={ (value: readonly string[], getTagProps: AutocompleteRenderGetTagProps) => {
+                                options={optionsArray.map((option: string) => option)}
+                                renderTags={(value: readonly string[], getTagProps: AutocompleteRenderGetTagProps) => {
                                     return value.map((option: string, index: number) => (
-                                        <Chip
-                                            key={ index }
-                                            size="medium"
-                                            label={ option }
-                                            { ...getTagProps({ index }) }
-                                        />
+                                        <Chip key={index} size="medium" label={option} {...getTagProps({ index })} />
                                     ));
-                                } }
-                                renderInput={ (params: AutocompleteRenderInputParams) => (
+                                }}
+                                renderInput={(params: AutocompleteRenderInputParams) => (
                                     <>
-                                        <InputLabel htmlFor="tags-filled" disableAnimation shrink={ false }>
-                                            { t(
+                                        <InputLabel htmlFor="tags-filled" disableAnimation shrink={false}>
+                                            {t(
                                                 "console:manage.features.organizationDiscovery.assign.form." +
-                                                "fields.emailDomains.label"
-                                            ) }
+                                                    "fields.emailDomains.label"
+                                            )}
                                         </InputLabel>
                                         <TextField
                                             id="tags-filled"
-                                            InputLabelProps={ {
+                                            InputLabelProps={{
                                                 required: true
-                                            } }
-                                            { ...params }
+                                            }}
+                                            {...params}
                                             margin="dense"
-                                            error={ isEmailDomainDataError || isEmailDomainAvailableError }
-                                            helperText= {
+                                            error={isEmailDomainDataError || isEmailDomainAvailableError}
+                                            helperText={
                                                 isEmailDomainDataError
                                                     ? t(
-                                                        "console:manage.features.organizationDiscovery.assign.form." +
-                                                        "fields.emailDomains.validations.invalid.0"
-                                                    )
+                                                          "console:manage.features.organizationDiscovery.assign.form." +
+                                                              "fields.emailDomains.validations.invalid.0"
+                                                      )
                                                     : isEmailDomainAvailableError
-                                                        ? t(
-                                                            "console:manage.features.organizationDiscovery.assign." +
-                                                            "form.fields.emailDomains.validations.invalid.1"
-                                                        )
-                                                        : null
+                                                    ? t(
+                                                          "console:manage.features.organizationDiscovery.assign." +
+                                                              "form.fields.emailDomains.validations.invalid.1"
+                                                      )
+                                                    : null
                                             }
-                                            placeholder={ t(
+                                            placeholder={t(
                                                 "console:manage.features.organizationDiscovery.assign.form." +
-                                                "fields.emailDomains.placeholder"
-                                            ) }
+                                                    "fields.emailDomains.placeholder"
+                                            )}
                                         />
                                     </>
-                                ) }
-                                onChange={ (_: SyntheticEvent<Element, Event>, value: string[]) => {
+                                )}
+                                onChange={(_: SyntheticEvent<Element, Event>, value: string[]) => {
                                     setEmailDomains(value);
                                     if (value.length > 0) {
                                         validateEmailDomain(value);
                                     }
-                                } }
-                                onInputChange={ () => {
+                                }}
+                                onInputChange={() => {
                                     setIsEmailDomainDataError(false);
                                     setIsEmailDomainAvailableError(false);
-                                } }
+                                }}
                             />
                             <FormHelperText>
                                 <Hint>
-                                    { t(
+                                    {t(
                                         "console:manage.features.organizationDiscovery.assign.form." +
-                                        "fields.emailDomains.hint"
-                                    ) }
+                                            "fields.emailDomains.hint"
+                                    )}
                                 </Hint>
                             </FormHelperText>
-                            <FormSpy subscription={ { values: true } }>
-                                { ({ values }: { values: AddOrganizationDiscoveryDomainsFormValuesInterface }) => (
+                            <FormSpy subscription={{ values: true }}>
+                                {({ values }: { values: AddOrganizationDiscoveryDomainsFormValuesInterface }) =>
                                     !isReadOnly && (
                                         <PrimaryButton
-                                            data-componentid={ `${componentId}-form-submit-button` }
+                                            data-componentid={`${componentId}-form-submit-button`}
                                             disabled={
                                                 submitting || isEmpty(emailDomains) || isEmpty(values?.organizationName)
                                             }
-                                            loading={ submitting }
+                                            loading={submitting}
                                             type="submit"
                                         >
-                                            { t("console:manage.features.organizationDiscovery.assign.buttons.assign") }
+                                            {t("console:manage.features.organizationDiscovery.assign.buttons.assign")}
                                         </PrimaryButton>
                                     )
-                                ) }
+                                }
                             </FormSpy>
                         </form>
                     );
-                } }
+                }}
             />
         </EmphasizedSegment>
     );

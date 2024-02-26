@@ -24,7 +24,8 @@ import React, { FunctionComponent, ReactElement } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { ReactComponent as SMSIcon } from "../../../themes/default/assets/images/icons/sms-icon.svg";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
+import { AppConstants, AppState, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
 import { SettingsSection } from "../settings/settings-section";
 import "./notification-channels.scss";
@@ -48,7 +49,7 @@ export const EmailAndSMSPage: FunctionComponent<EmailAndSMSPageInterface> = (
     const { t } = useTranslation();
     const { isSuperOrganization } = useGetCurrentOrganizationType();
 
-    const featureConfig : FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
+    const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
     /**
      * Handle connector advance setting selection.
@@ -63,54 +64,48 @@ export const EmailAndSMSPage: FunctionComponent<EmailAndSMSPageInterface> = (
 
     return (
         <PageLayout
-            pageTitle={ t("extensions:develop.notificationChannel.heading") }
-            title={ t("extensions:develop.notificationChannel.title") }
-            description={ t("extensions:develop.notificationChannel.description") }
-            data-testid={ `${componentid}-page-layout` }
+            pageTitle={t("extensions:develop.notificationChannel.heading")}
+            title={t("extensions:develop.notificationChannel.title")}
+            description={t("extensions:develop.notificationChannel.description")}
+            data-testid={`${componentid}-page-layout`}
         >
-            <Grid container rowSpacing={ 3 } columnSpacing={ 3 }>
-                { featureConfig.emailProviders?.enabled
-                  && !(featureConfig?.emailProviders?.disabledFeatures?.includes("superTenantProvider"))
-                  && (
-                      <Grid xs={ 12 } md={ 6 } lg={ 4 }>
-                          <SettingsSection
-                              data-componentid={ "email-provider-card" }
-                              description={ t("extensions:develop.emailProviders.description") }
-                              icon={ <EnvelopeIcon size="small" className="icon"/> }
-                              header={ t("extensions:develop.emailProviders.heading") }
-                              onPrimaryActionClick={ isSuperOrganization() ? null : handleEmailSelection }
-                              primaryAction={ isSuperOrganization() ? null : t("common:configure") }
-                              placeholder={
-                                  isSuperOrganization() ?
-                                      (<Trans
-                                          i18nKey={
-                                              "extensions:develop.emailProviders.note"
-                                          }
-                                      >
-                                    Email provider configurations for the super organization
-                                    can only be updated through <strong>deployment.toml</strong>
-                                      </Trans>) : null
-                              }
-                              connectorEnabled={ !isSuperOrganization() }
-                          />
-                      </Grid>
-                  ) }
+            <Grid container rowSpacing={3} columnSpacing={3}>
+                {featureConfig.emailProviders?.enabled &&
+                    !featureConfig?.emailProviders?.disabledFeatures?.includes("superTenantProvider") && (
+                        <Grid xs={12} md={6} lg={4}>
+                            <SettingsSection
+                                data-componentid={"email-provider-card"}
+                                description={t("extensions:develop.emailProviders.description")}
+                                icon={<EnvelopeIcon size="small" className="icon" />}
+                                header={t("extensions:develop.emailProviders.heading")}
+                                onPrimaryActionClick={isSuperOrganization() ? null : handleEmailSelection}
+                                primaryAction={isSuperOrganization() ? null : t("common:configure")}
+                                placeholder={
+                                    isSuperOrganization() ? (
+                                        <Trans i18nKey={"extensions:develop.emailProviders.note"}>
+                                            Email provider configurations for the super organization can only be updated
+                                            through <strong>deployment.toml</strong>
+                                        </Trans>
+                                    ) : null
+                                }
+                                connectorEnabled={!isSuperOrganization()}
+                            />
+                        </Grid>
+                    )}
 
-                { featureConfig.smsProviders?.enabled && (
-                    <Grid xs={ 12 } md={ 6 } lg={ 4 }>
+                {featureConfig.smsProviders?.enabled && (
+                    <Grid xs={12} md={6} lg={4}>
                         <SettingsSection
-                            data-componentid={ "sms-provider-card" }
-                            description={ t("extensions:develop.smsProviders.description") }
-                            icon={ <SMSIcon fill="white" /> }
-                            header={
-                                t("extensions:develop.smsProviders.heading")
-                            }
-                            onPrimaryActionClick={ handleSMSSelection }
-                            primaryAction={ t("common:configure") }
+                            data-componentid={"sms-provider-card"}
+                            description={t("extensions:develop.smsProviders.description")}
+                            icon={<SMSIcon fill="white" />}
+                            header={t("extensions:develop.smsProviders.heading")}
+                            onPrimaryActionClick={handleSMSSelection}
+                            primaryAction={t("common:configure")}
                             connectorEnabled
                         />
                     </Grid>
-                ) }
+                )}
             </Grid>
         </PageLayout>
     );

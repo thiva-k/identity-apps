@@ -22,7 +22,8 @@ import { GridLayout, PageLayout, Section } from "@wso2is/react-components";
 import React, { FunctionComponent, MutableRefObject, ReactElement, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Divider, Grid, Ref } from "semantic-ui-react";
-import { AppConstants, history } from "../../../../features/core";
+import { AppConstants } from "../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 import UsernameValidationIcon from "../../../assets/images/icons/username-validation-icon.svg";
 
 /**
@@ -39,7 +40,7 @@ type AccountLoginPageInterface = IdentifiableComponentInterface;
 export const AccountLoginPage: FunctionComponent<AccountLoginPageInterface> = (
     props: AccountLoginPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const pageContextRef: MutableRefObject<HTMLElement> = useRef(null);
 
@@ -58,42 +59,41 @@ export const AccountLoginPage: FunctionComponent<AccountLoginPageInterface> = (
 
     return (
         <PageLayout
-            pageTitle={ t("extensions:manage.accountLogin.pageTitle") }
-            title={ t("extensions:manage.accountLogin.pageTitle") }
-            description={ t("extensions:manage.accountLogin.description") }
-            data-componentid={ `${ componentId }-page-layout` }
+            pageTitle={t("extensions:manage.accountLogin.pageTitle")}
+            title={t("extensions:manage.accountLogin.pageTitle")}
+            description={t("extensions:manage.accountLogin.description")}
+            data-componentid={`${componentId}-page-layout`}
         >
-            <Ref innerRef={ pageContextRef }>
-                <GridLayout
-                    showTopActionPanel={ false }
-                >
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 12 }>
+            <Ref innerRef={pageContextRef}>
+                <GridLayout showTopActionPanel={false}>
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={12}>
                             <Section
-                                data-componentid={ `${componentId}-section` }
-                                description={ t("extensions:manage.accountLogin.editPage.description") }
-                                icon={ UsernameValidationIcon }
-                                header={ t("extensions:manage.accountLogin.editPage.pageTitle") }
-                                onPrimaryActionClick={ handleSelection }
-                                primaryAction={ "Configure" }
+                                data-componentid={`${componentId}-section`}
+                                description={t("extensions:manage.accountLogin.editPage.description")}
+                                icon={UsernameValidationIcon}
+                                header={t("extensions:manage.accountLogin.editPage.pageTitle")}
+                                onPrimaryActionClick={handleSelection}
+                                primaryAction={"Configure"}
                             >
-                                <Divider hidden/>
+                                <Divider hidden />
                             </Section>
                         </Grid.Column>
                     </Grid.Row>
-                    <Divider hidden/>
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 12 }>
+                    <Divider hidden />
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={12}>
                             <Section
-                                data-componentid={ `${componentId}-alternative-login-identifier-section` }
-                                description={ t("extensions:manage.accountLogin.alternativeLoginIdentifierPage." +
-                                                "description") }
-                                icon={ <ArrowLoopRightUserIcon className="icon" /> }
-                                header={ t("extensions:manage.accountLogin.alternativeLoginIdentifierPage.pageTitle") }
-                                onPrimaryActionClick={ handleAlternativeLoginIdentifierSelection }
-                                primaryAction={ "Configure" }
+                                data-componentid={`${componentId}-alternative-login-identifier-section`}
+                                description={t(
+                                    "extensions:manage.accountLogin.alternativeLoginIdentifierPage." + "description"
+                                )}
+                                icon={<ArrowLoopRightUserIcon className="icon" />}
+                                header={t("extensions:manage.accountLogin.alternativeLoginIdentifierPage.pageTitle")}
+                                onPrimaryActionClick={handleAlternativeLoginIdentifierSelection}
+                                primaryAction={"Configure"}
                             >
-                                <Divider hidden/>
+                                <Divider hidden />
                             </Section>
                         </Grid.Column>
                     </Grid.Row>

@@ -33,9 +33,7 @@ import {
     getInboundProtocolConfig,
     useApplicationList
 } from "../../../../features/applications/api";
-import {
-    MinimalAppCreateWizard
-} from "../../../../features/applications/components/wizard/minimal-application-create-wizard";
+import { MinimalAppCreateWizard } from "../../../../features/applications/components/wizard/minimal-application-create-wizard";
 import { ApplicationManagementConstants } from "../../../../features/applications/constants";
 import {
     ApplicationListItemInterface,
@@ -48,9 +46,9 @@ import {
     ConfigReducerStateInterface,
     EventPublisher,
     FeatureConfigInterface,
-    history,
     setActiveView
 } from "../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { OrganizationType } from "../../../../features/organizations/constants";
 import { useGetCurrentOrganizationType } from "../../../../features/organizations/hooks/use-get-organization-type";
 import { AppViewExtensionTypes } from "../../../configs";
@@ -77,10 +75,7 @@ interface AdvanceUserViewInterface extends IdentifiableComponentInterface {
 const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
     props: AdvanceUserViewInterface
 ): ReactElement => {
-
-    const {
-        onApplicationCreate
-    } = props;
+    const { onApplicationCreate } = props;
 
     const { t } = useTranslation();
 
@@ -88,8 +83,9 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
 
     const profileInfo: ProfileInfoInterface = useSelector((state: AppState) => state.profile.profileInfo);
     const isProfileInfoLoading: boolean = useSelector((state: AppState) => state.loaders.isProfileInfoRequestLoading);
-    const asgardeoTryItURL: string = useSelector((state: AppState) =>
-        state.config.deployment.extensions.asgardeoTryItURL) as string;
+    const asgardeoTryItURL: string = useSelector(
+        (state: AppState) => state.config.deployment.extensions.asgardeoTryItURL
+    ) as string;
     const activeView: string = useSelector((state: AppState) => state.global.activeView);
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
@@ -97,17 +93,16 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
     const username: string = useSelector((state: AppState) => state.auth.fullName);
     const isPrivilegedUser: boolean = useSelector((state: AppState) => state.auth.isPrivilegedUser);
 
-    const saasFeatureStatus : FeatureStatus = useCheckFeatureStatus(FeatureGateConstants.SAAS_FEATURES_IDENTIFIER);
+    const saasFeatureStatus: FeatureStatus = useCheckFeatureStatus(FeatureGateConstants.SAAS_FEATURES_IDENTIFIER);
 
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ selectedTemplate, setSelectedTemplate ] = useState<ApplicationTemplateListItemInterface>(null);
-    const [ isPlaygroundExist, setisPlaygroundExist ] = useState(undefined);
-    const [ showWizardLogin, setShowWizardLogin ] = useState<boolean>(false);
-    const [ inboundProtocolConfig, setInboundProtocolConfig ] = useState<any>(undefined);
-    const [
-        isTryItApplicationSearchRequestLoading,
-        setIsTryItApplicationSearchRequestLoading
-    ] = useState<boolean>(false);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [selectedTemplate, setSelectedTemplate] = useState<ApplicationTemplateListItemInterface>(null);
+    const [isPlaygroundExist, setisPlaygroundExist] = useState(undefined);
+    const [showWizardLogin, setShowWizardLogin] = useState<boolean>(false);
+    const [inboundProtocolConfig, setInboundProtocolConfig] = useState<any>(undefined);
+    const [isTryItApplicationSearchRequestLoading, setIsTryItApplicationSearchRequestLoading] = useState<boolean>(
+        false
+    );
 
     const { organizationType } = useGetCurrentOrganizationType();
 
@@ -123,13 +118,13 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
         null,
         null,
         null,
-        `name eq ${ TryItApplicationConstants.DISPLAY_NAME }`,
+        `name eq ${TryItApplicationConstants.DISPLAY_NAME}`,
         saasFeatureStatus !== FeatureStatus.DISABLED
     );
 
     useEffect(() => {
         checkTryItApplicationExistence();
-    }, [ tryItApplicationSearchResults ]);
+    }, [tryItApplicationSearchResults]);
 
     /**
      * Make sure `QUICKSTART` tab is highlighed when this page is in use.
@@ -145,7 +140,7 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
     useEffect(() => {
         // Add debug logs here one a logger is added.
         // Tracked here https://github.com/wso2/product-is/issues/11650.
-    }, [ tryItApplicationSearchRequestError ]);
+    }, [tryItApplicationSearchRequestError]);
 
     /**
      * Monitor `profileInfo.id` and publish the event to avoid an event without `UUID`.
@@ -158,15 +153,15 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
         // TODO: Move this to the `extensions/configs/common`.
         // Tracked here https://github.com/wso2-enterprise/asgardeo-product/issues/7742#issuecomment-939960128.
         eventPublisher.publish("console-click-getting-started-menu-item");
-    }, [ profileInfo?.id ]);
+    }, [profileInfo?.id]);
 
     const handleTryLoginClick = () => {
-        if(isPlaygroundExist){
-            window.open(asgardeoTryItURL+"?client_id="+getTryItClientId(tenantDomain)+"&org="+tenantDomain);
+        if (isPlaygroundExist) {
+            window.open(asgardeoTryItURL + "?client_id=" + getTryItClientId(tenantDomain) + "&org=" + tenantDomain);
             eventPublisher.publish("tryit-try-login-overview", {
                 "client-id": inboundProtocolConfig?.oauth2?.clientId
             });
-        } else{
+        } else {
             eventPublisher.publish("application-quick-start-click-add-user");
             setShowWizardLogin(true);
         }
@@ -176,15 +171,17 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
         eventPublisher.publish("tryit-customize-login-flow", {
             "client-id": getTryItClientId(tenantDomain)
         });
-        history.push(AppConstants.getPaths()
-            .get("APPLICATION_EDIT").replace(":id", `${ tryItApplicationSearchResults.applications[0].id }#tab=2`) );
+        history.push(
+            AppConstants.getPaths()
+                .get("APPLICATION_EDIT")
+                .replace(":id", `${tryItApplicationSearchResults.applications[0].id}#tab=2`)
+        );
     };
 
     /**
      * Checking whether the playground application already exist or not
      */
     const checkTryItApplicationExistence = () => {
-
         setIsTryItApplicationSearchRequestLoading(true);
 
         if (!tryItApplicationSearchResults?.applications || isTryItApplicationSearchRequestValidating) {
@@ -205,26 +202,30 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
             applicationDetailPromises.push(getApplicationDetails(application.id));
         });
 
-        axios.all(applicationDetailPromises)
-            .then(axios.spread((...responses: any[]) => {
-                getInboundProtocolConfig(
-                    responses[0].id,
-                    ApplicationManagementUtils.mapProtocolTypeToName(responses[0].inboundProtocols[0].type)
-                )
-                    .then((response: any) => {
-                        protocolConfigs = {
-                            ...protocolConfigs,[responses[0].inboundProtocols[0].type]:response
-                        };
-                        setInboundProtocolConfig(protocolConfigs);
-                    })
-                    .finally(() =>{
-                        if (protocolConfigs?.oauth2?.clientId === getTryItClientId(tenantDomain)) {
-                            setisPlaygroundExist(true);
-                        } else{
-                            setisPlaygroundExist(false);
-                        }
-                    });
-            }))
+        axios
+            .all(applicationDetailPromises)
+            .then(
+                axios.spread((...responses: any[]) => {
+                    getInboundProtocolConfig(
+                        responses[0].id,
+                        ApplicationManagementUtils.mapProtocolTypeToName(responses[0].inboundProtocols[0].type)
+                    )
+                        .then((response: any) => {
+                            protocolConfigs = {
+                                ...protocolConfigs,
+                                [responses[0].inboundProtocols[0].type]: response
+                            };
+                            setInboundProtocolConfig(protocolConfigs);
+                        })
+                        .finally(() => {
+                            if (protocolConfigs?.oauth2?.clientId === getTryItClientId(tenantDomain)) {
+                                setisPlaygroundExist(true);
+                            } else {
+                                setisPlaygroundExist(false);
+                            }
+                        });
+                })
+            )
             .catch(() => {
                 // Add debug logs here one a logger is added.
                 // Tracked here https://github.com/wso2/product-is/issues/11650.
@@ -235,45 +236,31 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
     };
 
     const renderManageUsersCard = (): ReactElement => (
-        <Grid.Column
-            stretched
-            mobile={ 16 }
-            tablet={ 16 }
-            computer={ 8 }
-            largeScreen={ 8 }
-            widescreen={ 8 }
-        >
-            <Card
-                fluid
-                className="basic-card no-hover getting-started-card manage-users-card"
-            >
+        <Grid.Column stretched mobile={16} tablet={16} computer={8} largeScreen={8} widescreen={8}>
+            <Card fluid className="basic-card no-hover getting-started-card manage-users-card">
                 <Card.Content extra className="description-container">
                     <div className="card-heading mb-1">
-                        <Heading as="h2">
-                            Manage users
-                        </Heading>
+                        <Heading as="h2">Manage users</Heading>
                     </div>
-                    <Text muted>
-                        Manage users in your organization who will access the  applications
-                    </Text>
+                    <Text muted>Manage users in your organization who will access the applications</Text>
                 </Card.Content>
-                <Card.Content style={ { borderTop: "none" } } className="illustration-container">
+                <Card.Content style={{ borderTop: "none" }} className="illustration-container">
                     <GenericIcon
                         relaxed="very"
                         size="small"
                         transparent
                         className="onboard-users-animated-illustration mb-5"
-                        icon={ getGettingStartedCardIllustrations().onboardUsers }
+                        icon={getGettingStartedCardIllustrations().onboardUsers}
                     />
                 </Card.Content>
                 <Card.Content className="action-container" extra>
                     <CardExpandedNavigationButton
                         data-testid="getting-started-page-add-user-button"
                         data-componentid="getting-started-page-add-user-button"
-                        onClick={ () => {
+                        onClick={() => {
                             eventPublisher.publish("console-getting-started-add-users-path");
                             history.push(AppConstants.getPaths().get("USERS"));
-                        } }
+                        }}
                         text="View users"
                         icon="angle right"
                         iconPlacement="right"
@@ -285,47 +272,33 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
     );
 
     const renderConnectionsCard = (): ReactElement => (
-        <Grid.Column
-            stretched
-            mobile={ 16 }
-            tablet={ 16 }
-            computer={ 8 }
-            largeScreen={ 8 }
-            widescreen={ 8 }
-        >
-            <Card
-                fluid
-                className="basic-card no-hover getting-started-card social-connections-card"
-            >
+        <Grid.Column stretched mobile={16} tablet={16} computer={8} largeScreen={8} widescreen={8}>
+            <Card fluid className="basic-card no-hover getting-started-card social-connections-card">
                 <Card.Content extra className="description-container">
                     <div className="card-heading mb-1">
-                        <Heading as="h2">
-                            Enhance app login
-                        </Heading>
+                        <Heading as="h2">Enhance app login</Heading>
                     </div>
-                    <Text muted>
-                        { t("extensions:common.quickStart.sections.addSocialLogin.description") }
-                    </Text>
+                    <Text muted>{t("extensions:common.quickStart.sections.addSocialLogin.description")}</Text>
                 </Card.Content>
-                <Card.Content style={ { borderTop: "none" } } className="illustration-container">
+                <Card.Content style={{ borderTop: "none" }} className="illustration-container">
                     <GenericIcon
                         relaxed="very"
                         size="small"
                         transparent
                         className="social-connections-animated-illustration mb-5"
-                        icon={ getGettingStartedCardIllustrations().setupSocialConnections }
+                        icon={getGettingStartedCardIllustrations().setupSocialConnections}
                     />
                 </Card.Content>
                 <Card.Content extra className="action-container">
                     <CardExpandedNavigationButton
                         data-testid="develop-getting-started-page-add-social-login"
                         data-componentid="develop-getting-started-page-add-social-login"
-                        onClick={ () => {
+                        onClick={() => {
                             eventPublisher.publish("console-getting-started-add-social-connection-path");
                             history.push({
                                 pathname: AppConstants.getPaths().get("CONNECTIONS")
                             });
-                        } }
+                        }}
                         text="Set up social connections"
                         icon="angle right"
                         iconPlacement="right"
@@ -339,99 +312,79 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
     const renderTryItCard = (): ReactElement => (
         <Grid.Row>
             <Grid.Column>
-                <Card
-                    fluid
-                    className="basic-card no-hover"
-                >
+                <Card fluid className="basic-card no-hover">
                     <Card.Content>
                         <div className="try-it-card">
                             <div className="try-it-card-icon">
                                 <GenericIcon
-                                    style={ {
+                                    style={{
                                         height: "91.3px",
                                         width: "111.26px"
-                                    } }
+                                    }}
                                     floated="left"
                                     transparent
-                                    icon={
-                                        getGettingStartedCardIllustrations()
-                                            .tryItApplication
-                                    }
+                                    icon={getGettingStartedCardIllustrations().tryItApplication}
                                 />
                             </div>
                             <div className="try-it-card-content">
                                 <div className="card-heading pt-3 mb-1">
-                                    <Heading as="h2">
-                                        Try login with the Try It app
-                                    </Heading>
+                                    <Heading as="h2">Try login with the Try It app</Heading>
                                 </div>
                                 <Text muted>
-                                    Use the hosted sample application to try basic and
-                                    customized login flows of Asgardeo.
+                                    Use the hosted sample application to try basic and customized login flows of
+                                    Asgardeo.
                                 </Text>
                             </div>
                             <div className="try-it-card-actions">
-                                {
-                                    (isTryItApplicationSearchRequestLoading ||
-                                        isTryItApplicationSearchRequestValidating ||
-                                        isPlaygroundExist === undefined)
-                                        ? (
-                                            <Button
-                                                loading
-                                                floated="right"
-                                                data-componentid={
-                                                    "develop-getting-started-page-try-it-loading"
-                                                }
-                                                className={
-                                                    "primary-action-button loading mr-3"
-                                                }
-                                            />
-                                        )
-                                        : (
-                                            <>
-                                                <Popup
-                                                    position="top center"
-                                                    trigger={ (
-                                                        <Button
-                                                            data-testid="develop-getting-started-page-try-it"
-                                                            data-componentid="develop-getting-started-page-try-it"
-                                                            onClick={ handleTryLoginClick }
-                                                            icon="angle right"
-                                                            iconPlacement="right"
-                                                            className="primary-action-button mr-3"
-                                                            size="large"
-                                                        />
-                                                    ) }
-                                                    content="Try It"
-                                                    inverted
+                                {isTryItApplicationSearchRequestLoading ||
+                                isTryItApplicationSearchRequestValidating ||
+                                isPlaygroundExist === undefined ? (
+                                    <Button
+                                        loading
+                                        floated="right"
+                                        data-componentid={"develop-getting-started-page-try-it-loading"}
+                                        className={"primary-action-button loading mr-3"}
+                                    />
+                                ) : (
+                                    <>
+                                        <Popup
+                                            position="top center"
+                                            trigger={
+                                                <Button
+                                                    data-testid="develop-getting-started-page-try-it"
+                                                    data-componentid="develop-getting-started-page-try-it"
+                                                    onClick={handleTryLoginClick}
+                                                    icon="angle right"
+                                                    iconPlacement="right"
+                                                    className="primary-action-button mr-3"
+                                                    size="large"
                                                 />
-                                                {
-                                                    isPlaygroundExist && (
-                                                        <Popup
-                                                            position="top center"
-                                                            trigger={ (
-                                                                <Button
-                                                                    data-testid={
-                                                                        "develop-getting-started-page-cutomize-try-it"
-                                                                    }
-                                                                    data-componentid={
-                                                                        "develop-getting-started-page-cutomize-try-it"
-                                                                    }
-                                                                    onClick={ onCustomizeLoginFlowNavigate }
-                                                                    icon="setting"
-                                                                    iconPlacement="right"
-                                                                    size="large"
-                                                                    className="primary-action-button"
-                                                                />
-                                                            ) }
-                                                            content="Customize Login Flow"
-                                                            inverted
-                                                        />
-                                                    )
+                                            }
+                                            content="Try It"
+                                            inverted
+                                        />
+                                        {isPlaygroundExist && (
+                                            <Popup
+                                                position="top center"
+                                                trigger={
+                                                    <Button
+                                                        data-testid={"develop-getting-started-page-cutomize-try-it"}
+                                                        data-componentid={
+                                                            "develop-getting-started-page-cutomize-try-it"
+                                                        }
+                                                        onClick={onCustomizeLoginFlowNavigate}
+                                                        icon="setting"
+                                                        iconPlacement="right"
+                                                        size="large"
+                                                        className="primary-action-button"
+                                                    />
                                                 }
-                                            </>
-                                        )
-                                }
+                                                content="Customize Login Flow"
+                                                inverted
+                                            />
+                                        )}
+                                    </>
+                                )}
                             </div>
                         </div>
                     </Card.Content>
@@ -452,121 +405,90 @@ const AdvanceUserView: FunctionComponent<AdvanceUserViewInterface> = (
                     data-componentid="welcome-greeting-header"
                     data-suppress=""
                 >
-                    {
-                        isProfileInfoLoading
-                            ? (
-                                <Placeholder
-                                    data-testid="welcome-greeting-placeholder"
-                                    data-componentid="welcome-greeting-placeholder"
-                                >
-                                    <Placeholder.Header>
-                                        <Placeholder.Line length="very long"/>
-                                    </Placeholder.Header>
-                                </Placeholder>
-                            )
-                            : t("extensions:common.quickStart.greeting.heading", {
-                                username: isPrivilegedUser ? username : resolveUserDisplayName(profileInfo)
-                            })
-                    }
+                    {isProfileInfoLoading ? (
+                        <Placeholder
+                            data-testid="welcome-greeting-placeholder"
+                            data-componentid="welcome-greeting-placeholder"
+                        >
+                            <Placeholder.Header>
+                                <Placeholder.Line length="very long" />
+                            </Placeholder.Header>
+                        </Placeholder>
+                    ) : (
+                        t("extensions:common.quickStart.greeting.heading", {
+                            username: isPrivilegedUser ? username : resolveUserDisplayName(profileInfo)
+                        })
+                    )}
                 </Heading>
             </div>
             <Grid stackable>
-                <Grid.Row columns={ 2 }>
-                    {
-                        organizationType !== OrganizationType.SUBORGANIZATION && (
-                            <Show
-                                when={
-                                    [
-                                        AccessControlConstants.APPLICATION_WRITE,
-                                        AccessControlConstants.APPLICATION_READ
-                                    ]
-                                }
-                            >
-                                <Grid.Column
-                                    stretched
-                                    mobile={ 16 }
-                                    tablet={ 16 }
-                                    computer={ 6 }
-                                    largeScreen={ 6 }
-                                    widescreen={ 6 }
-                                >
-                                    <DynamicApplicationContextCard
-                                        onTemplateSelected={ (template: ApplicationTemplateListItemInterface) => {
-                                            setSelectedTemplate(template);
-                                            setShowWizard(true);
-                                        } }
-                                    />
-                                </Grid.Column>
-                            </Show>
-                        )
-                    }
-                    <Grid.Column
-                        stretched
-                        mobile={ 16 }
-                        tablet={ 16 }
-                        computer={ 10 }
-                        largeScreen={ 10 }
-                        widescreen={ 10 }
-                    >
+                <Grid.Row columns={2}>
+                    {organizationType !== OrganizationType.SUBORGANIZATION && (
+                        <Show
+                            when={[AccessControlConstants.APPLICATION_WRITE, AccessControlConstants.APPLICATION_READ]}
+                        >
+                            <Grid.Column stretched mobile={16} tablet={16} computer={6} largeScreen={6} widescreen={6}>
+                                <DynamicApplicationContextCard
+                                    onTemplateSelected={(template: ApplicationTemplateListItemInterface) => {
+                                        setSelectedTemplate(template);
+                                        setShowWizard(true);
+                                    }}
+                                />
+                            </Grid.Column>
+                        </Show>
+                    )}
+                    <Grid.Column stretched mobile={16} tablet={16} computer={10} largeScreen={10} widescreen={10}>
                         <Grid stackable>
-                            <Grid.Row columns={ 2 }>
-                                <Show when={ AccessControlConstants.USER_READ }>
-                                    { renderManageUsersCard() }
-                                </Show>
-                                <Show when={ AccessControlConstants.IDP_READ }>
-                                    { renderConnectionsCard() }
-                                </Show>
+                            <Grid.Row columns={2}>
+                                <Show when={AccessControlConstants.USER_READ}>{renderManageUsersCard()}</Show>
+                                <Show when={AccessControlConstants.IDP_READ}>{renderConnectionsCard()}</Show>
                             </Grid.Row>
-                            {
-                                organizationType !== OrganizationType.SUBORGANIZATION && (
-                                    <Show
-                                        when={ AccessControlConstants.APPLICATION_WRITE }
-                                        featureId={ FeatureGateConstants.SAAS_FEATURES_IDENTIFIER }
-                                    >
-                                        { featureConfig.tryIt?.enabled && renderTryItCard() }
-                                    </Show>
-                                )
-                            }
+                            {organizationType !== OrganizationType.SUBORGANIZATION && (
+                                <Show
+                                    when={AccessControlConstants.APPLICATION_WRITE}
+                                    featureId={FeatureGateConstants.SAAS_FEATURES_IDENTIFIER}
+                                >
+                                    {featureConfig.tryIt?.enabled && renderTryItCard()}
+                                </Show>
+                            )}
                         </Grid>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            { showWizard && (
+            {showWizard && (
                 <MinimalAppCreateWizard
-                    title={ selectedTemplate?.name }
-                    subTitle={ selectedTemplate?.description }
-                    closeWizard={ (): void => {
+                    title={selectedTemplate?.name}
+                    subTitle={selectedTemplate?.description}
+                    closeWizard={(): void => {
                         setShowWizard(false);
                         setSelectedTemplate(undefined);
-                    } }
-                    template={ selectedTemplate }
-                    showHelpPanel={ true }
-                    subTemplates={ selectedTemplate?.subTemplates }
-                    subTemplatesSectionTitle={ selectedTemplate?.subTemplatesSectionTitle }
-                    addProtocol={ false }
+                    }}
+                    template={selectedTemplate}
+                    showHelpPanel={true}
+                    subTemplates={selectedTemplate?.subTemplates}
+                    subTemplatesSectionTitle={selectedTemplate?.subTemplatesSectionTitle}
+                    addProtocol={false}
                     templateLoadingStrategy={
-                        config.ui.applicationTemplateLoadingStrategy
-                            ?? ApplicationManagementConstants.DEFAULT_APP_TEMPLATE_LOADING_STRATEGY
+                        config.ui.applicationTemplateLoadingStrategy ??
+                        ApplicationManagementConstants.DEFAULT_APP_TEMPLATE_LOADING_STRATEGY
                     }
                 />
-            ) }
-            {
-                showWizardLogin && (
-                    <LoginPlaygroundWizard
-                        data-componentId="login-playground-wizard-modal"
-                        closeWizard={ () => setShowWizardLogin(false) }
-                        applicationName="Asgardeo Login Playground"
-                        onApplicationCreate={ () => {
-                            setisPlaygroundExist(true);
-                            mutateTryItApplicationSearchResults();
+            )}
+            {showWizardLogin && (
+                <LoginPlaygroundWizard
+                    data-componentId="login-playground-wizard-modal"
+                    closeWizard={() => setShowWizardLogin(false)}
+                    applicationName="Asgardeo Login Playground"
+                    onApplicationCreate={() => {
+                        setisPlaygroundExist(true);
+                        mutateTryItApplicationSearchResults();
 
-                            if (onApplicationCreate) {
-                                onApplicationCreate();
-                            }
-                        } }
-                    />
-                )
-            }
+                        if (onApplicationCreate) {
+                            onApplicationCreate();
+                        }
+                    }}
+                />
+            )}
         </div>
     );
 };

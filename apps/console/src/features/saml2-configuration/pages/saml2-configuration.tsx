@@ -34,7 +34,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid, Placeholder, Ref } from "semantic-ui-react";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
+import { AppConstants, AppState, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { updateSaml2Configurations, useSaml2Config } from "../api/saml2-configuration";
 import { Saml2ConfigurationConstants } from "../constants/saml2-configuration";
 import {
@@ -56,36 +57,41 @@ const FORM_ID: string = "saml2-config-form";
 export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInterface> = (
     props: Saml2ConfigurationPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const pageContextRef: MutableRefObject<any> = useRef(null);
     const formRef: MutableRefObject<FormPropsInterface> = useRef<FormPropsInterface>(null);
     const url: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
     const gonvernanConnectorsConfig: FeatureAccessConfigInterface = useSelector(
-        (state: AppState) => state?.config?.ui?.features?.governanceConnectors);
-    const saml2WebSSO: DeprecatedFeatureInterface = gonvernanConnectorsConfig
-        .deprecatedFeaturesToShow.find((feature: any) => {
+        (state: AppState) => state?.config?.ui?.features?.governanceConnectors
+    );
+    const saml2WebSSO: DeprecatedFeatureInterface = gonvernanConnectorsConfig.deprecatedFeaturesToShow.find(
+        (feature: any) => {
             return feature?.name === "saml2";
-        });
+        }
+    );
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const isReadOnly: boolean = useMemo(() => !hasRequiredScopes(
-        featureConfig?.governanceConnectors,
-        featureConfig?.governanceConnectors?.scopes?.update,
-        allowedScopes
-    ), [ featureConfig, allowedScopes ]);
+    const isReadOnly: boolean = useMemo(
+        () =>
+            !hasRequiredScopes(
+                featureConfig?.governanceConnectors,
+                featureConfig?.governanceConnectors?.scopes?.update,
+                allowedScopes
+            ),
+        [featureConfig, allowedScopes]
+    );
 
     const dispatch: Dispatch<any> = useDispatch();
 
     const { t } = useTranslation();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ saml2Config , setSaml2Config ] =
-        useState<Saml2ConfigFormValuesInterface>(undefined);
-    const [ destinationUrls, setDestinationUrls ] = useState<string>("");
-    const [ showURLError, setShowURLError ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [saml2Config, setSaml2Config] = useState<Saml2ConfigFormValuesInterface>(undefined);
+    const [destinationUrls, setDestinationUrls] = useState<string>("");
+    const [showURLError, setShowURLError] = useState<boolean>(false);
 
     const {
         data: originalSaml2Config,
@@ -95,8 +101,7 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
     } = useSaml2Config();
 
     useEffect(() => {
-        if (originalSaml2Config instanceof IdentityAppsApiException
-            || saml2ConfigFetchRequestError) {
+        if (originalSaml2Config instanceof IdentityAppsApiException || saml2ConfigFetchRequestError) {
             handleRetrieveError();
 
             return;
@@ -110,10 +115,10 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
             enableMetadataSigning: originalSaml2Config.enableMetadataSigning ?? false,
             metadataValidityPeriod: originalSaml2Config.metadataValidityPeriod ?? 0
         });
-        setDestinationUrls(originalSaml2Config.destinationURLs.length > 0
-            ? originalSaml2Config.destinationURLs.toString()
-            : "");
-    }, [ originalSaml2Config ]);
+        setDestinationUrls(
+            originalSaml2Config.destinationURLs.length > 0 ? originalSaml2Config.destinationURLs.toString() : ""
+        );
+    }, [originalSaml2Config]);
 
     /**
      * Displays the error banner when unable to fetch saml2 configuration configuration.
@@ -121,11 +126,9 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
     const handleRetrieveError = (): void => {
         dispatch(
             addAlert({
-                description: t("console:saml2Config.notifications." +
-                "getConfiguration.error.description"),
+                description: t("console:saml2Config.notifications." + "getConfiguration.error.description"),
                 level: AlertLevels.ERROR,
-                message: t("console:saml2Config.notifications." +
-                "getConfiguration.error.message")
+                message: t("console:saml2Config.notifications." + "getConfiguration.error.message")
             })
         );
     };
@@ -136,11 +139,9 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
     const handleUpdateSuccess = () => {
         dispatch(
             addAlert({
-                description: t("console:saml2Config.notifications." +
-                "updateConfiguration.success.description"),
+                description: t("console:saml2Config.notifications." + "updateConfiguration.success.description"),
                 level: AlertLevels.SUCCESS,
-                message: t("console:saml2Config.notifications." +
-                "updateConfiguration.success.message")
+                message: t("console:saml2Config.notifications." + "updateConfiguration.success.message")
             })
         );
     };
@@ -151,11 +152,9 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
     const handleUpdateError = () => {
         dispatch(
             addAlert({
-                description: t("console:saml2Config.notifications." +
-                "updateConfiguration.error.description"),
+                description: t("console:saml2Config.notifications." + "updateConfiguration.error.description"),
                 level: AlertLevels.ERROR,
-                message: t("console:saml2Config.notifications." +
-                "updateConfiguration.error.message")
+                message: t("console:saml2Config.notifications." + "updateConfiguration.error.message")
             })
         );
     };
@@ -166,25 +165,22 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
      * @param values - Form Values.
      * @returns Form validation.
      */
-    const validateForm = (
-        values: Saml2ConfigFormValuesInterface
-    ): Saml2ConfigFormErrorValidationsInterface => {
+    const validateForm = (values: Saml2ConfigFormValuesInterface): Saml2ConfigFormErrorValidationsInterface => {
         const error: Saml2ConfigFormErrorValidationsInterface = {
             destinationURLs: undefined,
             metadataValidityPeriod: undefined
         };
 
-        if (values?.metadataValidityPeriod && (!FormValidation.isInteger(values.metadataValidityPeriod as number)
-            || values.metadataValidityPeriod as number < 0)) {
-            error.metadataValidityPeriod = t(
-                "console:saml2Config.form.validation.metadataValidityPeriod"
-            );
+        if (
+            values?.metadataValidityPeriod &&
+            (!FormValidation.isInteger(values.metadataValidityPeriod as number) ||
+                (values.metadataValidityPeriod as number) < 0)
+        ) {
+            error.metadataValidityPeriod = t("console:saml2Config.form.validation.metadataValidityPeriod");
         }
 
         if (values?.destinationURLs && values.destinationURLs.length > 0) {
-            error.destinationURLs = t(
-                "console:saml2Config.form.validation.destinationURLs"
-            );
+            error.destinationURLs = t("console:saml2Config.form.validation.destinationURLs");
         }
 
         return error;
@@ -202,14 +198,17 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
             metadataValidityPeriod: values.metadataValidityPeriod
         };
 
-        updateSaml2Configurations(data).then(() => {
-            handleUpdateSuccess();
-        }).catch(() => {
-            handleUpdateError();
-        }).finally(() => {
-            setIsSubmitting(false);
-            mutateSaml2Config();
-        });
+        updateSaml2Configurations(data)
+            .then(() => {
+                handleUpdateSuccess();
+            })
+            .catch(() => {
+                handleUpdateError();
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+                mutateSaml2Config();
+            });
     };
 
     const onBackButtonClick = (): void => {
@@ -221,12 +220,9 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
      */
     const renderLoadingPlaceholder = (): ReactElement => {
         return (
-            <Grid.Row columns={ 1 }>
+            <Grid.Row columns={1}>
                 <div>
-                    <div
-                        className="ui card fluid settings-card"
-                        data-testid={ `${componentId}-loading-card` }
-                    >
+                    <div className="ui card fluid settings-card" data-testid={`${componentId}-loading-card`}>
                         <div className="content no-padding">
                             <div className="header-section">
                                 <Placeholder>
@@ -246,7 +242,7 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
                             </div>
                         </div>
                     </div>
-                    <Divider hidden/>
+                    <Divider hidden />
                 </div>
             </Grid.Row>
         );
@@ -254,151 +250,159 @@ export const Saml2ConfigurationPage: FunctionComponent<Saml2ConfigurationPageInt
 
     return (
         <PageLayout
-            title={ t("console:saml2Config.title") }
-            pageTitle={ t("console:saml2Config.title") }
-            description={ t("console:saml2Config.description") }
-            backButton={ {
+            title={t("console:saml2Config.title")}
+            pageTitle={t("console:saml2Config.title")}
+            description={t("console:saml2Config.description")}
+            backButton={{
                 onClick: () => onBackButtonClick(),
                 text: t("console:manage.features.governanceConnectors.goBackLoginAndRegistration")
-            } }
-            bottomMargin={ false }
-            contentTopMargin={ false }
-            data-componentid={ `${ componentId }-form-layout` }
+            }}
+            bottomMargin={false}
+            contentTopMargin={false}
+            data-componentid={`${componentId}-form-layout`}
             pageHeaderMaxWidth
         >
-            <Ref innerRef={ pageContextRef }>
-                <Grid className={ "mt-2" } >
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 16 }>
-                            <EmphasizedSegment className="form-wrapper" padded={ "very" }>
-                                { isSaml2FetchRequestLoading
-                                    ? renderLoadingPlaceholder()
-                                    : (
-                                        <>
-                                            <Form
-                                                id={ FORM_ID }
-                                                uncontrolledForm={ true }
-                                                onSubmit={ handleSubmit }
-                                                initialValues={ saml2Config }
-                                                enableReinitialize={ true }
-                                                ref={ formRef }
-                                                validate={ validateForm }
-                                                autoComplete="new-password"
-                                            >
-                                                <Grid>
-                                                    <Grid.Row columns={ 1 } key={ 3 }>
-                                                        <Grid.Column width={ 10 }>
-                                                            <Field.Checkbox
-                                                                ariaLabel={ t("console:saml2Config.form." +
-                                                                "enableMetadataSigning.label") }
-                                                                name="enableMetadataSigning"
-                                                                label={ t("console:saml2Config.form." +
-                                                                    "enableMetadataSigning.label") }
-                                                                readOnly={ isReadOnly }
-                                                                data-componentid={ `${componentId}-
-                                                                    enable-metadata-signing` }
-                                                                toggle
-                                                            />
-                                                        </Grid.Column>
-                                                    </Grid.Row>
-                                                    <Grid.Row columns={ 1 } key={ 1 }>
-                                                        <Grid.Column width={ 10 }>
-                                                            <Field.Input
-                                                                min={ Saml2ConfigurationConstants
-                                                                    .SAML2_CONFIG_FIELD_MIN_LENGTH }
-                                                                ariaLabel={ t("console:saml2Config.form." +
-                                                                "metadataValidityPeriod.label") }
-                                                                inputType="number"
-                                                                name="metadataValidityPeriod"
-                                                                label={ t("console:saml2Config.form." +
-                                                                    "metadataValidityPeriod.label") }
-                                                                hint={ t("console:saml2Config.form." +
-                                                                    "metadataValidityPeriod.hint") }
-                                                                value={ saml2Config?.metadataValidityPeriod }
-                                                                readOnly={ isReadOnly }
-                                                                minLength={ Saml2ConfigurationConstants
-                                                                    .SAML2_CONFIG_FIELD_MIN_LENGTH }
-                                                                maxLength={ null }
-                                                                data-componentid={
-                                                                    `${componentId}-metadata-validity-period` }
-                                                                autoComplete="new-password"
-                                                            />
-                                                        </Grid.Column>
-                                                    </Grid.Row>
-                                                    {
-                                                        saml2WebSSO?.deprecatedProperties
-                                                            .includes("destinationURLs.pattern") && (
-                                                            <Grid.Row columns={ 1 } key={ 2 }>
-                                                                <Grid.Column width={ 10 } key="destinationUrl">
-                                                                    <div ref={ url } />
-                                                                    <URLInput
-                                                                        urlState={ destinationUrls }
-                                                                        setURLState={ (url: string) => {
-                                                                            const processedUrl: string = url?.split(",")
-                                                                                ?.toString();
+            <Ref innerRef={pageContextRef}>
+                <Grid className={"mt-2"}>
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={16}>
+                            <EmphasizedSegment className="form-wrapper" padded={"very"}>
+                                {isSaml2FetchRequestLoading ? (
+                                    renderLoadingPlaceholder()
+                                ) : (
+                                    <>
+                                        <Form
+                                            id={FORM_ID}
+                                            uncontrolledForm={true}
+                                            onSubmit={handleSubmit}
+                                            initialValues={saml2Config}
+                                            enableReinitialize={true}
+                                            ref={formRef}
+                                            validate={validateForm}
+                                            autoComplete="new-password"
+                                        >
+                                            <Grid>
+                                                <Grid.Row columns={1} key={3}>
+                                                    <Grid.Column width={10}>
+                                                        <Field.Checkbox
+                                                            ariaLabel={t(
+                                                                "console:saml2Config.form." +
+                                                                    "enableMetadataSigning.label"
+                                                            )}
+                                                            name="enableMetadataSigning"
+                                                            label={t(
+                                                                "console:saml2Config.form." +
+                                                                    "enableMetadataSigning.label"
+                                                            )}
+                                                            readOnly={isReadOnly}
+                                                            data-componentid={`${componentId}-
+                                                                    enable-metadata-signing`}
+                                                            toggle
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                                <Grid.Row columns={1} key={1}>
+                                                    <Grid.Column width={10}>
+                                                        <Field.Input
+                                                            min={
+                                                                Saml2ConfigurationConstants.SAML2_CONFIG_FIELD_MIN_LENGTH
+                                                            }
+                                                            ariaLabel={t(
+                                                                "console:saml2Config.form." +
+                                                                    "metadataValidityPeriod.label"
+                                                            )}
+                                                            inputType="number"
+                                                            name="metadataValidityPeriod"
+                                                            label={t(
+                                                                "console:saml2Config.form." +
+                                                                    "metadataValidityPeriod.label"
+                                                            )}
+                                                            hint={t(
+                                                                "console:saml2Config.form." +
+                                                                    "metadataValidityPeriod.hint"
+                                                            )}
+                                                            value={saml2Config?.metadataValidityPeriod}
+                                                            readOnly={isReadOnly}
+                                                            minLength={
+                                                                Saml2ConfigurationConstants.SAML2_CONFIG_FIELD_MIN_LENGTH
+                                                            }
+                                                            maxLength={null}
+                                                            data-componentid={`${componentId}-metadata-validity-period`}
+                                                            autoComplete="new-password"
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                                {saml2WebSSO?.deprecatedProperties.includes(
+                                                    "destinationURLs.pattern"
+                                                ) && (
+                                                    <Grid.Row columns={1} key={2}>
+                                                        <Grid.Column width={10} key="destinationUrl">
+                                                            <div ref={url} />
+                                                            <URLInput
+                                                                urlState={destinationUrls}
+                                                                setURLState={(url: string) => {
+                                                                    const processedUrl: string = url
+                                                                        ?.split(",")
+                                                                        ?.toString();
 
-                                                                            setDestinationUrls(processedUrl);
-                                                                        } }
-                                                                        labelName={ t("console:saml2Config.form." +
-                                                                            "destinationUrl.label") }
-                                                                        hint={ t("console:saml2Config.form." +
-                                                                            "destinationUrl.hint") }
-                                                                        required={ true }
-                                                                        showError={ showURLError }
-                                                                        setShowError={ setShowURLError }
-                                                                        validationErrorMsg={
-                                                                            t("console:saml2Config.form." +
-                                                                            "validation.destinationURLs") }
-                                                                        validation={ (value: string) => {
-                                                                            if (!URLUtils.isURLValid(value, true)) {
-                                                                                setShowURLError(true);
+                                                                    setDestinationUrls(processedUrl);
+                                                                }}
+                                                                labelName={t(
+                                                                    "console:saml2Config.form." + "destinationUrl.label"
+                                                                )}
+                                                                hint={t(
+                                                                    "console:saml2Config.form." + "destinationUrl.hint"
+                                                                )}
+                                                                required={true}
+                                                                showError={showURLError}
+                                                                setShowError={setShowURLError}
+                                                                validationErrorMsg={t(
+                                                                    "console:saml2Config.form." +
+                                                                        "validation.destinationURLs"
+                                                                )}
+                                                                validation={(value: string) => {
+                                                                    if (!URLUtils.isURLValid(value, true)) {
+                                                                        setShowURLError(true);
 
-                                                                                return false;
-                                                                            }
-
-                                                                            return true;
-                                                                        } }
-                                                                        readOnly={ isReadOnly }
-                                                                        addURLTooltip={ t("common:addURL") }
-                                                                        duplicateURLErrorMessage={
-                                                                            t("common:duplicateURLError") }
-                                                                        data-componentid={ `${ componentId }
-                                                                            -destination-url-input` }
-                                                                        showPredictions={ false }
-                                                                    />
-                                                                </Grid.Column>
-                                                            </Grid.Row>
-                                                        )
-                                                    }
-                                                </Grid>
-                                            </Form>
-                                            {
-                                                !isReadOnly && (
-                                                    <>
-                                                        <Divider hidden />
-                                                        <Grid.Row columns={ 1 } className="mt-6">
-                                                            <Grid.Column width={ 10 }>
-                                                                <PrimaryButton
-                                                                    size="small"
-                                                                    loading={ isSubmitting }
-                                                                    onClick={ () => {
-                                                                        formRef?.current?.triggerSubmit();
-                                                                    } }
-                                                                    ariaLabel="saml2 configuration form update button"
-                                                                    data-componentid={
-                                                                        `${ componentId }-update-button`
+                                                                        return false;
                                                                     }
-                                                                >
-                                                                    { t("common:update") }
-                                                                </PrimaryButton>
-                                                            </Grid.Column>
-                                                        </Grid.Row>
-                                                    </>
-                                                )
-                                            }
-                                        </>
-                                    )
-                                }
+
+                                                                    return true;
+                                                                }}
+                                                                readOnly={isReadOnly}
+                                                                addURLTooltip={t("common:addURL")}
+                                                                duplicateURLErrorMessage={t("common:duplicateURLError")}
+                                                                data-componentid={`${componentId}
+                                                                            -destination-url-input`}
+                                                                showPredictions={false}
+                                                            />
+                                                        </Grid.Column>
+                                                    </Grid.Row>
+                                                )}
+                                            </Grid>
+                                        </Form>
+                                        {!isReadOnly && (
+                                            <>
+                                                <Divider hidden />
+                                                <Grid.Row columns={1} className="mt-6">
+                                                    <Grid.Column width={10}>
+                                                        <PrimaryButton
+                                                            size="small"
+                                                            loading={isSubmitting}
+                                                            onClick={() => {
+                                                                formRef?.current?.triggerSubmit();
+                                                            }}
+                                                            ariaLabel="saml2 configuration form update button"
+                                                            data-componentid={`${componentId}-update-button`}
+                                                        >
+                                                            {t("common:update")}
+                                                        </PrimaryButton>
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </>
+                                        )}
+                                    </>
+                                )}
                             </EmphasizedSegment>
                         </Grid.Column>
                     </Grid.Row>

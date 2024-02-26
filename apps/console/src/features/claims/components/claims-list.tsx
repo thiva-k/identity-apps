@@ -45,7 +45,7 @@ import {
     useConfirmationModalAlert
 } from "@wso2is/react-components";
 import isEqual from "lodash-es/isEqual";
-import React,{
+import React, {
     Dispatch,
     FunctionComponent,
     MutableRefObject,
@@ -68,9 +68,9 @@ import {
     AppState,
     FeatureConfigInterface,
     UIConstants,
-    getEmptyPlaceholderIllustrations,
-    history
+    getEmptyPlaceholderIllustrations
 } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getProfileSchemas } from "../../users/api";
 import { getUserStores } from "../../userstores/api/user-stores";
 import { UserStoreListItem } from "../../userstores/models/user-stores";
@@ -104,9 +104,10 @@ export type ClaimEventClickItem = Claim | ExternalClaim | ClaimDialect | AddExte
 /**
  * Prop types of `ClaimsList` component
  */
-interface ClaimsListPropsInterface extends SBACInterface<FeatureConfigInterface>, LoadableComponentInterface,
-    TestableComponentInterface {
-
+interface ClaimsListPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        LoadableComponentInterface,
+        TestableComponentInterface {
     /**
      * Advanced Search component.
      */
@@ -193,7 +194,6 @@ interface ClaimsListPropsInterface extends SBACInterface<FeatureConfigInterface>
 export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
     props: ClaimsListPropsInterface
 ): ReactElement => {
-
     const {
         showTableHeaders,
         advancedSearch,
@@ -215,21 +215,21 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
         showListItemActions,
         isEditable,
         updateMappedClaims,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
-    const [ deleteConfirm, setDeleteConfirm ] = useState(false);
-    const [ deleteType, setDeleteType ] = useState<ListType>(null);
-    const [ deleteItem, setDeleteItem ] = useState<Claim | ExternalClaim | ClaimDialect>(null);
-    const [ userStores, setUserStores ] = useState<UserStoreListItem[]>([]);
-    const [ editClaim, setEditClaim ] = useState("");
-    const [ editExternalClaim, setEditExternalClaim ] = useState<AddExternalClaim>(undefined);
+    const [deleteConfirm, setDeleteConfirm] = useState(false);
+    const [deleteType, setDeleteType] = useState<ListType>(null);
+    const [deleteItem, setDeleteItem] = useState<Claim | ExternalClaim | ClaimDialect>(null);
+    const [userStores, setUserStores] = useState<UserStoreListItem[]>([]);
+    const [editClaim, setEditClaim] = useState("");
+    const [editExternalClaim, setEditExternalClaim] = useState<AddExternalClaim>(undefined);
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
     const dispatch: ThunkDispatch<AppState, any, any> = useDispatch();
 
-    const [ submitExternalClaim, setSubmitExternalClaim ] = useTrigger();
+    const [submitExternalClaim, setSubmitExternalClaim] = useTrigger();
 
     //TODO: [Type Fix] Check the usage of following refs and fix the types.
     const claimURIText: MutableRefObject<any[]> = useRef([]);
@@ -237,12 +237,12 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
 
     const { t } = useTranslation();
 
-    const [ alert, setAlert, alertComponent ] = useConfirmationModalAlert();
+    const [alert, setAlert, alertComponent] = useConfirmationModalAlert();
     const OIDC: string = "oidc";
 
     list?.forEach((_element: Claim | ExternalClaim | ClaimDialect | AddExternalClaim, index: number) => {
-        claimURIText.current.push(claimURIText.current[ index ] || React.createRef());
-        copyButton.current.push(copyButton.current[ index ] || React.createRef());
+        claimURIText.current.push(claimURIText.current[index] || React.createRef());
+        copyButton.current.push(copyButton.current[index] || React.createRef());
     });
 
     useEffect(() => {
@@ -253,18 +253,26 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
                 })
                 //TODO: [Type Fix] Throw proper generic error from API function.
                 .catch((error: any) => {
-                    dispatch(addAlert({
-                        description: error?.description
-                            ?? t("console:manage.features.userstores.notifications.fetchUserstores.genericError" +
-                                ".description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.message
-                            ?? t("console:manage.features.userstores.notifications." +
-                            "fetchUserstores.genericError.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.description ??
+                                t(
+                                    "console:manage.features.userstores.notifications.fetchUserstores.genericError" +
+                                        ".description"
+                                ),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.message ??
+                                t(
+                                    "console:manage.features.userstores.notifications." +
+                                        "fetchUserstores.genericError.message"
+                                )
+                        })
+                    );
                 });
         }
-    }, [ JSON.stringify(list) ]);
+    }, [JSON.stringify(list)]);
 
     /**
      * This check if the input claim is mapped to attribute from every userstore.
@@ -297,8 +305,14 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
      * @returns Whether the data is a local claim.
      */
     const isLocalClaim = (
-        toBeDetermined: Claim[] | ExternalClaim[] | ClaimDialect[] | AddExternalClaim[]
-            | Claim | ExternalClaim | ClaimDialect
+        toBeDetermined:
+            | Claim[]
+            | ExternalClaim[]
+            | ClaimDialect[]
+            | AddExternalClaim[]
+            | Claim
+            | ExternalClaim
+            | ClaimDialect
     ): toBeDetermined is Claim[] | Claim => {
         return localClaim === ListType.LOCAL;
     };
@@ -311,8 +325,14 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
      * @returns whether the data is a dialect.
      */
     const isDialect = (
-        toBeDetermined: Claim[] | ExternalClaim[] | ClaimDialect[] | AddExternalClaim[]
-            | Claim | ExternalClaim | ClaimDialect
+        toBeDetermined:
+            | Claim[]
+            | ExternalClaim[]
+            | ClaimDialect[]
+            | AddExternalClaim[]
+            | Claim
+            | ExternalClaim
+            | ClaimDialect
     ): toBeDetermined is ClaimDialect[] | ClaimDialect => {
         return localClaim === ListType.DIALECT;
     };
@@ -325,8 +345,14 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
      * @returns whether the data is an external claim.
      */
     const isExternalClaim = (
-        toBeDetermined: Claim[] | ExternalClaim[] | ClaimDialect[] | AddExternalClaim[]
-            | Claim | ExternalClaim | ClaimDialect
+        toBeDetermined:
+            | Claim[]
+            | ExternalClaim[]
+            | ClaimDialect[]
+            | AddExternalClaim[]
+            | Claim
+            | ExternalClaim
+            | ClaimDialect
     ): toBeDetermined is ExternalClaim[] | ExternalClaim => {
         return localClaim === ListType.EXTERNAL;
     };
@@ -350,27 +376,32 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
                 update();
                 closeDeleteConfirm();
                 updateMappedClaims(true);
-                dispatch(addAlert(
-                    {
-                        description: t("console:manage.features.claims.local.notifications.deleteClaim.success."+
-                            "description"),
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.claims.local.notifications.deleteClaim.success." + "description"
+                        ),
                         level: AlertLevels.SUCCESS,
                         message: t("console:manage.features.claims.local.notifications.deleteClaim.success.message")
-                    }
-                ));
+                    })
+                );
             })
             //TODO: [Type Fix] Throw proper generic error from API function.
             .catch((error: any) => {
-                dispatch(setAlert(
-                    {
-                        description: error?.description
-                            || t("console:manage.features.claims.local." +
-                            "notifications.deleteClaim.genericError.description"),
+                dispatch(
+                    setAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.claims.local." +
+                                    "notifications.deleteClaim.genericError.description"
+                            ),
                         level: AlertLevels.ERROR,
-                        message: error?.message
-                            || t("console:manage.features.claims.local.notifications.deleteClaim.genericError.message")
-                    }
-                ));
+                        message:
+                            error?.message ||
+                            t("console:manage.features.claims.local.notifications.deleteClaim.genericError.message")
+                    })
+                );
             });
     };
 
@@ -389,29 +420,40 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
 
                 updateMappedClaims(true);
                 closeDeleteConfirm();
-                dispatch(addAlert(
-                    {
-                        description: t("console:manage.features.claims.external.notifications." +
-                            "deleteExternalClaim.success.description", { type: claim.claimURI }),
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.claims.external.notifications." +
+                                "deleteExternalClaim.success.description",
+                            { type: claim.claimURI }
+                        ),
                         level: AlertLevels.SUCCESS,
-                        message: t("console:manage.features.claims.external.notifications." +
-                            "deleteExternalClaim.success.message")
-                    }
-                ));
+                        message: t(
+                            "console:manage.features.claims.external.notifications." +
+                                "deleteExternalClaim.success.message"
+                        )
+                    })
+                );
             })
             //TODO: [Type Fix] Throw proper generic error from API function.
             .catch((error: any) => {
-                dispatch(addAlert(
-                    {
-                        description: error?.description
-                            || t("console:manage.features.claims.external.notifications." +
-                                "deleteExternalClaim.genericError.description"),
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.claims.external.notifications." +
+                                    "deleteExternalClaim.genericError.description"
+                            ),
                         level: AlertLevels.ERROR,
-                        message: error?.message
-                            || t("console:manage.features.claims.external.notifications." +
-                                "deleteExternalClaim.genericError.message")
-                    }
-                ));
+                        message:
+                            error?.message ||
+                            t(
+                                "console:manage.features.claims.external.notifications." +
+                                    "deleteExternalClaim.genericError.message"
+                            )
+                    })
+                );
             });
     };
 
@@ -427,23 +469,20 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
             })
             .catch((error: IdentityAppsApiException) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.notifications.getProfileSchema.error.message")
-                    })
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.notifications.getProfileSchema.error.message")
+                        })
                     );
                 }
 
                 dispatch(
                     addAlert({
-                        description: t(
-                            "console:manage.notifications.getProfileSchema.genericError.description"
-                        ),
+                        description: t("console:manage.notifications.getProfileSchema.genericError.description"),
                         level: AlertLevels.ERROR,
-                        message: t(
-                            "console:manage.notifications.getProfileSchema.genericError.message"
-                        )
+                        message: t("console:manage.notifications.getProfileSchema.genericError.message")
                     })
                 );
             })
@@ -461,30 +500,39 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
             .then(() => {
                 update();
                 closeDeleteConfirm();
-                dispatch(addAlert(
-                    {
-                        description: t("console:manage.features.claims.dialects.notifications." +
-                            "deleteDialect.success.description"),
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.claims.dialects.notifications." +
+                                "deleteDialect.success.description"
+                        ),
                         level: AlertLevels.SUCCESS,
-                        message: t("console:manage.features.claims.dialects.notifications." +
-                            "deleteDialect.success.message")
-                    }
-                ));
+                        message: t(
+                            "console:manage.features.claims.dialects.notifications." + "deleteDialect.success.message"
+                        )
+                    })
+                );
             })
             .catch((error: any) => {
-                dispatch(addAlert(
-                    {
+                dispatch(
+                    addAlert({
                         //TODO: [Type Fix] Description attribute does not exist on
                         //AxiosError or IdentityAppsApiException.
-                        description: error?.description
-                            || t("console:manage.features.claims.dialects.notifications." +
-                                "deleteDialect.genericError.description"),
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.claims.dialects.notifications." +
+                                    "deleteDialect.genericError.description"
+                            ),
                         level: AlertLevels.ERROR,
-                        message: error?.message
-                            || t("console:manage.features.claims.dialects.notifications." +
-                                "deleteDialect.genericError.message")
-                    }
-                ));
+                        message:
+                            error?.message ||
+                            t(
+                                "console:manage.features.claims.dialects.notifications." +
+                                    "deleteDialect.genericError.message"
+                            )
+                    })
+                );
             });
     };
 
@@ -499,7 +547,7 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
             listItem = {
                 assertion: deleteItem.displayName,
                 delete: deleteLocalClaim,
-                message:t("console:manage.features.claims.list.confirmation.local.message"),
+                message: t("console:manage.features.claims.list.confirmation.local.message"),
                 name: t("console:manage.features.claims.list.confirmation.local.name")
             };
         } else if (isDialect(deleteItem)) {
@@ -513,16 +561,14 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
             listItem = {
                 assertion: deleteItem.claimURI,
                 delete: deleteExternalClaim,
-                message: (
+                message:
                     t("console:manage.features.claims.list.confirmation.external.message", {
                         type: deleteItem.claimURI
                     }) +
                     (attributeType && attributeType === OIDC
-                        ?
-                        "If this attribute is attached to any scope, this action will also remove " +
-                        "the attribute from the relevant scope."
-                        : ClaimManagementConstants.EMPTY_STRING
-                    )),
+                        ? "If this attribute is attached to any scope, this action will also remove " +
+                          "the attribute from the relevant scope."
+                        : ClaimManagementConstants.EMPTY_STRING),
                 name: t("console:manage.features.claims.list.confirmation.external.name", {
                     type: deleteItem.claimURI
                 })
@@ -531,46 +577,42 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
 
         return (
             <ConfirmationModal
-                onClose={ closeDeleteConfirm }
+                onClose={closeDeleteConfirm}
                 type="negative"
-                open={ deleteConfirm }
-                assertionHint={ t("console:manage.features.claims.list.confirmation.hint") }
+                open={deleteConfirm}
+                assertionHint={t("console:manage.features.claims.list.confirmation.hint")}
                 assertionType="checkbox"
-                primaryAction={ t("console:manage.features.claims.list.confirmation.action") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={ (): void => {
+                primaryAction={t("console:manage.features.claims.list.confirmation.action")}
+                secondaryAction={t("common:cancel")}
+                onSecondaryActionClick={(): void => {
                     setDeleteConfirm(false);
                     setAlert(null);
-                } }
-                onPrimaryActionClick={ () => {
+                }}
+                onPrimaryActionClick={() => {
                     deleteType === ListType.EXTERNAL
                         ? listItem.delete(dialectID, deleteItem as ExternalClaim)
                         : listItem.delete(deleteItem.id);
-                } }
-                data-testid={ `${ testId }-delete-confirmation-modal` }
-                closeOnDimmerClick={ false }
+                }}
+                data-testid={`${testId}-delete-confirmation-modal`}
+                closeOnDimmerClick={false}
             >
-                <ConfirmationModal.Header
-                    data-testid={ `${ testId }-delete-confirmation-modal-header` }
-                >
-                    { t("console:manage.features.claims.list.confirmation.header") }
+                <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                    {t("console:manage.features.claims.list.confirmation.header")}
                 </ConfirmationModal.Header>
                 <ConfirmationModal.Message
                     attached
                     negative
-                    data-testid={ `${ testId }-delete-confirmation-modal-message` }
+                    data-testid={`${testId}-delete-confirmation-modal-message`}
                 >
-                    { t("console:manage.features.claims.list.confirmation.message", {
+                    {t("console:manage.features.claims.list.confirmation.message", {
                         name: listItem.name
-                    }) }
+                    })}
                 </ConfirmationModal.Message>
-                <ConfirmationModal.Content
-                    data-testid={ `${ testId }-delete-confirmation-modal-content` }
-                >
-                    <div className="modal-alert-wrapper"> { alert && alertComponent }</div>
-                    { t("console:manage.features.claims.list.confirmation.content", {
+                <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                    <div className="modal-alert-wrapper"> {alert && alertComponent}</div>
+                    {t("console:manage.features.claims.list.confirmation.content", {
                         message: listItem.message
-                    }) }
+                    })}
                 </ConfirmationModal.Content>
             </ConfirmationModal>
         );
@@ -597,19 +639,19 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
         if (searchQuery) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:manage.placeholders.emptySearchResult.action") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:manage.placeholders.emptySearchResult.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.placeholders.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("console:manage.placeholders.emptySearchResult.title")}
+                    subtitle={[
                         t("console:manage.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                         t("console:manage.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder` }
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder`}
                 />
             );
         }
@@ -617,42 +659,44 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
         if (list?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ attributeConfig.attributesPlaceholderAddButton(attributeType)
-                        && (
-                            <Show when={ AccessControlConstants.SCOPE_WRITE }>
-                                <PrimaryButton
-                                    onClick={ onEmptyListPlaceholderActionClick }
-                                >
-                                    <Icon name="add"/>
-                                    {
-                                        isLocalClaim(list)
-                                            ?  t("console:manage.features.claims.list.placeholders.emptyList." +
-                                                "action.local")
-                                            : isDialect(list)
-                                                ? t("console:manage.features.claims.list.placeholders.emptyList." +
-                                                    "action.dialect", { type: resolveType(attributeType, true) })
-                                                : t("console:manage.features.claims.list.placeholders." +
-                                            "emptyList.action.external", { type: resolveType(attributeType, true) })
-                                    }
+                    action={
+                        attributeConfig.attributesPlaceholderAddButton(attributeType) && (
+                            <Show when={AccessControlConstants.SCOPE_WRITE}>
+                                <PrimaryButton onClick={onEmptyListPlaceholderActionClick}>
+                                    <Icon name="add" />
+                                    {isLocalClaim(list)
+                                        ? t(
+                                              "console:manage.features.claims.list.placeholders.emptyList." +
+                                                  "action.local"
+                                          )
+                                        : isDialect(list)
+                                        ? t(
+                                              "console:manage.features.claims.list.placeholders.emptyList." +
+                                                  "action.dialect",
+                                              { type: resolveType(attributeType, true) }
+                                          )
+                                        : t(
+                                              "console:manage.features.claims.list.placeholders." +
+                                                  "emptyList.action.external",
+                                              { type: resolveType(attributeType, true) }
+                                          )}
                                 </PrimaryButton>
                             </Show>
-                        ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                        )
+                    }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
                     title={
                         isLocalClaim(list)
                             ? t("console:manage.features.claims.list.placeholders.emptyList.title.local")
                             : isDialect(list)
-                                ? t("console:manage.features.claims.list.placeholders.emptyList.title.dialect")
-                                : t(
-                                    "console:manage.features.claims.list.placeholders.emptyList.title.external",
-                                    { type: resolveType(attributeType, true) }
-                                )
+                            ? t("console:manage.features.claims.list.placeholders.emptyList.title.dialect")
+                            : t("console:manage.features.claims.list.placeholders.emptyList.title.external", {
+                                  type: resolveType(attributeType, true)
+                              })
                     }
-                    subtitle={ [
-
-                    ] }
-                    data-testid={ `${ testId }-empty-placeholder` }
+                    subtitle={[]}
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             );
         }
@@ -670,7 +714,7 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
     const generateInitialLetter = (claim: Claim): string => {
         const parts: string[] = claim.claimURI.split("/");
 
-        return parts[ parts.length - 1 ];
+        return parts[parts.length - 1];
     };
 
     /**
@@ -693,52 +737,46 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
                         return (
                             <Header as="h6" image>
                                 <>
-                                    { attributeConfig.attributes.showUserstoreMappingWarningIcon && showWarning && (
+                                    {attributeConfig.attributes.showUserstoreMappingWarningIcon && showWarning && (
                                         <Popup
-                                            trigger={ (
+                                            trigger={
                                                 <Icon
                                                     className="notification-icon"
                                                     name="warning circle"
                                                     size="small"
                                                     color="red"
                                                 />
-                                            ) }
-                                            content={ (
+                                            }
+                                            content={
                                                 <div>
-                                                    { t("console:manage.features.claims.list.warning") }
+                                                    {t("console:manage.features.claims.list.warning")}
                                                     <ul>
-                                                        {
-                                                            userStoresNotMapped.map((store: string, index: number) => {
-                                                                return (
-                                                                    <li key={ index }>
-                                                                        { store }
-                                                                    </li>
-                                                                );
-                                                            })
-                                                        }
+                                                        {userStoresNotMapped.map((store: string, index: number) => {
+                                                            return <li key={index}>{store}</li>;
+                                                        })}
                                                     </ul>
                                                 </div>
-                                            ) }
+                                            }
                                             inverted
                                         />
-                                    ) }
+                                    )}
                                     <AppAvatar
-                                        image={ (
+                                        image={
                                             <AnimatedAvatar
-                                                name={ generateInitialLetter(claim) }
+                                                name={generateInitialLetter(claim)}
                                                 size="mini"
-                                                data-testid={ `${ testId }-item-image-inner` }
+                                                data-testid={`${testId}-item-image-inner`}
                                             />
-                                        ) }
+                                        }
                                         size="mini"
                                         spaced="right"
-                                        data-testid={ `${ testId }-item-image` }
+                                        data-testid={`${testId}-item-image`}
                                     />
                                 </>
                                 <Header.Content>
-                                    { claim.displayName }
+                                    {claim.displayName}
                                     <Header.Subheader>
-                                        <code className="inline-code compact transparent">{ claim.claimURI }</code>
+                                        <code className="inline-code compact transparent">{claim.claimURI}</code>
                                     </Header.Subheader>
                                 </Header.Content>
                             </Header>
@@ -767,27 +805,20 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
                     key: "dialectURI",
                     render: (dialect: ClaimDialect) => {
                         return (
-                            <Header
-                                image
-                                as="h6"
-                                className="header-with-icon"
-                                data-testid={ `${ testId }-item-heading` }
-                            >
+                            <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                                 <AppAvatar
-                                    image={ (
+                                    image={
                                         <AnimatedAvatar
-                                            name={ dialect.dialectURI }
+                                            name={dialect.dialectURI}
                                             size="mini"
-                                            data-testid={ `${ testId }-item-image-inner` }
+                                            data-testid={`${testId}-item-image-inner`}
                                         />
-                                    ) }
+                                    }
                                     size="mini"
                                     spaced="right"
-                                    data-testid={ `${ testId }-item-image` }
+                                    data-testid={`${testId}-item-image`}
                                 />
-                                <Header.Content>
-                                    { dialect.dialectURI }
-                                </Header.Content>
+                                <Header.Content>{dialect.dialectURI}</Header.Content>
                             </Header>
                         );
                     },
@@ -806,7 +837,6 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
         }
 
         if (isExternalClaim(list)) {
-
             /**
              * A predicate that tells whether table action column should render or not.
              * Currently, we only have "edit" and "delete". This will only check whether
@@ -842,41 +872,33 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
                     key: "claimURI",
                     render: (claim: ExternalClaim) => {
                         return (
-                            <Header
-                                image
-                                as="h6"
-                                className="header-with-icon"
-                                data-testid={ `${ testId }-item-heading` }
-                            >
+                            <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                                 <AppAvatar
-                                    image={ (
+                                    image={
                                         <AnimatedAvatar
-                                            name={ claim.claimURI }
+                                            name={claim.claimURI}
                                             size="mini"
-                                            data-testid={ `${ testId }-item-image-inner` }
+                                            data-testid={`${testId}-item-image-inner`}
                                         />
-                                    ) }
+                                    }
                                     size="mini"
                                     spaced="right"
-                                    data-testid={ `${ testId }-item-image` }
+                                    data-testid={`${testId}-item-image`}
                                 />
                                 <Popup
                                     inverted
                                     position="top center"
-                                    key={ `${ claim.claimURI }-popup` }
-                                    content={ claim.claimURI }
-                                    trigger={ (
-                                        <Header.Content className="ellipsis">
-                                            { claim.claimURI }
-                                        </Header.Content>
-                                    ) }
+                                    key={`${claim.claimURI}-popup`}
+                                    content={claim.claimURI}
+                                    trigger={<Header.Content className="ellipsis">{claim.claimURI}</Header.Content>}
                                 />
                             </Header>
                         );
                     },
-                    title: attributeType && attributeType === ClaimManagementConstants.SCIM
-                        ? t("console:manage.features.claims.list.columns.claimURI")
-                        : t("console:manage.features.claims.list.columns.name"),
+                    title:
+                        attributeType && attributeType === ClaimManagementConstants.SCIM
+                            ? t("console:manage.features.claims.list.columns.claimURI")
+                            : t("console:manage.features.claims.list.columns.name"),
                     width: 8
                 },
                 {
@@ -884,46 +906,43 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
                     dataIndex: "dialectURI",
                     id: "dialectURI",
                     key: "dialectURI",
-                    render: (claim: ExternalClaim): ReactNode => (
-                        (editClaim === claim?.id)
-                            ? (
-                                <EditExternalClaim
-                                    claimID={ claim.id }
-                                    dialectID={ dialectID }
-                                    update={ () => {
-                                        setEditClaim("");
-                                        update();
-                                    } }
-                                    submit={ submitExternalClaim }
-                                    claimURI={ claim.claimURI }
-                                    externalClaims={ list }
-                                    data-testid={ `${ testId }-edit-external-claim` }
-                                    attributeType={ attributeType }
-                                />
-                            )
-                            : (
-                                <Popup
-                                    inverted
-                                    position="top center"
-                                    key={ `${ claim.mappedLocalClaimURI }-popup` }
-                                    content={ claim.mappedLocalClaimURI }
-                                    trigger={ (
-                                        <code>{ claim.mappedLocalClaimURI }</code>
-                                    ) }
-                                />
-                            )
-                    ),
+                    render: (claim: ExternalClaim): ReactNode =>
+                        editClaim === claim?.id ? (
+                            <EditExternalClaim
+                                claimID={claim.id}
+                                dialectID={dialectID}
+                                update={() => {
+                                    setEditClaim("");
+                                    update();
+                                }}
+                                submit={submitExternalClaim}
+                                claimURI={claim.claimURI}
+                                externalClaims={list}
+                                data-testid={`${testId}-edit-external-claim`}
+                                attributeType={attributeType}
+                            />
+                        ) : (
+                            <Popup
+                                inverted
+                                position="top center"
+                                key={`${claim.mappedLocalClaimURI}-popup`}
+                                content={claim.mappedLocalClaimURI}
+                                trigger={<code>{claim.mappedLocalClaimURI}</code>}
+                            />
+                        ),
                     title: t("console:manage.features.claims.list.columns.dialectURI"),
                     width: 6
                 },
-                shouldRenderActionsColumn() ? {
-                    allowToggleVisibility: false,
-                    dataIndex: "action",
-                    id: "actions",
-                    key: "actions",
-                    textAlign: "right",
-                    title: ClaimManagementConstants.EMPTY_STRING
-                } : null
+                shouldRenderActionsColumn()
+                    ? {
+                          allowToggleVisibility: false,
+                          dataIndex: "action",
+                          id: "actions",
+                          key: "actions",
+                          textAlign: "right",
+                          title: ClaimManagementConstants.EMPTY_STRING
+                      }
+                    : null
             ].filter(Boolean);
         }
 
@@ -939,50 +958,42 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
                     }
 
                     if (isEqual(editExternalClaim, claim)) {
-
                         return (
                             <EditExternalClaim
-                                dialectID={ dialectID }
-                                update={ () => {
+                                dialectID={dialectID}
+                                update={() => {
                                     setEditExternalClaim(undefined);
-                                } }
-                                submit={ submitExternalClaim }
-                                claimURI={ claim.claimURI }
-                                onSubmit={ (values: Map<string, FormValue>) => {
+                                }}
+                                submit={submitExternalClaim}
+                                claimURI={claim.claimURI}
+                                onSubmit={(values: Map<string, FormValue>) => {
                                     onEdit(claim, values);
-                                } }
-                                wizard={ true }
-                                addedClaim={ claim }
-                                externalClaims={ list }
+                                }}
+                                wizard={true}
+                                addedClaim={claim}
+                                externalClaims={list}
                             />
                         );
                     }
 
                     return (
-                        <Header
-                            image
-                            as="h6"
-                            className="header-with-icon"
-                            data-testid={ `${ testId }-item-heading` }
-                        >
+                        <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                             <AppAvatar
-                                name={ claim.claimURI }
-                                image={ (
+                                name={claim.claimURI}
+                                image={
                                     <AnimatedAvatar
-                                        name={ claim.claimURI }
+                                        name={claim.claimURI}
                                         size="mini"
-                                        data-testid={ `${ testId }-item-image-inner` }
+                                        data-testid={`${testId}-item-image-inner`}
                                     />
-                                ) }
+                                }
                                 size="mini"
                                 spaced="right"
-                                data-testid={ `${ testId }-item-image` }
+                                data-testid={`${testId}-item-image`}
                             />
                             <Header.Content>
-                                { claim.claimURI }
-                                <Header.Subheader>
-                                    { claim.mappedLocalClaimURI }
-                                </Header.Subheader>
+                                {claim.claimURI}
+                                <Header.Subheader>{claim.mappedLocalClaimURI}</Header.Subheader>
                             </Header.Content>
                         </Header>
                     );
@@ -1014,22 +1025,38 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
         if (isLocalClaim(list)) {
             return [
                 {
-                    icon: (): SemanticICONS => !hasRequiredScopes(featureConfig?.attributeDialects,
-                        featureConfig?.attributeDialects?.scopes?.update, allowedScopes)
-                        ? "eye"
-                        : "pencil alternate",
+                    icon: (): SemanticICONS =>
+                        !hasRequiredScopes(
+                            featureConfig?.attributeDialects,
+                            featureConfig?.attributeDialects?.scopes?.update,
+                            allowedScopes
+                        )
+                            ? "eye"
+                            : "pencil alternate",
                     onClick: (e: SyntheticEvent, claim: Claim | ExternalClaim | ClaimDialect): void => {
-                        history.push(AppConstants.getPaths().get("LOCAL_CLAIMS_EDIT").replace(":id", claim?.id));
+                        history.push(
+                            AppConstants.getPaths()
+                                .get("LOCAL_CLAIMS_EDIT")
+                                .replace(":id", claim?.id)
+                        );
                     },
-                    popupText: (): string => hasRequiredScopes(featureConfig?.attributeDialects,
-                        featureConfig?.attributeDialects?.scopes?.update, allowedScopes)
-                        ? t("common:edit")
-                        : t("common:view"),
+                    popupText: (): string =>
+                        hasRequiredScopes(
+                            featureConfig?.attributeDialects,
+                            featureConfig?.attributeDialects?.scopes?.update,
+                            allowedScopes
+                        )
+                            ? t("common:edit")
+                            : t("common:view"),
                     renderer: "semantic-icon"
                 },
                 attributeConfig.attributes.deleteAction && {
-                    hidden: (): boolean => !hasRequiredScopes(featureConfig?.attributeDialects,
-                        featureConfig?.attributeDialects?.scopes?.delete, allowedScopes),
+                    hidden: (): boolean =>
+                        !hasRequiredScopes(
+                            featureConfig?.attributeDialects,
+                            featureConfig?.attributeDialects?.scopes?.delete,
+                            allowedScopes
+                        ),
                     icon: (): SemanticICONS => "trash alternate",
                     onClick: (e: SyntheticEvent, claim: Claim | ExternalClaim | ClaimDialect): void =>
                         initDelete(ListType.LOCAL, claim),
@@ -1042,18 +1069,30 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
         if (isDialect(list)) {
             return [
                 {
-                    hidden: (): boolean => !hasRequiredScopes(featureConfig?.attributeDialects,
-                        featureConfig?.attributeDialects?.scopes?.create, allowedScopes),
+                    hidden: (): boolean =>
+                        !hasRequiredScopes(
+                            featureConfig?.attributeDialects,
+                            featureConfig?.attributeDialects?.scopes?.create,
+                            allowedScopes
+                        ),
                     icon: (): SemanticICONS => "pencil alternate",
                     onClick: (e: SyntheticEvent, dialect: ClaimDialect): void => {
-                        history.push(AppConstants.getPaths().get("EXTERNAL_DIALECT_EDIT").replace(":id", dialect.id));
+                        history.push(
+                            AppConstants.getPaths()
+                                .get("EXTERNAL_DIALECT_EDIT")
+                                .replace(":id", dialect.id)
+                        );
                     },
-                    popupText: (): string =>  t("common:edit"),
+                    popupText: (): string => t("common:edit"),
                     renderer: "semantic-icon"
                 },
                 attributeConfig.attributeMappings.deleteAction && {
-                    hidden: (): boolean => !hasRequiredScopes(featureConfig?.attributeDialects,
-                        featureConfig?.attributeDialects?.scopes?.delete, allowedScopes),
+                    hidden: (): boolean =>
+                        !hasRequiredScopes(
+                            featureConfig?.attributeDialects,
+                            featureConfig?.attributeDialects?.scopes?.delete,
+                            allowedScopes
+                        ),
                     icon: (): SemanticICONS => "trash alternate",
                     onClick: (e: SyntheticEvent, dialect: ClaimDialect): void => initDelete(ListType.DIALECT, dialect),
                     popupText: (): string => t("common:delete"),
@@ -1074,36 +1113,46 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
                 attributeConfig.externalAttributes.showActions(dialectID) && {
                     hidden: (): boolean => {
                         if (attributeConfig.externalAttributes.isAttributeEditable) {
-                            return !hasRequiredScopes(featureConfig?.attributeDialects,
-                                featureConfig?.attributeDialects?.scopes?.create, allowedScopes);
+                            return !hasRequiredScopes(
+                                featureConfig?.attributeDialects,
+                                featureConfig?.attributeDialects?.scopes?.create,
+                                allowedScopes
+                            );
                         } else {
                             return !attributeConfig.externalAttributes.isAttributeEditable;
                         }
                     },
-                    icon: (claim: ExternalClaim): SemanticICONS => attributeConfig.externalAttributes
-                        .getEditIcon(claim, editClaim),
+                    icon: (claim: ExternalClaim): SemanticICONS =>
+                        attributeConfig.externalAttributes.getEditIcon(claim, editClaim),
 
                     link: (claim: ExternalClaim) => {
                         return attributeConfig.externalAttributes.isEditActionClickable(claim);
                     },
                     onClick: (e: SyntheticEvent, claim: ExternalClaim): void =>
                         attributeConfig.externalAttributes.editAttribute(claim, editClaim, setEditClaim),
-                    popupText: (claim: ExternalClaim): string => attributeConfig.externalAttributes
-                        .getEditPopupText(claim, editClaim),
+                    popupText: (claim: ExternalClaim): string =>
+                        attributeConfig.externalAttributes.getEditPopupText(claim, editClaim),
                     renderer: "semantic-icon"
                 },
                 attributeConfig.externalAttributes.showDeleteIcon(dialectID, list) && {
                     hidden: (claim: ExternalClaim): boolean => {
-                        if (!hasRequiredScopes(featureConfig?.attributeDialects,
-                            featureConfig?.attributeDialects?.scopes?.delete, allowedScopes)
-                            || attributeConfig.externalAttributes.hideDeleteIcon(claim)) {
+                        if (
+                            !hasRequiredScopes(
+                                featureConfig?.attributeDialects,
+                                featureConfig?.attributeDialects?.scopes?.delete,
+                                allowedScopes
+                            ) ||
+                            attributeConfig.externalAttributes.hideDeleteIcon(claim)
+                        ) {
                             return true;
                         }
 
-                        if (attributeConfig.defaultScimMapping
-                            && Object.keys(attributeConfig.defaultScimMapping).length > 0) {
-                            const defaultSCIMClaims: Map<string, string> = attributeConfig
-                                .defaultScimMapping[claim.claimDialectURI];
+                        if (
+                            attributeConfig.defaultScimMapping &&
+                            Object.keys(attributeConfig.defaultScimMapping).length > 0
+                        ) {
+                            const defaultSCIMClaims: Map<string, string> =
+                                attributeConfig.defaultScimMapping[claim.claimDialectURI];
 
                             if (defaultSCIMClaims && defaultSCIMClaims.get(claim.claimURI)) {
                                 return true;
@@ -1113,8 +1162,7 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
                         }
                     },
                     icon: (): SemanticICONS => "trash alternate",
-                    onClick: (e: SyntheticEvent, claim: ExternalClaim): void =>
-                        initDelete(ListType.EXTERNAL, claim),
+                    onClick: (e: SyntheticEvent, claim: ExternalClaim): void => initDelete(ListType.EXTERNAL, claim),
                     popupText: (): string => t("common:delete"),
                     renderer: "semantic-icon"
                 }
@@ -1131,9 +1179,8 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
             },
             {
                 hidden: () => !isEditable,
-                icon: (claim: AddExternalClaim): SemanticICONS => isEqual(editExternalClaim, claim)
-                    ? "times"
-                    : "pencil alternate",
+                icon: (claim: AddExternalClaim): SemanticICONS =>
+                    isEqual(editExternalClaim, claim) ? "times" : "pencil alternate",
                 onClick: (e: SyntheticEvent, claim: AddExternalClaim) => {
                     setEditExternalClaim(editExternalClaim ? undefined : claim);
                 },
@@ -1156,17 +1203,29 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
      * @param item - Row item.
      */
     const resolveTableRowClick = (e: SyntheticEvent, item: Claim | ExternalClaim | ClaimDialect | any): void => {
-
         //Disables inline edit if create scope is not available
-        if (!hasRequiredScopes(featureConfig?.attributeDialects,
-            featureConfig?.attributeDialects?.scopes?.create, allowedScopes)) {
+        if (
+            !hasRequiredScopes(
+                featureConfig?.attributeDialects,
+                featureConfig?.attributeDialects?.scopes?.create,
+                allowedScopes
+            )
+        ) {
             return;
         }
 
         if (isLocalClaim(list)) {
-            history.push(AppConstants.getPaths().get("LOCAL_CLAIMS_EDIT").replace(":id", item.id));
+            history.push(
+                AppConstants.getPaths()
+                    .get("LOCAL_CLAIMS_EDIT")
+                    .replace(":id", item.id)
+            );
         } else if (isDialect(list)) {
-            history.push(AppConstants.getPaths().get("EXTERNAL_DIALECT_EDIT").replace(":id", item.id));
+            history.push(
+                AppConstants.getPaths()
+                    .get("EXTERNAL_DIALECT_EDIT")
+                    .replace(":id", item.id)
+            );
         } else if (isExternalClaim(list) && attributeConfig.externalAttributes.isRowClickable(dialectID, ItemHeader)) {
             if (attributeConfig.externalAttributes.isAttributeEditable) {
                 setEditClaim(editClaim ? "" : item.id);
@@ -1183,27 +1242,28 @@ export const ClaimsList: FunctionComponent<ClaimsListPropsInterface> = (
 
     return (
         <>
-            { deleteConfirm ? showDeleteConfirm() : null }
+            {deleteConfirm ? showDeleteConfirm() : null}
             <DataTable<(Claim | ExternalClaim | ClaimDialect)[]>
                 className="external-dialects-list"
-                externalSearch={ advancedSearch }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                externalSearch={advancedSearch}
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ list }
-                onRowClick={ resolveTableRowClick }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ showTableHeaders }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-testid={ testId }
-                isRowSelectable={ (claim: Claim | ExternalClaim | ClaimDialect) =>
-                    attributeConfig.isRowSelectable(claim) }
-                fixed={ attributeType !== OIDC }
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={list}
+                onRowClick={resolveTableRowClick}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={showTableHeaders}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-testid={testId}
+                isRowSelectable={(claim: Claim | ExternalClaim | ClaimDialect) =>
+                    attributeConfig.isRowSelectable(claim)
+                }
+                fixed={attributeType !== OIDC}
             />
         </>
     );

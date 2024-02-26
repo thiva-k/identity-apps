@@ -69,10 +69,10 @@ import {
     FeatureConfigInterface,
     ModalWithSidePanel,
     getCORSOrigins,
-    getTechnologyLogos,
-    history
+    getTechnologyLogos
 } from "../../../core";
 import { store } from "@wso2is/features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { TierLimitReachErrorModal } from "../../../core/components/tier-limit-reach-error-modal";
 import { OrganizationType } from "../../../organizations/constants";
 import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";

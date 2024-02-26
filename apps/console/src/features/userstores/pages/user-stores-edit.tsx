@@ -27,14 +27,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
+import { AppConstants, AppState, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getAType, getAUserStore } from "../api";
-import {
-    EditBasicDetailsUserStore,
-    EditConnectionDetails,
-    EditGroupDetails,
-    EditUserDetails
-} from "../components";
+import { EditBasicDetailsUserStore, EditConnectionDetails, EditGroupDetails, EditUserDetails } from "../components";
 import { getDatabaseAvatarGraphic } from "../configs";
 import { CONSUMER_USERSTORE, CONSUMER_USERSTORE_ID } from "../constants";
 import { CategorizedProperties, UserStore, UserstoreType } from "../models";
@@ -62,18 +58,14 @@ interface RouteParams {
 const UserStoresEditPage: FunctionComponent<UserStoresEditPageInterface> = (
     props: UserStoresEditPageInterface & RouteComponentProps<RouteParams>
 ): ReactElement => {
-
-    const {
-        match,
-        [ "data-testid" ]: testId
-    } = props;
+    const { match, ["data-testid"]: testId } = props;
 
     const userStoreId: string = match.params.id;
 
-    const [ userStore, setUserStore ] = useState<UserStore>(null);
-    const [ type, setType ] = useState<UserstoreType>(null);
-    const [ properties, setProperties ] = useState<CategorizedProperties>(null);
-    const [ isGroupDetailsRequestLoading, setIsGroupDetailsRequestLoading ] = useState<boolean>(undefined);
+    const [userStore, setUserStore] = useState<UserStore>(null);
+    const [type, setType] = useState<UserstoreType>(null);
+    const [properties, setProperties] = useState<CategorizedProperties>(null);
+    const [isGroupDetailsRequestLoading, setIsGroupDetailsRequestLoading] = useState<boolean>(undefined);
 
     const dispatch: Dispatch = useDispatch();
 
@@ -88,22 +80,29 @@ const UserStoresEditPage: FunctionComponent<UserStoresEditPageInterface> = (
     const getUserStore = () => {
         setIsGroupDetailsRequestLoading(true);
 
-        getAUserStore(userStoreId).then((response: UserStore) => {
-            setUserStore(response);
-        }).catch((error: IdentityAppsError) => {
-            dispatch(addAlert(
-                {
-                    description: error?.description
-                        || t("console:manage.features.userstores.notifications.fetchUserstores.genericError" +
-                            ".description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.userstores.notifications.fetchUserstores.genericError.message")
-                }
-            ));
-        }).finally(() => {
-            setIsGroupDetailsRequestLoading(false);
-        });
+        getAUserStore(userStoreId)
+            .then((response: UserStore) => {
+                setUserStore(response);
+            })
+            .catch((error: IdentityAppsError) => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.userstores.notifications.fetchUserstores.genericError" +
+                                    ".description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t("console:manage.features.userstores.notifications.fetchUserstores.genericError.message")
+                    })
+                );
+            })
+            .finally(() => {
+                setIsGroupDetailsRequestLoading(false);
+            });
     };
 
     useEffect(() => {
@@ -112,27 +111,37 @@ const UserStoresEditPage: FunctionComponent<UserStoresEditPageInterface> = (
 
     useEffect(() => {
         if (userStore) {
-            getAType(userStore?.typeId, null).then((response: UserstoreType) => {
-                setType(response);
-            }).catch((error: IdentityAppsError) => {
-                dispatch(addAlert({
-                    description: error?.description
-                        || t("console:manage.features.userstores.notifications.fetchUserstoreMetadata." +
-                            "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.userstores.notifications.fetchUserstoreMetadata" +
-                            ".genericError.message")
-                }));
-            });
+            getAType(userStore?.typeId, null)
+                .then((response: UserstoreType) => {
+                    setType(response);
+                })
+                .catch((error: IdentityAppsError) => {
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.description ||
+                                t(
+                                    "console:manage.features.userstores.notifications.fetchUserstoreMetadata." +
+                                        "genericError.description"
+                                ),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.message ||
+                                t(
+                                    "console:manage.features.userstores.notifications.fetchUserstoreMetadata" +
+                                        ".genericError.message"
+                                )
+                        })
+                    );
+                });
         }
-    }, [ userStore ]);
+    }, [userStore]);
 
     useEffect(() => {
         if (type) {
             setProperties(reOrganizeProperties(type.properties, userStore.properties));
         }
-    }, [ type ]);
+    }, [type]);
 
     /**
      * Returns if the userstore is readonly or not based on the scopes.
@@ -140,8 +149,7 @@ const UserStoresEditPage: FunctionComponent<UserStoresEditPageInterface> = (
      * @returns If an userstore is Read Only or not.
      */
     const resolveReadOnlyState = (): boolean => {
-        return !hasRequiredScopes(featureConfig?.userStores, featureConfig?.userStores?.scopes?.update,
-            allowedScopes);
+        return !hasRequiredScopes(featureConfig?.userStores, featureConfig?.userStores?.scopes?.update, allowedScopes);
     };
 
     /**
@@ -149,32 +157,34 @@ const UserStoresEditPage: FunctionComponent<UserStoresEditPageInterface> = (
      */
     const panes: ResourceTabPaneInterface[] = [
         {
-            menuItem:  t ("console:manage.features.userstores.pageLayout.edit.tabs.general"),
+            menuItem: t("console:manage.features.userstores.pageLayout.edit.tabs.general"),
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <EditBasicDetailsUserStore
-                        readOnly={ resolveReadOnlyState() }
-                        properties={ properties?.basic }
-                        userStore={ userStore }
-                        update={ getUserStore }
-                        id={ userStoreId }
-                        data-testid={ `${ testId }-userstore-basic-details-edit` }
+                        readOnly={resolveReadOnlyState()}
+                        properties={properties?.basic}
+                        userStore={userStore}
+                        update={getUserStore}
+                        id={userStoreId}
+                        data-testid={`${testId}-userstore-basic-details-edit`}
                     />
                 </ResourceTab.Pane>
             )
         },
         {
-            menuItem: (userStoreId === CONSUMER_USERSTORE_ID) ? null
-                : t("console:manage.features.userstores.pageLayout.edit.tabs.connection"),
+            menuItem:
+                userStoreId === CONSUMER_USERSTORE_ID
+                    ? null
+                    : t("console:manage.features.userstores.pageLayout.edit.tabs.connection"),
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <EditConnectionDetails
-                        readOnly={ resolveReadOnlyState() }
-                        update={ getUserStore }
-                        type={ type }
-                        id={ userStoreId }
-                        properties={ properties?.connection }
-                        data-testid={ `${ testId }-userstore-connection-details-edit` }
+                        readOnly={resolveReadOnlyState()}
+                        update={getUserStore}
+                        type={type}
+                        id={userStoreId}
+                        properties={properties?.connection}
+                        data-testid={`${testId}-userstore-connection-details-edit`}
                     />
                 </ResourceTab.Pane>
             )
@@ -182,29 +192,29 @@ const UserStoresEditPage: FunctionComponent<UserStoresEditPageInterface> = (
         {
             menuItem: t("console:manage.features.userstores.pageLayout.edit.tabs.user"),
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <EditUserDetails
-                        readOnly={ resolveReadOnlyState() }
-                        update={ getUserStore }
-                        type={ type }
-                        id={ userStoreId }
-                        properties={ properties?.user }
-                        data-testid={ `${ testId }-userstore-user-details-edit` }
+                        readOnly={resolveReadOnlyState()}
+                        update={getUserStore}
+                        type={type}
+                        id={userStoreId}
+                        properties={properties?.user}
+                        data-testid={`${testId}-userstore-user-details-edit`}
                     />
                 </ResourceTab.Pane>
             )
         },
         {
-            menuItem:  t("console:manage.features.userstores.pageLayout.edit.tabs.group"),
+            menuItem: t("console:manage.features.userstores.pageLayout.edit.tabs.group"),
             render: () => (
-                <ResourceTab.Pane controlledSegmentation attached={ false }>
+                <ResourceTab.Pane controlledSegmentation attached={false}>
                     <EditGroupDetails
-                        readOnly={ resolveReadOnlyState() }
-                        update={ getUserStore }
-                        type={ type }
-                        id={ userStoreId }
-                        properties={ properties?.group }
-                        data-testid={ `${ testId }-userstore-group-details-edit` }
+                        readOnly={resolveReadOnlyState()}
+                        update={getUserStore}
+                        type={type}
+                        id={userStoreId}
+                        properties={properties?.group}
+                        data-testid={`${testId}-userstore-group-details-edit`}
                     />
                 </ResourceTab.Pane>
             )
@@ -213,16 +223,16 @@ const UserStoresEditPage: FunctionComponent<UserStoresEditPageInterface> = (
 
     return (
         <TabPageLayout
-            isLoading= { isGroupDetailsRequestLoading }
+            isLoading={isGroupDetailsRequestLoading}
             image={
-                (<GenericIcon
+                <GenericIcon
                     defaultIcon
                     size="x60"
                     relaxed="very"
                     shape="rounded"
-                    hoverable={ false }
-                    icon={ getDatabaseAvatarGraphic() }
-                />)
+                    hoverable={false}
+                    icon={getDatabaseAvatarGraphic()}
+                />
             }
             title={
                 userStore?.name === CONSUMER_USERSTORE
@@ -234,27 +244,27 @@ const UserStoresEditPage: FunctionComponent<UserStoresEditPageInterface> = (
                     ? UserstoreConstants.CUSTOMER_USER_STORE_MAPPING
                     : userStore?.name
             }
-            description={ t("console:manage.features.userstores.pageLayout.edit.description") }
-            backButton={ {
+            description={t("console:manage.features.userstores.pageLayout.edit.description")}
+            backButton={{
                 onClick: () => {
                     history.push(AppConstants.getPaths().get("USERSTORES"));
                 },
-                text: t ("console:manage.features.userstores.pageLayout.edit.back")
-            } }
+                text: t("console:manage.features.userstores.pageLayout.edit.back")
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            data-testid={ `${ testId }-page-layout` }
+            bottomMargin={false}
+            data-testid={`${testId}-page-layout`}
         >
             <ResourceTab
-                isLoading={ isGroupDetailsRequestLoading }
-                panes={ panes }
-                onTabChange={ () => {
+                isLoading={isGroupDetailsRequestLoading}
+                panes={panes}
+                onTabChange={() => {
                     // Re-fetch userstore details on every tab change to try to get the latest available updated
                     // userstore properties due to the asynchronous nature of userstore operations.
                     // TODO: Remove once the userstore operations are made synchronous.
                     getUserStore();
-                } }
-                data-testid={ `${ testId }-tabs` }
+                }}
+                data-testid={`${testId}-tabs`}
             />
         </TabPageLayout>
     );

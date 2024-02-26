@@ -1,20 +1,20 @@
 /**
-* Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
-*
-* WSO2 LLC. licenses this file to you under the Apache License,
-* Version 2.0 (the "License"); you may not use this file except
-* in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied. See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
+ * Copyright (c) 2020, WSO2 LLC. (https://www.wso2.com). All Rights Reserved.
+ *
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 import { LoadableComponentInterface, TestableComponentInterface } from "@wso2is/core/models";
 import {
@@ -31,7 +31,8 @@ import {
 import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Header, Icon, SemanticICONS } from "semantic-ui-react";
-import { AppConstants, UIConstants, getEmptyPlaceholderIllustrations, history } from "../../../core";
+import { AppConstants, UIConstants, getEmptyPlaceholderIllustrations } from "../../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { EmailTemplateType } from "../../models";
 
 /**
@@ -87,7 +88,6 @@ interface EmailTemplateListPropsInterface extends LoadableComponentInterface, Te
 export const EmailTemplateTypeList: FunctionComponent<EmailTemplateListPropsInterface> = (
     props: EmailTemplateListPropsInterface
 ): ReactElement => {
-
     const {
         advancedSearch,
         defaultListItemLimit,
@@ -99,16 +99,20 @@ export const EmailTemplateTypeList: FunctionComponent<EmailTemplateListPropsInte
         selection,
         searchQuery,
         showListItemActions,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ showTemplateTypeDeleteConfirmation, setShowTemplateTypeDeleteConfirmation ] = useState<boolean>(false);
-    const [ currentDeletingTemplate, setCurrentDeletingTemplate ] = useState<EmailTemplateType>(undefined);
+    const [showTemplateTypeDeleteConfirmation, setShowTemplateTypeDeleteConfirmation] = useState<boolean>(false);
+    const [currentDeletingTemplate, setCurrentDeletingTemplate] = useState<EmailTemplateType>(undefined);
 
     const handleEditTemplate = (templateTypeId: string) => {
-        history.push(AppConstants.getPaths().get("EMAIL_TEMPLATES").replace(":templateTypeId", templateTypeId));
+        history.push(
+            AppConstants.getPaths()
+                .get("EMAIL_TEMPLATES")
+                .replace(":templateTypeId", templateTypeId)
+        );
     };
 
     /**
@@ -120,40 +124,40 @@ export const EmailTemplateTypeList: FunctionComponent<EmailTemplateListPropsInte
         if (searchQuery) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:manage.placeholders.emptySearchResult.action") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:manage.placeholders.emptySearchResult.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.placeholders.emptySearchResult.title") }
-                    subtitle={ [
+                    title={t("console:manage.placeholders.emptySearchResult.title")}
+                    subtitle={[
                         t("console:manage.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
                         t("console:manage.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder` }
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder`}
                 />
             );
         }
         if (templateList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <PrimaryButton onClick={ onEmptyListPlaceholderActionClick }>
-                            <Icon name="add"/>
-                            { t("console:manage.features.emailTemplateTypes.placeholders.emptyList.action") }
+                    action={
+                        <PrimaryButton onClick={onEmptyListPlaceholderActionClick}>
+                            <Icon name="add" />
+                            {t("console:manage.features.emailTemplateTypes.placeholders.emptyList.action")}
                         </PrimaryButton>
-                    ) }
-                    title={ t("console:manage.features.emailTemplateTypes.placeholders.emptyList.title") }
-                    subtitle={ [
+                    }
+                    title={t("console:manage.features.emailTemplateTypes.placeholders.emptyList.title")}
+                    subtitle={[
                         t("console:manage.features.emailTemplateTypes.placeholders.emptyList.subtitles.0"),
                         t("console:manage.features.emailTemplateTypes.placeholders.emptyList.subtitles.1"),
                         t("console:manage.features.emailTemplateTypes.placeholders.emptyList.subtitles.2")
-                    ] }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    ]}
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    data-testid={ `${ testId }-empty-placeholder` }
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             );
         }
@@ -174,27 +178,22 @@ export const EmailTemplateTypeList: FunctionComponent<EmailTemplateListPropsInte
                 id: "name",
                 key: "name",
                 render: (templateType: EmailTemplateType): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ testId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                         <AppAvatar
-                            name={ templateType.displayName }
-                            image={ (
+                            name={templateType.displayName}
+                            image={
                                 <AnimatedAvatar
-                                    name={ templateType.displayName }
+                                    name={templateType.displayName}
                                     size="mini"
-                                    data-testid={ `${ testId }-item-image` }
+                                    data-testid={`${testId}-item-image`}
                                 />
-                            ) }
+                            }
                             size="mini"
                             spaced="right"
-                            data-testid={ `${ testId }-item-image` }
+                            data-testid={`${testId}-item-image`}
                         />
-                        <Header.Content data-testid={ `${ testId }-item-heading` }>
-                            { templateType.displayName }
+                        <Header.Content data-testid={`${testId}-item-heading`}>
+                            {templateType.displayName}
                         </Header.Content>
                     </Header>
                 ),
@@ -223,7 +222,7 @@ export const EmailTemplateTypeList: FunctionComponent<EmailTemplateListPropsInte
 
         return [
             {
-                "data-testid": `${ testId }-item-edit-button`,
+                "data-testid": `${testId}-item-edit-button`,
                 icon: (): SemanticICONS => "pencil alternate",
                 onClick: (e: SyntheticEvent, templateType: EmailTemplateType): void =>
                     handleEditTemplate(templateType.id),
@@ -231,7 +230,7 @@ export const EmailTemplateTypeList: FunctionComponent<EmailTemplateListPropsInte
                 renderer: "semantic-icon"
             },
             {
-                "data-testid": `${ testId }-item-delete-button`,
+                "data-testid": `${testId}-item-delete-button`,
                 icon: (): SemanticICONS => "trash alternate",
                 onClick: (e: SyntheticEvent, templateType: EmailTemplateType): void => {
                     setCurrentDeletingTemplate(templateType);
@@ -247,76 +246,69 @@ export const EmailTemplateTypeList: FunctionComponent<EmailTemplateListPropsInte
         <>
             <DataTable<EmailTemplateType>
                 className="email-template-types-table"
-                externalSearch={ advancedSearch }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                externalSearch={advancedSearch}
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ templateList }
-                onRowClick={ (e: SyntheticEvent, templateType: EmailTemplateType): void => {
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={templateList}
+                onRowClick={(e: SyntheticEvent, templateType: EmailTemplateType): void => {
                     handleEditTemplate(templateType?.id);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ false }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-testid={ testId }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={false}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-testid={testId}
             />
-            {
-                showTemplateTypeDeleteConfirmation && (
-                    <ConfirmationModal
-                        onClose={ (): void => setShowTemplateTypeDeleteConfirmation(false) }
-                        type="negative"
-                        open={ showTemplateTypeDeleteConfirmation }
-                        assertion={ currentDeletingTemplate.displayName }
-                        assertionHint={ (
-                            <p>
-                                <Trans
-                                    i18nKey={ "console:manage.features.emailTemplateTypes.confirmations" +
-                                    ".deleteTemplateType.assertionHint" }
-                                    tOptions={ { id: currentDeletingTemplate.displayName } }
-                                >
-                                    Please type <strong>{ currentDeletingTemplate.displayName }</strong> to confirm.
-                                </Trans>
-                            </p>
-                        ) }
-                        assertionType="input"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setShowTemplateTypeDeleteConfirmation(false) }
-                        onPrimaryActionClick={ (): void => {
-                            onDelete(currentDeletingTemplate.id);
-                            setShowTemplateTypeDeleteConfirmation(false);
-                        } }
-                        data-testid={ `${ testId }-delete-confirmation-modal` }
-                        closeOnDimmerClick={ false }
+            {showTemplateTypeDeleteConfirmation && (
+                <ConfirmationModal
+                    onClose={(): void => setShowTemplateTypeDeleteConfirmation(false)}
+                    type="negative"
+                    open={showTemplateTypeDeleteConfirmation}
+                    assertion={currentDeletingTemplate.displayName}
+                    assertionHint={
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "console:manage.features.emailTemplateTypes.confirmations" +
+                                    ".deleteTemplateType.assertionHint"
+                                }
+                                tOptions={{ id: currentDeletingTemplate.displayName }}
+                            >
+                                Please type <strong>{currentDeletingTemplate.displayName}</strong> to confirm.
+                            </Trans>
+                        </p>
+                    }
+                    assertionType="input"
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => setShowTemplateTypeDeleteConfirmation(false)}
+                    onPrimaryActionClick={(): void => {
+                        onDelete(currentDeletingTemplate.id);
+                        setShowTemplateTypeDeleteConfirmation(false);
+                    }}
+                    data-testid={`${testId}-delete-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                        {t("console:manage.features.emailTemplateTypes.confirmations.deleteTemplateType" + ".header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        attached
+                        negative
+                        data-testid={`${testId}-delete-confirmation-modal-message`}
                     >
-                        <ConfirmationModal.Header
-                            data-testid={ `${ testId }-delete-confirmation-modal-header` }
-                        >
-                            { t("console:manage.features.emailTemplateTypes.confirmations.deleteTemplateType" +
-                                ".header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${ testId }-delete-confirmation-modal-message` }
-                        >
-                            { t("console:manage.features.emailTemplateTypes.confirmations.deleteTemplateType" +
-                                ".message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content
-                            data-testid={ `${ testId }-delete-confirmation-modal-content` }
-                        >
-                            { t("console:manage.features.emailTemplateTypes.confirmations.deleteTemplateType" +
-                                ".content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+                        {t("console:manage.features.emailTemplateTypes.confirmations.deleteTemplateType" + ".message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                        {t("console:manage.features.emailTemplateTypes.confirmations.deleteTemplateType" + ".content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

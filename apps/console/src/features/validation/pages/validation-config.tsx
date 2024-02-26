@@ -19,7 +19,8 @@
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
-import { AppConstants, history } from "../../core";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getSettingsSectionIcons } from "../../server-configurations";
 import { SettingsSection } from "../../server-configurations/settings/settings-section";
 
@@ -37,7 +38,7 @@ type MyAccountSettingsPageInterface = IdentifiableComponentInterface;
 export const ValidationConfigPage: FunctionComponent<MyAccountSettingsPageInterface> = (
     props: MyAccountSettingsPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
@@ -50,13 +51,13 @@ export const ValidationConfigPage: FunctionComponent<MyAccountSettingsPageInterf
 
     return (
         <SettingsSection
-            data-componentid={ `${componentId}-settings-section` }
-            data-testid={ `${componentId}-settings-section` }
-            description={ "Customize password validation rules for your users." }
-            icon={ getSettingsSectionIcons().passwordValidation }
-            header={ "Password Validation" }
-            onPrimaryActionClick={ handleSelection }
-            primaryAction={ t("common:configure") }
+            data-componentid={`${componentId}-settings-section`}
+            data-testid={`${componentId}-settings-section`}
+            description={"Customize password validation rules for your users."}
+            icon={getSettingsSectionIcons().passwordValidation}
+            header={"Password Validation"}
+            onPrimaryActionClick={handleSelection}
+            primaryAction={t("common:configure")}
         />
     );
 };

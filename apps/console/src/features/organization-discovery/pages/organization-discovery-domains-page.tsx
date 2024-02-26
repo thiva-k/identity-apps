@@ -55,9 +55,9 @@ import {
     AppState,
     EventPublisher,
     FeatureConfigInterface,
-    UIConstants,
-    history
+    UIConstants
 } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import addOrganizationDiscoveryConfig from "../api/add-organization-discovery-config";
 import deleteOrganizationDiscoveryConfig from "../api/delete-organization-discovery-config";
 import useGetOrganizationDiscovery from "../api/use-get-organization-discovery";
@@ -71,8 +71,10 @@ import {
 const ORGANIZATIONS_LIST_SORTING_OPTIONS: DropdownItemProps[] = [
     {
         key: 0,
-        text: I18n.instance.t("console:manage.features.organizationDiscovery.advancedSearch." +
-        "form.dropdown.filterAttributeOptions.organizationName") as ReactNode,
+        text: I18n.instance.t(
+            "console:manage.features.organizationDiscovery.advancedSearch." +
+                "form.dropdown.filterAttributeOptions.organizationName"
+        ) as ReactNode,
         value: "organizationName"
     }
 ];
@@ -91,7 +93,7 @@ type OrganizationDiscoveryDomainsPageInterface = IdentifiableComponentInterface;
 const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryDomainsPageInterface> = (
     props: OrganizationDiscoveryDomainsPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: testId } = props;
+    const { ["data-componentid"]: testId } = props;
 
     const { t } = useTranslation();
 
@@ -107,16 +109,16 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
                 featureConfig?.organizationDiscovery?.scopes?.update,
                 allowedScopes
             ),
-        [ featureConfig, allowedScopes ]
+        [featureConfig, allowedScopes]
     );
 
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ listSortingStrategy, setListSortingStrategy ] = useState<DropdownItemProps>(
-        ORGANIZATIONS_LIST_SORTING_OPTIONS[ 0 ]
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [listSortingStrategy, setListSortingStrategy] = useState<DropdownItemProps>(
+        ORGANIZATIONS_LIST_SORTING_OPTIONS[0]
     );
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -126,7 +128,7 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
         filterQuery = searchQuery;
 
         return filterQuery;
-    }, [ searchQuery ]);
+    }, [searchQuery]);
 
     const {
         data: organizationDiscoveryConfig,
@@ -159,16 +161,16 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
             addAlert({
                 description: t(
                     "console:manage.features.organizationDiscovery.notifications." +
-                            "getEmailDomainDiscovery.error.description"
+                        "getEmailDomainDiscovery.error.description"
                 ),
                 level: AlertLevels.ERROR,
                 message: t(
                     "console:manage.features.organizationDiscovery.notifications." +
-                            "getEmailDomainDiscovery.error.message"
+                        "getEmailDomainDiscovery.error.message"
                 )
             })
         );
-    }, [ organizationDiscoveryConfigFetchRequestError ]);
+    }, [organizationDiscoveryConfigFetchRequestError]);
 
     /**
      * Handle error scenarios of the discoverable organizations fetch request.
@@ -182,16 +184,16 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
             addAlert({
                 description: t(
                     "console:manage.features.organizationDiscovery.notifications." +
-                    "getOrganizationListWithDiscovery.error.description"
+                        "getOrganizationListWithDiscovery.error.description"
                 ),
                 level: AlertLevels.ERROR,
                 message: t(
                     "console:manage.features.organizationDiscovery.notifications." +
-                "getOrganizationListWithDiscovery.error.message"
+                        "getOrganizationListWithDiscovery.error.message"
                 )
             })
         );
-    }, [ discoverableOrganizationsFetchRequestError ]);
+    }, [discoverableOrganizationsFetchRequestError]);
 
     /**
      * Sets the list sorting strategy.
@@ -217,7 +219,7 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
         (query: string): void => {
             setSearchQuery(query);
         },
-        [ setSearchQuery ]
+        [setSearchQuery]
     );
 
     /**
@@ -248,7 +250,7 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
     const handleSearchQueryClear: () => void = useCallback((): void => {
         setTriggerClearQuery(!triggerClearQuery);
         setSearchQuery("");
-    }, [ setSearchQuery, triggerClearQuery ]);
+    }, [setSearchQuery, triggerClearQuery]);
 
     /**
      * This is called when the enable toggle changes.
@@ -273,12 +275,12 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
                         addAlert({
                             description: t(
                                 "console:manage.features.organizationDiscovery.notifications." +
-                                "enableEmailDomainDiscovery.success.description"
+                                    "enableEmailDomainDiscovery.success.description"
                             ),
                             level: AlertLevels.SUCCESS,
                             message: t(
                                 "console:manage.features.organizationDiscovery.notifications." +
-                                "enableEmailDomainDiscovery.success.message"
+                                    "enableEmailDomainDiscovery.success.message"
                             )
                         })
                     );
@@ -290,12 +292,12 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
                         addAlert({
                             description: t(
                                 "console:manage.features.organizationDiscovery.notifications." +
-                                "enableEmailDomainDiscovery.error.description"
+                                    "enableEmailDomainDiscovery.error.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.organizationDiscovery.notifications." +
-                                "enableEmailDomainDiscovery.error.message"
+                                    "enableEmailDomainDiscovery.error.message"
                             )
                         })
                     );
@@ -310,12 +312,12 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
                     addAlert({
                         description: t(
                             "console:manage.features.organizationDiscovery.notifications." +
-                            "disableEmailDomainDiscovery.success.description"
+                                "disableEmailDomainDiscovery.success.description"
                         ),
                         level: AlertLevels.SUCCESS,
                         message: t(
                             "console:manage.features.organizationDiscovery.notifications." +
-                            "disableEmailDomainDiscovery.success.message"
+                                "disableEmailDomainDiscovery.success.message"
                         )
                     })
                 );
@@ -327,12 +329,12 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
                     addAlert({
                         description: t(
                             "console:manage.features.organizationDiscovery.notifications." +
-                            "disableEmailDomainDiscovery.error.description"
+                                "disableEmailDomainDiscovery.error.description"
                         ),
                         level: AlertLevels.ERROR,
                         message: t(
                             "console:manage.features.organizationDiscovery.notifications." +
-                            "disableEmailDomainDiscovery.error.message"
+                                "disableEmailDomainDiscovery.error.message"
                         )
                     })
                 );
@@ -345,13 +347,12 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
     const discoveryToggle = (): ReactElement => {
         return (
             <Checkbox
-                label={ t("console:manage.features.organizationDiscovery." +
-                    "emailDomains.actions.enable") }
+                label={t("console:manage.features.organizationDiscovery." + "emailDomains.actions.enable")}
                 toggle
-                onChange={ handleToggle }
-                checked={ isOrganizationDiscoveryEnabled }
-                data-testId={ `${ testId }-enable-toggle` }
-                readOnly={ isReadOnly }
+                onChange={handleToggle}
+                checked={isOrganizationDiscoveryEnabled}
+                data-testId={`${testId}-enable-toggle`}
+                readOnly={isReadOnly}
             />
         );
     };
@@ -376,113 +377,107 @@ const OrganizationDiscoveryDomainsPage: FunctionComponent<OrganizationDiscoveryD
     return (
         <PageLayout
             action={
-                !isOrganizationDiscoveryConfigFetchRequestLoading
-                && isOrganizationDiscoveryEnabled
-                && !(!searchQuery
-                    && (
-                        isEmpty(discoverableOrganizations)
-                        || discoverableOrganizations?.totalResults <= 0
-                    )
+                !isOrganizationDiscoveryConfigFetchRequestLoading &&
+                isOrganizationDiscoveryEnabled &&
+                !(
+                    !searchQuery &&
+                    (isEmpty(discoverableOrganizations) || discoverableOrganizations?.totalResults <= 0)
                 ) && (
-                    <Show when={ AccessControlConstants.ORGANIZATION_DISCOVERY_WRITE }>
+                    <Show when={AccessControlConstants.ORGANIZATION_DISCOVERY_WRITE}>
                         <PrimaryButton
-                            disabled={ isDiscoverableOrganizationsFetchRequestLoading }
-                            loading={ isDiscoverableOrganizationsFetchRequestLoading }
-                            onClick={ () => {
+                            disabled={isDiscoverableOrganizationsFetchRequestLoading}
+                            loading={isDiscoverableOrganizationsFetchRequestLoading}
+                            onClick={() => {
                                 eventPublisher.publish("organization-click-assign-email-domain-button");
-                                history.push(
-                                    AppConstants.getPaths().get("ASSIGN_ORGANIZATION_DISCOVERY_DOMAINS")
-                                );
-                            } }
-                            data-componentid={ `${ testId }-list-layout-assign-button` }
+                                history.push(AppConstants.getPaths().get("ASSIGN_ORGANIZATION_DISCOVERY_DOMAINS"));
+                            }}
+                            data-componentid={`${testId}-list-layout-assign-button`}
                         >
                             <Icon name="add" />
-                            { t("console:manage.features.organizationDiscovery.emailDomains.actions.assign") }
+                            {t("console:manage.features.organizationDiscovery.emailDomains.actions.assign")}
                         </PrimaryButton>
                     </Show>
                 )
             }
-            pageTitle={ t("console:manage.pages.emailDomainDiscovery.title") }
-            title={ t("console:manage.pages.emailDomainDiscovery.title") }
-            description={ t("console:manage.pages.emailDomainDiscovery.subTitle") }
-            data-componentid={ `${ testId }-page-layout` }
-            backButton={ {
-                "data-testid": `${ testId }-page-back-button`,
+            pageTitle={t("console:manage.pages.emailDomainDiscovery.title")}
+            title={t("console:manage.pages.emailDomainDiscovery.title")}
+            description={t("console:manage.pages.emailDomainDiscovery.subTitle")}
+            data-componentid={`${testId}-page-layout`}
+            backButton={{
+                "data-testid": `${testId}-page-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:manage.features.governanceConnectors.goBackLoginAndRegistration")
-            } }
+            }}
         >
-            { discoveryToggle() }
+            {discoveryToggle()}
             <Divider hidden />
-            <Alert severity="info">
-                { t("console:manage.features.organizationDiscovery.message") }
-            </Alert>
+            <Alert severity="info">{t("console:manage.features.organizationDiscovery.message")}</Alert>
             <Divider hidden />
-            { isOrganizationDiscoveryEnabled && (
+            {isOrganizationDiscoveryEnabled && (
                 <ListLayout
-                    advancedSearch={ (
+                    advancedSearch={
                         <AdvancedSearchWithBasicFilters
-                            onFilter={ handleOrganizationFilter }
-                            filterAttributeOptions={ [
+                            onFilter={handleOrganizationFilter}
+                            filterAttributeOptions={[
                                 {
                                     key: 0,
-                                    text: t("console:manage.features.organizationDiscovery.advancedSearch." +
-                                    "form.dropdown.filterAttributeOptions.organizationName"),
+                                    text: t(
+                                        "console:manage.features.organizationDiscovery.advancedSearch." +
+                                            "form.dropdown.filterAttributeOptions.organizationName"
+                                    ),
                                     value: "organizationName"
                                 }
-                            ] }
-                            filterAttributePlaceholder={ t(
+                            ]}
+                            filterAttributePlaceholder={t(
                                 "console:manage.features.organizationDiscovery.advancedSearch.form" +
-                                        ".inputs.filterAttribute.placeholder"
-                            ) }
-                            filterConditionsPlaceholder={ t(
+                                    ".inputs.filterAttribute.placeholder"
+                            )}
+                            filterConditionsPlaceholder={t(
                                 "console:manage.features.organizationDiscovery.advancedSearch.form" +
-                                        ".inputs.filterCondition.placeholder"
-                            ) }
-                            filterValuePlaceholder={ t(
+                                    ".inputs.filterCondition.placeholder"
+                            )}
+                            filterValuePlaceholder={t(
                                 "console:manage.features.organizationDiscovery.advancedSearch.form" +
-                                ".inputs.filterValue.placeholder"
-                            ) }
-                            placeholder={ t(
-                                "console:manage.features.organizationDiscovery.advancedSearch.placeholder"
-                            ) }
+                                    ".inputs.filterValue.placeholder"
+                            )}
+                            placeholder={t("console:manage.features.organizationDiscovery.advancedSearch.placeholder")}
                             defaultSearchAttribute="organizationName"
                             defaultSearchOperator="co"
-                            triggerClearQuery={ triggerClearQuery }
-                            data-componentid={ `${ testId }-list-advanced-search` }
+                            triggerClearQuery={triggerClearQuery}
+                            data-componentid={`${testId}-list-advanced-search`}
                         />
-                    ) }
-                    currentListSize={ discoverableOrganizations?.organizations?.length }
-                    listItemLimit={ listItemLimit }
-                    onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                    onPageChange={ handlePaginationChange }
-                    onSortStrategyChange={ handleListSortingStrategyOnChange }
+                    }
+                    currentListSize={discoverableOrganizations?.organizations?.length}
+                    listItemLimit={listItemLimit}
+                    onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                    onPageChange={handlePaginationChange}
+                    onSortStrategyChange={handleListSortingStrategyOnChange}
                     showTopActionPanel={
                         isDiscoverableOrganizationsFetchRequestLoading ||
-                                !(!searchQuery && discoverableOrganizations?.organizations?.length <= 0)
+                        !(!searchQuery && discoverableOrganizations?.organizations?.length <= 0)
                     }
-                    sortOptions={ ORGANIZATIONS_LIST_SORTING_OPTIONS }
-                    sortStrategy={ listSortingStrategy }
-                    totalPages={ 10 }
-                    totalListSize={ discoverableOrganizations?.organizations?.length }
-                    isLoading={ isDiscoverableOrganizationsFetchRequestLoading }
-                    paginationOptions={ {
+                    sortOptions={ORGANIZATIONS_LIST_SORTING_OPTIONS}
+                    sortStrategy={listSortingStrategy}
+                    totalPages={10}
+                    totalListSize={discoverableOrganizations?.organizations?.length}
+                    isLoading={isDiscoverableOrganizationsFetchRequestLoading}
+                    paginationOptions={{
                         disableNextButton: !shouldShowNextPageNavigation(discoverableOrganizations)
-                    } }
-                    data-componentid={ `${ testId }-list-layout` }
+                    }}
+                    data-componentid={`${testId}-list-layout`}
                     showPagination
                 >
                     <DiscoverableOrganizationsList
-                        list={ discoverableOrganizations }
-                        onEmptyListPlaceholderActionClick={ () => {
+                        list={discoverableOrganizations}
+                        onEmptyListPlaceholderActionClick={() => {
                             history.push(AppConstants.getPaths().get("ASSIGN_ORGANIZATION_DISCOVERY_DOMAINS"));
-                        } }
-                        onSearchQueryClear={ handleSearchQueryClear }
-                        searchQuery={ searchQuery }
+                        }}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        searchQuery={searchQuery}
                         data-componentid="organization-list-with-discovery"
                     />
                 </ListLayout>
-            ) }
+            )}
         </PageLayout>
     );
 };

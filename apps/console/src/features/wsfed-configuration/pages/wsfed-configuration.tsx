@@ -27,7 +27,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid, Placeholder, Ref } from "semantic-ui-react";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
+import { AppConstants, AppState, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { updateWSFederationConfigurations, useWSFederationConfig } from "../api/wsfed-configuration";
 import {
     WSFederationConfigAPIResponseInterface,
@@ -47,26 +48,24 @@ const FORM_ID: string = "wsfederation-configuration-form";
 export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfigurationPageInterface> = (
     props: WSFederationConfigurationPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const pageContextRef: MutableRefObject<any> = useRef(null);
     const formRef: MutableRefObject<FormPropsInterface> = useRef<FormPropsInterface>(null);
 
-    const featureConfig : FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
-    const allowedScopes : string = useSelector((state: AppState) => state?.auth?.allowedScopes);
+    const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
+    const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const isReadOnly : boolean = useMemo(() => !hasRequiredScopes(
-        featureConfig?.server,
-        featureConfig?.server?.scopes?.update,
-        allowedScopes
-    ), [ featureConfig, allowedScopes ]);
+    const isReadOnly: boolean = useMemo(
+        () => !hasRequiredScopes(featureConfig?.server, featureConfig?.server?.scopes?.update, allowedScopes),
+        [featureConfig, allowedScopes]
+    );
 
-    const dispatch : Dispatch<any> = useDispatch();
+    const dispatch: Dispatch<any> = useDispatch();
 
     const { t } = useTranslation();
 
-    const [ wsFederationConfig , setWSFederationConfig ] =
-        useState<WSFederationConfigFormValuesInterface>(undefined);
+    const [wsFederationConfig, setWSFederationConfig] = useState<WSFederationConfigFormValuesInterface>(undefined);
 
     const {
         data: originalWSFederationConfig,
@@ -76,8 +75,7 @@ export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfig
     } = useWSFederationConfig();
 
     useEffect(() => {
-        if (originalWSFederationConfig instanceof IdentityAppsApiException
-            || wsFederationConfigFetchRequestError) {
+        if (originalWSFederationConfig instanceof IdentityAppsApiException || wsFederationConfigFetchRequestError) {
             handleRetrieveError();
 
             return;
@@ -90,7 +88,7 @@ export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfig
         setWSFederationConfig({
             enableRequestSigning: originalWSFederationConfig.enableRequestSigning
         });
-    }, [ originalWSFederationConfig ]);
+    }, [originalWSFederationConfig]);
 
     /**
      * Displays the error banner when unable to fetch WSFederation configuration.
@@ -98,11 +96,9 @@ export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfig
     const handleRetrieveError = (): void => {
         dispatch(
             addAlert({
-                description: t("console:wsFederationConfig.notifications." +
-                "getConfiguration.error.description"),
+                description: t("console:wsFederationConfig.notifications." + "getConfiguration.error.description"),
                 level: AlertLevels.ERROR,
-                message: t("console:wsFederationConfig.notifications." +
-                "getConfiguration.error.message")
+                message: t("console:wsFederationConfig.notifications." + "getConfiguration.error.message")
             })
         );
     };
@@ -113,11 +109,9 @@ export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfig
     const handleUpdateSuccess = () => {
         dispatch(
             addAlert({
-                description: t("console:wsFederationConfig.notifications." +
-                "updateConfiguration.success.description"),
+                description: t("console:wsFederationConfig.notifications." + "updateConfiguration.success.description"),
                 level: AlertLevels.SUCCESS,
-                message: t("console:wsFederationConfig.notifications." +
-                "updateConfiguration.success.message")
+                message: t("console:wsFederationConfig.notifications." + "updateConfiguration.success.message")
             })
         );
     };
@@ -128,11 +122,9 @@ export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfig
     const handleUpdateError = () => {
         dispatch(
             addAlert({
-                description: t("console:wsFederationConfig.notifications." +
-                "updateConfiguration.error.description"),
+                description: t("console:wsFederationConfig.notifications." + "updateConfiguration.error.description"),
                 level: AlertLevels.ERROR,
-                message: t("console:wsFederationConfig.notifications." +
-                "updateConfiguration.error.message")
+                message: t("console:wsFederationConfig.notifications." + "updateConfiguration.error.message")
             })
         );
     };
@@ -145,13 +137,16 @@ export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfig
             enableRequestSigning: value
         };
 
-        updateWSFederationConfigurations(data).then(() => {
-            handleUpdateSuccess();
-        }).catch(() => {
-            handleUpdateError();
-        }).finally(() => {
-            mutateWSFederationConfig();
-        });
+        updateWSFederationConfigurations(data)
+            .then(() => {
+                handleUpdateSuccess();
+            })
+            .catch(() => {
+                handleUpdateError();
+            })
+            .finally(() => {
+                mutateWSFederationConfig();
+            });
     };
 
     const onBackButtonClick = (): void => {
@@ -163,12 +158,9 @@ export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfig
      */
     const renderLoadingPlaceholder = (): ReactElement => {
         return (
-            <Grid.Row columns={ 1 }>
+            <Grid.Row columns={1}>
                 <div>
-                    <div
-                        className="ui card fluid settings-card"
-                        data-testid={ `${componentId}-loading-card` }
-                    >
+                    <div className="ui card fluid settings-card" data-testid={`${componentId}-loading-card`}>
                         <div className="content no-padding">
                             <div className="header-section">
                                 <Placeholder>
@@ -188,7 +180,7 @@ export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfig
                             </div>
                         </div>
                     </div>
-                    <Divider hidden/>
+                    <Divider hidden />
                 </div>
             </Grid.Row>
         );
@@ -196,61 +188,61 @@ export const WSFederationConfigurationPage: FunctionComponent<WSFederationConfig
 
     return (
         <PageLayout
-            title={ t("console:wsFederationConfig.title") }
-            pageTitle={ t("console:wsFederationConfig.title") }
-            description={ t("console:wsFederationConfig.description") }
-            backButton={ {
+            title={t("console:wsFederationConfig.title")}
+            pageTitle={t("console:wsFederationConfig.title")}
+            description={t("console:wsFederationConfig.description")}
+            backButton={{
                 onClick: () => onBackButtonClick(),
                 text: t("console:manage.features.governanceConnectors.goBackLoginAndRegistration")
-            } }
-            bottomMargin={ false }
-            contentTopMargin={ false }
-            pageHeaderMaxWidth={ true }
-            data-componentid={ `${ componentId }-form-layout` }
+            }}
+            bottomMargin={false}
+            contentTopMargin={false}
+            pageHeaderMaxWidth={true}
+            data-componentid={`${componentId}-form-layout`}
         >
-            <Ref innerRef={ pageContextRef }>
-                <Grid className={ "mt-2" } >
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 16 }>
-                            <EmphasizedSegment className="form-wrapper" padded={ "very" }>
-                                { isWSFederationFetchRequestLoading
-                                    ? renderLoadingPlaceholder()
-                                    : (
-                                        <>
-                                            <Form
-                                                id={ FORM_ID }
-                                                uncontrolledForm={ true }
-                                                onSubmit={ null }
-                                                initialValues={ wsFederationConfig }
-                                                enableReinitialize={ true }
-                                                ref={ formRef }
-                                                noValidate={ true }
-                                                autoComplete="new-password"
-                                            >
-                                                <Grid>
-                                                    <Grid.Row columns={ 1 } key={ 1 }>
-                                                        <Grid.Column key="enableRequestSigning">
-                                                            <Field.Checkbox
-                                                                ariaLabel="Enable Authentication Requests Signing"
-                                                                name="enableRequestSigning"
-                                                                label={ t("console:wsFederationConfig.form." +
-                                                                    "enableRequestSigning.label") }
-                                                                readOnly={ isReadOnly }
-                                                                width={ 16 }
-                                                                data-componentid={
-                                                                    `${componentId}-enable-request-signing` }
-                                                                toggle
-                                                                listen={ (value: boolean) => {
-                                                                    handleSubmit(value);
-                                                                } }
-                                                            />
-                                                        </Grid.Column>
-                                                    </Grid.Row>
-                                                </Grid>
-                                            </Form>
-                                        </>
-                                    )
-                                }
+            <Ref innerRef={pageContextRef}>
+                <Grid className={"mt-2"}>
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={16}>
+                            <EmphasizedSegment className="form-wrapper" padded={"very"}>
+                                {isWSFederationFetchRequestLoading ? (
+                                    renderLoadingPlaceholder()
+                                ) : (
+                                    <>
+                                        <Form
+                                            id={FORM_ID}
+                                            uncontrolledForm={true}
+                                            onSubmit={null}
+                                            initialValues={wsFederationConfig}
+                                            enableReinitialize={true}
+                                            ref={formRef}
+                                            noValidate={true}
+                                            autoComplete="new-password"
+                                        >
+                                            <Grid>
+                                                <Grid.Row columns={1} key={1}>
+                                                    <Grid.Column key="enableRequestSigning">
+                                                        <Field.Checkbox
+                                                            ariaLabel="Enable Authentication Requests Signing"
+                                                            name="enableRequestSigning"
+                                                            label={t(
+                                                                "console:wsFederationConfig.form." +
+                                                                    "enableRequestSigning.label"
+                                                            )}
+                                                            readOnly={isReadOnly}
+                                                            width={16}
+                                                            data-componentid={`${componentId}-enable-request-signing`}
+                                                            toggle
+                                                            listen={(value: boolean) => {
+                                                                handleSubmit(value);
+                                                            }}
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </Form>
+                                    </>
+                                )}
                             </EmphasizedSegment>
                         </Grid.Column>
                     </Grid.Row>

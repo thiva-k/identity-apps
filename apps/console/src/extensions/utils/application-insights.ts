@@ -20,7 +20,7 @@ import { ITelemetryItem } from "@microsoft/applicationinsights-core-js";
 import { ReactPlugin } from "@microsoft/applicationinsights-react-js";
 import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { v4 as uuidv4 } from "uuid";
-import { history } from "../../features/core/helpers/history";
+import { history } from "@wso2is/features/core/helpers";
 import { store } from "@wso2is/features/core/store";
 
 /**

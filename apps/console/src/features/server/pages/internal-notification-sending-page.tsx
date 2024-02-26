@@ -26,7 +26,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Checkbox, CheckboxProps } from "semantic-ui-react";
-import { AppConstants, history } from "../../core";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getConnectorDetails, updateGovernanceConnector } from "../../server-configurations/api";
 import {
     ConnectorPropertyInterface,
@@ -49,17 +50,13 @@ type InternalNotificationSendingPageInterface = IdentifiableComponentInterface;
 export const InternalNotificationSendingPage: FC<InternalNotificationSendingPageInterface> = (
     props: InternalNotificationSendingPageInterface
 ): ReactElement => {
-
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ isLoading, setIsLoading ] = useState<boolean>(false);
-    const [
-        isNotificationInternallyManaged,
-        setIsNotificationInternallyManaged
-    ] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isNotificationInternallyManaged, setIsNotificationInternallyManaged] = useState<boolean>(false);
 
     useEffect(() => {
         getNotificationInternallyManaged();
@@ -105,7 +102,7 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
                         summationOfResponse = false;
                     }
                 });
-                
+
                 setIsNotificationInternallyManaged(summationOfResponse);
             })
             .catch((error: AxiosError) => {
@@ -114,13 +111,13 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.description",
+                                    "getConnector.error.description",
                                 { description: error.response.data.description }
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.message"
+                                    "getConnector.error.message"
                             )
                         })
                     );
@@ -129,17 +126,18 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.description"
+                                    "getConnector.genericError.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.message"
+                                    "getConnector.genericError.message"
                             )
                         })
                     );
                 }
-            }).finally(() => {
+            })
+            .finally(() => {
                 setIsLoading(false);
             });
     };
@@ -178,18 +176,23 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
             );
 
             // All the updates are successful.
-            if (selfSignUpResult && emailVerificationResult && accountLockingResult &&
-                accountDisablingResult && accountRecoveryResult) {
+            if (
+                selfSignUpResult &&
+                emailVerificationResult &&
+                accountLockingResult &&
+                accountDisablingResult &&
+                accountRecoveryResult
+            ) {
                 dispatch(
                     addAlert({
                         description: t(
                             "extensions:manage.accountLogin.alternativeLoginIdentifierPage." +
-                            "notification.success.description"
+                                "notification.success.description"
                         ),
                         level: AlertLevels.SUCCESS,
                         message: t(
                             "console:manage.features.governanceConnectors.notifications." +
-                            "updateConnector.success.message"
+                                "updateConnector.success.message"
                         )
                     })
                 );
@@ -201,13 +204,12 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
                     addAlert({
                         description: t(
                             "console:manage.features.governanceConnectors.notifications." +
-                            "getConnector.error.description",
+                                "getConnector.error.description",
                             { description: error.response.data.description }
                         ),
                         level: AlertLevels.ERROR,
                         message: t(
-                            "console:manage.features.governanceConnectors.notifications." +
-                            "getConnector.error.message"
+                            "console:manage.features.governanceConnectors.notifications." + "getConnector.error.message"
                         )
                     })
                 );
@@ -216,12 +218,12 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
                     addAlert({
                         description: t(
                             "console:manage.features.governanceConnectors.notifications." +
-                            "getConnector.genericError.description"
+                                "getConnector.genericError.description"
                         ),
                         level: AlertLevels.ERROR,
                         message: t(
                             "console:manage.features.governanceConnectors.notifications." +
-                            "getConnector.genericError.message"
+                                "getConnector.genericError.message"
                         )
                     })
                 );
@@ -255,13 +257,13 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.description",
+                                    "getConnector.error.description",
                                 { description: error.response.data.description }
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.error.message"
+                                    "getConnector.error.message"
                             )
                         })
                     );
@@ -270,12 +272,12 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.description"
+                                    "getConnector.genericError.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "getConnector.genericError.message"
+                                    "getConnector.genericError.message"
                             )
                         })
                     );
@@ -298,8 +300,8 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
             operation: "UPDATE",
             properties: [
                 {
-                    "name": propertyName,
-                    "value": value
+                    name: propertyName,
+                    value: value
                 }
             ]
         };
@@ -314,12 +316,12 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
                         addAlert({
                             description: t(
                                 "extensions:manage.accountLogin.alternativeLoginIdentifierPage" +
-                                ".notification.error.description"
+                                    ".notification.error.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "updateConnector.error.message"
+                                    "updateConnector.error.message"
                             )
                         })
                     );
@@ -329,12 +331,12 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
                         addAlert({
                             description: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "updateConnector.genericError.description"
+                                    "updateConnector.genericError.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.governanceConnectors.notifications." +
-                                "updateConnector.genericError.message"
+                                    "updateConnector.genericError.message"
                             )
                         })
                     );
@@ -362,42 +364,47 @@ export const InternalNotificationSendingPage: FC<InternalNotificationSendingPage
 
     return (
         <PageLayout
-            title={ "Internal Notification Sending" }
-            pageTitle={ "Internal Notification Sending" }
-            data-componentid={ `${ componentId }-page-layout` }
-            backButton={ {
-                "data-testid": `${ componentId }-page-back-button`,
+            title={"Internal Notification Sending"}
+            pageTitle={"Internal Notification Sending"}
+            data-componentid={`${componentId}-page-layout`}
+            backButton={{
+                "data-testid": `${componentId}-page-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:manage.pages.rolesEdit.backButton", { type: "Server" })
-            } }
-            bottomMargin={ false }
-            contentTopMargin={ true }
-            pageHeaderMaxWidth={ true }
-            isLoading={ isLoading }
+            }}
+            bottomMargin={false}
+            contentTopMargin={true}
+            pageHeaderMaxWidth={true}
+            isLoading={isLoading}
         >
-            <Grid className={ "mt-5" }>
-                <EmphasizedSegment className="form-wrapper" padded={ "very" }>
+            <Grid className={"mt-5"}>
+                <EmphasizedSegment className="form-wrapper" padded={"very"}>
                     <Checkbox
-                        ariaLabel={ t("console:manage.features.governanceConnectors.connectorCategories." +
-                            "accountManagement.connectors.accountRecovery.properties." +
-                            "recoveryNotificationInternallyManage.label") }
+                        ariaLabel={t(
+                            "console:manage.features.governanceConnectors.connectorCategories." +
+                                "accountManagement.connectors.accountRecovery.properties." +
+                                "recoveryNotificationInternallyManage.label"
+                        )}
                         name="manageInternalNotificationSending"
-                        label={ t("console:manage.features.governanceConnectors.connectorCategories." +
-                            "accountManagement.connectors.accountRecovery.properties." +
-                            "recoveryNotificationInternallyManage.label") }
-                        width={ 16 }
-                        data-componentid={ 
-                            `${componentId}-toggle` }
+                        label={t(
+                            "console:manage.features.governanceConnectors.connectorCategories." +
+                                "accountManagement.connectors.accountRecovery.properties." +
+                                "recoveryNotificationInternallyManage.label"
+                        )}
+                        width={16}
+                        data-componentid={`${componentId}-toggle`}
                         toggle
-                        onChange={ (event: FormEvent<HTMLInputElement>, data: CheckboxProps) => {
+                        onChange={(event: FormEvent<HTMLInputElement>, data: CheckboxProps) => {
                             handleCheckboxToggle(data);
-                        } }
-                        checked={ isNotificationInternallyManaged }
+                        }}
+                        checked={isNotificationInternallyManaged}
                     />
                     <Hint>
-                        { t("console:manage.features.governanceConnectors.connectorCategories." +
-                            "accountManagement.connectors.accountRecovery.properties." +
-                            "recoveryNotificationInternallyManage.hint") }
+                        {t(
+                            "console:manage.features.governanceConnectors.connectorCategories." +
+                                "accountManagement.connectors.accountRecovery.properties." +
+                                "recoveryNotificationInternallyManage.hint"
+                        )}
                     </Hint>
                 </EmphasizedSegment>
             </Grid>

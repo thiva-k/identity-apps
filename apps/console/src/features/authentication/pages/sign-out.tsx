@@ -23,7 +23,8 @@ import { AuthenticateUtils } from "@wso2is/core/utils";
 import React, { FunctionComponent, ReactElement, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { AppState, PreLoader, history } from "../../core";
+import { AppState, PreLoader } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import useOrganizations from "../../organizations/hooks/use-organizations";
 
 /**
@@ -36,10 +37,7 @@ const SignOut: FunctionComponent<Record<string, unknown>> = (): ReactElement => 
 
     const { signOut, on } = useAuthContext();
 
-    const {
-        removeOrgIdInLocalStorage,
-        removeUserOrgInLocalStorage
-    } = useOrganizations();
+    const { removeOrgIdInLocalStorage, removeUserOrgInLocalStorage } = useOrganizations();
 
     const logoutInit: boolean = useSelector((state: AppState) => state.auth.logoutInit);
 
@@ -55,12 +53,11 @@ const SignOut: FunctionComponent<Record<string, unknown>> = (): ReactElement => 
             removeOrgIdInLocalStorage();
             removeUserOrgInLocalStorage();
 
-            signOut()
-                .catch(() => {
-                    history.push(window[ "AppUtils" ].getConfig().routes.home);
-                });
+            signOut().catch(() => {
+                history.push(window["AppUtils"].getConfig().routes.home);
+            });
         }
-    }, [ logoutInit ]);
+    }, [logoutInit]);
 
     return <PreLoader />;
 };

@@ -23,20 +23,16 @@ import React, { FC, ReactElement, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import { AppConstants, history } from "../../core";
-import {
-    useRemoteLogPublishingConfigs
-} from "../api/server";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
+import { useRemoteLogPublishingConfigs } from "../api/server";
 import { RemoteLoggingConfigForm } from "../components/remote-logging-config-form";
 import { LogType, RemoteLogPublishingConfigurationInterface } from "../models/server";
 
 type RemoteLoggingPageInterface = IdentifiableComponentInterface;
 
-export const RemoteLoggingPage: FC<RemoteLoggingPageInterface> = (
-    props: RemoteLoggingPageInterface
-): ReactElement => {
-
-    const { [ "data-componentid" ]: componentId } = props;
+export const RemoteLoggingPage: FC<RemoteLoggingPageInterface> = (props: RemoteLoggingPageInterface): ReactElement => {
+    const { ["data-componentid"]: componentId } = props;
 
     const {
         data: remoteLogPublishingConfigs,
@@ -52,15 +48,19 @@ export const RemoteLoggingPage: FC<RemoteLoggingPageInterface> = (
         if (remoteLogPublishingConfigRetrievalError && !isRemoteLogPublishingConfigsLoading) {
             dispatch(
                 addAlert<AlertInterface>({
-                    description: t("console:manage.features.serverConfigs.remoteLogPublishing." +
-                    "notification.error.fetchError.description"),
+                    description: t(
+                        "console:manage.features.serverConfigs.remoteLogPublishing." +
+                            "notification.error.fetchError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:manage.features.serverConfigs.remoteLogPublishing." +
-                    "notification.error.fetchError.message")
+                    message: t(
+                        "console:manage.features.serverConfigs.remoteLogPublishing." +
+                            "notification.error.fetchError.message"
+                    )
                 })
             );
         }
-    }, [ ]);
+    }, []);
 
     /**
      * Handles the back button click event.
@@ -71,25 +71,25 @@ export const RemoteLoggingPage: FC<RemoteLoggingPageInterface> = (
 
     return (
         <PageLayout
-            title={ t("console:manage.features.serverConfigs.remoteLogPublishing.title") }
-            pageTitle={ t("console:manage.features.serverConfigs.remoteLogPublishing.pageTitle") }
-            description={ <>{ t("console:manage.features.serverConfigs.remoteLogPublishing.description") }</> }
-            data-componentid={ `${ componentId }-page-layout` }
-            backButton={ {
-                "data-testid": `${ componentId }-page-back-button`,
+            title={t("console:manage.features.serverConfigs.remoteLogPublishing.title")}
+            pageTitle={t("console:manage.features.serverConfigs.remoteLogPublishing.pageTitle")}
+            description={<>{t("console:manage.features.serverConfigs.remoteLogPublishing.description")}</>}
+            data-componentid={`${componentId}-page-layout`}
+            backButton={{
+                "data-testid": `${componentId}-page-back-button`,
                 onClick: handleBackButtonClick,
                 text: t("console:manage.pages.rolesEdit.backButton", { type: "Server" })
-            } }
-            bottomMargin={ false }
-            isLoading={ isRemoteLogPublishingConfigsLoading }
+            }}
+            bottomMargin={false}
+            isLoading={isRemoteLogPublishingConfigsLoading}
         >
             <RemoteLoggingConfigForm
-                mutateRemoteLoggingRequest={ mutateRemoteLoggingRequest }
-                logType={ LogType.AUDIT }
-                logConfig={ remoteLogPublishingConfigs?.find(
+                mutateRemoteLoggingRequest={mutateRemoteLoggingRequest}
+                logType={LogType.AUDIT}
+                logConfig={remoteLogPublishingConfigs?.find(
                     (config: RemoteLogPublishingConfigurationInterface) =>
                         config.logType.toLowerCase() === LogType.AUDIT.toString()
-                ) }
+                )}
             />
         </PageLayout>
     );

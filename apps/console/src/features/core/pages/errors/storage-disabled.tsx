@@ -22,7 +22,7 @@ import { useTranslation } from "react-i18next";
 import { RouteComponentProps } from "react-router-dom";
 import { getEmptyPlaceholderIllustrations } from "../../configs";
 import { AppConstants } from "../../constants";
-import { history } from "../../helpers";
+import { history } from "@wso2is/features/core/helpers";
 
 /**
  * Storage disabled error page.
@@ -31,7 +31,6 @@ import { history } from "../../helpers";
  * @return {React.ReactElement}
  */
 const SessionStorageDisabled: FunctionComponent<RouteComponentProps> = (): ReactElement => {
-
     const { t } = useTranslation();
 
     useEffect(() => {
@@ -48,13 +47,13 @@ const SessionStorageDisabled: FunctionComponent<RouteComponentProps> = (): React
 
     return (
         <EmptyPlaceholder
-            image={ getEmptyPlaceholderIllustrations().loginError }
+            image={getEmptyPlaceholderIllustrations().loginError}
             imageSize="tiny"
-            subtitle={ [
+            subtitle={[
                 t("console:common.placeholders.sessionStorageDisabled.subtitles.0"),
                 t("console:common.placeholders.sessionStorageDisabled.subtitles.1")
-            ] }
-            title={ t("console:common.placeholders.sessionStorageDisabled.title") }
+            ]}
+            title={t("console:common.placeholders.sessionStorageDisabled.title")}
         />
     );
 };

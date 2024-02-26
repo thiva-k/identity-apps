@@ -25,7 +25,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteChildrenProps } from "react-router-dom";
 import { Dispatch } from "redux";
-import { AppConstants, history } from "../../core";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { AppState } from "../../core/store";
 import useGetOrganization from "../../organizations/api/use-get-organization";
 import useGetOrganizationDiscoveryAttributes from "../api/use-get-organization-discovery-attributes";
@@ -47,11 +48,7 @@ export type EditOrganizationDiscoveryDomainsPagePropsInterface = IdentifiableCom
 const EditOrganizationDiscoveryDomainsPage: FunctionComponent<EditOrganizationDiscoveryDomainsPagePropsInterface> = (
     props: EditOrganizationDiscoveryDomainsPagePropsInterface
 ): ReactElement => {
-
-    const {
-        location,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { location, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
@@ -66,12 +63,12 @@ const EditOrganizationDiscoveryDomainsPage: FunctionComponent<EditOrganizationDi
         const path: string[] = location.pathname.split("/");
 
         return path[path.length - 1];
-    }, [ location ]);
+    }, [location]);
 
-    const {
-        data: organization,
-        error: organizationFetchRequestError
-    } = useGetOrganization(!!organizationId, organizationId);
+    const { data: organization, error: organizationFetchRequestError } = useGetOrganization(
+        !!organizationId,
+        organizationId
+    );
 
     const {
         data: organizationDiscoveryAttributes,
@@ -79,7 +76,7 @@ const EditOrganizationDiscoveryDomainsPage: FunctionComponent<EditOrganizationDi
         mutate: mutateOrganizationDiscoveryAttributesFetchRequest
     } = useGetOrganizationDiscoveryAttributes(!!organizationId, organizationId);
 
-    const [ isReadOnly, setIsReadOnly ] = useState<boolean>(true);
+    const [isReadOnly, setIsReadOnly] = useState<boolean>(true);
 
     /**
      * Set the isReadOnly state based on the feature config.
@@ -89,74 +86,69 @@ const EditOrganizationDiscoveryDomainsPage: FunctionComponent<EditOrganizationDi
             !isFeatureEnabled(
                 featureConfig,
                 OrganizationDiscoveryConstants.FEATURE_DICTIONARY.get("ORGANIZATION_DISCOVERY_UPDATE")
-            ) || !hasRequiredScopes(
-                featureConfig,
-                featureConfig.scopes?.update,
-                allowedScopes
-            )
+            ) || !hasRequiredScopes(featureConfig, featureConfig.scopes?.update, allowedScopes)
         );
-    }, [ featureConfig, organization ]);
+    }, [featureConfig, organization]);
 
     useEffect(() => {
         if (!organizationFetchRequestError) {
             return;
         }
 
-        dispatch(addAlert({
-            description: t("console:manage.features.organizations.notifications.fetchOrganization." +
-                "genericError.message"),
-            level: AlertLevels.ERROR,
-            message: t("console:manage.features.organizations.notifications.fetchOrganization." +
-                "genericError.message")
-        }));
-    }, [ organizationFetchRequestError ]);
+        dispatch(
+            addAlert({
+                description: t(
+                    "console:manage.features.organizations.notifications.fetchOrganization." + "genericError.message"
+                ),
+                level: AlertLevels.ERROR,
+                message: t(
+                    "console:manage.features.organizations.notifications.fetchOrganization." + "genericError.message"
+                )
+            })
+        );
+    }, [organizationFetchRequestError]);
 
     useEffect(() => {
         if (!organizationDiscoveryAttributesFetchRequestError) {
             return;
         }
 
-        dispatch(addAlert({
-            description: t("console:manage.features.organizations.notifications.fetchOrganization." +
-                "error.description"),
-            level: AlertLevels.ERROR,
-            message: t("console:manage.features.organizations.notifications.fetchOrganization." +
-                "error.message")
-        }));
-    }, [ organizationDiscoveryAttributesFetchRequestError ]);
+        dispatch(
+            addAlert({
+                description: t(
+                    "console:manage.features.organizations.notifications.fetchOrganization." + "error.description"
+                ),
+                level: AlertLevels.ERROR,
+                message: t("console:manage.features.organizations.notifications.fetchOrganization." + "error.message")
+            })
+        );
+    }, [organizationDiscoveryAttributesFetchRequestError]);
 
-    const goBackToOrganizationListWithDomains: () => void = useCallback(() =>
-        history.push(AppConstants.getPaths().get("ORGANIZATION_DISCOVERY_DOMAINS")),[ history ]
+    const goBackToOrganizationListWithDomains: () => void = useCallback(
+        () => history.push(AppConstants.getPaths().get("ORGANIZATION_DISCOVERY_DOMAINS")),
+        [history]
     );
 
     return (
         <PageLayout
-            title={ organization?.name ?? t("console:manage.features.organizationDiscovery.title") }
-            pageTitle={ organization?.name ?? t("console:manage.features.organizationDiscovery.title") }
-            description={ t("console:manage.features.organizationDiscovery.edit.description") }
-            image={ (
-                <GenericIcon
-                    defaultIcon
-                    relaxed="very"
-                    shape="rounded"
-                    size="x50"
-                    icon={ OrganizationIcon }
-                />
-            ) }
-            backButton={ {
+            title={organization?.name ?? t("console:manage.features.organizationDiscovery.title")}
+            pageTitle={organization?.name ?? t("console:manage.features.organizationDiscovery.title")}
+            description={t("console:manage.features.organizationDiscovery.edit.description")}
+            image={<GenericIcon defaultIcon relaxed="very" shape="rounded" size="x50" icon={OrganizationIcon} />}
+            backButton={{
                 "data-componentid": "org-email-domains-edit-org-back-button",
                 onClick: goBackToOrganizationListWithDomains,
                 text: t("console:manage.features.organizationDiscovery.edit.back")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            data-componentid={ componentId }
+            bottomMargin={false}
+            data-componentid={componentId}
         >
             <EditOrganizationDiscoveryDomains
-                organization={ organization }
-                organizationDiscoveryAttributes = { organizationDiscoveryAttributes }
-                isReadOnly={ isReadOnly }
-                onOrganizationUpdate={ () => mutateOrganizationDiscoveryAttributesFetchRequest() }
+                organization={organization}
+                organizationDiscoveryAttributes={organizationDiscoveryAttributes}
+                isReadOnly={isReadOnly}
+                onOrganizationUpdate={() => mutateOrganizationDiscoveryAttributesFetchRequest()}
             />
         </PageLayout>
     );

@@ -22,7 +22,8 @@ import { PageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppConstants, FeatureConfigInterface, history } from "../../core";
+import { AppConstants, FeatureConfigInterface } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { AppState } from "../../core/store";
 import AddOrganizationDiscoveryDomains from "../components/add-organization-discovery-domains";
 import { OrganizationDiscoveryConstants } from "../constants/organization-discovery-constants";
@@ -30,8 +31,8 @@ import { OrganizationDiscoveryConstants } from "../constants/organization-discov
 /**
  * Props interface of {@link AssignOrganizationDiscoverDomainsPage}
  */
-export type EmailDomainAssignPagePropsInterface = SBACInterface<FeatureConfigInterface>
-    & IdentifiableComponentInterface;
+export type EmailDomainAssignPagePropsInterface = SBACInterface<FeatureConfigInterface> &
+    IdentifiableComponentInterface;
 
 /**
  * This component renders the email domain assign page for the organization.
@@ -42,8 +43,7 @@ export type EmailDomainAssignPagePropsInterface = SBACInterface<FeatureConfigInt
 const AssignOrganizationDiscoverDomainsPage: FunctionComponent<EmailDomainAssignPagePropsInterface> = (
     props: EmailDomainAssignPagePropsInterface
 ): ReactElement => {
-
-    const { ["data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
@@ -57,33 +57,30 @@ const AssignOrganizationDiscoverDomainsPage: FunctionComponent<EmailDomainAssign
             !isFeatureEnabled(
                 featureConfig,
                 OrganizationDiscoveryConstants.FEATURE_DICTIONARY.get("ORGANIZATION_DISCOVERY_UPDATE")
-            ) || !hasRequiredScopes(
-                featureConfig,
-                featureConfig.scopes?.update,
-                allowedScopes
-            )
+            ) || !hasRequiredScopes(featureConfig, featureConfig.scopes?.update, allowedScopes)
         );
-    }, [ featureConfig ]);
+    }, [featureConfig]);
 
-    const goBackToOrganizationListWithDomains: () => void = useCallback(() =>
-        history.push(AppConstants.getPaths().get("ORGANIZATION_DISCOVERY_DOMAINS")),[ history ]
+    const goBackToOrganizationListWithDomains: () => void = useCallback(
+        () => history.push(AppConstants.getPaths().get("ORGANIZATION_DISCOVERY_DOMAINS")),
+        [history]
     );
 
     return (
         <PageLayout
-            title={ t("console:manage.features.organizationDiscovery.assign.title") }
+            title={t("console:manage.features.organizationDiscovery.assign.title")}
             pageTitle="Assign Email Domains"
-            description={ t("console:manage.features.organizationDiscovery.assign.description") }
-            backButton={ {
+            description={t("console:manage.features.organizationDiscovery.assign.description")}
+            backButton={{
                 "data-componentid": "assign-discovery-domains-page-back-button",
                 onClick: goBackToOrganizationListWithDomains,
                 text: t("common:back")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            data-componentid={ componentId }
+            bottomMargin={false}
+            data-componentid={componentId}
         >
-            <AddOrganizationDiscoveryDomains isReadOnly={ isReadOnly } />
+            <AddOrganizationDiscoveryDomains isReadOnly={isReadOnly} />
         </PageLayout>
     );
 };

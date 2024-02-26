@@ -44,7 +44,7 @@ import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
 import { RoleDeleteErrorConfirmation } from "./wizard/role-delete-error-confirmation";
 import { getEmptyPlaceholderIllustrations } from "../../core/configs/ui";
 import { AppConstants } from "../../core/constants/app-constants";
-import { history } from "../../core/helpers/history";
+import { history } from "@wso2is/features/core/helpers";
 import { AppState } from "@wso2is/features/core/store/index";
 import { RoleAudienceTypes, RoleConstants } from "../constants/role-constants";
 
@@ -288,8 +288,8 @@ export const RoleList: React.FunctionComponent<RoleListProps> = (props: RoleList
                 hidden: (role: RolesInterface) =>
                     isSubOrg ||
                     role?.displayName === CommonRoleConstants.ADMIN_ROLE ||
-                        role?.displayName === CommonRoleConstants.ADMIN_GROUP ||
-                        role?.displayName === administratorRoleDisplayName ||
+                    role?.displayName === CommonRoleConstants.ADMIN_GROUP ||
+                    role?.displayName === administratorRoleDisplayName ||
                     !isFeatureEnabled(featureConfig, RoleConstants.FEATURE_DICTIONARY.get("ROLE_DELETE")) ||
                     !hasRequiredScopes(featureConfig, featureConfig?.scopes?.delete, allowedScopes),
                 icon: (): SemanticICONS => "trash alternate",

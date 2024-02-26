@@ -45,8 +45,13 @@ import {
     AdvancedSearchWithBasicFilters,
     AppState,
     EventPublisher,
-    FeatureConfigInterface, UIConstants, UserStoreDetails, UserStoreProperty, getEmptyPlaceholderIllustrations, history
+    FeatureConfigInterface,
+    UIConstants,
+    UserStoreDetails,
+    UserStoreProperty,
+    getEmptyPlaceholderIllustrations
 } from "../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { deleteUser, useUsersList } from "../../../../features/users/api/users";
 import { BulkImportUserWizard } from "../../../../features/users/components/wizard/bulk-import-user-wizard";
 import { UserAddOptionTypes } from "../../../../features/users/constants";
@@ -74,15 +79,8 @@ const NUMBER_OF_PAGES_FOR_LDAP: number = 100;
  * @param props - Props injected to the component.
  * @returns Users Page component
  */
-const UsersPage: FunctionComponent<UsersPageInterface> = (
-    props: UsersPageInterface
-): ReactElement => {
-
-    const {
-        location,
-        [ "data-componentid" ]: componentId,
-        [ "data-testid"]: testId
-    } = props;
+const UsersPage: FunctionComponent<UsersPageInterface> = (props: UsersPageInterface): ReactElement => {
+    const { location, ["data-componentid"]: componentId, ["data-testid"]: testId } = props;
 
     const urlSearchParams: URLSearchParams = new URLSearchParams(location.search);
 
@@ -92,23 +90,23 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ selectedAddUserType ] = useState<UserAccountTypes>(UserAccountTypes.USER);
-    const [ isUsersNextPageAvailable, setIsUsersNextPageAvailable ] = useState<boolean>(undefined);
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ userStoreError, setUserStoreError ] = useState(false);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ showBulkImportWizard, setShowBulkImportWizard ] = useState<boolean>(false);
-    const [ rolesList ] = useState([]);
-    const [ userListMetaContent ] = useState(undefined);
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ readOnlyUserStoresList , setReadOnlyUserStoresList ] = useState<string[]>([]);
-    const [ userStoreList, setUserStoreList ] = useState<DropdownItemProps[]>([]);
-    const [ isUserStoreListLoading, setUserStoreListLoading ] = useState<boolean>(false);
-    const [ selectedUserStore, setSelectedUserStore ] = useState<string>(CONSUMER_USERSTORE);
-    const [ isSelectedUserStoreReadOnly, setSelectedUserStoreReadOnly ] = useState<boolean>(false);
-    const [ isUserStoreDropdownDisabled, setUserStoreDropdownDisabled ] = useState<boolean>(false);
+    const [selectedAddUserType] = useState<UserAccountTypes>(UserAccountTypes.USER);
+    const [isUsersNextPageAvailable, setIsUsersNextPageAvailable] = useState<boolean>(undefined);
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [userStoreError, setUserStoreError] = useState(false);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [showBulkImportWizard, setShowBulkImportWizard] = useState<boolean>(false);
+    const [rolesList] = useState([]);
+    const [userListMetaContent] = useState(undefined);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [readOnlyUserStoresList, setReadOnlyUserStoresList] = useState<string[]>([]);
+    const [userStoreList, setUserStoreList] = useState<DropdownItemProps[]>([]);
+    const [isUserStoreListLoading, setUserStoreListLoading] = useState<boolean>(false);
+    const [selectedUserStore, setSelectedUserStore] = useState<string>(CONSUMER_USERSTORE);
+    const [isSelectedUserStoreReadOnly, setSelectedUserStoreReadOnly] = useState<boolean>(false);
+    const [isUserStoreDropdownDisabled, setUserStoreDropdownDisabled] = useState<boolean>(false);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -139,27 +137,32 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         }
 
         if (userListFetchRequestError?.response?.data?.description) {
-            dispatch(addAlert({
-                description: userListFetchRequestError?.response?.data?.description
-                    ?? userListFetchRequestError?.response?.data?.detail
-                        ?? t("console:manage.features.users.notifications.fetchUsers.error.description"),
-                level: AlertLevels.ERROR,
-                message: userListFetchRequestError?.response?.data?.message
-                    ?? t("console:manage.features.users.notifications.fetchUsers.error.message")
-            }));
+            dispatch(
+                addAlert({
+                    description:
+                        userListFetchRequestError?.response?.data?.description ??
+                        userListFetchRequestError?.response?.data?.detail ??
+                        t("console:manage.features.users.notifications.fetchUsers.error.description"),
+                    level: AlertLevels.ERROR,
+                    message:
+                        userListFetchRequestError?.response?.data?.message ??
+                        t("console:manage.features.users.notifications.fetchUsers.error.message")
+                })
+            );
 
             return;
         }
 
-        dispatch(addAlert({
-            description: t("console:manage.features.users.notifications.fetchUsers.genericError." +
-                "description"),
-            level: AlertLevels.ERROR,
-            message: t("console:manage.features.users.notifications.fetchUsers.genericError.message")
-        }));
+        dispatch(
+            addAlert({
+                description: t("console:manage.features.users.notifications.fetchUsers.genericError." + "description"),
+                level: AlertLevels.ERROR,
+                message: t("console:manage.features.users.notifications.fetchUsers.genericError.message")
+            })
+        );
 
         setUserStoreError(true);
-    }, [ userListFetchRequestError ]);
+    }, [userListFetchRequestError]);
 
     /**
      * Subscribe to the URS search params to check for User create wizard triggers.
@@ -167,7 +170,6 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
      * If the URL contains a search param `?open=Customer`, it'll open up the user create wizard.
      */
     useEffect(() => {
-
         if (!urlSearchParams.get(UsersConstants.USER_CREATE_WIZARD_TRIGGER_URL_SEARCH_PARAM_KEY)) {
             return;
         }
@@ -176,7 +178,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
             type: "user"
         });
         setShowWizard(true);
-    }, [ urlSearchParams.get(UsersConstants.USER_CREATE_WIZARD_TRIGGER_URL_SEARCH_PARAM_KEY) ]);
+    }, [urlSearchParams.get(UsersConstants.USER_CREATE_WIZARD_TRIGGER_URL_SEARCH_PARAM_KEY)]);
 
     /**
      * Fetch userstores at the initial loading.
@@ -199,7 +201,6 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         const clonedUserList: UserListInterface = cloneDeep(usersList);
 
         clonedUserList.Resources = clonedUserList?.Resources?.map((resource: UserBasicInterface) => {
-
             let email: string | null = null;
 
             if (resource?.emails instanceof Array) {
@@ -212,7 +213,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
                 }
             }
 
-            resource.emails = [ email ];
+            resource.emails = [email];
 
             return resource;
         });
@@ -234,9 +235,11 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
          *  next page is available.
          * @returns Moderated users list.
          */
-        const moderateUsersList = (list: UserListInterface, requestedLimit: number,
-            popCount: number = 1): UserListInterface => {
-
+        const moderateUsersList = (
+            list: UserListInterface,
+            requestedLimit: number,
+            popCount: number = 1
+        ): UserListInterface => {
             const moderated: UserListInterface = list;
 
             if (moderated.Resources?.length < requestedLimit) {
@@ -252,7 +255,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         return moderateUsersList(clonedUserList, modifiedLimit, TEMP_RESOURCE_LIST_ITEM_LIMIT_OFFSET);
     };
 
-    const usersList: UserListInterface = useMemo(() => transformUserList(originalUserList), [ originalUserList ]);
+    const usersList: UserListInterface = useMemo(() => transformUserList(originalUserList), [originalUserList]);
 
     /**
      * Handles the `onFilter` callback action from the
@@ -271,29 +274,26 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
     };
 
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps): void => {
-        setListOffset((data.activePage as number - 1) * listItemLimit + 1);
+        setListOffset(((data.activePage as number) - 1) * listItemLimit + 1);
     };
 
-    const handleItemsPerPageDropdownChange = (event: React.MouseEvent<HTMLAnchorElement>, data: DropdownProps)
-        : void => {
+    const handleItemsPerPageDropdownChange = (
+        event: React.MouseEvent<HTMLAnchorElement>,
+        data: DropdownProps
+    ): void => {
         setListItemLimit(data.value as number);
     };
 
     const handleUserDelete = (userId: string): Promise<void> => {
-        return deleteUser(userId)
-            .then(() => {
-                handleAlerts({
-                    description: t(
-                        "console:manage.features.users.notifications.deleteUser.success.description"
-                    ),
-                    level: AlertLevels.SUCCESS,
-                    message: t(
-                        "console:manage.features.users.notifications.deleteUser.success.message"
-                    )
-                });
-
-                mutateUserListFetchRequest();
+        return deleteUser(userId).then(() => {
+            handleAlerts({
+                description: t("console:manage.features.users.notifications.deleteUser.success.description"),
+                level: AlertLevels.SUCCESS,
+                message: t("console:manage.features.users.notifications.deleteUser.success.message")
             });
+
+            mutateUserListFetchRequest();
+        });
     };
 
     /**
@@ -320,12 +320,14 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
      * @returns If the given userstore is read only or not
      */
     const checkReadOnlyUserStore = (userStore: UserStoreDetails): boolean => {
-        if( userStore.typeName === UsersConstants.DEFAULT_USERSTORE_TYPE_NAME ) {
+        if (userStore.typeName === UsersConstants.DEFAULT_USERSTORE_TYPE_NAME) {
             return false;
         } else {
-            return userStore.properties.filter(
-                (property: UserStoreProperty)=>
-                    property.name===UsersConstants.USER_STORE_PROPERTY_READ_ONLY)[0].value==="true";
+            return (
+                userStore.properties.filter(
+                    (property: UserStoreProperty) => property.name === UsersConstants.USER_STORE_PROPERTY_READ_ONLY
+                )[0].value === "true"
+            );
         }
     };
 
@@ -335,9 +337,9 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         getUserStores()
             .then((response: UserStoreDetails[]) => {
                 const readOnlyUserStoreArray: string[] = [];
-                const userStoreArray: DropdownItemProps[] = response?.filter(
-                    (item: UserStoreDetails) => item.enabled).map(
-                    (item: UserStoreDetails, index: number) => {
+                const userStoreArray: DropdownItemProps[] = response
+                    ?.filter((item: UserStoreDetails) => item.enabled)
+                    .map((item: UserStoreDetails, index: number) => {
                         // Set readOnly userstores based on the ReadOnly property.
                         if (checkReadOnlyUserStore(item)) {
                             readOnlyUserStoreArray.push(item.name.toUpperCase());
@@ -348,8 +350,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
                             text: item.name.toUpperCase(),
                             value: item.name.toUpperCase()
                         };
-                    }
-                );
+                    });
 
                 setUserStoreError(false);
                 setUserStoreList(userStoreArray);
@@ -358,23 +359,31 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
             })
             .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? error?.response?.data?.detail
-                            ?? t("console:manage.features.users.notifications.fetchUserStores.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message
-                            ?? t("console:manage.features.users.notifications.fetchUserStores.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:manage.features.users.notifications.fetchUserStores.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:manage.features.users.notifications.fetchUserStores.error.message")
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:manage.features.users.notifications.fetchUserStores.genericError." +
-                        "description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.users.notifications.fetchUserStores.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.users.notifications.fetchUserStores.genericError." + "description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.users.notifications.fetchUserStores.genericError.message")
+                    })
+                );
 
                 setUserStoreError(true);
 
@@ -401,25 +410,28 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
             /** Response from the LDAP only contains the total items per page.
              * No way to resolve the total number of items. So a large value will be set here and the
              * next button will be disabled if there are no more items to fetch.
-            */
+             */
             return NUMBER_OF_PAGES_FOR_LDAP;
         }
     };
 
     const advancedSearchFilter = (): ReactElement => (
         <AdvancedSearchWithBasicFilters
-            onFilter={ handleUserFilter }
-            filterAttributeOptions={ [
+            onFilter={handleUserFilter}
+            filterAttributeOptions={[
                 {
                     key: 0,
-                    text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                        "filterAttributeOptions.username"),
+                    text: t(
+                        "console:manage.features.users.advancedSearch.form.dropdown." +
+                            "filterAttributeOptions.username"
+                    ),
                     value: "userName"
                 },
                 {
                     key: 1,
-                    text: t("console:manage.features.users.advancedSearch.form.dropdown." +
-                        "filterAttributeOptions.email"),
+                    text: t(
+                        "console:manage.features.users.advancedSearch.form.dropdown." + "filterAttributeOptions.email"
+                    ),
                     value: "emails"
                 },
                 {
@@ -432,48 +444,43 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
                     text: "Last Name",
                     value: "name.familyName"
                 }
-            ] }
-            filterAttributePlaceholder={
-                t("console:manage.features.users.advancedSearch.form.inputs.filterAttribute.placeholder")
-            }
-            filterConditionsPlaceholder={
-                t("console:manage.features.users.advancedSearch.form.inputs.filterCondition" +
-                    ".placeholder")
-            }
-            filterValuePlaceholder={
-                t("console:manage.features.users.advancedSearch.form.inputs.filterValue" +
-                    ".placeholder")
-            }
-            placeholder={ t("console:manage.features.users.advancedSearch.placeholder") }
+            ]}
+            filterAttributePlaceholder={t(
+                "console:manage.features.users.advancedSearch.form.inputs.filterAttribute.placeholder"
+            )}
+            filterConditionsPlaceholder={t(
+                "console:manage.features.users.advancedSearch.form.inputs.filterCondition" + ".placeholder"
+            )}
+            filterValuePlaceholder={t(
+                "console:manage.features.users.advancedSearch.form.inputs.filterValue" + ".placeholder"
+            )}
+            placeholder={t("console:manage.features.users.advancedSearch.placeholder")}
             defaultSearchAttribute="emails"
             defaultSearchOperator="co"
-            triggerClearQuery={ triggerClearQuery }
+            triggerClearQuery={triggerClearQuery}
         />
     );
 
     const addUserDropdownTrigger: ReactElement = (
-        <PrimaryButton
-            data-componentid={ `${ componentId }-add-user-button` }
-            data-testid={ `${ testId }-add-user-button` }
-        >
-            <Icon name="add"/>
-            { t("extensions:manage.users.buttons.addUserBtn") }
-            <Icon name="dropdown" className="ml-3 mr-0"/>
+        <PrimaryButton data-componentid={`${componentId}-add-user-button`} data-testid={`${testId}-add-user-button`}>
+            <Icon name="add" />
+            {t("extensions:manage.users.buttons.addUserBtn")}
+            <Icon name="dropdown" className="ml-3 mr-0" />
         </PrimaryButton>
     );
 
     const getAddUserOptions = () => {
         const options: DropdownItemProps[] = [
             {
-                "data-componentid": `${ componentId }-add-user-dropdown-item`,
-                "data-testid": `${ testId }-add-user-dropdown-item`,
+                "data-componentid": `${componentId}-add-user-dropdown-item`,
+                "data-testid": `${testId}-add-user-dropdown-item`,
                 key: 1,
                 text: t("console:manage.features.users.addUserDropDown.addNewUser"),
                 value: UserAddOptionTypes.MANUAL_INPUT
             },
             {
-                "data-componentid": `${ componentId }-bulk-import-users-dropdown-item`,
-                "data-testid": `${ testId }-bulk-import-users-dropdown-item`,
+                "data-componentid": `${componentId}-bulk-import-users-dropdown-item`,
+                "data-testid": `${testId}-bulk-import-users-dropdown-item`,
                 key: 2,
                 text: t("console:manage.features.users.addUserDropDown.bulkImport"),
                 value: UserAddOptionTypes.BULK_IMPORT
@@ -485,21 +492,21 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
 
     const addUserDropDown: ReactElement = (
         <Dropdown
-            data-testid={ `${ testId }-add-user-dropdown` }
-            data-componentid={ `${ testId }-add-user-dropdown` }
+            data-testid={`${testId}-add-user-dropdown`}
+            data-componentid={`${testId}-add-user-dropdown`}
             direction="left"
             floating
-            icon={ null }
-            trigger={ addUserDropdownTrigger }
+            icon={null}
+            trigger={addUserDropdownTrigger}
         >
-            <Dropdown.Menu >
-                { getAddUserOptions().map((option: DropdownItemProps) => (
+            <Dropdown.Menu>
+                {getAddUserOptions().map((option: DropdownItemProps) => (
                     <Dropdown.Item
-                        key={ option.value as string }
-                        onClick={ ()=> handleDropdownItemChange(option.value as string) }
-                        { ...option }
+                        key={option.value as string}
+                        onClick={() => handleDropdownItemChange(option.value as string)}
+                        {...option}
                     />
-                )) }
+                ))}
             </Dropdown.Menu>
         </Dropdown>
     );
@@ -534,138 +541,128 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (
         <PageLayout
             pageTitle="Users"
             action={
-                !isUserListFetchRequestLoading
-                && (
-                    <Show when={ AccessControlConstants.USER_WRITE }>
-                        { featureConfig?.bulkUserImport?.enabled
-                            ? (
-                                addUserDropDown
-                            ) : (
-                                <PrimaryButton
-                                    data-componentid={ `${ componentId }-add-user-button` }
-                                    data-testid={ `${ testId }-add-user-button` }
-                                    onClick={ () => {
-                                        eventPublisher.publish("manage-users-click-create-new", {
-                                            type: "user"
-                                        });
-                                        setShowWizard(true);
-                                    } }
-                                >
-                                    <Icon name="add"/>
-                                    { t("extensions:manage.users.buttons.addUserBtn") }
-                                </PrimaryButton>
-                            ) }
+                !isUserListFetchRequestLoading && (
+                    <Show when={AccessControlConstants.USER_WRITE}>
+                        {featureConfig?.bulkUserImport?.enabled ? (
+                            addUserDropDown
+                        ) : (
+                            <PrimaryButton
+                                data-componentid={`${componentId}-add-user-button`}
+                                data-testid={`${testId}-add-user-button`}
+                                onClick={() => {
+                                    eventPublisher.publish("manage-users-click-create-new", {
+                                        type: "user"
+                                    });
+                                    setShowWizard(true);
+                                }}
+                            >
+                                <Icon name="add" />
+                                {t("extensions:manage.users.buttons.addUserBtn")}
+                            </PrimaryButton>
+                        )}
                     </Show>
                 )
             }
-            title={ t("extensions:manage.users.usersTitle") }
-            description={ (
+            title={t("extensions:manage.users.usersTitle")}
+            description={
                 <>
-                    { t("extensions:manage.users.usersSubTitle") }
-                    <DocumentationLink
-                        link={ getLink("manage.users.customerAccounts.learnMore") }
-                    >
-                        { t("extensions:common.learnMore") }
+                    {t("extensions:manage.users.usersSubTitle")}
+                    <DocumentationLink link={getLink("manage.users.customerAccounts.learnMore")}>
+                        {t("extensions:common.learnMore")}
                     </DocumentationLink>
                 </>
-            ) }
-            data-componentid={ `${ componentId }-page-layout` }
-            data-testid={ `${ testId }-page-layout` }
+            }
+            data-componentid={`${componentId}-page-layout`}
+            data-testid={`${testId}-page-layout`}
             headingColumnWidth="11"
             actionColumnWidth="5"
         >
             <ListLayout
                 // TODO add sorting functionality.
-                advancedSearch={ advancedSearchFilter() }
-                currentListSize={ usersList?.itemsPerPage }
-                listItemLimit={ listItemLimit }
-                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
+                advancedSearch={advancedSearchFilter()}
+                currentListSize={usersList?.itemsPerPage}
+                listItemLimit={listItemLimit}
+                onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
                 data-componentid="user-mgt-user-list-layout"
                 data-testid="user-mgt-user-list-layout"
-                onPageChange={ handlePaginationChange }
-                showPagination={ true }
-                totalPages={ resolveTotalPages() }
-                totalListSize={ usersList?.totalResults }
-                isLoading={ isUserListFetchRequestLoading }
-                paginationOptions={ {
+                onPageChange={handlePaginationChange}
+                showPagination={true}
+                totalPages={resolveTotalPages()}
+                totalListSize={usersList?.totalResults}
+                isLoading={isUserListFetchRequestLoading}
+                paginationOptions={{
                     disableNextButton: !isUsersNextPageAvailable,
                     showItemsPerPageDropdown: selectedUserStore === CONSUMER_USERSTORE ? true : false
-                } }
-                showPaginationPageLimit={ !isSelectedUserStoreReadOnly }
+                }}
+                showPaginationPageLimit={!isSelectedUserStoreReadOnly}
                 leftActionPanel={
-                    (
-                        <Dropdown
-                            data-componentid="user-mgt-user-list-userstore-dropdown"
-                            data-testid="user-mgt-user-list-userstore-dropdown"
-                            selection
-                            options={ userStoreList }
-                            onChange={ handleUserStoreChange }
-                            text={ selectedUserStore }
-                            loading={ isUserStoreListLoading }
-                            disabled={ isUserStoreDropdownDisabled }
-                        />
-                    )
+                    <Dropdown
+                        data-componentid="user-mgt-user-list-userstore-dropdown"
+                        data-testid="user-mgt-user-list-userstore-dropdown"
+                        selection
+                        options={userStoreList}
+                        onChange={handleUserStoreChange}
+                        text={selectedUserStore}
+                        loading={isUserStoreListLoading}
+                        disabled={isUserStoreDropdownDisabled}
+                    />
                 }
             >
-                {
-                    userStoreError
-                        ? (
-                            <EmptyPlaceholder
-                                subtitle={ [ t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
-                                    t("console:manage.features.users.placeholders.userstoreError.subtitles.1") ] }
-                                title={ t("console:manage.features.users.placeholders.userstoreError.title") }
-                                image={ getEmptyPlaceholderIllustrations().genericError }
-                                imageSize="tiny"
-                            />
-                        )
-                        : (
-                            <UsersList
-                                advancedSearch={ advancedSearchFilter() }
-                                usersList={ usersList }
-                                handleUserDelete={ handleUserDelete }
-                                userMetaListContent={ userListMetaContent }
-                                onSearchQueryClear={ handleSearchQueryClear }
-                                searchQuery={ searchQuery }
-                                data-componentid="user-mgt-user-list"
-                                data-testid="user-mgt-user-list"
-                                readOnlyUserStores={ readOnlyUserStoresList }
-                                featureConfig={ featureConfig }
-                                userEditPath={ UsersConstants.getPaths().get("CUSTOMER_USER_EDIT_PATH") }
-                            />
-                        )
-                }
+                {userStoreError ? (
+                    <EmptyPlaceholder
+                        subtitle={[
+                            t("console:manage.features.users.placeholders.userstoreError.subtitles.0"),
+                            t("console:manage.features.users.placeholders.userstoreError.subtitles.1")
+                        ]}
+                        title={t("console:manage.features.users.placeholders.userstoreError.title")}
+                        image={getEmptyPlaceholderIllustrations().genericError}
+                        imageSize="tiny"
+                    />
+                ) : (
+                    <UsersList
+                        advancedSearch={advancedSearchFilter()}
+                        usersList={usersList}
+                        handleUserDelete={handleUserDelete}
+                        userMetaListContent={userListMetaContent}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        searchQuery={searchQuery}
+                        data-componentid="user-mgt-user-list"
+                        data-testid="user-mgt-user-list"
+                        readOnlyUserStores={readOnlyUserStoresList}
+                        featureConfig={featureConfig}
+                        userEditPath={UsersConstants.getPaths().get("CUSTOMER_USER_EDIT_PATH")}
+                    />
+                )}
             </ListLayout>
-            {
-                showWizard && (
-                    <AddUserWizard
-                        data-componentid="user-mgt-add-user-wizard-modal"
-                        data-testid="user-mgt-add-user-wizard-modal"
-                        closeWizard={ () => {
-                            setShowWizard(false);
-                        } }
-                        rolesList={ rolesList }
-                        emailVerificationEnabled={ true }
-                        onSuccessfulUserAddition={ (id: string) => {
-                            eventPublisher.publish("manage-users-finish-creating-user");
-                            history.push(UsersConstants.getPaths().get("CUSTOMER_USER_EDIT_PATH")
-                                .replace(":id", id));
-                        } }
-                        defaultUserTypeSelection={ selectedAddUserType }
-                    />
-                )
-            }
-            {
-                showBulkImportWizard && (
-                    <BulkImportUserWizard
-                        data-componentid="user-mgt-bulk-import-user-wizard-modal"
-                        closeWizard={ handleBulkImportWizardClose }
-                        userstore={ CONSUMER_USERSTORE }
-                    />
-                )
-            }
+            {showWizard && (
+                <AddUserWizard
+                    data-componentid="user-mgt-add-user-wizard-modal"
+                    data-testid="user-mgt-add-user-wizard-modal"
+                    closeWizard={() => {
+                        setShowWizard(false);
+                    }}
+                    rolesList={rolesList}
+                    emailVerificationEnabled={true}
+                    onSuccessfulUserAddition={(id: string) => {
+                        eventPublisher.publish("manage-users-finish-creating-user");
+                        history.push(
+                            UsersConstants.getPaths()
+                                .get("CUSTOMER_USER_EDIT_PATH")
+                                .replace(":id", id)
+                        );
+                    }}
+                    defaultUserTypeSelection={selectedAddUserType}
+                />
+            )}
+            {showBulkImportWizard && (
+                <BulkImportUserWizard
+                    data-componentid="user-mgt-bulk-import-user-wizard-modal"
+                    closeWizard={handleBulkImportWizardClose}
+                    userstore={CONSUMER_USERSTORE}
+                />
+            )}
         </PageLayout>
     );
-
 };
 
 /**

@@ -53,9 +53,9 @@ import {
     UIConstants,
     UserBasicInterface,
     getAUserStore,
-    getEmptyPlaceholderIllustrations,
-    history
+    getEmptyPlaceholderIllustrations
 } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { store } from "@wso2is/features/core";
 import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
 import {

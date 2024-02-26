@@ -53,9 +53,9 @@ import {
     AppState,
     FeatureConfigInterface,
     getEmptyPlaceholderIllustrations,
-    getSidePanelIcons,
-    history
+    getSidePanelIcons
 } from "../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { store } from "@wso2is/features/core";
 import { getIdPIcons } from "../../../../features/identity-providers/configs/ui";
 import { PatchRoleDataInterface } from "../../../../features/roles/models/roles";

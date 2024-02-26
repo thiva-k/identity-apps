@@ -27,7 +27,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { AppConstants } from "../../core/constants";
-import { history } from "../../core/helpers";
+import { history } from "@wso2is/features/core/helpers";
 import { store } from "@wso2is/features/core/store";
 import { useGetCurrentOrganizationType } from "../../organizations/hooks/use-get-organization-type";
 import { createRole } from "../api/roles";

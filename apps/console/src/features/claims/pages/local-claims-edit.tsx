@@ -26,7 +26,8 @@ import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Image } from "semantic-ui-react";
 import { attributeConfig } from "../../../extensions";
-import { AppConstants, history } from "../../core";
+import { AppConstants } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { getAClaim } from "../api";
 import {
     EditAdditionalPropertiesLocalClaims,

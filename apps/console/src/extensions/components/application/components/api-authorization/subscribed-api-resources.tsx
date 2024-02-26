@@ -32,7 +32,8 @@ import {
     SegmentedAccordion,
     SegmentedAccordionTitleActionInterface
 } from "@wso2is/react-components";
-import { getEmptyPlaceholderIllustrations, history } from "apps/console/src/features/core";
+import { getEmptyPlaceholderIllustrations } from "apps/console/src/features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { RequestErrorInterface } from "apps/console/src/features/core/hooks/use-request";
 import { AxiosError } from "axios";
 import React, { Fragment, FunctionComponent, ReactElement, useEffect, useState } from "react";
@@ -48,8 +49,9 @@ import { AuthorizedAPIListItemInterface, AuthorizedPermissionListItemInterface }
 /**
  * Prop types for the API resources list component.
  */
-interface SubscribedAPIResourcesProps extends
-    SBACInterface<ExtendedFeatureConfigInterface>, IdentifiableComponentInterface {
+interface SubscribedAPIResourcesProps
+    extends SBACInterface<ExtendedFeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Application ID.
      */
@@ -69,7 +71,7 @@ interface SubscribedAPIResourcesProps extends
     /**
      * List of subscribed API Resources
      */
-    subscribedAPIResourcesListData: AuthorizedAPIListItemInterface[],
+    subscribedAPIResourcesListData: AuthorizedAPIListItemInterface[];
     /**
      * Error when fetching subscribed API Resources
      */
@@ -109,7 +111,6 @@ interface SubscribedAPIResourcesProps extends
 export const SubscribedAPIResources: FunctionComponent<SubscribedAPIResourcesProps> = (
     props: SubscribedAPIResourcesProps
 ): ReactElement => {
-
     const {
         appId,
         allAPIResourcesListData,
@@ -128,18 +129,20 @@ export const SubscribedAPIResources: FunctionComponent<SubscribedAPIResourcesPro
     /**
      * Check if the place holders should be shown.
      */
-    const showPlaceHolders: boolean = allAPIResourcesListData?.length === 0 || 
-        subscribedAPIResourcesListData?.length === 0 || 
+    const showPlaceHolders: boolean =
+        allAPIResourcesListData?.length === 0 ||
+        subscribedAPIResourcesListData?.length === 0 ||
         allAPIResourcesFetchRequestError != null ||
-        subscribedAPIResourcesFetchRequestError !=  null ;
+        subscribedAPIResourcesFetchRequestError != null;
 
     const { t } = useTranslation();
 
-    const [ activeSubscribedAPIResource, setActiveSubscribedAPIResource ] = useState<string>(null);
-    const [ searchQuery, setSearchQuery ] = useState<string>(null);
-    const [ searchedSubscribedAPIResources, setSearchedSubscribedAPIResources ] = 
-        useState<AuthorizedAPIListItemInterface[]>(null);
-    const [ copyScopesValue, setCopyScopesValue ] = useState<string>(null);
+    const [activeSubscribedAPIResource, setActiveSubscribedAPIResource] = useState<string>(null);
+    const [searchQuery, setSearchQuery] = useState<string>(null);
+    const [searchedSubscribedAPIResources, setSearchedSubscribedAPIResources] = useState<
+        AuthorizedAPIListItemInterface[]
+    >(null);
+    const [copyScopesValue, setCopyScopesValue] = useState<string>(null);
 
     /**
      * Initialize the subscribed API Resources list to the searched list.
@@ -148,18 +151,18 @@ export const SubscribedAPIResources: FunctionComponent<SubscribedAPIResourcesPro
         if (subscribedAPIResourcesListData) {
             setSearchedSubscribedAPIResources(subscribedAPIResourcesListData);
         }
-    }, [ subscribedAPIResourcesListData ]);
+    }, [subscribedAPIResourcesListData]);
 
     /**
      * Initalize the copy scopes value.
      */
     useEffect(() => {
         if (allAuthorizedScopes) {
-            setCopyScopesValue(allAuthorizedScopes.map(
-                (scope: AuthorizedPermissionListItemInterface) => scope.name).join(" ")
+            setCopyScopesValue(
+                allAuthorizedScopes.map((scope: AuthorizedPermissionListItemInterface) => scope.name).join(" ")
             );
         }
-    }, [ allAuthorizedScopes ]);
+    }, [allAuthorizedScopes]);
 
     /**
      * Navigate to the API Resources page.
@@ -173,74 +176,106 @@ export const SubscribedAPIResources: FunctionComponent<SubscribedAPIResourcesPro
         if (allAPIResourcesFetchRequestError || subscribedAPIResourcesFetchRequestError) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().genericError }
+                    image={getEmptyPlaceholderIllustrations().genericError}
                     imageSize="tiny"
-                    title={ t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                        ".apiSubscriptions.placeHolderTexts.errorText.title") }
-                    subtitle={ [ t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                        ".apiSubscriptions.placeHolderTexts.errorText.subtitles.1"),
-                    t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                        ".apiSubscriptions.placeHolderTexts.errorText.subtitles.0") ] }
-                    data-componentid={ `${componentId}-all-empty-placeholder-icon` }
+                    title={t(
+                        "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                            ".apiSubscriptions.placeHolderTexts.errorText.title"
+                    )}
+                    subtitle={[
+                        t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                                ".apiSubscriptions.placeHolderTexts.errorText.subtitles.1"
+                        ),
+                        t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                                ".apiSubscriptions.placeHolderTexts.errorText.subtitles.0"
+                        )
+                    ]}
+                    data-componentid={`${componentId}-all-empty-placeholder-icon`}
                 />
             );
         } else if (allAPIResourcesListData && allAPIResourcesListData.length === 0) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
-                    action={ (
-                        isScopesAvailableForUpdate && 
-                            ( <Link
-                                data-componentid={ `${componentId}-link-api-resource-page` }
-                                onClick={ navigateToAPIResources }
-                                external={ false }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
+                    action={
+                        isScopesAvailableForUpdate && (
+                            <Link
+                                data-componentid={`${componentId}-link-api-resource-page`}
+                                onClick={navigateToAPIResources}
+                                external={false}
                             >
-                                { t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                                    ".apiSubscriptions.buttons.noAPIResourcesLink") }
-                            </Link> )
-                    ) }
+                                {t(
+                                    "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                                        ".apiSubscriptions.buttons.noAPIResourcesLink"
+                                )}
+                            </Link>
+                        )
+                    }
                     imageSize="tiny"
-                    subtitle={ [ t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                        ".apiSubscriptions.placeHolderTexts.noAPIResources") ] }
-                    data-componentid={ `${componentId}-sub-empty-placeholder-icon` }
+                    subtitle={[
+                        t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                                ".apiSubscriptions.placeHolderTexts.noAPIResources"
+                        )
+                    ]}
+                    data-componentid={`${componentId}-sub-empty-placeholder-icon`}
                 />
             );
         } else if (subscribedAPIResourcesListData && subscribedAPIResourcesListData.length === 0) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().emptyList }
-                    action={ (
-                        isScopesAvailableForUpdate && 
-                            ( <PrimaryButton
-                                data-componentid={ `${componentId}-empty-placeholder-sub-api-resource-button` }
-                                onClick={ (): void => setIsAuthorizeAPIResourceWizardOpen(true) }
+                    image={getEmptyPlaceholderIllustrations().emptyList}
+                    action={
+                        isScopesAvailableForUpdate && (
+                            <PrimaryButton
+                                data-componentid={`${componentId}-empty-placeholder-sub-api-resource-button`}
+                                onClick={(): void => setIsAuthorizeAPIResourceWizardOpen(true)}
                             >
                                 <Icon name="add" />
-                                { t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                                    ".apiSubscriptions.buttons.subAPIResource") }
-                            </PrimaryButton> )
-                    ) }
+                                {t(
+                                    "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                                        ".apiSubscriptions.buttons.subAPIResource"
+                                )}
+                            </PrimaryButton>
+                        )
+                    }
                     imageSize="tiny"
-                    subtitle={ [ t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                        ".apiSubscriptions.placeHolderTexts.emptyText") ] }
-                    data-componentid={ `${componentId}-sub-empty-placeholder-icon` }
+                    subtitle={[
+                        t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                                ".apiSubscriptions.placeHolderTexts.emptyText"
+                        )
+                    ]}
+                    data-componentid={`${componentId}-sub-empty-placeholder-icon`}
                 />
             );
         } else if (searchedSubscribedAPIResources?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    title={ t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                        ".apiSubscriptions.placeHolderTexts.emptySearch.title") }
-                    subtitle={ [ t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                        ".apiSubscriptions.placeHolderTexts.emptySearch.subTitle.0"),
-                    t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                        ".apiSubscriptions.placeHolderTexts.emptySearch.subTitle.1") ] }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    title={t(
+                        "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                            ".apiSubscriptions.placeHolderTexts.emptySearch.title"
+                    )}
+                    subtitle={[
+                        t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                                ".apiSubscriptions.placeHolderTexts.emptySearch.subTitle.0"
+                        ),
+                        t(
+                            "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                                ".apiSubscriptions.placeHolderTexts.emptySearch.subTitle.1"
+                        )
+                    ]}
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     action={
-                        (<LinkButton onClick={ clearSearchQuery }>
-                            { t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                                ".apiSubscriptions.buttons.emptySearchButton") }
-                        </LinkButton>)
+                        <LinkButton onClick={clearSearchQuery}>
+                            {t(
+                                "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                                    ".apiSubscriptions.buttons.emptySearchButton"
+                            )}
+                        </LinkButton>
                     }
                     imageSize="tiny"
                 />
@@ -251,71 +286,63 @@ export const SubscribedAPIResources: FunctionComponent<SubscribedAPIResourcesPro
     };
 
     const renderPolicyForAPIResource = (policyIdentifier: string): string => {
-        switch(policyIdentifier) {
+        switch (policyIdentifier) {
             case Policy.ROLE:
-                return I18n.instance.t("extensions:develop.applications.edit.sections.apiAuthorization" +
-                    ".sections.policySection.form.fields.rbac.name");
+                return I18n.instance.t(
+                    "extensions:develop.applications.edit.sections.apiAuthorization" +
+                        ".sections.policySection.form.fields.rbac.name"
+                );
 
             case Policy.NO:
-                return I18n.instance.t("extensions:develop.applications.edit.sections.apiAuthorization" +
-                    ".sections.policySection.form.fields.noPolicy.name");
-        
+                return I18n.instance.t(
+                    "extensions:develop.applications.edit.sections.apiAuthorization" +
+                        ".sections.policySection.form.fields.noPolicy.name"
+                );
+
             default:
-                return I18n.instance.t("extensions:develop.applications.edit.sections.apiAuthorization" +
-                    ".sections.policySection.form.fields.noPolicy.name");
+                return I18n.instance.t(
+                    "extensions:develop.applications.edit.sections.apiAuthorization" +
+                        ".sections.policySection.form.fields.noPolicy.name"
+                );
         }
     };
 
     /**
      * Resolves the header of the subscribed API Resources list.
      */
-    const resolveSubscribedAPIResourcesListHeader = (subscribedAPIResource: AuthorizedAPIListItemInterface): 
-        ReactElement => (
-        <Header
-            as="h6"
-            className="header-with-icon"
-            data-componentId={ `${componentId}-heading` }
-        >
+    const resolveSubscribedAPIResourcesListHeader = (
+        subscribedAPIResource: AuthorizedAPIListItemInterface
+    ): ReactElement => (
+        <Header as="h6" className="header-with-icon" data-componentId={`${componentId}-heading`}>
             <Grid verticalAlign="middle">
                 <Grid.Row>
-                    <Grid.Column width={ 8 }>
+                    <Grid.Column width={8}>
                         <Header.Content>
                             <Grid verticalAlign="middle">
                                 <Grid.Row>
-                                    <Grid.Column width={ 16 }>
-                                        { subscribedAPIResource.apiDisplayName }
-                                        {
-                                            subscribedAPIResource.isChoreoAPI && (
-                                                <Label
-                                                    size="mini"
-                                                    className="choreo-label"
-                                                >
-                                                    { t("extensions:develop.apiResource.managedByChoreoText") }
-                                                </Label>
-                                            )
-                                        }
+                                    <Grid.Column width={16}>
+                                        {subscribedAPIResource.apiDisplayName}
+                                        {subscribedAPIResource.isChoreoAPI && (
+                                            <Label size="mini" className="choreo-label">
+                                                {t("extensions:develop.apiResource.managedByChoreoText")}
+                                            </Label>
+                                        )}
                                     </Grid.Column>
                                 </Grid.Row>
                             </Grid>
                             <Header.Subheader className="mt-1">
-                                {
-                                    subscribedAPIResource.apiIdentifier
-                                        ? <Code withBackground>{ subscribedAPIResource.apiIdentifier }</Code>
-                                        : null
-                                }
+                                {subscribedAPIResource.apiIdentifier ? (
+                                    <Code withBackground>{subscribedAPIResource.apiIdentifier}</Code>
+                                ) : null}
                             </Header.Subheader>
                         </Header.Content>
                     </Grid.Column>
-                    <Grid.Column width={ 8 }>
-                        {
-                            subscribedAPIResource.apiIdentifier
-                                ? (
-                                    <Header.Subheader>
-                                        { renderPolicyForAPIResource(subscribedAPIResource.policyIdentifier) }
-                                    </Header.Subheader>
-                                )
-                                : null
-                        }
+                    <Grid.Column width={8}>
+                        {subscribedAPIResource.apiIdentifier ? (
+                            <Header.Subheader>
+                                {renderPolicyForAPIResource(subscribedAPIResource.policyIdentifier)}
+                            </Header.Subheader>
+                        ) : null}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -323,48 +350,50 @@ export const SubscribedAPIResources: FunctionComponent<SubscribedAPIResourcesPro
     );
 
     /**
-     * Creates the actions of the subscribed API Resources list item. 
+     * Creates the actions of the subscribed API Resources list item.
      */
-    const createAccordionAction = (subscribedAPIResource: AuthorizedAPIListItemInterface):
-        SegmentedAccordionTitleActionInterface[] => {
-
-        return [ 
+    const createAccordionAction = (
+        subscribedAPIResource: AuthorizedAPIListItemInterface
+    ): SegmentedAccordionTitleActionInterface[] => {
+        return [
             {
                 disabled: !isScopesAvailableForUpdate,
                 icon: "trash alternate",
                 onClick: () => setRemoveSubscribedAPIResource(subscribedAPIResource),
-                popoverText: t("extensions:develop.applications.edit.sections.apiAuthorization.sections" +
-                    ".apiSubscriptions.unsubscribeAPIResourcePopOver"),
+                popoverText: t(
+                    "extensions:develop.applications.edit.sections.apiAuthorization.sections" +
+                        ".apiSubscriptions.unsubscribeAPIResourcePopOver"
+                ),
                 type: "icon"
-            } 
+            }
         ];
     };
 
     /**
      * Resolves the content of the subscribed API Resources list item.
      */
-    const resolveSubscribedAPIResourcesListContent = (subscribedAPIResource: AuthorizedAPIListItemInterface):
-        ReactElement => (
-
+    const resolveSubscribedAPIResourcesListContent = (
+        subscribedAPIResource: AuthorizedAPIListItemInterface
+    ): ReactElement => (
         <>
-            {
-                isChoreoApp && subscribedAPIResource.isChoreoAPI && (
-                    <Alert severity="warning">
-                        <Trans 
-                            i18nKey={ "extensions:develop.applications.edit.sections.apiAuthorization.sections." + 
-                                "apiSubscriptions.choreoApiEditWarning" }
-                        >
-                            Updating the authorized scopes will create unforeseen errors as this is an API resource 
-                            managed by Choreo. <b>Proceed with caution.</b>
-                        </Trans>
-                    </Alert>
-                )
-            }
+            {isChoreoApp && subscribedAPIResource.isChoreoAPI && (
+                <Alert severity="warning">
+                    <Trans
+                        i18nKey={
+                            "extensions:develop.applications.edit.sections.apiAuthorization.sections." +
+                            "apiSubscriptions.choreoApiEditWarning"
+                        }
+                    >
+                        Updating the authorized scopes will create unforeseen errors as this is an API resource managed
+                        by Choreo. <b>Proceed with caution.</b>
+                    </Trans>
+                </Alert>
+            )}
             <ScopeForm
-                appId={ appId }
-                subscribedAPIResource={ subscribedAPIResource }
-                isScopesAvailableForUpdate={ isScopesAvailableForUpdate }
-                bulkChangeAllAuthorizedScopes={ bulkChangeAllAuthorizedScopes }
+                appId={appId}
+                subscribedAPIResource={subscribedAPIResource}
+                isScopesAvailableForUpdate={isScopesAvailableForUpdate}
+                bulkChangeAllAuthorizedScopes={bulkChangeAllAuthorizedScopes}
             />
         </>
     );
@@ -406,122 +435,102 @@ export const SubscribedAPIResources: FunctionComponent<SubscribedAPIResourcesPro
         }
     };
 
-    return (
-        showPlaceHolders
-            ? (
-                <EmphasizedSegment>
-                    { getPlaceholders() }
-                </EmphasizedSegment>
-            ) 
-            : (
-                <Grid className="mt-3">
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
-                            <ListLayout
-                                showTopActionPanel={ true }
-                                showPagination={ false }
-                                onPageChange={ () => null }
-                                totalPages={ 100 }
-                                data-componentid={ `${componentId}-list-layout` }
-                                totalListSize={ subscribedAPIResourcesListData?.length }
-                                leftActionPanel={
-                                    (<div className="advanced-search-wrapper aligned-left fill-default">
-                                        <Input
-                                            className="advanced-search with-add-on"
-                                            data-componentid={ `${componentId}-list-search-input` }
-                                            icon="search"
-                                            iconPosition="left"
-                                            onChange={ searchSubscribedAPIResources }
-                                            placeholder={ t("extensions:develop.applications.edit.sections." +
-                                                "apiAuthorization.sections.apiSubscriptions.search") }
-                                            floated="right"
-                                            size="small"
-                                            value={ searchQuery }
-                                        />
-                                    </div>)
-                                }
+    return showPlaceHolders ? (
+        <EmphasizedSegment>{getPlaceholders()}</EmphasizedSegment>
+    ) : (
+        <Grid className="mt-3">
+            <Grid.Row columns={1}>
+                <Grid.Column mobile={16} tablet={16} computer={12}>
+                    <ListLayout
+                        showTopActionPanel={true}
+                        showPagination={false}
+                        onPageChange={() => null}
+                        totalPages={100}
+                        data-componentid={`${componentId}-list-layout`}
+                        totalListSize={subscribedAPIResourcesListData?.length}
+                        leftActionPanel={
+                            <div className="advanced-search-wrapper aligned-left fill-default">
+                                <Input
+                                    className="advanced-search with-add-on"
+                                    data-componentid={`${componentId}-list-search-input`}
+                                    icon="search"
+                                    iconPosition="left"
+                                    onChange={searchSubscribedAPIResources}
+                                    placeholder={t(
+                                        "extensions:develop.applications.edit.sections." +
+                                            "apiAuthorization.sections.apiSubscriptions.search"
+                                    )}
+                                    floated="right"
+                                    size="small"
+                                    value={searchQuery}
+                                />
+                            </div>
+                        }
+                    >
+                        {searchedSubscribedAPIResources?.length !== 0 ? (
+                            <SegmentedAccordion
+                                data-componentid={`${componentId}-subscribed-api-resources`}
+                                viewType="table-view"
                             >
-                                {
-                                    searchedSubscribedAPIResources?.length !== 0
-                                        ? (
-                                            <SegmentedAccordion
-                                                data-componentid={ `${componentId}-subscribed-api-resources` }
-                                                viewType="table-view"
-                                            >
-                                                {
-                                                    searchedSubscribedAPIResources?.map(
-                                                        (subscribedAPIResource: AuthorizedAPIListItemInterface) => (
-                                                            <Fragment key={ subscribedAPIResource.apiId }>
-                                                                <SegmentedAccordion.Title
-                                                                    id={ subscribedAPIResource.apiId }
-                                                                    data-componentid={
-                                                                        `${componentId}-title`
-                                                                    }
-                                                                    active={ activeSubscribedAPIResource
-                                                                        === subscribedAPIResource.apiId }
-                                                                    accordionIndex={ subscribedAPIResource.apiId }
-                                                                    onClick={ () =>
-                                                                        handleSubscribedAPIResourcesListItemClick(
-                                                                            subscribedAPIResource) }
-                                                                    content={ (
-                                                                        resolveSubscribedAPIResourcesListHeader(
-                                                                            subscribedAPIResource)
-                                                                    ) }
-                                                                    hideChevron={ false }
-                                                                    actions={ 
-                                                                        createAccordionAction(subscribedAPIResource) 
-                                                                    }
-                                                                />
-                                                                <SegmentedAccordion.Content
-                                                                    active={ activeSubscribedAPIResource
-                                                                        === subscribedAPIResource.apiId }
-                                                                    data-componentid={
-                                                                        `${componentId}-${subscribedAPIResource.apiId}
-                                                                                    -content`
-                                                                    }
-                                                                    children={ 
-                                                                        resolveSubscribedAPIResourcesListContent(
-                                                                            subscribedAPIResource) }
-                                                                />
-                                                            </Fragment>
-                                                        )
-                                                    )
+                                {searchedSubscribedAPIResources?.map(
+                                    (subscribedAPIResource: AuthorizedAPIListItemInterface) => (
+                                        <Fragment key={subscribedAPIResource.apiId}>
+                                            <SegmentedAccordion.Title
+                                                id={subscribedAPIResource.apiId}
+                                                data-componentid={`${componentId}-title`}
+                                                active={activeSubscribedAPIResource === subscribedAPIResource.apiId}
+                                                accordionIndex={subscribedAPIResource.apiId}
+                                                onClick={() =>
+                                                    handleSubscribedAPIResourcesListItemClick(subscribedAPIResource)
                                                 }
-                                            </SegmentedAccordion>
-                                        ) 
-                                        : getPlaceholders()
-                                }
-                            </ListLayout>
-                        </Grid.Column>
-                    </Grid.Row>
-                    {
-                        copyScopesValue && (
-                            <Grid.Row className="mt-2">
-                                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
-                                    <Grid.Row>
-                                        <Form>
-                                            <Form.Field>
-                                                <CopyInputField
-                                                    className="copy-input spaced"
-                                                    value={ copyScopesValue }
-                                                    data-componentid={ `${ componentId }-selected-scope-area` }
-                                                />
-                                                <Hint>
-                                                    { t("extensions:develop.applications.edit.sections." +
-                                                    "apiAuthorization.sections.apiSubscriptions.scopesSection." + 
-                                                    "copyScopesHint") }
-                                                </Hint>
-                                            </Form.Field>
-                                        </Form>
-                                    </Grid.Row>
-                                </Grid.Column>
-                            </Grid.Row>
-                        )
-                    }
-                </Grid>
-            )
+                                                content={resolveSubscribedAPIResourcesListHeader(subscribedAPIResource)}
+                                                hideChevron={false}
+                                                actions={createAccordionAction(subscribedAPIResource)}
+                                            />
+                                            <SegmentedAccordion.Content
+                                                active={activeSubscribedAPIResource === subscribedAPIResource.apiId}
+                                                data-componentid={`${componentId}-${subscribedAPIResource.apiId}
+                                                                                    -content`}
+                                                children={resolveSubscribedAPIResourcesListContent(
+                                                    subscribedAPIResource
+                                                )}
+                                            />
+                                        </Fragment>
+                                    )
+                                )}
+                            </SegmentedAccordion>
+                        ) : (
+                            getPlaceholders()
+                        )}
+                    </ListLayout>
+                </Grid.Column>
+            </Grid.Row>
+            {copyScopesValue && (
+                <Grid.Row className="mt-2">
+                    <Grid.Column mobile={16} tablet={16} computer={12}>
+                        <Grid.Row>
+                            <Form>
+                                <Form.Field>
+                                    <CopyInputField
+                                        className="copy-input spaced"
+                                        value={copyScopesValue}
+                                        data-componentid={`${componentId}-selected-scope-area`}
+                                    />
+                                    <Hint>
+                                        {t(
+                                            "extensions:develop.applications.edit.sections." +
+                                                "apiAuthorization.sections.apiSubscriptions.scopesSection." +
+                                                "copyScopesHint"
+                                        )}
+                                    </Hint>
+                                </Form.Field>
+                            </Form>
+                        </Grid.Row>
+                    </Grid.Column>
+                </Grid.Row>
+            )}
+        </Grid>
     );
-
 };
 
 /**

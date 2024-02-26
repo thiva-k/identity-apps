@@ -41,7 +41,7 @@ import {
     ApplicationTemplateInterface,
     URLFragmentTypes
 } from "../../../../features/applications/models";
-import { history } from "../../../../features/core";
+import { history } from "@wso2is/features/core/helpers";
 import { AppState } from "../../../../features/core/store";
 import { QuickStartModes } from "../../shared";
 import { QuickStartPanelOverview, SPACustomConfiguration, SPATechnologySelection } from "../../shared/components";
@@ -72,7 +72,6 @@ const QUICK_START_TAB_INDEX: number = 0;
 const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQuickStartPropsInterface> = (
     props: SinglePageApplicationQuickStartPropsInterface
 ): ReactElement => {
-
     const {
         application,
         defaultTabIndex,
@@ -89,37 +88,45 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ selectedIntegration, setSelectedIntegration ] = useState<QuickStartModes>(undefined);
-    const [ selectedTechnology, setSelectedTechnology ] = useState<SupportedSPATechnologyTypes>(undefined);
-    const [ appList, setAppList ] = useState<ApplicationListInterface>(undefined);
+    const [selectedIntegration, setSelectedIntegration] = useState<QuickStartModes>(undefined);
+    const [selectedTechnology, setSelectedTechnology] = useState<SupportedSPATechnologyTypes>(undefined);
+    const [appList, setAppList] = useState<ApplicationListInterface>(undefined);
     const isHelpPanelVisible: boolean = useSelector((state: AppState) => state.helpPanel.visibility);
-
 
     useEffect(() => {
         getApplicationList(null, null, null)
             .then((response: ApplicationListInterface) => {
                 setAppList(response);
-
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.fetchApplications." +
-                            "error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.fetchApplications." +
+                                    "error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.fetchApplications" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.fetchApplications." +
-                        "genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.fetchApplications" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.fetchApplications." +
+                                "genericError.message"
+                        )
+                    })
+                );
             });
     }, []);
 
@@ -128,7 +135,7 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
             return;
         }
 
-        if (!(window.location.hash).includes(URLFragmentTypes.VIEW)) {
+        if (!window.location.hash.includes(URLFragmentTypes.VIEW)) {
             if (appList?.applications?.length > 1) {
                 setSelectedIntegration(QuickStartModes.INTEGRATE);
 
@@ -136,18 +143,17 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
             }
             setSelectedIntegration(QuickStartModes.SAMPLES);
         }
-    }, [ appList ]);
+    }, [appList]);
 
     /**
      * Called when the URL fragment updates
      */
     useEffect(() => {
-
-        if (!(window.location.hash).includes(URLFragmentTypes.VIEW)) {
+        if (!window.location.hash.includes(URLFragmentTypes.VIEW)) {
             return;
         }
 
-        const technologyType: string = (window.location.hash).split("&" + URLFragmentTypes.VIEW)[1].split("_")[1];
+        const technologyType: string = window.location.hash.split("&" + URLFragmentTypes.VIEW)[1].split("_")[1];
 
         if (SupportedSPATechnologyTypes.REACT.toLowerCase() == technologyType) {
             setSelectedTechnology(SupportedSPATechnologyTypes.REACT);
@@ -158,15 +164,14 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
         } else {
             handleInvalidURL();
         }
-    }, [ window.location.hash ]);
+    }, [window.location.hash]);
 
     /**
      * Handles invalid URL fragments
      */
     const handleInvalidURL = (): void => {
-
         history.push({
-            hash: `${ URLFragmentTypes.TAB_INDEX }${ defaultTabIndex }`,
+            hash: `${URLFragmentTypes.TAB_INDEX}${defaultTabIndex}`,
             pathname: window.location.pathname
         });
 
@@ -178,25 +183,24 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
     };
 
     const resolveQuickStartMode = (): ReactElement => {
-
         switch (selectedIntegration) {
             case QuickStartModes.INTEGRATE:
                 return (
                     <IntegrateSDKs
-                        application={ application }
-                        template={ template }
-                        technology={ selectedTechnology }
-                        inboundProtocolConfig={ inboundProtocolConfig }
+                        application={application}
+                        template={template}
+                        technology={selectedTechnology}
+                        inboundProtocolConfig={inboundProtocolConfig}
                     />
                 );
             case QuickStartModes.SAMPLES:
                 return (
                     <TryoutSamples
-                        application={ application }
-                        template={ template }
-                        technology={ selectedTechnology }
-                        onApplicationUpdate={ onApplicationUpdate }
-                        inboundProtocolConfig={ inboundProtocolConfig }
+                        application={application}
+                        template={template}
+                        technology={selectedTechnology}
+                        onApplicationUpdate={onApplicationUpdate}
+                        inboundProtocolConfig={inboundProtocolConfig}
                     />
                 );
             default:
@@ -205,9 +209,8 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
     };
 
     const resetTabState = () => {
-
         history.push({
-            hash: `${ URLFragmentTypes.TAB_INDEX }${ QUICK_START_TAB_INDEX }`,
+            hash: `${URLFragmentTypes.TAB_INDEX}${QUICK_START_TAB_INDEX}`,
             pathname: window.location.pathname
         });
 
@@ -215,7 +218,6 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
     };
 
     const resolveTechnologyLogo = (technology: SupportedSPATechnologyTypes) => {
-
         if (technology === SupportedSPATechnologyTypes.REACT) {
             return ReactLogo;
         }
@@ -229,9 +231,9 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
 
     const resolveTechnologySelection = (): ReactElement => {
         return (
-            <Grid.Row data-componentid={ `${ componentId }-technology-selection-container` }>
+            <Grid.Row data-componentid={`${componentId}-technology-selection-container`}>
                 <SPATechnologySelection<SupportedSPATechnologyTypes>
-                    technologies={ [
+                    technologies={[
                         {
                             "data-componentid": "react",
                             displayName: SupportedSPATechnologyTypes.REACT,
@@ -246,11 +248,10 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
                             sampleAppURL: SDKMeta.javascript.samples.javascript.artifact,
                             type: SupportedSPATechnologyTypes.JAVASCRIPT
                         }
-                    ] }
-                    data-componentid={ `${ componentId }-technology-selection` }
-                    onSelectedTechnologyChange={
-                        (technology: SupportedSPATechnologyTypes) =>
-                            setSelectedTechnology(technology)
+                    ]}
+                    data-componentid={`${componentId}-technology-selection`}
+                    onSelectedTechnologyChange={(technology: SupportedSPATechnologyTypes) =>
+                        setSelectedTechnology(technology)
                     }
                 />
             </Grid.Row>
@@ -259,74 +260,66 @@ const SinglePageApplicationQuickStart: FunctionComponent<SinglePageApplicationQu
 
     const resolveCustomConfiguration = (): ReactElement => {
         return (
-            <Grid.Row data-componentid={ `${ componentId }-custom-configuration-container` }>
+            <Grid.Row data-componentid={`${componentId}-custom-configuration-container`}>
                 <SPACustomConfiguration
-                    onTriggerTabUpdate={ onTriggerTabUpdate }
-                    infoTabIndex={ INFO_TAB_INDEX }
-                    protocolTabIndex={ PROTOCOL_TAB_INDEX }
-                    inboundProtocolConfig={ inboundProtocolConfig }
-                    icons={ [
+                    onTriggerTabUpdate={onTriggerTabUpdate}
+                    infoTabIndex={INFO_TAB_INDEX}
+                    protocolTabIndex={PROTOCOL_TAB_INDEX}
+                    inboundProtocolConfig={inboundProtocolConfig}
+                    icons={[
                         { techIcon: AngularIcon, techIconTitle: "Angular" },
                         { techIcon: VueIcon, techIconTitle: "Vue" },
                         { techIcon: MeteorIcon, techIconTitle: "Meteor" },
                         { techIcon: BackboneIcon, techIconTitle: "Backbone" }
-                    ] }
-                    data-componentid={ `${ componentId }-custom-configuration` }
-                    documentationLink={
-                        getLink(
-                            "develop.applications.editApplication." +
+                    ]}
+                    data-componentid={`${componentId}-custom-configuration`}
+                    documentationLink={getLink(
+                        "develop.applications.editApplication." +
                             "singlePageApplication.quickStart." +
                             "customConfig.learnMore"
-                        )
-                    }
+                    )}
                 />
             </Grid.Row>
         );
     };
 
     return (
-        <Grid data-componentid={ componentId } className="ml-0 mr-0">
-            {
-                !(selectedTechnology || (window.location.hash).includes(URLFragmentTypes.VIEW))
-                    ? (
-                        <>
-                            <Grid.Row className="technology-selection-wrapper single-page-qsg">
-                                <Grid.Column width={ 8 } className="custom-config-container p-5">
-                                    { resolveCustomConfiguration() }
-                                </Grid.Column>
-                                <Grid.Column width={ 8 } className="p-5">
-                                    { resolveTechnologySelection() }
-                                </Grid.Column>
-                            </Grid.Row>
-                            <Divider className="or" vertical>
-                                <Heading as="h5">OR</Heading>
-                            </Divider>
-                        </>
-                    )
-                    : (
-                        <>
-                            <Grid.Row>
-                                <Grid.Column width={ isHelpPanelVisible ? 16 : 13 }>
-                                    <QuickStartPanelOverview
-                                        technology={ selectedTechnology }
-                                        applicationType={ template.id }
-                                        application={ application }
-                                        inboundProtocols={ application?.inboundProtocols }
-                                        onBackButtonClick={ () => resetTabState() }
-                                        handleIntegrateSelection={ handleIntegrateSelection }
-                                        technologyLogo={ resolveTechnologyLogo(selectedTechnology) }
-                                        defaultTabIndex={ defaultTabIndex }
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>
-                            <Grid.Row>
-                                <Grid.Column width={ isHelpPanelVisible ? 16 : 13 }>
-                                    { resolveQuickStartMode() }
-                                </Grid.Column>
-                            </Grid.Row>
-                        </>
-                    )
-            }
+        <Grid data-componentid={componentId} className="ml-0 mr-0">
+            {!(selectedTechnology || window.location.hash.includes(URLFragmentTypes.VIEW)) ? (
+                <>
+                    <Grid.Row className="technology-selection-wrapper single-page-qsg">
+                        <Grid.Column width={8} className="custom-config-container p-5">
+                            {resolveCustomConfiguration()}
+                        </Grid.Column>
+                        <Grid.Column width={8} className="p-5">
+                            {resolveTechnologySelection()}
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Divider className="or" vertical>
+                        <Heading as="h5">OR</Heading>
+                    </Divider>
+                </>
+            ) : (
+                <>
+                    <Grid.Row>
+                        <Grid.Column width={isHelpPanelVisible ? 16 : 13}>
+                            <QuickStartPanelOverview
+                                technology={selectedTechnology}
+                                applicationType={template.id}
+                                application={application}
+                                inboundProtocols={application?.inboundProtocols}
+                                onBackButtonClick={() => resetTabState()}
+                                handleIntegrateSelection={handleIntegrateSelection}
+                                technologyLogo={resolveTechnologyLogo(selectedTechnology)}
+                                defaultTabIndex={defaultTabIndex}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={isHelpPanelVisible ? 16 : 13}>{resolveQuickStartMode()}</Grid.Column>
+                    </Grid.Row>
+                </>
+            )}
         </Grid>
     );
 };

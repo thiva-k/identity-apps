@@ -27,7 +27,8 @@ import { BasicRoleDetails } from "./edit-role-basic";
 import { RoleGroupsList } from "./edit-role-groups";
 import { RolePermissionDetails } from "./edit-role-permission";
 import { RoleUserDetails } from "./edit-role-users";
-import { AppState, FeatureConfigInterface, history } from "../../../core";
+import { AppState, FeatureConfigInterface } from "../../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { UserManagementConstants } from "../../../users/constants";
 
 /**
@@ -54,81 +55,75 @@ interface EditRoleProps extends SBACInterface<FeatureConfigInterface> {
  * @param props - contains role details to be edited.
  */
 export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps): ReactElement => {
-
-    const {
-        isLoading,
-        roleId,
-        roleObject,
-        onRoleUpdate,
-        readOnly
-    } = props;
+    const { isLoading, roleId, roleObject, onRoleUpdate, readOnly } = props;
 
     const { t } = useTranslation();
 
     const usersFeatureConfig: FeatureAccessConfigInterface = useSelector(
-        (state: AppState) => state?.config?.ui?.features?.users);
+        (state: AppState) => state?.config?.ui?.features?.users
+    );
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
-    const [ isGroup, setIsGroup ] = useState<boolean>(false);
-    const [ isAdminRole, setIsAdminRole ] = useState<boolean>(false);
+    const [isGroup, setIsGroup] = useState<boolean>(false);
+    const [isAdminRole, setIsAdminRole] = useState<boolean>(false);
 
     const isUserReadOnly: boolean = useMemo(() => {
-        return !isFeatureEnabled(usersFeatureConfig,
-            UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")) ||
-            !hasRequiredScopes(usersFeatureConfig,
-                usersFeatureConfig?.scopes?.update, allowedScopes);
-    }, [ usersFeatureConfig, allowedScopes ]);
+        return (
+            !isFeatureEnabled(usersFeatureConfig, UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")) ||
+            !hasRequiredScopes(usersFeatureConfig, usersFeatureConfig?.scopes?.update, allowedScopes)
+        );
+    }, [usersFeatureConfig, allowedScopes]);
 
     /**
      * Get is groups url to proceed as groups
      */
     useEffect(() => {
-        if(!roleObject) {
+        if (!roleObject) {
             return;
         }
 
         setIsGroup(history.location.pathname.includes("/groups/"));
-
-    }, [ roleObject ]);
+    }, [roleObject]);
 
     /**
      * Set the if the role is `Internal/admin`.
      */
     useEffect(() => {
-        if(!roleObject) {
+        if (!roleObject) {
             return;
         }
 
-        setIsAdminRole(roleObject.displayName === RoleConstants.ADMIN_ROLE ||
-            roleObject.displayName === RoleConstants.ADMIN_GROUP);
-
-    }, [ roleObject ]);
+        setIsAdminRole(
+            roleObject.displayName === RoleConstants.ADMIN_ROLE || roleObject.displayName === RoleConstants.ADMIN_GROUP
+        );
+    }, [roleObject]);
 
     const resolveResourcePanes = () => {
         const panes: ResourceTabPaneInterface[] = [
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.basic"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <BasicRoleDetails
-                            isReadOnly={ isAdminRole || readOnly }
+                            isReadOnly={isAdminRole || readOnly}
                             data-testid="role-mgt-edit-role-basic"
-                            roleId={ roleId }
-                            isGroup={ isGroup }
-                            roleObject={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            roleId={roleId}
+                            isGroup={isGroup}
+                            roleObject={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
-            },{
+            },
+            {
                 menuItem: t("console:manage.features.roles.edit.menuItems.permissions"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RolePermissionDetails
-                            isReadOnly={ isAdminRole || readOnly }
+                            isReadOnly={isAdminRole || readOnly}
                             data-testid="role-mgt-edit-role-permissions"
-                            isGroup={ false }
-                            roleObject={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            isGroup={false}
+                            roleObject={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
@@ -136,12 +131,12 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.groups"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RoleGroupsList
-                            isReadOnly={ readOnly || isUserReadOnly }
+                            isReadOnly={readOnly || isUserReadOnly}
                             data-testid="role-mgt-edit-role-groups"
-                            role={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            role={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
@@ -149,13 +144,13 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
             {
                 menuItem: t("console:manage.features.roles.edit.menuItems.users"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <RoleUserDetails
-                            isReadOnly={ readOnly }
+                            isReadOnly={readOnly}
                             data-testid="role-mgt-edit-role-users"
-                            isGroup={ false }
-                            roleObject={ roleObject }
-                            onRoleUpdate={ onRoleUpdate }
+                            isGroup={false}
+                            roleObject={roleObject}
+                            onRoleUpdate={onRoleUpdate}
                         />
                     </ResourceTab.Pane>
                 )
@@ -165,9 +160,5 @@ export const EditRole: FunctionComponent<EditRoleProps> = (props: EditRoleProps)
         return panes;
     };
 
-    return (
-        <ResourceTab
-            isLoading={ isLoading }
-            panes={ resolveResourcePanes() } />
-    );
+    return <ResourceTab isLoading={isLoading} panes={resolveResourcePanes()} />;
 };

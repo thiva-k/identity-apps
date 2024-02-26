@@ -44,9 +44,9 @@ import {
     AppConstants,
     AppState,
     FeatureConfigInterface,
-    UIConstants,
-    history
+    UIConstants
 } from "../../core";
+import { history } from "@wso2is/features/core/helpers";
 import { CreateGroupMemberInterface } from "../../groups/models";
 import { CreateRoleInterface, CreateRoleMemberInterface } from "../../roles/models/roles";
 import { createOrganizationRole, getOrganizationRoles } from "../api/organization-role";
@@ -74,7 +74,6 @@ type OrganizationRolesPageInterface = IdentifiableComponentInterface;
 const OrganizationRoles: FunctionComponent<OrganizationRolesPageInterface> = (
     props: OrganizationRolesPageInterface
 ): ReactElement => {
-
     const { ["data-componentid"]: testId } = props;
 
     const { t } = useTranslation();
@@ -82,26 +81,26 @@ const OrganizationRoles: FunctionComponent<OrganizationRolesPageInterface> = (
     const dispatch: Dispatch = useDispatch();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ listSortingStrategy, setListSortingStrategy ] = useState<DropdownItemProps>(
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [listSortingStrategy, setListSortingStrategy] = useState<DropdownItemProps>(
         ORGANIZATION_ROLES_LIST_SORTING_OPTIONS[0]
     );
 
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ isOrganizationRoleListRequestLoading, setOrganizationRoleListRequestLoading ] = useState<boolean>(false);
-    const [ isLoading, setLoading ] = useState<boolean>(true);
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ isOrganizationRolesNextPageAvailable, setIsOrganizationRolesNextPageAvailable ] = useState<boolean>(
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [isOrganizationRoleListRequestLoading, setOrganizationRoleListRequestLoading] = useState<boolean>(false);
+    const [isLoading, setLoading] = useState<boolean>(true);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [isOrganizationRolesNextPageAvailable, setIsOrganizationRolesNextPageAvailable] = useState<boolean>(
         undefined
     );
-    const [ organizationRoles, setOrganizationRoles ] = useState<Array<OrganizationRoleListItemInterface>>();
-    const [ after, setAfter ] = useState<string>("");
-    const [ before, setBefore ] = useState<string>("");
-    const [ cursor, setCursor ] = useState(null);
-    const [ activePage, setActivePage ] = useState<number>(1);
+    const [organizationRoles, setOrganizationRoles] = useState<Array<OrganizationRoleListItemInterface>>();
+    const [after, setAfter] = useState<string>("");
+    const [before, setBefore] = useState<string>("");
+    const [cursor, setCursor] = useState(null);
+    const [activePage, setActivePage] = useState<number>(1);
 
-    const [ paginationReset, triggerResetPagination ] = useTrigger();
+    const [paginationReset, triggerResetPagination] = useTrigger();
     const currentOrganization: OrganizationResponseInterface = useSelector(
         (state: AppState) => state.organization.organization
     );
@@ -120,19 +119,11 @@ const OrganizationRoles: FunctionComponent<OrganizationRolesPageInterface> = (
      * @param after - After link for cursor based pagination
      * @param before - Before link for cursor based pagination
      */
-    const getOrganizationRoleLists: (
-        limit?: number,
-        filter?: string,
-        after?: string,
-    ) => void = useCallback(
+    const getOrganizationRoleLists: (limit?: number, filter?: string, after?: string) => void = useCallback(
         (limit?: number, filter?: string, cursor?: string): void => {
             setOrganizationRoleListRequestLoading(true);
 
-            getOrganizationRoles(
-                currentOrganization.id,
-                filter,
-                limit,
-                cursor)
+            getOrganizationRoles(currentOrganization.id, filter, limit, cursor)
                 .then((response: OrganizationRoleListResponseInterface) => {
                     handleCursorPagination(response.nextCursor, response.previousCursor);
                     setOrganizationRoles(response.Resources);
@@ -145,7 +136,7 @@ const OrganizationRoles: FunctionComponent<OrganizationRolesPageInterface> = (
                                 level: AlertLevels.ERROR,
                                 message: t(
                                     "console:manage.features.organizations.notifications." + // ToDo
-                                    "getOrganizationList.error.message"
+                                        "getOrganizationList.error.message"
                                 )
                             })
                         );
@@ -157,12 +148,12 @@ const OrganizationRoles: FunctionComponent<OrganizationRolesPageInterface> = (
                         addAlert({
                             description: t(
                                 "console:manage.features.organizations.notifications.getOrganizationList" + // ToDo
-                                ".genericError.description"
+                                    ".genericError.description"
                             ),
                             level: AlertLevels.ERROR,
                             message: t(
                                 "console:manage.features.organizations.notifications." + // ToDo
-                                "getOrganizationList.genericError.message"
+                                    "getOrganizationList.genericError.message"
                             )
                         })
                     );
@@ -172,7 +163,7 @@ const OrganizationRoles: FunctionComponent<OrganizationRolesPageInterface> = (
                     setLoading(false);
                 });
         },
-        [ dispatch, t ]
+        [dispatch, t]
     );
 
     /**
@@ -269,67 +260,86 @@ const OrganizationRoles: FunctionComponent<OrganizationRolesPageInterface> = (
     /**
      * Handles the organization role create action.
      */
-    const handleOrganizationRoleCreate: (roleData: CreateRoleInterface) 
-    => void = useCallback((roleData: CreateRoleInterface) => {
-        // Setting up the data model for organization role creation (temp)
-        roleData.groups.forEach((group: CreateGroupMemberInterface) => {
-            delete(group.display);
-        });
+    const handleOrganizationRoleCreate: (roleData: CreateRoleInterface) => void = useCallback(
+        (roleData: CreateRoleInterface) => {
+            // Setting up the data model for organization role creation (temp)
+            roleData.groups.forEach((group: CreateGroupMemberInterface) => {
+                delete group.display;
+            });
 
-        roleData.users.forEach((user: CreateRoleMemberInterface) => {
-            delete(user.display);
-        });
+            roleData.users.forEach((user: CreateRoleMemberInterface) => {
+                delete user.display;
+            });
 
-        delete(roleData.schemas);
+            delete roleData.schemas;
 
-        createOrganizationRole(currentOrganization.id, roleData).then((response: AxiosResponse) => {
-            if (response.status === 201) {
-                dispatch(
-                    addAlert({
-                        description: t("console:manage.features.roles.notifications.createRole." +
-                            "success.description"),
-                        level: AlertLevels.SUCCESS,
-                        message: t("console:manage.features.roles.notifications.createRole.success.message")
-                    })
-                );
+            createOrganizationRole(currentOrganization.id, roleData)
+                .then((response: AxiosResponse) => {
+                    if (response.status === 201) {
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.roles.notifications.createRole." + "success.description"
+                                ),
+                                level: AlertLevels.SUCCESS,
+                                message: t("console:manage.features.roles.notifications.createRole.success.message")
+                            })
+                        );
 
-                setShowWizard(false);
-                history.push(AppConstants.getPaths().get("ORGANIZATION_ROLE_UPDATE").replace(":id", response.data.id));
-            }
-
-        }).catch((error: AxiosError) => {
-            if (!error.response || error.response.status === 401) {
-                setShowWizard(false);
-                dispatch(
-                    addAlert({
-                        description: t("console:manage.features.roles.notifications.createRole.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.roles.notifications.createRole.error.message")
-                    })
-                );
-            } else if (error.response && error.response.data.detail) {
-                setShowWizard(false);
-                dispatch(
-                    addAlert({
-                        description: t("console:manage.features.roles.notifications.createRole.error.description",
-                            { description: error.response.data.detail }),
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.roles.notifications.createRole.error.message")
-                    })
-                );
-            } else {
-                setShowWizard(false);
-                dispatch(addAlert({
-                    description: t("console:manage.features.roles.notifications.createRole." +
-                        "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.roles.notifications.createRole.genericError.message")
-                }));
-            }
-        }).finally(() => {
-            setLoading(false);
-        });
-    }, [ setShowWizard, setLoading, dispatch, currentOrganization, t ]);
+                        setShowWizard(false);
+                        history.push(
+                            AppConstants.getPaths()
+                                .get("ORGANIZATION_ROLE_UPDATE")
+                                .replace(":id", response.data.id)
+                        );
+                    }
+                })
+                .catch((error: AxiosError) => {
+                    if (!error.response || error.response.status === 401) {
+                        setShowWizard(false);
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.roles.notifications.createRole.error.description"
+                                ),
+                                level: AlertLevels.ERROR,
+                                message: t("console:manage.features.roles.notifications.createRole.error.message")
+                            })
+                        );
+                    } else if (error.response && error.response.data.detail) {
+                        setShowWizard(false);
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.roles.notifications.createRole.error.description",
+                                    { description: error.response.data.detail }
+                                ),
+                                level: AlertLevels.ERROR,
+                                message: t("console:manage.features.roles.notifications.createRole.error.message")
+                            })
+                        );
+                    } else {
+                        setShowWizard(false);
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "console:manage.features.roles.notifications.createRole." +
+                                        "genericError.description"
+                                ),
+                                level: AlertLevels.ERROR,
+                                message: t(
+                                    "console:manage.features.roles.notifications.createRole.genericError.message"
+                                )
+                            })
+                        );
+                    }
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
+        },
+        [setShowWizard, setLoading, dispatch, currentOrganization, t]
+    );
 
     /**
      * Handles the `onSearchQueryClear` callback action.
@@ -342,13 +352,15 @@ const OrganizationRoles: FunctionComponent<OrganizationRolesPageInterface> = (
 
     const handleListItemClick = (_e: SyntheticEvent, organizationRole: OrganizationRoleListItemInterface): void => {
         history.push(
-            AppConstants.getPaths().get("ORGANIZATION_ROLE_UPDATE").replace(":id", organizationRole.id)
+            AppConstants.getPaths()
+                .get("ORGANIZATION_ROLE_UPDATE")
+                .replace(":id", organizationRole.id)
         );
     };
 
     useEffect(() => {
         getOrganizationRoleLists(listItemLimit, searchQuery, cursor);
-    }, [ listItemLimit, getOrganizationRoleLists, searchQuery ]);
+    }, [listItemLimit, getOrganizationRoleLists, searchQuery]);
 
     const handleBackButtonClick = (): void => {
         history.push(AppConstants.getPaths().get("ROLES"));
@@ -360,147 +372,147 @@ const OrganizationRoles: FunctionComponent<OrganizationRolesPageInterface> = (
                 action={
                     !isLoading &&
                     !(!searchQuery && (isEmpty(organizationRoles) || organizationRoles.length <= 0)) && (
-                        <Show when={ AccessControlConstants.ORGANIZATION_WRITE }>
+                        <Show when={AccessControlConstants.ORGANIZATION_WRITE}>
                             <PrimaryButton
-                                disabled={ isOrganizationRoleListRequestLoading }
-                                loading={ isOrganizationRoleListRequestLoading }
-                                onClick={ (): void => {
+                                disabled={isOrganizationRoleListRequestLoading}
+                                loading={isOrganizationRoleListRequestLoading}
+                                onClick={(): void => {
                                     // eventPublisher.publish("organization-click-new-organization-button");
                                     setShowWizard(true);
-                                } }
-                                data-testid={ `${testId}-list-layout-add-button` }
+                                }}
+                                data-testid={`${testId}-list-layout-add-button`}
                             >
-                                <Icon name="add"/>
-                                { /*ToDo*/ }
-                                { t("Add Organization Role") }
+                                <Icon name="add" />
+                                {/*ToDo*/}
+                                {t("Add Organization Role")}
                             </PrimaryButton>
                         </Show>
                     )
                 }
                 // ToDo
-                title={ "Organization Roles" }
+                title={"Organization Roles"}
                 pageTitle="Organization Roles"
-                description={ "Manage organization roles here" }
-                data-testid={ `${testId}-page-layout` }
-                backButton={ {
+                description={"Manage organization roles here"}
+                data-testid={`${testId}-page-layout`}
+                backButton={{
                     onClick: handleBackButtonClick,
                     text: t("extensions:console.applicationRoles.roles.goBackToRoles")
-                } }
+                }}
             >
-                { !isLoading ? (
+                {!isLoading ? (
                     <>
                         <ListLayout
                             advancedSearch={
-                                (<AdvancedSearchWithBasicFilters
-                                    onFilter={ handleOrganizationRoleFilter }
-                                    filterAttributeOptions={ [
+                                <AdvancedSearchWithBasicFilters
+                                    onFilter={handleOrganizationRoleFilter}
+                                    filterAttributeOptions={[
                                         {
                                             key: 0,
                                             text: t("common:name"),
                                             value: "name"
                                         }
-                                    ] }
-                                    filterAttributePlaceholder={ t(
+                                    ]}
+                                    filterAttributePlaceholder={t(
                                         "console:manage.features.organizations.advancedSearch.form" +
-                                        ".inputs.filterAttribute.placeholder"
-                                    ) }
-                                    filterConditionsPlaceholder={ t(
+                                            ".inputs.filterAttribute.placeholder"
+                                    )}
+                                    filterConditionsPlaceholder={t(
                                         "console:manage.features.organizations.advancedSearch.form" +
-                                        ".inputs.filterCondition.placeholder"
-                                    ) }
-                                    filterValuePlaceholder={ t(
+                                            ".inputs.filterCondition.placeholder"
+                                    )}
+                                    filterValuePlaceholder={t(
                                         "console:manage.features.organizations.advancedSearch.form.inputs.filterValue" +
-                                        ".placeholder"
-                                    ) }
-                                    placeholder={ t(
+                                            ".placeholder"
+                                    )}
+                                    placeholder={t(
                                         "console:manage.features.organizations." + "advancedSearch.placeholder"
-                                    ) }
+                                    )}
                                     defaultSearchAttribute="name"
                                     defaultSearchOperator="co"
-                                    triggerClearQuery={ triggerClearQuery }
-                                    data-testid={ `${testId}-list-advanced-search` }
-                                />)
+                                    triggerClearQuery={triggerClearQuery}
+                                    data-testid={`${testId}-list-advanced-search`}
+                                />
                             }
-                            currentListSize={ organizationRoles?.length }
-                            listItemLimit={ listItemLimit }
-                            onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                            onPageChange={ handlePaginationChange }
-                            onSortStrategyChange={ handleListSortingStrategyOnChange }
-                            showPagination={ true }
+                            currentListSize={organizationRoles?.length}
+                            listItemLimit={listItemLimit}
+                            onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                            onPageChange={handlePaginationChange}
+                            onSortStrategyChange={handleListSortingStrategyOnChange}
+                            showPagination={true}
                             showTopActionPanel={
                                 isOrganizationRoleListRequestLoading ||
                                 !(!searchQuery && organizationRoles?.length <= 0)
                             }
-                            sortOptions={ ORGANIZATION_ROLES_LIST_SORTING_OPTIONS }
-                            sortStrategy={ listSortingStrategy }
-                            totalPages={ after ? activePage + 1 : 1 }
-                            totalListSize={ organizationRoles?.length }
-                            paginationOptions={ {
+                            sortOptions={ORGANIZATION_ROLES_LIST_SORTING_OPTIONS}
+                            sortStrategy={listSortingStrategy}
+                            totalPages={after ? activePage + 1 : 1}
+                            totalListSize={organizationRoles?.length}
+                            paginationOptions={{
                                 disableNextButton: !isOrganizationRolesNextPageAvailable
-                            } }
-                            data-testid={ `${ testId }-list-layout` }
-                            resetPagination={ paginationReset }
+                            }}
+                            data-testid={`${testId}-list-layout`}
+                            resetPagination={paginationReset}
                         >
                             <OrganizationRoleList
                                 advancedSearch={
-                                    (<AdvancedSearchWithBasicFilters
-                                        onFilter={ handleOrganizationRoleFilter }
-                                        filterAttributeOptions={ [
+                                    <AdvancedSearchWithBasicFilters
+                                        onFilter={handleOrganizationRoleFilter}
+                                        filterAttributeOptions={[
                                             {
                                                 key: 0,
                                                 text: t("common:name"),
                                                 value: "name"
                                             }
-                                        ] }
-                                        filterAttributePlaceholder={ t(
+                                        ]}
+                                        filterAttributePlaceholder={t(
                                             "console:manage.features.organizations.advancedSearch." +
-                                            "form.inputs.filterAttribute.placeholder"
-                                        ) }
-                                        filterConditionsPlaceholder={ t(
+                                                "form.inputs.filterAttribute.placeholder"
+                                        )}
+                                        filterConditionsPlaceholder={t(
                                             "console:manage.features.organizations.advancedSearch." +
-                                            "form.inputs.filterCondition.placeholder"
-                                        ) }
-                                        filterValuePlaceholder={ t(
+                                                "form.inputs.filterCondition.placeholder"
+                                        )}
+                                        filterValuePlaceholder={t(
                                             "console:manage.features.organizations.advancedSearch." +
-                                            "form.inputs.filterValue.placeholder"
-                                        ) }
-                                        placeholder={ t(
+                                                "form.inputs.filterValue.placeholder"
+                                        )}
+                                        placeholder={t(
                                             "console:manage.features.organizations.advancedSearch.placeholder"
-                                        ) }
+                                        )}
                                         defaultSearchAttribute="name"
                                         defaultSearchOperator="co"
-                                        triggerClearQuery={ triggerClearQuery }
-                                        data-testid={ `${testId}-list-advanced-search` }
-                                    />)
+                                        triggerClearQuery={triggerClearQuery}
+                                        data-testid={`${testId}-list-advanced-search`}
+                                    />
                                 }
-                                featureConfig={ featureConfig }
-                                isLoading={ isOrganizationRoleListRequestLoading }
-                                list={ organizationRoles }
-                                onOrganizationRoleDelete={ handleOrganizationRoleDelete }
-                                onEmptyListPlaceholderActionClick={ () => {
+                                featureConfig={featureConfig}
+                                isLoading={isOrganizationRoleListRequestLoading}
+                                list={organizationRoles}
+                                onOrganizationRoleDelete={handleOrganizationRoleDelete}
+                                onEmptyListPlaceholderActionClick={() => {
                                     setShowWizard(true);
-                                } }
-                                onSearchQueryClear={ handleSearchQueryClear }
-                                organizationId={ currentOrganization.id }
-                                searchQuery={ searchQuery }
-                                data-testid={ `${testId}-list` }
+                                }}
+                                onSearchQueryClear={handleSearchQueryClear}
+                                organizationId={currentOrganization.id}
+                                searchQuery={searchQuery}
+                                data-testid={`${testId}-list`}
                                 data-componentid="organization"
-                                onListItemClick={ handleListItemClick }
+                                onListItemClick={handleListItemClick}
                             />
                         </ListLayout>
-                        { showWizard && (
+                        {showWizard && (
                             <AddOrganizationRoleWizard
                                 data-testid="org-role-mgt-add-role-wizard"
-                                isAddGroup={ false }
-                                closeWizard={ () => setShowWizard(false) }
-                                updateList={ () => handleOrganizationRoleListUpdate() }
-                                onCreateRoleRequested={ handleOrganizationRoleCreate }
+                                isAddGroup={false}
+                                closeWizard={() => setShowWizard(false)}
+                                updateList={() => handleOrganizationRoleListUpdate()}
+                                onCreateRoleRequested={handleOrganizationRoleCreate}
                             />
-                        ) }
+                        )}
                     </>
                 ) : (
-                    <GridLayout isLoading={ isLoading }/>
-                ) }
+                    <GridLayout isLoading={isLoading} />
+                )}
             </PageLayout>
         </>
     );
