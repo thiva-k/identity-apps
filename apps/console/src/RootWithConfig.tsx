@@ -37,51 +37,59 @@ import { ProtectedApp } from "./protected-app";
 import { RouteComponentProps } from 'react-router-dom';
 import ApplicationPage from "./ApplicationPage";
 import ConnectionPage from "./ConnectionPage";
-import { RootWithConfig } from "./RootWithConfig"
-import PopupOpener from "./AppIFrame";
+import { getAuthParams } from "./index";
+
 
 // Set the runtime config in the context.
 
-ContextUtils.setRuntimeConfig(Config.getDeploymentConfig());
+/**
+ * Render root component with configs.
+ *
+ * @returns Root element with configs.
+ */
 
-export const getAuthParams = (): Promise<AuthParams> => {
-    if (
-        !SPAUtils.hasAuthSearchParamsInURL() &&
-        Config.getDeploymentConfig()?.idpConfigs?.responseMode === ResponseMode.formPost
-    ) {
-        const contextPath: string = window["AppUtils"].getConfig().appBase
-            ? `/${StringUtils.removeSlashesFromPath(window["AppUtils"].getConfig().appBase)}`
-            : "";
+export const RootWithConfig = ({ children }: { children: React.ReactNode }): ReactElement => {
+    const [ready, setReady] = React.useState(false);
 
-        return axios.get(contextPath + "/auth").then((response: AxiosResponse) => {
-            return Promise.resolve({
-                authorizationCode: response?.data?.authCode,
-                sessionState: response?.data?.sessionState,
-                state: response?.data?.state
-            });
-        });
+    React.useEffect(() => {
+        if (AuthenticateUtils.getInitializeConfig()?.baseUrl) {
+            setReady(true);
+
+            return;
+        }
+
+        setReady(false);
+    }, [AuthenticateUtils.getInitializeConfig()?.baseUrl]);
+
+    if (!ready) {
+        return <PreLoader />;
     }
 
-    return;
+    return (
+        <AppSettingsProvider>
+            <ThemeProvider theme={AsgardeoTheme} defaultMode="light" modeStorageKey="console-oxygen-mode">
+                <Provider store={store}>
+                    <UserPreferencesProvider<UserPreferencesInterface>>
+                        <BrowserRouter>
+                            <AuthProvider
+                                config={AuthenticateUtils.getInitializeConfig()}
+                                fallback={<PreLoader />}
+                                getAuthParams={getAuthParams}
+                            >
+                                <AppConfigProvider>
+                                    <OrganizationsProvider>
+                                        {children}
+                                    </OrganizationsProvider>
+                                </AppConfigProvider>
+                            </AuthProvider>
+                        </BrowserRouter>
+                    </UserPreferencesProvider>
+                </Provider>
+            </ThemeProvider>
+        </AppSettingsProvider>
+    );
 };
 
 
 
-const Root = (): ReactElement => {
-    return (
-        <RootWithConfig>
-            <ProtectedApp>
-                 {/* Home Page
-                <PopupOpener /> */}
-                <ConnectionPage />
-                <ApplicationPage />
-            </ProtectedApp>
-        </RootWithConfig>
-    );
-}
 
-const rootElement: HTMLElement = document.getElementById("root");
-
-// Moved back to the legacy mode due to unpredictable state update issue.
-// Tracked here: https://github.com/wso2/product-is/issues/14912
-ReactDOM.render(<Root />, rootElement);

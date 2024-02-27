@@ -74,7 +74,7 @@ import {NodesIcon} from "@oxygen-ui/react-icons";
  *
  * @returns App Root component.
  */
-export const App: FunctionComponent<Record<string, never>> = (): ReactElement => {
+export const ApplicationPage: FunctionComponent<Record<string, never>> = (): ReactElement => {
     const featureGateConfigUpdated: FeatureGateInterface = { ...featureGateConfig };
 
     const dispatch: Dispatch<any> = useDispatch();
@@ -450,7 +450,7 @@ export const App: FunctionComponent<Record<string, never>> = (): ReactElement =>
                                         />
                                         <Switch>
                                             <Redirect exact from="/" to={AppConstants.getAppHomePath()} />
-                                            {myRoutes.map((route: RouteInterface, index: number) => {
+                                            {applicationRoutes.map((route: RouteInterface, index: number) => {
                                                 return route.protected ? (
                                                     <ProtectedRoute
                                                         component={route.component}
@@ -492,7 +492,7 @@ export const App: FunctionComponent<Record<string, never>> = (): ReactElement =>
  * TODO: Change this to a named export once react starts supporting named exports for code splitting.
  * @see {@link https://reactjs.org/docs/code-splitting.html#reactlazy}
  */
-export default App;
+export default ApplicationPage;
 
 const applicationRoutes = 
     //https://localhost:9001/t/carbon.super/console/applications    
