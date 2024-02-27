@@ -63,6 +63,12 @@ import { history } from "@wso2is/features/core";
 import useRoutes from "./use-routes";
 import useOrganizationSwitch from "@wso2is/features/organizations/hooks/use-organization-switch";
 import { GovernanceCategoryForOrgsInterface, useGovernanceConnectorCategories } from "@wso2is/features/server-configurations";
+import UsersPage from "@wso2is/features/users/pages/users"
+import ConnectionsPage from "@wso2is/features/connections/pages/connections"
+import Applicationspage from '@wso2is/features/applications/pages/applications'
+import { RouteComponentProps } from 'react-router-dom';
+import ApplicationTemplateSelectPage from "features/applications/pages/application-template";
+
 
 const App: LazyExoticComponent<FunctionComponent> = lazy(() => import("./app"));
 
@@ -315,6 +321,45 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
             });
     }, [isAuthenticated]);
 
+    type CustomRouteProps = RouteComponentProps 
+      
+      // Create dummy values for the necessary properties
+      const dummyProps: CustomRouteProps = {
+        history: {
+            push: () => { console.log("Pushed") },
+            length: 0,
+            action: "PUSH",
+            location: undefined,
+            replace: undefined,
+            go: function (n: number): void {
+                throw new Error("Function not implemented.");
+            },
+            goBack: function (): void {
+                throw new Error("Function not implemented.");
+            },
+            goForward: function (): void {
+                throw new Error("Function not implemented.");
+            },
+            block: undefined,
+            listen: undefined,
+            createHref: undefined
+        },
+        location: {
+            pathname: '',
+            search: "",
+            state: undefined,
+            hash: ""
+        },
+        match: {
+            params: {},
+            isExact: false,
+            path: "",
+            url: ""
+        }
+        // Add other necessary properties if needed
+      };
+
+
     return (
         <SecureApp
             fallback={<PreLoader />}
@@ -331,10 +376,17 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
             <GovernanceConnectorProvider connectorCategories={governanceConnectors}>
                 <I18nextProvider i18n={I18n.instance}>
                     <SubscriptionProvider tierName={tenantTier?.tierName ?? TenantTier.FREE}>
-                        {renderApp && routesFiltered ? <App /> : <PreLoader />}
+                        {renderApp && routesFiltered ? <App/>
+                                                      
+                        : <PreLoader />}
                     </SubscriptionProvider>
                 </I18nextProvider>
             </GovernanceConnectorProvider>
         </SecureApp>
     );
 };
+//React.createElement(UsersPage, dummyProps) 
+//<div><Applicationspage/ > 
+                        
+// {React.createElement(ApplicationTemplateSelectPage) }
+// </div>

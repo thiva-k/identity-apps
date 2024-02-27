@@ -39,21 +39,21 @@ import has from "lodash-es/has";
 import isEmpty from "lodash-es/isEmpty";
 import set from "lodash-es/set";
 import * as moment from "moment";
-import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
+import React, { FunctionComponent, ReactElement, Suspense, lazy, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Trans } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { StaticContext } from "react-router";
 import { Redirect, Route, RouteComponentProps, Router, Switch } from "react-router-dom";
 import { Dispatch } from "redux";
-import { commonConfig } from "@wso2is/features/extensions";
+import { commonConfig, identityProviderConfig } from "@wso2is/features/extensions";
 import { useGetAllFeatures } from "@wso2is/features/extensions/components/feature-gate/api/feature-gate";
 import { featureGateConfig } from "@wso2is/features/extensions/configs/feature-gate";
 import { AccessControlUtils } from "@wso2is/features/access-control/configs/access-control";
 import { EventPublisher, PreLoader } from "@wso2is/features/core";
 import { ProtectedRoute } from "@wso2is/features/core/components";
 import {  getBaseRoutes } from "./routes";
-import { Config,DocumentationLinks} from "@wso2is/features/core/configs"
+import { Config,DocumentationLinks, getSidePanelIcons} from "@wso2is/features/core/configs"
 import { AppConstants } from "@wso2is/features/core/constants";
 import { history } from "@wso2is/features/core";
 import {
@@ -66,6 +66,8 @@ import { AppState, store } from "@wso2is/features/core/store";
 import "moment/locale/si";
 import "moment/locale/fr";
 import { OrganizationUtils } from "@wso2is/features/organizations/utils";
+import ConnectionsPage from "@wso2is/features/connections/pages/connections";
+import {NodesIcon} from "@oxygen-ui/react-icons";
 
 /**
  * Main App component.
@@ -330,6 +332,7 @@ export const App: FunctionComponent<Record<string, never>> = (): ReactElement =>
         return <PreLoader />;
     }
 
+    
     return (
         <Router history={history}>
             <div className="container-fluid">
@@ -447,7 +450,7 @@ export const App: FunctionComponent<Record<string, never>> = (): ReactElement =>
                                         />
                                         <Switch>
                                             <Redirect exact from="/" to={AppConstants.getAppHomePath()} />
-                                            {baseRoutes.map((route: RouteInterface, index: number) => {
+                                            {myRoutes.map((route: RouteInterface, index: number) => {
                                                 return route.protected ? (
                                                     <ProtectedRoute
                                                         component={route.component}
@@ -490,3 +493,91 @@ export const App: FunctionComponent<Record<string, never>> = (): ReactElement =>
  * @see {@link https://reactjs.org/docs/code-splitting.html#reactlazy}
  */
 export default App;
+
+const applicationRoutes = 
+    //https://localhost:9001/t/carbon.super/console/applications    
+        [
+            {
+                component: lazy(() => import("@wso2is/features/applications/pages/application-template")),
+                exact: true,
+                icon: {
+                    icon: getSidePanelIcons().childIcon
+                },
+                id: "applicationTemplate",
+                name: "Application Templates",
+                path: AppConstants.getPaths().get("APPLICATION_TEMPLATES"),
+                protected: true,
+                showOnSidePanel: false
+            },
+            {
+                component: lazy(() => import("@wso2is/features/applications/pages/application-edit")),
+                exact: true,
+                icon: {
+                    icon: getSidePanelIcons().childIcon
+                },
+                id: "applicationsEdit",
+                name: "Application Edit",
+                path: AppConstants.getPaths().get("APPLICATION_EDIT"),
+                protected: true,
+                showOnSidePanel: false
+            },
+        {
+        component: lazy(() => import("@wso2is/features/applications/pages/applications")),
+        exact: true,
+        icon: {
+            icon: getSidePanelIcons().applications
+        },
+        id: "applications",
+        name: "common:applications",
+        order: 1,
+        path: AppConstants.getPaths().get("APPLICATIONS"),
+        protected: true,
+        showOnSidePanel: true
+    }];
+
+    const connectionRoutes = [
+    //https://localhost:9001/t/carbon.super/console/connections
+        
+            {
+                component: lazy(() => import("@wso2is/features/connections/pages/connection-templates")),
+                exact: true,
+                icon: {
+                    icon: getSidePanelIcons().childIcon
+                },
+                id: "identityProviderTemplate",
+                name: "Identity Provider Templates",
+                path: AppConstants.getPaths().get("IDP_TEMPLATES"),
+                protected: true,
+                showOnSidePanel: false
+            },
+            {
+                component: lazy(() => import("@wso2is/features/connections/pages/connection-edit")),
+                exact: true,
+                icon: {
+                    icon: getSidePanelIcons().childIcon
+                },
+                id: "identityProvidersEdit",
+                name: "Identity Providers Edit",
+                path: AppConstants.getPaths().get("IDP_EDIT"),
+                protected: true,
+                showOnSidePanel: false
+            },
+        {
+        component: lazy(() => import("@wso2is/features/connections/pages/connections")),
+        exact: true,
+        icon: {
+            icon: <NodesIcon />
+        },
+        id: "identityProviders",
+        name: identityProviderConfig?.useNewConnectionsView
+            ? "console:develop.features.sidePanel.authenticationProviders"
+            : "console:develop.features.sidePanel.identityProviders",
+        order: 3,
+        path: AppConstants.getPaths().get("IDP"),
+        protected: true,
+        showOnSidePanel: true
+    }]
+
+const myRoutes = applicationRoutes.concat(connectionRoutes);
+
+

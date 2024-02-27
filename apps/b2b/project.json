@@ -1,7 +1,7 @@
 {
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
-    "root": "apps/console",
-    "sourceRoot": "apps/console/src",
+    "root": "apps/b2b",
+    "sourceRoot": "apps/b2b/src",
     "projectType": "application",
     "generators": {},
     "prefix": "@wso2is",
@@ -26,7 +26,7 @@
                         "description": "Preparing the build copying necessary assets, etc."
                     }
                 ],
-                "cwd": "apps/console",
+                "cwd": "apps/b2b",
                 "parallel": false
             }
         },
@@ -38,12 +38,12 @@
             "defaultConfiguration": "production",
             "options": {
                 "compiler": "babel",
-                "outputPath": "apps/console/build/console",
+                "outputPath": "apps/b2b/build/b2b",
                 "index": "index.html",
-                "baseHref": "/console/",
-                "main": "apps/console/src/index.tsx",
+                "baseHref": "/b2b/",
+                "main": "apps/b2b/src/index.tsx",
                 "polyfills": "",
-                "tsConfig": "apps/console/tsconfig.json",
+                "tsConfig": "apps/b2b/tsconfig.json",
                 "assets": [
                     {
                         "glob": "**/*",
@@ -57,7 +57,7 @@
                     },
                     {
                         "glob": "**/*",
-                        "input": "apps/console/src/public",
+                        "input": "apps/b2b/src/public",
                         "output": "."
                     },
                     {
@@ -67,20 +67,20 @@
                     },
                     {
                         "glob": "meta.*.json",
-                        "input": "apps/console/src/extensions/i18n/tmp",
+                        "input": "apps/b2b/src/extensions/i18n/tmp",
                         "output": "resources/i18n"
                     },
                     {
                         "glob": "**/auth.jsp",
-                        "input": "apps/console/src",
+                        "input": "apps/b2b/src",
                         "output": "."
                     }
                 ],
                 "styles": [],
                 "scripts": [],
                 "generateIndexHtml": false,
-                "postcssConfig": "apps/console/postcss.config.js",
-                "webpackConfig": "apps/console/webpack.config.ts"
+                "postcssConfig": "apps/b2b/postcss.config.js",
+                "webpackConfig": "apps/b2b/webpack.config.ts"
             },
             "configurations": {
                 "development": {
@@ -113,7 +113,7 @@
                         "description": "Clearing up the redundant files after the build."
                     }
                 ],
-                "cwd": "apps/console",
+                "cwd": "apps/b2b",
                 "parallel": false
             }
         },
@@ -121,11 +121,11 @@
             "executor": "@nrwl/workspace:run-commands",
             "options": {
                 "commands": [
-                    "pnpm nx run console:build-prepare",
-                    "pnpm nx run console:build-base",
-                    "pnpm nx run console:build-windup"
+                    "pnpm nx run b2b:build-prepare",
+                    "pnpm nx run b2b:build-base",
+                    "pnpm nx run b2b:build-windup"
                 ],
-                "cwd": "apps/console",
+                "cwd": "apps/b2b",
                 "parallel": false
             }
         },
@@ -135,10 +135,10 @@
                 "commands": [
                     {
                         "command": "pnpm clean",
-                        "description": "Cleaning Console"
+                        "description": "Cleaning b2b"
                     }
                 ],
-                "cwd": "apps/console",
+                "cwd": "apps/b2b",
                 "parallel": false
             }
         },
@@ -151,7 +151,7 @@
                         "description": "Preparing for the serve copying necessary assets, etc."
                     }
                 ],
-                "cwd": "apps/console",
+                "cwd": "apps/b2b",
                 "parallel": true
             }
         },
@@ -159,19 +159,19 @@
             "executor": "@nrwl/web:dev-server",
             "defaultConfiguration": "development",
             "options": {
-                "buildTarget": "console:build-base",
+                "buildTarget": "b2b:build-base",
                 "port": 9001,
-                "baseHref": "/console/",
+                "baseHref": "/b2b/",
                 "open": true,
                 "hmr": true,
                 "ssl": true
             },
             "configurations": {
                 "development": {
-                    "buildTarget": "console:build-base:development"
+                    "buildTarget": "b2b:build-base:development"
                 },
                 "production": {
-                    "buildTarget": "console:build-base:production",
+                    "buildTarget": "b2b:build-base:production",
                     "hmr": false
                 }
             }
@@ -180,10 +180,10 @@
             "executor": "@nrwl/workspace:run-commands",
             "options": {
                 "commands": [
-                    "pnpm nx run console:serve-prepare",
-                    "pnpm nx run console:serve-base"
+                    "pnpm nx run b2b:serve-prepare",
+                    "pnpm nx run b2b:serve-base"
                 ],
-                "cwd": "apps/console",
+                "cwd": "apps/b2b",
                 "parallel": false
             }
         },
@@ -191,7 +191,7 @@
             "executor": "@nrwl/workspace:run-commands",
             "options": {
                 "command": "pnpm lint",
-                "cwd": "apps/console",
+                "cwd": "apps/b2b",
                 "parallel": false
             }
         },
@@ -199,7 +199,7 @@
             "executor": "@nrwl/workspace:run-commands",
             "options": {
                 "command": "pnpm test",
-                "cwd": "apps/console",
+                "cwd": "apps/b2b",
                 "parallel": false
             }
         }

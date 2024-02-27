@@ -34,6 +34,10 @@ import AppSettingsProvider from "@wso2is/features/core/providers/app-settings-pr
 import UserPreferencesProvider from "@wso2is/features/core/providers/user-preferences-provider";
 import OrganizationsProvider from "@wso2is/features/organizations/providers/organizations-provider";
 import { ProtectedApp } from "./protected-app";
+import { App } from "./app";
+import UsersPage from "@wso2is/features/users/pages/users"
+import { RouteComponentProps } from 'react-router-dom';
+
 
 // Set the runtime config in the context.
 ContextUtils.setRuntimeConfig(Config.getDeploymentConfig());
@@ -81,6 +85,44 @@ const RootWithConfig = (): ReactElement => {
         return <PreLoader />;
     }
 
+    type CustomRouteProps = RouteComponentProps 
+      
+      // Create dummy values for the necessary properties
+      const dummyProps: CustomRouteProps = {
+        history: {
+            push: () => { console.log("Pushed") },
+            length: 0,
+            action: "PUSH",
+            location: undefined,
+            replace: undefined,
+            go: function (n: number): void {
+                throw new Error("Function not implemented.");
+            },
+            goBack: function (): void {
+                throw new Error("Function not implemented.");
+            },
+            goForward: function (): void {
+                throw new Error("Function not implemented.");
+            },
+            block: undefined,
+            listen: undefined,
+            createHref: undefined
+        },
+        location: {
+            pathname: '',
+            search: "",
+            state: undefined,
+            hash: ""
+        },
+        match: {
+            params: {},
+            isExact: false,
+            path: "",
+            url: ""
+        }
+        // Add other necessary properties if needed
+      };
+
     return (
         <AppSettingsProvider>
             <ThemeProvider theme={AsgardeoTheme} defaultMode="light" modeStorageKey="console-oxygen-mode">
@@ -94,7 +136,7 @@ const RootWithConfig = (): ReactElement => {
                             >
                                 <AppConfigProvider>
                                     <OrganizationsProvider>
-                                        <ProtectedApp />
+                                    <ProtectedApp />
                                     </OrganizationsProvider>
                                 </AppConfigProvider>
                             </AuthProvider>
@@ -111,3 +153,5 @@ const rootElement: HTMLElement = document.getElementById("root");
 // Moved back to the legacy mode due to unpredictable state update issue.
 // Tracked here: https://github.com/wso2/product-is/issues/14912
 ReactDOM.render(<RootWithConfig />, rootElement);
+//{React.createElement(UsersPage, dummyProps)}
+

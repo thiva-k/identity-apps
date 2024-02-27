@@ -8,7 +8,7 @@
     "main": "index.js",
     "scripts": {
         "build": "pnpm build:prod",
-        "build:prod": "pnpm nx run console:build",
+        "build:prod": "pnpm nx run b2b:build",
         "clean": "pnpm clean:build && pnpm clean:lock-files && pnpm clean:maven-folders && pnpm clean:themes:src && pnpm clean:node-modules",
         "clean:build": "pnpm rimraf build",
         "clean:lock-files": "pnpm rimraf package-lock.json && pnpm rimraf pnpm-lock.yaml && pnpm rimraf yarn.lock",
@@ -29,7 +29,7 @@
         "prebuild": "node scripts/pre-build.js",
         "postbuild": "node scripts/post-build.js",
         "poststart": "pnpm run postbuild",
-        "start": "pnpm prestart && pnpm nx run console:serve && pnpm poststart",
+        "start": "pnpm prestart && pnpm nx run b2b:serve && pnpm poststart",
         "test": "pnpm jest --passWithNoTests",
         "test:watch": "pnpm run test --watchAll",
         "start:profile": "pnpm run start -- --env ENABLE_BUILD_PROFILER=true",
