@@ -1,4 +1,7 @@
+import { AppConstants } from '@wso2is/common';
 import React, { useState } from 'react';
+import {Router, Link, Route, Switch } from 'react-router-dom';
+import { history } from "@wso2is/features/core";
 
 const Modal = ({ isOpen, onClose, url }) => {
   const modalContentStyle = {
@@ -45,13 +48,49 @@ const PopupOpener = () => {
   };
 
   return (
-    <div>
-      <button onClick={openModal1}>Open Applications</button>
-      <button onClick={openModal2}>Open Connections</button>
+  <>
+    <button onClick={openModal1}>Open Applications</button>
+    <button onClick={openModal2}>Open Connections</button>
+    
+    <Router history={history}>
+      <div>
+      <div> 
+        <nav>
+          <ul>
+            <li>
+              <Link to="/applications">Open Applications</Link>
+            </li>
+            <li>
+              <Link to ={AppConstants.getPaths().get("APPLICATIONS")}>Applications Console</Link>
+            </li>
+            <li>
+              <Link to="/connections">Open Connections</Link>
+            </li>
+          </ul>
+        </nav>
+        <Switch>
+          <Route path="/applications">
+            <Applications />
+          </Route>
+          <Route path="/connections">
+            <Connections />
+          </Route>
+        </Switch>
+      </div>
       <Modal isOpen={isOpenModal1} onClose={closeModal1} url={modal1Url} />
       <Modal isOpen={isOpenModal2} onClose={closeModal2} url={modal2Url} />
-    </div>
+      </div>
+    </Router>
+    </> 
   );
+};
+
+const Applications = () => {
+  return <h2>Applications Component</h2>;
+};
+
+const Connections = () => {
+  return <h2>Connections Component</h2>;
 };
 
 export default PopupOpener;

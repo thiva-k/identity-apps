@@ -71,7 +71,7 @@ const Root = (): ReactElement => {
     return (
         <RootWithConfig>
             <ProtectedApp>
-                 Home Page
+                 
                 <PopupOpener />
                 <ConnectionPage />
                 <ApplicationPage />
