@@ -103,6 +103,7 @@
     "@nrwl/storybook": "15.2.1",
     "@nrwl/web": "15.2.1",
     "@nrwl/workspace": "15.2.1",
+    "@nrwl/vite": "^18.0.5",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
     "@storybook/builder-webpack5": "~6.4.12",
     "@storybook/core-server": "~6.4.12",
