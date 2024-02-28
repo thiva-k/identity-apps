@@ -27,13 +27,15 @@ const PopupOpener = () => {
   const [modal2Url, setModal2Url] = useState(`${window['AppUtils'].getConfig().clientOriginWithTenant}/console/connections`);
 
   const openModal1 = () => {
+    window.sessionStorage.setItem("auth_callback_url_console", "/t/wso2.com/console/applications");
     setIsOpenModal1(true);
   };
 
   const openModal2 = () => {
+    window.sessionStorage.setItem("auth_callback_url_console", "/t/wso2.com/console/connections");
     setIsOpenModal2(true);
   };
-
+  
   const closeModal1 = () => {
     setIsOpenModal1(false);
   };
