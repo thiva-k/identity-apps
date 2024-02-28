@@ -521,18 +521,18 @@ const applicationRoutes =
                 protected: true,
                 showOnSidePanel: false
             },
-        {
-        component: lazy(() => import("@wso2is/features/applications/pages/applications")),
-        exact: true,
-        icon: {
-            icon: getSidePanelIcons().applications
-        },
-        id: "applications",
-        name: "common:applications",
-        order: 1,
-        path: AppConstants.getPaths().get("APPLICATIONS"),
-        protected: true,
-        showOnSidePanel: true
+            {
+            component: lazy(() => import("@wso2is/features/applications/pages/applications")),
+            exact: true,
+            icon: {
+                icon: getSidePanelIcons().applications
+            },
+            id: "applications",
+            name: "common:applications",
+            order: 1,
+            path: AppConstants.getPaths().get("APPLICATIONS"),
+            protected: true,
+            showOnSidePanel: true
     }];
 
     const connectionRoutes = [

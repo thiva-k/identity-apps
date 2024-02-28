@@ -519,63 +519,63 @@ const applicationRoutes =
                 path: AppConstants.getPaths().get("APPLICATION_EDIT"),
                 protected: true,
                 showOnSidePanel: false
+                },
+            {
+            component: lazy(() => import("@wso2is/features/applications/pages/applications")),
+            exact: true,
+            icon: {
+                icon: getSidePanelIcons().applications
             },
-        {
-        component: lazy(() => import("@wso2is/features/applications/pages/applications")),
-        exact: true,
-        icon: {
-            icon: getSidePanelIcons().applications
-        },
-        id: "applications",
-        name: "common:applications",
-        order: 1,
-        path: AppConstants.getPaths().get("APPLICATIONS"),
-        protected: true,
-        showOnSidePanel: true
-    }];
+            id: "applications",
+            name: "common:applications",
+            order: 1,
+            path: AppConstants.getPaths().get("APPLICATIONS"),
+            protected: true,
+            showOnSidePanel: true
+        }];
 
     const connectionRoutes = [
     //https://localhost:9001/t/carbon.super/console/connections
         
-            {
-                component: lazy(() => import("@wso2is/features/connections/pages/connection-templates")),
-                exact: true,
-                icon: {
-                    icon: getSidePanelIcons().childIcon
-                },
-                id: "identityProviderTemplate",
-                name: "Identity Provider Templates",
-                path: AppConstants.getPaths().get("IDP_TEMPLATES"),
-                protected: true,
-                showOnSidePanel: false
-            },
-            {
-                component: lazy(() => import("@wso2is/features/connections/pages/connection-edit")),
-                exact: true,
-                icon: {
-                    icon: getSidePanelIcons().childIcon
-                },
-                id: "identityProvidersEdit",
-                name: "Identity Providers Edit",
-                path: AppConstants.getPaths().get("IDP_EDIT"),
-                protected: true,
-                showOnSidePanel: false
-            },
         {
-        component: lazy(() => import("@wso2is/features/connections/pages/connections")),
-        exact: true,
-        icon: {
-            icon: <NodesIcon />
+            component: lazy(() => import("@wso2is/features/connections/pages/connection-templates")),
+            exact: true,
+            icon: {
+                icon: getSidePanelIcons().childIcon
+            },
+            id: "identityProviderTemplate",
+            name: "Identity Provider Templates",
+            path: AppConstants.getPaths().get("IDP_TEMPLATES"),
+            protected: true,
+            showOnSidePanel: false
         },
-        id: "identityProviders",
-        name: identityProviderConfig?.useNewConnectionsView
-            ? "console:develop.features.sidePanel.authenticationProviders"
-            : "console:develop.features.sidePanel.identityProviders",
-        order: 3,
-        path: AppConstants.getPaths().get("IDP"),
-        protected: true,
-        showOnSidePanel: true
-    }]
+        {
+            component: lazy(() => import("@wso2is/features/connections/pages/connection-edit")),
+            exact: true,
+            icon: {
+                icon: getSidePanelIcons().childIcon
+            },
+            id: "identityProvidersEdit",
+            name: "Identity Providers Edit",
+            path: AppConstants.getPaths().get("IDP_EDIT"),
+            protected: true,
+            showOnSidePanel: false
+            },
+            {
+            component: lazy(() => import("@wso2is/features/connections/pages/connections")),
+            exact: true,
+            icon: {
+                icon: <NodesIcon />
+            },
+            id: "identityProviders",
+            name: identityProviderConfig?.useNewConnectionsView
+                ? "console:develop.features.sidePanel.authenticationProviders"
+                : "console:develop.features.sidePanel.identityProviders",
+            order: 3,
+            path: AppConstants.getPaths().get("IDP"),
+            protected: true,
+            showOnSidePanel: true
+        }]
 
 const myRoutes = applicationRoutes.concat(connectionRoutes);
 

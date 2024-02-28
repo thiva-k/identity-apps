@@ -13,7 +13,7 @@ const Modal = ({ isOpen, onClose, url }) => {
       <div className="modal-overlay" style={{ display: isOpen ? 'block' : 'none' }}>
         <div className="modal-content" style={modalContentStyle}>
           <button className="close-button" onClick={onClose}>Close</button>
-          <iframe src={url} title="External Website" style={{ width: '100%', height: '100%' }} />
+          <iframe src={url} title="External Website" style={{ width: '100%', height: '100%' }}  />
         </div>
       </div>
     )
@@ -23,8 +23,8 @@ const Modal = ({ isOpen, onClose, url }) => {
 const PopupOpener = () => {
   const [isOpenModal1, setIsOpenModal1] = useState(false);
   const [isOpenModal2, setIsOpenModal2] = useState(false);
-  const [modal1Url, setModal1Url] = useState('https://localhost:9001/t/carbon.super/console/applications');
-  const [modal2Url, setModal2Url] = useState('https://localhost:9001/t/carbon.super/console/connections');
+  const [modal1Url, setModal1Url] = useState(`${window['AppUtils'].getConfig().clientOriginWithTenant}/console/applications`);
+  const [modal2Url, setModal2Url] = useState(`${window['AppUtils'].getConfig().clientOriginWithTenant}/console/connections`);
 
   const openModal1 = () => {
     setIsOpenModal1(true);

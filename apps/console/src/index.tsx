@@ -71,17 +71,25 @@ const Root = (): ReactElement => {
     return (
         <RootWithConfig>
             <ProtectedApp>
-                 {/* Home Page
-                <PopupOpener /> */}
+                 Home Page
+                <PopupOpener />
                 <ConnectionPage />
                 <ApplicationPage />
             </ProtectedApp>
         </RootWithConfig>
+    
     );
 }
-
 const rootElement: HTMLElement = document.getElementById("root");
 
 // Moved back to the legacy mode due to unpredictable state update issue.
 // Tracked here: https://github.com/wso2/product-is/issues/14912
 ReactDOM.render(<Root />, rootElement);
+
+
+// Home Page
+// <PopupOpener />
+
+  {/* Home Page
+ <PopupOpener /> */}
+
