@@ -25,10 +25,10 @@ import * as React from "react";
 import { ReactElement } from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Link, Route, Router, Switch } from "react-router-dom";
 import { AsgardeoTheme } from "./branding/theme";
 import { AuthenticateUtils } from "@wso2is/features/authentication";
-import { Config, PreLoader, store } from "@wso2is/features/core";
+import { AppConstants, Config, PreLoader, store } from "@wso2is/features/core";
 import { UserPreferencesInterface } from "@wso2is/features/core/models/user-preferences";
 import AppSettingsProvider from "@wso2is/features/core/providers/app-settings-provider";
 import UserPreferencesProvider from "@wso2is/features/core/providers/user-preferences-provider";
@@ -38,7 +38,8 @@ import { RouteComponentProps } from 'react-router-dom';
 import ApplicationPage from "./ApplicationPage";
 import ConnectionPage from "./ConnectionPage";
 import { RootWithConfig } from "./RootWithConfig"
-import PopupOpener from "./AppIFrame";
+//import PopupOpener from "./AppIFrame";
+import { history } from "@wso2is/features/core";
 
 // Set the runtime config in the context.
 
@@ -71,15 +72,66 @@ const Root = (): ReactElement => {
     return (
         <RootWithConfig>
             <ProtectedApp>
-                 
-                <PopupOpener />
-                <ConnectionPage />
-                <ApplicationPage />
+                <Router history={history}>
+                    <div>
+                        <div> <h1> B2B Admin Portal </h1> </div>
+                        <nav>
+                            <ul>
+                                <li>
+                                    <Link to="/home"> Home</Link>
+                                </li>
+                                <li>
+                                    <Link to="/about"> About</Link>
+                                </li>
+                                <li>
+                                    <Link to ={AppConstants.getPaths().get("APPLICATIONS")}>Applications Management</Link>
+                                </li>
+                                <li>
+                                    <Link to={ AppConstants.getPaths().get("IDP")}> Connections Management</Link>
+                                </li>
+                            </ul>
+                        </nav>
+                        <Switch>
+                            <Route path="/home" component={ApplicationsPage} />
+                            <Route path="/about" component={ConnectionsPage} />
+                            <Route path={AppConstants.getPaths().get("APPLICATIONS")} component={ApplicationPage} />
+                            <Route path={AppConstants.getPaths().get("IDP")} component={ConnectionPage} />
+                        </Switch>
+                    </div>
+                </Router>
             </ProtectedApp>
         </RootWithConfig>
-    
     );
 }
+
+
+const ApplicationsPage = () => {
+    return (
+      <div>
+        <h2>Home Page</h2>
+        <p>This is the Home Page</p>
+      </div>
+    );
+  }
+  
+  const ConnectionsPage = () => {
+    return (
+      <div>
+        <h2>About Page</h2>
+        <p>This is the About Page content.</p>
+      </div>
+    );
+  }
+  
+  const HomePage = () => {
+    return (
+      <div>
+        <h2>Home Page</h2>
+        <p>This is the Home Page content.</p>
+      </div>
+    );
+  }
+  
 const rootElement: HTMLElement = document.getElementById("root");
 
 // Moved back to the legacy mode due to unpredictable state update issue.
