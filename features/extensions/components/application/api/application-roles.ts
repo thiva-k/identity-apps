@@ -19,21 +19,21 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "features/core";
-import useRequest, { 
+import { store } from "../../../../core";
+import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "features/core/hooks/use-request";
-import { 
+} from "../../../../core/hooks/use-request";
+import {
     ApplicationRoleGroupsAPIResponseInterface,
     ApplicationRoleGroupsUpdatePayloadInterface,
-    ApplicationRolesResponseInterface, 
-    AuthorizedAPIListItemInterface, 
-    CreateRolePayloadInterface, 
-    DescendantDataInterface, 
-    SharedApplicationAPIResponseInterface, 
-    SharedApplicationDataInterface, 
+    ApplicationRolesResponseInterface,
+    AuthorizedAPIListItemInterface,
+    CreateRolePayloadInterface,
+    DescendantDataInterface,
+    SharedApplicationAPIResponseInterface,
+    SharedApplicationDataInterface,
     UpdateRolePayloadInterface
 } from "../models";
 
@@ -52,7 +52,7 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  * @param after - After link.
  * @param filter - Filter query.
  * @param limit - Limit.
- * 
+ *
  * @returns A promise containing the response.
  */
 export const getApplicationRolesList = (
@@ -61,8 +61,7 @@ export const getApplicationRolesList = (
     after: string,
     filter: string,
     limit: number
-):Promise<ApplicationRolesResponseInterface> => {
-
+): Promise<ApplicationRolesResponseInterface> => {
     const requestConfig: AxiosRequestConfig = {
         method: HttpMethods.GET,
         params: {
@@ -71,7 +70,7 @@ export const getApplicationRolesList = (
             filter,
             limit
         },
-        url:  `${ store.getState().config.endpoints.authzEndpoint }/applications/${ appId }/roles`
+        url: `${store.getState().config.endpoints.authzEndpoint}/applications/${appId}/roles`
     };
 
     return httpClient(requestConfig)
@@ -87,13 +86,13 @@ export const getApplicationRolesList = (
  * Get the authorized APIs of the application with authorized permissions.
  *
  * @param appId - Application ID.
- * 
+ *
  * @returns A promise containing the response.
  */
-export const getAuthorizedAPIList = (appId: string):Promise<AuthorizedAPIListItemInterface[]> => {
+export const getAuthorizedAPIList = (appId: string): Promise<AuthorizedAPIListItemInterface[]> => {
     const requestConfig: AxiosRequestConfig = {
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.authzEndpoint }/applications/${ appId }/authorized-apis`
+        url: `${store.getState().config.endpoints.authzEndpoint}/applications/${appId}/authorized-apis`
     };
 
     return httpClient(requestConfig)
@@ -110,14 +109,14 @@ export const getAuthorizedAPIList = (appId: string):Promise<AuthorizedAPIListIte
  *
  * @param appId - Application ID.
  * @param payload - Application role creation payload.
- * 
+ *
  * @returns A promise containing the response.
  */
-export const createRole = (appId: string, payload: CreateRolePayloadInterface):Promise<any> => {
+export const createRole = (appId: string, payload: CreateRolePayloadInterface): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         data: payload,
         method: HttpMethods.POST,
-        url:  `${ store.getState().config.endpoints.authzEndpoint }/applications/${ appId }/roles`
+        url: `${store.getState().config.endpoints.authzEndpoint}/applications/${appId}/roles`
     };
 
     return httpClient(requestConfig)
@@ -135,18 +134,18 @@ export const createRole = (appId: string, payload: CreateRolePayloadInterface):P
  * @param appId - Application ID.
  * @param roleName - Selected role name.
  * @param payload - Application role creation payload.
- * 
+ *
  * @returns A promise containing the response.
  */
-export const updateRolePermissions = ( 
-    appId: string, 
-    roleName: string, 
+export const updateRolePermissions = (
+    appId: string,
+    roleName: string,
     payload: UpdateRolePayloadInterface
-):Promise<any> => {
+): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         data: payload,
         method: HttpMethods.PATCH,
-        url:  `${ store.getState().config.endpoints.authzEndpoint }/applications/${ appId }/roles/${ roleName }`
+        url: `${store.getState().config.endpoints.authzEndpoint}/applications/${appId}/roles/${roleName}`
     };
 
     return httpClient(requestConfig)
@@ -163,13 +162,13 @@ export const updateRolePermissions = (
  *
  * @param appId - Application ID.
  * @param roleName - Selected role name.
- * 
+ *
  * @returns A promise containing the response.
  */
-export const deleteRole = (appId: string, roleName: string):Promise<any> => {
+export const deleteRole = (appId: string, roleName: string): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         method: HttpMethods.DELETE,
-        url:  `${ store.getState().config.endpoints.authzEndpoint }/applications/${ appId }/roles/${ roleName }`
+        url: `${store.getState().config.endpoints.authzEndpoint}/applications/${appId}/roles/${roleName}`
     };
 
     return httpClient(requestConfig)
@@ -188,19 +187,19 @@ export const deleteRole = (appId: string, roleName: string):Promise<any> => {
  * @param orgId - The current organization id
  * @returns the shared application details of a sub organization
  */
-export const useSharedApplicationData = <Data = SharedApplicationAPIResponseInterface, 
-    Error = RequestErrorInterface> (
-        appId: string,
-        orgId: string
-    ): RequestResultInterface<Data, Error> => {
+export const useSharedApplicationData = <Data = SharedApplicationAPIResponseInterface, Error = RequestErrorInterface>(
+    appId: string,
+    orgId: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${store.getState().config.endpoints.organizations
-        }/organizations/${ orgId }/applications/${ appId }/shared-apps`
+        url: `${
+            store.getState().config.endpoints.organizations
+        }/organizations/${orgId}/applications/${appId}/shared-apps`
     };
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
@@ -229,14 +228,14 @@ export const createRoleInSharedApplications = (
 ): Promise<CreateRolePayloadInterface> => {
     const requestConfig: RequestConfigInterface = {
         data: {
-            "shareTo": sharedApplications
+            shareTo: sharedApplications
         },
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: `${ store.getState().config.endpoints.authzEndpoint }/applications/${ appId }/roles/${ roleName }/share`
+        url: `${store.getState().config.endpoints.authzEndpoint}/applications/${appId}/roles/${roleName}/share`
     };
 
     return httpClient(requestConfig)
@@ -255,19 +254,20 @@ export const createRoleInSharedApplications = (
  * @param roleName - The application role name
  * @returns the role mapped groups of an application for a given role.
  */
-export const useApplicationRoleMappedGroups = <Data = ApplicationRoleGroupsAPIResponseInterface, 
-    Error = RequestErrorInterface> (
-        appId: string,
-        roleName: string
-    ): RequestResultInterface<Data, Error> => {
+export const useApplicationRoleMappedGroups = <
+    Data = ApplicationRoleGroupsAPIResponseInterface,
+    Error = RequestErrorInterface
+>(
+    appId: string,
+    roleName: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.authzEndpoint
-        }/applications/${ appId }/roles/${ roleName }/group-mapping`
+        url: `${store.getState().config.endpoints.authzEndpoint}/applications/${appId}/roles/${roleName}/group-mapping`
     };
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
@@ -288,19 +288,22 @@ export const useApplicationRoleMappedGroups = <Data = ApplicationRoleGroupsAPIRe
  * @param roleName - The application role name
  * @returns the role mapped groups of an application for a given role.
  */
-export const useApplicationRoleInvitedUserGroups = <Data = ApplicationRoleGroupsAPIResponseInterface, 
-    Error = RequestErrorInterface> (
-        appId: string,
-        roleName: string
-    ): RequestResultInterface<Data, Error> => {
+export const useApplicationRoleInvitedUserGroups = <
+    Data = ApplicationRoleGroupsAPIResponseInterface,
+    Error = RequestErrorInterface
+>(
+    appId: string,
+    roleName: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.authzEndpoint
-        }/applications/${ appId }/roles/${ roleName }/cross-org-group-mapping`
+        url: `${
+            store.getState().config.endpoints.authzEndpoint
+        }/applications/${appId}/roles/${roleName}/cross-org-group-mapping`
     };
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
@@ -334,8 +337,7 @@ export const updateApplicationRoleMappedGroups = (
             "Content-Type": "application/json"
         },
         method: HttpMethods.PATCH,
-        url: `${ store.getState().config.endpoints.authzEndpoint
-        }/applications/${ appId }/roles/${ roleName }/group-mapping`
+        url: `${store.getState().config.endpoints.authzEndpoint}/applications/${appId}/roles/${roleName}/group-mapping`
     };
 
     return httpClient(requestConfig)
@@ -355,20 +357,23 @@ export const updateApplicationRoleMappedGroups = (
  * @param idpId - The identity provider id
  * @returns identity provider assigned groups
  */
-export const useIdentityProviderAssignedGroups = <Data = ApplicationRoleGroupsAPIResponseInterface, 
-    Error = RequestErrorInterface> (
-        appId: string,
-        roleName: string,
-        idpId: string
-    ): RequestResultInterface<Data, Error> => {
+export const useIdentityProviderAssignedGroups = <
+    Data = ApplicationRoleGroupsAPIResponseInterface,
+    Error = RequestErrorInterface
+>(
+    appId: string,
+    roleName: string,
+    idpId: string
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.authzEndpoint
-        }/applications/${ appId }/roles/${ roleName }/identity-providers/${ idpId }/assigned-groups`
+        url: `${
+            store.getState().config.endpoints.authzEndpoint
+        }/applications/${appId}/roles/${roleName}/identity-providers/${idpId}/assigned-groups`
     };
 
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig);
@@ -404,8 +409,9 @@ export const updateIdentityProviderAssignedGroups = (
             "Content-Type": "application/json"
         },
         method: HttpMethods.PATCH,
-        url: `${ store.getState().config.endpoints.authzEndpoint
-        }/applications/${ appId }/roles/${ roleName }/identity-providers/${ idpId }/assigned-groups`
+        url: `${
+            store.getState().config.endpoints.authzEndpoint
+        }/applications/${appId}/roles/${roleName}/identity-providers/${idpId}/assigned-groups`
     };
 
     return httpClient(requestConfig)
@@ -422,8 +428,10 @@ export const updateIdentityProviderAssignedGroups = (
  *
  * @returns descendants of the sub organization
  */
-export const useDescendantsOfSubOrg = <Data = DescendantDataInterface[], 
-    Error = RequestErrorInterface> (): RequestResultInterface<Data, Error> => {
+export const useDescendantsOfSubOrg = <
+    Data = DescendantDataInterface[],
+    Error = RequestErrorInterface
+>(): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
             Accept: "application/json",

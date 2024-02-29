@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, GridColumn, GridRow } from "semantic-ui-react";
-import { SharedUserStoreConstants, SharedUserStoreUtils } from "features/core";
+import { SharedUserStoreConstants, SharedUserStoreUtils } from "../../../../core";
 import { CreateGroupFormData, SearchGroupInterface, searchGroupList } from "../../../../groups";
 import { commonConfig } from "../../../configs/common";
 import { CONSUMER_USERSTORE, PRIMARY_USERSTORE } from "../../users/constants";
@@ -45,18 +45,12 @@ interface GroupBasicProps extends TestableComponentInterface {
  *
  */
 export const GroupBasics: FunctionComponent<GroupBasicProps> = (props: GroupBasicProps): ReactElement => {
-
-    const {
-        onSubmit,
-        triggerSubmit,
-        initialValues,
-        [ "data-testid" ]: testId
-    } = props;
+    const { onSubmit, triggerSubmit, initialValues, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ isRegExLoading, setRegExLoading ] = useState<boolean>(false);
+    const [isRegExLoading, setRegExLoading] = useState<boolean>(false);
 
     const groupName: MutableRefObject<HTMLDivElement> = useRef<HTMLDivElement>();
 
@@ -67,12 +61,13 @@ export const GroupBasics: FunctionComponent<GroupBasicProps> = (props: GroupBasi
     const validateGroupNamePattern = async (): Promise<string> => {
         let userStoreRegEx: string = "";
 
-        await SharedUserStoreUtils.getUserStoreRegEx(CONSUMER_USERSTORE,
-            SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.RolenameRegEx)
-            .then((response: string) => {
-                setRegExLoading(true);
-                userStoreRegEx = response;
-            });
+        await SharedUserStoreUtils.getUserStoreRegEx(
+            CONSUMER_USERSTORE,
+            SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.RolenameRegEx
+        ).then((response: string) => {
+            setRegExLoading(true);
+            userStoreRegEx = response;
+        });
 
         setRegExLoading(false);
 
@@ -83,7 +78,6 @@ export const GroupBasics: FunctionComponent<GroupBasicProps> = (props: GroupBasi
                 reject("");
             }
         });
-
     };
 
     /**
@@ -100,28 +94,37 @@ export const GroupBasics: FunctionComponent<GroupBasicProps> = (props: GroupBasi
 
     return (
         <Forms
-            data-testid={ testId }
-            onSubmit={ (values: any) => {
+            data-testid={testId}
+            onSubmit={(values: any) => {
                 onSubmit(getFormValues(values));
-            } }
-            submitState={ triggerSubmit }
+            }}
+            submitState={triggerSubmit}
         >
             <Grid>
                 <GridRow>
-                    <GridColumn mobile={ 16 } tablet={ 16 } computer={ 10 }>
+                    <GridColumn mobile={16} tablet={16} computer={10}>
                         <Field
-                            ref={ groupName }
-                            data-testid={ `${ testId }-role-name-input` }
+                            ref={groupName}
+                            data-testid={`${testId}-role-name-input`}
                             type="text"
                             name="groupName"
-                            label={ t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                                "roleName.label", { type: "Group" }) }
-                            placeholder={ t("console:manage.features.roles.addRoleWizard.forms." +
-                                "roleBasicDetails.roleName.placeholder", { type: "group" }) }
-                            required={ true }
-                            requiredErrorMessage={ t("console:manage.features.roles.addRoleWizard.forms." +
-                                "roleBasicDetails.roleName.validations.empty", { type: "Group" }) }
-                            validation={ async (value: string, validation: Validation) => {
+                            label={t(
+                                "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                                    "roleName.label",
+                                { type: "Group" }
+                            )}
+                            placeholder={t(
+                                "console:manage.features.roles.addRoleWizard.forms." +
+                                    "roleBasicDetails.roleName.placeholder",
+                                { type: "group" }
+                            )}
+                            required={true}
+                            requiredErrorMessage={t(
+                                "console:manage.features.roles.addRoleWizard.forms." +
+                                    "roleBasicDetails.roleName.validations.empty",
+                                { type: "Group" }
+                            )}
+                            validation={async (value: string, validation: Validation) => {
                                 let isGroupNameValid: boolean = true;
 
                                 await validateGroupNamePattern().then((regex: string) => {
@@ -130,46 +133,56 @@ export const GroupBasics: FunctionComponent<GroupBasicProps> = (props: GroupBasi
 
                                 if (!isGroupNameValid) {
                                     validation.isValid = false;
-                                    validation.errorMessages.push(t("console:manage.features.businessGroups" +
-                                        ".fields.groupName.validations.invalid",
-                                    { type: "group" }));
+                                    validation.errorMessages.push(
+                                        t(
+                                            "console:manage.features.businessGroups" +
+                                                ".fields.groupName.validations.invalid",
+                                            { type: "group" }
+                                        )
+                                    );
                                 }
 
                                 const searchData: SearchGroupInterface = {
-                                    filter: `displayName eq  ${ CONSUMER_USERSTORE }/${ value }`,
-                                    schemas: [
-                                        "urn:ietf:params:scim:api:messages:2.0:SearchRequest"
-                                    ],
+                                    filter: `displayName eq  ${CONSUMER_USERSTORE}/${value}`,
+                                    schemas: ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
                                     startIndex: 1
                                 };
 
-                                await searchGroupList(searchData).then((response: any) => {
-                                    if (response?.data?.totalResults !== 0) {
-                                        validation.isValid = false;
-                                        validation.errorMessages.push(
-                                            t("console:manage.features.roles.addRoleWizard." +
-                                                "forms.roleBasicDetails.roleName.validations.duplicate",
-                                            { type: "Group" }));
-                                    }
-                                }).catch(() => {
-                                    dispatch(addAlert({
-                                        description: t("console:manage.features.groups.notifications." +
-                                            "fetchGroups.genericError.description"),
-                                        level: AlertLevels.ERROR,
-                                        message: t("console:manage.features.groups.notifications.fetchGroups." +
-                                            "genericError.message")
-                                    }));
-                                });
-
-                            } }
-                            value={ initialValues && initialValues.groupName }
-                            loading={ isRegExLoading }
+                                await searchGroupList(searchData)
+                                    .then((response: any) => {
+                                        if (response?.data?.totalResults !== 0) {
+                                            validation.isValid = false;
+                                            validation.errorMessages.push(
+                                                t(
+                                                    "console:manage.features.roles.addRoleWizard." +
+                                                        "forms.roleBasicDetails.roleName.validations.duplicate",
+                                                    { type: "Group" }
+                                                )
+                                            );
+                                        }
+                                    })
+                                    .catch(() => {
+                                        dispatch(
+                                            addAlert({
+                                                description: t(
+                                                    "console:manage.features.groups.notifications." +
+                                                        "fetchGroups.genericError.description"
+                                                ),
+                                                level: AlertLevels.ERROR,
+                                                message: t(
+                                                    "console:manage.features.groups.notifications.fetchGroups." +
+                                                        "genericError.message"
+                                                )
+                                            })
+                                        );
+                                    });
+                            }}
+                            value={initialValues && initialValues.groupName}
+                            loading={isRegExLoading}
                         />
                         <Hint>
-                            A name for the group.
-                            { " " }
-                            Can contain between 3 to 30 alphanumeric characters, dashes (<Code>-</Code>),{ " " }
-                            and underscores (<Code>_</Code>).
+                            A name for the group. Can contain between 3 to 30 alphanumeric characters, dashes (
+                            <Code>-</Code>), and underscores (<Code>_</Code>).
                         </Hint>
                     </GridColumn>
                 </GridRow>

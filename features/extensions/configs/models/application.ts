@@ -25,7 +25,7 @@ import {
     SelectedDialectInterface
 } from "features/applications/components/settings";
 import { ApplicationInterface, ApplicationTabTypes } from "features/applications/models";
-import { FeatureConfigInterface } from "features/core";
+import { FeatureConfigInterface } from "../../../core";
 import { OIDCSDKMeta } from "../../application-templates/templates/oidc-web-application/models";
 import { SAMLSDKMeta } from "../../application-templates/templates/saml-web-application/models";
 import { SDKMetaInterface } from "../../application-templates/templates/single-page-application/models";

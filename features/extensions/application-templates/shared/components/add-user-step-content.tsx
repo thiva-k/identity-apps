@@ -42,16 +42,13 @@ type AddUserStepContentPropsInterface = TestableComponentInterface;
 export const AddUserStepContent: FunctionComponent<AddUserStepContentPropsInterface> = (
     props: AddUserStepContentPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ addedUserList, setAddedUserList ] = useState<string[]>([]);
-    const [ isLoading, setIsLoading ] = useState(false);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [addedUserList, setAddedUserList] = useState<string[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -64,8 +61,8 @@ export const AddUserStepContent: FunctionComponent<AddUserStepContentPropsInterf
 
                     users.push(
                         response?.userName.split("/")?.length > 1
-                            ? response?.userName.split("/")[ 1 ]
-                            : response?.userName.split("/")[ 0 ]
+                            ? response?.userName.split("/")[1]
+                            : response?.userName.split("/")[0]
                     );
                     setAddedUserList(users);
                 }
@@ -79,94 +76,84 @@ export const AddUserStepContent: FunctionComponent<AddUserStepContentPropsInterf
     };
 
     return (
-        <div data-testid={ testId } className="add-user-step">
+        <div data-testid={testId} className="add-user-step">
             <Text>
                 <Trans i18nKey="extensions:console.application.quickStart.addUserOption.description">
                     You need a <strong>user account</strong> to log in to the application.
                 </Trans>
             </Text>
-            <Show
-                when={ AccessControlConstants.USER_WRITE }
-            >
+            <Show when={AccessControlConstants.USER_WRITE}>
                 <Text>
                     <Trans i18nKey="extensions:console.application.quickStart.addUserOption.hint">
-                        If you don’t already have a user account, click the below button to create one.
-                        Alternatively, go to
+                        If you don’t already have a user account, click the below button to create one. Alternatively,
+                        go to
                         <a
-                            onClick={ () => {
-                                eventPublisher.publish(
-                                    "application-quick-start-click-navigate-to-user-management"
+                            onClick={() => {
+                                eventPublisher.publish("application-quick-start-click-navigate-to-user-management");
+                                window.open(
+                                    AppConstants.getClientOrigin() + UsersConstants.getPaths().get("USERS_PATH"),
+                                    "",
+                                    "noopener"
                                 );
-                                window.open(AppConstants.getClientOrigin()
-                                    + UsersConstants.getPaths().get("USERS_PATH"),
-                                "", "noopener");
-                            } }
+                            }}
                             className="external-link link pointing primary"
-                        > Manage &gt; Users <Icon name="external"/></a> and create users.
+                        >
+                            {" "}
+                            Manage &gt; Users <Icon name="external" />
+                        </a>{" "}
+                        and create users.
                     </Trans>
                 </Text>
-                <Button 
+                <Button
                     basic
                     primary
                     className="info add-user-step-button"
-                    onClick={ () => {
+                    onClick={() => {
                         eventPublisher.publish("application-quick-start-click-add-user");
                         setShowWizard(true);
-                    } }
+                    }}
                 >
-                    { t("extensions:manage.users.buttons.addUserBtn") }
+                    {t("extensions:manage.users.buttons.addUserBtn")}
                 </Button>
                 <List className="add-user-step-list">
-                    {
-                        isLoading ? (
-                            <ContentLoader/>
-                        ) :
-                            addedUserList?.map((user: string, index: number) => {
-                                return (
-                                    <List.Item key={ index } className="list-item">
-                                        <div>
-                                            <Icon
-                                                className={ "list-icon" }
-                                                name={ "check" }
-                                                color={ "green" }
-                                            />User <strong>{ user }</strong> added successfully.
-                                        </div>
-                                    </List.Item>
-                                );
-                            })
-                    }
+                    {isLoading ? (
+                        <ContentLoader />
+                    ) : (
+                        addedUserList?.map((user: string, index: number) => {
+                            return (
+                                <List.Item key={index} className="list-item">
+                                    <div>
+                                        <Icon className={"list-icon"} name={"check"} color={"green"} />
+                                        User <strong>{user}</strong> added successfully.
+                                    </div>
+                                </List.Item>
+                            );
+                        })
+                    )}
                 </List>
             </Show>
-            <Show
-                when={ [] }
-                notWhen={ AccessControlConstants.USER_WRITE }
-            >
-                <Text compact>
-                    { t("extensions:console.application.quickStart.addUserOption.message") }
-                </Text>
+            <Show when={[]} notWhen={AccessControlConstants.USER_WRITE}>
+                <Text compact>{t("extensions:console.application.quickStart.addUserOption.message")}</Text>
             </Show>
-            {
-                showWizard && (
-                    <AddConsumerUserWizard
-                        data-testid="user-mgt-add-user-wizard-modal"
-                        closeWizard={ () => setShowWizard(false) }
-                        onSuccessfulUserAddition={ (id: string) => {
-                            eventPublisher.publish("application-finish-adding-user");
-                            addNewUser(id);
-                        } }
-                        emailVerificationEnabled={ false }
-                        requiredSteps={ [ "BasicDetails" ] }
-                        submitStep={ "BasicDetails" }
-                        hiddenFields={ [ "firstName", "lastName" ] }
-                        showStepper={ false }
-                        requestedPasswordOption="create-password"
-                        title="Add User"
-                        description="Follow the steps to add a new user"
-                    />
-                )
-            }
+            {showWizard && (
+                <AddConsumerUserWizard
+                    data-testid="user-mgt-add-user-wizard-modal"
+                    closeWizard={() => setShowWizard(false)}
+                    onSuccessfulUserAddition={(id: string) => {
+                        eventPublisher.publish("application-finish-adding-user");
+                        addNewUser(id);
+                    }}
+                    emailVerificationEnabled={false}
+                    requiredSteps={["BasicDetails"]}
+                    submitStep={"BasicDetails"}
+                    hiddenFields={["firstName", "lastName"]}
+                    showStepper={false}
+                    requestedPasswordOption="create-password"
+                    title="Add User"
+                    description="Follow the steps to add a new user"
+                />
+            )}
         </div>
-
     );
 };
 

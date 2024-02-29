@@ -25,8 +25,7 @@ import { FunctionComponent } from "react";
 import { useSelector } from "react-redux";
 import { ApplicationManagementConstants } from "../../../../applications/constants";
 import { AppState, AppUtils } from "../../../../core";
-import LoginApplicationTemplate from 
-    "../../../application-templates/templates/single-page-application/login-playground-application.json";
+import LoginApplicationTemplate from "../../../application-templates/templates/single-page-application/login-playground-application.json";
 import { TryItApplicationConstants } from "../constants/try-it-constants";
 
 /**
@@ -38,8 +37,7 @@ export const persistPlaygroundTourViewedStatus = (status: boolean): void => {
     const userPreferences: StorageIdentityAppsSettingsInterface = AppUtils.getUserPreferences();
     const newPref: StorageIdentityAppsSettingsInterface = cloneDeep(userPreferences);
 
-    set(newPref?.identityAppsSettings?.devPortal,
-        TryItApplicationConstants.TRY_IT_TOUR_STATUS_STORAGE_KEY, status);
+    set(newPref?.identityAppsSettings?.devPortal, TryItApplicationConstants.TRY_IT_TOUR_STATUS_STORAGE_KEY, status);
 
     AppUtils.setUserPreferences(newPref);
 };
@@ -56,8 +54,11 @@ export const getPlaygroundTourViewedStatus = (): boolean => {
         return false;
     }
 
-    return get(userPreferences?.identityAppsSettings?.devPortal,
-        TryItApplicationConstants.TRY_IT_TOUR_STATUS_STORAGE_KEY, false);
+    return get(
+        userPreferences?.identityAppsSettings?.devPortal,
+        TryItApplicationConstants.TRY_IT_TOUR_STATUS_STORAGE_KEY,
+        false
+    );
 };
 
 /**
@@ -65,8 +66,9 @@ export const getPlaygroundTourViewedStatus = (): boolean => {
  *
  * @return {string}
  */
-export const getTryItClientId = (tenantDomain:string): string => {
-    
-    return LoginApplicationTemplate.application.
-        inboundProtocolConfiguration.oidc.clientId.replace("<TENANT>", tenantDomain);
+export const getTryItClientId = (tenantDomain: string): string => {
+    return LoginApplicationTemplate.application.inboundProtocolConfiguration.oidc.clientId.replace(
+        "<TENANT>",
+        tenantDomain
+    );
 };

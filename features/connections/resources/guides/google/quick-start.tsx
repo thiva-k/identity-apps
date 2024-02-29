@@ -16,10 +16,7 @@
  * under the License.
  */
 
-import {
-    VerticalStepper,
-    VerticalStepperStepInterface
-} from "@wso2is/common/src";
+import { VerticalStepper, VerticalStepperStepInterface } from "@wso2is/common/src";
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
@@ -39,6 +36,10 @@ import { ApplicationListInterface } from "../../../../applications/models";
 import {
     ConnectionInterface,
     ConnectionTemplateInterface
+} from "../../../../../features/connections/models/connection";
+import { AdvancedSearchWithBasicFilters } from "../../../../core/components";
+import { AppConstants } from "../../../../core/constants";
+import { history } from "../../../../core/helpers";
 } from "../../../../connections/models/connection";
 import { AdvancedSearchWithBasicFilters } from "../../../../core/components";
 import { AppConstants } from "../../../../core/constants";
@@ -65,30 +66,27 @@ const ITEMS_PER_PAGE: number = 6;
 const GoogleQuickStart: FunctionComponent<GoogleQuickStartPropsInterface> = (
     props: GoogleQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(ITEMS_PER_PAGE);
-    const [ appList, setAppList ] = useState<ApplicationListInterface>({});
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ isApplicationListRequestLoading, setApplicationListRequestLoading ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(ITEMS_PER_PAGE);
+    const [appList, setAppList] = useState<ApplicationListInterface>({});
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [isApplicationListRequestLoading, setApplicationListRequestLoading] = useState<boolean>(false);
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const isApplicationReadAccessAllowed: boolean = useMemo(() => (
-        hasRequiredScopes(
-            featureConfig?.applications, featureConfig?.applications?.scopes?.read, allowedScopes)
-    ), [ featureConfig, allowedScopes ]);
+    const isApplicationReadAccessAllowed: boolean = useMemo(
+        () => hasRequiredScopes(featureConfig?.applications, featureConfig?.applications?.scopes?.read, allowedScopes),
+        [featureConfig, allowedScopes]
+    );
 
     /**
      * Retrieves the list of applications.
@@ -110,23 +108,33 @@ const GoogleQuickStart: FunctionComponent<GoogleQuickStartPropsInterface> = (
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.fetchApplications" +
-                            ".error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.fetchApplications" +
+                                    ".error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.fetchApplications" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.fetchApplications." +
-                        "genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.fetchApplications" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.fetchApplications." +
+                                "genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setApplicationListRequestLoading(false);
@@ -138,7 +146,7 @@ const GoogleQuickStart: FunctionComponent<GoogleQuickStartPropsInterface> = (
      */
     useEffect(() => {
         getAppLists(listItemLimit, listOffset, null);
-    }, [ listOffset, listItemLimit ]);
+    }, [listOffset, listItemLimit]);
 
     /**
      * Handles per page dropdown page.
@@ -146,10 +154,7 @@ const GoogleQuickStart: FunctionComponent<GoogleQuickStartPropsInterface> = (
      * @param event - Mouse event.
      * @param data - Dropdown data.
      */
-    const handleItemsPerPageDropdownChange = (
-        event: MouseEvent<HTMLAnchorElement>,
-        data: DropdownProps
-    ): void => {
+    const handleItemsPerPageDropdownChange = (event: MouseEvent<HTMLAnchorElement>, data: DropdownProps): void => {
         setListItemLimit(data.value as number);
     };
 
@@ -160,7 +165,7 @@ const GoogleQuickStart: FunctionComponent<GoogleQuickStartPropsInterface> = (
      * @param data - Pagination component data.
      */
     const handlePaginationChange = (event: MouseEvent<HTMLAnchorElement>, data: PaginationProps): void => {
-        setListOffset((data.activePage as number - 1) * listItemLimit);
+        setListOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     /**
@@ -201,9 +206,14 @@ const GoogleQuickStart: FunctionComponent<GoogleQuickStartPropsInterface> = (
                                 "extensions:develop.identityProviders.google.quickStart.steps.selectApplication.content"
                             }
                         >
-                            Choose the { isApplicationReadAccessAllowed ? (
-                                <Link external={ false } onClick={ () => setShowApplicationModal(true) }>
-                                application </Link>) : "application" }
+                            Choose the{" "}
+                            {isApplicationReadAccessAllowed ? (
+                                <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                                    application{" "}
+                                </Link>
+                            ) : (
+                                "application"
+                            )}
                             for which you want to set up Google login.
                         </Trans>
                     </Text>
@@ -216,22 +226,22 @@ const GoogleQuickStart: FunctionComponent<GoogleQuickStartPropsInterface> = (
                 <>
                     <Text>
                         <Trans
-                            i18nKey={ "extensions:develop.identityProviders.google.quickStart.steps." +
-                            "selectDefaultConfig.content" }
+                            i18nKey={
+                                "extensions:develop.identityProviders.google.quickStart.steps." +
+                                "selectDefaultConfig.content"
+                            }
                         >
                             Go to <strong>Login Flow</strong> tab and click on the <strong>Add Sign In Option</strong>
                             button inside the login box. And select a Google connection.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowStep01Illustration } size="huge"/>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowStep02Illustration } size="huge"/>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowStep03Illustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowStep01Illustration} size="huge" />
+                    <GenericIcon inline transparent icon={BuildLoginFlowStep02Illustration} size="huge" />
+                    <GenericIcon inline transparent icon={BuildLoginFlowStep03Illustration} size="huge" />
                 </>
             ),
             stepTitle: (
-                <Trans
-                    i18nKey="extensions:develop.identityProviders.google.quickStart.steps.selectDefaultConfig.heading"
-                >
+                <Trans i18nKey="extensions:develop.identityProviders.google.quickStart.steps.selectDefaultConfig.heading">
                     Add a <strong>Google</strong> connection
                 </Trans>
             )
@@ -240,130 +250,120 @@ const GoogleQuickStart: FunctionComponent<GoogleQuickStartPropsInterface> = (
 
     return (
         <>
-            <Grid data-testid={ testId } className="authenticator-quickstart-content">
+            <Grid data-testid={testId} className="authenticator-quickstart-content">
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
+                    <Grid.Column width={16}>
                         <PageHeader
                             className="mb-2"
-                            title={ t("extensions:develop.identityProviders.google.quickStart.heading") }
-                            imageSpaced={ false }
-                            bottomMargin={ false }
+                            title={t("extensions:develop.identityProviders.google.quickStart.heading")}
+                            imageSpaced={false}
+                            bottomMargin={false}
                         />
                         <Heading subHeading as="h6">
-                            { t("extensions:develop.identityProviders.google.quickStart.subHeading") }
+                            {t("extensions:develop.identityProviders.google.quickStart.subHeading")}
                         </Heading>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
-                        <VerticalStepper
-                            alwaysOpen
-                            isSidePanelOpen
-                            stepContent={ steps }
-                            isNextEnabled={ true }
-                        />
+                    <Grid.Column width={16}>
+                        <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            {
-                showApplicationModal && (
-                    <Modal
-                        data-testid={ testId }
-                        open={ true }
-                        className="wizard application-create-wizard"
-                        dimmer="blurring"
-                        size="large"
-                        onClose={ () => setShowApplicationModal(false) }
-                        closeOnDimmerClick={ false }
-                        closeOnEscape
-                    >
-                        <Modal.Header className="wizard-header">
-                            { t("extensions:develop.identityProviders.google.quickStart.addLoginModal.heading") }
-                            <Heading as="h6">
-                                {
-                                    t("extensions:develop.identityProviders.google.quickStart." +
-                                        "addLoginModal.subHeading")
-                                }
-                            </Heading>
-                        </Modal.Header>
-                        <Modal.Content className="content-container" scrolling>
-                            <ListLayout
-                                advancedSearch={
-                                    (<AdvancedSearchWithBasicFilters
-                                        onFilter={ handleApplicationFilter }
-                                        filterAttributeOptions={ [
-                                            {
-                                                key: 0,
-                                                text: t("common:name"),
-                                                value: "name"
-                                            }
-                                        ] }
-                                        filterAttributePlaceholder={
-                                            t("console:develop.features.applications.advancedSearch.form." +
-                                                "inputs.filterAttribute.placeholder")
+            {showApplicationModal && (
+                <Modal
+                    data-testid={testId}
+                    open={true}
+                    className="wizard application-create-wizard"
+                    dimmer="blurring"
+                    size="large"
+                    onClose={() => setShowApplicationModal(false)}
+                    closeOnDimmerClick={false}
+                    closeOnEscape
+                >
+                    <Modal.Header className="wizard-header">
+                        {t("extensions:develop.identityProviders.google.quickStart.addLoginModal.heading")}
+                        <Heading as="h6">
+                            {t("extensions:develop.identityProviders.google.quickStart." + "addLoginModal.subHeading")}
+                        </Heading>
+                    </Modal.Header>
+                    <Modal.Content className="content-container" scrolling>
+                        <ListLayout
+                            advancedSearch={
+                                <AdvancedSearchWithBasicFilters
+                                    onFilter={handleApplicationFilter}
+                                    filterAttributeOptions={[
+                                        {
+                                            key: 0,
+                                            text: t("common:name"),
+                                            value: "name"
                                         }
-                                        filterConditionsPlaceholder={
-                                            t("console:develop.features.applications.advancedSearch.form." +
-                                                "inputs.filterCondition.placeholder")
-                                        }
-                                        filterValuePlaceholder={
-                                            t("console:develop.features.applications.advancedSearch.form." +
-                                                "inputs.filterValue.placeholder")
-                                        }
-                                        placeholder={ t("console:develop.features.applications." +
-                                            "advancedSearch.placeholder") }
-                                        defaultSearchAttribute="name"
-                                        defaultSearchOperator="co"
-                                        triggerClearQuery={ triggerClearQuery }
-                                        data-testid={ `${ testId }-list-advanced-search` }
-                                    />)
-                                }
-                                currentListSize={ appList.count }
-                                listItemLimit={ listItemLimit }
-                                onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                                onPageChange={ handlePaginationChange }
-                                showPagination={ appList?.totalResults > listItemLimit }
-                                totalPages={ Math.ceil(appList.totalResults / listItemLimit) }
-                                totalListSize={ appList.totalResults }
-                                data-testid={ `${ testId }-list-layout` }
-                                showTopActionPanel={ appList?.totalResults > listItemLimit }
-                                paginationOptions={ {
-                                    itemsPerPageDropdownLowerLimit: ITEMS_PER_PAGE
-                                } }
-                            >
-                                <ApplicationList
-                                    isSetStrongerAuth
-                                    list={ appList }
-                                    onEmptyListPlaceholderActionClick={
-                                        () => history.push(
-                                            AppConstants.getPaths().get("APPLICATION_TEMPLATES")
-                                        )
-                                    }
-                                    onSearchQueryClear={ handleSearchQueryClear }
-                                    searchQuery={ searchQuery }
-                                    isLoading={ isApplicationListRequestLoading }
-                                    isRenderedOnPortal={ true }
-                                    data-testid={ `${ testId }-list` }
+                                    ]}
+                                    filterAttributePlaceholder={t(
+                                        "console:develop.features.applications.advancedSearch.form." +
+                                            "inputs.filterAttribute.placeholder"
+                                    )}
+                                    filterConditionsPlaceholder={t(
+                                        "console:develop.features.applications.advancedSearch.form." +
+                                            "inputs.filterCondition.placeholder"
+                                    )}
+                                    filterValuePlaceholder={t(
+                                        "console:develop.features.applications.advancedSearch.form." +
+                                            "inputs.filterValue.placeholder"
+                                    )}
+                                    placeholder={t(
+                                        "console:develop.features.applications." + "advancedSearch.placeholder"
+                                    )}
+                                    defaultSearchAttribute="name"
+                                    defaultSearchOperator="co"
+                                    triggerClearQuery={triggerClearQuery}
+                                    data-testid={`${testId}-list-advanced-search`}
                                 />
-                            </ListLayout>
-                        </Modal.Content>
-                        <Modal.Actions>
-                            <Grid>
-                                <Grid.Row column={ 1 }>
-                                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                                        <LinkButton
-                                            data-testid={ `${ testId }-cancel-button` }
-                                            floated="left"
-                                            onClick={ () => setShowApplicationModal(false) }
-                                        >
-                                            { t("common:cancel") }
-                                        </LinkButton>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                        </Modal.Actions>
-                    </Modal>
-                ) }
+                            }
+                            currentListSize={appList.count}
+                            listItemLimit={listItemLimit}
+                            onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                            onPageChange={handlePaginationChange}
+                            showPagination={appList?.totalResults > listItemLimit}
+                            totalPages={Math.ceil(appList.totalResults / listItemLimit)}
+                            totalListSize={appList.totalResults}
+                            data-testid={`${testId}-list-layout`}
+                            showTopActionPanel={appList?.totalResults > listItemLimit}
+                            paginationOptions={{
+                                itemsPerPageDropdownLowerLimit: ITEMS_PER_PAGE
+                            }}
+                        >
+                            <ApplicationList
+                                isSetStrongerAuth
+                                list={appList}
+                                onEmptyListPlaceholderActionClick={() =>
+                                    history.push(AppConstants.getPaths().get("APPLICATION_TEMPLATES"))
+                                }
+                                onSearchQueryClear={handleSearchQueryClear}
+                                searchQuery={searchQuery}
+                                isLoading={isApplicationListRequestLoading}
+                                isRenderedOnPortal={true}
+                                data-testid={`${testId}-list`}
+                            />
+                        </ListLayout>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Grid>
+                            <Grid.Row column={1}>
+                                <Grid.Column mobile={8} tablet={8} computer={8}>
+                                    <LinkButton
+                                        data-testid={`${testId}-cancel-button`}
+                                        floated="left"
+                                        onClick={() => setShowApplicationModal(false)}
+                                    >
+                                        {t("common:cancel")}
+                                    </LinkButton>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </Modal.Actions>
+                </Modal>
+            )}
         </>
     );
 };

@@ -23,7 +23,7 @@ import kebabCase from "lodash-es/kebabCase";
 import React, { FunctionComponent, ReactElement, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, Divider } from "semantic-ui-react";
-import { EventPublisher } from "features/core/utils";
+import { EventPublisher } from "../../../../core/utils";
 
 /**
  * Prop-types for the Technology Selection component.
@@ -48,17 +48,12 @@ interface TechnologyInterface<T> extends TestableComponentInterface, Identifiabl
  * @param props - Props injected to the component.
  * @returns Technology selection component.
  */
-export const SPATechnologySelection: <T>(
-    props: SPATechnologySelectionPropsInterface<T>
-) => ReactElement = <T extends unknown>(
+export const SPATechnologySelection: <T>(props: SPATechnologySelectionPropsInterface<T>) => ReactElement = <
+    T extends unknown
+>(
     props: SPATechnologySelectionPropsInterface<T>
 ): ReactElement => {
-
-    const {
-        onSelectedTechnologyChange,
-        technologies,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { onSelectedTechnologyChange, technologies, ["data-componentid"]: componentId } = props;
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
     const { t } = useTranslation();
@@ -67,54 +62,39 @@ export const SPATechnologySelection: <T>(
         <Card
             fluid
             className="basic-card no-hover quick-start-custom-config-message no-background"
-            data-componentid={ componentId }
+            data-componentid={componentId}
         >
             <Card.Content textAlign="center">
-                <Text muted>
-                    { t("extensions:console.application.quickStart.spa.techSelection.heading") }
-                </Text>
+                <Text muted>{t("extensions:console.application.quickStart.spa.techSelection.heading")}</Text>
             </Card.Content>
-            <Divider hidden/>
-            {
-                (!isEmpty(technologies) && Array.isArray(technologies) && technologies.length > 0) && (
-                    <Card.Group
-                        centered
-                        className="tech-selection-cards mt-3"
-                        itemsPerRow={ 1 }
-                    >
-                        {
-                            technologies.map((technology: TechnologyInterface<T>, index: number) => (
-                                <LargeTechnologyCard
-                                    key={ index }
-                                    raised={ false }
-                                    data-componentid={
-                                        technology["data-componentid"]
-                                        ?? `technology-card-${ kebabCase(technology.displayName) }`
-                                    }
-                                    onSampleAppClick={ () => {
-                                        window.open(
-                                            technology.sampleAppURL,
-                                            "_blank",
-                                            "noreferrer"
-                                        );
-                                    } }
-                                    onQuickstartClick={ () => {
-                                        eventPublisher.publish("application-select-technology", {
-                                            type: technology["data-componentid"]
-                                        });
-                                        onSelectedTechnologyChange(technology.type);
-                                    } }
-                                    displayName={ technology.displayName }
-                                    disabled={ technology.disabled }
-                                    overlayOpacity={ 0.6 }
-                                    image={ technology.logo }
-                                    featureAvailable={ t("common:featureAvailable") }
-                                />
-                            ))
-                        }
-                    </Card.Group>
-                )
-            }
+            <Divider hidden />
+            {!isEmpty(technologies) && Array.isArray(technologies) && technologies.length > 0 && (
+                <Card.Group centered className="tech-selection-cards mt-3" itemsPerRow={1}>
+                    {technologies.map((technology: TechnologyInterface<T>, index: number) => (
+                        <LargeTechnologyCard
+                            key={index}
+                            raised={false}
+                            data-componentid={
+                                technology["data-componentid"] ?? `technology-card-${kebabCase(technology.displayName)}`
+                            }
+                            onSampleAppClick={() => {
+                                window.open(technology.sampleAppURL, "_blank", "noreferrer");
+                            }}
+                            onQuickstartClick={() => {
+                                eventPublisher.publish("application-select-technology", {
+                                    type: technology["data-componentid"]
+                                });
+                                onSelectedTechnologyChange(technology.type);
+                            }}
+                            displayName={technology.displayName}
+                            disabled={technology.disabled}
+                            overlayOpacity={0.6}
+                            image={technology.logo}
+                            featureAvailable={t("common:featureAvailable")}
+                        />
+                    ))}
+                </Card.Group>
+            )}
         </Card>
     );
 };

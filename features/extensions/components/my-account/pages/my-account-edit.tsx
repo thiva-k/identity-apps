@@ -87,31 +87,30 @@ const FORM_ID: string = "my-account-settings-form";
 export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditPage> = (
     props: MyAccountSettingsEditPage
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const dispatch: Dispatch = useDispatch();
     const pageContextRef: MutableRefObject<HTMLElement> = useRef(null);
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
-    const consumerAccountURL: string = useSelector((state: AppState) =>
-        state?.config?.deployment?.accountApp?.tenantQualifiedPath);
+    const consumerAccountURL: string = useSelector(
+        (state: AppState) => state?.config?.deployment?.accountApp?.tenantQualifiedPath
+    );
 
-    const [ isMyAccountEnabled, setMyAccountEnabled ] = useState<boolean>(AppConstants.DEFAULT_MY_ACCOUNT_STATUS);
-    const [ isLoadingForTheFirstTime, setIsLoadingForTheFirstTime ] = useState<boolean>(true);
-    const [ showMyAccountStatusEnableModal,
-        setShowMyAccountStatusEnableConfirmationModal ] = useState<boolean>(false);
-    const [ showMyAccountStatusDisableModal,
-        setShowMyAccountStatusDisableConfirmationModal ] = useState<boolean>(false);
-    const [ isSubmitting, setSubmitting ] = useState<boolean>(false);
-    const [ initialFormValues, setInitialFormValues ] = useState<MyAccountFormInterface>(undefined);
-    const [ isApplicationRedirect, setApplicationRedirect ] = useState<boolean>(false);
-    const [ isSmsOtpEnabled, setIsSmsOtpEnabled ] = useState<boolean>(false);
-    const [ isOtpEnabled, setIsOtpEnabled ] = useState<boolean>(false);
-    const [ isTOTPChecked, setIsTOTPChecked ] = useState<boolean>(false);
-    const [ isEmailOtpChecked, setIsEmailOtpChecked ] = useState<boolean>(false);
-    const [ isSmsOtpChecked, setIsSmsOtpChecked ] = useState<boolean>(false);
-    const [ checkBackupCodeAuthenticator, setCheckBackupCodeAuthenticator ] = useState<boolean>(false);
-    const [ checkTotpEnrollment, setCheckTotpEnrollment ] = useState<boolean>(false);
+    const [isMyAccountEnabled, setMyAccountEnabled] = useState<boolean>(AppConstants.DEFAULT_MY_ACCOUNT_STATUS);
+    const [isLoadingForTheFirstTime, setIsLoadingForTheFirstTime] = useState<boolean>(true);
+    const [showMyAccountStatusEnableModal, setShowMyAccountStatusEnableConfirmationModal] = useState<boolean>(false);
+    const [showMyAccountStatusDisableModal, setShowMyAccountStatusDisableConfirmationModal] = useState<boolean>(false);
+    const [isSubmitting, setSubmitting] = useState<boolean>(false);
+    const [initialFormValues, setInitialFormValues] = useState<MyAccountFormInterface>(undefined);
+    const [isApplicationRedirect, setApplicationRedirect] = useState<boolean>(false);
+    const [isSmsOtpEnabled, setIsSmsOtpEnabled] = useState<boolean>(false);
+    const [isOtpEnabled, setIsOtpEnabled] = useState<boolean>(false);
+    const [isTOTPChecked, setIsTOTPChecked] = useState<boolean>(false);
+    const [isEmailOtpChecked, setIsEmailOtpChecked] = useState<boolean>(false);
+    const [isSmsOtpChecked, setIsSmsOtpChecked] = useState<boolean>(false);
+    const [checkBackupCodeAuthenticator, setCheckBackupCodeAuthenticator] = useState<boolean>(false);
+    const [checkTotpEnrollment, setCheckTotpEnrollment] = useState<boolean>(false);
 
     const {
         data: myAccountStatus,
@@ -153,76 +152,90 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
      * Handles the my account status fetch request error.
      */
     useEffect(() => {
-
         if (!myAccountStatusFetchRequestError) {
             return;
         }
 
-        if (myAccountStatusFetchRequestError.response
-            && myAccountStatusFetchRequestError.response.data
-            && myAccountStatusFetchRequestError.response.data.description) {
+        if (
+            myAccountStatusFetchRequestError.response &&
+            myAccountStatusFetchRequestError.response.data &&
+            myAccountStatusFetchRequestError.response.data.description
+        ) {
             if (myAccountStatusFetchRequestError.response.status === 404) {
                 return;
             }
-            dispatch(addAlert({
-                description: myAccountStatusFetchRequestError.response.data.description ??
-                    t("console:develop.features.applications.myaccount.fetchMyAccountStatus.error.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.myaccount.fetchMyAccountStatus.error.message")
-            }));
+            dispatch(
+                addAlert({
+                    description:
+                        myAccountStatusFetchRequestError.response.data.description ??
+                        t("console:develop.features.applications.myaccount.fetchMyAccountStatus.error.description"),
+                    level: AlertLevels.ERROR,
+                    message: t("console:develop.features.applications.myaccount.fetchMyAccountStatus.error.message")
+                })
+            );
 
             return;
         }
 
-        dispatch(addAlert({
-            description: t("console:develop.features.applications.myaccount.fetchMyAccountStatus" +
-                ".genericError.description"),
-            level: AlertLevels.ERROR,
-            message: t("console:develop.features.applications.myaccount.fetchMyAccountStatus" +
-                ".genericError.message")
-        }));
-    }, [ myAccountStatusFetchRequestError ]);
+        dispatch(
+            addAlert({
+                description: t(
+                    "console:develop.features.applications.myaccount.fetchMyAccountStatus" + ".genericError.description"
+                ),
+                level: AlertLevels.ERROR,
+                message: t(
+                    "console:develop.features.applications.myaccount.fetchMyAccountStatus" + ".genericError.message"
+                )
+            })
+        );
+    }, [myAccountStatusFetchRequestError]);
 
     /**
      * Handles the my account data fetch request error.
      */
     useEffect(() => {
-
         if (!myAccountDataFetchRequestError) {
             return;
         }
 
-        if (myAccountDataFetchRequestError.response
-            && myAccountDataFetchRequestError.response.data
-            && myAccountDataFetchRequestError.response.data.description) {
+        if (
+            myAccountDataFetchRequestError.response &&
+            myAccountDataFetchRequestError.response.data &&
+            myAccountDataFetchRequestError.response.data.description
+        ) {
             if (myAccountDataFetchRequestError.response.status === 404) {
                 return;
             }
-            dispatch(addAlert({
-                description: myAccountDataFetchRequestError.response.data.description ??
-                    t("console:develop.features.applications.myaccount.fetchMyAccountData.error.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.myaccount.fetchMyAccountData.error.message")
-            }));
+            dispatch(
+                addAlert({
+                    description:
+                        myAccountDataFetchRequestError.response.data.description ??
+                        t("console:develop.features.applications.myaccount.fetchMyAccountData.error.description"),
+                    level: AlertLevels.ERROR,
+                    message: t("console:develop.features.applications.myaccount.fetchMyAccountData.error.message")
+                })
+            );
 
             return;
         }
 
-        dispatch(addAlert({
-            description: t("console:develop.features.applications.myaccount.fetchMyAccountData" +
-                ".genericError.description"),
-            level: AlertLevels.ERROR,
-            message: t("console:develop.features.applications.myaccount.fetchMyAccountData" +
-                ".genericError.message")
-        }));
-
-    }, [ myAccountDataFetchRequestError ]);
+        dispatch(
+            addAlert({
+                description: t(
+                    "console:develop.features.applications.myaccount.fetchMyAccountData" + ".genericError.description"
+                ),
+                level: AlertLevels.ERROR,
+                message: t(
+                    "console:develop.features.applications.myaccount.fetchMyAccountData" + ".genericError.message"
+                )
+            })
+        );
+    }, [myAccountDataFetchRequestError]);
 
     /**
      * Handles the my account data fetch request error.
      */
     useEffect(() => {
-
         if (!totpConfigDataFetchRequestError) {
             return;
         }
@@ -231,33 +244,38 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
             if (totpConfigDataFetchRequestError.response.status === 404) {
                 return;
             }
-            dispatch(addAlert({
-                description: totpConfigDataFetchRequestError.response.data.description ??
-                    t("console:develop.features.applications.myaccount.fetchMyAccountData.error.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.myaccount.fetchMyAccountData.error.message")
-            }));
+            dispatch(
+                addAlert({
+                    description:
+                        totpConfigDataFetchRequestError.response.data.description ??
+                        t("console:develop.features.applications.myaccount.fetchMyAccountData.error.description"),
+                    level: AlertLevels.ERROR,
+                    message: t("console:develop.features.applications.myaccount.fetchMyAccountData.error.message")
+                })
+            );
 
             return;
         }
 
-        dispatch(addAlert({
-            description: t("console:develop.features.applications.myaccount.fetchMyAccountData" +
-                ".genericError.description"),
-            level: AlertLevels.ERROR,
-            message: t("console:develop.features.applications.myaccount.fetchMyAccountData" +
-                ".genericError.message")
-        }));
-    }, [ totpConfigDataFetchRequestError ]);
+        dispatch(
+            addAlert({
+                description: t(
+                    "console:develop.features.applications.myaccount.fetchMyAccountData" + ".genericError.description"
+                ),
+                level: AlertLevels.ERROR,
+                message: t(
+                    "console:develop.features.applications.myaccount.fetchMyAccountData" + ".genericError.message"
+                )
+            })
+        );
+    }, [totpConfigDataFetchRequestError]);
 
     /**
      * Sets the initial spinner.
      * TODO: Remove this once the loaders are finalized.
      */
     useEffect(() => {
-        if (isMyAccountStatusLoading === false
-            && isLoadingForTheFirstTime === true) {
-
+        if (isMyAccountStatusLoading === false && isLoadingForTheFirstTime === true) {
             let status: boolean = AppConstants.DEFAULT_MY_ACCOUNT_STATUS;
 
             if (myAccountStatus) {
@@ -273,8 +291,13 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
         }
 
         initializeForm();
-    }, [ isMyAccountDataLoading, isMyAccountStatusLoading, isLoadingForTheFirstTime, totpConfigDataValidating,
-        isMyAccountDataValidating ]);
+    }, [
+        isMyAccountDataLoading,
+        isMyAccountStatusLoading,
+        isLoadingForTheFirstTime,
+        totpConfigDataValidating,
+        isMyAccountDataValidating
+    ]);
 
     useEffect(() => {
         if (!notificationSendersListFetchRequestError) {
@@ -282,11 +305,15 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
                 let enableSMSOTP: boolean = false;
 
                 for (const notificationSender of notificationSendersList) {
-                    const channelValues: NotificationSenderProperty[] =
-                        notificationSender.properties ? notificationSender.properties : [];
+                    const channelValues: NotificationSenderProperty[] = notificationSender.properties
+                        ? notificationSender.properties
+                        : [];
 
-                    const containsProperty: boolean = channelValues.filter((prop: NotificationSenderProperty) =>
-                        prop.key === SMS_OTP_RESOURCE_KEY && prop.value === SMS_OTP_RESOURCE_VALUE).length > 0;
+                    const containsProperty: boolean =
+                        channelValues.filter(
+                            (prop: NotificationSenderProperty) =>
+                                prop.key === SMS_OTP_RESOURCE_KEY && prop.value === SMS_OTP_RESOURCE_VALUE
+                        ).length > 0;
 
                     if (notificationSender.name === CHANNEL_TYPE && containsProperty) {
                         enableSMSOTP = true;
@@ -297,15 +324,21 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
                 setIsSmsOtpEnabled(enableSMSOTP);
             }
         } else {
-            dispatch(addAlert({
-                description: t("extensions:develop.identityProviders.smsOTP.settings.errorNotifications" +
-                    ".notificationSendersRetrievalError.description"),
-                level: AlertLevels.ERROR,
-                message:t("extensions:develop.identityProviders.smsOTP.settings.errorNotifications" +
-                    ".notificationSendersRetrievalError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "extensions:develop.identityProviders.smsOTP.settings.errorNotifications" +
+                            ".notificationSendersRetrievalError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "extensions:develop.identityProviders.smsOTP.settings.errorNotifications" +
+                            ".notificationSendersRetrievalError.message"
+                    )
+                })
+            );
         }
-    }, [ notificationSendersList, notificationSendersListFetchRequestError ]);
+    }, [notificationSendersList, notificationSendersListFetchRequestError]);
 
     /**
      * Handles the `isOtpEnabled` state change when the OTP methods are changed.
@@ -317,17 +350,18 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
             setIsOtpEnabled(false);
             setCheckBackupCodeAuthenticator(false);
         }
-    }, [ isTOTPChecked, isEmailOtpChecked, isSmsOtpChecked ]);
+    }, [isTOTPChecked, isEmailOtpChecked, isSmsOtpChecked]);
 
     useEffect(() => {
         if (!isTOTPChecked) {
             setCheckTotpEnrollment(false);
         }
-    }, [ isTOTPChecked ]);
+    }, [isTOTPChecked]);
 
     const getMyAccountStatus = (attributeName: string): boolean => {
-        const status: MyAccountPortalStatusInterface[] = myAccountData
-            ?.attributes?.filter((attribute: MyAccountPortalStatusInterface) => attribute.key === attributeName);
+        const status: MyAccountPortalStatusInterface[] = myAccountData?.attributes?.filter(
+            (attribute: MyAccountPortalStatusInterface) => attribute.key === attributeName
+        );
 
         if (status?.length > 0) {
             // This will return false only if the value is false.
@@ -339,8 +373,9 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
     };
 
     const getTotpConfigData = (attributeName: string): boolean => {
-        const status: TotpConfigPortalStatusInterface[] = totpConfigData
-            ?.attributes?.filter((attribute: TotpConfigPortalStatusInterface) => attribute.key === attributeName);
+        const status: TotpConfigPortalStatusInterface[] = totpConfigData?.attributes?.filter(
+            (attribute: TotpConfigPortalStatusInterface) => attribute.key === attributeName
+        );
 
         if (status?.length > 0) {
             // This will return false only if the value is false.
@@ -352,13 +387,13 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
     };
 
     const initializeForm = (): void => {
-
         const isEmailOtpEnabled: boolean = getMyAccountStatus(MyAccountAttributeTypes.EMAIL_OTP_ENABLED);
         const isSmsOtpEnabled: boolean = getMyAccountStatus(MyAccountAttributeTypes.SMS_OTP_ENABLED);
         const isTotpEnabled: boolean = getMyAccountStatus(MyAccountAttributeTypes.TOTP_ENABLED);
         let isBackupCodeEnabled: boolean = getMyAccountStatus(MyAccountAttributeTypes.BACKUP_CODE_ENABLED);
         let totpEnrollmentEnabled: boolean = getTotpConfigData(
-            TotpConfigAttributeTypes.ENROLL_USER_IN_AUTHENTICATION_FLOW);
+            TotpConfigAttributeTypes.ENROLL_USER_IN_AUTHENTICATION_FLOW
+        );
 
         setIsTOTPChecked(isTotpEnabled);
         setIsEmailOtpChecked(isEmailOtpEnabled);
@@ -404,7 +439,6 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
      * @param data - CheckboxProps of My Account toggle.
      */
     const handleMyAccountStatusToggle = (e: SyntheticEvent, data: CheckboxProps): void => {
-
         if (data.checked) {
             setShowMyAccountStatusEnableConfirmationModal(true);
         } else {
@@ -417,38 +451,30 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
      * @returns My Account status enabling warning modal.
      */
     const renderMyAccountStatusEnableWarning = (): ReactElement => {
-
         return (
             <ConfirmationModal
-                onClose={ (): void => setShowMyAccountStatusEnableConfirmationModal(false) }
+                onClose={(): void => setShowMyAccountStatusEnableConfirmationModal(false)}
                 type="warning"
-                open={ showMyAccountStatusEnableModal }
-                primaryAction={ t("common:confirm") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={
-                    (): void => {
-                        setShowMyAccountStatusEnableConfirmationModal(false);
-                    }
-                }
-                onPrimaryActionClick={
-                    (): void => {
-                        setShowMyAccountStatusEnableConfirmationModal(false);
-                        handleUpdateMyAccountStatus(true);
-                    }
-                }
-                closeOnDimmerClick={ false }
+                open={showMyAccountStatusEnableModal}
+                primaryAction={t("common:confirm")}
+                secondaryAction={t("common:cancel")}
+                onSecondaryActionClick={(): void => {
+                    setShowMyAccountStatusEnableConfirmationModal(false);
+                }}
+                onPrimaryActionClick={(): void => {
+                    setShowMyAccountStatusEnableConfirmationModal(false);
+                    handleUpdateMyAccountStatus(true);
+                }}
+                closeOnDimmerClick={false}
             >
                 <ConfirmationModal.Header>
-                    { t("console:develop.features.applications.myaccount.Confirmation.enableConfirmation.heading") }
+                    {t("console:develop.features.applications.myaccount.Confirmation.enableConfirmation.heading")}
                 </ConfirmationModal.Header>
-                <ConfirmationModal.Message
-                    attached
-                    warning
-                >
-                    { t("console:develop.features.applications.myaccount.Confirmation.enableConfirmation.message") }
+                <ConfirmationModal.Message attached warning>
+                    {t("console:develop.features.applications.myaccount.Confirmation.enableConfirmation.message")}
                 </ConfirmationModal.Message>
                 <ConfirmationModal.Content>
-                    { t("console:develop.features.applications.myaccount.Confirmation.enableConfirmation.content") }
+                    {t("console:develop.features.applications.myaccount.Confirmation.enableConfirmation.content")}
                 </ConfirmationModal.Content>
             </ConfirmationModal>
         );
@@ -459,38 +485,30 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
      * @returns My Account status disabling warning modal.
      */
     const renderMyAccountStatusDisableWarning = (): ReactElement => {
-
         return (
             <ConfirmationModal
-                onClose={ (): void => setShowMyAccountStatusDisableConfirmationModal(false) }
+                onClose={(): void => setShowMyAccountStatusDisableConfirmationModal(false)}
                 type="warning"
-                open={ showMyAccountStatusDisableModal }
-                primaryAction={ t("common:confirm") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={
-                    (): void => {
-                        setShowMyAccountStatusDisableConfirmationModal(false);
-                    }
-                }
-                onPrimaryActionClick={
-                    (): void => {
-                        setShowMyAccountStatusDisableConfirmationModal(false);
-                        handleUpdateMyAccountStatus(false);
-                    }
-                }
-                closeOnDimmerClick={ false }
+                open={showMyAccountStatusDisableModal}
+                primaryAction={t("common:confirm")}
+                secondaryAction={t("common:cancel")}
+                onSecondaryActionClick={(): void => {
+                    setShowMyAccountStatusDisableConfirmationModal(false);
+                }}
+                onPrimaryActionClick={(): void => {
+                    setShowMyAccountStatusDisableConfirmationModal(false);
+                    handleUpdateMyAccountStatus(false);
+                }}
+                closeOnDimmerClick={false}
             >
                 <ConfirmationModal.Header>
-                    { t("console:develop.features.applications.myaccount.Confirmation.disableConfirmation.heading") }
+                    {t("console:develop.features.applications.myaccount.Confirmation.disableConfirmation.heading")}
                 </ConfirmationModal.Header>
-                <ConfirmationModal.Message
-                    attached
-                    warning
-                >
-                    { t("console:develop.features.applications.myaccount.Confirmation.disableConfirmation.message") }
+                <ConfirmationModal.Message attached warning>
+                    {t("console:develop.features.applications.myaccount.Confirmation.disableConfirmation.message")}
                 </ConfirmationModal.Message>
                 <ConfirmationModal.Content>
-                    { t("console:develop.features.applications.myaccount.Confirmation.disableConfirmation.content") }
+                    {t("console:develop.features.applications.myaccount.Confirmation.disableConfirmation.content")}
                 </ConfirmationModal.Content>
             </ConfirmationModal>
         );
@@ -507,31 +525,44 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
             .then(() => {
                 setMyAccountEnabled(status);
                 mutateMyAccountStatusFetchRequest();
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.myaccount.notifications.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.myaccount.notifications.success.message")
-                }));
-
-            }).catch((error: AxiosError) => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.myaccount.notifications.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:develop.features.applications.myaccount.notifications.success.message")
+                    })
+                );
+            })
+            .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? error?.response?.data?.detail
-                            ?? t("console:develop.features.applications.myaccount.notifications.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message
-                            ?? t("console:develop.features.applications.myaccount.notifications.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:develop.features.applications.myaccount.notifications.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:develop.features.applications.myaccount.notifications.error.message")
+                        })
+                    );
 
                     return;
                 }
-                dispatch(addAlert({
-                    description: t(
-                        "console:develop.features.applications.myaccount.notifications.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.myaccount.notifications.genericError.message")
-                }));
-            }).finally(() => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.myaccount.notifications.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:develop.features.applications.myaccount.notifications.genericError.message")
+                    })
+                );
+            })
+            .finally(() => {
                 setSubmitting(false);
             });
     };
@@ -546,36 +577,46 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
         values.backupCodeEnabled = checkBackupCodeAuthenticator;
         values.totpEnrollmentEnabled = checkTotpEnrollment;
 
-        Promise.all([
-            updateMyAccountMFAOptions(values),
-            updateTotpConfigOptions(values)
-        ]).then(() => {
-            mutateMyAccountDataFetchRequest();
-            mutateTotpConfigDataFetchRequest();
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.myaccount.notifications.success.description"),
-                level: AlertLevels.SUCCESS,
-                message: t("console:develop.features.applications.myaccount.notifications.success.message")
-            }));
-        })
+        Promise.all([updateMyAccountMFAOptions(values), updateTotpConfigOptions(values)])
+            .then(() => {
+                mutateMyAccountDataFetchRequest();
+                mutateTotpConfigDataFetchRequest();
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.myaccount.notifications.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:develop.features.applications.myaccount.notifications.success.message")
+                    })
+                );
+            })
             .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? error?.response?.data?.detail
-                            ?? t("console:develop.features.applications.myaccount.notifications.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message
-                            ?? t("console:develop.features.applications.myaccount.notifications.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:develop.features.applications.myaccount.notifications.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:develop.features.applications.myaccount.notifications.error.message")
+                        })
+                    );
 
                     return;
                 }
-                dispatch(addAlert({
-                    description: t(
-                        "console:develop.features.applications.myaccount.notifications.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.myaccount.notifications.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.myaccount.notifications.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:develop.features.applications.myaccount.notifications.genericError.message")
+                    })
+                );
             })
             .finally(() => {
                 setSubmitting(false);
@@ -593,38 +634,25 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
         }
 
         return (
-            <EmphasizedSegment
-                className="m-0 pb-4 pt-4"
-                data-componentid="my-account-link"
-                padded={ "very" }
-            >
+            <EmphasizedSegment className="m-0 pb-4 pt-4" data-componentid="my-account-link" padded={"very"}>
                 <List>
                     <List.Item>
                         <Grid verticalAlign="middle">
-                            <Grid.Column
-                                floated="left"
-                                mobile={ 16 }
-                                computer={ 10 }
-                            >
-                                <List.Description
-                                    data-componentid="my-account-link-description"
-                                >
-                                    { t("extensions:manage.myAccount.editPage.myAccountUrlDescription") }
+                            <Grid.Column floated="left" mobile={16} computer={10}>
+                                <List.Description data-componentid="my-account-link-description">
+                                    {t("extensions:manage.myAccount.editPage.myAccountUrlDescription")}
                                 </List.Description>
                             </Grid.Column>
                             <Popup
                                 trigger={
-                                    (<Grid.Column
-                                        mobile={ 16 }
-                                        computer={ 6 }
-                                    >
+                                    <Grid.Column mobile={16} computer={6}>
                                         <CopyInputField
-                                            value={ consumerAccountURL }
-                                            data-componentid={ "my-account-link-copy-field" }
+                                            value={consumerAccountURL}
+                                            data-componentid={"my-account-link-copy-field"}
                                         />
-                                    </Grid.Column>)
+                                    </Grid.Column>
                                 }
-                                content={ t("extensions:manage.myAccount.editPage.myAccountUrlDescription") }
+                                content={t("extensions:manage.myAccount.editPage.myAccountUrlDescription")}
                                 position="top center"
                                 size="mini"
                                 hideOnScroll
@@ -637,186 +665,178 @@ export const MyAccountSettingsEditPage: FunctionComponent<MyAccountSettingsEditP
         );
     };
 
-    return !isMyAccountDataValidating ?  (
+    return !isMyAccountDataValidating ? (
         <PageLayout
-            pageTitle={ t("extensions:manage.myAccount.editPage.pageTitle") }
-            title={ t("extensions:manage.myAccount.editPage.pageTitle") }
-            description={ (
+            pageTitle={t("extensions:manage.myAccount.editPage.pageTitle")}
+            title={t("extensions:manage.myAccount.editPage.pageTitle")}
+            description={
                 <>
-                    { t("extensions:manage.myAccount.editPage.description") }
-                    <DocumentationLink
-                        link={ getLink("develop.applications.myaccount.learnMore") }
-                    >
-                        { t("common:learnMore") }
+                    {t("extensions:manage.myAccount.editPage.description")}
+                    <DocumentationLink link={getLink("develop.applications.myaccount.learnMore")}>
+                        {t("common:learnMore")}
                     </DocumentationLink>
                 </>
-            ) }
-            data-componentid={ `${ componentId }-page-layout` }
-            backButton={ {
-                "data-testid": `${ componentId }-page-back-button`,
+            }
+            data-componentid={`${componentId}-page-layout`}
+            backButton={{
+                "data-testid": `${componentId}-page-back-button`,
                 onClick: handleBackButtonClick,
-                text: isApplicationRedirect ?
-                    t("extensions:manage.myAccount.goBackToApplication")
+                text: isApplicationRedirect
+                    ? t("extensions:manage.myAccount.goBackToApplication")
                     : t("extensions:manage.myAccount.goBackToMyAccount")
-            } }
-            bottomMargin={ false }
-            contentTopMargin={ true }
-            pageHeaderMaxWidth={ true }
+            }}
+            bottomMargin={false}
+            contentTopMargin={true}
+            pageHeaderMaxWidth={true}
         >
             <Checkbox
-                label={ isMyAccountEnabled ? t("extensions:manage.serverConfigurations.generalEnabledLabel") :
-                    t("extensions:manage.serverConfigurations.generalDisabledLabel") }
+                label={
+                    isMyAccountEnabled
+                        ? t("extensions:manage.serverConfigurations.generalEnabledLabel")
+                        : t("extensions:manage.serverConfigurations.generalDisabledLabel")
+                }
                 toggle
-                onChange={ handleMyAccountStatusToggle }
-                checked={ isMyAccountEnabled }
-                data-testId={ `${ componentId }-enable-toggle` }
+                onChange={handleMyAccountStatusToggle}
+                checked={isMyAccountEnabled}
+                data-testId={`${componentId}-enable-toggle`}
             />
-            <Ref innerRef={ pageContextRef }>
-                <Grid
-                    className="mt-3"
-                >
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 16 }>
-                            { renderTenantedMyAccountLink() }
-                            <EmphasizedSegment className="form-wrapper" padded={ "very" }>
-                                { (!isMyAccountDataLoading && !totpConfigDataLoading) ? (
+            <Ref innerRef={pageContextRef}>
+                <Grid className="mt-3">
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={16}>
+                            {renderTenantedMyAccountLink()}
+                            <EmphasizedSegment className="form-wrapper" padded={"very"}>
+                                {!isMyAccountDataLoading && !totpConfigDataLoading ? (
                                     <Form
-                                        id={ FORM_ID }
-                                        initialValues={ initialFormValues }
+                                        id={FORM_ID}
+                                        initialValues={initialFormValues}
                                         uncontrolledForm
-                                        validate={ null }
-                                        onSubmit={
-                                            (values: MyAccountFormInterface) => handleUpdateMyAccountData(values)
-                                        }
+                                        validate={null}
+                                        onSubmit={(values: MyAccountFormInterface) => handleUpdateMyAccountData(values)}
                                     >
-                                        <Text>
-                                            {
-                                                t("extensions:manage.myAccount.editPage.mfaDescription")
-                                            }
-                                        </Text>
+                                        <Text>{t("extensions:manage.myAccount.editPage.mfaDescription")}</Text>
                                         <Field.Checkbox
                                             ariaLabel="totpEnabled"
                                             name="totpEnabled"
-                                            label={ t("extensions:manage.myAccount.editPage.enableTotp") }
-                                            required={ false }
-                                            disabled={ !isMyAccountEnabled }
-                                            width={ 16 }
-                                            listen={ (value: boolean) => setIsTOTPChecked(value) }
-                                            data-testid={ `${ componentId }-totp-toggle` }
+                                            label={t("extensions:manage.myAccount.editPage.enableTotp")}
+                                            required={false}
+                                            disabled={!isMyAccountEnabled}
+                                            width={16}
+                                            listen={(value: boolean) => setIsTOTPChecked(value)}
+                                            data-testid={`${componentId}-totp-toggle`}
                                         />
                                         <div className="ml-6">
                                             <Field.Checkbox
                                                 ariaLabel="totpEnrollmentEnabled"
                                                 name="totpEnrollmentEnabled"
-                                                label={
-                                                    t("extensions:manage.myAccount.editPage.EnableTotpEnrollment") }
-                                                required={ false }
-                                                disabled={ !isMyAccountEnabled || !isTOTPChecked }
-                                                width={ 16 }
-                                                listen={ (value: boolean) => setCheckTotpEnrollment(value) }
-                                                data-testid={ `${ componentId }-totp-enrollment-toggle` }
-                                                checked={ checkTotpEnrollment }
+                                                label={t("extensions:manage.myAccount.editPage.EnableTotpEnrollment")}
+                                                required={false}
+                                                disabled={!isMyAccountEnabled || !isTOTPChecked}
+                                                width={16}
+                                                listen={(value: boolean) => setCheckTotpEnrollment(value)}
+                                                data-testid={`${componentId}-totp-enrollment-toggle`}
+                                                checked={checkTotpEnrollment}
                                             />
                                         </div>
                                         <Message info className="connector-info ml-6">
                                             <Icon name="info circle" />
-                                            { t("extensions:manage.myAccount.editPage.totpEnrollmentInfo") }
+                                            {t("extensions:manage.myAccount.editPage.totpEnrollmentInfo")}
                                         </Message>
                                         <Field.Checkbox
                                             ariaLabel="emailOtpEnabled"
                                             name="emailOtpEnabled"
-                                            label={ t("extensions:manage.myAccount.editPage.enableEmailOtp") }
-                                            required={ false }
-                                            disabled={ !isMyAccountEnabled }
-                                            width={ 16 }
-                                            listen={ (value: boolean) => setIsEmailOtpChecked(value) }
-                                            data-testid={ `${ componentId }-email-otp-toggle` }
+                                            label={t("extensions:manage.myAccount.editPage.enableEmailOtp")}
+                                            required={false}
+                                            disabled={!isMyAccountEnabled}
+                                            width={16}
+                                            listen={(value: boolean) => setIsEmailOtpChecked(value)}
+                                            data-testid={`${componentId}-email-otp-toggle`}
                                         />
                                         <Field.Checkbox
                                             ariaLabel="smsOtpEnabled"
                                             name="smsOtpEnabled"
-                                            label={ t("extensions:manage.myAccount.editPage.enableSmsOtp") }
-                                            required={ false }
-                                            disabled={ !isMyAccountEnabled || !isSmsOtpEnabled }
-                                            width={ 16 }
-                                            listen={ (value: boolean) => setIsSmsOtpChecked(value) }
-                                            data-testid={ `${ componentId }-sms-otp-toggle` }
+                                            label={t("extensions:manage.myAccount.editPage.enableSmsOtp")}
+                                            required={false}
+                                            disabled={!isMyAccountEnabled || !isSmsOtpEnabled}
+                                            width={16}
+                                            listen={(value: boolean) => setIsSmsOtpChecked(value)}
+                                            data-testid={`${componentId}-sms-otp-toggle`}
                                         />
-                                        { !isSmsOtpEnabled && (
+                                        {!isSmsOtpEnabled && (
                                             <Text
                                                 compact
-                                                weight={ "300" }
+                                                weight={"300"}
                                                 className="field-compact-description pb-3 pt-0"
-                                                size={ "13px" }
+                                                size={"13px"}
                                             >
                                                 <Trans
-                                                    i18nKey=
-                                                        { "extensions:manage.myAccount." +
-                                                            "editPage.smsOtpEnableDescription" }
+                                                    i18nKey={
+                                                        "extensions:manage.myAccount." +
+                                                        "editPage.smsOtpEnableDescription"
+                                                    }
                                                 >
-                                                    To enable the SMS OTP authentication option,
-                                                    you need to set up the SMS OTP authenticator for your organization.
+                                                    To enable the SMS OTP authentication option, you need to set up the
+                                                    SMS OTP authenticator for your organization.
                                                     <DocumentationLink
-                                                        link={ getLink("develop.applications.myaccount.smsOtp") }
+                                                        link={getLink("develop.applications.myaccount.smsOtp")}
                                                     >
                                                         Learn more
                                                     </DocumentationLink>
                                                 </Trans>
                                             </Text>
-                                        ) }
+                                        )}
                                         <div className="mt-3">
                                             <Text>
-                                                {
-                                                    t("extensions:manage.myAccount.editPage.backupCodeDescription")
-                                                }
+                                                {t("extensions:manage.myAccount.editPage.backupCodeDescription")}
                                             </Text>
                                         </div>
                                         <div className="mt-0 mb-0">
                                             <Field.Checkbox
                                                 ariaLabel="backupCodeEnabled"
                                                 name="backupCodeEnabled"
-                                                label={ t("extensions:manage.myAccount.editPage.enableBackupCodes") }
-                                                required={ false }
-                                                disabled={ !isMyAccountEnabled || !isOtpEnabled }
-                                                width={ 16 }
-                                                data-testid={ `${ componentId }-backup-code-toggle` }
-                                                listen={ (value: boolean) => setCheckBackupCodeAuthenticator(value) }
-                                                checked={ checkBackupCodeAuthenticator }
+                                                label={t("extensions:manage.myAccount.editPage.enableBackupCodes")}
+                                                required={false}
+                                                disabled={!isMyAccountEnabled || !isOtpEnabled}
+                                                width={16}
+                                                data-testid={`${componentId}-backup-code-toggle`}
+                                                listen={(value: boolean) => setCheckBackupCodeAuthenticator(value)}
+                                                checked={checkBackupCodeAuthenticator}
                                             />
                                         </div>
-                                        { !isOtpEnabled && (
+                                        {!isOtpEnabled && (
                                             <div className="mt-0 mb-0">
                                                 <Message
-                                                    content={ t("extensions:manage.myAccount.editPage.backupCodeInfo") }
+                                                    content={t("extensions:manage.myAccount.editPage.backupCodeInfo")}
                                                     type="warning"
                                                 />
                                             </div>
-                                        ) }
+                                        )}
                                         <Field.Button
-                                            form={ FORM_ID }
+                                            form={FORM_ID}
                                             size="small"
                                             buttonType="primary_btn"
                                             ariaLabel="Self registration update button"
                                             name="update-button"
-                                            data-testid={ `${ componentId }-submit-button` }
-                                            disabled={ !isMyAccountEnabled }
-                                            loading={ isSubmitting }
-                                            label={ t("common:update") }
-                                            hidden={ !isMyAccountEnabled }
+                                            data-testid={`${componentId}-submit-button`}
+                                            disabled={!isMyAccountEnabled}
+                                            loading={isSubmitting}
+                                            label={t("common:update")}
+                                            hidden={!isMyAccountEnabled}
                                         />
                                     </Form>
-                                ) : <ContentLoader/>
-                                }
+                                ) : (
+                                    <ContentLoader />
+                                )}
                             </EmphasizedSegment>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Ref>
-            { showMyAccountStatusEnableModal && renderMyAccountStatusEnableWarning() }
-            { showMyAccountStatusDisableModal && renderMyAccountStatusDisableWarning() }
+            {showMyAccountStatusEnableModal && renderMyAccountStatusEnableWarning()}
+            {showMyAccountStatusDisableModal && renderMyAccountStatusDisableWarning()}
         </PageLayout>
     ) : (
-        <GridLayout isLoading={ isMyAccountDataValidating } className={ "pt-5" } />
+        <GridLayout isLoading={isMyAccountDataValidating} className={"pt-5"} />
     );
 };
 

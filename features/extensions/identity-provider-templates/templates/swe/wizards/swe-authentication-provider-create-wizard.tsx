@@ -37,17 +37,17 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid } from "semantic-ui-react";
 import { SIWEAuthenticationProviderCreateWizardContent } from "./swe-authentication-provider-create-wizard-content";
-import { CommonPluggableComponentPropertyInterface } from "features/connections";
-import { ModalWithSidePanel, TierLimitReachErrorModal } from "features/core/components";
-import { EventPublisher } from "features/core/utils";
-import { createIdentityProvider } from "features/identity-providers/api";
-import { getIdPIcons } from "features/identity-providers/configs/ui";
-import { IdentityProviderManagementConstants } from "features/identity-providers/constants";
+import { CommonPluggableComponentPropertyInterface } from "../../../../../connections";
+import { ModalWithSidePanel, TierLimitReachErrorModal } from "../../../../../core/components";
+import { EventPublisher } from "../../../../../core/utils";
+import { createIdentityProvider } from "../../../../../identity-providers/api";
+import { getIdPIcons } from "../../../../../identity-providers/configs/ui";
+import { IdentityProviderManagementConstants } from "../../../../../identity-providers/constants";
 import {
     GenericIdentityProviderCreateWizardPropsInterface,
     IdentityProviderInterface
-} from "features/identity-providers/models";
-import { IdentityProviderManagementUtils } from "features/identity-providers/utils";
+} from "../../../../../identity-providers/models";
+import { IdentityProviderManagementUtils } from "../../../../../identity-providers/utils";
 import { identityProviderConfig } from "../../../../configs/identity-provider";
 
 /**

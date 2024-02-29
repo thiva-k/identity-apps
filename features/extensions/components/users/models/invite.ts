@@ -16,7 +16,7 @@
  * under the License.
  */
 import { RolesInterface } from "@wso2is/core/models";
-import { UserBasicInterface } from "features/core";
+import { UserBasicInterface } from "../../../../core";
 
 /**
  * Interface to store data for create group api.

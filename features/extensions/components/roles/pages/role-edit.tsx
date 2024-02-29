@@ -21,21 +21,20 @@ import { PageLayout } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "features/core";
+import { AppConstants, AppState, FeatureConfigInterface, history } from "../../../../core";
 import { getRoleById } from "../../../../roles/api";
 import { EditRole } from "../components";
 
 const RoleEditPage: FunctionComponent<any> = (): ReactElement => {
-
     const { t } = useTranslation();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ roleId, setRoleId ] = useState<string>(undefined);
-    const [ roleObject, setRoleObject ] = useState<RolesInterface>();
-    const [ isRoleDetailsRequestLoading, setIsRoleDetailsRequestLoading ] = useState<boolean>(false);
+    const [roleId, setRoleId] = useState<string>(undefined);
+    const [roleObject, setRoleObject] = useState<RolesInterface>();
+    const [isRoleDetailsRequestLoading, setIsRoleDetailsRequestLoading] = useState<boolean>(false);
 
-    const getRoleDetails = (roleId: string ): void => {
+    const getRoleDetails = (roleId: string): void => {
         setIsRoleDetailsRequestLoading(true);
 
         getRoleById(roleId)
@@ -43,7 +42,8 @@ const RoleEditPage: FunctionComponent<any> = (): ReactElement => {
                 if (response.status === 200) {
                     setRoleObject(response.data);
                 }
-            }).catch(() => {
+            })
+            .catch(() => {
                 // TODO: handle error
             })
             .finally(() => {
@@ -60,7 +60,7 @@ const RoleEditPage: FunctionComponent<any> = (): ReactElement => {
      */
     useEffect(() => {
         const path: string[] = history.location.pathname.split("/");
-        const roleId: string = path[ path.length - 1 ];
+        const roleId: string = path[path.length - 1];
 
         setRoleId(roleId);
         getRoleDetails(roleId);
@@ -72,24 +72,24 @@ const RoleEditPage: FunctionComponent<any> = (): ReactElement => {
 
     return (
         <PageLayout
-            isLoading={ isRoleDetailsRequestLoading }
+            isLoading={isRoleDetailsRequestLoading}
             title={
-                roleObject && roleObject?.displayName ?
-                    roleObject?.displayName :
-                    t("console:manage.pages.rolesEdit.title")
+                roleObject && roleObject?.displayName
+                    ? roleObject?.displayName
+                    : t("console:manage.pages.rolesEdit.title")
             }
-            backButton={ {
+            backButton={{
                 onClick: handleBackButtonClick,
                 text: t("console:manage.pages.rolesEdit.backButton", { type: "roles" })
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
+            bottomMargin={false}
         >
             <EditRole
-                roleObject={ roleObject }
-                roleId={ roleId }
-                onRoleUpdate={ onRoleUpdate }
-                featureConfig={ featureConfig }
+                roleObject={roleObject}
+                roleId={roleId}
+                onRoleUpdate={onRoleUpdate}
+                featureConfig={featureConfig}
             />
         </PageLayout>
     );

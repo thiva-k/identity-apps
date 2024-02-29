@@ -25,7 +25,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Label } from "semantic-ui-react";
-import { AppState, getEmptyPlaceholderIllustrations, history } from "features/core";
+import { AppState, getEmptyPlaceholderIllustrations, history } from "../../../../core";
 import { ExtendedFeatureConfigInterface } from "../../../configs/models";
 import { useAPIResourceDetails } from "../api";
 import { EditAPIResource } from "../components";
@@ -46,18 +46,15 @@ type APIResourcesEditPageInterface = IdentifiableComponentInterface;
 const APIResourcesEditPage: FunctionComponent<APIResourcesEditPageInterface> = (
     props: APIResourcesEditPageInterface
 ): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ isReadOnly, setReadOnly ] = useState<boolean>(false);
-    const [ isManagedByChoreo, setIsManagedByChoreo ] = useState<boolean>(false);
-    const [ apiResourceId, setAPIResourceId ] = useState<string>(null);
+    const [isReadOnly, setReadOnly] = useState<boolean>(false);
+    const [isManagedByChoreo, setIsManagedByChoreo] = useState<boolean>(false);
+    const [apiResourceId, setAPIResourceId] = useState<string>(null);
 
     const featureConfig: ExtendedFeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
@@ -74,64 +71,81 @@ const APIResourcesEditPage: FunctionComponent<APIResourcesEditPageInterface> = (
     useEffect(() => {
         setAPIResourceIdFromPath();
     }, []);
-    
+
     /**
      * The following useEffect is used to handle if the user has the required scopes to update the API resource
      */
     useEffect(() => {
-        if (!hasRequiredScopes(
-            featureConfig?.apiResources, featureConfig?.apiResources?.scopes?.update, allowedScopes)) {
+        if (
+            !hasRequiredScopes(featureConfig?.apiResources, featureConfig?.apiResources?.scopes?.update, allowedScopes)
+        ) {
             setReadOnly(true);
         }
-    }, [ apiResourceData ]);
+    }, [apiResourceData]);
 
     /**
      * The following useEffect is used to check if the API resource is managed by Choreo.
      */
     useEffect(() => {
         APIResourceUtils.checkIfAPIResourceManagedByChoreo(apiResourceData?.gwName) && setIsManagedByChoreo(true);
-    }, [ apiResourceData ]);
+    }, [apiResourceData]);
 
     /**
      * The following useEffect is used to handle if any error occurs while fetching the API resource
      */
     useEffect(() => {
-        if(apiResourceDataFetchRequestError) {
+        if (apiResourceDataFetchRequestError) {
             switch (apiResourceDataFetchRequestError.response?.data?.code) {
                 case APIResourcesConstants.UNAUTHORIZED_ACCESS:
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("extensions:develop.apiResource.notifications.getAPIResource" +
-                            ".unauthorizedError.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("extensions:develop.apiResource.notifications.getAPIResource" +
-                            ".unauthorizedError.message")
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t(
+                                "extensions:develop.apiResource.notifications.getAPIResource" +
+                                    ".unauthorizedError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "extensions:develop.apiResource.notifications.getAPIResource" +
+                                    ".unauthorizedError.message"
+                            )
+                        })
+                    );
 
                     break;
 
                 case APIResourcesConstants.NO_VALID_API_RESOURCE_ID_FOUND:
                 case APIResourcesConstants.API_RESOURCE_NOT_FOUND:
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("extensions:develop.apiResource.notifications.getAPIResource" +
-                            ".notFoundError.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("extensions:develop.apiResource.notifications.getAPIResource" +
-                            ".notFoundError.message")
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t(
+                                "extensions:develop.apiResource.notifications.getAPIResource" +
+                                    ".notFoundError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "extensions:develop.apiResource.notifications.getAPIResource" + ".notFoundError.message"
+                            )
+                        })
+                    );
 
                     break;
 
                 default:
-                    dispatch(addAlert<AlertInterface>({
-                        description: t("extensions:develop.apiResource.notifications.getAPIResource" +
-                            ".genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("extensions:develop.apiResource.notifications.getAPIResource" +
-                            ".genericError.message")
-                    }));
+                    dispatch(
+                        addAlert<AlertInterface>({
+                            description: t(
+                                "extensions:develop.apiResource.notifications.getAPIResource" +
+                                    ".genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "extensions:develop.apiResource.notifications.getAPIResource" + ".genericError.message"
+                            )
+                        })
+                    );
             }
         }
-    }, [ apiResourceDataFetchRequestError ]);
+    }, [apiResourceDataFetchRequestError]);
 
     /**
      * set API resource id from the URL path
@@ -150,53 +164,51 @@ const APIResourcesEditPage: FunctionComponent<APIResourcesEditPageInterface> = (
         history.push(APIResourcesConstants.getPaths().get("API_RESOURCES"));
     };
 
-    return (
-        (!isAPIResourceDatatLoading && !apiResourceData) || apiResourceDataFetchRequestError
-            ? (<EmptyPlaceholder
-                subtitle={ [ t("extensions:develop.apiResource.tabs.apiResourceError.subtitles.0"),
-                    t("extensions:develop.apiResource.tabs.apiResourceError.subtitles.1") ] }
-                title={ t("extensions:develop.apiResource.tabs.apiResourceError.title") }
-                image={ getEmptyPlaceholderIllustrations().emptySearch }
-                imageSize="tiny"
-            />)
-            : (<TabPageLayout
-                isLoading={ isAPIResourceDatatLoading }
-                title={ apiResourceData?.displayName }
-                pageTitle={ t("extensions:develop.apiResource.tabs.title") }
-                description={ (
-                    isManagedByChoreo && (
-                        <Label
-                            size="small"
-                            className="choreo-label"
-                        >
-                            { t("extensions:develop.apiResource.managedByChoreoText") }
-                        </Label> 
-                    )
-                ) }
-                loadingStateOptions={ {
-                    count: 5,
-                    imageType: "circular"
-                } }
-                backButton={ {
-                    "data-testid": `${componentId}-back-button`,
-                    onClick: handleBackButtonClick,
-                    text: t("extensions:develop.apiResource.tabs.backButton")
-                } }
-                titleTextAlign="left"
-                bottomMargin={ false }
-                pageHeaderMaxWidth={ true }
-            >
-                <EditAPIResource 
-                    apiResourceData={ apiResourceData } 
-                    isAPIResourceDataLoading={ isAPIResourceDatatLoading }   
-                    featureConfig={ featureConfig }
-                    isReadOnly={ isReadOnly }
-                    isManagedByChoreo={ isManagedByChoreo }
-                    mutateAPIResource={ updateAPIResource }           
-                />
-            </TabPageLayout>)
+    return (!isAPIResourceDatatLoading && !apiResourceData) || apiResourceDataFetchRequestError ? (
+        <EmptyPlaceholder
+            subtitle={[
+                t("extensions:develop.apiResource.tabs.apiResourceError.subtitles.0"),
+                t("extensions:develop.apiResource.tabs.apiResourceError.subtitles.1")
+            ]}
+            title={t("extensions:develop.apiResource.tabs.apiResourceError.title")}
+            image={getEmptyPlaceholderIllustrations().emptySearch}
+            imageSize="tiny"
+        />
+    ) : (
+        <TabPageLayout
+            isLoading={isAPIResourceDatatLoading}
+            title={apiResourceData?.displayName}
+            pageTitle={t("extensions:develop.apiResource.tabs.title")}
+            description={
+                isManagedByChoreo && (
+                    <Label size="small" className="choreo-label">
+                        {t("extensions:develop.apiResource.managedByChoreoText")}
+                    </Label>
+                )
+            }
+            loadingStateOptions={{
+                count: 5,
+                imageType: "circular"
+            }}
+            backButton={{
+                "data-testid": `${componentId}-back-button`,
+                onClick: handleBackButtonClick,
+                text: t("extensions:develop.apiResource.tabs.backButton")
+            }}
+            titleTextAlign="left"
+            bottomMargin={false}
+            pageHeaderMaxWidth={true}
+        >
+            <EditAPIResource
+                apiResourceData={apiResourceData}
+                isAPIResourceDataLoading={isAPIResourceDatatLoading}
+                featureConfig={featureConfig}
+                isReadOnly={isReadOnly}
+                isManagedByChoreo={isManagedByChoreo}
+                mutateAPIResource={updateAPIResource}
+            />
+        </TabPageLayout>
     );
-
 };
 
 /**

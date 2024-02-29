@@ -24,8 +24,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
-import { AppState } from "features/core";
-import { FeatureConfigInterface } from "features/core/models";
+import { AppState } from "../../../../core";
+import { FeatureConfigInterface } from "../../../../core/models";
 import { VerticalStepper, VerticalStepperStepInterface } from "../../component-extensions";
 import ApplicationSelectionModal from "../../shared/application-selection-modal";
 
@@ -44,22 +44,19 @@ type EmailOTPQuickStartPropsInterface = TestableComponentInterface;
 const EmailOTPQuickStart: FunctionComponent<EmailOTPQuickStartPropsInterface> = (
     props: EmailOTPQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const isApplicationReadAccessAllowed: boolean = useMemo(() => (
-        hasRequiredScopes(
-            featureConfig?.applications, featureConfig?.applications?.scopes?.read, allowedScopes)
-    ), [ featureConfig, allowedScopes ]);
+    const isApplicationReadAccessAllowed: boolean = useMemo(
+        () => hasRequiredScopes(featureConfig?.applications, featureConfig?.applications?.scopes?.read, allowedScopes),
+        [featureConfig, allowedScopes]
+    );
 
     /**
      * Vertical Stepper steps.
@@ -76,9 +73,14 @@ const EmailOTPQuickStart: FunctionComponent<EmailOTPQuickStartPropsInterface> = 
                                 ".content"
                             }
                         >
-                            Choose the { isApplicationReadAccessAllowed ? (
-                                <Link external={ false } onClick={ () => setShowApplicationModal(true) }>
-                                application </Link>) : "application" }
+                            Choose the{" "}
+                            {isApplicationReadAccessAllowed ? (
+                                <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                                    application{" "}
+                                </Link>
+                            ) : (
+                                "application"
+                            )}
                             for which you want to set up Email OTP login.
                         </Trans>
                     </Text>
@@ -91,15 +93,17 @@ const EmailOTPQuickStart: FunctionComponent<EmailOTPQuickStartPropsInterface> = 
                 <>
                     <Text>
                         <Trans
-                            i18nKey={ "extensions:develop.identityProviders.emailOTP.quickStart.steps.selectEmailOTP" +
-                            ".content" }
+                            i18nKey={
+                                "extensions:develop.identityProviders.emailOTP.quickStart.steps.selectEmailOTP" +
+                                ".content"
+                            }
                         >
-                            Go to <strong>Login Flow</strong> tab and click on the <strong>Username & Password +
-                                Email OTP </strong> option from the Multi-factor login section to configure a
-                                basic Email OTP flow.
+                            Go to <strong>Login Flow</strong> tab and click on the{" "}
+                            <strong>Username & Password + Email OTP </strong> option from the Multi-factor login section
+                            to configure a basic Email OTP flow.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
@@ -112,47 +116,36 @@ const EmailOTPQuickStart: FunctionComponent<EmailOTPQuickStartPropsInterface> = 
 
     return (
         <>
-            <Grid data-testid={ testId } className="authenticator-quickstart-content">
+            <Grid data-testid={testId} className="authenticator-quickstart-content">
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
+                    <Grid.Column width={16}>
                         <PageHeader
                             className="mb-2"
-                            title={ t("extensions:develop.identityProviders.emailOTP.quickStart.heading") }
-                            imageSpaced={ false }
-                            bottomMargin={ false }
+                            title={t("extensions:develop.identityProviders.emailOTP.quickStart.heading")}
+                            imageSpaced={false}
+                            bottomMargin={false}
                         />
                         <Heading subHeading as="h6">
-                            { t("extensions:develop.identityProviders.emailOTP.quickStart.subHeading") }
+                            {t("extensions:develop.identityProviders.emailOTP.quickStart.subHeading")}
                         </Heading>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
-                        <VerticalStepper
-                            alwaysOpen
-                            isSidePanelOpen
-                            stepContent={ steps }
-                            isNextEnabled={ true }
-                        />
+                    <Grid.Column width={16}>
+                        <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ testId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={
-                            t("extensions:develop.identityProviders.emailOTP.quickStart.addLoginModal.heading")
-                        }
-                        subHeading={
-                            t("extensions:develop.identityProviders.emailOTP.quickStart.addLoginModal.subHeading")
-                        }
-                        data-componentid="connections"
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${testId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.emailOTP.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.emailOTP.quickStart.addLoginModal.subHeading")}
+                    data-componentid="connections"
+                />
+            )}
         </>
     );
 };

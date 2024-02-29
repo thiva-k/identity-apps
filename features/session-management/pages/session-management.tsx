@@ -28,7 +28,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid, Placeholder, Ref } from "semantic-ui-react";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "../../../features/core";
+import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
 import { updateSessionManagmentConfigurations, useSessionManagementConfig } from "../api/session-management";
 import { SessionManagementConstants } from "../constants/session-management";
 import {
@@ -50,27 +50,32 @@ const FORM_ID: string = "session-management-config-form";
 export const SessionManagementSettingsPage: FunctionComponent<SessionManagementSettingsPageInterface> = (
     props: SessionManagementSettingsPageInterface
 ): ReactElement => {
-    const { [ "data-componentid" ]: componentId } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const pageContextRef: MutableRefObject<any> = useRef(null);
     const formRef: MutableRefObject<FormPropsInterface> = useRef<FormPropsInterface>(null);
 
-    const featureConfig : FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
-    const allowedScopes : string = useSelector((state: AppState) => state?.auth?.allowedScopes);
+    const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
+    const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const isReadOnly : boolean = useMemo(() => !hasRequiredScopes(
-        featureConfig?.governanceConnectors,
-        featureConfig?.governanceConnectors?.scopes?.update,
-        allowedScopes
-    ), [ featureConfig, allowedScopes ]);
+    const isReadOnly: boolean = useMemo(
+        () =>
+            !hasRequiredScopes(
+                featureConfig?.governanceConnectors,
+                featureConfig?.governanceConnectors?.scopes?.update,
+                allowedScopes
+            ),
+        [featureConfig, allowedScopes]
+    );
 
-    const dispatch : Dispatch<any> = useDispatch();
+    const dispatch: Dispatch<any> = useDispatch();
 
     const { t } = useTranslation();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ sessionManagementConfig , setSessionManagementConfig ] =
-        useState<SessionManagementConfigFormValuesInterface>(undefined);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [sessionManagementConfig, setSessionManagementConfig] = useState<SessionManagementConfigFormValuesInterface>(
+        undefined
+    );
 
     const {
         data: originalSessionManagementConfig,
@@ -80,8 +85,10 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
     } = useSessionManagementConfig();
 
     useEffect(() => {
-        if (originalSessionManagementConfig instanceof IdentityAppsApiException
-            || sessionManagementConfigFetchRequestError) {
+        if (
+            originalSessionManagementConfig instanceof IdentityAppsApiException ||
+            sessionManagementConfigFetchRequestError
+        ) {
             handleRetrieveError();
 
             return;
@@ -92,14 +99,16 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
         }
 
         // Validate if the email provider config exists.
-        if (originalSessionManagementConfig.idleSessionTimeoutPeriod
-            && originalSessionManagementConfig.rememberMePeriod) {
+        if (
+            originalSessionManagementConfig.idleSessionTimeoutPeriod &&
+            originalSessionManagementConfig.rememberMePeriod
+        ) {
             setSessionManagementConfig({
                 idleSessionTimeout: parseInt(originalSessionManagementConfig.idleSessionTimeoutPeriod),
                 rememberMePeriod: parseInt(originalSessionManagementConfig.rememberMePeriod)
             });
         }
-    }, [ originalSessionManagementConfig ]);
+    }, [originalSessionManagementConfig]);
 
     /**
      * Displays the error banner when unable to fetch session management configuration.
@@ -107,11 +116,9 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
     const handleRetrieveError = (): void => {
         dispatch(
             addAlert({
-                description: t("console:sessionManagement.notifications." +
-                "getConfiguration.error.description"),
+                description: t("console:sessionManagement.notifications." + "getConfiguration.error.description"),
                 level: AlertLevels.ERROR,
-                message: t("console:sessionManagement.notifications." +
-                "getConfiguration.error.message")
+                message: t("console:sessionManagement.notifications." + "getConfiguration.error.message")
             })
         );
     };
@@ -122,11 +129,9 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
     const handleUpdateSuccess = () => {
         dispatch(
             addAlert({
-                description: t("console:sessionManagement.notifications." +
-                "updateConfiguration.success.description"),
+                description: t("console:sessionManagement.notifications." + "updateConfiguration.success.description"),
                 level: AlertLevels.SUCCESS,
-                message: t("console:sessionManagement.notifications." +
-                "updateConfiguration.success.message")
+                message: t("console:sessionManagement.notifications." + "updateConfiguration.success.message")
             })
         );
     };
@@ -137,11 +142,9 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
     const handleUpdateError = () => {
         dispatch(
             addAlert({
-                description: t("console:sessionManagement.notifications." +
-                "updateConfiguration.error.description"),
+                description: t("console:sessionManagement.notifications." + "updateConfiguration.error.description"),
                 level: AlertLevels.ERROR,
-                message: t("console:sessionManagement.notifications." +
-                "updateConfiguration.error.message")
+                message: t("console:sessionManagement.notifications." + "updateConfiguration.error.message")
             })
         );
     };
@@ -160,20 +163,20 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
             rememberMePeriod: undefined
         };
 
-        if (values?.idleSessionTimeout && (!FormValidation.isInteger(values.idleSessionTimeout as number)
-            || values.idleSessionTimeout as number < 0)) {
-            error.idleSessionTimeout = t(
-                "console:sessionManagement.form.validation.idleSessionTimeout"
-            );
+        if (
+            values?.idleSessionTimeout &&
+            (!FormValidation.isInteger(values.idleSessionTimeout as number) ||
+                (values.idleSessionTimeout as number) < 0)
+        ) {
+            error.idleSessionTimeout = t("console:sessionManagement.form.validation.idleSessionTimeout");
         }
 
-        if (values?.rememberMePeriod && (!FormValidation.isInteger(values.rememberMePeriod as number)
-            || values.rememberMePeriod as number < 0)) {
-            error.rememberMePeriod = t(
-                "console:sessionManagement.form.validation.rememberMePeriod"
-            );
+        if (
+            values?.rememberMePeriod &&
+            (!FormValidation.isInteger(values.rememberMePeriod as number) || (values.rememberMePeriod as number) < 0)
+        ) {
+            error.rememberMePeriod = t("console:sessionManagement.form.validation.rememberMePeriod");
         }
-
 
         return error;
     };
@@ -185,14 +188,14 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
         setIsSubmitting(true);
         const updateValues: PatchData[] = [
             {
-                "operation": SessionManagementConstants.REPLACE_OPERATION,
-                "path": SessionManagementConstants.IDLE_SESSION_TIMEOUT_PATH,
-                "value": values.idleSessionTimeout.toString()
+                operation: SessionManagementConstants.REPLACE_OPERATION,
+                path: SessionManagementConstants.IDLE_SESSION_TIMEOUT_PATH,
+                value: values.idleSessionTimeout.toString()
             },
             {
-                "operation": SessionManagementConstants.REPLACE_OPERATION,
-                "path": SessionManagementConstants.REMEMBER_ME_PERIOD_PATH,
-                "value": values.rememberMePeriod.toString()
+                operation: SessionManagementConstants.REPLACE_OPERATION,
+                path: SessionManagementConstants.REMEMBER_ME_PERIOD_PATH,
+                value: values.rememberMePeriod.toString()
             }
         ];
 
@@ -203,7 +206,8 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
             })
             .catch(() => {
                 handleUpdateError();
-            }).finally(() => {
+            })
+            .finally(() => {
                 setIsSubmitting(false);
             });
     };
@@ -217,12 +221,9 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
      */
     const renderLoadingPlaceholder = (): ReactElement => {
         return (
-            <Grid.Row columns={ 1 }>
+            <Grid.Row columns={1}>
                 <div>
-                    <div
-                        className="ui card fluid settings-card"
-                        data-testid={ `${componentId}-loading-card` }
-                    >
+                    <div className="ui card fluid settings-card" data-testid={`${componentId}-loading-card`}>
                         <div className="content no-padding">
                             <div className="header-section">
                                 <Placeholder>
@@ -242,7 +243,7 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
                             </div>
                         </div>
                     </div>
-                    <Divider hidden/>
+                    <Divider hidden />
                 </div>
             </Grid.Row>
         );
@@ -250,119 +251,129 @@ export const SessionManagementSettingsPage: FunctionComponent<SessionManagementS
 
     return (
         <PageLayout
-            title={ t("console:sessionManagement.title") }
-            pageTitle={ t("console:sessionManagement.title") }
-            description={ t("console:sessionManagement.description") }
-            backButton={ {
+            title={t("console:sessionManagement.title")}
+            pageTitle={t("console:sessionManagement.title")}
+            description={t("console:sessionManagement.description")}
+            backButton={{
                 onClick: () => onBackButtonClick(),
                 text: t("console:manage.features.governanceConnectors.goBackLoginAndRegistration")
-            } }
-            bottomMargin={ false }
-            contentTopMargin={ false }
-            pageHeaderMaxWidth={ true }
-            data-componentid={ `${ componentId }-form-layout` }
+            }}
+            bottomMargin={false}
+            contentTopMargin={false}
+            pageHeaderMaxWidth={true}
+            data-componentid={`${componentId}-form-layout`}
         >
-            <Ref innerRef={ pageContextRef }>
-                <Grid className={ "mt-2" } >
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 16 }>
-                            <EmphasizedSegment className="form-wrapper" padded={ "very" }>
-                                { isSessionManagementFetchRequestLoading
-                                    ? renderLoadingPlaceholder()
-                                    : (
-                                        <>
-                                            <Form
-                                                id={ FORM_ID }
-                                                uncontrolledForm={ true }
-                                                onSubmit={ handleSubmit }
-                                                initialValues={ sessionManagementConfig }
-                                                enableReinitialize={ true }
-                                                ref={ formRef }
-                                                noValidate={ true }
-                                                validate={ validateForm }
-                                                autoComplete="new-password"
-                                            >
-                                                <Grid>
-                                                    <Grid.Row columns={ 2 } key={ 1 }>
-                                                        <Grid.Column key="idleSessionTimeout">
-                                                            <Field.Input
-                                                                min={ SessionManagementConstants
-                                                                    .SESSION_MANAGEMENT_CONFIG_FIELD_MIN_LENGTH }
-                                                                ariaLabel="Idle Session Timeout Field"
-                                                                inputType="number"
-                                                                name="idleSessionTimeout"
-                                                                label={ t("console:sessionManagement.form." +
-                                                                    "idleSessionTimeout.label") }
-                                                                placeholder={ t("console:sessionManagement.form." +
-                                                                    "idleSessionTimeout.placeholder") }
-                                                                hint={ t("console:sessionManagement.form." +
-                                                                    "idleSessionTimeout.hint") }
-                                                                required={ true }
-                                                                value={ sessionManagementConfig?.idleSessionTimeout }
-                                                                readOnly={ isReadOnly }
-                                                                maxLength={ null }
-                                                                minLength={ SessionManagementConstants
-                                                                    .SESSION_MANAGEMENT_CONFIG_FIELD_MIN_LENGTH }
-                                                                width={ 16 }
-                                                                data-componentid={
-                                                                    `${componentId}-idle-session-timeout` }
-                                                                autoComplete="new-password"
-                                                            />
-                                                        </Grid.Column>
-                                                        <Grid.Column key="rememberMePeriod">
-                                                            <Field.Input
-                                                                min={ SessionManagementConstants
-                                                                    .SESSION_MANAGEMENT_CONFIG_FIELD_MIN_LENGTH }
-                                                                ariaLabel="Remember Me Period Field"
-                                                                inputType="number"
-                                                                name="rememberMePeriod"
-                                                                label={ t("console:sessionManagement.form." +
-                                                                    "rememberMePeriod.label") }
-                                                                placeholder={ t("console:sessionManagement.form." +
-                                                                    "rememberMePeriod.placeholder") }
-                                                                hint={ t("console:sessionManagement.form." +
-                                                                    "rememberMePeriod.hint") }
-                                                                required={ true }
-                                                                value={ sessionManagementConfig?.rememberMePeriod }
-                                                                readOnly={ isReadOnly }
-                                                                maxLength={ null }
-                                                                minLength={ SessionManagementConstants
-                                                                    .SESSION_MANAGEMENT_CONFIG_FIELD_MIN_LENGTH }
-                                                                width={ 16 }
-                                                                data-componentid={ `${componentId}-remember-me-period` }
-                                                                autoComplete="new-password"
-                                                            />
-                                                        </Grid.Column>
-                                                    </Grid.Row>
-                                                </Grid>
-                                            </Form>
-                                            {
-                                                !isReadOnly && (
-                                                    <>
-                                                        <Divider hidden />
-                                                        <Grid.Row columns={ 1 } className="mt-6">
-                                                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                                                <PrimaryButton
-                                                                    size="small"
-                                                                    loading={ isSubmitting }
-                                                                    onClick={ () => {
-                                                                        formRef?.current?.triggerSubmit();
-                                                                    } }
-                                                                    ariaLabel="Session management form update button"
-                                                                    data-componentid={
-                                                                        `${ componentId }-update-button`
-                                                                    }
-                                                                >
-                                                                    { t("common:update") }
-                                                                </PrimaryButton>
-                                                            </Grid.Column>
-                                                        </Grid.Row>
-                                                    </>
-                                                )
-                                            }
-                                        </>
-                                    )
-                                }
+            <Ref innerRef={pageContextRef}>
+                <Grid className={"mt-2"}>
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={16}>
+                            <EmphasizedSegment className="form-wrapper" padded={"very"}>
+                                {isSessionManagementFetchRequestLoading ? (
+                                    renderLoadingPlaceholder()
+                                ) : (
+                                    <>
+                                        <Form
+                                            id={FORM_ID}
+                                            uncontrolledForm={true}
+                                            onSubmit={handleSubmit}
+                                            initialValues={sessionManagementConfig}
+                                            enableReinitialize={true}
+                                            ref={formRef}
+                                            noValidate={true}
+                                            validate={validateForm}
+                                            autoComplete="new-password"
+                                        >
+                                            <Grid>
+                                                <Grid.Row columns={2} key={1}>
+                                                    <Grid.Column key="idleSessionTimeout">
+                                                        <Field.Input
+                                                            min={
+                                                                SessionManagementConstants.SESSION_MANAGEMENT_CONFIG_FIELD_MIN_LENGTH
+                                                            }
+                                                            ariaLabel="Idle Session Timeout Field"
+                                                            inputType="number"
+                                                            name="idleSessionTimeout"
+                                                            label={t(
+                                                                "console:sessionManagement.form." +
+                                                                    "idleSessionTimeout.label"
+                                                            )}
+                                                            placeholder={t(
+                                                                "console:sessionManagement.form." +
+                                                                    "idleSessionTimeout.placeholder"
+                                                            )}
+                                                            hint={t(
+                                                                "console:sessionManagement.form." +
+                                                                    "idleSessionTimeout.hint"
+                                                            )}
+                                                            required={true}
+                                                            value={sessionManagementConfig?.idleSessionTimeout}
+                                                            readOnly={isReadOnly}
+                                                            maxLength={null}
+                                                            minLength={
+                                                                SessionManagementConstants.SESSION_MANAGEMENT_CONFIG_FIELD_MIN_LENGTH
+                                                            }
+                                                            width={16}
+                                                            data-componentid={`${componentId}-idle-session-timeout`}
+                                                            autoComplete="new-password"
+                                                        />
+                                                    </Grid.Column>
+                                                    <Grid.Column key="rememberMePeriod">
+                                                        <Field.Input
+                                                            min={
+                                                                SessionManagementConstants.SESSION_MANAGEMENT_CONFIG_FIELD_MIN_LENGTH
+                                                            }
+                                                            ariaLabel="Remember Me Period Field"
+                                                            inputType="number"
+                                                            name="rememberMePeriod"
+                                                            label={t(
+                                                                "console:sessionManagement.form." +
+                                                                    "rememberMePeriod.label"
+                                                            )}
+                                                            placeholder={t(
+                                                                "console:sessionManagement.form." +
+                                                                    "rememberMePeriod.placeholder"
+                                                            )}
+                                                            hint={t(
+                                                                "console:sessionManagement.form." +
+                                                                    "rememberMePeriod.hint"
+                                                            )}
+                                                            required={true}
+                                                            value={sessionManagementConfig?.rememberMePeriod}
+                                                            readOnly={isReadOnly}
+                                                            maxLength={null}
+                                                            minLength={
+                                                                SessionManagementConstants.SESSION_MANAGEMENT_CONFIG_FIELD_MIN_LENGTH
+                                                            }
+                                                            width={16}
+                                                            data-componentid={`${componentId}-remember-me-period`}
+                                                            autoComplete="new-password"
+                                                        />
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </Grid>
+                                        </Form>
+                                        {!isReadOnly && (
+                                            <>
+                                                <Divider hidden />
+                                                <Grid.Row columns={1} className="mt-6">
+                                                    <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                        <PrimaryButton
+                                                            size="small"
+                                                            loading={isSubmitting}
+                                                            onClick={() => {
+                                                                formRef?.current?.triggerSubmit();
+                                                            }}
+                                                            ariaLabel="Session management form update button"
+                                                            data-componentid={`${componentId}-update-button`}
+                                                        >
+                                                            {t("common:update")}
+                                                        </PrimaryButton>
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            </>
+                                        )}
+                                    </>
+                                )}
                             </EmphasizedSegment>
                         </Grid.Column>
                     </Grid.Row>

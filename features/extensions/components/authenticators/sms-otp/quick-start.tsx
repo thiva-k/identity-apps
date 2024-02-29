@@ -24,8 +24,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid } from "semantic-ui-react";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
-import { FeatureConfigInterface } from "features/core/models";
-import { AppState } from "features/core/store";
+import { FeatureConfigInterface } from "../../../../core/models";
+import { AppState } from "../../../../core/store";
 import { VerticalStepper, VerticalStepperStepInterface } from "../../component-extensions";
 import ApplicationSelectionModal from "../../shared/application-selection-modal";
 
@@ -44,22 +44,19 @@ type SMSOTPQuickStartPropsInterface = IdentifiableComponentInterface;
 const SMSOTPQuickStart: FunctionComponent<SMSOTPQuickStartPropsInterface> = (
     props: SMSOTPQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const isApplicationReadAccessAllowed: boolean = useMemo(() => (
-        hasRequiredScopes(
-            featureConfig?.applications, featureConfig?.applications?.scopes?.read, allowedScopes)
-    ), [ featureConfig, allowedScopes ]);
+    const isApplicationReadAccessAllowed: boolean = useMemo(
+        () => hasRequiredScopes(featureConfig?.applications, featureConfig?.applications?.scopes?.read, allowedScopes),
+        [featureConfig, allowedScopes]
+    );
 
     /**
      * Vertical Stepper steps.
@@ -75,9 +72,14 @@ const SMSOTPQuickStart: FunctionComponent<SMSOTPQuickStartPropsInterface> = (
                                 "extensions:develop.identityProviders.smsOTP.quickStart.steps.selectApplication.content"
                             }
                         >
-                            Choose the { isApplicationReadAccessAllowed ? (
-                                <Link external={ false } onClick={ () => setShowApplicationModal(true) }>
-                                application </Link>) : "application" }
+                            Choose the{" "}
+                            {isApplicationReadAccessAllowed ? (
+                                <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                                    application{" "}
+                                </Link>
+                            ) : (
+                                "application"
+                            )}
                             for which you want to set up SMS OTP login.
                         </Trans>
                     </Text>
@@ -90,14 +92,16 @@ const SMSOTPQuickStart: FunctionComponent<SMSOTPQuickStartPropsInterface> = (
                 <>
                     <Text>
                         <Trans
-                            i18nKey={ "extensions:develop.identityProviders.smsOTP.quickStart.steps.selectSMSOTP" +
-                                ".content" }
+                            i18nKey={
+                                "extensions:develop.identityProviders.smsOTP.quickStart.steps.selectSMSOTP" + ".content"
+                            }
                         >
-                            Go to <strong>Login Flow</strong> tab and click on the <strong>Username & Password + SMS OTP
-                            </strong> option from the Multi-factor login section to configure a basic SMS OTP flow.
+                            Go to <strong>Login Flow</strong> tab and click on the{" "}
+                            <strong>Username & Password + SMS OTP</strong> option from the Multi-factor login section to
+                            configure a basic SMS OTP flow.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
@@ -110,47 +114,36 @@ const SMSOTPQuickStart: FunctionComponent<SMSOTPQuickStartPropsInterface> = (
 
     return (
         <>
-            <Grid data-testid={ componentId } className="authenticator-quickstart-content">
+            <Grid data-testid={componentId} className="authenticator-quickstart-content">
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
+                    <Grid.Column width={16}>
                         <PageHeader
                             className="mb-2"
-                            title={ t("extensions:develop.identityProviders.smsOTP.quickStart.heading") }
-                            imageSpaced={ false }
-                            bottomMargin={ false }
+                            title={t("extensions:develop.identityProviders.smsOTP.quickStart.heading")}
+                            imageSpaced={false}
+                            bottomMargin={false}
                         />
                         <Heading subHeading as="h6">
-                            { t("extensions:develop.identityProviders.smsOTP.quickStart.subHeading") }
+                            {t("extensions:develop.identityProviders.smsOTP.quickStart.subHeading")}
                         </Heading>
                     </Grid.Column>
                 </Grid.Row>
                 <Grid.Row textAlign="left">
-                    <Grid.Column width={ 16 }>
-                        <VerticalStepper
-                            alwaysOpen
-                            isSidePanelOpen
-                            stepContent={ steps }
-                            isNextEnabled={ true }
-                        />
+                    <Grid.Column width={16}>
+                        <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ componentId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={
-                            t("extensions:develop.identityProviders.smsOTP.quickStart.addLoginModal.heading")
-                        }
-                        subHeading={
-                            t("extensions:develop.identityProviders.smsOTP.quickStart.addLoginModal.subHeading")
-                        }
-                        data-componentid="connections"
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${componentId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.smsOTP.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.smsOTP.quickStart.addLoginModal.subHeading")}
+                    data-componentid="connections"
+                />
+            )}
         </>
     );
 };

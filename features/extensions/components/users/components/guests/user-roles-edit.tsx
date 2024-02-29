@@ -42,11 +42,7 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Form, Grid, Modal } from "semantic-ui-react";
-import {
-    AppState,
-    FeatureConfigInterface,
-    updateResources
-} from "features/core";
+import { AppState, FeatureConfigInterface, updateResources } from "../../../../../core";
 import { getRolesList } from "../../../../../roles/api";
 import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "../../../../../roles/constants";
 import { RealmConfigInterface } from "features/server-configurations/models";
@@ -111,36 +107,36 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ showAddNewRoleModal, setAddNewRoleModalView ] = useState(false);
-    const [ roleList, setRoleList ] = useState<RolesInterface[]>([]);
-    const [ selectedRoleList, setSelectedRoleList ] = useState<RolesInterface[]>([]);
-    const [ , setInitialRoleList ] = useState([]);
-    const [ primaryRoles, setPrimaryRoles ] = useState<RolesInterface[]>(undefined);
+    const [showAddNewRoleModal, setAddNewRoleModalView] = useState(false);
+    const [roleList, setRoleList] = useState<RolesInterface[]>([]);
+    const [selectedRoleList, setSelectedRoleList] = useState<RolesInterface[]>([]);
+    const [, setInitialRoleList] = useState([]);
+    const [primaryRoles, setPrimaryRoles] = useState<RolesInterface[]>(undefined);
 
     // The following constant holds the state of role already assigned roles.
-    const [ primaryRolesList, setPrimaryRolesList ] = useState(undefined);
+    const [primaryRolesList, setPrimaryRolesList] = useState(undefined);
 
-    const [ , setIsSelectAllRolesChecked ] = useState(false);
-    const [ showRolePermissionModal, setRolePermissionModal ] = useState(false);
-    const [ selectedRoleId ] = useState<string>("");
-    const [ isRoleSelected, setRoleSelection ] = useState(false);
+    const [, setIsSelectAllRolesChecked] = useState(false);
+    const [showRolePermissionModal, setRolePermissionModal] = useState(false);
+    const [selectedRoleId] = useState<string>("");
+    const [isRoleSelected, setRoleSelection] = useState(false);
 
     // The following constant are used to persist the state of the unassigned roles permissions.
-    const [ viewRolePermissions, setViewRolePermissions ] = useState(false);
-    const [ roleId ] = useState();
-    const [ isSelected, setSelection ] = useState(false);
+    const [viewRolePermissions, setViewRolePermissions] = useState(false);
+    const [roleId] = useState();
+    const [isSelected, setSelection] = useState(false);
 
     // The following constant is used to persist the state whether user's assigned roles are still loading or finished.
-    const [ isPrimaryRolesLoading, setPrimaryRolesLoading ] = useState<boolean>(false);
+    const [isPrimaryRolesLoading, setPrimaryRolesLoading] = useState<boolean>(false);
 
-    const [ , setAssignedRoles ] = useState([]);
-    const [ displayedRoles, setDisplayedRoles ] = useState([]);
+    const [, setAssignedRoles] = useState([]);
+    const [displayedRoles, setDisplayedRoles] = useState([]);
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
     const authenticatedUserTenanted: string = useSelector((state: AppState) => state?.auth?.username);
     const authenticatedUserComponents: string[] = authenticatedUserTenanted.split("@");
-    
+
     authenticatedUserComponents.pop();
     const authenticatedUser: string = authenticatedUserComponents.join("@");
 
@@ -152,7 +148,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
         if (isRoleSelected) {
             handleOpenRolePermissionModal();
         }
-    }, [ isRoleSelected ]);
+    }, [isRoleSelected]);
 
     useEffect(() => {
         if (!roleId) {
@@ -162,11 +158,11 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
         if (isSelected) {
             setViewRolePermissions(true);
         }
-    }, [ isSelected ]);
+    }, [isSelected]);
 
     useEffect(() => {
         setAssignedRoles(displayedRoles);
-    }, [ displayedRoles ]);
+    }, [displayedRoles]);
 
     /**
      * The following useEffect will be triggered when the roles are updated.
@@ -183,20 +179,21 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
             return;
         }
         setDisplayedRoles(
-            user.roles.filter((
-                role: RolesMemberInterface
-            ) => role.display?.split("/").length !== 2 && role.display?.split("/")[ 0 ] !== "Application")
+            user.roles.filter(
+                (role: RolesMemberInterface) =>
+                    role.display?.split("/").length !== 2 && role.display?.split("/")[0] !== "Application"
+            )
         );
         mapUserRoles();
         resolveUserRoles();
-    }, [ user ]);
+    }, [user]);
 
     useEffect(() => {
         if (!user) {
             return;
         }
         setInitialLists();
-    }, [ user.roles && primaryRoles ]);
+    }, [user.roles && primaryRoles]);
 
     useEffect(() => {
         setPrimaryRolesLoading(true);
@@ -236,9 +233,9 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
 
                 if (
                     displayName?.length > 1 &&
-                    (displayName[ 0 ] == APPLICATION_DOMAIN || displayName[ 0 ] == INTERNAL_DOMAIN)
+                    (displayName[0] == APPLICATION_DOMAIN || displayName[0] == INTERNAL_DOMAIN)
                 ) {
-                    if (hideApplicationRoles && group[ 0 ] === "Application" && group.length === 2) {
+                    if (hideApplicationRoles && group[0] === "Application" && group.length === 2) {
                         return;
                     }
                     userRoles.push(group);
@@ -250,7 +247,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
     };
 
     const setInitialLists = () => {
-        const roleListCopy: RolesInterface[] = primaryRoles ? [ ...primaryRoles ] : [];
+        const roleListCopy: RolesInterface[] = primaryRoles ? [...primaryRoles] : [];
         const addedRoles: RolesInterface[] = [];
 
         if (roleListCopy && primaryRolesList) {
@@ -284,7 +281,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                     const groupName: string[] = group?.display?.split("/");
 
                     if (groupName?.length >= 1) {
-                        if (hideApplicationRoles && group[ 0 ] === "Application" && group.length === 2) {
+                        if (hideApplicationRoles && group[0] === "Application" && group.length === 2) {
                             return;
                         }
                         groupsMap?.set(group.display, group.value);
@@ -301,7 +298,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                 const role: string[] = roles?.display?.split("/");
 
                 if (role?.length >= 1 && roles?.value) {
-                    if (hideApplicationRoles && role[ 0 ] === "Application" && role.length === 2) {
+                    if (hideApplicationRoles && role[0] === "Application" && role.length === 2) {
                         return;
                     }
                     rolesMap.set(roles?.display, roles?.value);
@@ -328,7 +325,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
         const bulkData: any = {
             Operations: [],
             failOnErrors: 1,
-            schemas: [ "urn:ietf:params:scim:api:messages:2.0:BulkRequest" ]
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:BulkRequest"]
         };
 
         let removeOperation: {
@@ -348,7 +345,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                         path: "users[value eq " + user.id + "]"
                     }
                 ],
-                schemas: [ "urn:ietf:params:scim:schemas:core:2.0:Role" ]
+                schemas: ["urn:ietf:params:scim:schemas:core:2.0:Role"]
             },
             method: "PATCH"
         };
@@ -380,7 +377,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                         }
                     }
                 ],
-                schemas: [ "urn:ietf:params:scim:schemas:core:2.0:Role" ]
+                schemas: ["urn:ietf:params:scim:schemas:core:2.0:Role"]
             },
             method: "PATCH"
         };
@@ -413,7 +410,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
         const addedIds: string[] = [];
 
         if (primaryRolesList) {
-            removedIds = [ ...primaryRolesList.values() ];
+            removedIds = [...primaryRolesList.values()];
         }
 
         if (roleIds?.length > 0) {
@@ -435,18 +432,20 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                 removeOperations.push(removeOperation);
             });
 
-            removeOperations.map((operation: {
-                data: {
-                    Operations: {
-                        op: string;
-                        path: string;
-                    }[];
-                    schemas: string[];
-                };
-                method: string;
-            }) => {
-                bulkData.Operations.push(operation);
-            });
+            removeOperations.map(
+                (operation: {
+                    data: {
+                        Operations: {
+                            op: string;
+                            path: string;
+                        }[];
+                        schemas: string[];
+                    };
+                    method: string;
+                }) => {
+                    bulkData.Operations.push(operation);
+                }
+            );
         }
 
         if (addedIds && addedIds?.length > 0) {
@@ -458,22 +457,24 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                 addOperations.push(addOperation);
             });
 
-            addOperations.map((operation: {
-                data: {
-                    Operations: {
-                        op: string;
-                        value: {
-                            users: {
-                                value: any;
-                            }[];
-                        };
-                    }[];
-                    schemas: string[];
-                };
-                method: string;
-            }) => {
-                bulkData.Operations.push(operation);
-            });
+            addOperations.map(
+                (operation: {
+                    data: {
+                        Operations: {
+                            op: string;
+                            value: {
+                                users: {
+                                    value: any;
+                                }[];
+                            };
+                        }[];
+                        schemas: string[];
+                    };
+                    method: string;
+                }) => {
+                    bulkData.Operations.push(operation);
+                }
+            );
         }
 
         setIsSubmitting(true);
@@ -483,35 +484,35 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                 let description: string = null;
 
                 try {
-                    description = JSON.parse(response.data.Operations[ 1 ].response).scimType;
-                }
-                catch (e) {
+                    description = JSON.parse(response.data.Operations[1].response).scimType;
+                } catch (e) {
                     description = t(
-                        "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                        "error.message"
+                        "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." + "error.message"
                     );
                 }
-                if (response?.data?.Operations[ 0 ]?.status.code === 400 &&
-                    response?.data?.Operations[ 1 ]?.status.code === 400
+                if (
+                    response?.data?.Operations[0]?.status.code === 400 &&
+                    response?.data?.Operations[1]?.status.code === 400
                 ) {
                     onAlertFired({
                         description: description,
                         level: AlertLevels.ERROR,
                         message: t(
                             "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                            "error.message"
+                                "error.message"
                         )
                     });
                     setInitialLists();
-                } else if (response?.data?.Operations[ 0 ]?.status.code === 400 ||
-                    response?.data?.Operations[ 1 ]?.status.code === 400
+                } else if (
+                    response?.data?.Operations[0]?.status.code === 400 ||
+                    response?.data?.Operations[1]?.status.code === 400
                 ) {
                     onAlertFired({
                         description: description,
                         level: AlertLevels.WARNING,
                         message: t(
                             "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                            "error.message"
+                                "error.message"
                         )
                     });
                     setInitialLists();
@@ -519,12 +520,12 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                     onAlertFired({
                         description: t(
                             "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                            "success.description"
+                                "success.description"
                         ),
                         level: AlertLevels.SUCCESS,
                         message: t(
                             "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                            "success.message"
+                                "success.message"
                         )
                     });
                     handelAddNewRoleModalClose();
@@ -542,7 +543,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                         level: AlertLevels.ERROR,
                         message: t(
                             "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                            "error.message"
+                                "error.message"
                         )
                     });
 
@@ -552,12 +553,12 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                 onAlertFired({
                     description: t(
                         "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                        "genericError.description"
+                            "genericError.description"
                     ),
                     level: AlertLevels.ERROR,
                     message: t(
                         "console:manage.features.user.updateUser.roles.notifications.updateUserRoles." +
-                        "genericError.message"
+                            "genericError.message"
                     )
                 });
             })
@@ -602,43 +603,38 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
     };
 
     const addNewGroupModal = () => (
-        <Modal 
-            data-testid="user-mgt-update-roles-modal" 
-            open={ showAddNewRoleModal } 
-            size="small" 
-            className="user-roles"
-        >
+        <Modal data-testid="user-mgt-update-roles-modal" open={showAddNewRoleModal} size="small" className="user-roles">
             <Modal.Header>
-                { t("console:manage.features.user.updateUser.roles.addRolesModal.heading") }
+                {t("console:manage.features.user.updateUser.roles.addRolesModal.heading")}
                 <Heading subHeading ellipsis as="h6">
-                    { t("console:manage.features.user.updateUser.roles.addRolesModal.subHeading") }
+                    {t("console:manage.features.user.updateUser.roles.addRolesModal.subHeading")}
                 </Heading>
             </Modal.Header>
-            { viewRolePermissions && (
+            {viewRolePermissions && (
                 <>
                     <Modal.Content>
                         <RolePermissions
                             data-testid="user-mgt-update-roles-modal-unselected-role-permissions"
-                            handleNavigateBack={ handleViewRolePermission }
-                            roleId={ roleId }
+                            handleNavigateBack={handleViewRolePermission}
+                            roleId={roleId}
                         />
                     </Modal.Content>
                     <Divider hidden />
                 </>
-            ) }
+            )}
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 2 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={2}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
                                 data-testid="user-mgt-update-roles-modal-cancel-button"
                                 floated="left"
-                                onClick={ handleCloseAddNewGroupModal }
+                                onClick={handleCloseAddNewGroupModal}
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }></Grid.Column>
+                        <Grid.Column mobile={8} tablet={8} computer={8}></Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Modal.Actions>
@@ -658,10 +654,10 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
         return (
             <UserRolePermissions
                 data-testid="user-mgt-roles-list-roles-permission-modal"
-                openRolePermissionModal={ showRolePermissionModal }
-                handleCloseRolePermissionModal={ handleCloseRolePermissionModal }
-                roleId={ selectedRoleId }
-                permissionsToHide={ permissionsToHide }
+                openRolePermissionModal={showRolePermissionModal}
+                handleCloseRolePermissionModal={handleCloseRolePermissionModal}
+                roleId={selectedRoleId}
+                permissionsToHide={permissionsToHide}
             />
         );
     };
@@ -681,7 +677,7 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
         <>
             <Grid>
                 <Grid.Row>
-                    <Grid.Column width={ 16 }>
+                    <Grid.Column width={16}>
                         {
                             <EmphasizedSegment
                                 clearing
@@ -693,159 +689,158 @@ export const UserRolesList: FunctionComponent<UserRolesPropsInterface> = (
                                     <Grid.Row>
                                         <Grid.Column>
                                             <Heading as="h4">
-                                                { t("console:manage.features.user.updateUser.roles.editRoles.heading") }
+                                                {t("console:manage.features.user.updateUser.roles.editRoles.heading")}
                                             </Heading>
                                             <Heading subHeading ellipsis as="h6">
-                                                { !hasRequiredScopes(featureConfig?.users,
+                                                {!hasRequiredScopes(
+                                                    featureConfig?.users,
                                                     featureConfig?.users?.scopes?.update,
-                                                    allowedScopes) || (user?.userName === realmConfigs?.adminUser
-                                                    && authenticatedUser !== user?.userName) 
-                                                    ? (
-                                                        <>
-                                                            Add or remove the roles assigned to this user to control the
-                                                            user&apos;s access to different functionalities of 
-                                                            the Console application.
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            Collaborators are assigned administrator 
-                                                            permissions by default.
-                                                            <DocumentationLink
-                                                                link={ getLink("manage.users.collaboratorAccounts." +
-                                                                    "roles.learnMore") }
-                                                            >
-                                                                { t("extensions:common.learnMore") }
-                                                            </DocumentationLink>
-                                                        </>
-                                                    )
-                                                }
+                                                    allowedScopes
+                                                ) ||
+                                                (user?.userName === realmConfigs?.adminUser &&
+                                                    authenticatedUser !== user?.userName) ? (
+                                                    <>
+                                                        Add or remove the roles assigned to this user to control the
+                                                        user&apos;s access to different functionalities of the Console
+                                                        application.
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Collaborators are assigned administrator permissions by default.
+                                                        <DocumentationLink
+                                                            link={getLink(
+                                                                "manage.users.collaboratorAccounts." + "roles.learnMore"
+                                                            )}
+                                                        >
+                                                            {t("extensions:common.learnMore")}
+                                                        </DocumentationLink>
+                                                    </>
+                                                )}
                                             </Heading>
                                         </Grid.Column>
                                     </Grid.Row>
                                     <Grid.Row>
-                                        <Grid.Column computer={ 10 } tablet={ 16 } mobile={ 16 }>
-                                            { !isPrimaryRolesLoading ? (
+                                        <Grid.Column computer={10} tablet={16} mobile={16}>
+                                            {!isPrimaryRolesLoading ? (
                                                 <EmphasizedSegment>
                                                     <Form.Group>
                                                         <Divider hidden />
-                                                        {
-                                                            roleList?.map((role: RolesInterface, index: number) => {
-                                                                const roleName: string[]
-                                                                    = role?.displayName?.split("/");
+                                                        {roleList?.map((role: RolesInterface, index: number) => {
+                                                            const roleName: string[] = role?.displayName?.split("/");
 
-                                                                if (
-                                                                    roleName?.length >= 1 &&
-                                                                    !roleName.includes("everyone") &&
-                                                                    !roleName.includes("system") &&
-                                                                    !roleName.includes("selfsignup")
-                                                                ) {
-                                                                    return (
-                                                                        <>
-                                                                            <Form.Radio
-                                                                                onChange={ () =>
-                                                                                    handleUnassignedItemCheckboxChange(
-                                                                                        role)
-                                                                                }
-                                                                                key={ index }
-                                                                                label={
-                                                                                    roleName?.length > 1
-                                                                                        ? roleName[ 1 ]
-                                                                                        : roleName[ 0 ]
-                                                                                }
-                                                                                checked={
-                                                                                    selectedRoleList.includes(role) }
-                                                                                data-testid={
-                                                                                    "user-mgt-update-roles-" +
-                                                                                    "modal-unselected-roles"
-                                                                                }
-                                                                                readOnly={
-                                                                                    !hasRequiredScopes(
-                                                                                        featureConfig?.users,
-                                                                                        featureConfig?.users
-                                                                                            ?.scopes?.update,
-                                                                                        allowedScopes
-                                                                                    )
-                                                                                    || ( user?.userName
-                                                                                            === realmConfigs?.adminUser
-                                                                                        && authenticatedUser
-                                                                                            !== user?.userName
-                                                                                    )
-                                                                                }
-                                                                            />
-                                                                            <Divider hidden />
-                                                                        </>
-                                                                    );
-                                                                }
-                                                            })
-                                                        }
+                                                            if (
+                                                                roleName?.length >= 1 &&
+                                                                !roleName.includes("everyone") &&
+                                                                !roleName.includes("system") &&
+                                                                !roleName.includes("selfsignup")
+                                                            ) {
+                                                                return (
+                                                                    <>
+                                                                        <Form.Radio
+                                                                            onChange={() =>
+                                                                                handleUnassignedItemCheckboxChange(role)
+                                                                            }
+                                                                            key={index}
+                                                                            label={
+                                                                                roleName?.length > 1
+                                                                                    ? roleName[1]
+                                                                                    : roleName[0]
+                                                                            }
+                                                                            checked={selectedRoleList.includes(role)}
+                                                                            data-testid={
+                                                                                "user-mgt-update-roles-" +
+                                                                                "modal-unselected-roles"
+                                                                            }
+                                                                            readOnly={
+                                                                                !hasRequiredScopes(
+                                                                                    featureConfig?.users,
+                                                                                    featureConfig?.users?.scopes
+                                                                                        ?.update,
+                                                                                    allowedScopes
+                                                                                ) ||
+                                                                                (user?.userName ===
+                                                                                    realmConfigs?.adminUser &&
+                                                                                    authenticatedUser !==
+                                                                                        user?.userName)
+                                                                            }
+                                                                        />
+                                                                        <Divider hidden />
+                                                                    </>
+                                                                );
+                                                            }
+                                                        })}
                                                     </Form.Group>
                                                 </EmphasizedSegment>
                                             ) : (
                                                 <ContentLoader />
-                                            ) }
+                                            )}
                                         </Grid.Column>
                                     </Grid.Row>
-                                    { !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.update,
-                                        allowedScopes) || (user?.userName === realmConfigs?.adminUser
-                                        && authenticatedUser !== user?.userName) && (
-                                        <Grid.Row>
-                                            <Grid.Column>
-                                                <Show when={ AccessControlConstants.USER_WRITE }>
-                                                    <PrimaryButton
-                                                        data-testid="user-mgt-update-roles-modal-save-button"
-                                                        floated="left"
-                                                        loading={ isSubmitting }
-                                                        disabled={ isSubmitting }
-                                                        onClick={ () => checkRolesSelected() }
-                                                    >
-                                                        { t("common:update") }
-                                                    </PrimaryButton>
-                                                </Show>
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    ) }
+                                    {!hasRequiredScopes(
+                                        featureConfig?.users,
+                                        featureConfig?.users?.scopes?.update,
+                                        allowedScopes
+                                    ) ||
+                                        (user?.userName === realmConfigs?.adminUser &&
+                                            authenticatedUser !== user?.userName && (
+                                                <Grid.Row>
+                                                    <Grid.Column>
+                                                        <Show when={AccessControlConstants.USER_WRITE}>
+                                                            <PrimaryButton
+                                                                data-testid="user-mgt-update-roles-modal-save-button"
+                                                                floated="left"
+                                                                loading={isSubmitting}
+                                                                disabled={isSubmitting}
+                                                                onClick={() => checkRolesSelected()}
+                                                            >
+                                                                {t("common:update")}
+                                                            </PrimaryButton>
+                                                        </Show>
+                                                    </Grid.Column>
+                                                </Grid.Row>
+                                            ))}
                                 </Grid>
                             </EmphasizedSegment>
                         }
                     </Grid.Column>
                 </Grid.Row>
-                { viewRolesPermissionModal() }
-                { addNewGroupModal() }
+                {viewRolesPermissionModal()}
+                {addNewGroupModal()}
             </Grid>
-            { showDeleteConfirmationModal && (
+            {showDeleteConfirmationModal && (
                 <ConfirmationModal
                     data-testid="user-mgt-update-roles-confirmation-modal"
-                    onClose={ (): void => setShowDeleteConfirmationModal(false) }
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
                     type="negative"
-                    open={ showDeleteConfirmationModal }
-                    assertionHint={ t(
+                    open={showDeleteConfirmationModal}
+                    assertionHint={t(
                         "console:manage.features.user.updateUser.roles.editRoles" + ".confirmationModal.assertionHint"
-                    ) }
+                    )}
                     assertionType="checkbox"
-                    primaryAction={ t("common:confirm") }
-                    secondaryAction={ t("common:cancel") }
-                    onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                    onPrimaryActionClick={ (): void => {
+                    primaryAction={t("common:confirm")}
+                    secondaryAction={t("common:cancel")}
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => {
                         updateUserRole(user, selectedRoleList);
                         setShowDeleteConfirmationModal(false);
-                    } }
-                    closeOnDimmerClick={ false }
+                    }}
+                    closeOnDimmerClick={false}
                 >
                     <ConfirmationModal.Header data-testid="user-mgt-update-roles-confirmation-modal-header">
-                        { t("console:manage.features.user.updateUser.roles.editRoles.confirmationModal" + ".header") }
+                        {t("console:manage.features.user.updateUser.roles.editRoles.confirmationModal" + ".header")}
                     </ConfirmationModal.Header>
                     <ConfirmationModal.Message
                         data-testid="user-mgt-update-roles-confirmation-modal-message"
                         attached
                         negative
                     >
-                        { t("console:manage.features.user.updateUser.roles.editRoles.confirmationModal" + ".message") }
+                        {t("console:manage.features.user.updateUser.roles.editRoles.confirmationModal" + ".message")}
                     </ConfirmationModal.Message>
                     <ConfirmationModal.Content data-testid="user-mgt-update-roles-confirmation-modal-content">
-                        { t("console:manage.features.user.updateUser.roles.editRoles.confirmationModal" + ".content") }
+                        {t("console:manage.features.user.updateUser.roles.editRoles.confirmationModal" + ".content")}
                     </ConfirmationModal.Content>
                 </ConfirmationModal>
-            ) }
+            )}
         </>
     );
 };

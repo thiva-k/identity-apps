@@ -32,12 +32,12 @@ import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Card, Form, Grid } from "semantic-ui-react";
 import { SAMLApplicationConfigurationInterface } from "features/applications/models";
-import { AppState, EventPublisher } from "features/core";
+import { AppState, EventPublisher } from "../../../../core";
 
 type TechnologyArrayPropsInterface = {
     techIcon: GenericIconProps;
     techIconTitle?: string;
-}
+};
 
 interface TWASAMLCustomConfigurationPropsInterface extends IdentifiableComponentInterface {
     icons: Array<GenericIconProps["icon"]> | TechnologyArrayPropsInterface[];
@@ -64,7 +64,6 @@ interface CustomConfigInterface {
 export const TraditionalSAMLWebApplicationCustomConfiguration: FC<TWASAMLCustomConfigurationPropsInterface> = (
     props: TWASAMLCustomConfigurationPropsInterface
 ): ReactElement => {
-
     const {
         icons,
         onTriggerTabUpdate,
@@ -78,10 +77,11 @@ export const TraditionalSAMLWebApplicationCustomConfiguration: FC<TWASAMLCustomC
     const { t } = useTranslation();
 
     const samlConfigurations: SAMLApplicationConfigurationInterface = useSelector(
-        (state: AppState) => state.application.samlConfigurations);
+        (state: AppState) => state.application.samlConfigurations
+    );
 
-    const [ isConfigOpen, setConfigOpen ] = useState<boolean>(true);
-    const [ sdkConfig, setSdkConfig ] = useState<CustomConfigInterface>(undefined);
+    const [isConfigOpen, setConfigOpen] = useState<boolean>(true);
+    const [sdkConfig, setSdkConfig] = useState<CustomConfigInterface>(undefined);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -92,7 +92,7 @@ export const TraditionalSAMLWebApplicationCustomConfiguration: FC<TWASAMLCustomC
         if (!inboundProtocolConfig?.saml) {
             return;
         }
-    
+
         const configs: CustomConfigInterface = {
             acsUrl: inboundProtocolConfig.saml.defaultAssertionConsumerUrl,
             idpEntityId: samlConfigurations?.issuer,
@@ -104,9 +104,7 @@ export const TraditionalSAMLWebApplicationCustomConfiguration: FC<TWASAMLCustomC
     }, []);
 
     const onServerEndpointConfigTabClick = (): void => {
-        eventPublisher.publish(
-            "application-quick-start-visit-info-section"
-        );
+        eventPublisher.publish("application-quick-start-visit-info-section");
         onTriggerTabUpdate(infoTabIndex);
     };
 
@@ -114,78 +112,73 @@ export const TraditionalSAMLWebApplicationCustomConfiguration: FC<TWASAMLCustomC
         onTriggerTabUpdate(protocolTabIndex);
     };
 
-    const renderConfigurationFields = (): ReactElement => {        
+    const renderConfigurationFields = (): ReactElement => {
         return (
             <>
                 <div className="custom-config-message">
-                    <Heading as="h6" compact>                     
+                    <Heading as="h6" compact>
                         <Trans
-                            i18nKey={
-                                "extensions:console.application.quickStart" +
-                                ".spa.customConfig.protocolConfig"
-                            }
+                            i18nKey={"extensions:console.application.quickStart" + ".spa.customConfig.protocolConfig"}
                         >
-                            Use the following configurations to integrate your application with Asgardeo. 
-                            For more details on configurations, go to the 
-                            <a
-                                className="link pointing"
-                                onClick={ onProtocolTabClick }
-                            >
+                            Use the following configurations to integrate your application with Asgardeo. For more
+                            details on configurations, go to the
+                            <a className="link pointing" onClick={onProtocolTabClick}>
                                 Protocols
-                            </a> tab.
+                            </a>{" "}
+                            tab.
                         </Trans>
                     </Heading>
                 </div>
-                <Grid className="custom-config-message mt-4 mb-4" >
+                <Grid className="custom-config-message mt-4 mb-4">
                     <Grid.Row>
-                        <Grid.Column computer={ 14 } widescreen={ 10 }>
+                        <Grid.Column computer={14} widescreen={10}>
                             <Form>
                                 <Form.Field>
                                     <label>
-                                        {
-                                            t("extensions:console.application.quickStart" +
-                                            ".twa.saml.customConfig.issuer")
-                                        }
+                                        {t(
+                                            "extensions:console.application.quickStart" +
+                                                ".twa.saml.customConfig.issuer"
+                                        )}
                                     </label>
                                     <CopyInputField
-                                        value={ sdkConfig?.issuer }
-                                        data-componentid={ `${ componentId }-client-id-readonly-input` }
+                                        value={sdkConfig?.issuer}
+                                        data-componentid={`${componentId}-client-id-readonly-input`}
                                     />
                                 </Form.Field>
                                 <Form.Field>
                                     <label>
-                                        {
-                                            t("extensions:console.application.quickStart" +
-                                            ".twa.saml.customConfig.acsUrl")
-                                        }
+                                        {t(
+                                            "extensions:console.application.quickStart" +
+                                                ".twa.saml.customConfig.acsUrl"
+                                        )}
                                     </label>
                                     <CopyInputField
-                                        value={ sdkConfig?.acsUrl }
-                                        data-componentid={ `${ componentId }-base-url-readonly-input` }
+                                        value={sdkConfig?.acsUrl}
+                                        data-componentid={`${componentId}-base-url-readonly-input`}
                                     />
                                 </Form.Field>
                                 <Form.Field>
                                     <label>
-                                        {
-                                            t("extensions:console.application.quickStart" +
-                                            ".twa.saml.customConfig.idpEntityId")
-                                        }
+                                        {t(
+                                            "extensions:console.application.quickStart" +
+                                                ".twa.saml.customConfig.idpEntityId"
+                                        )}
                                     </label>
                                     <CopyInputField
-                                        value={ sdkConfig?.idpEntityId }
-                                        data-componentid={ `${ componentId }-redirect-url-readonly-input` }
+                                        value={sdkConfig?.idpEntityId}
+                                        data-componentid={`${componentId}-redirect-url-readonly-input`}
                                     />
                                 </Form.Field>
                                 <Form.Field>
                                     <label>
-                                        {
-                                            t("extensions:console.application.quickStart" +
-                                            ".twa.saml.customConfig.idpUrl")
-                                        }
+                                        {t(
+                                            "extensions:console.application.quickStart" +
+                                                ".twa.saml.customConfig.idpUrl"
+                                        )}
                                     </label>
                                     <CopyInputField
-                                        value={ sdkConfig?.idpUrl }
-                                        data-componentid={ `${ componentId }-scope-readonly-input` }
+                                        value={sdkConfig?.idpUrl}
+                                        data-componentid={`${componentId}-scope-readonly-input`}
                                     />
                                 </Form.Field>
                             </Form>
@@ -195,18 +188,13 @@ export const TraditionalSAMLWebApplicationCustomConfiguration: FC<TWASAMLCustomC
                 <div className="custom-config-message mb-4">
                     <Heading as="h6" compact>
                         <Trans
-                            i18nKey={
-                                "extensions:console.application.quickStart" +
-                                ".spa.customConfig.serverEndpoints"
-                            }
+                            i18nKey={"extensions:console.application.quickStart" + ".spa.customConfig.serverEndpoints"}
                         >
-                            Details on the server endpoints are available in the 
-                            <a
-                                className="link pointing"
-                                onClick={ onServerEndpointConfigTabClick }
-                            >
+                            Details on the server endpoints are available in the
+                            <a className="link pointing" onClick={onServerEndpointConfigTabClick}>
                                 Info
-                            </a> tab.
+                            </a>{" "}
+                            tab.
                         </Trans>
                     </Heading>
                 </div>
@@ -215,76 +203,61 @@ export const TraditionalSAMLWebApplicationCustomConfiguration: FC<TWASAMLCustomC
     };
 
     return (
-        <Card
-            fluid
-            className="basic-card no-hover quick-start-custom-config-message no-background"
-        >
+        <Card fluid className="basic-card no-hover quick-start-custom-config-message no-background">
             <Card.Content textAlign="center">
                 <Text muted>
-                    <Trans
-                        i18nKey={
-                            "extensions:console.application.quickStart" +
-                            ".twa.saml.customConfig.heading"
-                        }
-                    >
-                        You can discover  
-                        <DocumentationLink
-                            link={ documentationLink }
-                            showEmptyLinkText
-                        >
+                    <Trans i18nKey={"extensions:console.application.quickStart" + ".twa.saml.customConfig.heading"}>
+                        You can discover
+                        <DocumentationLink link={documentationLink} showEmptyLinkText>
                             SAML configurations
-                        </DocumentationLink> to integrate Asgardeo with any traditional web application.
+                        </DocumentationLink>{" "}
+                        to integrate Asgardeo with any traditional web application.
                     </Trans>
-                </Text>  
+                </Text>
             </Card.Content>
             <Card.Content>
                 <div className="tech-array">
-                    { icons.map((icon: TechnologyArrayPropsInterface, index: number) => (
+                    {icons.map((icon: TechnologyArrayPropsInterface, index: number) => (
                         <Popup
                             basic
                             inverted
                             position="top center"
-                            key={ `extended-tech-icon-popup-${ index }` }
-                            content={ icon.techIconTitle }
+                            key={`extended-tech-icon-popup-${index}`}
+                            content={icon.techIconTitle}
                             trigger={
-                                (<div>
+                                <div>
                                     <GenericIcon
-                                        key={ `extended-tech-icon-${ index }` }
+                                        key={`extended-tech-icon-${index}`}
                                         transparent
                                         size="x30"
-                                        icon={ icon.techIcon }
+                                        icon={icon.techIcon}
                                     />
-                                </div>)
+                                </div>
                             }
                         />
-                    )) }
+                    ))}
                 </div>
-                <div>
-                    { t("extensions:console.application.quickStart.twa.common.orAnyTechnology") }
-                </div>
+                <div>{t("extensions:console.application.quickStart.twa.common.orAnyTechnology")}</div>
             </Card.Content>
             <Card.Content>
-                <SegmentedAccordion
-                    fluid
-                    data-componentid={ `${componentId}-accordion` }
-                >
+                <SegmentedAccordion fluid data-componentid={`${componentId}-accordion`}>
                     <SegmentedAccordion.Title
-                        active={ isConfigOpen }
-                        data-componentid={ `${componentId}-headings-accordion-item` }
-                        onClick={ () => setConfigOpen(!isConfigOpen) }
+                        active={isConfigOpen}
+                        data-componentid={`${componentId}-headings-accordion-item`}
+                        onClick={() => setConfigOpen(!isConfigOpen)}
                         className="spa-config-accordion-title"
                     >
                         <Heading as="h5">
-                            { t("extensions:console.application.quickStart.spa.customConfig.configurations") }
+                            {t("extensions:console.application.quickStart.spa.customConfig.configurations")}
                         </Heading>
                     </SegmentedAccordion.Title>
                     <SegmentedAccordion.Content
-                        secondary={ false }
-                        active={ isConfigOpen }
-                        data-componentid={ `${componentId}-headings-accordion-content` }
+                        secondary={false}
+                        active={isConfigOpen}
+                        data-componentid={`${componentId}-headings-accordion-content`}
                         className="spa-config-accordion-content"
                     >
-                        { renderConfigurationFields() }
+                        {renderConfigurationFields()}
                     </SegmentedAccordion.Content>
                 </SegmentedAccordion>
             </Card.Content>

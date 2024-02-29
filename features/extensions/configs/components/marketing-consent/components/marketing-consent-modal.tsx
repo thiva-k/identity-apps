@@ -27,7 +27,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Card, Grid, Icon } from "semantic-ui-react";
-import { AppState } from "features/core";
+import { AppState } from "../../../../../core";
 import { updateUserConsent } from "../api";
 import { getMarketingConsentIllustrations } from "../configs";
 import { setMarketingConsentStatusToLocalStorage } from "../utils";

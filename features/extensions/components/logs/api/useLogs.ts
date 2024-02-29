@@ -17,11 +17,8 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import useRequest, {
-    RequestConfigInterface,
-    RequestResultInterface
-} from "../../../../core/hooks/use-request";
-import { store } from "features/core/store";
+import useRequest, { RequestConfigInterface, RequestResultInterface } from "../../../../core/hooks/use-request";
+import { store } from "../../../../core/store";
 import { InterfaceLogsRequest, InterfaceLogsResponse } from "../models/log-models";
 
 /**
@@ -38,9 +35,10 @@ export const useLogs = <Data = InterfaceLogsResponse, Error = unknown>(
             "Content-Type": "application/json"
         },
         method: HttpMethods.POST,
-        url: (data?.logType === 0)
-            ? store.getState().config.endpoints.diagnosticLogsEndpoint
-            : store.getState().config.endpoints.auditLogsEndpoint
+        url:
+            data?.logType === 0
+                ? store.getState().config.endpoints.diagnosticLogsEndpoint
+                : store.getState().config.endpoints.auditLogsEndpoint
     };
 
     return useRequest<Data, Error>(data ? requestConfig : null);

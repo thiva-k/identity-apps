@@ -23,18 +23,11 @@ import { ContentLoader } from "@wso2is/react-components/src/components/loader/co
 import { AxiosError, AxiosResponse } from "axios";
 import debounce, { DebouncedFunc } from "lodash-es/debounce";
 import isEmpty from "lodash-es/isEmpty";
-import React, {
-    Dispatch,
-    FunctionComponent,
-    ReactElement,
-    SetStateAction,
-    useCallback,
-    useState
-} from "react";
+import React, { Dispatch, FunctionComponent, ReactElement, SetStateAction, useCallback, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, Segment } from "semantic-ui-react";
-import { AppState } from "features/core/store";
+import { AppState } from "../../../../../core/store";
 import { checkDuplicateTenants } from "../../api";
 import { TenantManagementConstants } from "../../constants";
 
@@ -82,13 +75,11 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
         setTenantDuplicate,
         isCheckingTenantExistence,
         setCheckingTenantExistence,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
-    const [ newTenantName, setNewTenantName ] = useState<string>(
-        TenantManagementConstants.TENANT_URI_PLACEHOLDER
-    );
-    const [ isTenantValid, setIsTenantValid ] = useState<boolean>(false);
+    const [newTenantName, setNewTenantName] = useState<string>(TenantManagementConstants.TENANT_URI_PLACEHOLDER);
+    const [isTenantValid, setIsTenantValid] = useState<boolean>(false);
 
     const regionQualifiedConsoleUrl: string = useSelector((state: AppState) => {
         return state.config?.deployment?.extensions?.regionQualifiedConsoleUrl as string;
@@ -102,11 +93,7 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
 
     const checkTenantValidity = (tenantName: string): boolean => {
         const isValidTenantName: boolean =
-            !!tenantName &&
-            !!tenantName.match(
-                TenantManagementConstants.FORM_FIELD_CONSTRAINTS
-                    .TENANT_NAME_PATTERN
-            );
+            !!tenantName && !!tenantName.match(TenantManagementConstants.FORM_FIELD_CONSTRAINTS.TENANT_NAME_PATTERN);
 
         if (!isValidTenantName) {
             setCheckingTenantExistence(false);
@@ -120,9 +107,7 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
      * Function to check if the tenant name user entered is already taken. A debounced version of the function is used
      * to trigger the API call only after user stops typing for 1000ms.
      */
-    const isDuplicateTenant: DebouncedFunc<(
-        data: string
-    ) => void> = useCallback(
+    const isDuplicateTenant: DebouncedFunc<(data: string) => void> = useCallback(
         debounce((data: string) => {
             checkDuplicateTenants(data)
                 .then((response: AxiosResponse) => {
@@ -159,9 +144,7 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
      * @param values - Form Values.
      * @returns Form validation.
      */
-    const validateForm = (
-        values: AddTenantWizardFormValuesInterface
-    ): AddTenantWizardFormErrorValidationsInterface => {
+    const validateForm = (values: AddTenantWizardFormValuesInterface): AddTenantWizardFormErrorValidationsInterface => {
         const error: AddTenantWizardFormErrorValidationsInterface = {
             tenantName: undefined
         };
@@ -169,7 +152,7 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
         if (tenantDuplicate) {
             error.tenantName = t(
                 "extensions:manage.features.tenant.wizards.addTenant.forms.fields." +
-                "tenantName.validations.duplicate",
+                    "tenantName.validations.duplicate",
                 { tenantName: values.toString() }
             );
         } else if (!values.tenantName) {
@@ -184,16 +167,14 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
     return (
         <>
             <Form
-                id={ FORM_ID }
-                onSubmit={ (values: Record<string, any>) => {
+                id={FORM_ID}
+                onSubmit={(values: Record<string, any>) => {
                     setSubmissionValue(values as AddTenantWizardFormValuesInterface);
-                } }
-                triggerSubmit={ (submitFunction: any) => triggerSubmission(submitFunction) }
-                uncontrolledForm={ false }
+                }}
+                triggerSubmit={(submitFunction: any) => triggerSubmission(submitFunction)}
+                uncontrolledForm={false}
                 validate={
-                    (tenantDuplicate ||
-                        newTenantName ===
-                        TenantManagementConstants.TENANT_URI_PLACEHOLDER) &&
+                    (tenantDuplicate || newTenantName === TenantManagementConstants.TENANT_URI_PLACEHOLDER) &&
                     validateForm
                 }
             >
@@ -201,28 +182,18 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
                     ariaLabel="Tenant Name"
                     inputType="resource_name"
                     name="tenantName"
-                    label={ t(
-                        "extensions:manage.features.tenant.wizards.addTenant.forms.fields.tenantName.label"
-                    ) }
-                    placeholder={ t(
+                    label={t("extensions:manage.features.tenant.wizards.addTenant.forms.fields.tenantName.label")}
+                    placeholder={t(
                         "extensions:manage.features.tenant.wizards.addTenant.forms.fields.tenantName.placeholder"
-                    ) }
-                    required={ true }
-                    listen={ (value: string) => updateTenantUrl(value) }
-                    maxLength={
-                        TenantManagementConstants.FORM_FIELD_CONSTRAINTS
-                            .TENANT_NAME_MAX_LENGTH
-                    }
-                    minLength={
-                        TenantManagementConstants.FORM_FIELD_CONSTRAINTS
-                            .TENANT_NAME_MIN_LENGTH
-                    }
-                    validation={ (value: string) => {
+                    )}
+                    required={true}
+                    listen={(value: string) => updateTenantUrl(value)}
+                    maxLength={TenantManagementConstants.FORM_FIELD_CONSTRAINTS.TENANT_NAME_MAX_LENGTH}
+                    minLength={TenantManagementConstants.FORM_FIELD_CONSTRAINTS.TENANT_NAME_MIN_LENGTH}
+                    validation={(value: string) => {
                         if (!checkTenantValidity(value.toString())) {
                             if (
-                                value.length <
-                                TenantManagementConstants.FORM_FIELD_CONSTRAINTS
-                                    .TENANT_NAME_MIN_LENGTH
+                                value.length < TenantManagementConstants.FORM_FIELD_CONSTRAINTS.TENANT_NAME_MIN_LENGTH
                             ) {
                                 return (
                                     <Message error>
@@ -232,48 +203,40 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
                                                 "tenantName.validations.invalidLength"
                                             }
                                             minLength={
-                                                TenantManagementConstants
-                                                    .FORM_FIELD_CONSTRAINTS
-                                                    .TENANT_NAME_MIN_LENGTH
+                                                TenantManagementConstants.FORM_FIELD_CONSTRAINTS.TENANT_NAME_MIN_LENGTH
                                             }
                                             maxLength={
-                                                TenantManagementConstants
-                                                    .FORM_FIELD_CONSTRAINTS
-                                                    .TENANT_NAME_MAX_LENGTH
+                                                TenantManagementConstants.FORM_FIELD_CONSTRAINTS.TENANT_NAME_MAX_LENGTH
                                             }
                                         >
-                                            The name you entered is less than { { minLength: TenantManagementConstants
-                                                .FORM_FIELD_CONSTRAINTS
-                                                .TENANT_NAME_MIN_LENGTH } } characters. It must
+                                            The name you entered is less than{" "}
+                                            {{
+                                                minLength:
+                                                    TenantManagementConstants.FORM_FIELD_CONSTRAINTS
+                                                        .TENANT_NAME_MIN_LENGTH
+                                            }}{" "}
+                                            characters. It must
                                             <ul>
                                                 <li>be unique</li>
                                                 <li>
                                                     <>
-                                                    contain more than{ " " }
-                                                        { {
+                                                        contain more than{" "}
+                                                        {{
                                                             minLength:
-                                                            TenantManagementConstants
-                                                                .FORM_FIELD_CONSTRAINTS
-                                                                .TENANT_NAME_MIN_LENGTH
-                                                        } }
-                                                    and less than{ " " }
-                                                        { {
+                                                                TenantManagementConstants.FORM_FIELD_CONSTRAINTS
+                                                                    .TENANT_NAME_MIN_LENGTH
+                                                        }}
+                                                        and less than{" "}
+                                                        {{
                                                             maxLength:
-                                                            TenantManagementConstants
-                                                                .FORM_FIELD_CONSTRAINTS
-                                                                .TENANT_NAME_MAX_LENGTH
-                                                        } }
-                                                    characters
+                                                                TenantManagementConstants.FORM_FIELD_CONSTRAINTS
+                                                                    .TENANT_NAME_MAX_LENGTH
+                                                        }}
+                                                        characters
                                                     </>
                                                 </li>
-                                                <li>
-                                                    consist of only lowercase
-                                                    alphanumeric characters
-                                                </li>
-                                                <li>
-                                                    begin with an alphabetic
-                                                    character
-                                                </li>
+                                                <li>consist of only lowercase alphanumeric characters</li>
+                                                <li>begin with an alphabetic character</li>
                                             </ul>
                                         </Trans>
                                     </Message>
@@ -287,47 +250,34 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
                                                 "tenantName.validations.invalid"
                                             }
                                             minLength={
-                                                TenantManagementConstants
-                                                    .FORM_FIELD_CONSTRAINTS
-                                                    .TENANT_NAME_MIN_LENGTH
+                                                TenantManagementConstants.FORM_FIELD_CONSTRAINTS.TENANT_NAME_MIN_LENGTH
                                             }
                                             maxLength={
-                                                TenantManagementConstants
-                                                    .FORM_FIELD_CONSTRAINTS
-                                                    .TENANT_NAME_MAX_LENGTH
+                                                TenantManagementConstants.FORM_FIELD_CONSTRAINTS.TENANT_NAME_MAX_LENGTH
                                             }
                                         >
-                                            Please enter a valid format for
-                                            organization name. It must
+                                            Please enter a valid format for organization name. It must
                                             <ul>
                                                 <li>be unique</li>
                                                 <li>
                                                     <>
-                                                    contain more than{ " " }
-                                                        { {
+                                                        contain more than{" "}
+                                                        {{
                                                             minLength:
-                                                            TenantManagementConstants
-                                                                .FORM_FIELD_CONSTRAINTS
-                                                                .TENANT_NAME_MIN_LENGTH
-                                                        } }
-                                                    and less than{ " " }
-                                                        { {
+                                                                TenantManagementConstants.FORM_FIELD_CONSTRAINTS
+                                                                    .TENANT_NAME_MIN_LENGTH
+                                                        }}
+                                                        and less than{" "}
+                                                        {{
                                                             maxLength:
-                                                            TenantManagementConstants
-                                                                .FORM_FIELD_CONSTRAINTS
-                                                                .TENANT_NAME_MAX_LENGTH
-                                                        } }
-                                                    characters
+                                                                TenantManagementConstants.FORM_FIELD_CONSTRAINTS
+                                                                    .TENANT_NAME_MAX_LENGTH
+                                                        }}
+                                                        characters
                                                     </>
                                                 </li>
-                                                <li>
-                                                    consist of only lowercase
-                                                    alphanumeric characters
-                                                </li>
-                                                <li>
-                                                    begin with an alphabetic
-                                                    character
-                                                </li>
+                                                <li>consist of only lowercase alphanumeric characters</li>
+                                                <li>begin with an alphabetic character</li>
                                             </ul>
                                         </Trans>
                                     </Message>
@@ -336,7 +286,7 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
                         } else if (tenantDuplicate) {
                             return t(
                                 "extensions:manage.features.tenant.wizards.addTenant.forms.fields." +
-                                "tenantName.validations.duplicate",
+                                    "tenantName.validations.duplicate",
                                 {
                                     tenantName: value.toString()
                                 }
@@ -345,64 +295,56 @@ export const AddTenantWizardForm: FunctionComponent<AddTenantWizardFormPropsInte
                             setCheckingTenantExistence(true);
                             isDuplicateTenant(value.toString());
                         }
-                    } }
-                    width={ 16 }
-                    data-testid={ `${ testId }-type-input` }
+                    }}
+                    width={16}
+                    data-testid={`${testId}-type-input`}
                 />
             </Form>
             <Divider className="mt-1" hidden />
-            { isCheckingTenantExistence ? (
+            {isCheckingTenantExistence ? (
                 <span className="display-flex">
-                    { `${regionQualifiedConsoleUrl ?? "https://console.asgardeo.io"}/${tenantPrefix ?? "t"}/` }
+                    {`${regionQualifiedConsoleUrl ?? "https://console.asgardeo.io"}/${tenantPrefix ?? "t"}/`}
                     <Segment basic size="mini">
                         <ContentLoader
                             className="p-0"
                             size="mini"
                             active
                             inline
-                            data-testid={ `${ testId }-name-loader` }
+                            data-testid={`${testId}-name-loader`}
                         />
                     </Segment>
                 </span>
             ) : (
                 <span>
-                    { `${regionQualifiedConsoleUrl ?? "https://console.asgardeo.io"}/${tenantPrefix ?? "t"}/` }
+                    {`${regionQualifiedConsoleUrl ?? "https://console.asgardeo.io"}/${tenantPrefix ?? "t"}/`}
                     <span
-                        className={ `${ newTenantName !==
-                                TenantManagementConstants.TENANT_URI_PLACEHOLDER
-                            ? isTenantValid && !tenantDuplicate
-                                ? "valid-tenant placeholder-uri-bold"
-                                : "invalid-tenant placeholder-uri-bold"
-                            : newTenantName ==
-                                    TenantManagementConstants.TENANT_URI_PLACEHOLDER
+                        className={`${
+                            newTenantName !== TenantManagementConstants.TENANT_URI_PLACEHOLDER
+                                ? isTenantValid && !tenantDuplicate
+                                    ? "valid-tenant placeholder-uri-bold"
+                                    : "invalid-tenant placeholder-uri-bold"
+                                : newTenantName == TenantManagementConstants.TENANT_URI_PLACEHOLDER
                                 ? isTenantValid && !tenantDuplicate
                                     ? "valid-tenant placeholder-uri-bold"
                                     : "placeholder-uri"
                                 : void 0
-                        }` }
+                        }`}
                     >
-                        { newTenantName }
+                        {newTenantName}
                         <Hint icon="info circle" popup>
-                            { t(
-                                "extensions:manage.features.tenant.wizards.addTenant.tooltips.message"
-                            ) }
+                            {t("extensions:manage.features.tenant.wizards.addTenant.tooltips.message")}
                         </Hint>
                     </span>
                 </span>
-            ) }
+            )}
             <Divider className="mt-1" hidden />
             <Message
                 type="info"
                 content={
-                    (<Trans
-                        i18nKey={
-                            "extensions:manage.features.tenant.wizards.addTenant.forms.messages.info"
-                        }
-                    >
-                        Think of a good, unique organization name for your new
-                        Asgardeo workspace because you&nbsp;won’t be able to
-                        change it later!
-                    </Trans>)
+                    <Trans i18nKey={"extensions:manage.features.tenant.wizards.addTenant.forms.messages.info"}>
+                        Think of a good, unique organization name for your new Asgardeo workspace because you&nbsp;won’t
+                        be able to change it later!
+                    </Trans>
                 }
             />
         </>

@@ -17,7 +17,7 @@
  */
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import { EmptyPlaceholder, Hint, LinkButton, Message, PrimaryButton } from "@wso2is/react-components";
-import { getEmptyPlaceholderIllustrations } from "features/core";
+import { getEmptyPlaceholderIllustrations } from "../../../core";
 import InfiniteScrollContainer from "../../../extensions/components/logs/components/infinite-scroll-container";
 import React, { MutableRefObject, ReactElement, UIEventHandler, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";

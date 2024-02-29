@@ -17,7 +17,7 @@
  */
 
 import { HttpMethods } from "@wso2is/core/models";
-import useRequest, { RequestErrorInterface, RequestResultInterface } from "features/core/hooks/use-request";
+import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../core/hooks/use-request";
 import { AxiosRequestConfig } from "axios";
 import { store } from "../../core/store";
 import { AuthorizedPermissionListItemInterface } from "../models/api-authorization";

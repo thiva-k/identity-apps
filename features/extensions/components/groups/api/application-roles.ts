@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "features/core";
+import { store } from "../../../../core";
 import { ApplicationRoleInterface, GroupRoleAssignPayloadInterface } from "../models/application-roles";
 
 /**
@@ -33,13 +33,13 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  * Get the application roles assigned to the group.
  *
  * @param group - Group name.
- * 
+ *
  * @returns A promise containing the response.
  */
-export const getAssignedApplicationRolesList = (group: string):Promise<ApplicationRoleInterface[]> => {
+export const getAssignedApplicationRolesList = (group: string): Promise<ApplicationRoleInterface[]> => {
     const requestConfig: AxiosRequestConfig = {
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.authzEndpoint }/groups/${ group }/role-mapping`
+        url: `${store.getState().config.endpoints.authzEndpoint}/groups/${group}/role-mapping`
     };
 
     return httpClient(requestConfig)
@@ -56,10 +56,10 @@ export const getAssignedApplicationRolesList = (group: string):Promise<Applicati
  *
  * @returns A promise containing the response.
  */
-export const getAllApplicationRolesList = ():Promise<ApplicationRoleInterface[]> => {
+export const getAllApplicationRolesList = (): Promise<ApplicationRoleInterface[]> => {
     const requestConfig: AxiosRequestConfig = {
         method: HttpMethods.GET,
-        url: `${ store.getState().config.endpoints.authzEndpoint }/roles`
+        url: `${store.getState().config.endpoints.authzEndpoint}/roles`
     };
 
     return httpClient(requestConfig)
@@ -76,14 +76,14 @@ export const getAllApplicationRolesList = ():Promise<ApplicationRoleInterface[]>
  *
  * @param group - Group name.
  * @param payload - Group role assign payload.
- * 
+ *
  * @returns A promise containing the response.
  */
-export const updateGroupRoleMapping = (group: string, payload: GroupRoleAssignPayloadInterface):Promise<any> => {
+export const updateGroupRoleMapping = (group: string, payload: GroupRoleAssignPayloadInterface): Promise<any> => {
     const requestConfig: AxiosRequestConfig = {
         data: payload,
         method: HttpMethods.PATCH,
-        url: `${ store.getState().config.endpoints.authzEndpoint }/groups/${ group }/role-mapping`
+        url: `${store.getState().config.endpoints.authzEndpoint}/groups/${group}/role-mapping`
     };
 
     return httpClient(requestConfig)

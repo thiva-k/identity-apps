@@ -26,7 +26,7 @@ import { Dispatch } from "redux";
 import { TabProps } from "semantic-ui-react";
 import { ConsumerUserGroupsList } from "./consumer-user-groupslist";
 import { ConsumerUserProfile } from "./consumer-user-profile";
-import { FeatureConfigInterface } from "features/core";
+import { FeatureConfigInterface } from "../../../../../core";
 import { GroupsInterface, useGroupList } from "../../../../../groups";
 import { ConnectorPropertyInterface } from "features/server-configurations";
 import { UserSessions } from "../../../../../users/components/user-sessions";

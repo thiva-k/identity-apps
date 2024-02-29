@@ -19,7 +19,7 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "features/core";
+import { store } from "../../../core";
 
 /**
  * Initialize an axios Http client.

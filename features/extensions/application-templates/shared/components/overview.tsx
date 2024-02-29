@@ -27,7 +27,7 @@ import {
     InboundProtocolListItemInterface,
     URLFragmentTypes
 } from "features/applications/models";
-import { EventPublisher, history } from "features/core";
+import { EventPublisher, history } from "../../../../core";
 import { QuickStartModes } from "../models";
 import { useDispatch } from "react-redux";
 import { addAlert } from "@wso2is/core/store";
@@ -59,7 +59,6 @@ const QUICK_START_TAB_INDEX: number = 0;
 export const QuickStartPanelOverview: FunctionComponent<QuickStartPanelOverviewPropsInterface> = (
     props: QuickStartPanelOverviewPropsInterface
 ): ReactElement => {
-
     const {
         applicationType,
         defaultTabIndex,
@@ -73,37 +72,46 @@ export const QuickStartPanelOverview: FunctionComponent<QuickStartPanelOverviewP
 
     const dispatch = useDispatch();
 
-    const [ appList, setAppList ] = useState<ApplicationListInterface>(undefined);
+    const [appList, setAppList] = useState<ApplicationListInterface>(undefined);
 
-    const [ selectedIntegration, setSelectedIntegration ] = useState<QuickStartModes>(undefined);
+    const [selectedIntegration, setSelectedIntegration] = useState<QuickStartModes>(undefined);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
     useEffect(() => {
         getApplicationList(null, null, null)
-            .then((response) => {
+            .then(response => {
                 setAppList(response);
-
             })
-            .catch((error) => {
+            .catch(error => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.fetchApplications." +
-                            "error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.fetchApplications." +
+                                    "error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.fetchApplications" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.fetchApplications." +
-                        "genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.fetchApplications" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.fetchApplications." +
+                                "genericError.message"
+                        )
+                    })
+                );
             });
     }, []);
 
@@ -116,8 +124,7 @@ export const QuickStartPanelOverview: FunctionComponent<QuickStartPanelOverviewP
          * 'applicationType'. Use the template ID of the applications in the appList and set selectedIntegration
          * accordingly.
          */
-        if(!(window.location.hash).includes(URLFragmentTypes.VIEW)) {
-
+        if (!window.location.hash.includes(URLFragmentTypes.VIEW)) {
             if (appList?.applications?.length > 1) {
                 setSelectedIntegration(QuickStartModes.INTEGRATE);
                 handleIntegrateSelection(QuickStartModes.INTEGRATE);
@@ -132,8 +139,7 @@ export const QuickStartPanelOverview: FunctionComponent<QuickStartPanelOverviewP
      * Called when the integration type changes
      */
     useEffect(() => {
-
-        if(!technology || !selectedIntegration){
+        if (!technology || !selectedIntegration) {
             return;
         }
 
@@ -150,24 +156,24 @@ export const QuickStartPanelOverview: FunctionComponent<QuickStartPanelOverviewP
         });
 
         history.push({
-            hash: `${ URLFragmentTypes.TAB_INDEX }${ QUICK_START_TAB_INDEX }&${ URLFragmentTypes.VIEW }`+
-                `${ selectedIntegration.toLowerCase() }_${ technology.toLowerCase() }`,
+            hash:
+                `${URLFragmentTypes.TAB_INDEX}${QUICK_START_TAB_INDEX}&${URLFragmentTypes.VIEW}` +
+                `${selectedIntegration.toLowerCase()}_${technology.toLowerCase()}`,
             pathname: window.location.pathname
         });
-    }, [ selectedIntegration ]);
+    }, [selectedIntegration]);
 
     /**
      * Called when the URL fragment updates
      */
     useEffect(() => {
-
-        if(!(window.location.hash).includes(URLFragmentTypes.VIEW)) {
+        if (!window.location.hash.includes(URLFragmentTypes.VIEW)) {
             return;
         }
 
-        const urlFragment: string[] = (window.location.hash).split("&" + URLFragmentTypes.VIEW);
+        const urlFragment: string[] = window.location.hash.split("&" + URLFragmentTypes.VIEW);
 
-        if(urlFragment[0] !== ("#"+URLFragmentTypes.TAB_INDEX+QUICK_START_TAB_INDEX.toString())) {
+        if (urlFragment[0] !== "#" + URLFragmentTypes.TAB_INDEX + QUICK_START_TAB_INDEX.toString()) {
             handleInvalidURL();
 
             return;
@@ -184,15 +190,14 @@ export const QuickStartPanelOverview: FunctionComponent<QuickStartPanelOverviewP
         } else {
             handleInvalidURL();
         }
-    }, [ window.location.hash ]);
+    }, [window.location.hash]);
 
     /**
      * Handles invalid URL fragments
      */
     const handleInvalidURL = (): void => {
-
         history.push({
-            hash: `${ URLFragmentTypes.TAB_INDEX }${ defaultTabIndex }`,
+            hash: `${URLFragmentTypes.TAB_INDEX}${defaultTabIndex}`,
             pathname: window.location.pathname
         });
     };
@@ -203,133 +208,119 @@ export const QuickStartPanelOverview: FunctionComponent<QuickStartPanelOverviewP
                 <Grid.Row>
                     <Grid.Column>
                         <PageHeader
-                            image={ (
+                            image={
                                 <GenericIcon
                                     inline
                                     transparent
                                     className="display-flex"
-                                    icon={ technologyLogo }
+                                    icon={technologyLogo}
                                     size="mini"
                                 />
-                            ) }
+                            }
                             className="mb-2"
-                            title={ technology }
-                            backButton={ {
+                            title={technology}
+                            backButton={{
                                 onClick: () => onBackButtonClick(),
                                 text: "Go back to selection"
-                            } }
-                            imageSpaced={ false }
-                            bottomMargin={ false }
+                            }}
+                            imageSpaced={false}
+                            bottomMargin={false}
                         />
                         <Heading subHeading as="h6">
                             Select one of the following paths to get started.
                         </Heading>
                     </Grid.Column>
                 </Grid.Row>
-                {
-                    applicationType
-                        ? (
-                            <>
-                                <Grid.Row stretched>
-                                    <Grid.Column width={ 8 }>
-                                        <Card
-                                            fluid
-                                            className={
-                                                `selection-card radio-selection-card quickstart-mode-card ${
-                                                    selectedIntegration === QuickStartModes.INTEGRATE
-                                                        ? "card-selected"
-                                                        : ""
-                                                    }`
-                                            }
-                                            data-testid="integration-mode-selection-card"
-                                        >
-                                            <Card.Content
-                                                onClick={ () => {
-                                                    eventPublisher.publish(
-                                                        "application-quick-start-click-integration-path-radio", {
-                                                            type: "integrate-own-application"
-                                                        }
-                                                    );
-                                                    setSelectedIntegration(QuickStartModes.INTEGRATE);
-                                                    handleIntegrateSelection(QuickStartModes.INTEGRATE);
-                                                } }
-                                                className="selection-card-content"
-                                                data-testid="integration-mode-selection-card-content"
+                {applicationType ? (
+                    <>
+                        <Grid.Row stretched>
+                            <Grid.Column width={8}>
+                                <Card
+                                    fluid
+                                    className={`selection-card radio-selection-card quickstart-mode-card ${
+                                        selectedIntegration === QuickStartModes.INTEGRATE ? "card-selected" : ""
+                                    }`}
+                                    data-testid="integration-mode-selection-card"
+                                >
+                                    <Card.Content
+                                        onClick={() => {
+                                            eventPublisher.publish(
+                                                "application-quick-start-click-integration-path-radio",
+                                                {
+                                                    type: "integrate-own-application"
+                                                }
+                                            );
+                                            setSelectedIntegration(QuickStartModes.INTEGRATE);
+                                            handleIntegrateSelection(QuickStartModes.INTEGRATE);
+                                        }}
+                                        className="selection-card-content"
+                                        data-testid="integration-mode-selection-card-content"
+                                    >
+                                        <div className="integrate-radio">
+                                            <Radio
+                                                checked={selectedIntegration === QuickStartModes.INTEGRATE}
+                                                data-testid="integration-mode-selection-card-radio"
+                                            />
+                                        </div>
+                                        <div className="card-content">
+                                            <Card.Header
+                                                className="mb-2"
+                                                data-testid="integration-mode-selection-card-header"
                                             >
-                                                <div className="integrate-radio">
-                                                    <Radio
-                                                        checked={ selectedIntegration === QuickStartModes.INTEGRATE }
-                                                        data-testid="integration-mode-selection-card-radio"
-                                                    />
-                                                </div>
-                                                <div className="card-content">
-                                                    <Card.Header
-                                                        className="mb-2"
-                                                        data-testid="integration-mode-selection-card-header"
-                                                    >
-                                                        <span>Integrate</span> your application
-                                                    </Card.Header>
-                                                    <Card.Meta>
-                                                        <span>
-                                                            Follow the steps below to integrate your own application
-                                                        </span>
-                                                    </Card.Meta>
-                                                </div>
-                                            </Card.Content>
-                                        </Card>
-                                    </Grid.Column>
-                                    <Grid.Column width={ 8 }>
-                                        <Card
-                                            fluid
-                                            className={
-                                                `selection-card radio-selection-card quickstart-mode-card ${
-                                                    selectedIntegration === QuickStartModes.SAMPLES
-                                                        ? "card-selected"
-                                                        : ""
-                                                    }`
-                                            }
-                                            data-testid="try-out-mode-selection-card"
-                                        >
-                                            <Card.Content
-                                                onClick={ () => {
-                                                    eventPublisher.publish(
-                                                        "application-quick-start-click-integration-path-radio", {
-                                                            type: "try-out-sample"
-                                                        }
-                                                    );
-                                                    setSelectedIntegration(QuickStartModes.SAMPLES);
-                                                    handleIntegrateSelection(QuickStartModes.SAMPLES);
-                                                } }
-                                                className="selection-card-content"
-                                                data-testid="try-out-mode-selection-card-content"
+                                                <span>Integrate</span> your application
+                                            </Card.Header>
+                                            <Card.Meta>
+                                                <span>Follow the steps below to integrate your own application</span>
+                                            </Card.Meta>
+                                        </div>
+                                    </Card.Content>
+                                </Card>
+                            </Grid.Column>
+                            <Grid.Column width={8}>
+                                <Card
+                                    fluid
+                                    className={`selection-card radio-selection-card quickstart-mode-card ${
+                                        selectedIntegration === QuickStartModes.SAMPLES ? "card-selected" : ""
+                                    }`}
+                                    data-testid="try-out-mode-selection-card"
+                                >
+                                    <Card.Content
+                                        onClick={() => {
+                                            eventPublisher.publish(
+                                                "application-quick-start-click-integration-path-radio",
+                                                {
+                                                    type: "try-out-sample"
+                                                }
+                                            );
+                                            setSelectedIntegration(QuickStartModes.SAMPLES);
+                                            handleIntegrateSelection(QuickStartModes.SAMPLES);
+                                        }}
+                                        className="selection-card-content"
+                                        data-testid="try-out-mode-selection-card-content"
+                                    >
+                                        <div className="integrate-radio">
+                                            <Radio
+                                                checked={selectedIntegration === QuickStartModes.SAMPLES}
+                                                data-testid="try-out-mode-selection-card-radio"
+                                            />
+                                        </div>
+                                        <div className="card-content">
+                                            <Card.Header
+                                                className="mb-2"
+                                                data-testid="try-out-mode-selection-card-header"
                                             >
-                                                <div className="integrate-radio">
-                                                    <Radio
-                                                        checked={ selectedIntegration === QuickStartModes.SAMPLES }
-                                                        data-testid="try-out-mode-selection-card-radio"
-                                                    />
-                                                </div>
-                                                <div className="card-content">
-                                                    <Card.Header
-                                                        className="mb-2"
-                                                        data-testid="try-out-mode-selection-card-header"
-                                                    >
-                                                        <span>Try out </span>a sample
-                                                    </Card.Header>
-                                                    <Card.Meta>
-                                                        <span>
-                                                            Use our preconfigured sample to try out the login flow
-                                                        </span>
-                                                    </Card.Meta>
-                                                </div>
-                                            </Card.Content>
-                                        </Card>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </>
-                        )
-                        : null
-                }
+                                                <span>Try out </span>a sample
+                                            </Card.Header>
+                                            <Card.Meta>
+                                                <span>Use our preconfigured sample to try out the login flow</span>
+                                            </Card.Meta>
+                                        </div>
+                                    </Card.Content>
+                                </Card>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </>
+                ) : null}
             </Grid>
         </>
     );

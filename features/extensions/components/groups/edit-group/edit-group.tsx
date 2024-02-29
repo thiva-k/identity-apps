@@ -29,7 +29,7 @@ import { TabProps } from "semantic-ui-react";
 import { BasicGroupDetails } from "./edit-group-basic";
 import { GroupRolesList } from "./edit-group-roles";
 import { GroupUsersList } from "./edit-group-users";
-import { AppState, FeatureConfigInterface } from "features/core";
+import { AppState, FeatureConfigInterface } from "../../../../core";
 import { GroupsInterface } from "../../../../groups";
 import { GroupConstants } from "../../../../groups/constants";
 import useGroupManagement from "../../../../groups/hooks/use-group-management";
@@ -67,83 +67,81 @@ interface EditGroupProps extends SBACInterface<FeatureConfigInterface> {
  * @param props - contains group details to be edited.
  */
 export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupProps): ReactElement => {
-
-    const {
-        groupId,
-        group,
-        onGroupUpdate,
-        featureConfig,
-        isGroupDetailsRequestLoading
-    } = props;
+    const { groupId, group, onGroupUpdate, featureConfig, isGroupDetailsRequestLoading } = props;
 
     const { t } = useTranslation();
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const extendedFeatureConfig: ExtendedFeatureConfigInterface = useSelector(
-        (state: AppState) => state.config.ui.features);
+        (state: AppState) => state.config.ui.features
+    );
 
-    const isSubOrg: boolean = window[ "AppUtils" ].getConfig().organizationName;
+    const isSubOrg: boolean = window["AppUtils"].getConfig().organizationName;
 
-    const [ isReadOnly, setReadOnly ] = useState<boolean>(false);
-    const [ isUserstoreRemote, setUserstoreRemote ] = useState<boolean>(false);
-    const [ isReadOnlyLoading, setReadOnlyLoading ] = useState<boolean>(true);
-    const [ readOnlyUserStoresList, setReadOnlyUserStoresList ] = useState<string[]>(undefined);
-    const [ isRolesTabEnabled, setRolesTabEnabled ] = useState<boolean>(false);
-    const [ isResourcePanesLoading, setIsResourcePanesLoading ] = useState<boolean>(true);
+    const [isReadOnly, setReadOnly] = useState<boolean>(false);
+    const [isUserstoreRemote, setUserstoreRemote] = useState<boolean>(false);
+    const [isReadOnlyLoading, setReadOnlyLoading] = useState<boolean>(true);
+    const [readOnlyUserStoresList, setReadOnlyUserStoresList] = useState<string[]>(undefined);
+    const [isRolesTabEnabled, setRolesTabEnabled] = useState<boolean>(false);
+    const [isResourcePanesLoading, setIsResourcePanesLoading] = useState<boolean>(true);
 
     const { activeTab, updateActiveTab } = useGroupManagement();
     const dispatch: Dispatch = useDispatch();
 
     useEffect(() => {
-
         checkRolesTabEnabled();
         UserStoreUtils.getReadOnlyUserStores()
             .then((response: string[]) => {
                 setReadOnlyUserStoresList(response);
             })
             .catch(() => {
-                dispatch(addAlert({
-                    description: t("console:manage.features.groups.notifications.fetchGroups.genericError" +
-                        ".description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.groups.notifications.fetchGroups.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.groups.notifications.fetchGroups.genericError" + ".description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.groups.notifications.fetchGroups.genericError.message")
+                    })
+                );
             })
             .finally(() => {
                 setReadOnlyLoading(false);
             });
-    }, [ ]);
+    }, []);
 
     useEffect(() => {
-        if(!group) {
+        if (!group) {
             return;
         }
 
         const userStore: string[] = group?.displayName.split("/");
 
-        if (!isFeatureEnabled(featureConfig?.groups, GroupConstants.FEATURE_DICTIONARY.get("GROUP_UPDATE"))
-            || readOnlyUserStoresList?.includes(userStore[0]?.toString())
-            || !hasRequiredScopes(featureConfig?.groups, featureConfig?.groups?.scopes?.update, allowedScopes)
+        if (
+            !isFeatureEnabled(featureConfig?.groups, GroupConstants.FEATURE_DICTIONARY.get("GROUP_UPDATE")) ||
+            readOnlyUserStoresList?.includes(userStore[0]?.toString()) ||
+            !hasRequiredScopes(featureConfig?.groups, featureConfig?.groups?.scopes?.update, allowedScopes)
         ) {
             setReadOnly(true);
         }
 
-        if(userStore[0]?.toString()!==CONSUMER_USERSTORE) {
+        if (userStore[0]?.toString() !== CONSUMER_USERSTORE) {
             setUserstoreRemote(true);
         }
-    }, [ group, readOnlyUserStoresList ]);
+    }, [group, readOnlyUserStoresList]);
 
     /**
      * Check if the application roles tab should be enabled.
      */
     const checkRolesTabEnabled = () => {
-
         const userHasRequiredScopes: boolean = hasRequiredScopes(
             extendedFeatureConfig?.apiResources,
-            [ ...extendedFeatureConfig?.apiResources?.scopes?.create,
+            [
+                ...extendedFeatureConfig?.apiResources?.scopes?.create,
                 ...extendedFeatureConfig?.apiResources?.scopes?.delete,
                 ...extendedFeatureConfig?.apiResources?.scopes?.read,
-                ...extendedFeatureConfig?.apiResources?.scopes?.update ],
+                ...extendedFeatureConfig?.apiResources?.scopes?.update
+            ],
             allowedScopes
         );
 
@@ -157,9 +155,7 @@ export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupPro
             } else if (extendedFeatureConfig?.applicationRoles?.enabled) {
                 getAllApplicationRolesList()
                     .then((response: ApplicationRoleInterface[]) => {
-                        (response.length > 0)
-                            ? setRolesTabEnabled(true)
-                            : setRolesTabEnabled(false);
+                        response.length > 0 ? setRolesTabEnabled(true) : setRolesTabEnabled(false);
                     })
                     .catch(() => {
                         setRolesTabEnabled(false);
@@ -172,7 +168,6 @@ export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupPro
                 setIsResourcePanesLoading(false);
             }
         }
-
     };
 
     const resolveResourcePanes = () => {
@@ -183,30 +178,31 @@ export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupPro
             {
                 menuItem: "General",
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <BasicGroupDetails
                             data-testid="group-mgt-edit-group-basic"
-                            groupId={ groupId }
-                            isGroup={ true }
-                            groupObject={ group }
-                            onGroupUpdate={ onGroupUpdate }
-                            isReadOnly={ isReadOnly }
-                            isUserstoreRemote = { isUserstoreRemote }
-                            isReadOnlyLoading={ isReadOnlyLoading }
+                            groupId={groupId}
+                            isGroup={true}
+                            groupObject={group}
+                            onGroupUpdate={onGroupUpdate}
+                            isReadOnly={isReadOnly}
+                            isUserstoreRemote={isUserstoreRemote}
+                            isReadOnlyLoading={isReadOnlyLoading}
                         />
                     </ResourceTab.Pane>
                 )
-            },{
+            },
+            {
                 menuItem: t("console:manage.features.roles.edit.menuItems.users"),
                 render: () => (
-                    <ResourceTab.Pane controlledSegmentation attached={ false }>
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
                         <GroupUsersList
-                            isGroupDetailsRequestLoading={ isGroupDetailsRequestLoading }
+                            isGroupDetailsRequestLoading={isGroupDetailsRequestLoading}
                             data-testid="group-mgt-edit-group-users"
-                            isGroup={ true }
-                            group={ group }
-                            onGroupUpdate={ onGroupUpdate }
-                            isReadOnly={ isReadOnly }
+                            isGroup={true}
+                            group={group}
+                            onGroupUpdate={onGroupUpdate}
+                            isReadOnly={isReadOnly}
                         />
                     </ResourceTab.Pane>
                 )
@@ -214,25 +210,23 @@ export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupPro
         ];
 
         if (isRolesTabEnabled) {
-            panes.push(
-                {
-                    menuItem: isSubOrg
-                        ? t("extensions:console.applicationRoles.heading")
-                        : t("extensions:manage.groups.edit.roles.title"),
-                    render: () => (
-                        <ResourceTab.Pane controlledSegmentation attached={ false }>
-                            <GroupRolesList
-                                isGroupDetailsRequestLoading={ isGroupDetailsRequestLoading }
-                                data-componentid="group-mgt-edit-group-roles"
-                                isGroup={ true }
-                                group={ group }
-                                onGroupUpdate={ onGroupUpdate }
-                                isReadOnly={ isReadOnly }
-                            />
-                        </ResourceTab.Pane>
-                    )
-                }
-            );
+            panes.push({
+                menuItem: isSubOrg
+                    ? t("extensions:console.applicationRoles.heading")
+                    : t("extensions:manage.groups.edit.roles.title"),
+                render: () => (
+                    <ResourceTab.Pane controlledSegmentation attached={false}>
+                        <GroupRolesList
+                            isGroupDetailsRequestLoading={isGroupDetailsRequestLoading}
+                            data-componentid="group-mgt-edit-group-roles"
+                            isGroup={true}
+                            group={group}
+                            onGroupUpdate={onGroupUpdate}
+                            isReadOnly={isReadOnly}
+                        />
+                    </ResourceTab.Pane>
+                )
+            });
         }
 
         return panes;
@@ -240,12 +234,12 @@ export const EditGroup: FunctionComponent<EditGroupProps> = (props: EditGroupPro
 
     return (
         <ResourceTab
-            activeIndex={ activeTab }
-            isLoading={ isResourcePanesLoading }
-            onTabChange={ (event: React.MouseEvent<HTMLDivElement>, data: TabProps) => {
+            activeIndex={activeTab}
+            isLoading={isResourcePanesLoading}
+            onTabChange={(event: React.MouseEvent<HTMLDivElement>, data: TabProps) => {
                 updateActiveTab(data.activeIndex as number);
-            } }
-            panes={ resolveResourcePanes() }
+            }}
+            panes={resolveResourcePanes()}
         />
     );
 };

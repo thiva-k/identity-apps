@@ -39,7 +39,7 @@ import {
     UIConstants,
     getEmptyPlaceholderIllustrations,
     history
-} from "features/core";
+} from "../../../../core";
 import { RealmConfigInterface } from "features/server-configurations";
 import { UserManagementConstants } from "../../../../users/constants/user-management-constants";
 import { UserBasicInterface, UserListInterface } from "../../../../users/models/user";
@@ -47,9 +47,10 @@ import { UserBasicInterface, UserListInterface } from "../../../../users/models/
 /**
  * Prop types for the liked accounts component.
  */
-interface UsersListProps extends SBACInterface<FeatureConfigInterface>, LoadableComponentInterface,
-    TestableComponentInterface {
-
+interface UsersListProps
+    extends SBACInterface<FeatureConfigInterface>,
+        LoadableComponentInterface,
+        TestableComponentInterface {
     /**
      * Advanced Search component.
      */
@@ -139,20 +140,24 @@ export const UsersList: React.FunctionComponent<UsersListProps> = (props: UsersL
         showMetaContent,
         userMetaListContent,
         usersList,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingUser, setDeletingUser ] = useState<UserBasicInterface>(undefined);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingUser, setDeletingUser] = useState<UserBasicInterface>(undefined);
 
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const authenticatedUser: string = useSelector((state: AppState) => state?.auth?.username);
     const tenantDomain: string = useSelector((state: AppState) => state?.auth?.tenantDomain);
 
     const handleUserEdit = (userId: string) => {
-        history.push(AppConstants.getPaths().get("USER_EDIT").replace(":id", userId));
+        history.push(
+            AppConstants.getPaths()
+                .get("USER_EDIT")
+                .replace(":id", userId)
+        );
     };
 
     const deleteUser = (id: string): void => {
@@ -174,33 +179,22 @@ export const UsersList: React.FunctionComponent<UsersListProps> = (props: UsersL
                 id: "name",
                 key: "name",
                 render: (user: UserBasicInterface): ReactNode => {
-                    const resolvedUserName: string = (user.name && user.name.givenName !== undefined)
-                        ? user.name.givenName + " " + (user.name.familyName ? user.name.familyName : "")
-                        : user.userName.split("/")?.length > 1
-                            ? user.userName.split("/")[ 1 ]
-                            : user.userName.split("/")[ 0 ];
+                    const resolvedUserName: string =
+                        user.name && user.name.givenName !== undefined
+                            ? user.name.givenName + " " + (user.name.familyName ? user.name.familyName : "")
+                            : user.userName.split("/")?.length > 1
+                            ? user.userName.split("/")[1]
+                            : user.userName.split("/")[0];
 
-                    const resolvedDescription: string = user.emails
-                        ? user.emails[ 0 ]?.toString()
-                        : user.userName;
+                    const resolvedDescription: string = user.emails ? user.emails[0]?.toString() : user.userName;
 
                     return (
-                        <Header
-                            image
-                            as="h6"
-                            className="header-with-icon"
-                            data-testid={ `${ testId }-item-heading` }
-                        >
-                            <UserAvatar
-                                name={ user.userName }
-                                size="mini"
-                                image={ user.profileUrl }
-                                spaced="right"
-                            />
+                        <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
+                            <UserAvatar name={user.userName} size="mini" image={user.profileUrl} spaced="right" />
                             <Header.Content>
-                                { resolvedUserName }
-                                <Header.Subheader data-testid={ `${ testId }-item-sub-heading` }>
-                                    { resolvedDescription }
+                                {resolvedUserName}
+                                <Header.Subheader data-testid={`${testId}-item-sub-heading`}>
+                                    {resolvedDescription}
                                 </Header.Subheader>
                             </Header.Content>
                         </Header>
@@ -222,9 +216,9 @@ export const UsersList: React.FunctionComponent<UsersListProps> = (props: UsersL
             return defaultColumns;
         }
 
-        const dynamicColumns: TableColumnInterface[]= [];
+        const dynamicColumns: TableColumnInterface[] = [];
 
-        for (const [ key, value ] of userMetaListContent.entries()) {
+        for (const [key, value] of userMetaListContent.entries()) {
             if (key === "name" || key === "emails" || key === "profileUrl" || value === "") {
                 continue;
             }
@@ -266,31 +260,43 @@ export const UsersList: React.FunctionComponent<UsersListProps> = (props: UsersL
 
         const actions: TableActionsInterface[] = [
             {
-                hidden: (): boolean => !isFeatureEnabled(featureConfig?.users,
-                    UserManagementConstants.FEATURE_DICTIONARY.get("USER_READ")),
+                hidden: (): boolean =>
+                    !isFeatureEnabled(
+                        featureConfig?.users,
+                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_READ")
+                    ),
                 icon: (user: UserBasicInterface): SemanticICONS => {
-                    const userStore: string = user?.userName?.split("/").length > 1
-                        ? user?.userName?.split("/")[0]
-                        : "PRIMARY";
+                    const userStore: string =
+                        user?.userName?.split("/").length > 1 ? user?.userName?.split("/")[0] : "PRIMARY";
 
-                    return !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.update, allowedScopes)
-                    || !isFeatureEnabled(featureConfig?.users,
-                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE"))
-                    || readOnlyUserStores?.includes(userStore.toString())
+                    return !hasRequiredScopes(
+                        featureConfig?.users,
+                        featureConfig?.users?.scopes?.update,
+                        allowedScopes
+                    ) ||
+                        !isFeatureEnabled(
+                            featureConfig?.users,
+                            UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")
+                        ) ||
+                        readOnlyUserStores?.includes(userStore.toString())
                         ? "eye"
                         : "pencil alternate";
                 },
-                onClick: (e: SyntheticEvent, user: UserBasicInterface): void =>
-                    handleUserEdit(user?.id),
+                onClick: (e: SyntheticEvent, user: UserBasicInterface): void => handleUserEdit(user?.id),
                 popupText: (user: UserBasicInterface): string => {
-                    const userStore: string = user?.userName?.split("/").length > 1
-                        ? user?.userName?.split("/")[0]
-                        : "PRIMARY";
+                    const userStore: string =
+                        user?.userName?.split("/").length > 1 ? user?.userName?.split("/")[0] : "PRIMARY";
 
-                    return !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.update, allowedScopes)
-                    || !isFeatureEnabled(featureConfig?.users,
-                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE"))
-                    || readOnlyUserStores?.includes(userStore.toString())
+                    return !hasRequiredScopes(
+                        featureConfig?.users,
+                        featureConfig?.users?.scopes?.update,
+                        allowedScopes
+                    ) ||
+                        !isFeatureEnabled(
+                            featureConfig?.users,
+                            UserManagementConstants.FEATURE_DICTIONARY.get("USER_UPDATE")
+                        ) ||
+                        readOnlyUserStores?.includes(userStore.toString())
                         ? t("common:view")
                         : t("common:edit");
                 },
@@ -300,11 +306,15 @@ export const UsersList: React.FunctionComponent<UsersListProps> = (props: UsersL
 
         actions.push({
             hidden: (user: UserBasicInterface): boolean => {
-                return !isFeatureEnabled(featureConfig?.users,
-                    UserManagementConstants.FEATURE_DICTIONARY.get("USER_DELETE"))
-                    || !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.delete, allowedScopes)
-                    || user.userName === realmConfigs?.adminUser
-                    || authenticatedUser !== realmConfigs?.adminUser + "@" + tenantDomain;
+                return (
+                    !isFeatureEnabled(
+                        featureConfig?.users,
+                        UserManagementConstants.FEATURE_DICTIONARY.get("USER_DELETE")
+                    ) ||
+                    !hasRequiredScopes(featureConfig?.users, featureConfig?.users?.scopes?.delete, allowedScopes) ||
+                    user.userName === realmConfigs?.adminUser ||
+                    authenticatedUser !== realmConfigs?.adminUser + "@" + tenantDomain
+                );
             },
             icon: (): SemanticICONS => "trash alternate",
             onClick: (e: SyntheticEvent, user: UserBasicInterface): void => {
@@ -328,19 +338,20 @@ export const UsersList: React.FunctionComponent<UsersListProps> = (props: UsersL
         if (searchQuery) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>
-                            { t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton") }
+                    action={
+                        <LinkButton onClick={onSearchQueryClear}>
+                            {t("console:manage.features.users.usersList.search.emptyResultPlaceholder.clearButton")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title") }
-                    subtitle={ [
-                        t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0",
-                            { query: searchQuery }),
+                    title={t("console:manage.features.users.usersList.search.emptyResultPlaceholder.title")}
+                    subtitle={[
+                        t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.0", {
+                            query: searchQuery
+                        }),
                         t("console:manage.features.users.usersList.search.emptyResultPlaceholder.subTitle.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -348,24 +359,24 @@ export const UsersList: React.FunctionComponent<UsersListProps> = (props: UsersL
         if (usersList.totalResults === 0) {
             return (
                 <EmptyPlaceholder
-                    data-testid={ `${ testId }-empty-placeholder` }
-                    action={ (
+                    data-testid={`${testId}-empty-placeholder`}
+                    action={
                         <PrimaryButton
-                            data-testid={ `${ testId }-empty-placeholder-add-user-button` }
-                            onClick={ () => onEmptyListPlaceholderActionClick() }
+                            data-testid={`${testId}-empty-placeholder-add-user-button`}
+                            onClick={() => onEmptyListPlaceholderActionClick()}
                         >
-                            <Icon name="add"/>
-                            { t("console:manage.features.users.usersList.list.emptyResultPlaceholder.addButton") }
+                            <Icon name="add" />
+                            {t("console:manage.features.users.usersList.list.emptyResultPlaceholder.addButton")}
                         </PrimaryButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    title={ t("console:manage.features.users.usersList.list.emptyResultPlaceholder.title") }
-                    subtitle={ [
+                    title={t("console:manage.features.users.usersList.list.emptyResultPlaceholder.title")}
+                    subtitle={[
                         t("console:manage.features.users.usersList.list.emptyResultPlaceholder.subTitle.0"),
                         t("console:manage.features.users.usersList.list.emptyResultPlaceholder.subTitle.1"),
                         t("console:manage.features.users.usersList.list.emptyResultPlaceholder.subTitle.2")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -377,70 +388,63 @@ export const UsersList: React.FunctionComponent<UsersListProps> = (props: UsersL
         <>
             <DataTable<UserBasicInterface>
                 className="users-table"
-                externalSearch={ advancedSearch }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                externalSearch={advancedSearch}
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "circular"
-                } }
-                actions={ resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ usersList.Resources }
-                onColumnSelectionChange={ onColumnSelectionChange }
-                onRowClick={ (e: SyntheticEvent, user: UserBasicInterface): void => {
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={usersList.Resources}
+                onColumnSelectionChange={onColumnSelectionChange}
+                onRowClick={(e: SyntheticEvent, user: UserBasicInterface): void => {
                     handleUserEdit(user?.id);
                     onListItemClick && onListItemClick(e, user);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ false }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-testid={ testId }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={false}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-testid={testId}
             />
-            {
-                deletingUser && (
-                    <ConfirmationModal
-                        data-testid={ `${ testId }-confirmation-modal` }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="warning"
-                        open={ showDeleteConfirmationModal }
-                        assertion={ deletingUser.userName }
-                        assertionHint={
-                            (
-                                <p>
-                                    <Trans
-                                        i18nKey={ "console:manage.features.onboarded.confirmationModal.removeUser." +
-                                        "assertionHint" }
-                                        tOptions={ { name: deletingUser.userName } }
-                                    >
-                                        Please type <strong>{ deletingUser.userName }</strong> to confirm.
-                                    </Trans>
-                                </p>
-                            )
-                        }
-                        assertionType="input"
-                        primaryAction="Confirm"
-                        secondaryAction="Cancel"
-                        onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                        onPrimaryActionClick={ (): void => deleteUser(deletingUser.id) }
-                        closeOnDimmerClick={ false }
-                    >
-                        <ConfirmationModal.Header data-testid={ `${ testId }-confirmation-modal-header` }>
-                            { t("console:manage.features.onboarded.confirmationModal.removeUser.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            data-testid={ `${ testId }-confirmation-modal-message` }
-                            attached
-                            warning
-                        >
-                            { t("console:manage.features.onboarded.confirmationModal.removeUser.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-testid={ `${ testId }-confirmation-modal-content` }>
-                            { t("console:manage.features.onboarded.confirmationModal.removeUser.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+            {deletingUser && (
+                <ConfirmationModal
+                    data-testid={`${testId}-confirmation-modal`}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="warning"
+                    open={showDeleteConfirmationModal}
+                    assertion={deletingUser.userName}
+                    assertionHint={
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "console:manage.features.onboarded.confirmationModal.removeUser." + "assertionHint"
+                                }
+                                tOptions={{ name: deletingUser.userName }}
+                            >
+                                Please type <strong>{deletingUser.userName}</strong> to confirm.
+                            </Trans>
+                        </p>
+                    }
+                    assertionType="input"
+                    primaryAction="Confirm"
+                    secondaryAction="Cancel"
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => deleteUser(deletingUser.id)}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-confirmation-modal-header`}>
+                        {t("console:manage.features.onboarded.confirmationModal.removeUser.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message data-testid={`${testId}-confirmation-modal-message`} attached warning>
+                        {t("console:manage.features.onboarded.confirmationModal.removeUser.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-confirmation-modal-content`}>
+                        {t("console:manage.features.onboarded.confirmationModal.removeUser.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

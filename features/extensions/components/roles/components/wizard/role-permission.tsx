@@ -23,7 +23,7 @@ import Tree, { TreeNodeProps } from "rc-tree";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Divider, Grid } from "semantic-ui-react";
-import { AppConstants, store } from "features/core";
+import { AppConstants, store } from "../../../../../core";
 import { RoleConstants } from "../../../../../roles/constants";
 import { TreeNode } from "features/roles/models";
 import { RoleManagementUtils } from "features/roles/utils";
@@ -33,7 +33,7 @@ import { hiddenPermissions } from "../../meta";
 /**
  * Interface to capture permission list props
  */
-interface PermissionListProp extends  TestableComponentInterface {
+interface PermissionListProp extends TestableComponentInterface {
     /**
      * Should the content be emphasized.
      */
@@ -54,7 +54,6 @@ interface PermissionListProp extends  TestableComponentInterface {
  * @param props - props containing event handlers for permission component
  */
 export const PermissionList: FunctionComponent<PermissionListProp> = (props: PermissionListProp): ReactElement => {
-
     const {
         onChange,
         isReadOnly,
@@ -65,55 +64,50 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
         isEdit,
         initialValues,
         isRole,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ permissions, setPermissions ] = useState<TreeNode[]>([]);
-    const [ checkedPermission, setCheckedPermission ] = useState<TreeNode[]>([]);
-    const [ defaultExpandedKeys, setDefaultExpandKeys ] = useState<string[]>([]);
-    const [ isPermissionsLoading, setIsPermissionsLoading ] = useState<boolean>(true);
-    const [ isSuperAdmin, setIsSuperAdmin ] = useState<boolean>(undefined);
+    const [permissions, setPermissions] = useState<TreeNode[]>([]);
+    const [checkedPermission, setCheckedPermission] = useState<TreeNode[]>([]);
+    const [defaultExpandedKeys, setDefaultExpandKeys] = useState<string[]>([]);
+    const [isPermissionsLoading, setIsPermissionsLoading] = useState<boolean>(true);
+    const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(undefined);
 
     /**
      * Check if the user is a super admin.
      * TODO: Move this to a higher component (maybe app.tsx) and store in redux state. And only fetch if undefined.
      */
     useEffect(() => {
-
         checkIsSuperAdmin();
     }, []);
 
     useEffect(() => {
-
         if (isSuperAdmin === undefined) {
             return;
         }
 
         // Only show relevant permission to tenants.
-        const permissionsToHide: string[] = (AppConstants.getTenant() !== AppConstants.getSuperTenant())
-            ? hiddenPermissions
-            : [];
+        const permissionsToHide: string[] =
+            AppConstants.getTenant() !== AppConstants.getSuperTenant() ? hiddenPermissions : [];
 
-        RoleManagementUtils.getAllPermissions(permissionsToHide)
-            .then((permissionTree: TreeNode[]) => {
-                disableSuperAdminTreeNode(isSuperAdmin, permissionTree);
-                setPermissions(permissionTree);
-                setDefaultExpandKeys([ permissionTree[ 0 ].key.toString() ]);
-                setIsPermissionsLoading(false);
-            });
-    }, [ isSuperAdmin ]);
+        RoleManagementUtils.getAllPermissions(permissionsToHide).then((permissionTree: TreeNode[]) => {
+            disableSuperAdminTreeNode(isSuperAdmin, permissionTree);
+            setPermissions(permissionTree);
+            setDefaultExpandKeys([permissionTree[0].key.toString()]);
+            setIsPermissionsLoading(false);
+        });
+    }, [isSuperAdmin]);
 
     useEffect(() => {
-
         if (!(permissions && Array.isArray(permissions) && permissions.length > 0)) {
             return;
         }
 
         const checkedNodes: TreeNode[] = [];
 
-        if (initialValues && initialValues.length > 0 ) {
+        if (initialValues && initialValues.length > 0) {
             const previousFormCheckedKeys: string[] = [];
 
             initialValues.forEach((initialKey: TreeNode) => {
@@ -126,9 +120,10 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
         }
 
         if (isRole && roleObject) {
-            const previousFormCheckedKeys: string[] = (roleObject?.permissions && Array.isArray(roleObject.permissions))
-                ? [ ...(roleObject.permissions as string[])  ]
-                : [];
+            const previousFormCheckedKeys: string[] =
+                roleObject?.permissions && Array.isArray(roleObject.permissions)
+                    ? [...(roleObject.permissions as string[])]
+                    : [];
 
             previousFormCheckedKeys?.forEach((key: string) => {
                 checkedNodes.push(getNodeByKey(key, permissions));
@@ -138,13 +133,12 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
         setCheckedPermission(checkedNodes);
         // If onchange is defined, send the checked nodes.
         onChange && onChange(checkedNodes);
-    }, [ permissions, initialValues ]);
+    }, [permissions, initialValues]);
 
     /**
      * Util function to check if current user is a super admin.
      */
     const checkIsSuperAdmin = () => {
-
         getServerConfigs()
             .then((response: ServerConfigurationsInterface) => {
                 const loggedUserName: string = store.getState().profile.profileInfo.userName;
@@ -200,7 +194,6 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
      * @param info - checked information
      */
     const onCheck = (checked: { checked: React.ReactText[]; halfChecked: React.ReactText[] }, info: any) => {
-
         let nodes: TreeNode[] = [];
 
         if (info.checked) {
@@ -209,24 +202,29 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
                 let checkedChildren: number = 1;
 
                 parentNode?.children?.forEach((childPermission: TreeNode) => {
-                    if ( checkedPermission.filter((checkedPermission: TreeNode) =>
-                        checkedPermission.key === childPermission.key).length > 0 ) {
+                    if (
+                        checkedPermission.filter(
+                            (checkedPermission: TreeNode) => checkedPermission.key === childPermission.key
+                        ).length > 0
+                    ) {
                         ++checkedChildren;
                     }
                 });
                 if (parentNode?.children?.length === checkedChildren) {
                     const filteredCheckedPermissions: TreeNode[] = checkedPermission.filter((permission: TreeNode) => {
-                        permission.key.toString()
+                        permission.key
+                            .toString()
                             .replace(/^\/|\/$/g, "")
-                            .split("/") === parentNode.key.toString()
-                            .replace(/^\/|\/$/g, "")
-                            .split("/");
+                            .split("/") ===
+                            parentNode.key
+                                .toString()
+                                .replace(/^\/|\/$/g, "")
+                                .split("/");
                     });
 
-                    nodes = [ ...filteredCheckedPermissions, parentNode ];
+                    nodes = [...filteredCheckedPermissions, parentNode];
                 } else {
-
-                    nodes = [ ...checkedPermission, info.node ];
+                    nodes = [...checkedPermission, info.node];
                 }
             }
         } else {
@@ -246,13 +244,13 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
      * @param isParent - condition to find the parent of the key node
      */
     const getNodeByKey = (key: string, permissionTree: TreeNode[], isParent: boolean = false): TreeNode => {
-        const flattenedTree: TreeNode[] = [ permissionTree[ 0 ] ];
+        const flattenedTree: TreeNode[] = [permissionTree[0]];
 
-        while ( flattenedTree.length ) {
+        while (flattenedTree.length) {
             const node: TreeNode = flattenedTree.shift();
 
             if (isParent) {
-                if ( node.key === key.slice(0,key.lastIndexOf("/")) ) {
+                if (node.key === key.slice(0, key.lastIndexOf("/"))) {
                     return node;
                 }
             } else {
@@ -261,7 +259,7 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
                 }
             }
 
-            if ( node.children ) {
+            if (node.children) {
                 flattenedTree.push(...node.children);
             }
         }
@@ -281,7 +279,7 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
 
         return (
             <div className="tree-arrow-wrap">
-                <span className={ `tree-arrow ${ !eventObject.expanded ? "active" : "" }` }>
+                <span className={`tree-arrow ${!eventObject.expanded ? "active" : ""}`}>
                     <span></span>
                     <span></span>
                 </span>
@@ -292,65 +290,59 @@ export const PermissionList: FunctionComponent<PermissionListProp> = (props: Per
     const renderChildren = (): ReactElement => (
         <>
             <Forms
-                submitState={ triggerSubmit }
-                onSubmit={ () => { onSubmit(checkedPermission); } }
+                submitState={triggerSubmit}
+                onSubmit={() => {
+                    onSubmit(checkedPermission);
+                }}
             >
-                {
-                    !isPermissionsLoading
-                        ? (
-                            <div className="treeview-container">
-                                <Tree
-                                    className={ "customIcon" }
-                                    data-testid={ `${ testId }-tree` }
-                                    disabled={ isReadOnly }
-                                    checkedKeys={ checkedPermission.map( (permission: TreeNode) => permission?.key ) }
-                                    defaultExpandedKeys={ defaultExpandedKeys }
-                                    showLine
-                                    showIcon={ false }
-                                    checkable
-                                    selectable={ false }
-                                    onCheck={ onCheck }
-                                    treeData={ permissions }
-                                    switcherIcon={ switcherIcon }
-                                />
-                            </div>
-                        )
-                        : <ContentLoader className="p-3" active />
-                }
-                { isEdit && !isPermissionsLoading && (
+                {!isPermissionsLoading ? (
+                    <div className="treeview-container">
+                        <Tree
+                            className={"customIcon"}
+                            data-testid={`${testId}-tree`}
+                            disabled={isReadOnly}
+                            checkedKeys={checkedPermission.map((permission: TreeNode) => permission?.key)}
+                            defaultExpandedKeys={defaultExpandedKeys}
+                            showLine
+                            showIcon={false}
+                            checkable
+                            selectable={false}
+                            onCheck={onCheck}
+                            treeData={permissions}
+                            switcherIcon={switcherIcon}
+                        />
+                    </div>
+                ) : (
+                    <ContentLoader className="p-3" active />
+                )}
+                {isEdit && !isPermissionsLoading && (
                     <>
-                        <Divider hidden/>
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
+                        <Divider hidden />
+                        <Grid.Row columns={1}>
+                            <Grid.Column mobile={16} tablet={16} computer={8}>
                                 <Button
-                                    data-testid={ `${ testId }-update-button` }
+                                    data-testid={`${testId}-update-button`}
                                     primary
                                     type="submit"
                                     size="small"
                                     className="form-button"
                                 >
-                                    { t("console:manage.features.roles.addRoleWizard.permissions.buttons.update") }
+                                    {t("console:manage.features.roles.addRoleWizard.permissions.buttons.update")}
                                 </Button>
                             </Grid.Column>
                         </Grid.Row>
                     </>
-                ) }
+                )}
             </Forms>
         </>
     );
 
-    return (
-        emphasize
-            ? (
-                <EmphasizedSegment data-testid={ testId } padded="very">
-                    { renderChildren() }
-                </EmphasizedSegment>
-            )
-            : (
-                <div data-testid={ testId }>
-                    { renderChildren() }
-                </div>
-            )
+    return emphasize ? (
+        <EmphasizedSegment data-testid={testId} padded="very">
+            {renderChildren()}
+        </EmphasizedSegment>
+    ) : (
+        <div data-testid={testId}>{renderChildren()}</div>
     );
 };
 

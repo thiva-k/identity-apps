@@ -17,25 +17,14 @@
  */
 
 import { IdentifiableComponentInterface, ProfileInfoInterface } from "@wso2is/core/models";
-import {
-    Announcement,
-    DocumentationLink,
-    LinkButton,
-    PageLayout,
-    useDocumentation
-} from "@wso2is/react-components";
+import { Announcement, DocumentationLink, LinkButton, PageLayout, useDocumentation } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Icon } from "semantic-ui-react";
 import AdvanceUserView from "./components/advance-user-view";
-import {
-    AppConstants,
-    AppState,
-    EventPublisher,
-    history
-} from "../../../core";
+import { AppConstants, AppState, EventPublisher, history } from "../../../core";
 import { setActiveView } from "../../../core/store";
 import { OrganizationType } from "../../../organizations/constants";
 import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
@@ -56,16 +45,13 @@ type GettingStartedPageInterface = IdentifiableComponentInterface;
 const GettingStartedPage: FunctionComponent<GettingStartedPageInterface> = (
     props: GettingStartedPageInterface
 ): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const dispatch: Dispatch = useDispatch();
 
     const profileInfo: ProfileInfoInterface = useSelector((state: AppState) => state.profile.profileInfo);
     const activeView: string = useSelector((state: AppState) => state.global.activeView);
-    
+
     const { organizationType } = useGetCurrentOrganizationType();
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
@@ -76,13 +62,12 @@ const GettingStartedPage: FunctionComponent<GettingStartedPageInterface> = (
 
     const featureAnnouncement: boolean = useMemo(() => {
         return organizationType !== OrganizationType.SUBORGANIZATION && false;
-    }, [ organizationType ]);
+    }, [organizationType]);
 
     /**
      * Make sure `QUICKSTART` tab is highlighed when this page is in use.
      */
     useEffect(() => {
-
         if (activeView === AppViewExtensionTypes.QUICKSTART) {
             return;
         }
@@ -94,7 +79,6 @@ const GettingStartedPage: FunctionComponent<GettingStartedPageInterface> = (
      * Monitor `profileInfo.id` and publish the event to avoid an event without `UUID`.
      */
     useEffect(() => {
-
         if (!profileInfo?.id) {
             return;
         }
@@ -102,44 +86,42 @@ const GettingStartedPage: FunctionComponent<GettingStartedPageInterface> = (
         // TODO: Move this to the `extensions/configs/common`.
         // Tracked here https://github.com/wso2-enterprise/asgardeo-product/issues/7742#issuecomment-939960128.
         eventPublisher.publish("console-click-getting-started-menu-item");
-    }, [ profileInfo?.id ]);
+    }, [profileInfo?.id]);
 
     return (
         <PageLayout
-            padded={ false }
+            padded={false}
             pageTitle="Home"
-            contentTopMargin={ false }
-            data-componentid={ `${componentId}-layout` }
+            contentTopMargin={false}
+            data-componentid={`${componentId}-layout`}
             className="getting-started-page"
         >
-            {
-                featureAnnouncement && (
-                    <Announcement
-                        message={ t("console:common.header.featureAnnouncements.organizations.message") }
-                        isFeatureAnnouncement={ true }
-                        showCloseIcon={ false }
-                    >
-                        <>
-                            <DocumentationLink
-                                className="pl-3 pr-0"
-                                link={ getLink("manage.organizations.learnMore") }
-                                showIcon={ false }
-                            >
-                                { t("common:learnMore") }
-                            </DocumentationLink>
-                            <LinkButton
-                                className="ml-0"
-                                onClick={ () => {
-                                    history.push(AppConstants.getPaths().get("ORGANIZATIONS"));
-                                } }
-                            >
-                                { t("console:common.header.featureAnnouncements.organizations.buttons.tryout") }
-                                <Icon name="angle right" />
-                            </LinkButton>
-                        </>
-                    </Announcement>
-                )
-            }
+            {featureAnnouncement && (
+                <Announcement
+                    message={t("console:common.header.featureAnnouncements.organizations.message")}
+                    isFeatureAnnouncement={true}
+                    showCloseIcon={false}
+                >
+                    <>
+                        <DocumentationLink
+                            className="pl-3 pr-0"
+                            link={getLink("manage.organizations.learnMore")}
+                            showIcon={false}
+                        >
+                            {t("common:learnMore")}
+                        </DocumentationLink>
+                        <LinkButton
+                            className="ml-0"
+                            onClick={() => {
+                                history.push(AppConstants.getPaths().get("ORGANIZATIONS"));
+                            }}
+                        >
+                            {t("console:common.header.featureAnnouncements.organizations.buttons.tryout")}
+                            <Icon name="angle right" />
+                        </LinkButton>
+                    </>
+                </Announcement>
+            )}
             <AdvanceUserView />
         </PageLayout>
     );

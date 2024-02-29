@@ -33,15 +33,7 @@ import React, { ChangeEvent, FunctionComponent, ReactElement, ReactNode, useEffe
 import { Trans } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import {
-    Button,
-    Divider,
-    DropdownItemProps,
-    Form,
-    Icon,
-    InputOnChangeData,
-    List
-} from "semantic-ui-react";
+import { Button, Divider, DropdownItemProps, Form, Icon, InputOnChangeData, List } from "semantic-ui-react";
 import {
     dotNetSDKConfigCode,
     dotNetSDKLoginCode,
@@ -64,7 +56,7 @@ import {
     SupportedAuthProtocolTypes
 } from "features/applications/models";
 import { ApplicationManagementUtils } from "../../../../applications/utils/application-management-utils";
-import { Config } from "features/core/configs";
+import { Config } from "../../../../core/configs";
 import MavenLogo from "../../../assets/images/icons/maven-logo.svg";
 import TomcatLogo from "../../../assets/images/icons/tomcat-icon.svg";
 import {
@@ -77,7 +69,7 @@ import { AddUserStepContent } from "../../shared/components";
  * The set of scopes requested to have a smooth UX. If `profile` is not requested, the `username` etc.
  * claims will not return with the ID Token.
  */
-const DEFAULT_REQUESTED_SCOPES: string[] = [ "openid", "profile" ];
+const DEFAULT_REQUESTED_SCOPES: string[] = ["openid", "profile"];
 
 interface IntegrateSDKsPropsInterface extends TestableComponentInterface {
     application: ApplicationInterface;
@@ -98,36 +90,35 @@ interface IntegrateSDKsPropsInterface extends TestableComponentInterface {
 export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
     props: IntegrateSDKsPropsInterface
 ): ReactElement => {
-
     const {
         application,
         inboundProtocolConfig,
         technology,
         addedCallBackUrls,
         addedOrigins,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const dispatch: Dispatch = useDispatch();
     const { getLink } = useDocumentation();
 
-    const [ SDKInitConfig, setSDKInitConfig ] = useState(undefined);
-    const [ configuredCallbacks, setConfiguredCallbacks ] = useState<DropdownItemProps[]>([]);
-    const [ sampleServerHost ] = useState<string>(null);
-    const [ callbacksUpdated, setCallbacksUpdated ] = useState<boolean>(false);
-    const [ appContextPath, setAppContextPath ] = useState<string>(null);
-    const [ isValidAppContextPath, setIsValidAppContextPath ] = useState<boolean>(true);
+    const [SDKInitConfig, setSDKInitConfig] = useState(undefined);
+    const [configuredCallbacks, setConfiguredCallbacks] = useState<DropdownItemProps[]>([]);
+    const [sampleServerHost] = useState<string>(null);
+    const [callbacksUpdated, setCallbacksUpdated] = useState<boolean>(false);
+    const [appContextPath, setAppContextPath] = useState<string>(null);
+    const [isValidAppContextPath, setIsValidAppContextPath] = useState<boolean>(true);
 
     useEffect(() => {
-
-        if (!inboundProtocolConfig?.oidc?.callbackURLs
-            || !Array.isArray(inboundProtocolConfig.oidc.callbackURLs)
-            || inboundProtocolConfig.oidc.callbackURLs.length < 1) {
-
+        if (
+            !inboundProtocolConfig?.oidc?.callbackURLs ||
+            !Array.isArray(inboundProtocolConfig.oidc.callbackURLs) ||
+            inboundProtocolConfig.oidc.callbackURLs.length < 1
+        ) {
             return;
         }
 
-        const callbacks: string[] = EncodeDecodeUtils.decodeURLRegex(inboundProtocolConfig.oidc.callbackURLs[ 0 ]);
+        const callbacks: string[] = EncodeDecodeUtils.decodeURLRegex(inboundProtocolConfig.oidc.callbackURLs[0]);
 
         if (callbacks && Array.isArray(callbacks) && callbacks.length > 1) {
             callbacks.forEach((url: string) => {
@@ -141,7 +132,7 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                 ]);
             });
         }
-    }, [ inboundProtocolConfig ]);
+    }, [inboundProtocolConfig]);
 
     useEffect(() => {
         if (!inboundProtocolConfig?.oidc) {
@@ -160,22 +151,23 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
             clientSecret: inboundProtocolConfig.oidc.clientSecret,
             scope: DEFAULT_REQUESTED_SCOPES,
             serverOrigin: Config.getDeploymentConfig().customServerHost,
-            signInRedirectURL: configuredCallbacks[ 0 ] ? configuredCallbacks[ 0 ].value : null,
-            signOutRedirectURL: configuredCallbacks[ 0 ] ? configuredCallbacks[ 0 ].value : null
+            signInRedirectURL: configuredCallbacks[0] ? configuredCallbacks[0].value : null,
+            signOutRedirectURL: configuredCallbacks[0] ? configuredCallbacks[0].value : null
         };
 
         setSDKInitConfig(configs);
-    }, [ inboundProtocolConfig, configuredCallbacks ]);
+    }, [inboundProtocolConfig, configuredCallbacks]);
 
     const handleAddCallback = (url: string) => {
-
         const configuredCallbacks: any = ApplicationManagementUtils.buildCallBackURLWithSeparator(
-            inboundProtocolConfig.oidc.callbackURLs[ 0 ]).split(",");
+            inboundProtocolConfig.oidc.callbackURLs[0]
+        ).split(",");
         const allowedOriginForCallbackUrl: string = URLUtils.urlComponents(url)?.origin;
 
         const shouldUpdateCallbacks: boolean = !configuredCallbacks.includes(url);
-        const shouldUpdateAllowedOrigins: boolean =
-            !inboundProtocolConfig.oidc.allowedOrigins.includes(allowedOriginForCallbackUrl);
+        const shouldUpdateAllowedOrigins: boolean = !inboundProtocolConfig.oidc.allowedOrigins.includes(
+            allowedOriginForCallbackUrl
+        );
 
         if (shouldUpdateCallbacks && !addedCallBackUrls.includes(url)) {
             addedCallBackUrls.push(url);
@@ -188,16 +180,18 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
         const body: OIDCDataInterface = {
             ...inboundProtocolConfig.oidc,
             allowedOrigins: shouldUpdateAllowedOrigins
-                ? [ ...inboundProtocolConfig.oidc.allowedOrigins, ...addedOrigins ]
+                ? [...inboundProtocolConfig.oidc.allowedOrigins, ...addedOrigins]
                 : inboundProtocolConfig.oidc.allowedOrigins,
             callbackURLs: shouldUpdateCallbacks
-                ? [ ApplicationManagementUtils.buildCallBackUrlWithRegExp([ ...configuredCallbacks,
-                    ...addedCallBackUrls ].join(",")) ]
+                ? [
+                      ApplicationManagementUtils.buildCallBackUrlWithRegExp(
+                          [...configuredCallbacks, ...addedCallBackUrls].join(",")
+                      )
+                  ]
                 : inboundProtocolConfig.oidc.callbackURLs
         };
 
         const resolveAlertContent = () => {
-
             if (shouldUpdateAllowedOrigins && shouldUpdateCallbacks) {
                 return {
                     description: "Successfully updated the URLs in the application.",
@@ -225,21 +219,22 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                 dispatch(addAlert<AlertInterface>(resolveAlertContent()));
             })
             .catch(() => {
-                dispatch(addAlert<AlertInterface>({
-                    description: "An error occurred while updating the application.",
-                    level: AlertLevels.ERROR,
-                    message: "Error occurred"
-                }));
+                dispatch(
+                    addAlert<AlertInterface>({
+                        description: "An error occurred while updating the application.",
+                        level: AlertLevels.ERROR,
+                        message: "Error occurred"
+                    })
+                );
             });
     };
 
     const checkCallbacks = (urlToCheck: string) => {
         const urlArray: string[] = inboundProtocolConfig.oidc
-            ? EncodeDecodeUtils.decodeURLRegex(inboundProtocolConfig.oidc.callbackURLs[ 0 ])
+            ? EncodeDecodeUtils.decodeURLRegex(inboundProtocolConfig.oidc.callbackURLs[0])
             : [];
 
         if (!urlArray || !Array.isArray(urlArray) || urlArray.length < 1) {
-
             return false;
         }
 
@@ -247,7 +242,6 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
     };
 
     const generateConfigureStepTitle = (technology: SupportedTraditionalOIDCAppTechnologyTypes): ReactNode => {
-
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE) {
             return "Add Dependencies";
         }
@@ -260,18 +254,21 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
     };
 
     const generateConfigureStep = (technology: SupportedTraditionalOIDCAppTechnologyTypes): ReactNode => {
-
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE) {
             return (
                 <>
                     <Text>
-                        To ease development, we&apos;ve introduced the <a
+                        To ease development, we&apos;ve introduced the{" "}
+                        <a
                             href="https://github.com/asgardeo/asgardeo-tomcat-oidc-agent"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="link external"
-                        >Asgardeo OIDC Agent</a>. You can use this Agent in your project by updating
-                        your <code className="inline-code">pom.xml</code> file with the following dependency.
+                        >
+                            Asgardeo OIDC Agent
+                        </a>
+                        . You can use this Agent in your project by updating your{" "}
+                        <code className="inline-code">pom.xml</code> file with the following dependency.
                     </Text>
 
                     <div className="code-segment">
@@ -281,10 +278,10 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             showLineNumbers
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ tomcatOIDCAgentMavenDependencyCode() }
-                            options={ {
+                            sourceCode={tomcatOIDCAgentMavenDependencyCode()}
+                            options={{
                                 lineWrapping: true
-                            } }
+                            }}
                             height="100%"
                             theme="dark"
                         />
@@ -293,8 +290,8 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                     <Divider hidden />
 
                     <Text>
-                        The Agent is hosted at <strong>WSO2 Internal Repository</strong>.
-                        To resolve the dependency mentioned above, point to the repository as follows.
+                        The Agent is hosted at <strong>WSO2 Internal Repository</strong>. To resolve the dependency
+                        mentioned above, point to the repository as follows.
                     </Text>
 
                     <div className="code-segment">
@@ -303,10 +300,10 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             showLineNumbers
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ wso2InternalRepoPointingCode() }
-                            options={ {
+                            sourceCode={wso2InternalRepoPointingCode()}
+                            options={{
                                 lineWrapping: true
-                            } }
+                            }}
                             theme="dark"
                             height="100%"
                         />
@@ -325,12 +322,16 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
 
                     <List ordered>
                         <List.Item>
-                            Open the <a
+                            Open the{" "}
+                            <a
                                 href="https://www.nuget.org/"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="link external"
-                            >Nuget Package Manger</a>.
+                            >
+                                Nuget Package Manger
+                            </a>
+                            .
                         </List.Item>
                         <List.Item>
                             Search for <code className="inline-code">Asgardeo.OIDC.SDK</code>.
@@ -351,10 +352,10 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             showLineNumbers
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ dotNetSDKNugetCLICode() }
-                            options={ {
+                            sourceCode={dotNetSDKNugetCLICode()}
+                            options={{
                                 lineWrapping: true
-                            } }
+                            }}
                             height="100%"
                             theme="dark"
                         />
@@ -362,14 +363,17 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
 
                     <div className="mt-3">
                         <Text>
-                            Check out the <a
-                                href={ SDKMeta.dotNet.readme }
+                            Check out the{" "}
+                            <a
+                                href={SDKMeta.dotNet.readme}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="link external"
                             >
-                                <Icon name="github" />documentation
-                            </a> to learn more about other installation options.
+                                <Icon name="github" />
+                                documentation
+                            </a>{" "}
+                            to learn more about other installation options.
                         </Text>
                     </div>
                 </>
@@ -380,7 +384,6 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
     };
 
     const generateInitialisationStepTitle = (technology: SupportedTraditionalOIDCAppTechnologyTypes): ReactNode => {
-
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE) {
             return "Configure";
         }
@@ -403,8 +406,7 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
     };
 
     const renderAppContextInput = () => {
-
-        return  (
+        return (
             <>
                 <Form>
                     <Form.Group widths="3">
@@ -412,114 +414,96 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             fluid
                             placeholder="https://myapp.io"
                             label="App Context Path"
-                            value={ appContextPath }
-                            onChange={ (e: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
+                            value={appContextPath}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>, data: InputOnChangeData) => {
                                 handleURLFieldUpdate(e, data);
-                            } }
+                            }}
                         />
                     </Form.Group>
                     <Hint>
-                        Few of the configurations such as <code className="inline-code">callBackURL</code> and <code
-                            className="inline-code">skipURIs</code> depends on your <strong>App context path</strong>.
+                        Few of the configurations such as <code className="inline-code">callBackURL</code> and{" "}
+                        <code className="inline-code">skipURIs</code> depends on your <strong>App context path</strong>.
                     </Hint>
                 </Form>
 
-                <Text>
-
-                </Text>
-                { !isValidAppContextPath && (
-                    <Message
-                        type="error"
-                        content="Please enter a valid URL"
-                    />
-                ) }
+                <Text></Text>
+                {!isValidAppContextPath && <Message type="error" content="Please enter a valid URL" />}
             </>
         );
     };
 
     const generateInitialisationStep = (technology: SupportedTraditionalOIDCAppTechnologyTypes): ReactNode => {
-
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE) {
-
             return (
                 <>
-                    {
-                        !callbacksUpdated
-                            && !isEmpty(sampleServerHost)
-                            && !(checkCallbacks(
-                                sampleServerHost + SDKMeta.tomcatOIDCAgent.sample.sigInRedirectURL))
-                            ? (
-                                <Message warning>
-                                    <p>
-                                        In order to try out the sample, you need to
-                                        add <strong>
-                                            { sampleServerHost + SDKMeta.tomcatOIDCAgent.sample.sigInRedirectURL }
-                                        </strong> to <strong>Authorized redirect URIs</strong>
-                                        <Button
-                                            className="warning"
-                                            floated="right"
-                                            onClick={
-                                                () => handleAddCallback(sampleServerHost +
-                                                    SDKMeta.tomcatOIDCAgent.sample.sigInRedirectURL)
-                                            }
-                                        >
-                                            Add Now
-                                        </Button>
-                                    </p>
-                                </Message>
-                            )
-                            : null
-                    }
+                    {!callbacksUpdated &&
+                    !isEmpty(sampleServerHost) &&
+                    !checkCallbacks(sampleServerHost + SDKMeta.tomcatOIDCAgent.sample.sigInRedirectURL) ? (
+                        <Message warning>
+                            <p>
+                                In order to try out the sample, you need to add{" "}
+                                <strong>{sampleServerHost + SDKMeta.tomcatOIDCAgent.sample.sigInRedirectURL}</strong> to{" "}
+                                <strong>Authorized redirect URIs</strong>
+                                <Button
+                                    className="warning"
+                                    floated="right"
+                                    onClick={() =>
+                                        handleAddCallback(
+                                            sampleServerHost + SDKMeta.tomcatOIDCAgent.sample.sigInRedirectURL
+                                        )
+                                    }
+                                >
+                                    Add Now
+                                </Button>
+                            </p>
+                        </Message>
+                    ) : null}
 
                     <Text>
-                        We provide the Asgardeo endpoints to the application using a property file, which is read
-                        by the Asgardeo OIDC Agent.
+                        We provide the Asgardeo endpoints to the application using a property file, which is read by the
+                        Asgardeo OIDC Agent.
                     </Text>
                     <Text>
                         Create a file named <code className="inline-code">oidc-sample-app.properties</code> inside the
-                        <code className="inline-code">&#60;YOUR_APP&#62;/src/main/resources</code> directory,
-                        using the content below.
+                        <code className="inline-code">&#60;YOUR_APP&#62;/src/main/resources</code> directory, using the
+                        content below.
                     </Text>
                     <Text>
                         <Trans i18nKey="extensions:develop.applications.quickstart.twa.setup.skipURIs">
                             Note the <strong>skipURIs</strong> property. This property defines the web pages in your
-                            application that should not be secured, and do not require authentication.
-                            Multiple URIs can be set using <strong>comma separated</strong> values.
+                            application that should not be secured, and do not require authentication. Multiple URIs can
+                            be set using <strong>comma separated</strong> values.
                         </Trans>
                     </Text>
 
                     <Divider hidden />
 
-                    { renderAppContextInput() }
+                    {renderAppContextInput()}
 
-                    {
-                        !callbacksUpdated
-                        && !isEmpty(appContextPath)
-                        && !(checkCallbacks(
-                            appContextPath + SDKMeta.tomcatOIDCAgent.integrate.defaultCallbackContext))
-                            ? (
-                                <Message warning>
-                                    <p>
-                                        For successful integration, you need to
-                                        add <strong>
-                                            { appContextPath 
-                                            + SDKMeta.tomcatOIDCAgent.integrate.defaultCallbackContext }
-                                        </strong> to <strong>Authorized redirect URIs</strong>
-                                        <Button
-                                            className="warning"
-                                            floated="right"
-                                            onClick={
-                                                () => handleAddCallback(appContextPath +
-                                                    SDKMeta.tomcatOIDCAgent.integrate.defaultCallbackContext)
-                                            }
-                                        >
-                                            Add Now
-                                        </Button>
-                                    </p>
-                                </Message>
-                            )
-                            : null
-                    }
+                    {!callbacksUpdated &&
+                    !isEmpty(appContextPath) &&
+                    !checkCallbacks(appContextPath + SDKMeta.tomcatOIDCAgent.integrate.defaultCallbackContext) ? (
+                        <Message warning>
+                            <p>
+                                For successful integration, you need to add{" "}
+                                <strong>
+                                    {appContextPath + SDKMeta.tomcatOIDCAgent.integrate.defaultCallbackContext}
+                                </strong>{" "}
+                                to <strong>Authorized redirect URIs</strong>
+                                <Button
+                                    className="warning"
+                                    floated="right"
+                                    onClick={() =>
+                                        handleAddCallback(
+                                            appContextPath + SDKMeta.tomcatOIDCAgent.integrate.defaultCallbackContext
+                                        )
+                                    }
+                                >
+                                    Add Now
+                                </Button>
+                            </p>
+                        </Message>
+                    ) : null}
 
                     <div className="code-segment" data-suppress="">
                         <CodeEditor
@@ -527,31 +511,35 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             showLineNumbers
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ tomcatOIDCAgentSamplePropertiesCode(SDKInitConfig, appContextPath) }
-                            options={ {
+                            sourceCode={tomcatOIDCAgentSamplePropertiesCode(SDKInitConfig, appContextPath)}
+                            options={{
                                 lineWrapping: true
-                            } }
+                            }}
                             height="100%"
                             theme="dark"
                         />
                     </div>
 
-                    <Divider hidden/>
+                    <Divider hidden />
 
                     <Text>
-                        A comprehensive list of the properties used above, can be found in the <a
-                            href={ SDKMeta.tomcatOIDCAgent.catalog }
+                        A comprehensive list of the properties used above, can be found in the{" "}
+                        <a
+                            href={SDKMeta.tomcatOIDCAgent.catalog}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="link external"
-                        >Configuration Catalog</a>.
+                        >
+                            Configuration Catalog
+                        </a>
+                        .
                     </Text>
 
-                    <Divider hidden/>
+                    <Divider hidden />
 
                     <Text>
-                        Finally, copy and paste the following configuration to the <code
-                            className="inline-code">&#60;YOUR_APP&#62;/src/main/webapp/WEB-INF/web.xml</code> file.
+                        Finally, copy and paste the following configuration to the{" "}
+                        <code className="inline-code">&#60;YOUR_APP&#62;/src/main/webapp/WEB-INF/web.xml</code> file.
                     </Text>
 
                     <div className="code-segment">
@@ -560,10 +548,10 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             showLineNumbers
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ tomcatOIDCAgentSampleWebXMLCode() }
-                            options={ {
+                            sourceCode={tomcatOIDCAgentSampleWebXMLCode()}
+                            options={{
                                 lineWrapping: true
-                            } }
+                            }}
                             height="100%"
                             theme="dark"
                         />
@@ -573,12 +561,12 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
         }
 
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.DOT_NET) {
-
             return (
                 <>
                     <Text>
-                        Once you have installed the SDK, create a file named <code className="inline-code">
-                        App.config</code> in the application path and add the following configuration.
+                        Once you have installed the SDK, create a file named{" "}
+                        <code className="inline-code">App.config</code> in the application path and add the following
+                        configuration.
                     </Text>
 
                     <div className="code-segment">
@@ -587,10 +575,10 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             showLineNumbers
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ dotNetSDKConfigCode(SDKInitConfig) }
-                            options={ {
+                            sourceCode={dotNetSDKConfigCode(SDKInitConfig)}
+                            options={{
                                 lineWrapping: true
-                            } }
+                            }}
                             height="100%"
                             theme="dark"
                         />
@@ -603,14 +591,12 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
     };
 
     const generateLoginStep = (technology: SupportedTraditionalOIDCAppTechnologyTypes): ReactNode => {
-
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE) {
-
             return (
                 <>
                     <Text>
-                        In the <code className="inline-code">index.html</code> file, add a login button to forward
-                        the user to secure pages upon successful login.
+                        In the <code className="inline-code">index.html</code> file, add a login button to forward the
+                        user to secure pages upon successful login.
                     </Text>
 
                     <div className="code-segment">
@@ -620,10 +606,10 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             showLineNumbers
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ tomcatOIDCAgentLoginButtonCode() }
-                            options={ {
+                            sourceCode={tomcatOIDCAgentLoginButtonCode()}
+                            options={{
                                 lineWrapping: true
-                            } }
+                            }}
                             height="100%"
                             theme="dark"
                         />
@@ -633,12 +619,9 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
         }
 
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.DOT_NET) {
-
             return (
                 <>
-                    <Text>
-                        Use the following code snippet to authenticate a user.
-                    </Text>
+                    <Text>Use the following code snippet to authenticate a user.</Text>
 
                     <div className="code-segment">
                         <CodeEditor
@@ -647,10 +630,10 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             showLineNumbers
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ dotNetSDKLoginCode() }
-                            options={ {
+                            sourceCode={dotNetSDKLoginCode()}
+                            options={{
                                 lineWrapping: true
-                            } }
+                            }}
                             height="100%"
                             theme="dark"
                         />
@@ -663,14 +646,10 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
     };
 
     const generateLogoutStep = (technology: SupportedTraditionalOIDCAppTechnologyTypes): ReactNode => {
-
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE) {
-
             return (
                 <>
-                    <Text>
-                        Add the following snippet to enable logout.
-                    </Text>
+                    <Text>Add the following snippet to enable logout.</Text>
 
                     <div className="code-segment">
                         <CodeEditor
@@ -679,7 +658,7 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             oneLiner
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ tomcatOIDCAgentLogoutCode() }
+                            sourceCode={tomcatOIDCAgentLogoutCode()}
                             theme="dark"
                             height="100%"
                         />
@@ -689,12 +668,9 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
         }
 
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.DOT_NET) {
-
             return (
                 <>
-                    <Text>
-                        Use the following code snippet to log out an already logged in user.
-                    </Text>
+                    <Text>Use the following code snippet to log out an already logged in user.</Text>
 
                     <div className="code-segment">
                         <CodeEditor
@@ -703,10 +679,10 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                             showLineNumbers
                             withClipboardCopy
                             language="htmlmixed"
-                            sourceCode={ dotNetSDKLogoutCode() }
-                            options={ {
+                            sourceCode={dotNetSDKLogoutCode()}
+                            options={{
                                 lineWrapping: true
-                            } }
+                            }}
                             height="100%"
                             theme="dark"
                         />
@@ -738,48 +714,55 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
     ];
 
     const renderPrerequisitesStep = (technology: SupportedTraditionalOIDCAppTechnologyTypes): ReactElement => {
-
-        if (!(technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE
-            || technology === SupportedTraditionalOIDCAppTechnologyTypes.DOT_NET)) {
-
+        if (
+            !(
+                technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE ||
+                technology === SupportedTraditionalOIDCAppTechnologyTypes.DOT_NET
+            )
+        ) {
             return null;
         }
 
         const generateContent = () => {
-
             if (technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE) {
                 return (
                     <>
                         <p>
-                            In this section, we guide you on how to configure your own Java application that
-                            uses&nbsp;
+                            In this section, we guide you on how to configure your own Java application that uses&nbsp;
                             <GenericIcon
                                 transparent
-                                icon={ MavenLogo }
+                                icon={MavenLogo}
                                 size="mini"
-                                style={ {
-                                    "display": "inline"
-                                } }
-                            /> <strong>Apache Maven</strong> (3.6.x or higher) as the package manager and&nbsp;
+                                style={{
+                                    display: "inline"
+                                }}
+                            />{" "}
+                            <strong>Apache Maven</strong> (3.6.x or higher) as the package manager and&nbsp;
                             <GenericIcon
                                 transparent
-                                icon={ TomcatLogo }
+                                icon={TomcatLogo}
                                 size="micro"
-                                style={ {
-                                    "display": "inline",
-                                    "verticalAlign": "sub"
-                                } }
-                            /> <strong>Apache Tomcat</strong> (8.x or 9.x) as the deployment engine. You may
-                            need to adjust some of the steps if you&apos;re working with a different application
-                            container or technology.
+                                style={{
+                                    display: "inline",
+                                    verticalAlign: "sub"
+                                }}
+                            />{" "}
+                            <strong>Apache Tomcat</strong> (8.x or 9.x) as the deployment engine. You may need to adjust
+                            some of the steps if you&apos;re working with a different application container or
+                            technology.
                         </p>
 
-                        <Text className="message-info-text">To download the latest <strong>Apache Maven</strong>,
-                            navigate to the official <DocumentationLink
-                            link={ getLink("develop.applications.editApplication." +
-                                "oidcApplication.quickStart.mavenDownload") }
-                            showEmptyLinkText
-                        >downloads</DocumentationLink> page.
+                        <Text className="message-info-text">
+                            To download the latest <strong>Apache Maven</strong>, navigate to the official{" "}
+                            <DocumentationLink
+                                link={getLink(
+                                    "develop.applications.editApplication." + "oidcApplication.quickStart.mavenDownload"
+                                )}
+                                showEmptyLinkText
+                            >
+                                downloads
+                            </DocumentationLink>{" "}
+                            page.
                         </Text>
                     </>
                 );
@@ -790,21 +773,25 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                     <>
                         <Message
                             icon="info circle"
-                            content={ (
+                            content={
                                 <p>
-                                    In this section we&apos;re guiding you on configuring your own .Net application
-                                    that uses <strong>Microsoft Windows 8</strong> (Or server equivalent) or greater,
-                                    and <strong>.NET Framework 4.6.1</strong> (or greater).
+                                    In this section we&apos;re guiding you on configuring your own .Net application that
+                                    uses <strong>Microsoft Windows 8</strong> (Or server equivalent) or greater, and{" "}
+                                    <strong>.NET Framework 4.6.1</strong> (or greater).
                                 </p>
-                            ) }
+                            }
                         />
-                        <Text className={ "message-info-text" }>
-                            To download <strong>.NET Framework</strong>, navigate to the official <a
+                        <Text className={"message-info-text"}>
+                            To download <strong>.NET Framework</strong>, navigate to the official{" "}
+                            <a
                                 href="https://dotnet.microsoft.com/download/dotnet-framework/net461"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="link external"
-                            >downloads</a> page.
+                            >
+                                downloads
+                            </a>{" "}
+                            page.
                         </Text>
                     </>
                 );
@@ -813,32 +800,24 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
 
         return (
             <div className="mt-3 mb-6">
-                <Message
-                    type={ "info" }
-                    header={ "Prerequisite" }
-                    content={ generateContent() }
-                />
+                <Message type={"info"} header={"Prerequisite"} content={generateContent()} />
             </div>
         );
     };
 
     return (
         <>
-            { renderPrerequisitesStep(technology) }
+            {renderPrerequisitesStep(technology)}
             <VerticalStepper
                 alwaysOpen
                 isSidePanelOpen
-                stepContent={ integrationFlowSteps }
-                isNextEnabled={ technology !== undefined }
-                data-testid={ `${ testId }-vertical-stepper` }
+                stepContent={integrationFlowSteps}
+                isNextEnabled={technology !== undefined}
+                data-testid={`${testId}-vertical-stepper`}
             />
-            <Divider hidden className="x2"/>
+            <Divider hidden className="x2" />
             <div className="mt-3 mb-6">
-                <Message
-                    type={ "info" }
-                    header={ "Try Out!" }
-                    content={ <AddUserStepContent/> }
-                />
+                <Message type={"info"} header={"Try Out!"} content={<AddUserStepContent />} />
             </div>
         </>
     );
