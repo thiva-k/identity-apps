@@ -34,8 +34,8 @@ import { AppConstants } from "../../../../../core/constants";
 import { history } from "../../../../../core/helpers";
 import { CreateGroupMemberInterface } from "../../../../../groups/models";
 import { createRole } from "../../../../../roles/api";
-import { getRolesWizardStepIcons } from "features/roles/configs";
-import { CreateRoleInterface, CreateRoleMemberInterface, TreeNode } from "features/roles/models";
+import { getRolesWizardStepIcons } from "../../../../../roles/configs";
+import { CreateRoleInterface, CreateRoleMemberInterface, TreeNode } from "../../../../../roles/models";
 import { UserBasicInterface } from "../../../../../users/models/user";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 

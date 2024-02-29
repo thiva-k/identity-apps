@@ -27,16 +27,16 @@ import { Dispatch } from "redux";
 import { DropdownProps, Grid, Modal, PaginationProps } from "semantic-ui-react";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
 import CustomizeStepsIllustration from "./assets/customize-steps.png";
-import { getApplicationList } from "features/applications/api";
-import { ApplicationList } from "features/applications/components/application-list";
-import { ApplicationListInterface } from "features/applications/models";
+import { getApplicationList } from "../../../../applications/api";
+import { ApplicationList } from "../../../../applications/components/application-list";
+import { ApplicationListInterface } from "../../../../applications/models";
 import { AdvancedSearchWithBasicFilters } from "../../../../core/components";
 import { AppConstants } from "../../../../core/constants";
 import { history } from "../../../../core/helpers";
 import {
     IdentityProviderInterface,
     IdentityProviderTemplateInterface
-} from "features/identity-providers/models/identity-provider";
+} from "../../../../identity-providers/models/identity-provider";
 import { VerticalStepper, VerticalStepperStepInterface } from "../../../components/component-extensions";
 
 /**

@@ -27,7 +27,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Grid, Icon } from "semantic-ui-react";
 import { AppState } from "../../../../../core/store";
-import { OrganizationType } from "features/organizations/constants";
+import { OrganizationType } from "../../../../../organizations/constants";
 import { generateInviteLink } from "../../api";
 
 interface AddUserWizardSummaryProps extends IdentifiableComponentInterface {

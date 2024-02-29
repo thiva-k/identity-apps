@@ -25,7 +25,7 @@ import { Icon, List } from "semantic-ui-react";
 import { AppConstants } from "../../../../core/constants";
 import { EventPublisher } from "../../../../core/utils";
 import { getUserDetails } from "../../../../users/api";
-import { AddConsumerUserWizard } from "features/users/components/wizard/add-consumer-user-wizard";
+import { AddConsumerUserWizard } from "../../../../users/components/wizard/add-consumer-user-wizard";
 import { UsersConstants } from "../../../components/users/constants";
 
 /**

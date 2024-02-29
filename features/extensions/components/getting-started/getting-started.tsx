@@ -26,8 +26,8 @@ import { Icon } from "semantic-ui-react";
 import AdvanceUserView from "./components/advance-user-view";
 import { AppConstants, AppState, EventPublisher, history } from "../../../core";
 import { setActiveView } from "../../../core/store";
-import { OrganizationType } from "features/organizations/constants";
-import { useGetCurrentOrganizationType } from "features/organizations/hooks/use-get-organization-type";
+import { OrganizationType } from "../../../organizations/constants";
+import { useGetCurrentOrganizationType } from "../../../organizations/hooks/use-get-organization-type";
 import { AppViewExtensionTypes } from "../../configs/models";
 
 /**

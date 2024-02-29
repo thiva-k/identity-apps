@@ -35,10 +35,11 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Header, Icon, Input } from "semantic-ui-react";
 import {
-    useApplicationRoleInvitedUserGroups,
-    useDescendantsOfSubOrg
+    useApplicationRoleInvitedUserGroups, useDescendantsOfSubOrg
 } from "../../extensions/components/application/api";
-import { ApplicationRoleGroupInterface, DescendantDataInterface } from "../../extensions/components/application/models";
+import {
+    ApplicationRoleGroupInterface, DescendantDataInterface
+} from "../../extensions/components/application/models";
 import { UIConstants } from "../../core";
 import { CONSUMER_USERSTORE } from "../../userstores/constants";
 
