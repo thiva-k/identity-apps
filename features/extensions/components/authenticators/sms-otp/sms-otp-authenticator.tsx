@@ -21,14 +21,14 @@ import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import {
     CommonAuthenticatorFormInitialValuesInterface,
     CommonAuthenticatorFormMetaInterface
-} from "features/identity-providers/models/identity-provider";
-import { Divider } from "modules/react-components/node_modules/semantic-ui-react";
+} from "../../../../identity-providers/models/identity-provider";
+import { Divider } from "@wso2is/react-components/node_modules/semantic-ui-react";
 import React, { FunctionComponent, ReactElement, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { SmsOtpAuthenticatorActivationSection } from "./sms-otp-authenticator-activation-section";
-import { FeatureConfigInterface } from "features/core/models";
-import { AppState } from "features/core/store";
-import { SMSOTPAuthenticatorForm } from "features/identity-providers/components/forms/authenticators/sms-otp-authenticator-form";
+import { FeatureConfigInterface } from "../../../../core/models";
+import { AppState } from "../../../../core/store";
+import { SMSOTPAuthenticatorForm } from "../../../../identity-providers/components/forms/authenticators/sms-otp-authenticator-form";
 
 interface SmsOTPAuthenticatorInterface extends IdentifiableComponentInterface {
     /**

@@ -1,0 +1,36 @@
+{
+  
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "paths":{
+      "@wso2is/common": ["modules/common/src/index.ts"],
+      "@wso2is/dynamic-forms": ["modules/dynamic-forms/src/index.ts"],
+      "@wso2is/form": ["modules/form/src/index.ts"],
+      "@wso2is/forms": ["modules/forms/src/index.ts"],
+      "@wso2is/react-components": [
+                "modules/react-components/src/index.ts"
+            ]
+    
+    },
+    "baseUrl": "../../",
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
+    "strict": false,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}

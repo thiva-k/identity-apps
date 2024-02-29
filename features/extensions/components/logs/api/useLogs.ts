@@ -20,7 +20,7 @@ import { HttpMethods } from "@wso2is/core/models";
 import useRequest, {
     RequestConfigInterface,
     RequestResultInterface
-} from "features/core/hooks/use-request";
+} from "../../../../core/hooks/use-request";
 import { store } from "features/core/store";
 import { InterfaceLogsRequest, InterfaceLogsResponse } from "../models/log-models";
 

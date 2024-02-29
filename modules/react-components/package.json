@@ -3,6 +3,7 @@
     "name": "@wso2is/react-components",
     "version": "2.1.9",
     "description": "A React component library for WSO2 Identity Server frontend apps implementing Semantic UI Framework",
+    "main":"./dist/index.js",
     "keywords": [
         "WSO2",
         "WSO2 IS",

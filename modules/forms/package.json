@@ -12,6 +12,7 @@
     ],
     "author": "WSO2",
     "license": "Apache-2.0",
+    "main": "dist/index.js",
     "scripts": {
         "build": "pnpm nx run forms:build",
         "clean": "pnpm clean:lock-files && pnpm clean:build && pnpm clean:node-modules",

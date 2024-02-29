@@ -24,8 +24,8 @@ import useRequest, {
     RequestErrorInterface,
     RequestResultInterface,
     SWRConfig
-} from "features/core/hooks/use-request";
-import { store } from "features/core/store";
+} from "../../../../core/hooks/use-request";
+import { store } from "../../../../core/store";
 import { OrganizationInterface } from "../../users/models/organization";
 
 /**

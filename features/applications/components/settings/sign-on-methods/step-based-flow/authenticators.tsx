@@ -26,7 +26,7 @@ import React, { Fragment, FunctionComponent, ReactElement, useEffect, useState }
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Icon, Label } from "semantic-ui-react";
-import { applicationConfig } from "features/extensions";
+import { applicationConfig } from "../../../../../extensions";
 import { AuthenticatorManagementConstants } from "../../../../../connections";
 import { ConnectionsManagementUtils } from "../../../../../connections/utils/connection-utils";
 import { IdentityProviderManagementConstants } from "../../../../../identity-providers/constants/identity-provider-management-constants";

@@ -21,9 +21,9 @@ import { ContentLoader, Hint, Text } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { Grid, Header, Segment } from "semantic-ui-react";
-import { ClaimManagementConstants } from "features/claims/constants/claim-management-constants";
-import { getUsernameConfiguration } from "features/users/utils";
-import { useValidationConfigData } from "features/validation/api";
+import { ClaimManagementConstants } from "../../../../../claims/constants/claim-management-constants";
+import { getUsernameConfiguration } from "../../../../../users/utils";
+import { useValidationConfigData } from "../../../../../validation/api";
 
 /**
  * Prop types of the attribute mappings component

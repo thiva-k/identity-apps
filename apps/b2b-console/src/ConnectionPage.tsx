@@ -73,7 +73,7 @@ import {NodesIcon} from "@oxygen-ui/react-icons";
  *
  * @returns App Root component.
  */
-export const ApplicationPage: FunctionComponent<Record<string, never>> = (): ReactElement => {
+export const ConnectionPage: FunctionComponent<Record<string, never>> = (): ReactElement => {
     const featureGateConfigUpdated: FeatureGateInterface = { ...featureGateConfig };
 
     const dispatch: Dispatch<any> = useDispatch();
@@ -449,7 +449,7 @@ export const ApplicationPage: FunctionComponent<Record<string, never>> = (): Rea
                                         />
                                         <Switch>
                                             <Redirect exact from="/" to={AppConstants.getAppHomePath()} />
-                                            {applicationRoutes.map((route: RouteInterface, index: number) => {
+                                            {connectionRoutes.map((route: RouteInterface, index: number) => {
                                                 return route.protected ? (
                                                     <ProtectedRoute
                                                         component={route.component}
@@ -491,7 +491,7 @@ export const ApplicationPage: FunctionComponent<Record<string, never>> = (): Rea
  * TODO: Change this to a named export once react starts supporting named exports for code splitting.
  * @see {@link https://reactjs.org/docs/code-splitting.html#reactlazy}
  */
-export default ApplicationPage;
+export default ConnectionPage;
 
 const applicationRoutes = 
     //https://localhost:9001/t/carbon.super/console/applications    
@@ -519,7 +519,7 @@ const applicationRoutes =
                 path: AppConstants.getPaths().get("APPLICATION_EDIT"),
                 protected: true,
                 showOnSidePanel: false
-            },
+                },
             {
             component: lazy(() => import("@wso2is/features/applications/pages/applications")),
             exact: true,
@@ -532,50 +532,50 @@ const applicationRoutes =
             path: AppConstants.getPaths().get("APPLICATIONS"),
             protected: true,
             showOnSidePanel: true
-    }];
+        }];
 
     const connectionRoutes = [
     //https://localhost:9001/t/carbon.super/console/connections
         
-            {
-                component: lazy(() => import("@wso2is/features/connections/pages/connection-templates")),
-                exact: true,
-                icon: {
-                    icon: getSidePanelIcons().childIcon
-                },
-                id: "identityProviderTemplate",
-                name: "Identity Provider Templates",
-                path: AppConstants.getPaths().get("IDP_TEMPLATES"),
-                protected: true,
-                showOnSidePanel: false
-            },
-            {
-                component: lazy(() => import("@wso2is/features/connections/pages/connection-edit")),
-                exact: true,
-                icon: {
-                    icon: getSidePanelIcons().childIcon
-                },
-                id: "identityProvidersEdit",
-                name: "Identity Providers Edit",
-                path: AppConstants.getPaths().get("IDP_EDIT"),
-                protected: true,
-                showOnSidePanel: false
-            },
         {
-        component: lazy(() => import("@wso2is/features/connections/pages/connections")),
-        exact: true,
-        icon: {
-            icon: <NodesIcon />
+            component: lazy(() => import("@wso2is/features/connections/pages/connection-templates")),
+            exact: true,
+            icon: {
+                icon: getSidePanelIcons().childIcon
+            },
+            id: "identityProviderTemplate",
+            name: "Identity Provider Templates",
+            path: AppConstants.getPaths().get("IDP_TEMPLATES"),
+            protected: true,
+            showOnSidePanel: false
         },
-        id: "identityProviders",
-        name: identityProviderConfig?.useNewConnectionsView
-            ? "console:develop.features.sidePanel.authenticationProviders"
-            : "console:develop.features.sidePanel.identityProviders",
-        order: 3,
-        path: AppConstants.getPaths().get("IDP"),
-        protected: true,
-        showOnSidePanel: true
-    }]
+        {
+            component: lazy(() => import("@wso2is/features/connections/pages/connection-edit")),
+            exact: true,
+            icon: {
+                icon: getSidePanelIcons().childIcon
+            },
+            id: "identityProvidersEdit",
+            name: "Identity Providers Edit",
+            path: AppConstants.getPaths().get("IDP_EDIT"),
+            protected: true,
+            showOnSidePanel: false
+            },
+            {
+            component: lazy(() => import("@wso2is/features/connections/pages/connections")),
+            exact: true,
+            icon: {
+                icon: <NodesIcon />
+            },
+            id: "identityProviders",
+            name: identityProviderConfig?.useNewConnectionsView
+                ? "console:develop.features.sidePanel.authenticationProviders"
+                : "console:develop.features.sidePanel.identityProviders",
+            order: 3,
+            path: AppConstants.getPaths().get("IDP"),
+            protected: true,
+            showOnSidePanel: true
+        }]
 
 const myRoutes = applicationRoutes.concat(connectionRoutes);
 
