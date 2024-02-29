@@ -50,16 +50,16 @@ import {
     UserRoleInterface,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../../../core";
+} from "../../../../../core";
 import { updateRoleDetails } from "../../../../../roles/api/roles";
 import { PatchRoleDataInterface } from "../../../../../roles/models/roles";
-import { RealmConfigInterface } from "../../../../server-configurations";
-import { UserManagementConstants } from "../../../../users/constants";
+import { RealmConfigInterface } from "../../../../../server-configurations";
+import { UserManagementConstants } from "../../../../../users/constants";
 import {
     InternalAdminUserListInterface,
     UserBasicInterface,
     UserListInterface
-} from "../../../../users/models";
+} from "../../../../../users/models";
 import { SCIMConfigs } from "../../../../configs/scim";
 import { FeatureGateConstants } from "../../../feature-gate/constants/feature-gate";
 import { deleteGuestUser } from "../../api";
