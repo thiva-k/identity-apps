@@ -32,16 +32,16 @@ import {
     getApplicationDetails,
     getInboundProtocolConfig,
     useApplicationList
-} from "features/applications/api";
+} from "../../../../applications/api";
 import {
     MinimalAppCreateWizard
-} from "features/applications/components/wizard/minimal-application-create-wizard";
-import { ApplicationManagementConstants } from "features/applications/constants";
+} from "../../../../applications/components/wizard/minimal-application-create-wizard";
+import { ApplicationManagementConstants } from "../../../../applications/constants";
 import {
     ApplicationListItemInterface,
     ApplicationTemplateListItemInterface
-} from "features/applications/models";
-import { ApplicationManagementUtils } from "features/applications/utils/application-management-utils";
+} from "../../../../applications/models";
+import { ApplicationManagementUtils } from "../../../../applications/utils/application-management-utils";
 import {
     AppConstants,
     AppState,
@@ -50,9 +50,9 @@ import {
     FeatureConfigInterface,
     history,
     setActiveView
-} from "features/core";
-import { OrganizationType } from "features/organizations/constants";
-import { useGetCurrentOrganizationType } from "features/organizations/hooks/use-get-organization-type";
+} from "../../../../core";
+import { OrganizationType } from "../../../../organizations/constants";
+import { useGetCurrentOrganizationType } from "../../../../organizations/hooks/use-get-organization-type";
 import { AppViewExtensionTypes } from "../../../configs";
 import { TryItApplicationConstants } from "../../application/constants";
 import { getTryItClientId } from "../../application/utils/try-it-utils";

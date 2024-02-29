@@ -42,10 +42,10 @@ import {
     FeatureConfigInterface,
     UIConstants,
     getEmptyPlaceholderIllustrations, history
-} from "features/core";
-import { RealmConfigInterface } from "features/server-configurations";
-import { UserManagementConstants } from "features/users/constants";
-import { UserBasicInterface, UserListInterface } from "features/users/models";
+} from "../../../../core";
+import { RealmConfigInterface } from "../../../../server-configurations";
+import { UserManagementConstants } from "../../../../users/constants";
+import { UserBasicInterface, UserListInterface } from "../../../../users/models";
 import { administratorConfig } from "../../../configs/administrator";
 import { SCIMConfigs } from "../../../configs/scim";
 import { CONSUMER_USERSTORE } from "../../users/constants";

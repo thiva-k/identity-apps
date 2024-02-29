@@ -63,7 +63,7 @@ import {
     OIDCDataInterface,
     SupportedAuthProtocolTypes
 } from "features/applications/models";
-import { ApplicationManagementUtils } from "features/applications/utils/application-management-utils";
+import { ApplicationManagementUtils } from "../../../../applications/utils/application-management-utils";
 import { Config } from "features/core/configs";
 import MavenLogo from "../../../assets/images/icons/maven-logo.svg";
 import TomcatLogo from "../../../assets/images/icons/tomcat-icon.svg";

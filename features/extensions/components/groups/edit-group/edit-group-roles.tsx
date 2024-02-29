@@ -57,7 +57,7 @@ import { Checkbox, Divider, Grid, Header, Icon, Input, Label, Modal, Table } fro
 import { getApplicationList } from "features/applications/api";
 import { ApplicationListInterface, ApplicationListItemInterface } from "features/applications/models";
 import { getEmptyPlaceholderIllustrations, history } from "features/core";
-import { GroupsInterface } from "features/groups";
+import { GroupsInterface } from "../../../../groups";
 import {
     getAllApplicationRolesList,
     getAssignedApplicationRolesList,

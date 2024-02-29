@@ -40,7 +40,7 @@ import { Grid } from "semantic-ui-react";
 import {
     GitHubAuthenticationProviderCreateWizardContent
 } from "./github-authentication-provider-create-wizard-content";
-import { identityProviderConfig } from "features/extensions/configs";
+import { identityProviderConfig } from "../../../../extensions/configs";
 import {
     AppState,
     ConfigReducerStateInterface,

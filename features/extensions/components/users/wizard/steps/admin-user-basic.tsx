@@ -29,7 +29,7 @@ import {
     useDocumentation
 } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
-import { UserListInterface } from "features/users/models/user";
+import { UserListInterface } from "../../../../../users/models/user";
 import { AxiosResponse } from "axios";
 import debounce, { DebouncedFunc } from "lodash-es/debounce";
 import isEmpty from "lodash-es/isEmpty";
@@ -39,7 +39,7 @@ import { useTranslation } from "react-i18next";
 import { Divider, DropdownProps, Grid, Header } from "semantic-ui-react";
 import { SharedUserStoreUtils, UIConstants, UserBasicInterface, UserRoleInterface, getUsersList } from "features/core";
 import { EventPublisher } from "features/core/utils";
-import { getRolesList } from "features/roles/api";
+import { getRolesList } from "../../../../../roles/api";
 import { administratorConfig } from "../../../../configs/administrator";
 import { SCIMConfigs } from "../../../../configs/scim";
 import { AdminAccountTypes } from "../../constants";

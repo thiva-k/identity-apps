@@ -32,11 +32,11 @@ import { CreateRoleSummary } from "./role-sumary";
 import { AddRoleUsers } from "./role-user-assign";
 import { AppConstants } from "features/core/constants";
 import { history } from "features/core/helpers";
-import { CreateGroupMemberInterface } from "features/groups/models";
-import { createRole } from "features/roles/api";
+import { CreateGroupMemberInterface } from "../../../../../groups/models";
+import { createRole } from "../../../../../roles/api";
 import { getRolesWizardStepIcons } from "features/roles/configs";
 import { CreateRoleInterface, CreateRoleMemberInterface, TreeNode } from "features/roles/models";
-import { UserBasicInterface } from "features/users/models/user";
+import { UserBasicInterface } from "../../../../../users/models/user";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 
 /**

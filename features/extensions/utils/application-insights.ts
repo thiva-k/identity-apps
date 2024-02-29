@@ -20,8 +20,8 @@ import { ITelemetryItem } from "@microsoft/applicationinsights-core-js";
 import { ReactPlugin } from "@microsoft/applicationinsights-react-js";
 import { ApplicationInsights } from "@microsoft/applicationinsights-web";
 import { v4 as uuidv4 } from "uuid";
-import { history } from "features/core/helpers/history";
-import { store } from "features/core/store";
+import { history } from "../../core/helpers/history";
+import { store } from "../../core/store";
 
 /**
  * App Insights class to perform application insights related functions.

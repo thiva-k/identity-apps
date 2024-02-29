@@ -41,7 +41,7 @@ import {
     GoogleAuthenticationProviderCreateWizardContent,
     GoogleAuthenticationProviderCreateWizardFormValuesInterface
 } from "./google-authentication-provider-create-wizard-content";
-import { identityProviderConfig } from "features/extensions/configs";
+import { identityProviderConfig } from "../../../../extensions/configs";
 import {
     AppState,
     ConfigReducerStateInterface,

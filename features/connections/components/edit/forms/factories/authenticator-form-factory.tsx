@@ -18,7 +18,7 @@
 
 import { TestableComponentInterface } from "@wso2is/core/models";
 import React, { FunctionComponent, ReactElement } from "react";
-import { identityProviderConfig } from "features/extensions/configs/identity-provider";
+import { identityProviderConfig } from "../../../../../extensions/configs/identity-provider";
 import { AuthenticatorManagementConstants } from "../../../../constants/autheticator-constants";
 import { ConnectionManagementConstants } from "../../../../constants/connection-constants";
 import {

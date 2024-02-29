@@ -28,7 +28,7 @@ import { SharedUserStoreConstants } from "features/core/constants";
 import { ConfigReducerStateInterface } from "features/core/models";
 import { AppState } from "features/core/store";
 import { SharedUserStoreUtils } from "features/core/utils";
-import { searchRoleList } from "features/roles/api";
+import { searchRoleList } from "../../../../../roles/api";
 import { CreateRoleFormData, SearchRoleInterface, TreeNode } from "features/roles/models";
 import { getUserStoreList } from "features/userstores/api";
 import { CONSUMER_USERSTORE } from "../../../users/constants";

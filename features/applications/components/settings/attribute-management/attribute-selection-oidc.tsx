@@ -32,7 +32,7 @@ import {
     useDocumentation
 } from "@wso2is/react-components";
 import { OIDCScopesClaimsListInterface } from "features/oidc-scopes";
-import { IdentifiableComponentInterface } from "modules/core/src/models";
+import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import React, {
     ChangeEvent,
     Fragment,

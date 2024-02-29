@@ -38,23 +38,23 @@ import {
     getAUserStore,
     getEmptyPlaceholderIllustrations,
     store
-} from "features/core";
+} from "../../../../core";
 import {
     RealmConfigInterface,
     ServerConfigurationsInterface,
     getServerConfigs
-} from "features/server-configurations";
-import { getUsersList } from "features/users/api";
-import { UsersListOptionsComponent } from "features/users/components/users-list-options";
-import { AddUserWizard } from "features/users/components/wizard/add-user-wizard";
-import { UserManagementConstants } from "features/users/constants";
-import { UserListInterface } from "features/users/models";
-import { getUserStoreList } from "features/userstores/api";
+} from "../../../../server-configurations";
+import { getUsersList } from "../../../../users/api";
+import { UsersListOptionsComponent } from "../../../../users/components/users-list-options";
+import { AddUserWizard } from "../../../../users/components/wizard/add-user-wizard";
+import { UserManagementConstants } from "../../../../users/constants";
+import { UserListInterface } from "../../../../users/models";
+import { getUserStoreList } from "../../../../userstores/api";
 import {
     UserStoreListItem,
     UserStorePostData,
     UserStoreProperty
-} from "features/userstores/models/user-stores";
+} from "../../../../userstores/models/user-stores";
 import { UserStoreUtils } from "../../../utils/user-store-utils";
 import { CONSUMER_USERSTORE } from "../../users/constants";
 import { deleteUser } from "../api";

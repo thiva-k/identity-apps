@@ -52,10 +52,10 @@ import {
     getEmptyPlaceholderIllustrations,
     history
 } from "features/core";
-import { deleteUser, useUsersList } from "features/users/api/users";
+import { deleteUser, useUsersList } from "../../../../users/api/users";
 import { BulkImportUserWizard } from "features/users/components/wizard/bulk-import-user-wizard";
 import { UserAddOptionTypes } from "features/users/constants";
-import { UserBasicInterface, UserListInterface } from "features/users/models/user";
+import { UserBasicInterface, UserListInterface } from "../../../../users/models/user";
 import { CONSUMER_USERSTORE } from "../../users/constants";
 import { getUserStores } from "../api";
 import { UsersList } from "../components";

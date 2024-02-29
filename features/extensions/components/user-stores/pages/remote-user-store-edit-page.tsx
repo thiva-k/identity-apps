@@ -32,7 +32,7 @@ import { Icon, TabProps } from "semantic-ui-react";
 import { URLFragmentTypes } from "features/applications/models";
 import { AppConstants, history } from "features/core";
 import { getAType, getAUserStore } from "features/userstores/api/user-stores";
-import { getDatabaseAvatarGraphic } from "features/userstores/configs/ui";
+import { getDatabaseAvatarGraphic } from "../../../../userstores/configs/ui";
 import { DISABLED } from "features/userstores/constants/user-store-constants";
 import {
     CategorizedProperties,
@@ -40,7 +40,7 @@ import {
     UserStoreProperty,
     UserstoreType
 } from "features/userstores/models/user-stores";
-import { reOrganizeProperties } from "features/userstores/utils/userstore-utils";
+import { reOrganizeProperties } from "../../../../userstores/utils/userstore-utils";
 import { getAgentConnections } from "../api";
 import { AttributeMappings, SetupGuideTab, UserStoreGeneralSettings } from "../components";
 import { RemoteUserStoreConstants } from "../constants";

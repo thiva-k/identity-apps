@@ -22,8 +22,8 @@ import { useSelector } from "react-redux";
 import useRequest, {
     RequestErrorInterface,
     RequestResultInterface
-} from "features/core/hooks/use-request";
-import { AppState, store } from "features/core/store";
+} from "../../../../core/hooks/use-request";
+import { AppState, store } from "../../../../core/store";
 
 /**
  * Hook to get the all features of the organization.

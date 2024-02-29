@@ -24,11 +24,11 @@ import { useTranslation } from "react-i18next";
 import { Dropdown, DropdownItemProps, DropdownProps, Form, Grid, Menu, Message, Radio } from "semantic-ui-react";
 import { SharedUserStoreConstants } from "features/core";
 import { EventPublisher, SharedUserStoreUtils } from "features/core/utils";
-import { getUsersList } from "features/users/api/users";
+import { getUsersList } from "../../../../../users/api/users";
 import { 
     BasicUserDetailsInterface,
     UserListInterface
-} from "features/users/models/user";
+} from "../../../../../users/models/user";
 import {
     generatePassword, 
     getConfiguration, 

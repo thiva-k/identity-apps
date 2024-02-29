@@ -46,8 +46,8 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { Grid, Header, Icon, Input, Modal, Table } from "semantic-ui-react";
 import { UIConstants, getEmptyPlaceholderIllustrations } from "features/core";
-import { getUsersList } from "features/users/api/users";
-import { UserBasicInterface, UserListInterface } from "features/users/models/user";
+import { getUsersList } from "../../../../../users/api/users";
+import { UserBasicInterface, UserListInterface } from "../../../../../users/models/user";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 
 /**

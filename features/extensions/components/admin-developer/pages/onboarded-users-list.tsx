@@ -41,8 +41,8 @@ import {
     history
 } from "features/core";
 import { RealmConfigInterface } from "features/server-configurations";
-import { UserManagementConstants } from "features/users/constants/user-management-constants";
-import { UserBasicInterface, UserListInterface } from "features/users/models/user";
+import { UserManagementConstants } from "../../../../users/constants/user-management-constants";
+import { UserBasicInterface, UserListInterface } from "../../../../users/models/user";
 
 /**
  * Prop types for the liked accounts component.

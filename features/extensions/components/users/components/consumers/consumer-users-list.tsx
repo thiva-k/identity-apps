@@ -40,9 +40,9 @@ import {
     UIConstants,
     getEmptyPlaceholderIllustrations,
     history
-} from "features/core";
-import { UserManagementConstants } from "features/users/constants";
-import { UserBasicInterface, UserListInterface } from "features/users/models";
+} from "../../../../../core";
+import { UserManagementConstants } from "../../../../../users/constants";
+import { UserBasicInterface, UserListInterface } from "../../../../../users/models";
 import { SCIMConfigs } from "../../../../configs/scim";
 import { UsersConstants } from "../../constants";
 import { UserManagementUtils } from "../../utils";

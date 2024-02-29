@@ -17,7 +17,7 @@
  */
 
 import { AxiosResponse } from "axios";
-import { getAUserStore } from "features/core/api";
+import { getAUserStore } from "../../core/api";
 import { SharedUserStoreConstants } from "features/core/constants";
 import { getUserStoreList } from "features/userstores/api";
 import { UserStoreListItem, UserStorePostData, UserStoreProperty } from "features/userstores/models";

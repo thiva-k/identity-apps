@@ -48,7 +48,7 @@ import { Dispatch } from "redux";
 import { Icon } from "semantic-ui-react";
 import { AutoCompleteRenderOption } from "./edit-role-common/auto-complete-render-option";
 import { RenderChip } from "./edit-role-common/render-chip";
-import { RemoteUserStoreConstants } from "features/extensions/components/user-stores/constants";
+import { RemoteUserStoreConstants } from "../../../extensions/components/user-stores/constants";
 import { updateResources } from "../../../core/api/bulk-operations";
 import { getEmptyPlaceholderIllustrations } from "../../../core/configs/ui";
 import { GroupsInterface } from "../../../groups/models/groups";

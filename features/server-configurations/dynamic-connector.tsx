@@ -26,7 +26,7 @@ import { Dispatch } from "redux";
 import { Checkbox, CheckboxProps, Divider, Grid, Header, Image, Segment } from "semantic-ui-react";
 import { updateGovernanceConnector } from "./api";
 import { GovernanceConnectorUtils } from "./utils";
-import { serverConfigurationConfig } from "features/extensions/configs/server-configuration";
+import { serverConfigurationConfig } from "../extensions/configs/server-configuration";
 import {
     ConnectorPropertyInterface,
     GovernanceConnectorInterface

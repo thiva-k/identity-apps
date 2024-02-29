@@ -39,7 +39,7 @@ import {
     UIConstants,
     getEmptyPlaceholderIllustrations
 } from "features/core";
-import { deleteUser } from "features/users/api";
+import { deleteUser } from "../../../../../users/api";
 
 import { UserListInterface } from "features/users/models";
 import { CONSUMER_USERSTORE } from "../../../users/constants";

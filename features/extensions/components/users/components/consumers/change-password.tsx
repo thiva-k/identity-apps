@@ -32,7 +32,7 @@ import {
     ConnectorPropertyInterface,
     ServerConfigurationsConstants
 } from "features/server-configurations";
-import { updateUserInfo } from "features/users/api/users";
+import { updateUserInfo } from "../../../../../users/api/users";
 import { USERSTORE_REGEX_PROPERTIES } from "features/userstores/constants/user-store-constants";
 import { ValidationFormInterface } from "features/validation/models";
 import { CONSUMER_USERSTORE } from "../../../users/constants";

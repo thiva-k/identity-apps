@@ -27,10 +27,10 @@ import { TabProps } from "semantic-ui-react";
 import { ConsumerUserGroupsList } from "./consumer-user-groupslist";
 import { ConsumerUserProfile } from "./consumer-user-profile";
 import { FeatureConfigInterface } from "features/core";
-import { GroupsInterface, useGroupList } from "features/groups";
+import { GroupsInterface, useGroupList } from "../../../../../groups";
 import { ConnectorPropertyInterface } from "features/server-configurations";
-import { UserSessions } from "features/users/components/user-sessions";
-import useUserManagement from "features/users/hooks/use-user-management";
+import { UserSessions } from "../../../../../users/components/user-sessions";
+import useUserManagement from "../../../../../users/hooks/use-user-management";
 import { SCIMConfigs } from "../../../../configs/scim";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 

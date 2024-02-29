@@ -42,7 +42,7 @@ import { Icon, Segment } from "semantic-ui-react";
 import { AddIdpCertificateModal } from "./add-idp-certificate-modal";
 import { EmptyCertificatesPlaceholder } from "./empty-certificates-placeholder";
 import { IdpCertificatesList } from "./idp-cetificates-list";
-import { commonConfig } from "features/extensions/configs";
+import { commonConfig } from "../../../../extensions/configs";
 import { AppState, ConfigReducerStateInterface } from "../../../../core";
 import { updateIDPCertificate } from "../../../api";
 import { IdentityProviderConstants } from "../../../constants";

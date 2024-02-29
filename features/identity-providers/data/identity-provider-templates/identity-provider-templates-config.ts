@@ -40,7 +40,7 @@ import EnterpriseSAMLIdentityProviderTemplate
 import { ExtensionsManager, identityProviderConfig } from "features/extensions";
 import {
     EnterpriseIdentityProviderTemplateExtension
-} from "features/extensions/configs/identity-providers-templates";
+} from "../../../extensions/configs/identity-providers-templates";
 import { AppConstants, store } from "../../../core";
 import { IdentityProviderTemplateCategoryInterface, IdentityProviderTemplateGroupInterface } from "../../models";
 

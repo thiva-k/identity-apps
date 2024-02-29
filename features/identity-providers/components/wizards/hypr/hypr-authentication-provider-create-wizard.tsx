@@ -38,7 +38,7 @@ import { Grid } from "semantic-ui-react";
 import {
     HyprAuthenticationProviderCreateWizardContent
 } from "./hypr-authentication-provider-create-wizard-content";
-import { identityProviderConfig } from "features/extensions/configs";
+import { identityProviderConfig } from "../../../../extensions/configs";
 import {
     EventPublisher,
     ModalWithSidePanel

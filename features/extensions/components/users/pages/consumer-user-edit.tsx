@@ -53,7 +53,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Icon, Label } from "semantic-ui-react";
-import { getProfileInformation } from "features/authentication";
+import { getProfileInformation } from "../../../../authentication";
 import {
     AppState,
     FeatureConfigInterface,
@@ -61,19 +61,19 @@ import {
     getSidePanelIcons,
     history,
     store
-} from "features/core";
-import { getIdPIcons } from "features/identity-providers/configs/ui";
-import { PatchRoleDataInterface } from "features/roles/models/roles";
-import { getGovernanceConnectors } from "features/server-configurations/api";
-import { ServerConfigurationsConstants } from "features/server-configurations/constants";
+} from "../../../../core";
+import { getIdPIcons } from "../../../../identity-providers/configs/ui";
+import { PatchRoleDataInterface } from "../../../../roles/models/roles";
+import { getGovernanceConnectors } from "../../../../server-configurations/api";
+import { ServerConfigurationsConstants } from "../../../../server-configurations/constants";
 import {
     ConnectorPropertyInterface,
     GovernanceConnectorInterface
-} from "features/server-configurations/models";
-import { getProfileSchemas, getUserDetails, updateUserInfo } from "features/users/api";
-import { UserManagementConstants } from "features/users/constants";
-import UserManagementProvider from "features/users/providers/user-management-provider";
-import { UserManagementUtils } from "features/users/utils";
+} from "../../../../server-configurations/models";
+import { getProfileSchemas, getUserDetails, updateUserInfo } from "../../../../users/api";
+import { UserManagementConstants } from "../../../../users/constants";
+import UserManagementProvider from "../../../../users/providers/user-management-provider";
+import { UserManagementUtils } from "../../../../users/utils";
 import { SCIMConfigs } from "../../../configs/scim";
 import { UserStoreUtils } from "../../../utils/user-store-utils";
 import { UserManagementUtils as UserUtils } from "../../users/utils";

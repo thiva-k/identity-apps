@@ -63,7 +63,7 @@ import { Action } from "reduce-reducers";
 import { ThunkDispatch } from "redux-thunk";
 import { applicationConfig, commonConfig } from "../extensions";
 import { FeatureGateConstants } from "../extensions/components/feature-gate/constants/feature-gate";
-import { getProfileInformation } from "features/authentication/store";
+import { getProfileInformation } from "../authentication/store";
 import {
     AppConstants,
     AppState,

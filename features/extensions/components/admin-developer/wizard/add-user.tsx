@@ -23,7 +23,7 @@ import { FormValidation } from "@wso2is/validation";
 import React, { ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Divider, Grid } from "semantic-ui-react";
-import { getRolesList } from "features/roles/api";
+import { getRolesList } from "../../../../roles/api";
 import { UserInviteInterface } from "../models";
 
 

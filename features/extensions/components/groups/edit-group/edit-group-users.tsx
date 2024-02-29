@@ -39,7 +39,7 @@ import {
 } from "@wso2is/react-components";
 import escapeRegExp from "lodash-es/escapeRegExp";
 import isEmpty from "lodash-es/isEmpty";
-import { IdentityAppsApiException } from "modules/core/dist/types/exceptions";
+import { IdentityAppsApiException } from "@wso2is/core/dist/types/exceptions";
 import React, {
     Dispatch,
     FormEvent,
@@ -61,9 +61,9 @@ import {
     GroupsMemberInterface,
     PatchGroupDataInterface,
     updateGroupDetails
-} from "features/groups";
-import { getUsersList } from "features/users/api/users";
-import { UserBasicInterface, UserListInterface } from "features/users/models/user";
+} from "../../../../groups";
+import { getUsersList } from "../../../../users/api/users";
+import { UserBasicInterface, UserListInterface } from "../../../../users/models/user";
 import { SCIMConfigs } from "../../../configs/scim";
 import { UserManagementUtils } from "../../users/utils";
 

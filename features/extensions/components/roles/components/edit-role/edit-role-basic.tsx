@@ -37,7 +37,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Form, Grid, InputOnChangeData, Label } from "semantic-ui-react";
 import { AppConstants, SharedUserStoreUtils, history } from "features/core";
-import { deleteRoleById, updateRoleDetails } from "features/roles/api";
+import { deleteRoleById, updateRoleDetails } from "../../../../../roles/api";
 import { PatchRoleDataInterface } from "features/roles/models";
 import { PRIMARY_USERSTORE_PROPERTY_VALUES } from "features/userstores/constants/user-store-constants";
 

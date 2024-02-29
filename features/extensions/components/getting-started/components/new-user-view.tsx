@@ -28,14 +28,14 @@ import { ApplicationTemplateCard } from "./application-template-card";
 import { PlaygroundApplicationCard } from "./playground-app-card";
 import {
     MinimalAppCreateWizard
-} from "features/applications/components/wizard/minimal-application-create-wizard";
-import { ApplicationManagementConstants } from "features/applications/constants";
+} from "../../../../applications/components/wizard/minimal-application-create-wizard";
+import { ApplicationManagementConstants } from "../../../../applications/constants";
 import {
     ApplicationListItemInterface,
     ApplicationTemplateListItemInterface
-} from "features/applications/models";
-import { AppState, ConfigReducerStateInterface } from "features/core";
-import { FeatureConfigInterface } from "features/core/models";
+} from "../../../../applications/models";
+import { AppState, ConfigReducerStateInterface } from "../../../../core";
+import { FeatureConfigInterface } from "../../../../core/models";
 
 export type NewUserViewContextCardPropsInterface = {
     applications: ApplicationListItemInterface[];

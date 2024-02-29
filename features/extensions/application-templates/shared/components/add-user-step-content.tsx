@@ -24,7 +24,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { Icon, List } from "semantic-ui-react";
 import { AppConstants } from "features/core/constants";
 import { EventPublisher } from "features/core/utils";
-import { getUserDetails } from "features/users/api";
+import { getUserDetails } from "../../../../users/api";
 import { AddConsumerUserWizard } from "features/users/components/wizard/add-consumer-user-wizard";
 import { UsersConstants } from "../../../components/users/constants";
 

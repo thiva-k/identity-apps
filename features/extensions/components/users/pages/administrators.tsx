@@ -64,11 +64,11 @@ import {
     history,
     store
 } from "features/core";
-import { getRoleById, searchRoleList } from "features/roles/api/roles";
+import { getRoleById, searchRoleList } from "../../../../roles/api/roles";
 import { SearchRoleInterface } from "features/roles/models/roles";
 import { useServerConfigs } from "features/server-configurations";
-import { useUsersList } from "features/users/api";
-import { AddUserWizard } from "features/users/components/wizard/add-user-wizard";
+import { useUsersList } from "../../../../users/api";
+import { AddUserWizard } from "../../../../users/components/wizard/add-user-wizard";
 import { InternalAdminUserListInterface, UserListInterface } from "features/users/models";
 import { UserManagementUtils } from "features/users/utils";
 import { administratorConfig } from "../../../configs/administrator";

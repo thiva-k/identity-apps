@@ -51,21 +51,21 @@ import {
     PatchGroupDataInterface,
     getGroupList,
     updateGroupDetails
-} from "features/groups";
-import { updateRoleDetails } from "features/roles/api/roles";
+} from "../../../../groups";
+import { updateRoleDetails } from "../../../../roles/api/roles";
 import { PatchRoleDataInterface } from "features/roles/models/roles";
-import { addUser } from "features/users/api/users";
-import { getUserWizardStepIcons } from "features/users/configs/ui";
+import { addUser } from "../../../../users/api/users";
+import { getUserWizardStepIcons } from "../../../../users/configs/ui";
 import {
     AddUserWizardStateInterface,
     BasicUserDetailsInterface,
     UserDetailsInterface,
     createEmptyUserDetails
-} from "features/users/models/user";
+} from "../../../../users/models/user";
 import {
     generatePassword,
     getConfiguration
-} from "features/users/utils/generate-password.utils";
+} from "../../../../users/utils/generate-password.utils";
 import { getUsernameConfiguration } from "features/users/utils/user-management-utils";
 import { useValidationConfigData } from "features/validation/api";
 import { ValidationFormInterface } from "features/validation/models";

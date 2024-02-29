@@ -18,7 +18,7 @@
 
 import { ProfileSchemaInterface } from "@wso2is/core/models";
 import { store } from "features/core";
-import { UserManagementConstants } from "features/users/constants/user-management-constants";
+import { UserManagementConstants } from "../../../../users/constants/user-management-constants";
 import { UserBasicInterface } from "features/users/models";
 import { UserManagementUtils as UserManagementUtilsExt } from "features/users/utils";
 

@@ -49,7 +49,7 @@ import { Label } from "semantic-ui-react";
 import {
     AuthenticatorExtensionsConfigInterface,
     identityProviderConfig
-} from "features/extensions/configs";
+} from "../../extensions/configs";
 import {
     AppConstants,
     AppState,

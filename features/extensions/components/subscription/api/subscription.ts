@@ -20,10 +20,10 @@ import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "features/core/hooks/use-request";
-import { HttpMethods } from "modules/core/src/models";
-import { Config } from "features/core";
-import { useGetCurrentOrganizationType } from "features/organizations/hooks/use-get-organization-type";
+} from "../../../../core/hooks/use-request";
+import { HttpMethods } from "@wso2is/core/models";
+import { Config } from "../../../../core";
+import { useGetCurrentOrganizationType } from "../../../../organizations/hooks/use-get-organization-type";
 import { getDomainQueryParam } from "../../tenants/api/tenants";
 import { getTenantResourceEndpoints } from "../../tenants/configs";
 import { TenantTierRequestResponse } from "../models/subscription";

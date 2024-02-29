@@ -59,9 +59,9 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Dropdown, DropdownItemProps, DropdownProps, Form, Grid, Icon } from "semantic-ui-react";
 import { v4 as uuidv4 } from "uuid";
-import { ClaimManagementConstants } from "../../../../features/claims/constants";
-import { getGroupList, useGroupList } from "../../../../features/groups/api";
-import { GroupsInterface } from "../../../../features/groups/models";
+import { ClaimManagementConstants } from "../../../claims/constants";
+import { getGroupList, useGroupList } from "../../../groups/api";
+import { GroupsInterface } from "../../../groups/models";
 import { getAllExternalClaims, getDialects, getSCIMResourceTypes } from "../../../claims/api";
 import {
     AppConstants,

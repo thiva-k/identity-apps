@@ -39,14 +39,14 @@ import {
     PatchGroupDataInterface,
     getGroupList,
     updateGroupDetails
-} from "../../../../features/groups";
-import { addUser } from "../../../../features/users/api/users";
-import { getUserWizardStepIcons } from "../../../../features/users/configs/ui";
+} from "../../../groups";
+import { addUser } from "../../../users/api/users";
+import { getUserWizardStepIcons } from "../../../users/configs/ui";
 import {
     AddUserWizardStateInterface,
     UserDetailsInterface,
     createEmptyUserDetails
-} from "../../../../features/users/models/user";
+} from "../../../users/models/user";
 import { getUsernameConfiguration } from "../../../../features/users/utils";
 import { useValidationConfigData } from "../../../../features/validation/api";
 import { ValidationFormInterface } from "../../../../features/validation/models";

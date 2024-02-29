@@ -34,7 +34,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Icon } from "semantic-ui-react";
-import { getProfileInformation } from "features/authentication/store";
+import { getProfileInformation } from "../../../../authentication/store";
 import { AppState, FeatureConfigInterface, history, store } from "features/core";
 import { PatchRoleDataInterface } from "features/roles/models/roles";
 import {
@@ -48,8 +48,8 @@ import {
     GovernanceConnectorInterface,
     RealmConfigInterface
 } from "features/server-configurations/models";
-import { getUserDetails, updateUserInfo } from "features/users/api/users";
-import { UserManagementConstants } from "features/users/constants/user-management-constants";
+import { getUserDetails, updateUserInfo } from "../../../../users/api/users";
+import { UserManagementConstants } from "../../../../users/constants/user-management-constants";
 import { UserManagementUtils } from "features/users/utils/user-management-utils";
 import { administratorConfig } from "../../../configs/administrator";
 import { UserStoreUtils } from "../../../utils/user-store-utils";

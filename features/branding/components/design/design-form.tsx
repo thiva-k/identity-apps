@@ -49,7 +49,7 @@ import { IllustrationsPreview } from "./illustrations-preview";
 import * as LayoutDesignExtensions from "./layout-design-extensions";
 import { LayoutSwatchAdapter } from "./layout-swatch";
 import { ThemeSwatchAdapter, ThemeSwatchUIConfigsInterface } from "./theme-swatch";
-import { commonConfig } from "features/extensions/configs";
+import { commonConfig } from "../../../extensions/configs";
 import { AppConstants } from "../../../core/constants";
 import { AppState } from "../../../core/store";
 import { useLayout } from "../../api";

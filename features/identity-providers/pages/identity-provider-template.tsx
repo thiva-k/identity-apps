@@ -37,7 +37,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
-import { identityProviderConfig } from "features/extensions/configs";
+import { identityProviderConfig } from "../../extensions/configs";
 import {
     AppConstants,
     AppState,

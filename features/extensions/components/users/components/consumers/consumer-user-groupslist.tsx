@@ -59,8 +59,8 @@ import {
     GroupsMemberInterface, 
     SearchGroupInterface, 
     searchGroupList 
-} from "features/groups";
-import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "features/roles/constants/role-constants";
+} from "../../../../../groups";
+import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "../../../../../roles/constants/role-constants";
 import { UsersConstants } from "../../constants";
 
 interface ConsumerUserGroupsPropsInterface {

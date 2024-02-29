@@ -20,8 +20,8 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosResponse } from "axios";
-import { store } from "features/core";
-import useRequest, { RequestConfigInterface, RequestResultInterface } from "features/core/hooks/use-request";
+import { store } from "../../../../../core";
+import useRequest, { RequestConfigInterface, RequestResultInterface } from "../../../../../core/hooks/use-request";
 import { getMarketingConsentEndpoints } from "../configs";
 import { ConsentResponseInterface, ConsentTypes } from "../models";
 

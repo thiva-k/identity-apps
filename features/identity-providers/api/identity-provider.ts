@@ -19,7 +19,7 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosResponse } from "axios";
-import { identityProviderConfig } from "features/extensions/configs";
+import { identityProviderConfig } from "../../extensions/configs";
 import { store } from "../../core";
 import useRequest, {
     RequestConfigInterface,

@@ -38,7 +38,7 @@ import React, { ReactElement, ReactNode, SyntheticEvent, useState } from "react"
 import { useTranslation } from "react-i18next";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
 import { AppConstants, UIConstants, getEmptyPlaceholderIllustrations, history } from "features/core";
-import { APPLICATION_DOMAIN } from "features/roles/constants";
+import { APPLICATION_DOMAIN } from "../../../../roles/constants";
 
 interface RoleListProps extends LoadableComponentInterface, TestableComponentInterface {
     /**

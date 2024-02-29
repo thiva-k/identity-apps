@@ -39,7 +39,7 @@ import { Grid } from "semantic-ui-react";
 import {
     MicrosoftAuthenticationProviderCreateWizardContent
 } from "./microsoft-authentication-provider-create-wizard-content";
-import { identityProviderConfig } from "features/extensions/configs";
+import { identityProviderConfig } from "../../../../extensions/configs";
 import {
     AppState,
     ConfigReducerStateInterface,

@@ -46,7 +46,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
 import { applicationConfig } from "features/extensions";
-import { applicationListConfig } from "features/extensions/configs/application-list";
+import { applicationListConfig } from "../../extensions/configs/application-list";
 import { ConsoleSettingsModes } from "../../console-settings/models/ui";
 import {
     AppConstants,

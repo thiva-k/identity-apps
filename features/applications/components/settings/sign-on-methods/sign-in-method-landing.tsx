@@ -21,7 +21,7 @@ import { Heading, InfoCard, useMediaContext } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Segment } from "semantic-ui-react";
-import { identityProviderConfig } from "features/extensions/configs/identity-provider";
+import { identityProviderConfig } from "../../../../extensions/configs/identity-provider";
 import useAuthenticationFlow from "../../../../authentication-flow-builder/hooks/use-authentication-flow";
 import { ConnectionManagementConstants } from "../../../../connections/constants/connection-constants";
 import { EventPublisher, FeatureConfigInterface } from "../../../../core";

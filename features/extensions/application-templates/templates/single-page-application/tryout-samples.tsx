@@ -46,7 +46,7 @@ import {
     OIDCDataInterface,
     SupportedAuthProtocolTypes
 } from "features/applications/models";
-import { ApplicationManagementUtils } from "features/applications/utils/application-management-utils";
+import { ApplicationManagementUtils } from "../../../../applications/utils/application-management-utils";
 import { Config } from "features/core/configs";
 import { EventPublisher } from "features/core/utils";
 import ReactLogoDataURL from "../../../assets/images/icons/react-icon.svg";

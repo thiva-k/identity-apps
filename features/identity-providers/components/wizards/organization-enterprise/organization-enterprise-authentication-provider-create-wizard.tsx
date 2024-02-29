@@ -32,7 +32,7 @@ import { Grid } from "semantic-ui-react";
 import {
     OrganizationEnterpriseAuthenticationProviderCreateWizardContent
 } from "./organization-enterprise-authentication-provider-create-wizard-content";
-import { identityProviderConfig } from "features/extensions/configs";
+import { identityProviderConfig } from "../../../../extensions/configs";
 import {
     EventPublisher,
     ModalWithSidePanel,

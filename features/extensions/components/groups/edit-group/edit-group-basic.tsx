@@ -45,7 +45,7 @@ import {
     deleteGroupById,
     searchGroupList,
     updateGroupDetails
-} from "features/groups";
+} from "../../../../groups";
 import { CONSUMER_USERSTORE } from "../../users/constants";
 
 /**

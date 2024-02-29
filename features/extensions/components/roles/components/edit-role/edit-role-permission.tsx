@@ -23,7 +23,7 @@ import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import { updateRole } from "features/roles/api";
+import { updateRole } from "../../../../../roles/api";
 import { TreeNode } from "features/roles/models";
 import { PermissionList } from "../wizard";
 
