@@ -35,22 +35,22 @@ import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Icon } from "semantic-ui-react";
 import { getProfileInformation } from "../../../../authentication/store";
-import { AppState, FeatureConfigInterface, history, store } from "features/core";
-import { PatchRoleDataInterface } from "features/roles/models/roles";
+import { AppState, FeatureConfigInterface, history, store } from "../../../../core";
+import { PatchRoleDataInterface } from "../../../../roles/models/roles";
 import {
     ServerConfigurationsInterface,
     getGovernanceConnectors,
     getServerConfigs
-} from "features/server-configurations/api";
-import { ServerConfigurationsConstants } from "features/server-configurations/constants";
+} from "../../../../server-configurations/api";
+import { ServerConfigurationsConstants } from "../../../../server-configurations/constants";
 import {
     ConnectorPropertyInterface,
     GovernanceConnectorInterface,
     RealmConfigInterface
-} from "features/server-configurations/models";
+} from "../../../../server-configurations/models";
 import { getUserDetails, updateUserInfo } from "../../../../users/api/users";
 import { UserManagementConstants } from "../../../../users/constants/user-management-constants";
-import { UserManagementUtils } from "features/users/utils/user-management-utils";
+import { UserManagementUtils } from "../../../../users/utils/user-management-utils";
 import { administratorConfig } from "../../../configs/administrator";
 import { UserStoreUtils } from "../../../utils/user-store-utils";
 import { UserManagementUtils as UserUtils } from "../../users/utils";

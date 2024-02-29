@@ -29,7 +29,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Modal, ModalProps } from "semantic-ui-react";
-import { UsersConstants } from "features/extensions/components/users/constants/users";
+import { UsersConstants } from "../../../../extensions/components/users/constants/users";
 import { UserBasicInterface } from "../../../../core/models/users";
 import { ConsoleAdministratorOnboardingConstants } from "../../../constants/console-administrator-onboarding-constants";
 import useBulkAssignAdministratorRoles from "../../../hooks/use-bulk-assign-user-roles";

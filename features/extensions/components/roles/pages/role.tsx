@@ -50,11 +50,11 @@ import {
     UIConstants,
     getHelpPanelActionIcons,
     toggleHelpPanelVisibility
-} from "features/core";
+} from "../../../../core";
 import { deleteRoleById, getRolesList, searchRoleList } from "../../../../roles/api";
 import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "../../../../roles/constants";
-import { SearchRoleInterface } from "features/roles/models";
-import { getUserStoreList } from "features/userstores/api";
+import { SearchRoleInterface } from "../../../../roles/models";
+import { getUserStoreList } from "../../../../userstores/api";
 import { CreateRoleWizard, RoleList } from "../components";
 import helpDoc from "../data/role.md";
 

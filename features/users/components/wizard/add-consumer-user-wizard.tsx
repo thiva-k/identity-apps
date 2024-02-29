@@ -33,7 +33,7 @@ import { Grid, Icon, Modal } from "semantic-ui-react";
 import { AddConsumerUser, AddConsumerUserProps } from "./steps/add-consumer-user";
 import { AddConsumerUserWizardSummary } from "./steps/add-consumer-user-wizard-summary";
 import { AddConsumerUserGroups } from "./steps/consumer-user-groups";
-import { UserBasicInterface } from "../../../../features/core";
+import { UserBasicInterface } from "../../../core";
 import {
     GroupsInterface,
     PatchGroupDataInterface,
@@ -47,9 +47,9 @@ import {
     UserDetailsInterface,
     createEmptyUserDetails
 } from "../../../users/models/user";
-import { getUsernameConfiguration } from "../../../../features/users/utils";
-import { useValidationConfigData } from "../../../../features/validation/api";
-import { ValidationFormInterface } from "../../../../features/validation/models";
+import { getUsernameConfiguration } from "../../../users/utils";
+import { useValidationConfigData } from "../../../validation/api";
+import { ValidationFormInterface } from "../../../validation/models";
 import { CONSUMER_USERSTORE } from "../../../extensions/components/users/constants/users";
 import { SCIMConfigs } from "../../../extensions/configs/scim";
 

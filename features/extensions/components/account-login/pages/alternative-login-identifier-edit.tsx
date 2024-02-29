@@ -35,19 +35,19 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Icon } from "semantic-ui-react";
-import { ExtendedClaimInterface } from "features/applications/components/settings/attribute-management";
-import { ApplicationManagementConstants } from "features/applications/constants";
-import { getAllLocalClaims, updateAClaim } from "features/claims/api/claims";
-import { ClaimManagementConstants } from "features/claims/constants";
-import { AppConstants, AppState, history } from "features/core";
-import { getConnectorDetails, updateGovernanceConnector } from "features/server-configurations/api";
+import { ExtendedClaimInterface } from "../../../../applications/components/settings/attribute-management";
+import { ApplicationManagementConstants } from "../../../../applications/constants";
+import { getAllLocalClaims, updateAClaim } from "../../../../claims/api/claims";
+import { ClaimManagementConstants } from "../../../../claims/constants";
+import { AppConstants, AppState, history } from "../../../../core";
+import { getConnectorDetails, updateGovernanceConnector } from "../../../../server-configurations/api";
 import {
     ConnectorPropertyInterface,
     GovernanceConnectorInterface,
     UpdateGovernanceConnectorConfigInterface
-} from "features/server-configurations/models";
-import { getUsernameConfiguration } from "features/users/utils/user-management-utils";
-import { useValidationConfigData } from "features/validation/api";
+} from "../../../../server-configurations/models";
+import { getUsernameConfiguration } from "../../../../users/utils/user-management-utils";
+import { useValidationConfigData } from "../../../../validation/api";
 import { AlternativeLoginIdentifierFormInterface } from "../models";
 
 /**

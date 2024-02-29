@@ -26,15 +26,15 @@ import {
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Message, Modal } from "semantic-ui-react";
-import { SharedUserStoreUtils } from "features/core";
+import { SharedUserStoreUtils } from "../../../../../core";
 import { PatchRoleDataInterface } from "features/roles/models/roles";
 import {
     ConnectorPropertyInterface,
     ServerConfigurationsConstants
-} from "features/server-configurations";
+} from "../../../../../server-configurations";
 import { updateUserInfo } from "../../../../../users/api/users";
-import { USERSTORE_REGEX_PROPERTIES } from "features/userstores/constants/user-store-constants";
-import { ValidationFormInterface } from "features/validation/models";
+import { USERSTORE_REGEX_PROPERTIES } from "../../../../../userstores/constants/user-store-constants";
+import { ValidationFormInterface } from "../../../../../validation/models";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 
 /**

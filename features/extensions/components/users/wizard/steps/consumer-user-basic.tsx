@@ -33,9 +33,9 @@ import {
     generatePassword, 
     getConfiguration, 
     getUsernameConfiguration
-} from "features/users/utils";
-import { USERSTORE_REGEX_PROPERTIES } from "features/userstores/constants/user-store-constants";
-import { ValidationDataInterface, ValidationFormInterface } from "features/validation/models";
+} from "../../../../../users/utils";
+import { USERSTORE_REGEX_PROPERTIES } from "../../../../../userstores/constants/user-store-constants";
+import { ValidationDataInterface, ValidationFormInterface } from "../../../../../validation/models";
 import { CONSUMER_USERSTORE, UsersConstants } from "../../../users/constants";
 
 /**

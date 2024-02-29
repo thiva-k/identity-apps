@@ -63,14 +63,14 @@ import {
     UserStoreDetails,
     history,
     store
-} from "features/core";
+} from "../../../../core";
 import { getRoleById, searchRoleList } from "../../../../roles/api/roles";
-import { SearchRoleInterface } from "features/roles/models/roles";
-import { useServerConfigs } from "features/server-configurations";
+import { SearchRoleInterface } from "../../../../roles/models/roles";
+import { useServerConfigs } from "../../../../server-configurations";
 import { useUsersList } from "../../../../users/api";
 import { AddUserWizard } from "../../../../users/components/wizard/add-user-wizard";
 import { InternalAdminUserListInterface, UserListInterface } from "features/users/models";
-import { UserManagementUtils } from "features/users/utils";
+import { UserManagementUtils } from "../../../../users/utils";
 import { administratorConfig } from "../../../configs/administrator";
 import { SCIMConfigs } from "../../../configs/scim";
 import { FeatureGateConstants } from "../../feature-gate/constants/feature-gate";

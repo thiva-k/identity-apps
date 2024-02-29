@@ -45,7 +45,7 @@ import {
     AddUserWizardSummary,
     UserTypeSelection
 } from "./steps";
-import { AppState, UserBasicInterface, UserStoreDetails, UserStoreProperty } from "features/core";
+import { AppState, UserBasicInterface, UserStoreDetails, UserStoreProperty } from "../../../../core";
 import {
     GroupsInterface,
     PatchGroupDataInterface,
@@ -53,7 +53,7 @@ import {
     updateGroupDetails
 } from "../../../../groups";
 import { updateRoleDetails } from "../../../../roles/api/roles";
-import { PatchRoleDataInterface } from "features/roles/models/roles";
+import { PatchRoleDataInterface } from "../../../../roles/models/roles";
 import { addUser } from "../../../../users/api/users";
 import { getUserWizardStepIcons } from "../../../../users/configs/ui";
 import {
@@ -66,9 +66,9 @@ import {
     generatePassword,
     getConfiguration
 } from "../../../../users/utils/generate-password.utils";
-import { getUsernameConfiguration } from "features/users/utils/user-management-utils";
-import { useValidationConfigData } from "features/validation/api";
-import { ValidationFormInterface } from "features/validation/models";
+import { getUsernameConfiguration } from "../../../../users/utils/user-management-utils";
+import { useValidationConfigData } from "../../../../validation/api";
+import { ValidationFormInterface } from "../../../../validation/models";
 import { administratorConfig } from "../../../configs/administrator";
 import { SCIMConfigs } from "../../../configs/scim";
 import { AdminAccountTypes, CONSUMER_USERSTORE } from "../../users/constants";

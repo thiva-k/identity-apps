@@ -24,11 +24,11 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { PaginationProps } from "semantic-ui-react";
-import { AppState, FeatureConfigInterface, UIConstants, history, sortList } from "features/core";
-import { useUserStores } from "features/userstores/api";
-import { UserStoresList } from "features/userstores/components";
-import { UserStoreManagementConstants } from "features/userstores/constants";
-import { UserStoreListItem } from "features/userstores/models/user-stores";
+import { AppState, FeatureConfigInterface, UIConstants, history, sortList } from "../../../../core";
+import { useUserStores } from "../../../../userstores/api";
+import { UserStoresList } from "../../../../userstores/components";
+import { UserStoreManagementConstants } from "../../../../userstores/constants";
+import { UserStoreListItem } from "../../../../userstores/models/user-stores";
 import { RemoteUserStoreConstants } from "../constants";
 
 /**

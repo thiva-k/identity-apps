@@ -27,11 +27,11 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid } from "semantic-ui-react";
-import { getAllLocalClaims } from "features/claims/api";
-import { ClaimManagementConstants } from "features/claims/constants";
-import { AppConstants, AppState, FeatureConfigInterface, history } from "features/core";
-import { addUserStore, getAType } from "features/userstores/api/user-stores";
-import { UserStoreManagementConstants } from "features/userstores/constants/user-store-constants";
+import { getAllLocalClaims } from "../../../../claims/api";
+import { ClaimManagementConstants } from "../../../../claims/constants";
+import { AppConstants, AppState, FeatureConfigInterface, history } from "../../../../core";
+import { addUserStore, getAType } from "../../../../userstores/api/user-stores";
+import { UserStoreManagementConstants } from "../../../../userstores/constants/user-store-constants";
 import {
     AttributeMapping,
     TypeProperty,
@@ -39,7 +39,7 @@ import {
     UserStorePostData,
     UserStoreProperty,
     UserstoreType
-} from "features/userstores/models/user-stores";
+} from "../../../../userstores/models/user-stores";
 import { userstoresConfig } from "../../../configs";
 import { VerticalStepper, VerticalStepperStepInterface } from "../../component-extensions";
 import { AttributeMappingsComponent, GeneralUserStoreDetails } from "../components";

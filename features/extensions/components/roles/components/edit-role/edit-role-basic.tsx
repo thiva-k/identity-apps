@@ -36,10 +36,10 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Form, Grid, InputOnChangeData, Label } from "semantic-ui-react";
-import { AppConstants, SharedUserStoreUtils, history } from "features/core";
+import { AppConstants, SharedUserStoreUtils, history } from "../../../../../core";
 import { deleteRoleById, updateRoleDetails } from "../../../../../roles/api";
-import { PatchRoleDataInterface } from "features/roles/models";
-import { PRIMARY_USERSTORE_PROPERTY_VALUES } from "features/userstores/constants/user-store-constants";
+import { PatchRoleDataInterface } from "../../../../../roles/models";
+import { PRIMARY_USERSTORE_PROPERTY_VALUES } from "../../../../../userstores/constants/user-store-constants";
 
 /**
  * Interface to contain props needed for component

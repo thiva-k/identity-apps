@@ -36,15 +36,15 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Dropdown, DropdownItemProps, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
-import { AccessControlConstants } from "features/access-control/constants/access-control";
+import { AccessControlConstants } from "../../../../access-control/constants/access-control";
 import {
     AdvancedSearchWithBasicFilters,
     AppState,
     FeatureConfigInterface,
     UIConstants,
     getEmptyPlaceholderIllustrations
-} from "features/core";
-import { EventPublisher } from "features/core/utils";
+} from "../../../../core";
+import { EventPublisher } from "../../../../core/utils";
 import {
     GroupsInterface,
     SearchGroupInterface,
@@ -53,9 +53,9 @@ import {
     useGroupList
 } from "../../../../groups";
 import { GroupConstants } from "../../../../groups/constants";
-import { useUserStores } from "features/userstores/api/user-stores";
-import { CONSUMER_USERSTORE } from "features/userstores/constants/user-store-constants";
-import { UserStoreListItem } from "features/userstores/models/user-stores";
+import { useUserStores } from "../../../../userstores/api/user-stores";
+import { CONSUMER_USERSTORE } from "../../../../userstores/constants/user-store-constants";
+import { UserStoreListItem } from "../../../../userstores/models/user-stores";
 import { UserStoreUtils } from "../../../utils/user-store-utils";
 import { GroupList } from "../groups-list";
 import { CreateGroupWizard } from "../wizard";

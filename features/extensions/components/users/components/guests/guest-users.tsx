@@ -29,8 +29,8 @@ import {
     FeatureConfigInterface, 
     UIConstants, 
     UserListInterface 
-} from "features/core";
-import { PRIMARY_USERSTORE } from "features/userstores/constants/user-store-constants";
+} from "../../../../../core";
+import { PRIMARY_USERSTORE } from "../../../../../userstores/constants/user-store-constants";
 import { UserInviteInterface } from "../../../admin-developer/models";
 import { UsersConstants } from "../../constants";
 import { InvitationStatus } from "../../models";

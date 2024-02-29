@@ -25,14 +25,14 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid, Message } from "semantic-ui-react";
 import { CONSUMER_USERSTORE, UsersConstants } from "../../../../extensions/components/users/constants/users";
-import { AppState } from "../../../../../features/core";
-import { SharedUserStoreUtils } from "../../../../../features/core/utils";
+import { AppState } from "../../../../core";
+import { SharedUserStoreUtils } from "../../../../core/utils";
 import { getUsersList } from "../../../../users/api/users";
 import { UserListInterface } from "../../../../users/models/user";
-import { getConfiguration, getUsernameConfiguration } from "../../../../../features/users/utils";
-import { USERSTORE_REGEX_PROPERTIES } from "../../../../../features/userstores/constants/user-store-constants";
-import { useValidationConfigData } from "../../../../../features/validation/api";
-import { ValidationFormInterface } from "../../../../../features/validation/models";
+import { getConfiguration, getUsernameConfiguration } from "../../../../users/utils";
+import { USERSTORE_REGEX_PROPERTIES } from "../../../../userstores/constants/user-store-constants";
+import { useValidationConfigData } from "../../../../validation/api";
+import { ValidationFormInterface } from "../../../../validation/models";
 
 /**
  * Proptypes for the add consumer user component.

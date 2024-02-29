@@ -20,10 +20,10 @@ import { I18n } from "@wso2is/i18n";
 import { AxiosResponse } from "axios";
 import { SemanticICONS } from "semantic-ui-react";
 import { AttributeConfig } from "./models";
-import { deleteADialect } from "features/claims/api/claims";
-import { ClaimManagementConstants } from "features/claims/constants/claim-management-constants";
-import { getUserStoreList } from "features/userstores/api";
-import { UserStoreListItem } from "features/userstores/models";
+import { deleteADialect } from "../../claims/api/claims";
+import { ClaimManagementConstants } from "../../claims/constants/claim-management-constants";
+import { getUserStoreList } from "../../userstores/api";
+import { UserStoreListItem } from "../../userstores/models";
 import { getClaimsForDialect, getDialects } from "../components/claims/api";
 
 /**

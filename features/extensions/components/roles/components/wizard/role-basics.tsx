@@ -24,13 +24,13 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Grid, GridColumn, GridRow } from "semantic-ui-react";
 import { PermissionList } from "./role-permission";
-import { SharedUserStoreConstants } from "features/core/constants";
-import { ConfigReducerStateInterface } from "features/core/models";
-import { AppState } from "features/core/store";
-import { SharedUserStoreUtils } from "features/core/utils";
+import { SharedUserStoreConstants } from "../../../../../core/constants";
+import { ConfigReducerStateInterface } from "../../../../../core/models";
+import { AppState } from "../../../../../core/store";
+import { SharedUserStoreUtils } from "../../../../../core/utils";
 import { searchRoleList } from "../../../../../roles/api";
-import { CreateRoleFormData, SearchRoleInterface, TreeNode } from "features/roles/models";
-import { getUserStoreList } from "features/userstores/api";
+import { CreateRoleFormData, SearchRoleInterface, TreeNode } from "../../../../../roles/models";
+import { getUserStoreList } from "../../../../../userstores/api";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 
 /**

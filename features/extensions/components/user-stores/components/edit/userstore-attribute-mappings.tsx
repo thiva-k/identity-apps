@@ -45,15 +45,15 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid, Header, Segment } from "semantic-ui-react";
-import { getAllLocalClaims } from "features/claims/api";
-import { AppState, sortList } from "features/core";
-import { updateUserStoreAttributeMappings } from "features/userstores/api/user-stores";
-import { DISABLED } from "features/userstores/constants/user-store-constants";
+import { getAllLocalClaims } from "../../../../../claims/api";
+import { AppState, sortList } from "../../../../../core";
+import { updateUserStoreAttributeMappings } from "../../../../../userstores/api/user-stores";
+import { DISABLED } from "../../../../../userstores/constants/user-store-constants";
 import {
     AttributeMapping,
     UserStore,
     UserStoreProperty
-} from "features/userstores/models/user-stores";
+} from "../../../../../userstores/models/user-stores";
 import { RemoteUserStoreConstants } from "../../constants";
 
 /**
