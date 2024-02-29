@@ -40,10 +40,6 @@ import {
 import { AdvancedSearchWithBasicFilters } from "../../../../core/components";
 import { AppConstants } from "../../../../core/constants";
 import { history } from "../../../../core/helpers";
-} from "../../../../connections/models/connection";
-import { AdvancedSearchWithBasicFilters } from "../../../../core/components";
-import { AppConstants } from "../../../../core/constants";
-import { history } from "../../../../core/helpers";
 import { FeatureConfigInterface } from "../../../../core/models";
 import { AppState } from "../../../../core/store";
 
