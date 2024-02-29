@@ -18,35 +18,17 @@
 
 import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { I18n } from "@wso2is/i18n";
-import {
-    Hint,
-    PrimaryButton,
-    RenderInput,
-    RenderToggle
-} from "@wso2is/react-components";
+import { Hint, PrimaryButton, RenderInput, RenderToggle } from "@wso2is/react-components";
 import camelCase from "lodash-es/camelCase";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import {
-    Field,
-    reduxForm
-} from "redux-form";
-import {
-    Divider,
-    Form,
-    Grid
-} from "semantic-ui-react";
-import { serverConfigurationConfig } from "features/extensions";
-import {
-    AppState,
-    FeatureConfigInterface
-} from "../../../core";
+import { Field, reduxForm } from "redux-form";
+import { Divider, Form, Grid } from "semantic-ui-react";
+import { serverConfigurationConfig } from "../../../extensions";
+import { AppState, FeatureConfigInterface } from "../../../core";
 import { ServerConfigurationsConstants } from "../../constants";
-import {
-    ConnectorPropertyInterface,
-    GovernanceConnectorInterface
-} from "../../models";
+import { ConnectorPropertyInterface, GovernanceConnectorInterface } from "../../models";
 import { GovernanceConnectorUtils } from "../../utils";
 
 /**
@@ -79,13 +61,12 @@ const getFieldType = (property: ConnectorPropertyInterface) => {
     }
 };
 
-const required =
-    (value: string) => value ? undefined : I18n.instance.t("common:required");
+const required = (value: string) => (value ? undefined : I18n.instance.t("common:required"));
 
 interface DynamicConnectorFormPropsInterface {
     isSubmitting: boolean;
     handleSubmit: (values: any) => void;
-    [ "data-testid" ]: string;
+    ["data-testid"]: string;
     props?: any;
     form: string;
     change: any;
@@ -98,157 +79,167 @@ interface DynamicConnectorFormPropsInterface {
  * @param props - Dynamic connector form properties.
  */
 const DynamicConnectorForm = (props: DynamicConnectorFormPropsInterface) => {
-    const { connector, isSubmitting, handleSubmit, [ "data-testid" ]: testId } = props;
+    const { connector, isSubmitting, handleSubmit, ["data-testid"]: testId } = props;
     const properties: ConnectorPropertyInterface[] = props.props.properties;
 
-    const formValues: Record<string, string | boolean>
-        = useSelector((state: AppState) => state.form[ props.form ].values);
+    const formValues: Record<string, string | boolean> = useSelector(
+        (state: AppState) => state.form[props.form].values
+    );
 
     const { t, i18n } = useTranslation();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const isReadOnly: boolean = useMemo(() => (
-        !hasRequiredScopes(
-            featureConfig?.attributeDialects, featureConfig?.attributeDialects?.scopes?.update, allowedScopes)
-    ), [ featureConfig, allowedScopes ]);
+    const isReadOnly: boolean = useMemo(
+        () =>
+            !hasRequiredScopes(
+                featureConfig?.attributeDialects,
+                featureConfig?.attributeDialects?.scopes?.update,
+                allowedScopes
+            ),
+        [featureConfig, allowedScopes]
+    );
 
     return (
-        <Form onSubmit={ handleSubmit }>
-            { <Grid padded={ true }>
-                { properties?.map((property: ConnectorPropertyInterface, index: number) => {
-                    const fieldLabelKey: string = "console:manage.features.governanceConnectors.connectorCategories." +
-                        camelCase(connector?.category) + ".connectors."+camelCase(connector?.name) +
-                        ".properties."+camelCase(property?.name)+".label";
-                    let fieldLabel: string = property?.displayName;
+        <Form onSubmit={handleSubmit}>
+            {
+                <Grid padded={true}>
+                    {properties?.map((property: ConnectorPropertyInterface, index: number) => {
+                        const fieldLabelKey: string =
+                            "console:manage.features.governanceConnectors.connectorCategories." +
+                            camelCase(connector?.category) +
+                            ".connectors." +
+                            camelCase(connector?.name) +
+                            ".properties." +
+                            camelCase(property?.name) +
+                            ".label";
+                        let fieldLabel: string = property?.displayName;
 
-                    if (i18n.exists(fieldLabelKey)) {
-                        fieldLabel = t(fieldLabelKey);
-                    }
-
-                    const fieldHintKey: string = "console:manage.features.governanceConnectors.connectorCategories." +
-                        camelCase(connector?.category)+".connectors."+camelCase(connector?.name) +
-                        ".properties."+camelCase(property?.name)+".hint";
-                    let fieldHint: string = property?.description;
-
-                    if (i18n.exists(fieldHintKey)) {
-                        fieldHint = t(fieldHintKey);
-                    }
-
-                    return (
-                        <Grid.Row
-                            columns={ 2 }
-                            className={ serverConfigurationConfig.intendSettings && "pl-3" }
-                            key={ index }
-                        >
-                            <Grid.Column
-                                mobile={ 12 }
-                                tablet={ 12 }
-                                computer={ 10 }
-                                className={ !serverConfigurationConfig.intendSettings && "pl-0" }
-                            >
-                                { !isToggle(property) ? (
-                                    <Field
-                                        name={ GovernanceConnectorUtils.encodeConnectorPropertyName(property.name) }
-                                        component={ getFieldComponent(property) }
-                                        type={ getFieldType(property) }
-                                        required={ true }
-                                        width={ 12 }
-                                        placeholder={ property.value }
-                                        data-testid={ `${ testId }-${ property.name }` }
-                                        label={ fieldLabel ?? property?.displayName }
-                                        validate={ [
-                                            required
-                                        ] }
-                                        readOnly={ isReadOnly }
-                                    />
-                                ) : (
-                                    <label>{ fieldLabel }</label>
-                                ) }
-                                {
-                                    (property.description) !== ""
-                                        && <Hint>{ fieldHint }</Hint>
-                                }
-                            </Grid.Column>
-                            <Grid.Column
-                                mobile={ 4 }
-                                tablet={ 4 }
-                                computer={ 6 }
-                                className={ !serverConfigurationConfig.intendSettings && "pl-0" }
-                            >
-                                { isToggle(property) && (
-                                    <Field
-                                        name={ GovernanceConnectorUtils.encodeConnectorPropertyName(property.name) }
-                                        component={ RenderToggle }
-                                        type={ getFieldType(property) }
-                                        width={ 10 }
-                                        placeholder={ property.value }
-                                        data-testid={ `${ testId }-${ property.name }` }
-                                        label={
-                                            formValues[
-                                                GovernanceConnectorUtils.encodeConnectorPropertyName(property.name)
-                                            ]
-                                                ? t("console:manage.features.governanceConnectors.enabled")
-                                                : t("console:manage.features.governanceConnectors.disabled")
-                                        }
-                                        onChange={ (event: any, newValue: boolean) => {
-                                            if (
-                                                property.name ===
-                                                ServerConfigurationsConstants.RE_CAPTCHA_ALWAYS_ENABLE &&
-                                                newValue
-                                            ) {
-                                                props.change(
-                                                    GovernanceConnectorUtils.encodeConnectorPropertyName(
-                                                        ServerConfigurationsConstants
-                                                            .RE_CAPTCHA_AFTER_MAX_FAILED_ATTEMPTS_ENABLE
-                                                    ),
-                                                    false
-                                                );
-                                            }
-
-                                            if (
-                                                property.name ===
-                                                ServerConfigurationsConstants
-                                                    .RE_CAPTCHA_AFTER_MAX_FAILED_ATTEMPTS_ENABLE &&
-                                                newValue
-                                            ) {
-                                                props.change(
-                                                    GovernanceConnectorUtils.encodeConnectorPropertyName(
-                                                        ServerConfigurationsConstants.RE_CAPTCHA_ALWAYS_ENABLE
-                                                    ),
-                                                    false
-                                                );
-                                            }
-                                        } }
-                                        readOnly={ isReadOnly }
-                                    />
-                                ) }
-                            </Grid.Column>
-                            <Divider hidden />
-                        </Grid.Row>
-                    );
-                }) }
-                <Grid.Row columns={ 1 } className={ serverConfigurationConfig.intendSettings && "pl-3" }>
-                    <Grid.Column
-                        mobile={ 16 }
-                        tablet={ 16 }
-                        computer={ 14 }
-                        className={ !serverConfigurationConfig.intendSettings && "pl-0" }
-                    >
-                        { !isReadOnly && (
-                            <PrimaryButton
-                                data-testid={ `${ testId }-update-button` }
-                                type="submit"
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
-                            >
-                                { t("common:update") }
-                            </PrimaryButton>)
+                        if (i18n.exists(fieldLabelKey)) {
+                            fieldLabel = t(fieldLabelKey);
                         }
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+
+                        const fieldHintKey: string =
+                            "console:manage.features.governanceConnectors.connectorCategories." +
+                            camelCase(connector?.category) +
+                            ".connectors." +
+                            camelCase(connector?.name) +
+                            ".properties." +
+                            camelCase(property?.name) +
+                            ".hint";
+                        let fieldHint: string = property?.description;
+
+                        if (i18n.exists(fieldHintKey)) {
+                            fieldHint = t(fieldHintKey);
+                        }
+
+                        return (
+                            <Grid.Row
+                                columns={2}
+                                className={serverConfigurationConfig.intendSettings && "pl-3"}
+                                key={index}
+                            >
+                                <Grid.Column
+                                    mobile={12}
+                                    tablet={12}
+                                    computer={10}
+                                    className={!serverConfigurationConfig.intendSettings && "pl-0"}
+                                >
+                                    {!isToggle(property) ? (
+                                        <Field
+                                            name={GovernanceConnectorUtils.encodeConnectorPropertyName(property.name)}
+                                            component={getFieldComponent(property)}
+                                            type={getFieldType(property)}
+                                            required={true}
+                                            width={12}
+                                            placeholder={property.value}
+                                            data-testid={`${testId}-${property.name}`}
+                                            label={fieldLabel ?? property?.displayName}
+                                            validate={[required]}
+                                            readOnly={isReadOnly}
+                                        />
+                                    ) : (
+                                        <label>{fieldLabel}</label>
+                                    )}
+                                    {property.description !== "" && <Hint>{fieldHint}</Hint>}
+                                </Grid.Column>
+                                <Grid.Column
+                                    mobile={4}
+                                    tablet={4}
+                                    computer={6}
+                                    className={!serverConfigurationConfig.intendSettings && "pl-0"}
+                                >
+                                    {isToggle(property) && (
+                                        <Field
+                                            name={GovernanceConnectorUtils.encodeConnectorPropertyName(property.name)}
+                                            component={RenderToggle}
+                                            type={getFieldType(property)}
+                                            width={10}
+                                            placeholder={property.value}
+                                            data-testid={`${testId}-${property.name}`}
+                                            label={
+                                                formValues[
+                                                    GovernanceConnectorUtils.encodeConnectorPropertyName(property.name)
+                                                ]
+                                                    ? t("console:manage.features.governanceConnectors.enabled")
+                                                    : t("console:manage.features.governanceConnectors.disabled")
+                                            }
+                                            onChange={(event: any, newValue: boolean) => {
+                                                if (
+                                                    property.name ===
+                                                        ServerConfigurationsConstants.RE_CAPTCHA_ALWAYS_ENABLE &&
+                                                    newValue
+                                                ) {
+                                                    props.change(
+                                                        GovernanceConnectorUtils.encodeConnectorPropertyName(
+                                                            ServerConfigurationsConstants.RE_CAPTCHA_AFTER_MAX_FAILED_ATTEMPTS_ENABLE
+                                                        ),
+                                                        false
+                                                    );
+                                                }
+
+                                                if (
+                                                    property.name ===
+                                                        ServerConfigurationsConstants.RE_CAPTCHA_AFTER_MAX_FAILED_ATTEMPTS_ENABLE &&
+                                                    newValue
+                                                ) {
+                                                    props.change(
+                                                        GovernanceConnectorUtils.encodeConnectorPropertyName(
+                                                            ServerConfigurationsConstants.RE_CAPTCHA_ALWAYS_ENABLE
+                                                        ),
+                                                        false
+                                                    );
+                                                }
+                                            }}
+                                            readOnly={isReadOnly}
+                                        />
+                                    )}
+                                </Grid.Column>
+                                <Divider hidden />
+                            </Grid.Row>
+                        );
+                    })}
+                    <Grid.Row columns={1} className={serverConfigurationConfig.intendSettings && "pl-3"}>
+                        <Grid.Column
+                            mobile={16}
+                            tablet={16}
+                            computer={14}
+                            className={!serverConfigurationConfig.intendSettings && "pl-0"}
+                        >
+                            {!isReadOnly && (
+                                <PrimaryButton
+                                    data-testid={`${testId}-update-button`}
+                                    type="submit"
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
+                                >
+                                    {t("common:update")}
+                                </PrimaryButton>
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
             }
         </Form>
     );
@@ -261,11 +252,12 @@ const validate = (values: Record<string, string>) => {
         ServerConfigurationsConstants.ALLOWED_IDLE_TIME_SPAN_IN_DAYS
     );
 
-    const allowedIdleTimeSpan: number = parseInt(values[ allowedIdleTimeSpanName ]);
+    const allowedIdleTimeSpan: number = parseInt(values[allowedIdleTimeSpanName]);
 
     if (allowedIdleTimeSpan < 0) {
-        errors[ allowedIdleTimeSpanName ]
-            = I18n.instance.t("console:manage.features.governanceConnectors.form.errors.positiveIntegers");
+        errors[allowedIdleTimeSpanName] = I18n.instance.t(
+            "console:manage.features.governanceConnectors.form.errors.positiveIntegers"
+        );
     }
 
     if (
@@ -282,17 +274,16 @@ const validate = (values: Record<string, string>) => {
                 ServerConfigurationsConstants.ALERT_SENDING_TIME_PERIODS_IN_DAYS
             )
         ] = I18n.instance.t("console:manage.features.governanceConnectors.form.errors.format");
-
     }
 
     if (
-        !(ServerConfigurationsConstants.MULTI_ATTRIBUTE_CLAIM_LIST_REGEX_PATTERN.test(
+        !ServerConfigurationsConstants.MULTI_ATTRIBUTE_CLAIM_LIST_REGEX_PATTERN.test(
             values[
                 GovernanceConnectorUtils.encodeConnectorPropertyName(
                     ServerConfigurationsConstants.MULTI_ATTRIBUTE_CLAIM_LIST
                 )
             ]
-        ))
+        )
     ) {
         errors[
             GovernanceConnectorUtils.encodeConnectorPropertyName(

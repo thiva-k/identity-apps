@@ -16,22 +16,13 @@
  * under the License.
  */
 
-import {
-    IdentifiableComponentInterface,
-    LoadableComponentInterface
-} from "@wso2is/core/models";
-import {
-    AnimatedAvatar,
-    AppAvatar,
-    EmptyPlaceholder,
-    LinkButton,
-    SegmentedAccordion
-} from "@wso2is/react-components";
+import { IdentifiableComponentInterface, LoadableComponentInterface } from "@wso2is/core/models";
+import { AnimatedAvatar, AppAvatar, EmptyPlaceholder, LinkButton, SegmentedAccordion } from "@wso2is/react-components";
 import React, { Fragment, ReactElement, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Accordion, Grid } from "semantic-ui-react";
 import RolesList from "./roles-list";
-import { ApplicationRoleInterface } from "features/extensions/components/groups/models";
+import { ApplicationRoleInterface } from "../../extensions/components/groups/models";
 import { AppConstants, getEmptyPlaceholderIllustrations, history } from "../../core";
 
 interface ApplicationRolesListProps extends LoadableComponentInterface, IdentifiableComponentInterface {
@@ -55,17 +46,11 @@ interface ApplicationRolesListProps extends LoadableComponentInterface, Identifi
  * @returns application roles list component.
  */
 export const ApplicationRolesList = (props: ApplicationRolesListProps): ReactElement => {
-
-    const {
-        onSearchQueryClear,
-        roleList,
-        searchQuery,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { onSearchQueryClear, roleList, searchQuery, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
-    const [ expandedAssignedApplications, setExpandedAssignedApplications ] = useState<string[]>([]);
+    const [expandedAssignedApplications, setExpandedAssignedApplications] = useState<string[]>([]);
 
     const navigateToApplications = () => history.push(AppConstants.getPaths().get("APPLICATIONS"));
 
@@ -74,28 +59,29 @@ export const ApplicationRolesList = (props: ApplicationRolesListProps): ReactEle
      *
      * @returns placeholder component.
      */
-    const showPlaceholders = (): ReactElement => {        
+    const showPlaceholders = (): ReactElement => {
         // When the search returns empty.
         if (searchQuery && roleList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    data-testid={ `${ componentId }-search-empty-placeholder` }
-                    action={ (
+                    data-testid={`${componentId}-search-empty-placeholder`}
+                    action={
                         <LinkButton
-                            data-testid={ `${ componentId }-search-empty-placeholder-clear-button` }
-                            onClick={ onSearchQueryClear }
+                            data-testid={`${componentId}-search-empty-placeholder-clear-button`}
+                            onClick={onSearchQueryClear}
                         >
-                            { t("console:manage.features.roles.list.emptyPlaceholders.search.action") }
+                            {t("console:manage.features.roles.list.emptyPlaceholders.search.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.roles.list.emptyPlaceholders.search.title") }
-                    subtitle={ [
-                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0",
-                            { searchQuery: searchQuery }),
+                    title={t("console:manage.features.roles.list.emptyPlaceholders.search.title")}
+                    subtitle={[
+                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0", {
+                            searchQuery: searchQuery
+                        }),
                         t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -103,22 +89,19 @@ export const ApplicationRolesList = (props: ApplicationRolesListProps): ReactEle
         if (roleList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    data-testid={ `${ componentId }-empty-list-empty-placeholder` }
-                    action={ (
-                        <LinkButton onClick={ navigateToApplications }>
-                            { t("extensions:manage.groups.edit.roles.placeHolders." +
-                                "emptyRoles.action") }
+                    data-testid={`${componentId}-empty-list-empty-placeholder`}
+                    action={
+                        <LinkButton onClick={navigateToApplications}>
+                            {t("extensions:manage.groups.edit.roles.placeHolders." + "emptyRoles.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
-                    imageSize="tiny"
-                    title={ t("extensions:console.applicationRoles.roleList.placeholder.title") }
-                    subtitle={
-                        [
-                            t("extensions:console.applicationRoles.roleList.placeholder.subTitle.0"),
-                            t("extensions:console.applicationRoles.roleList.placeholder.subTitle.1")
-                        ]
                     }
+                    image={getEmptyPlaceholderIllustrations().newList}
+                    imageSize="tiny"
+                    title={t("extensions:console.applicationRoles.roleList.placeholder.title")}
+                    subtitle={[
+                        t("extensions:console.applicationRoles.roleList.placeholder.subTitle.0"),
+                        t("extensions:console.applicationRoles.roleList.placeholder.subTitle.1")
+                    ]}
                 />
             );
         }
@@ -128,7 +111,7 @@ export const ApplicationRolesList = (props: ApplicationRolesListProps): ReactEle
 
     /**
      * Handle expand accordion title.
-     * 
+     *
      * @param appRole - Application role.
      */
     const handleAccordionTitleClick = (
@@ -136,82 +119,71 @@ export const ApplicationRolesList = (props: ApplicationRolesListProps): ReactEle
         expandedList: string[],
         stateActionExpanded: any
     ) => {
-        let tempExpandedList: string[] = [ ...expandedList ];
+        let tempExpandedList: string[] = [...expandedList];
 
         if (!expandedList?.includes(appRole.app)) {
             tempExpandedList.push(appRole.app);
         } else {
-            tempExpandedList =  tempExpandedList
-                .filter((roleDeselected: string) =>
-                    roleDeselected !== appRole.app);
+            tempExpandedList = tempExpandedList.filter((roleDeselected: string) => roleDeselected !== appRole.app);
         }
         stateActionExpanded(tempExpandedList);
     };
 
     /**
      * Renders the application roles list.
-     * 
+     *
      * @param roles - Role list.
-     * 
+     *
      * @returns Role list component.
      */
     const resolveApplicationRolesList = (filteredApplicationRoles: ApplicationRoleInterface[]): ReactElement => {
         return (
             <>
-                {
-                    showPlaceholders()
-                }
+                {showPlaceholders()}
                 <SegmentedAccordion>
-                    {
-                        filteredApplicationRoles.map(
-                            (application: ApplicationRoleInterface) => {
-                                return (
-                                    <Fragment key={ application.app }>
-                                        <SegmentedAccordion.Title
-                                            id={ application.app }
-                                            data-componentid={ `${ componentId }-${application.app}-title` }
-                                            attached={ true }
-                                            active={ expandedAssignedApplications?.includes(application.app) }
-                                            accordionIndex={ application.app }
-                                            className="nested-list-accordion-title mb-2 mt-1"
-                                            onClick={ 
-                                                () => 
-                                                    handleAccordionTitleClick(
-                                                        application,
-                                                        expandedAssignedApplications,
-                                                        setExpandedAssignedApplications
-                                                    )
-                                            }
-                                            hideChevron={ false }
-                                        >
-                                            <AppAvatar
-                                                image={ (
-                                                    <AnimatedAvatar
-                                                        name={ application?.appName }
-                                                        size="mini"
-                                                        data-componentid={ `${ componentId }-item-image-inner` }
-                                                    />
-                                                ) }
+                    {filteredApplicationRoles.map((application: ApplicationRoleInterface) => {
+                        return (
+                            <Fragment key={application.app}>
+                                <SegmentedAccordion.Title
+                                    id={application.app}
+                                    data-componentid={`${componentId}-${application.app}-title`}
+                                    attached={true}
+                                    active={expandedAssignedApplications?.includes(application.app)}
+                                    accordionIndex={application.app}
+                                    className="nested-list-accordion-title mb-2 mt-1"
+                                    onClick={() =>
+                                        handleAccordionTitleClick(
+                                            application,
+                                            expandedAssignedApplications,
+                                            setExpandedAssignedApplications
+                                        )
+                                    }
+                                    hideChevron={false}
+                                >
+                                    <AppAvatar
+                                        image={
+                                            <AnimatedAvatar
+                                                name={application?.appName}
                                                 size="mini"
-                                                spaced="right"
-                                                data-componentid={ `${ componentId }-item-image` }
+                                                data-componentid={`${componentId}-item-image-inner`}
                                             />
-                                            { application.appName }
-                                        </SegmentedAccordion.Title>
-                                        <SegmentedAccordion.Content
-                                            secondary={ false }
-                                            active={ expandedAssignedApplications?.includes(application.app) }
-                                            data-componentid={ `${ componentId }-color-palette-accordion-content` }
-                                        >
-                                            <RolesList
-                                                appId={ application.app }
-                                                rolesList={ application.roles }
-                                            />
-                                        </SegmentedAccordion.Content>
-                                    </Fragment>
-                                );
-                            })
-                    }
+                                        }
+                                        size="mini"
+                                        spaced="right"
+                                        data-componentid={`${componentId}-item-image`}
+                                    />
+                                    {application.appName}
+                                </SegmentedAccordion.Title>
+                                <SegmentedAccordion.Content
+                                    secondary={false}
+                                    active={expandedAssignedApplications?.includes(application.app)}
+                                    data-componentid={`${componentId}-color-palette-accordion-content`}
+                                >
+                                    <RolesList appId={application.app} rolesList={application.roles} />
+                                </SegmentedAccordion.Content>
+                            </Fragment>
+                        );
+                    })}
                 </SegmentedAccordion>
             </>
         );
@@ -220,15 +192,9 @@ export const ApplicationRolesList = (props: ApplicationRolesListProps): ReactEle
     return (
         <>
             <Grid.Row>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
-                    <Accordion
-                        data-componentid={ `${ componentId }-application-roles` }
-                    >
-                        { 
-                            resolveApplicationRolesList(
-                                roleList
-                            )
-                        }
+                <Grid.Column mobile={16} tablet={16} computer={12}>
+                    <Accordion data-componentid={`${componentId}-application-roles`}>
+                        {resolveApplicationRolesList(roleList)}
                     </Accordion>
                 </Grid.Column>
             </Grid.Row>

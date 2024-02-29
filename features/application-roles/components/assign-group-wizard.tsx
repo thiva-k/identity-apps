@@ -35,7 +35,7 @@ import { Grid, Modal } from "semantic-ui-react";
 import {
     ApplicationRoleGroupInterface,
     ApplicationRoleGroupsAPIResponseInterface
-} from "features/extensions/components/application/models";
+} from "../../extensions/components/application/models";
 import { getGroupList } from "../../groups/api";
 
 /**
@@ -53,23 +53,17 @@ interface AssignGroupProps extends IdentifiableComponentInterface {
  *
  */
 const AssignGroupWizard = (props: AssignGroupProps): ReactElement => {
-    const {
-        closeWizard,
-        handleGroupAdd,
-        existingGroupsList,
-        isSubmitting,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { closeWizard, handleGroupAdd, existingGroupsList, isSubmitting, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
-    const [ isLoading, setLoading ] = useState<boolean>(true);
-    const [ groupList, setGroupsList ] = useState<RolesInterface[]>([]);
-    const [ tempGroupList, setTempGroupList ] = useState<RolesInterface[]>([]);
-    const [ initialGroupList, setInitialGroupList ] = useState<RolesInterface[]>([]);
-    const [ , setInitialTempGroupList ] = useState<RolesInterface[]>([]);
-    const [ checkedUnassignedListItems, setCheckedUnassignedListItems ] = useState<RolesInterface[]>([]);
-    const [ isSelectUnassignedGroupsAllRolesChecked, setIsSelectUnassignedAllGroupsChecked ] = useState(false);
+    const [isLoading, setLoading] = useState<boolean>(true);
+    const [groupList, setGroupsList] = useState<RolesInterface[]>([]);
+    const [tempGroupList, setTempGroupList] = useState<RolesInterface[]>([]);
+    const [initialGroupList, setInitialGroupList] = useState<RolesInterface[]>([]);
+    const [, setInitialTempGroupList] = useState<RolesInterface[]>([]);
+    const [checkedUnassignedListItems, setCheckedUnassignedListItems] = useState<RolesInterface[]>([]);
+    const [isSelectUnassignedGroupsAllRolesChecked, setIsSelectUnassignedAllGroupsChecked] = useState(false);
 
     useEffect(() => {
         getGroupListForDomain();
@@ -77,17 +71,14 @@ const AssignGroupWizard = (props: AssignGroupProps): ReactElement => {
 
     useEffect(() => {
         setCheckedUnassignedListItems(tempGroupList);
-    }, [ tempGroupList ]);
+    }, [tempGroupList]);
 
     const getGroupListForDomain = () => {
         setLoading(true);
 
         getGroupList(null)
             .then((response: AxiosResponse) => {
-                filterOutExistingGroupsFromAllGroups(
-                    response?.data?.Resources,
-                    existingGroupsList?.groups
-                );
+                filterOutExistingGroupsFromAllGroups(response?.data?.Resources, existingGroupsList?.groups);
             })
             .finally(() => {
                 setLoading(false);
@@ -95,7 +86,7 @@ const AssignGroupWizard = (props: AssignGroupProps): ReactElement => {
     };
 
     const filterOutExistingGroupsFromAllGroups = (
-        allGroups: RolesInterface[], 
+        allGroups: RolesInterface[],
         existingGroups: ApplicationRoleGroupInterface[]
     ) => {
         const filteredGroups: RolesInterface[] = [];
@@ -103,14 +94,15 @@ const AssignGroupWizard = (props: AssignGroupProps): ReactElement => {
         if (allGroups?.length > 0) {
             allGroups.forEach((item: RolesInterface) => {
                 const itemIndex: number = existingGroups.findIndex(
-                    (existingGroup: ApplicationRoleGroupInterface)  => existingGroup?.name === item?.displayName);
-                
+                    (existingGroup: ApplicationRoleGroupInterface) => existingGroup?.name === item?.displayName
+                );
+
                 // No matching index found.
                 if (itemIndex === -1) {
                     filteredGroups.push(item);
                 }
             });
-    
+
             setGroupsList(filteredGroups);
             setInitialGroupList(filteredGroups);
         }
@@ -118,13 +110,13 @@ const AssignGroupWizard = (props: AssignGroupProps): ReactElement => {
 
     const assignGroupsToRole = () => {
         const selectedGroups: ApplicationRoleGroupInterface[] = [];
-        
+
         tempGroupList.forEach((group: RolesInterface) => {
             selectedGroups.push({
                 name: group.displayName
             });
         });
-        
+
         handleGroupAdd(selectedGroups);
     };
 
@@ -143,13 +135,14 @@ const AssignGroupWizard = (props: AssignGroupProps): ReactElement => {
         if (!isEmpty(value)) {
             const re: RegExp = new RegExp(escapeRegExp(value), "i");
 
-            initialGroupList && initialGroupList.map((group: RolesInterface) => {
-                isMatch = re.test(group.displayName);
-                if (isMatch) {
-                    filteredGroupList.push(group);
-                    handleGroupListChange(filteredGroupList);
-                }
-            });
+            initialGroupList &&
+                initialGroupList.map((group: RolesInterface) => {
+                    isMatch = re.test(group.displayName);
+                    if (isMatch) {
+                        filteredGroupList.push(group);
+                        handleGroupListChange(filteredGroupList);
+                    }
+                });
         } else {
             handleGroupListChange(initialGroupList);
         }
@@ -172,8 +165,8 @@ const AssignGroupWizard = (props: AssignGroupProps): ReactElement => {
      * The following method handles the onChange event of the
      * checkbox field of an unassigned item.
      */
-    const handleUnassignedItemCheckboxChange = (group: RolesInterface) => {        
-        const checkedGroups: RolesInterface[] = [ ...checkedUnassignedListItems ];
+    const handleUnassignedItemCheckboxChange = (group: RolesInterface) => {
+        const checkedGroups: RolesInterface[] = [...checkedUnassignedListItems];
 
         if (checkedGroups?.includes(group)) {
             checkedGroups.splice(checkedGroups.indexOf(group), 1);
@@ -214,98 +207,95 @@ const AssignGroupWizard = (props: AssignGroupProps): ReactElement => {
 
     return (
         <Modal
-            open={ true }
+            open={true}
             className="wizard create-role-wizard"
             dimmer="blurring"
             size="small"
-            onClose={ closeWizard }
-            closeOnDimmerClick={ false }
-            closeOnEscape= { false }
-            data-componentId={ componentId }
+            onClose={closeWizard}
+            closeOnDimmerClick={false}
+            closeOnEscape={false}
+            data-componentId={componentId}
         >
             <Modal.Header className="wizard-header">
-                { t("extensions:console.applicationRoles.assignGroupWizard.heading") }
-                <Heading as="h6">
-                    { t("extensions:console.applicationRoles.assignGroupWizard.subHeading") }
-                </Heading>
+                {t("extensions:console.applicationRoles.assignGroupWizard.heading")}
+                <Heading as="h6">{t("extensions:console.applicationRoles.assignGroupWizard.subHeading")}</Heading>
             </Modal.Header>
             <Modal.Content className="content-container" scrolling>
-                {
-                    !isLoading 
-                        ? (
-                            <TransferComponent
-                                selectionComponent
-                                searchPlaceholder={ t("console:manage.features.transferList.searchPlaceholder",
-                                    { type: "Groups" }) }
-                                handleUnelectedListSearch={ handleUnselectedListSearch }
-                                data-componentid="application-role-assign-group-modal"
-                                isLoading={ isLoading }
-                            >
-                                <TransferList
-                                    isListEmpty={ !(groupList?.length > 0) }
-                                    listType="unselected"
-                                    listHeaders={ [
-                                        t("console:manage.features.transferList.list.headers.0"),
-                                        t("console:manage.features.transferList.list.headers.1"), ""
-                                    ] }
-                                    handleHeaderCheckboxChange={ selectAllUnAssignedList }
-                                    isHeaderCheckboxChecked={ isSelectUnassignedGroupsAllRolesChecked }
-                                    emptyPlaceholderContent={ t("console:manage.features.transferList.list." +
-                                        "emptyPlaceholders.users.roles.unselected", { type: "groups" }) }
-                                    data-testid="user-mgt-add-user-wizard-modal-unselected-groups-select-all-checkbox"
-                                    emptyPlaceholderDefaultContent={ t("console:manage.features.transferList.list."
-                                        + "emptyPlaceholders.default") }
-                                >
-                                    {
-                                        groupList?.map((group: RolesInterface, index: number)=> {
-                                            const groupName: string[] = group?.displayName?.split("/");
+                {!isLoading ? (
+                    <TransferComponent
+                        selectionComponent
+                        searchPlaceholder={t("console:manage.features.transferList.searchPlaceholder", {
+                            type: "Groups"
+                        })}
+                        handleUnelectedListSearch={handleUnselectedListSearch}
+                        data-componentid="application-role-assign-group-modal"
+                        isLoading={isLoading}
+                    >
+                        <TransferList
+                            isListEmpty={!(groupList?.length > 0)}
+                            listType="unselected"
+                            listHeaders={[
+                                t("console:manage.features.transferList.list.headers.0"),
+                                t("console:manage.features.transferList.list.headers.1"),
+                                ""
+                            ]}
+                            handleHeaderCheckboxChange={selectAllUnAssignedList}
+                            isHeaderCheckboxChecked={isSelectUnassignedGroupsAllRolesChecked}
+                            emptyPlaceholderContent={t(
+                                "console:manage.features.transferList.list." +
+                                    "emptyPlaceholders.users.roles.unselected",
+                                { type: "groups" }
+                            )}
+                            data-testid="user-mgt-add-user-wizard-modal-unselected-groups-select-all-checkbox"
+                            emptyPlaceholderDefaultContent={t(
+                                "console:manage.features.transferList.list." + "emptyPlaceholders.default"
+                            )}
+                        >
+                            {groupList?.map((group: RolesInterface, index: number) => {
+                                const groupName: string[] = group?.displayName?.split("/");
 
-                                            return (
-                                                <TransferListItem
-                                                    style={ { height: "100%" } }
-                                                    handleItemChange={ () => handleUnassignedItemCheckboxChange(group) }
-                                                    key={ index }
-                                                    listItem={ groupName?.length > 1 
-                                                        ? groupName[1] : group?.displayName }
-                                                    listItemId={ group.id }
-                                                    listItemIndex={ index }
-                                                    listItemTypeLabel={ createGroupLabel(group?.displayName) }
-                                                    isItemChecked={ checkedUnassignedListItems.includes(group) }
-                                                    showSecondaryActions={ false }
-                                                    data-componentid="application-role-assign-group-modal-unselected"
-                                                />
-                                            );
-                                        })
-                                    }
-                                </TransferList>
-                            </TransferComponent>
-                        )
-                        : (
-                            <ContentLoader />
-                        ) 
-                }
+                                return (
+                                    <TransferListItem
+                                        style={{ height: "100%" }}
+                                        handleItemChange={() => handleUnassignedItemCheckboxChange(group)}
+                                        key={index}
+                                        listItem={groupName?.length > 1 ? groupName[1] : group?.displayName}
+                                        listItemId={group.id}
+                                        listItemIndex={index}
+                                        listItemTypeLabel={createGroupLabel(group?.displayName)}
+                                        isItemChecked={checkedUnassignedListItems.includes(group)}
+                                        showSecondaryActions={false}
+                                        data-componentid="application-role-assign-group-modal-unselected"
+                                    />
+                                );
+                            })}
+                        </TransferList>
+                    </TransferComponent>
+                ) : (
+                    <ContentLoader />
+                )}
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
                                 floated="left"
-                                onClick={ () => closeWizard() }
-                                data-componentId={ `${ componentId }-cancel-button` }
+                                onClick={() => closeWizard()}
+                                data-componentId={`${componentId}-cancel-button`}
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <PrimaryButton
                                 floated="right"
-                                onClick={ () => assignGroupsToRole() }
-                                data-componentId={ `${ componentId }-assign-button` }
-                                loading={ isSubmitting || isLoading }
-                                disabled={ isSubmitting || isLoading || groupList?.length === 0 }
+                                onClick={() => assignGroupsToRole()}
+                                data-componentId={`${componentId}-assign-button`}
+                                loading={isSubmitting || isLoading}
+                                disabled={isSubmitting || isLoading || groupList?.length === 0}
                             >
-                                { t("extensions:console.applicationRoles.assign") }
+                                {t("extensions:console.applicationRoles.assign")}
                             </PrimaryButton>
                         </Grid.Column>
                     </Grid.Row>

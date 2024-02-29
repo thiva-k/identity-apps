@@ -19,7 +19,7 @@
 import useUIConfig from "@wso2is/common/src/hooks/use-ui-configs";
 import { AlertLevels, FeatureAccessConfigInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { applicationConfig } from "features/extensions";
+import { applicationConfig } from "../../extensions";
 import cloneDeep from "lodash-es/cloneDeep";
 import isEmpty from "lodash-es/isEmpty";
 import isEqual from "lodash-es/isEqual";
@@ -44,9 +44,7 @@ import { AuthenticatorMeta } from "../../connections/meta/authenticator-meta";
 import { ConnectionInterface } from "../../connections/models/connection";
 import { ConnectionsManagementUtils } from "../../connections/utils/connection-utils";
 import { AppState } from "../../core/store";
-import {
-    IdentityProviderManagementConstants
-} from "../../identity-providers/constants/identity-provider-management-constants";
+import { IdentityProviderManagementConstants } from "../../identity-providers/constants/identity-provider-management-constants";
 import {
     FederatedAuthenticatorInterface,
     GenericAuthenticatorInterface,
@@ -127,11 +125,11 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ authenticationSequence, setAuthenticationSequence ] = useState<AuthenticationSequenceInterface>(
+    const [authenticationSequence, setAuthenticationSequence] = useState<AuthenticationSequenceInterface>(
         cloneDeep(application?.authenticationSequence)
     );
-    const [ isConditionalAuthenticationEnabled, setIsConditionalAuthenticationEnabled ] = useState<boolean>(false);
-    const [ filteredAuthenticators, setFilteredAuthenticators ] = useState<{
+    const [isConditionalAuthenticationEnabled, setIsConditionalAuthenticationEnabled] = useState<boolean>(false);
+    const [filteredAuthenticators, setFilteredAuthenticators] = useState<{
         enterprise: GenericAuthenticatorInterface[];
         local: GenericAuthenticatorInterface[];
         recovery: GenericAuthenticatorInterface[];
@@ -144,7 +142,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
         secondFactor: [],
         social: []
     });
-    const [ visualEditorFlowNodeMeta, setVisualEditorFlowNodeMeta ] = useState<VisualEditorFlowNodeMetaInterface>({
+    const [visualEditorFlowNodeMeta, setVisualEditorFlowNodeMeta] = useState<VisualEditorFlowNodeMetaInterface>({
         height: 0,
         width: 0
     });
@@ -166,7 +164,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
      */
     useEffect(() => {
         setAuthenticationSequence(application?.authenticationSequence);
-    }, [ application ]);
+    }, [application]);
 
     /**
      * Separates out the different authenticators to their relevant categories.
@@ -203,14 +201,17 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
         });
 
         federatedAuthenticators.forEach((authenticator: GenericAuthenticatorInterface) => {
-            authenticator.image = authenticator.defaultAuthenticator?.authenticatorId ===
-            AuthenticatorManagementConstants.ORGANIZATION_ENTERPRISE_AUTHENTICATOR_ID
-                ? AuthenticatorMeta.getAuthenticatorIcon(
-                    (authenticator as ConnectionInterface)
-                        .federatedAuthenticators?.defaultAuthenticatorId
-                            ?? authenticator.defaultAuthenticator?.authenticatorId)
-                : ConnectionsManagementUtils
-                    .resolveConnectionResourcePath(connectionResourcesUrl, authenticator.image);
+            authenticator.image =
+                authenticator.defaultAuthenticator?.authenticatorId ===
+                AuthenticatorManagementConstants.ORGANIZATION_ENTERPRISE_AUTHENTICATOR_ID
+                    ? AuthenticatorMeta.getAuthenticatorIcon(
+                          (authenticator as ConnectionInterface).federatedAuthenticators?.defaultAuthenticatorId ??
+                              authenticator.defaultAuthenticator?.authenticatorId
+                      )
+                    : ConnectionsManagementUtils.resolveConnectionResourcePath(
+                          connectionResourcesUrl,
+                          authenticator.image
+                      );
 
             if (
                 ApplicationManagementConstants.SOCIAL_AUTHENTICATORS.includes(
@@ -230,7 +231,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
             secondFactor: secondFactorAuthenticators,
             social: socialAuthenticators
         });
-    }, [ authenticators ]);
+    }, [authenticators]);
 
     const isAdaptiveAuthAvailable: boolean = useMemo(() => {
         if (orgType === OrganizationType.SUBORGANIZATION) {
@@ -238,19 +239,19 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
         }
 
         return isAdaptiveAuthenticationAvailable;
-    }, [ isAdaptiveAuthenticationAvailable, orgType ]);
+    }, [isAdaptiveAuthenticationAvailable, orgType]);
 
     const isVisualEditorEnabled: boolean = useMemo(() => {
         const disabledFeatures: string[] = featureConfig?.disabledFeatures;
 
         return !disabledFeatures.includes(VISUAL_EDITOR_FEATURE_ID);
-    }, [ featureConfig ]);
+    }, [featureConfig]);
 
     const isLegacyEditorEnabled: boolean = useMemo(() => {
         const disabledFeatures: string[] = featureConfig?.disabledFeatures;
 
         return !disabledFeatures.includes(LEGACY_EDITOR_FEATURE_ID);
-    }, [ featureConfig ]);
+    }, [featureConfig]);
 
     const isValidAuthenticationFlow: boolean = useMemo(() => {
         const stepsHaveOptions: boolean = authenticationSequence?.steps?.every(
@@ -258,13 +259,13 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
         );
 
         return stepsHaveOptions;
-    }, [ authenticationSequence ]);
+    }, [authenticationSequence]);
 
     /**
      * Handles the addition of new authentication step.
      */
     const addSignInStep = (): void => {
-        const steps: AuthenticationStepInterface[] = [ ...authenticationSequence?.steps ];
+        const steps: AuthenticationStepInterface[] = [...authenticationSequence?.steps];
         let script: string = authenticationSequence.script;
 
         // If the script is default, append a new `executeStep(id);`.
@@ -353,7 +354,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
             return;
         }
 
-        const steps: AuthenticationStepInterface[] = [ ...authenticationSequence?.steps ];
+        const steps: AuthenticationStepInterface[] = [...authenticationSequence?.steps];
 
         const isValid: boolean = validateStepAddition(authenticator, steps[stepIndex].options);
 
@@ -361,10 +362,12 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
             // TODO: setShowHandlerDisclaimerModal(true);
         }
 
-        const isFirstFactorAuth: boolean =
-            ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS.includes(authenticatorId);
-        const isSecondFactorAuth: boolean =
-            ApplicationManagementConstants.SECOND_FACTOR_AUTHENTICATORS.includes(authenticatorId);
+        const isFirstFactorAuth: boolean = ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS.includes(
+            authenticatorId
+        );
+        const isSecondFactorAuth: boolean = ApplicationManagementConstants.SECOND_FACTOR_AUTHENTICATORS.includes(
+            authenticatorId
+        );
         const isValidSecondFactorAddition: boolean = SignInMethodUtils.isSecondFactorAdditionValid(
             authenticator.defaultAuthenticator.authenticatorId,
             stepIndex,
@@ -374,11 +377,9 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
         // If the adding option is a second factor, and if the adding step is the first or there are no
         // first factor authenticators in previous steps, show a warning and stop adding the option.
         if (
-            isSecondFactorAuth
-            && (
-                (!isFirstFactorAuth && (stepIndex === 0 || !isValidSecondFactorAddition))
-                || (isFirstFactorAuth && stepIndex !== 0 && !isValidSecondFactorAddition)
-            )
+            isSecondFactorAuth &&
+            ((!isFirstFactorAuth && (stepIndex === 0 || !isValidSecondFactorAddition)) ||
+                (isFirstFactorAuth && stepIndex !== 0 && !isValidSecondFactorAddition))
         ) {
             dispatch(
                 addAlert({
@@ -431,7 +432,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
      * @param stepIndex - Authentication step.
      */
     const removeSignInStep = (stepIndex: number): void => {
-        const steps: AuthenticationStepInterface[] = [ ...authenticationSequence?.steps ];
+        const steps: AuthenticationStepInterface[] = [...authenticationSequence?.steps];
         let script: string = authenticationSequence.script;
 
         if (steps.length <= 1) {
@@ -463,7 +464,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
             rightSideSteps
         );
         const noOfTOTPOnRight: number = SignInMethodUtils.countSpecificFactorInSteps(
-            [ IdentityProviderManagementConstants.TOTP_AUTHENTICATOR ],
+            [IdentityProviderManagementConstants.TOTP_AUTHENTICATOR],
             rightSideSteps
         );
         const noOfFactorsOnRight: number =
@@ -483,13 +484,13 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
         if (containSecondFactorOnRight) {
             const containProperHandlersOnLeft: boolean = onlyTOTPOnRight
                 ? SignInMethodUtils.hasSpecificFactorsInSteps(
-                    ApplicationManagementConstants.TOTP_HANDLERS,
-                    leftSideSteps
-                )
+                      ApplicationManagementConstants.TOTP_HANDLERS,
+                      leftSideSteps
+                  )
                 : SignInMethodUtils.hasSpecificFactorsInSteps(
-                    ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS,
-                    leftSideSteps
-                ) ||
+                      ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS,
+                      leftSideSteps
+                  ) ||
                   SignInMethodUtils.checkImmediateStepHavingSpecificFactors(
                       ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS,
                       nextStep
@@ -535,7 +536,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
      * @param optionIndex - Index of the option.
      */
     const removeSignInOption = (stepIndex: number, authenticatorId: string): void => {
-        const steps: AuthenticationStepInterface[] = [ ...authenticationSequence?.steps ];
+        const steps: AuthenticationStepInterface[] = [...authenticationSequence?.steps];
 
         const currentStep: AuthenticationStepInterface = steps[stepIndex];
         const currentAuthenticator: AuthenticatorInterface = currentStep.options?.find(
@@ -550,9 +551,13 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
             currentAuthenticator?.authenticator === IdentityProviderManagementConstants.SMS_OTP_AUTHENTICATOR
         ) {
             // Check whether the current step has the backup code authenticator
-            if (SignInMethodUtils.hasSpecificAuthenticatorInCurrentStep(
-                IdentityProviderManagementConstants.BACKUP_CODE_AUTHENTICATOR, stepIndex, steps
-            )) {
+            if (
+                SignInMethodUtils.hasSpecificAuthenticatorInCurrentStep(
+                    IdentityProviderManagementConstants.BACKUP_CODE_AUTHENTICATOR,
+                    stepIndex,
+                    steps
+                )
+            ) {
                 // if there is only one 2FA in the step, prompt delete confirmation modal
                 if (SignInMethodUtils.countTwoFactorAuthenticatorsInCurrentStep(stepIndex, steps) < 2) {
                     currentStep.options.map((option: AuthenticatorInterface, optionIndex: number) => {
@@ -570,7 +575,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
         ]: AuthenticationStepInterface[][] = SignInMethodUtils.getLeftAndRightSideSteps(stepIndex, steps);
 
         const containSecondFactorOnRight: boolean = SignInMethodUtils.hasSpecificFactorsInSteps(
-            [ ...ApplicationManagementConstants.SECOND_FACTOR_AUTHENTICATORS ],
+            [...ApplicationManagementConstants.SECOND_FACTOR_AUTHENTICATORS],
             rightSideSteps
         );
 
@@ -578,7 +583,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
         if (containSecondFactorOnRight) {
             const deletingOption: AuthenticatorInterface = { ...currentAuthenticator };
             const noOfSecondFactorsOnRight: number = SignInMethodUtils.countSpecificFactorInSteps(
-                [ ...ApplicationManagementConstants.SECOND_FACTOR_AUTHENTICATORS ],
+                [...ApplicationManagementConstants.SECOND_FACTOR_AUTHENTICATORS],
                 rightSideSteps
             );
             const noOfSecondFactorsOnRightRequiringHandlers: number = SignInMethodUtils.countSpecificFactorInSteps(
@@ -634,16 +639,16 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
                     // Else check if there are first factors on the left.
                     const containProperHandlersOnLeft: boolean = onlySecondFactorsRequiringHandlersOnRight
                         ? SignInMethodUtils.hasSpecificFactorsInSteps(
-                            [
-                                ...ApplicationManagementConstants.TOTP_HANDLERS,
-                                ...ApplicationManagementConstants.EMAIL_OTP_HANDLERS
-                            ],
-                            leftSideSteps
-                        )
+                              [
+                                  ...ApplicationManagementConstants.TOTP_HANDLERS,
+                                  ...ApplicationManagementConstants.EMAIL_OTP_HANDLERS
+                              ],
+                              leftSideSteps
+                          )
                         : SignInMethodUtils.hasSpecificFactorsInSteps(
-                            ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS,
-                            leftSideSteps
-                        );
+                              ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS,
+                              leftSideSteps
+                          );
 
                     // There are no possible authenticators on the left form the deleting option to handle the second
                     // factor authenticators. Evaluate....
@@ -658,16 +663,16 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
                         // Try to find a proper handler in steps left of the immediate second factor.
                         const noOfProperHandlersOnLeft: number = onlySecondFactorsRequiringHandlersOnRight
                             ? SignInMethodUtils.countSpecificFactorInSteps(
-                                [
-                                    ...ApplicationManagementConstants.TOTP_HANDLERS,
-                                    ...ApplicationManagementConstants.EMAIL_OTP_HANDLERS
-                                ],
-                                leftSideStepsFromImmediateSecondFactor
-                            )
+                                  [
+                                      ...ApplicationManagementConstants.TOTP_HANDLERS,
+                                      ...ApplicationManagementConstants.EMAIL_OTP_HANDLERS
+                                  ],
+                                  leftSideStepsFromImmediateSecondFactor
+                              )
                             : SignInMethodUtils.countSpecificFactorInSteps(
-                                ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS,
-                                leftSideStepsFromImmediateSecondFactor
-                            );
+                                  ApplicationManagementConstants.FIRST_FACTOR_AUTHENTICATORS,
+                                  leftSideStepsFromImmediateSecondFactor
+                              );
 
                         // If there are no other handlers, Show a warning and abort option delete.
                         if (noOfProperHandlersOnLeft <= 1) {
@@ -738,7 +743,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
         const { script: _, ...rest }: AuthenticationSequenceInterface = defaultAuthenticationSequence;
 
         return isEqual(rest, authenticationSequence);
-    }, [ authenticationSequence, defaultAuthenticationSequence ]);
+    }, [authenticationSequence, defaultAuthenticationSequence]);
 
     const updateVisualEditorFlowNodeMeta: (
         stepId: number | string,
@@ -752,7 +757,7 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
 
     return (
         <AuthenticationFlowContext.Provider
-            value={ {
+            value={{
                 adaptiveAuthTemplates,
                 addSignInOption,
                 addSignInStep,
@@ -777,9 +782,9 @@ const AuthenticationFlowProvider = (props: PropsWithChildren<AuthenticationFlowP
                 updateAuthenticationSequence,
                 updateVisualEditorFlowNodeMeta,
                 visualEditorFlowNodeMeta
-            } }
+            }}
         >
-            { children }
+            {children}
         </AuthenticationFlowContext.Provider>
     );
 };

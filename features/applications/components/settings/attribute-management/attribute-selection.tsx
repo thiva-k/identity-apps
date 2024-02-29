@@ -43,7 +43,7 @@ import {
     ExtendedExternalClaimInterface,
     SelectedDialectInterface
 } from "./attribute-settings";
-import { applicationConfig } from "features/extensions";
+import { applicationConfig } from "../../../../extensions";
 import { ClaimManagementConstants } from "../../../../claims/constants";
 import {
     AppConstants,

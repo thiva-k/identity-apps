@@ -17,7 +17,7 @@
  */
 
 import { IdentityAppsError } from "@wso2is/core/errors";
-import { commonConfig } from "features/extensions";
+import { commonConfig } from "../../extensions";
 import { PredefinedLayouts } from "../meta/layouts";
 import { BrandingPreferenceInterface, PredefinedThemes, ThemeConfigInterface } from "../models";
 
@@ -25,12 +25,11 @@ import { BrandingPreferenceInterface, PredefinedThemes, ThemeConfigInterface } f
  * Class containing Branding Preferences constants.
  */
 export class BrandingPreferencesConstants {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      */
-    private constructor() { }
+    private constructor() {}
 
     public static readonly DEFAULT_THEME: PredefinedThemes = PredefinedThemes.LIGHT;
     public static readonly DEFAULT_LAYOUT: PredefinedLayouts = PredefinedLayouts.CENTERED;
@@ -114,10 +113,10 @@ export class BrandingPreferencesConstants {
      * General form field constraints for validations.
      */
     public static readonly GENERAL_DETAILS_FORM_FIELD_CONSTRAINTS: {
-        SUPPORT_EMAIL_MAX_LENGTH: number,
-        SUPPORT_EMAIL_MIN_LENGTH: number,
-        DISPLAY_NAME_MAX_LENGTH: number,
-        DISPLAY_NAME_MIN_LENGTH: number
+        SUPPORT_EMAIL_MAX_LENGTH: number;
+        SUPPORT_EMAIL_MIN_LENGTH: number;
+        DISPLAY_NAME_MAX_LENGTH: number;
+        DISPLAY_NAME_MIN_LENGTH: number;
     } = {
         DISPLAY_NAME_MAX_LENGTH: 100,
         DISPLAY_NAME_MIN_LENGTH: 3,
@@ -129,32 +128,32 @@ export class BrandingPreferencesConstants {
      * Design form field constraints for validations.
      */
     public static readonly DESIGN_FORM_FIELD_CONSTRAINTS: {
-        BORDER_RADIUS_MAX_LENGTH: number,
-        BORDER_RADIUS_MIN_LENGTH: number,
-        BORDER_WIDTH_MAX_LENGTH: number,
-        BORDER_WIDTH_MIN_LENGTH: number,
-        FAVICON_URL_MAX_LENGTH: number,
-        FAVICON_URL_MIN_LENGTH: number
-        FONT_FAMILY_MAX_LENGTH: number,
-        FONT_FAMILY_MIN_LENGTH: number,
-        FONT_IMPORT_URL_MAX_LENGTH: number,
-        FONT_IMPORT_URL_MIN_LENGTH: number,
-        LOGO_ALT_TEXT_MAX_LENGTH: number,
-        LOGO_ALT_TEXT_MIN_LENGTH: number,
-        LOGO_URL_MAX_LENGTH: number,
-        LOGO_URL_MIN_LENGTH: number,
-        MYACCOUNT_LOGO_ALT_TEXT_MAX_LENGTH: number,
-        MYACCOUNT_LOGO_ALT_TEXT_MIN_LENGTH: number,
-        MYACCOUNT_LOGO_TITLE_MAX_LENGTH: number,
-        MYACCOUNT_LOGO_TITLE_MIN_LENGTH: number,
-        MYACCOUNT_LOGO_URL_MAX_LENGTH: number,
-        MYACCOUNT_LOGO_URL_MIN_LENGTH: number,
-        SIDE_IMAGE_URL_MAX_LENGTH: number,
-        SIDE_IMAGE_URL_MIN_LENGTH: number,
-        SIDE_IMAGE_ALT_TEXT_MAX_LENGTH: number,
-        SIDE_IMAGE_ALT_TEXT_MIN_LENGTH: number,
-        PRODUCT_TAGLINE_TEXT_MAX_LENGTH: number,
-        PRODUCT_TAGLINE_TEXT_MIN_LENGTH: number,
+        BORDER_RADIUS_MAX_LENGTH: number;
+        BORDER_RADIUS_MIN_LENGTH: number;
+        BORDER_WIDTH_MAX_LENGTH: number;
+        BORDER_WIDTH_MIN_LENGTH: number;
+        FAVICON_URL_MAX_LENGTH: number;
+        FAVICON_URL_MIN_LENGTH: number;
+        FONT_FAMILY_MAX_LENGTH: number;
+        FONT_FAMILY_MIN_LENGTH: number;
+        FONT_IMPORT_URL_MAX_LENGTH: number;
+        FONT_IMPORT_URL_MIN_LENGTH: number;
+        LOGO_ALT_TEXT_MAX_LENGTH: number;
+        LOGO_ALT_TEXT_MIN_LENGTH: number;
+        LOGO_URL_MAX_LENGTH: number;
+        LOGO_URL_MIN_LENGTH: number;
+        MYACCOUNT_LOGO_ALT_TEXT_MAX_LENGTH: number;
+        MYACCOUNT_LOGO_ALT_TEXT_MIN_LENGTH: number;
+        MYACCOUNT_LOGO_TITLE_MAX_LENGTH: number;
+        MYACCOUNT_LOGO_TITLE_MIN_LENGTH: number;
+        MYACCOUNT_LOGO_URL_MAX_LENGTH: number;
+        MYACCOUNT_LOGO_URL_MIN_LENGTH: number;
+        SIDE_IMAGE_URL_MAX_LENGTH: number;
+        SIDE_IMAGE_URL_MIN_LENGTH: number;
+        SIDE_IMAGE_ALT_TEXT_MAX_LENGTH: number;
+        SIDE_IMAGE_ALT_TEXT_MIN_LENGTH: number;
+        PRODUCT_TAGLINE_TEXT_MAX_LENGTH: number;
+        PRODUCT_TAGLINE_TEXT_MIN_LENGTH: number;
     } = {
         BORDER_RADIUS_MAX_LENGTH: 100,
         BORDER_RADIUS_MIN_LENGTH: 3,
@@ -188,12 +187,12 @@ export class BrandingPreferencesConstants {
      * Advance form field constraints for validations.
      */
     public static readonly ADVANCE_FORM_FIELD_CONSTRAINTS: {
-        COOKIE_POLICY_URL_MAX_LENGTH: number,
-        COOKIE_POLICY_URL_MIN_LENGTH: number,
-        PRIVACY_POLICY_URL_MAX_LENGTH: number,
-        PRIVACY_POLICY_URL_MIN_LENGTH: number,
-        TOS_URL_MAX_LENGTH: number,
-        TOS_URL_MIN_LENGTH: number
+        COOKIE_POLICY_URL_MAX_LENGTH: number;
+        COOKIE_POLICY_URL_MIN_LENGTH: number;
+        PRIVACY_POLICY_URL_MAX_LENGTH: number;
+        PRIVACY_POLICY_URL_MIN_LENGTH: number;
+        TOS_URL_MAX_LENGTH: number;
+        TOS_URL_MIN_LENGTH: number;
     } = {
         COOKIE_POLICY_URL_MAX_LENGTH: 2048,
         COOKIE_POLICY_URL_MIN_LENGTH: 3,
@@ -228,7 +227,7 @@ export class BrandingPreferencesConstants {
         },
         theme: {
             activeTheme: PredefinedThemes.LIGHT,
-            [ PredefinedThemes.LIGHT ]: {
+            [PredefinedThemes.LIGHT]: {
                 buttons: {
                     externalConnection: {
                         base: {
@@ -431,7 +430,7 @@ export class BrandingPreferencesConstants {
                     }
                 }
             },
-            [ PredefinedThemes.DARK ]: {
+            [PredefinedThemes.DARK]: {
                 buttons: {
                     externalConnection: {
                         base: {

@@ -34,7 +34,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid, Ref } from "semantic-ui-react";
-import { serverConfigurationConfig } from "features/extensions";
+import { serverConfigurationConfig } from "../../extensions";
 import { AppConstants, AppState, FeatureConfigInterface, history } from "../../core";
 import {
     ConnectorPropertyInterface,

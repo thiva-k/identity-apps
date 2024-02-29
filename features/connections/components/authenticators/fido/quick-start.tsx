@@ -35,7 +35,7 @@ import {
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
-import ApplicationSelectionModal from "features/extensions/components/shared/application-selection-modal";
+import ApplicationSelectionModal from "../../../../extensions/components/shared/application-selection-modal";
 
 /**
  * Prop types of the component.
@@ -52,15 +52,12 @@ type FIDOQuickStartPropsInterface = TestableComponentInterface;
 const FIDOQuickStart: FunctionComponent<FIDOQuickStartPropsInterface> = (
     props: FIDOQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        ["data-testid"]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     /**
      * Vertical Stepper steps.
@@ -77,8 +74,10 @@ const FIDOQuickStart: FunctionComponent<FIDOQuickStartPropsInterface> = (
                                 "extensions:develop.identityProviders.fido.quickStart.steps.selectApplication.content"
                             }
                         >
-                            Choose the <Link external={ false } onClick={ () => setShowApplicationModal(true) }>
-                                application </Link>
+                            Choose the{" "}
+                            <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                                application{" "}
+                            </Link>
                             for which you want to set up passkey login.
                         </Trans>
                     </Text>
@@ -91,13 +90,13 @@ const FIDOQuickStart: FunctionComponent<FIDOQuickStartPropsInterface> = (
                 <>
                     <Text>
                         <Trans
-                            i18nKey={ "extensions:develop.identityProviders.fido.quickStart.steps.selectFIDO.content" }
+                            i18nKey={"extensions:develop.identityProviders.fido.quickStart.steps.selectFIDO.content"}
                         >
                             Go to <strong>Login Flow</strong> tab and click on the <strong>Passkey</strong>
                             option from the Passwordless login section to configure a basic Passkey flow.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
@@ -110,59 +109,48 @@ const FIDOQuickStart: FunctionComponent<FIDOQuickStartPropsInterface> = (
 
     return (
         <>
-            <Grid container spacing={ { md: 3, xs: 2 } } columns={ { md: 12, sm: 8, xs: 4 } }>
-                <Grid xs={ 4 } sm={ 8 } md={ 12 }>
+            <Grid container spacing={{ md: 3, xs: 2 }} columns={{ md: 12, sm: 8, xs: 4 }}>
+                <Grid xs={4} sm={8} md={12}>
                     <PageHeader
                         className="mb-2"
-                        imageSpaced={ false }
-                        bottomMargin={ false }
-                        title={ t("extensions:develop.identityProviders.fido.quickStart.heading") }
+                        imageSpaced={false}
+                        bottomMargin={false}
+                        title={t("extensions:develop.identityProviders.fido.quickStart.heading")}
                     />
                     <Heading subHeading as="h6">
-                        { t("extensions:develop.identityProviders.fido.quickStart.subHeading") }
+                        {t("extensions:develop.identityProviders.fido.quickStart.subHeading")}
                     </Heading>
                 </Grid>
-                <Grid md={ 12 } sm={ 8 } xs={ 4 }>
-                    <VerticalStepper
-                        alwaysOpen
-                        isSidePanelOpen
-                        stepContent={ steps }
-                        isNextEnabled={ true }
-                    />
+                <Grid md={12} sm={8} xs={4}>
+                    <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                 </Grid>
             </Grid>
-            <Grid data-componentid={ `${ testId }-passkeys` }>
+            <Grid data-componentid={`${testId}-passkeys`}>
                 <div className="mt-3 mb-6">
                     <Message
-                        type={ "info" }
-                        header={ t("extensions:develop.identityProviders.fido.quickStart.passkeys.heading") }
+                        type={"info"}
+                        header={t("extensions:develop.identityProviders.fido.quickStart.passkeys.heading")}
                         content={
-                            (<>
-                                { t("extensions:develop.identityProviders.fido.quickStart.passkeys.content") }
-                                <DocumentationLink
-                                    link={ getLink("develop.connections.edit.quickStart.fido.learnMore") }
-                                >
-                                    { t("extensions:develop.identityProviders.fido.quickStart.passkeys.docLinkText") }
+                            <>
+                                {t("extensions:develop.identityProviders.fido.quickStart.passkeys.content")}
+                                <DocumentationLink link={getLink("develop.connections.edit.quickStart.fido.learnMore")}>
+                                    {t("extensions:develop.identityProviders.fido.quickStart.passkeys.docLinkText")}
                                 </DocumentationLink>
-                            </>)
+                            </>
                         }
                     />
                 </div>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ testId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={ t("extensions:develop.identityProviders.fido.quickStart.addLoginModal.heading") }
-                        subHeading={
-                            t("extensions:develop.identityProviders.fido.quickStart.addLoginModal.subHeading")
-                        }
-                        data-componentid="connections"
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${testId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.fido.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.fido.quickStart.addLoginModal.subHeading")}
+                    data-componentid="connections"
+                />
+            )}
         </>
     );
 };

@@ -25,7 +25,7 @@ import { useDispatch } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import { Image } from "semantic-ui-react";
-import { attributeConfig } from "features/extensions";
+import { attributeConfig } from "../../extensions";
 import { AppConstants, history } from "../../core";
 import { getAClaim } from "../api";
 import {
@@ -56,16 +56,12 @@ interface RouteParams {
 const LocalClaimsEditPage: FunctionComponent<LocalClaimsEditPageInterface> = (
     props: LocalClaimsEditPageInterface & RouteComponentProps<RouteParams>
 ): ReactElement => {
-
-    const {
-        match,
-        [ "data-testid" ]: testId
-    } = props;
+    const { match, ["data-testid"]: testId } = props;
 
     const claimID: string = match.params.id;
 
-    const [ claim, setClaim ] = useState<Claim>(null);
-    const [ isLocalClaimDetailsRequestLoading, setIsLocalClaimDetailsRequestLoading ] = useState<boolean>(false);
+    const [claim, setClaim] = useState<Claim>(null);
+    const [isLocalClaimDetailsRequestLoading, setIsLocalClaimDetailsRequestLoading] = useState<boolean>(false);
 
     const dispatch: Dispatch = useDispatch();
 
@@ -82,13 +78,16 @@ const LocalClaimsEditPage: FunctionComponent<LocalClaimsEditPageInterface> = (
                 setClaim(response);
             })
             .catch((error: any) => {
-                dispatch(addAlert({
-                    description: error?.description
-                        || t("console:manage.features.claims.local.notifications.getAClaim.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.claims.local.notifications.getAClaim.genericError.message")
-                })
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t("console:manage.features.claims.local.notifications.getAClaim.genericError.description"),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t("console:manage.features.claims.local.notifications.getAClaim.genericError.message")
+                    })
                 );
             })
             .finally(() => {
@@ -112,8 +111,8 @@ const LocalClaimsEditPage: FunctionComponent<LocalClaimsEditPageInterface> = (
             render: () => (
                 <ResourceTab.Pane controlledSegmentation>
                     <EditBasicDetailsLocalClaims
-                        claim={ claim }
-                        update={ getClaim }
+                        claim={claim}
+                        update={getClaim}
                         data-testid="local-claims-basic-details-edit"
                     />
                 </ResourceTab.Pane>
@@ -124,9 +123,9 @@ const LocalClaimsEditPage: FunctionComponent<LocalClaimsEditPageInterface> = (
             render: () => (
                 <ResourceTab.Pane controlledSegmentation>
                     <EditMappedAttributesLocalClaims
-                        claim={ claim }
-                        update={ getClaim }
-                        data-testid={ `${ testId }-edit-local-claims-mapped-attributes` }
+                        claim={claim}
+                        update={getClaim}
+                        data-testid={`${testId}-edit-local-claims-mapped-attributes`}
                     />
                 </ResourceTab.Pane>
             )
@@ -136,9 +135,9 @@ const LocalClaimsEditPage: FunctionComponent<LocalClaimsEditPageInterface> = (
             render: () => (
                 <ResourceTab.Pane controlledSegmentation>
                     <EditAdditionalPropertiesLocalClaims
-                        claim={ claim }
-                        update={ getClaim }
-                        data-testid={ `${ testId }-edit-local-claims-additional-properties` }
+                        claim={claim}
+                        update={getClaim}
+                        data-testid={`${testId}-edit-local-claims-additional-properties`}
                     />
                 </ResourceTab.Pane>
             )
@@ -153,53 +152,44 @@ const LocalClaimsEditPage: FunctionComponent<LocalClaimsEditPageInterface> = (
     const generateClaimLetter = (name: string): string => {
         const stringArray: string[] = name?.replace("http://", "")?.split("/");
 
-        return stringArray[ stringArray?.length - 1 ][ 0 ]?.toLocaleUpperCase();
+        return stringArray[stringArray?.length - 1][0]?.toLocaleUpperCase();
     };
 
     return (
         <TabPageLayout
-            isLoading={ isLocalClaimDetailsRequestLoading }
-            image={ (
-                <Image
-                    floated="left"
-                    verticalAlign="middle"
-                    rounded
-                    centered
-                    size="tiny"
-                >
+            isLoading={isLocalClaimDetailsRequestLoading}
+            image={
+                <Image floated="left" verticalAlign="middle" rounded centered size="tiny">
                     <AnimatedAvatar />
-                    <span className="claims-letter">
-                        { claim && generateClaimLetter(claim?.claimURI) }
-                    </span>
+                    <span className="claims-letter">{claim && generateClaimLetter(claim?.claimURI)}</span>
                 </Image>
-            ) }
-            title={ claim?.displayName }
+            }
+            title={claim?.displayName}
             pageTitle="Edit Attributes"
-            description={ t("console:manage.features.claims.local.pageLayout.edit.description") }
-            backButton={ {
+            description={t("console:manage.features.claims.local.pageLayout.edit.description")}
+            backButton={{
                 onClick: () => {
                     history.push(AppConstants.getPaths().get("LOCAL_CLAIMS"));
                 },
                 text: t("console:manage.features.claims.local.pageLayout.edit.back")
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            data-testid={ `${ testId }-page-layout` }
+            bottomMargin={false}
+            data-testid={`${testId}-page-layout`}
         >
-            { attributeConfig.attributes.showEditTabs
-                ? (
-                    <ResourceTab 
-                        isLoading={ isLocalClaimDetailsRequestLoading }
-                        panes={ panes } 
-                        data-testid={ `${ testId }-tabs` } />
-                ) : (
-                    <EditBasicDetailsLocalClaims
-                        claim={ claim }
-                        update={ getClaim }
-                        data-testid="local-claims-basic-details-edit"
-                    />
-                )
-            }
+            {attributeConfig.attributes.showEditTabs ? (
+                <ResourceTab
+                    isLoading={isLocalClaimDetailsRequestLoading}
+                    panes={panes}
+                    data-testid={`${testId}-tabs`}
+                />
+            ) : (
+                <EditBasicDetailsLocalClaims
+                    claim={claim}
+                    update={getClaim}
+                    data-testid="local-claims-basic-details-edit"
+                />
+            )}
         </TabPageLayout>
     );
 };

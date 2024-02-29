@@ -23,7 +23,7 @@ import { GenericIcon, Heading, Link, PageHeader, Text } from "@wso2is/react-comp
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
-import ApplicationSelectionModal from "features/extensions/components/shared/application-selection-modal";
+import ApplicationSelectionModal from "../../../../extensions/components/shared/application-selection-modal";
 
 /**
  * Prop types of the component.
@@ -40,14 +40,11 @@ type EmailOTPQuickStartPropsInterface = TestableComponentInterface;
 const EmailOTPQuickStart: FunctionComponent<EmailOTPQuickStartPropsInterface> = (
     props: EmailOTPQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     /**
      * Vertical Stepper steps.
@@ -64,10 +61,11 @@ const EmailOTPQuickStart: FunctionComponent<EmailOTPQuickStartPropsInterface> = 
                             ".quickStart.steps.selectApplication.content"
                         }
                     >
-                        Choose the <Link
-                            external={ false }
-                            onClick={
-                                () => setShowApplicationModal(true) }> application </Link>
+                        Choose the{" "}
+                        <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                            {" "}
+                            application{" "}
+                        </Link>
                         for which you want to set up Email OTP login.
                     </Trans>
                 </Text>
@@ -79,15 +77,17 @@ const EmailOTPQuickStart: FunctionComponent<EmailOTPQuickStartPropsInterface> = 
                 <>
                     <Text>
                         <Trans
-                            i18nKey={ "extensions:develop.identityProviders.emailOTP.quickStart.steps.selectEmailOTP" +
-                            ".content" }
+                            i18nKey={
+                                "extensions:develop.identityProviders.emailOTP.quickStart.steps.selectEmailOTP" +
+                                ".content"
+                            }
                         >
-                            Go to <strong>Login Flow</strong> tab and click on the <strong>Username & Password +
-                                Email OTP </strong> option from the Multi-factor login section to configure a
-                                basic Email OTP flow.
+                            Go to <strong>Login Flow</strong> tab and click on the{" "}
+                            <strong>Username & Password + Email OTP </strong> option from the Multi-factor login section
+                            to configure a basic Email OTP flow.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
@@ -100,43 +100,32 @@ const EmailOTPQuickStart: FunctionComponent<EmailOTPQuickStartPropsInterface> = 
 
     return (
         <>
-            <Grid container spacing={ { md: 3, xs: 2 } } columns={ { md: 12, sm: 8, xs: 4 } }>
-                <Grid md={ 12 } sm={ 8 } xs={ 4 }>
+            <Grid container spacing={{ md: 3, xs: 2 }} columns={{ md: 12, sm: 8, xs: 4 }}>
+                <Grid md={12} sm={8} xs={4}>
                     <PageHeader
                         className="mb-2"
-                        title={ t("extensions:develop.identityProviders.emailOTP.quickStart.heading") }
-                        imageSpaced={ false }
-                        bottomMargin={ false }
+                        title={t("extensions:develop.identityProviders.emailOTP.quickStart.heading")}
+                        imageSpaced={false}
+                        bottomMargin={false}
                     />
                     <Heading subHeading as="h6">
-                        { t("extensions:develop.identityProviders.emailOTP.quickStart.subHeading") }
+                        {t("extensions:develop.identityProviders.emailOTP.quickStart.subHeading")}
                     </Heading>
                 </Grid>
-                <Grid md={ 12 } sm={ 8 } xs={ 4 }>
-                    <VerticalStepper
-                        alwaysOpen
-                        isSidePanelOpen
-                        stepContent={ steps }
-                        isNextEnabled={ true }
-                    />
+                <Grid md={12} sm={8} xs={4}>
+                    <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                 </Grid>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ testId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={
-                            t("extensions:develop.identityProviders.emailOTP.quickStart.addLoginModal.heading")
-                        }
-                        subHeading={
-                            t("extensions:develop.identityProviders.emailOTP.quickStart.addLoginModal.subHeading")
-                        }
-                        data-componentid="connections"
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${testId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.emailOTP.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.emailOTP.quickStart.addLoginModal.subHeading")}
+                    data-componentid="connections"
+                />
+            )}
         </>
     );
 };

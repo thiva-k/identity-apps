@@ -28,7 +28,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Divider, DropdownProps, Grid, Icon, Modal, PaginationProps } from "semantic-ui-react";
 import { ClaimsList, ListType } from "../../";
-import { attributeConfig } from "features/extensions";
+import { attributeConfig } from "../../../../extensions";
 import {
     AdvancedSearchWithBasicFilters,
     AppConstants,
@@ -100,14 +100,7 @@ interface SortByInterface {
 export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterface> = (
     props: EditExternalClaimsPropsInterface
 ): ReactElement => {
-
-    const {
-        attributeType,
-        attributeUri,
-        mappedLocalClaims,
-        updateMappedClaims,
-        [ "data-testid" ]: testId
-    } = props;
+    const { attributeType, attributeUri, mappedLocalClaims, updateMappedClaims, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
@@ -117,8 +110,9 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
     const SORT_BY: SortByInterface[] = [
         {
             key: 0,
-            text: t("console:manage.features.claims.external.attributes.attributeURI",
-                { type: resolveType(attributeType, true, true) }),
+            text: t("console:manage.features.claims.external.attributes.attributeURI", {
+                type: resolveType(attributeType, true, true)
+            }),
             value: "claimURI"
         },
         {
@@ -131,19 +125,19 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ offset, setOffset ] = useState(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ filteredClaims, setFilteredClaims ] = useState<ExternalClaim[]>([]);
-    const [ sortBy, setSortBy ] = useState(SORT_BY[ 0 ]);
-    const [ sortOrder, setSortOrder ] = useState(true);
-    const [ showAddExternalClaim, setShowAddExternalClaim ] = useState(false);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
-    const [ disableSubmit, setDisableSubmit ] = useState<boolean>(true);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [offset, setOffset] = useState(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [filteredClaims, setFilteredClaims] = useState<ExternalClaim[]>([]);
+    const [sortBy, setSortBy] = useState(SORT_BY[0]);
+    const [sortOrder, setSortOrder] = useState(true);
+    const [showAddExternalClaim, setShowAddExternalClaim] = useState(false);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
+    const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const [ triggerAddExternalClaim, setTriggerAddExternalClaim ] = useTrigger();
-    const [ resetPagination, setResetPagination ] = useTrigger();
+    const [triggerAddExternalClaim, setTriggerAddExternalClaim] = useTrigger();
+    const [resetPagination, setResetPagination] = useTrigger();
 
     const dispatch: Dispatch<any> = useDispatch();
 
@@ -156,11 +150,11 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
             setFilteredClaims(claims);
             handleSearchQueryClear(); // Clear the search field upon new claims
         }
-    }, [ claims ]);
+    }, [claims]);
 
     useEffect(() => {
         setFilteredClaims(sortList(filteredClaims, sortBy.value, sortOrder));
-    }, [ sortBy, sortOrder ]);
+    }, [sortBy, sortOrder]);
 
     /**
      * Slices and returns a portion of the list.
@@ -186,12 +180,12 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
     };
 
     /**
-    * Paginates.
-    * @param event - Pagination changed event.
-    * @param data - Pagination data.
-    */
+     * Paginates.
+     * @param event - Pagination changed event.
+     * @param data - Pagination data.
+     */
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setOffset((data.activePage as number - 1) * listItemLimit);
+        setOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     /**
@@ -201,14 +195,14 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
      * @param data - Dropdown data.
      */
     const handleSortStrategyChange = (event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
-        setSortBy(SORT_BY.filter((option: SortByInterface) => option.value === data.value)[ 0 ]);
+        setSortBy(SORT_BY.filter((option: SortByInterface) => option.value === data.value)[0]);
     };
 
     /**
-    * Handles sort order change.
+     * Handles sort order change.
      *
-    * @param isAscending - Is sort oder ascending or not.
-    */
+     * @param isAscending - Is sort oder ascending or not.
+     */
     const handleSortOrderChange = (isAscending: boolean) => {
         setSortOrder(isAscending);
     };
@@ -221,20 +215,20 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
      */
     const handleExternalClaimFilter = (query: string): void => {
         try {
-            const filteredList: ExternalClaim[] = filterList(
-                claims, query, sortBy.value, sortOrder
-            );
+            const filteredList: ExternalClaim[] = filterList(claims, query, sortBy.value, sortOrder);
 
             setFilteredClaims(filteredList);
             setSearchQuery(query);
             setOffset(0);
             setResetPagination();
         } catch (error) {
-            dispatch(addAlert({
-                description: error?.message,
-                level: AlertLevels.ERROR,
-                message: t("console:manage.features.claims.external.advancedSearch.error")
-            }));
+            dispatch(
+                addAlert({
+                    description: error?.message,
+                    level: AlertLevels.ERROR,
+                    message: t("console:manage.features.claims.external.advancedSearch.error")
+                })
+            );
         }
     };
 
@@ -248,7 +242,6 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
     };
 
     const handleAttributesSubmit = (claims: AddExternalClaim[]): void => {
-
         const addAttributesRequests: Promise<AddExternalClaim>[] = claims.map((claim: AddExternalClaim) => {
             return addExternalClaim(dialectID, {
                 claimURI: claim.claimURI,
@@ -257,36 +250,50 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
         });
 
         setIsSubmitting(true);
-        Promise.all(addAttributesRequests).then(() => {
-            dispatch(addAlert(
-                {
-                    description: t("console:manage.features.claims.external.notifications." +
-                        "addExternalAttribute.success.description", {
-                        type: resolveType(attributeType)
-                    }),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.claims.external.notifications." +
-                        "addExternalAttribute.success.message")
-                }
-            ));
-            update();
-            updateMappedClaims(true);
-        }).catch((error: any) => {
-            dispatch(addAlert(
-                {
-                    description: error?.description
-                        || t("console:manage.features.claims.external.notifications." +
-                            "addExternalAttribute.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.claims.external.notifications." +
-                            "addExternalAttribute.genericError.message")
-                }
-            ));
-        }).finally(() => {
-            setIsSubmitting(false);
-            setShowAddExternalClaim(false);
-        });
+        Promise.all(addAttributesRequests)
+            .then(() => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.claims.external.notifications." +
+                                "addExternalAttribute.success.description",
+                            {
+                                type: resolveType(attributeType)
+                            }
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:manage.features.claims.external.notifications." +
+                                "addExternalAttribute.success.message"
+                        )
+                    })
+                );
+                update();
+                updateMappedClaims(true);
+            })
+            .catch((error: any) => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.claims.external.notifications." +
+                                    "addExternalAttribute.genericError.description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t(
+                                "console:manage.features.claims.external.notifications." +
+                                    "addExternalAttribute.genericError.message"
+                            )
+                    })
+                );
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+                setShowAddExternalClaim(false);
+            });
     };
 
     /**
@@ -298,14 +305,15 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
 
     return (
         <ListLayout
-            advancedSearch={ (
+            advancedSearch={
                 <AdvancedSearchWithBasicFilters
-                    onFilter={ handleExternalClaimFilter }
-                    filterAttributeOptions={ [
+                    onFilter={handleExternalClaimFilter}
+                    filterAttributeOptions={[
                         {
                             key: 0,
-                            text: t("console:manage.features.claims.external.attributes.attributeURI",
-                                { type: resolveType(attributeType, true, true) }),
+                            text: t("console:manage.features.claims.external.attributes.attributeURI", {
+                                type: resolveType(attributeType, true, true)
+                            }),
                             value: "claimURI"
                         },
                         {
@@ -313,161 +321,168 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
                             text: t("console:manage.features.claims.external.attributes.mappedClaim"),
                             value: "mappedLocalClaimURI"
                         }
-                    ] }
-                    filterAttributePlaceholder={
-                        t("console:manage.features.claims.external.advancedSearch.form.inputs" +
-                            ".filterAttribute.placeholder", { type: resolveType(attributeType, true, true) })
-                    }
-                    filterConditionsPlaceholder={
-                        t("console:manage.features.claims.external.advancedSearch.form.inputs" +
-                            ".filterCondition.placeholder", { type: resolveType(attributeType, true, true) })
-                    }
-                    filterValuePlaceholder={
-                        t("console:manage.features.claims.external.advancedSearch.form.inputs" +
-                            ".filterValue.placeholder")
-                    }
-                    placeholder={ t("console:manage.features.claims.external.advancedSearch.placeholder",
-                        { type: resolveType(attributeType, true, true) }) }
+                    ]}
+                    filterAttributePlaceholder={t(
+                        "console:manage.features.claims.external.advancedSearch.form.inputs" +
+                            ".filterAttribute.placeholder",
+                        { type: resolveType(attributeType, true, true) }
+                    )}
+                    filterConditionsPlaceholder={t(
+                        "console:manage.features.claims.external.advancedSearch.form.inputs" +
+                            ".filterCondition.placeholder",
+                        { type: resolveType(attributeType, true, true) }
+                    )}
+                    filterValuePlaceholder={t(
+                        "console:manage.features.claims.external.advancedSearch.form.inputs" +
+                            ".filterValue.placeholder"
+                    )}
+                    placeholder={t("console:manage.features.claims.external.advancedSearch.placeholder", {
+                        type: resolveType(attributeType, true, true)
+                    })}
                     defaultSearchAttribute="claimURI"
                     defaultSearchOperator="co"
-                    triggerClearQuery={ triggerClearQuery }
-                    data-testid={ `${ testId }-list-advanced-search` }
+                    triggerClearQuery={triggerClearQuery}
+                    data-testid={`${testId}-list-advanced-search`}
                 />
-            ) }
-            currentListSize={ listItemLimit }
-            listItemLimit={ listItemLimit }
-            onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-            onPageChange={ handlePaginationChange }
-            onSortStrategyChange={ handleSortStrategyChange }
-            onSortOrderChange={ handleSortOrderChange }
-            resetPagination={ resetPagination }
-            showPagination={ true }
-            sortOptions={ SORT_BY }
-            sortStrategy={ sortBy }
-            showTopActionPanel={ isLoading || !(!searchQuery && filteredClaims?.length <= 0) }
-            totalPages={ Math.ceil(filteredClaims?.length / listItemLimit) }
-            totalListSize={ filteredClaims?.length }
+            }
+            currentListSize={listItemLimit}
+            listItemLimit={listItemLimit}
+            onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+            onPageChange={handlePaginationChange}
+            onSortStrategyChange={handleSortStrategyChange}
+            onSortOrderChange={handleSortOrderChange}
+            resetPagination={resetPagination}
+            showPagination={true}
+            sortOptions={SORT_BY}
+            sortStrategy={sortBy}
+            showTopActionPanel={isLoading || !(!searchQuery && filteredClaims?.length <= 0)}
+            totalPages={Math.ceil(filteredClaims?.length / listItemLimit)}
+            totalListSize={filteredClaims?.length}
             rightActionPanel={
-                (<>
-                    { attributeConfig?.editAttributeMappings?.showAddExternalAttributeButton(dialectID) &&
-                    hasRequiredScopes(
-                        featureConfig?.attributeDialects,
-                        featureConfig?.attributeDialects?.scopes?.create,
-                        allowedScopes
-                    ) && (
-                        /**
-                         * `loading` property is used to check whether the current selected
-                         * dialect is same as the dialect which the claims are loaded.
-                         * If it's different, this condition will wait until the correct
-                         * dialects are loaded onto the view.
-                         */
-                        <PrimaryButton
-                            loading={ claims && attributeUri !== claims[0]?.claimDialectURI }
-                            onClick={ (): void => {
-                                if (attributeUri !== claims[0]?.claimDialectURI) {
-                                    return;
-                                }
-                                setShowAddExternalClaim(true);
-                            } }
-                            disabled={ showAddExternalClaim || (claims && attributeUri !== claims[0]?.claimDialectURI) }
-                            data-testid={ `${testId}-list-layout-add-button` }
-                        >
-                            <Icon name="add" />
-                            {
-                                t("console:manage.features.claims.external.pageLayout.edit.primaryAction",
-                                    { type: resolveType(attributeType, true) }
-                                )
-                            }
-                        </PrimaryButton>
-                    ) }
-                    { attributeType === ClaimManagementConstants.OIDC &&
-                    featureConfig?.oidcScopes?.enabled &&
-                    hasRequiredScopes(
-                        featureConfig?.oidcScopes,
-                        featureConfig?.oidcScopes?.scopes?.feature,
-                        allowedScopes
-                    ) && (
-                        <SecondaryButton
-                            onClick={ () => {
-                                history.push(AppConstants.getPaths().get("OIDC_SCOPES"));
-                            } }
-                            data-componentid={ `${testId}-oidc-scopes-button` }
-                        >
-                            <UserCircleDotIcon fill="black" className="icon" />
-                            { t("console:develop.features.sidePanel.oidcScopes") }
-                        </SecondaryButton>
-                    ) }
-                </>)
-            }
-            data-testid={ `${ testId }-list-layout` }
-        >
-            {
-                showAddExternalClaim && (
-                    <Modal
-                        open={ showAddExternalClaim }
-                        onClose={ () => { setShowAddExternalClaim(false); } }
-                        dimmer="blurring"
-                        size="small"
-                        data-testid={ `${ testId }-add-external-claim-modal` }
-                        closeOnDimmerClick={ false }
-                    >
-                        <Modal.Header>
-                            { t("console:manage.features.claims.external.pageLayout.edit.header",
-                                { type: resolveType(attributeType, true) }) }
-                        </Modal.Header>
-                        <Modal.Content scrolling className="edit-attribute-mapping">
-                            <ExternalClaims
-                                data-testid={ `${ testId }-add-external-claims` }
-                                onSubmit={ (claims: AddExternalClaim[]) => {
-                                    handleAttributesSubmit(claims);
-                                } }
-                                submitState={ triggerAddExternalClaim }
-                                values={ claims }
-                                shouldShowInitialValues={ false }
-                                attributeType={ attributeType }
-                                claimDialectUri={ attributeUri }
-                                dialectId={ dialectID }
-                                wizard={ false }
-                                mappedLocalClaims={ mappedLocalClaims }
-                                onClaimListChange={ handleClaimListChange }
-                            />
-                        </Modal.Content>
-                        <Modal.Actions>
-                            <LinkButton
-                                onClick={ () => { setShowAddExternalClaim(false); } }
-                                data-testid={ `${ testId }-add-external-claim-modal-cancel-button` }
-                            >
-                                { t("common:cancel") }
-                            </LinkButton>
+                <>
+                    {attributeConfig?.editAttributeMappings?.showAddExternalAttributeButton(dialectID) &&
+                        hasRequiredScopes(
+                            featureConfig?.attributeDialects,
+                            featureConfig?.attributeDialects?.scopes?.create,
+                            allowedScopes
+                        ) && (
+                            /**
+                             * `loading` property is used to check whether the current selected
+                             * dialect is same as the dialect which the claims are loaded.
+                             * If it's different, this condition will wait until the correct
+                             * dialects are loaded onto the view.
+                             */
                             <PrimaryButton
-                                disabled={ disableSubmit || isSubmitting }
-                                loading={ isSubmitting }
-                                onClick={ () => {
-                                    eventPublisher.publish("manage-attribute-mappings-add-new-attribute", {
-                                        type: kebabCase(attributeType)
-                                    });
-                                    setTriggerAddExternalClaim();
-                                } }
-                                data-testid={ `${ testId }-add-external-claim-modal-save-button` }
+                                loading={claims && attributeUri !== claims[0]?.claimDialectURI}
+                                onClick={(): void => {
+                                    if (attributeUri !== claims[0]?.claimDialectURI) {
+                                        return;
+                                    }
+                                    setShowAddExternalClaim(true);
+                                }}
+                                disabled={
+                                    showAddExternalClaim || (claims && attributeUri !== claims[0]?.claimDialectURI)
+                                }
+                                data-testid={`${testId}-list-layout-add-button`}
                             >
-                                { t("common:save") }
+                                <Icon name="add" />
+                                {t("console:manage.features.claims.external.pageLayout.edit.primaryAction", {
+                                    type: resolveType(attributeType, true)
+                                })}
                             </PrimaryButton>
-                        </Modal.Actions>
-                    </Modal>
-                )
+                        )}
+                    {attributeType === ClaimManagementConstants.OIDC &&
+                        featureConfig?.oidcScopes?.enabled &&
+                        hasRequiredScopes(
+                            featureConfig?.oidcScopes,
+                            featureConfig?.oidcScopes?.scopes?.feature,
+                            allowedScopes
+                        ) && (
+                            <SecondaryButton
+                                onClick={() => {
+                                    history.push(AppConstants.getPaths().get("OIDC_SCOPES"));
+                                }}
+                                data-componentid={`${testId}-oidc-scopes-button`}
+                            >
+                                <UserCircleDotIcon fill="black" className="icon" />
+                                {t("console:develop.features.sidePanel.oidcScopes")}
+                            </SecondaryButton>
+                        )}
+                </>
             }
-            <Grid columns={ 1 }>
-                <Grid.Column width={ 16 }>
+            data-testid={`${testId}-list-layout`}
+        >
+            {showAddExternalClaim && (
+                <Modal
+                    open={showAddExternalClaim}
+                    onClose={() => {
+                        setShowAddExternalClaim(false);
+                    }}
+                    dimmer="blurring"
+                    size="small"
+                    data-testid={`${testId}-add-external-claim-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    <Modal.Header>
+                        {t("console:manage.features.claims.external.pageLayout.edit.header", {
+                            type: resolveType(attributeType, true)
+                        })}
+                    </Modal.Header>
+                    <Modal.Content scrolling className="edit-attribute-mapping">
+                        <ExternalClaims
+                            data-testid={`${testId}-add-external-claims`}
+                            onSubmit={(claims: AddExternalClaim[]) => {
+                                handleAttributesSubmit(claims);
+                            }}
+                            submitState={triggerAddExternalClaim}
+                            values={claims}
+                            shouldShowInitialValues={false}
+                            attributeType={attributeType}
+                            claimDialectUri={attributeUri}
+                            dialectId={dialectID}
+                            wizard={false}
+                            mappedLocalClaims={mappedLocalClaims}
+                            onClaimListChange={handleClaimListChange}
+                        />
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <LinkButton
+                            onClick={() => {
+                                setShowAddExternalClaim(false);
+                            }}
+                            data-testid={`${testId}-add-external-claim-modal-cancel-button`}
+                        >
+                            {t("common:cancel")}
+                        </LinkButton>
+                        <PrimaryButton
+                            disabled={disableSubmit || isSubmitting}
+                            loading={isSubmitting}
+                            onClick={() => {
+                                eventPublisher.publish("manage-attribute-mappings-add-new-attribute", {
+                                    type: kebabCase(attributeType)
+                                });
+                                setTriggerAddExternalClaim();
+                            }}
+                            data-testid={`${testId}-add-external-claim-modal-save-button`}
+                        >
+                            {t("common:save")}
+                        </PrimaryButton>
+                    </Modal.Actions>
+                </Modal>
+            )}
+            <Grid columns={1}>
+                <Grid.Column width={16}>
                     <Divider hidden />
                     <ClaimsList
-                        advancedSearch={ (
+                        advancedSearch={
                             <AdvancedSearchWithBasicFilters
-                                onFilter={ handleExternalClaimFilter }
-                                filterAttributeOptions={ [
+                                onFilter={handleExternalClaimFilter}
+                                filterAttributeOptions={[
                                     {
                                         key: 0,
-                                        text: t("console:manage.features.claims.external.attributes.attributeURI",
-                                            { type: resolveType(attributeType, true, true) }),
+                                        text: t("console:manage.features.claims.external.attributes.attributeURI", {
+                                            type: resolveType(attributeType, true, true)
+                                        }),
                                         value: "claimURI"
                                     },
                                     {
@@ -475,42 +490,44 @@ export const EditExternalClaims: FunctionComponent<EditExternalClaimsPropsInterf
                                         text: t("console:manage.features.claims.external.attributes.mappedClaim"),
                                         value: "mappedLocalClaimURI"
                                     }
-                                ] }
-                                filterAttributePlaceholder={
-                                    t("console:manage.features.claims.external.advancedSearch.form.inputs" +
-                                        ".filterAttribute.placeholder", {
+                                ]}
+                                filterAttributePlaceholder={t(
+                                    "console:manage.features.claims.external.advancedSearch.form.inputs" +
+                                        ".filterAttribute.placeholder",
+                                    {
                                         type: resolveType(attributeType, true, true)
-                                    })
-                                }
-                                filterConditionsPlaceholder={
-                                    t("console:manage.features.claims.external.advancedSearch.form.inputs" +
-                                        ".filterCondition.placeholder")
-                                }
-                                filterValuePlaceholder={
-                                    t("console:manage.features.claims.external.advancedSearch.form.inputs" +
-                                        ".filterValue.placeholder")
-                                }
-                                placeholder={ t("console:manage.features.claims.external.advancedSearch.placeholder",
-                                    { type: resolveType(attributeType, true, true) }) }
+                                    }
+                                )}
+                                filterConditionsPlaceholder={t(
+                                    "console:manage.features.claims.external.advancedSearch.form.inputs" +
+                                        ".filterCondition.placeholder"
+                                )}
+                                filterValuePlaceholder={t(
+                                    "console:manage.features.claims.external.advancedSearch.form.inputs" +
+                                        ".filterValue.placeholder"
+                                )}
+                                placeholder={t("console:manage.features.claims.external.advancedSearch.placeholder", {
+                                    type: resolveType(attributeType, true, true)
+                                })}
                                 defaultSearchAttribute="claimURI"
                                 defaultSearchOperator="co"
-                                triggerClearQuery={ triggerClearQuery }
-                                data-testid={ `${ testId }-list-advanced-search` }
+                                triggerClearQuery={triggerClearQuery}
+                                data-testid={`${testId}-list-advanced-search`}
                             />
-                        ) }
-                        showTableHeaders={ true }
-                        isLoading={ isLoading }
-                        list={ paginate(filteredClaims, listItemLimit, offset) }
-                        localClaim={ ListType.EXTERNAL }
-                        update={ () => update() }
-                        dialectID={ dialectID }
-                        onEmptyListPlaceholderActionClick={ () => setShowAddExternalClaim(true) }
-                        onSearchQueryClear={ handleSearchQueryClear }
-                        searchQuery={ searchQuery }
-                        data-testid={ `${ testId }-list` }
-                        attributeType={ attributeType }
-                        featureConfig={ featureConfig }
-                        updateMappedClaims={ updateMappedClaims }
+                        }
+                        showTableHeaders={true}
+                        isLoading={isLoading}
+                        list={paginate(filteredClaims, listItemLimit, offset)}
+                        localClaim={ListType.EXTERNAL}
+                        update={() => update()}
+                        dialectID={dialectID}
+                        onEmptyListPlaceholderActionClick={() => setShowAddExternalClaim(true)}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        searchQuery={searchQuery}
+                        data-testid={`${testId}-list`}
+                        attributeType={attributeType}
+                        featureConfig={featureConfig}
+                        updateMappedClaims={updateMappedClaims}
                     />
                 </Grid.Column>
             </Grid>

@@ -22,7 +22,7 @@ import { GenericIcon, Hint, InlineEditInput, Message, Popup } from "@wso2is/reac
 import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Card, Grid, Icon, Label } from "semantic-ui-react";
-import { attributeConfig } from "features/extensions";
+import { attributeConfig } from "../../../../extensions";
 import { getTechnologyLogos } from "../../../../core";
 import { ClaimManagementConstants } from "../../../constants";
 

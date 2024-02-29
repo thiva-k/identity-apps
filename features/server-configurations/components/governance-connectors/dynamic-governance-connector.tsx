@@ -26,11 +26,9 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Icon } from "semantic-ui-react";
 import DynamicConnectorForm from "./dynamic-connector-form";
-import { 
-    IdentityAppsApiException 
-} from "../../../../modules/core/dist/types/exceptions/identity-apps-api-exception";
+import { IdentityAppsApiException } from "../../../../modules/core/dist/types/exceptions/identity-apps-api-exception";
 import { AddAlertAction } from "../../../../modules/core/dist/types/store/actions/types/global";
-import { serverConfigurationConfig } from "features/extensions";
+import { serverConfigurationConfig } from "../../../extensions";
 import { updateGovernanceConnector } from "../../api";
 import { ServerConfigurationsConstants } from "../../constants";
 import {

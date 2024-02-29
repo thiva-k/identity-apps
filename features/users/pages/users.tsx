@@ -1033,7 +1033,7 @@ const UsersPage: FunctionComponent<UsersPageInterface> = (props: UsersPageInterf
         setShowInviteParentUserWizard(false);
         mutateParentOrgUserInviteList();
     };
-    console.log("Package Users")
+    console.log("Package Users");
     return (
         <PageLayout
             action={

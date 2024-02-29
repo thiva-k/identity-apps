@@ -33,7 +33,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Dropdown, Grid, Icon, Input, Item, Menu, Placeholder, SemanticICONS } from "semantic-ui-react";
-import { organizationConfigs } from "features/extensions";
+import { organizationConfigs } from "../../../extensions";
 import { FeatureGateConstants } from "../../../extensions/components/feature-gate/constants/feature-gate";
 import { getMiscellaneousIcons } from "../../../core/configs";
 import { AppConstants } from "../../../core/constants";
@@ -486,7 +486,9 @@ const TenantDropdown: FunctionComponent<TenantDropdownInterface> = (props: Tenan
                                         </Dropdown.Item>
                                     ) : null}
                                     {!isSubOrg &&
-                                    tenantDropdownLinks && tenantDropdownLinks.length && tenantDropdownLinks.length > 0
+                                    tenantDropdownLinks &&
+                                    tenantDropdownLinks.length &&
+                                    tenantDropdownLinks.length > 0
                                         ? tenantDropdownLinks.map(
                                               (link: TenantDropdownLinkInterface, index: number) => {
                                                   const { content, icon, name, onClick } = link;

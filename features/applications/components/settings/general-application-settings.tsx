@@ -33,23 +33,20 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider } from "semantic-ui-react";
-import { applicationConfig } from "features/extensions";
+import { applicationConfig } from "../../../extensions";
 import { AccessControlConstants } from "../../../access-control/constants/access-control";
 import { AppState, FeatureConfigInterface, UIConfigInterface } from "../../../core";
 import { deleteApplication, updateApplicationDetails } from "../../api";
-import {
-    ApplicationInterface,
-    ApplicationTemplateListItemInterface
-} from "../../models";
+import { ApplicationInterface, ApplicationTemplateListItemInterface } from "../../models";
 import { ApplicationManagementUtils } from "../../utils/application-management-utils";
 import { GeneralDetailsForm } from "../forms";
 
 /**
  * Proptypes for the applications general details component.
  */
-interface GeneralApplicationSettingsInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
-
+interface GeneralApplicationSettingsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Application access URL.
      */
@@ -105,7 +102,7 @@ interface GeneralApplicationSettingsInterface extends SBACInterface<FeatureConfi
     /**
      * Application.
      */
-    application?: ApplicationInterface
+    application?: ApplicationInterface;
 }
 
 /**
@@ -118,7 +115,6 @@ interface GeneralApplicationSettingsInterface extends SBACInterface<FeatureConfi
 export const GeneralApplicationSettings: FunctionComponent<GeneralApplicationSettingsInterface> = (
     props: GeneralApplicationSettingsInterface
 ): ReactElement => {
-
     const {
         appId,
         name,
@@ -134,7 +130,7 @@ export const GeneralApplicationSettings: FunctionComponent<GeneralApplicationSet
         readOnly,
         isManagementApp,
         application,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const dispatch: Dispatch = useDispatch();
@@ -144,9 +140,9 @@ export const GeneralApplicationSettings: FunctionComponent<GeneralApplicationSet
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
     const UIConfig: UIConfigInterface = useSelector((state: AppState) => state?.config?.ui);
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ isDeletionInProgress, setIsDeletionInProgress ] = useState<boolean>(false);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [isDeletionInProgress, setIsDeletionInProgress] = useState<boolean>(false);
 
     /**
      * Deletes an application.
@@ -156,12 +152,18 @@ export const GeneralApplicationSettings: FunctionComponent<GeneralApplicationSet
         deleteApplication(appId)
             .then(() => {
                 setIsDeletionInProgress(false);
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.deleteApplication.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.notifications.deleteApplication.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.deleteApplication.success" +
+                                ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.applications.notifications.deleteApplication.success.message"
+                        )
+                    })
+                );
 
                 setShowDeleteConfirmationModal(false);
                 onDelete();
@@ -169,23 +171,33 @@ export const GeneralApplicationSettings: FunctionComponent<GeneralApplicationSet
             .catch((error: AxiosError) => {
                 setIsDeletionInProgress(false);
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.deleteApplication.error" +
-                            ".message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.deleteApplication.error" +
+                                    ".message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.deleteApplication" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.deleteApplication.genericError" +
-                        ".message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.deleteApplication" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.deleteApplication.genericError" +
+                                ".message"
+                        )
+                    })
+                );
             });
     };
 
@@ -199,34 +211,50 @@ export const GeneralApplicationSettings: FunctionComponent<GeneralApplicationSet
 
         updateApplicationDetails(updatedDetails)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.updateApplication.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.applications.notifications.updateApplication.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.updateApplication.success" +
+                                ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "console:develop.features.applications.notifications.updateApplication.success.message"
+                        )
+                    })
+                );
 
                 onUpdate(appId);
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.updateApplication.error" +
-                            ".message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.updateApplication.error" +
+                                    ".message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.updateApplication" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.updateApplication.genericError" +
-                        ".message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.updateApplication" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.updateApplication.genericError" +
+                                ".message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsSubmitting(false);
@@ -239,8 +267,9 @@ export const GeneralApplicationSettings: FunctionComponent<GeneralApplicationSet
      * @returns React.ReactElement DangerZoneGroup element.
      */
     const resolveDangerActions = (): ReactElement => {
-        if (!hasRequiredScopes(
-            featureConfig?.applications, featureConfig?.applications?.scopes?.update, allowedScopes)) {
+        if (
+            !hasRequiredScopes(featureConfig?.applications, featureConfig?.applications?.scopes?.update, allowedScopes)
+        ) {
             return null;
         }
 
@@ -254,26 +283,19 @@ export const GeneralApplicationSettings: FunctionComponent<GeneralApplicationSet
 
         if (!application?.advancedConfigurations?.fragment) {
             return (
-                <Show
-                    when={ AccessControlConstants.APPLICATION_DELETE }
-                >
-                    <DangerZoneGroup
-                        sectionHeader={ t("console:develop.features.applications.dangerZoneGroup.header") }
-                    >
+                <Show when={AccessControlConstants.APPLICATION_DELETE}>
+                    <DangerZoneGroup sectionHeader={t("console:develop.features.applications.dangerZoneGroup.header")}>
                         <DangerZone
-                            actionTitle={
-                                t("console:develop.features.applications.dangerZoneGroup.deleteApplication" +
-                                    ".actionTitle")
-                            }
-                            header={
-                                t("console:develop.features.applications.dangerZoneGroup.deleteApplication.header")
-                            }
-                            subheader={
-                                t("console:develop.features.applications.dangerZoneGroup.deleteApplication" +
-                                    ".subheader")
-                            }
-                            onActionClick={ (): void => setShowDeleteConfirmationModal(true) }
-                            data-testid={ `${ componentId }-danger-zone` }
+                            actionTitle={t(
+                                "console:develop.features.applications.dangerZoneGroup.deleteApplication" +
+                                    ".actionTitle"
+                            )}
+                            header={t("console:develop.features.applications.dangerZoneGroup.deleteApplication.header")}
+                            subheader={t(
+                                "console:develop.features.applications.dangerZoneGroup.deleteApplication" + ".subheader"
+                            )}
+                            onActionClick={(): void => setShowDeleteConfirmationModal(true)}
+                            data-testid={`${componentId}-danger-zone`}
                         />
                     </DangerZoneGroup>
                 </Show>
@@ -283,130 +305,117 @@ export const GeneralApplicationSettings: FunctionComponent<GeneralApplicationSet
         return null;
     };
 
-    return (
-        !isLoading
-            ? (
-                <>
-                    <EmphasizedSegment padded="very">
-                        <GeneralDetailsForm
-                            name={ name }
-                            appId={ appId }
-                            application={ application }
-                            description={ description }
-                            discoverability={ discoverability }
-                            onSubmit={ handleFormSubmit }
-                            imageUrl={ imageUrl }
-                            accessUrl={ accessUrl }
-                            hiddenFields={ hiddenFields }
-                            readOnly={
-                                readOnly
-                                || !hasRequiredScopes(
-                                    featureConfig?.applications, featureConfig?.applications?.scopes?.update,
-                                    allowedScopes
-                                )
-                            }
-                            hasRequiredScope={ hasRequiredScopes(
-                                featureConfig?.applications, featureConfig?.applications?.scopes?.update,
-                                allowedScopes) }
-                            data-testid={ `${ componentId }-form` }
-                            isSubmitting={ isSubmitting }
-                            isManagementApp={ isManagementApp }
-                        />
-                    </EmphasizedSegment>
-                    <Divider hidden />
-                    { resolveDangerActions() }
-                    <ConfirmationModal
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertionHint={ t("console:develop.features.applications.confirmations.deleteApplication." +
-                            "assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                        onPrimaryActionClick={ (): void => handleApplicationDelete() }
-                        closeOnDimmerClick={ false }
-                        primaryActionLoading={ isDeletionInProgress }
-                        data-testid={ `${ componentId }-application-delete-confirmation-modal` }
-                    >
-                        
-                        {
-                            ApplicationManagementUtils.isChoreoApplication(application)
-                                ? ( 
-                                    <>
-                                        <ConfirmationModal.Header
-                                            data-testid={ 
-                                                `${ componentId }-application-delete-confirmation-modal-header` 
-                                            }
-                                        >
-                                            { t("console:develop.features.applications.confirmations." + 
-                                                "deleteChoreoApplication.header") }
-                                        </ConfirmationModal.Header>
-                                        <ConfirmationModal.Message
-                                            attached
-                                            negative
-                                            data-testid={ 
-                                                `${ componentId }-application-delete-confirmation-modal-message` 
-                                            }
-                                        >
-                                            { t("console:develop.features.applications.confirmations." + 
-                                                "deleteChoreoApplication.message") }
-                                        </ConfirmationModal.Message>
-                                        <ConfirmationModal.Content
-                                            data-testid={ 
-                                                `${ componentId }-application-delete-confirmation-modal-content` 
-                                            }
-                                        >
-                                            <Trans 
-                                                i18nKey= { "console:develop.features.applications.confirmations." + 
-                                                "deleteChoreoApplication.content" }>
-                                                Deleting this application will break the authentication flows and cause 
-                                                the associated Choreo application to be unusable with its credentials.
-                                                <b>Proceed at your own risk.</b>
-                                            </Trans>
-                                        </ConfirmationModal.Content>
-                                    </> 
-                                )
-                                : ( 
-                                    <>
-                                        <ConfirmationModal.Header
-                                            data-testid={ 
-                                                `${ componentId }-application-delete-confirmation-modal-header` 
-                                            }
-                                        >
-                                            { t("console:develop.features.applications.confirmations." + 
-                                                "deleteApplication.header") }
-                                        </ConfirmationModal.Header>
-                                        <ConfirmationModal.Message
-                                            attached
-                                            negative
-                                            data-testid={ 
-                                                `${ componentId }-application-delete-confirmation-modal-message` 
-                                            }
-                                        >
-                                            { t("console:develop.features.applications.confirmations." + 
-                                                "deleteApplication.message") }
-                                        </ConfirmationModal.Message>
-                                        <ConfirmationModal.Content
-                                            data-testid={ 
-                                                `${ componentId }-application-delete-confirmation-modal-content` 
-                                            }
-                                        >
-                                            { t("console:develop.features.applications.confirmations." + 
-                                                "deleteApplication.content") }
-                                        </ConfirmationModal.Content>
-                                    </> 
-                                )
-                        }
-                    </ConfirmationModal>
-                </>
-            ) :
-            (
-                <EmphasizedSegment padded="very">
-                    <ContentLoader inline="centered" active/>
-                </EmphasizedSegment>
-            )
+    return !isLoading ? (
+        <>
+            <EmphasizedSegment padded="very">
+                <GeneralDetailsForm
+                    name={name}
+                    appId={appId}
+                    application={application}
+                    description={description}
+                    discoverability={discoverability}
+                    onSubmit={handleFormSubmit}
+                    imageUrl={imageUrl}
+                    accessUrl={accessUrl}
+                    hiddenFields={hiddenFields}
+                    readOnly={
+                        readOnly ||
+                        !hasRequiredScopes(
+                            featureConfig?.applications,
+                            featureConfig?.applications?.scopes?.update,
+                            allowedScopes
+                        )
+                    }
+                    hasRequiredScope={hasRequiredScopes(
+                        featureConfig?.applications,
+                        featureConfig?.applications?.scopes?.update,
+                        allowedScopes
+                    )}
+                    data-testid={`${componentId}-form`}
+                    isSubmitting={isSubmitting}
+                    isManagementApp={isManagementApp}
+                />
+            </EmphasizedSegment>
+            <Divider hidden />
+            {resolveDangerActions()}
+            <ConfirmationModal
+                onClose={(): void => setShowDeleteConfirmationModal(false)}
+                type="negative"
+                open={showDeleteConfirmationModal}
+                assertionHint={t(
+                    "console:develop.features.applications.confirmations.deleteApplication." + "assertionHint"
+                )}
+                assertionType="checkbox"
+                primaryAction={t("common:confirm")}
+                secondaryAction={t("common:cancel")}
+                onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                onPrimaryActionClick={(): void => handleApplicationDelete()}
+                closeOnDimmerClick={false}
+                primaryActionLoading={isDeletionInProgress}
+                data-testid={`${componentId}-application-delete-confirmation-modal`}
+            >
+                {ApplicationManagementUtils.isChoreoApplication(application) ? (
+                    <>
+                        <ConfirmationModal.Header
+                            data-testid={`${componentId}-application-delete-confirmation-modal-header`}
+                        >
+                            {t(
+                                "console:develop.features.applications.confirmations." +
+                                    "deleteChoreoApplication.header"
+                            )}
+                        </ConfirmationModal.Header>
+                        <ConfirmationModal.Message
+                            attached
+                            negative
+                            data-testid={`${componentId}-application-delete-confirmation-modal-message`}
+                        >
+                            {t(
+                                "console:develop.features.applications.confirmations." +
+                                    "deleteChoreoApplication.message"
+                            )}
+                        </ConfirmationModal.Message>
+                        <ConfirmationModal.Content
+                            data-testid={`${componentId}-application-delete-confirmation-modal-content`}
+                        >
+                            <Trans
+                                i18nKey={
+                                    "console:develop.features.applications.confirmations." +
+                                    "deleteChoreoApplication.content"
+                                }
+                            >
+                                Deleting this application will break the authentication flows and cause the associated
+                                Choreo application to be unusable with its credentials.
+                                <b>Proceed at your own risk.</b>
+                            </Trans>
+                        </ConfirmationModal.Content>
+                    </>
+                ) : (
+                    <>
+                        <ConfirmationModal.Header
+                            data-testid={`${componentId}-application-delete-confirmation-modal-header`}
+                        >
+                            {t("console:develop.features.applications.confirmations." + "deleteApplication.header")}
+                        </ConfirmationModal.Header>
+                        <ConfirmationModal.Message
+                            attached
+                            negative
+                            data-testid={`${componentId}-application-delete-confirmation-modal-message`}
+                        >
+                            {t("console:develop.features.applications.confirmations." + "deleteApplication.message")}
+                        </ConfirmationModal.Message>
+                        <ConfirmationModal.Content
+                            data-testid={`${componentId}-application-delete-confirmation-modal-content`}
+                        >
+                            {t("console:develop.features.applications.confirmations." + "deleteApplication.content")}
+                        </ConfirmationModal.Content>
+                    </>
+                )}
+            </ConfirmationModal>
+        </>
+    ) : (
+        <EmphasizedSegment padded="very">
+            <ContentLoader inline="centered" active />
+        </EmphasizedSegment>
     );
 };
 

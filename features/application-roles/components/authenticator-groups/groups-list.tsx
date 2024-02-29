@@ -52,26 +52,21 @@ interface GroupsListProps extends IdentifiableComponentInterface {
 }
 
 const GroupsList = (props: GroupsListProps): ReactElement => {
-    const {
-        appId,
-        authenticatorId,
-        roleId,
-        ["data-componentid"]: componentId
-    } = props;
+    const { appId, authenticatorId, roleId, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ isLoading, setLoading ] = useState<boolean>(true);
-    const [ isGroupListRequestLoading, setGroupListRequestLoading ] = useState<boolean>(true);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ initialAssignedGroups, setInitialAssignedGroups ] = useState<ApplicationRoleGroupInterface[]>([]);
-    const [ groupList, setGroupsList ] = useState<string[]>([]);
-    const [ tempGroupList, setTempGroupList ] = useState<string[]>([]);
-    const [ initialGroupList, setInitialGroupList ] = useState<string[]>([]);
-    const [ checkedUnassignedListItems, setCheckedUnassignedListItems ] = useState<string[]>([]);
-    const [ isSelectUnassignedGroupsAllRolesChecked, setIsSelectUnassignedAllGroupsChecked ] = useState(false);
-    
+    const [isLoading, setLoading] = useState<boolean>(true);
+    const [isGroupListRequestLoading, setGroupListRequestLoading] = useState<boolean>(true);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [initialAssignedGroups, setInitialAssignedGroups] = useState<ApplicationRoleGroupInterface[]>([]);
+    const [groupList, setGroupsList] = useState<string[]>([]);
+    const [tempGroupList, setTempGroupList] = useState<string[]>([]);
+    const [initialGroupList, setInitialGroupList] = useState<string[]>([]);
+    const [checkedUnassignedListItems, setCheckedUnassignedListItems] = useState<string[]>([]);
+    const [isSelectUnassignedGroupsAllRolesChecked, setIsSelectUnassignedAllGroupsChecked] = useState(false);
+
     const {
         data: originalAssignedGroups,
         mutate: mutateAssignedGroups,
@@ -96,42 +91,52 @@ const GroupsList = (props: GroupsListProps): ReactElement => {
             .catch((error: IdentityAppsApiException) => {
                 if (error.response && error.response.data && error.response.data.description) {
                     handleAlerts({
-                        description: t("console:develop.features.authenticationProvider." +
-                            "notifications.getIDP.error.description",
-                        { description: error.response.data.description }),
+                        description: t(
+                            "console:develop.features.authenticationProvider." +
+                                "notifications.getIDP.error.description",
+                            { description: error.response.data.description }
+                        ),
                         level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider." +
-                            "notifications.getIDP.error.message")
+                        message: t(
+                            "console:develop.features.authenticationProvider." + "notifications.getIDP.error.message"
+                        )
                     });
 
                     return;
                 }
 
                 handleAlerts({
-                    description: t("console:develop.features.authenticationProvider." +
-                        "notifications.getIDP.genericError.description"),
+                    description: t(
+                        "console:develop.features.authenticationProvider." +
+                            "notifications.getIDP.genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider." +
-                        "notifications.getIDP.genericError.message")
+                    message: t(
+                        "console:develop.features.authenticationProvider." + "notifications.getIDP.genericError.message"
+                    )
                 });
-            }).finally(() => {
+            })
+            .finally(() => {
                 setGroupListRequestLoading(false);
-            }); 
+            });
     }, []);
 
     useEffect(() => {
         setLoading(isGroupListRequestLoading || isAssignedGroupsFetchRequestLoading);
-    }, [ isGroupListRequestLoading, isAssignedGroupsFetchRequestLoading ]);
+    }, [isGroupListRequestLoading, isAssignedGroupsFetchRequestLoading]);
 
-    useEffect(() => {                        
-        if (originalAssignedGroups instanceof IdentityAppsApiException 
-                || assignedGroupsFetchRequestError) {
+    useEffect(() => {
+        if (originalAssignedGroups instanceof IdentityAppsApiException || assignedGroupsFetchRequestError) {
             handleAlerts({
-                description: t("extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
-                    ".fetchAssignedGroups.genericError.description"),
+                description: t(
+                    "extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
+                        ".fetchAssignedGroups.genericError.description"
+                ),
                 level: AlertLevels.ERROR,
-                message: t("extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
-                    ".fetchAssignedGroups.genericError.message")
+                message: t(
+                    "extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
+                        ".fetchAssignedGroups.genericError.message"
+                )
             });
 
             return;
@@ -143,16 +148,16 @@ const GroupsList = (props: GroupsListProps): ReactElement => {
 
         if (originalAssignedGroups?.groups?.length > 0) {
             setInitialAssignedGroups(originalAssignedGroups.groups);
-            setCheckedUnassignedListItems(originalAssignedGroups?.groups.map(
-                (group:ApplicationRoleGroupInterface) => group.name));
-            setTempGroupList(originalAssignedGroups?.groups.map(
-                (group:ApplicationRoleGroupInterface) => group.name));
+            setCheckedUnassignedListItems(
+                originalAssignedGroups?.groups.map((group: ApplicationRoleGroupInterface) => group.name)
+            );
+            setTempGroupList(originalAssignedGroups?.groups.map((group: ApplicationRoleGroupInterface) => group.name));
         }
-    }, [ originalAssignedGroups ]);
+    }, [originalAssignedGroups]);
 
     useEffect(() => {
         setCheckedUnassignedListItems(tempGroupList);
-    }, [ tempGroupList ]);
+    }, [tempGroupList]);
 
     /**
      * The following method handles the onChange event of the
@@ -169,13 +174,14 @@ const GroupsList = (props: GroupsListProps): ReactElement => {
         if (!isEmpty(value)) {
             const re: RegExp = new RegExp(escapeRegExp(value), "i");
 
-            initialGroupList && initialGroupList.map((group: string) => {
-                isMatch = re.test(group);
-                if (isMatch) {
-                    filteredGroupList.push(group);
-                    handleGroupListChange(filteredGroupList);
-                }
-            });
+            initialGroupList &&
+                initialGroupList.map((group: string) => {
+                    isMatch = re.test(group);
+                    if (isMatch) {
+                        filteredGroupList.push(group);
+                        handleGroupListChange(filteredGroupList);
+                    }
+                });
         } else {
             handleGroupListChange(initialGroupList);
         }
@@ -198,8 +204,8 @@ const GroupsList = (props: GroupsListProps): ReactElement => {
      * The following method handles the onChange event of the
      * checkbox field of an unassigned item.
      */
-    const handleUnassignedItemCheckboxChange = (group: string) => {        
-        const checkedGroups: string[] = [ ...checkedUnassignedListItems ];        
+    const handleUnassignedItemCheckboxChange = (group: string) => {
+        const checkedGroups: string[] = [...checkedUnassignedListItems];
 
         if (checkedGroups?.includes(group)) {
             checkedGroups.splice(checkedGroups.indexOf(group), 1);
@@ -229,122 +235,126 @@ const GroupsList = (props: GroupsListProps): ReactElement => {
 
     const assignAuthenticatorGroupsToRole = () => {
         setIsSubmitting(true);
-        const addedGroups: ApplicationRoleGroupInterface[] =
-            tempGroupList?.filter((groupName: string) => 
-                !initialAssignedGroups?.find((group: ApplicationRoleGroupInterface) => group?.name === groupName))
-                .map((groupName: string) => {
-                    return {
-                        name: groupName
-                    };
-                });        
+        const addedGroups: ApplicationRoleGroupInterface[] = tempGroupList
+            ?.filter(
+                (groupName: string) =>
+                    !initialAssignedGroups?.find((group: ApplicationRoleGroupInterface) => group?.name === groupName)
+            )
+            .map((groupName: string) => {
+                return {
+                    name: groupName
+                };
+            });
 
-        const removedGroups: ApplicationRoleGroupInterface[] =
-            initialAssignedGroups?.filter((group: ApplicationRoleGroupInterface) => 
-                !tempGroupList.includes(group?.name));  
+        const removedGroups: ApplicationRoleGroupInterface[] = initialAssignedGroups?.filter(
+            (group: ApplicationRoleGroupInterface) => !tempGroupList.includes(group?.name)
+        );
 
         const data: ApplicationRoleGroupsUpdatePayloadInterface = {
             added_groups: addedGroups,
             removed_groups: removedGroups
         };
 
-        updateIdentityProviderAssignedGroups(
-            appId,
-            roleId,
-            authenticatorId,
-            data
-        ).then(() => {
-            handleAlerts({
-                description: t("extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
-                    ".updateAssignedGroups.success.description"),
-                level: AlertLevels.SUCCESS,
-                message: t("extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
-                    ".updateAssignedGroups.success.message")
+        updateIdentityProviderAssignedGroups(appId, roleId, authenticatorId, data)
+            .then(() => {
+                handleAlerts({
+                    description: t(
+                        "extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
+                            ".updateAssignedGroups.success.description"
+                    ),
+                    level: AlertLevels.SUCCESS,
+                    message: t(
+                        "extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
+                            ".updateAssignedGroups.success.message"
+                    )
+                });
+                mutateAssignedGroups();
+            })
+            .catch(() => {
+                handleAlerts({
+                    description: t(
+                        "extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
+                            ".updateAssignedGroups.genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
+                            ".updateAssignedGroups.genericError.message"
+                    )
+                });
+            })
+            .finally(() => {
+                setIsSubmitting(false);
             });
-            mutateAssignedGroups();
-        }).catch(() => {
-            handleAlerts({
-                description: t("extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
-                    ".updateAssignedGroups.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("extensions:console.applicationRoles.authenticatorGroups.groupsList.notifications" +
-                    ".updateAssignedGroups.genericError.message")
-            });
-        }).finally(() => {
-            setIsSubmitting(false);
-        });
     };
 
-    return (
-        !isLoading 
-            ? (
-                <Grid>
-                    <Grid.Row>
-                        <Grid.Column width={ 10 }>
-                            <TransferComponent
-                                selectionComponent
-                                searchPlaceholder={ t("console:manage.features.transferList.searchPlaceholder",
-                                    { type: "Groups" }) }
-                                handleUnelectedListSearch={ handleUnselectedListSearch }
-                                data-componentid="application-role-assign-group-modal"
-                                isLoading={ isLoading }
-                                bordered={ false }
-                                basic={ true }
-                            >
-                                <TransferList
-                                    isListEmpty={ !(groupList?.length > 0) }
-                                    listType="unselected"
-                                    handleHeaderCheckboxChange={ selectAllUnAssignedList }
-                                    isHeaderCheckboxChecked={ isSelectUnassignedGroupsAllRolesChecked }
-                                    emptyPlaceholderContent={ t("console:manage.features.transferList.list." +
-                                        "emptyPlaceholders.users.roles.unselected", { type: "groups" }) }
-                                    data-testid="user-mgt-add-user-wizard-modal-unselected-groups-select-all-checkbox"
-                                    emptyPlaceholderDefaultContent={ t("console:manage.features.transferList.list."
-                                        + "emptyPlaceholders.default") }
-                                >
-                                    {
-                                        groupList?.map((group: string, index: number)=> {
-                                            return (
-                                                <TransferListItem
-                                                    style={ { height: "100%" } }
-                                                    handleItemChange={ () => 
-                                                        handleUnassignedItemCheckboxChange(group) }
-                                                    key={ index }
-                                                    listItem={ group }
-                                                    listItemId={ group }
-                                                    listItemIndex={ index }
-                                                    isItemChecked={ checkedUnassignedListItems.includes(group) }
-                                                    showSecondaryActions={ false }
-                                                    data-componentid="application-role-assign-group-modal-unselected"
-                                                />
-                                            );
-                                        })
-                                    }
-                                </TransferList>
-                            </TransferComponent>
-                        </Grid.Column>
-                    </Grid.Row>
-                    {
-                        groupList?.length > 0 && (
-                            <PrimaryButton
-                                className="ml-6 mb-5"
-                                size="small"
-                                floated="left"
-                                onClick={ () => assignAuthenticatorGroupsToRole() }
-                                data-componentId={ `${ componentId }-assign-button` }
-                                loading={ isSubmitting || isLoading }
-                                disabled={ isSubmitting || isLoading }
-                            >
-                                { t("extensions:console.applicationRoles.authenticatorGroups.groupsList.assignGroups") }
-                            </PrimaryButton>
-                        )
-                    }
-                </Grid>
-            )
-            : (
-                <EmphasizedSegment padded="very">
-                    <ContentLoader />
-                </EmphasizedSegment>
-            ) 
+    return !isLoading ? (
+        <Grid>
+            <Grid.Row>
+                <Grid.Column width={10}>
+                    <TransferComponent
+                        selectionComponent
+                        searchPlaceholder={t("console:manage.features.transferList.searchPlaceholder", {
+                            type: "Groups"
+                        })}
+                        handleUnelectedListSearch={handleUnselectedListSearch}
+                        data-componentid="application-role-assign-group-modal"
+                        isLoading={isLoading}
+                        bordered={false}
+                        basic={true}
+                    >
+                        <TransferList
+                            isListEmpty={!(groupList?.length > 0)}
+                            listType="unselected"
+                            handleHeaderCheckboxChange={selectAllUnAssignedList}
+                            isHeaderCheckboxChecked={isSelectUnassignedGroupsAllRolesChecked}
+                            emptyPlaceholderContent={t(
+                                "console:manage.features.transferList.list." +
+                                    "emptyPlaceholders.users.roles.unselected",
+                                { type: "groups" }
+                            )}
+                            data-testid="user-mgt-add-user-wizard-modal-unselected-groups-select-all-checkbox"
+                            emptyPlaceholderDefaultContent={t(
+                                "console:manage.features.transferList.list." + "emptyPlaceholders.default"
+                            )}
+                        >
+                            {groupList?.map((group: string, index: number) => {
+                                return (
+                                    <TransferListItem
+                                        style={{ height: "100%" }}
+                                        handleItemChange={() => handleUnassignedItemCheckboxChange(group)}
+                                        key={index}
+                                        listItem={group}
+                                        listItemId={group}
+                                        listItemIndex={index}
+                                        isItemChecked={checkedUnassignedListItems.includes(group)}
+                                        showSecondaryActions={false}
+                                        data-componentid="application-role-assign-group-modal-unselected"
+                                    />
+                                );
+                            })}
+                        </TransferList>
+                    </TransferComponent>
+                </Grid.Column>
+            </Grid.Row>
+            {groupList?.length > 0 && (
+                <PrimaryButton
+                    className="ml-6 mb-5"
+                    size="small"
+                    floated="left"
+                    onClick={() => assignAuthenticatorGroupsToRole()}
+                    data-componentId={`${componentId}-assign-button`}
+                    loading={isSubmitting || isLoading}
+                    disabled={isSubmitting || isLoading}
+                >
+                    {t("extensions:console.applicationRoles.authenticatorGroups.groupsList.assignGroups")}
+                </PrimaryButton>
+            )}
+        </Grid>
+    ) : (
+        <EmphasizedSegment padded="very">
+            <ContentLoader />
+        </EmphasizedSegment>
     );
 };
 

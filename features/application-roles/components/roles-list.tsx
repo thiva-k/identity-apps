@@ -27,7 +27,7 @@ import {
 import React, { ChangeEvent, ReactElement, ReactNode, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Header, Icon, Input, SemanticICONS } from "semantic-ui-react";
-import { RoleBasicInterface } from "features/extensions/components/groups/models";
+import { RoleBasicInterface } from "../../extensions/components/groups/models";
 import { history } from "../../core";
 import { AppConstants, UIConstants } from "../../core/constants";
 
@@ -37,18 +37,14 @@ interface RolesListProps extends IdentifiableComponentInterface {
 }
 
 const RolesList = (props: RolesListProps): ReactElement => {
-    const {
-        appId,
-        rolesList,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { appId, rolesList, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
-    const isSubOrg: boolean = window[ "AppUtils" ].getConfig().organizationName;
+    const isSubOrg: boolean = window["AppUtils"].getConfig().organizationName;
 
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ processedRolesList, setProcessedRolesList ] = useState<RoleBasicInterface[]>(rolesList);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [processedRolesList, setProcessedRolesList] = useState<RoleBasicInterface[]>(rolesList);
 
     /**
      * Handles the change event of the search query input.
@@ -59,7 +55,7 @@ const RolesList = (props: RolesListProps): ReactElement => {
 
         if (query === "") {
             setProcessedRolesList(rolesList);
-            
+
             return;
         }
 
@@ -78,13 +74,15 @@ const RolesList = (props: RolesListProps): ReactElement => {
     const editRole = (role: RoleBasicInterface): void => {
         if (isSubOrg) {
             history.push({
-                pathname: AppConstants.getPaths().get("APPLICATION_ROLES_EDIT_SUB")
+                pathname: AppConstants.getPaths()
+                    .get("APPLICATION_ROLES_EDIT_SUB")
                     .replace(":applicationId", appId)
                     .replace(":roleId", role.name)
             });
         } else {
             history.push({
-                pathname: AppConstants.getPaths().get("APPLICATION_ROLES_EDIT")
+                pathname: AppConstants.getPaths()
+                    .get("APPLICATION_ROLES_EDIT")
                     .replace(":applicationId", appId)
                     .replace(":roleId", role.name)
             });
@@ -104,28 +102,28 @@ const RolesList = (props: RolesListProps): ReactElement => {
         if (searchQuery && processedRolesList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    data-testid={ `${ componentId }-search-empty-placeholder` }
-                    action={ (
+                    data-testid={`${componentId}-search-empty-placeholder`}
+                    action={
                         <LinkButton
-                            data-testid={ `${ componentId }-search-empty-placeholder-clear-button` }
-                            onClick={ onSearchQueryClear }
+                            data-testid={`${componentId}-search-empty-placeholder-clear-button`}
+                            onClick={onSearchQueryClear}
                         >
-                            { t("console:manage.features.roles.list.emptyPlaceholders.search.action") }
+                            {t("console:manage.features.roles.list.emptyPlaceholders.search.action")}
                         </LinkButton>
-                    ) }
-                    title={ t("console:manage.features.roles.list.emptyPlaceholders.search.title") }
-                    subtitle={ [
-                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0",
-                            { searchQuery: searchQuery }),
+                    }
+                    title={t("console:manage.features.roles.list.emptyPlaceholders.search.title")}
+                    subtitle={[
+                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0", {
+                            searchQuery: searchQuery
+                        }),
                         t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.1")
-                    ] }
+                    ]}
                 />
             );
         }
 
         return null;
     };
-        
 
     /**
      * Resolves data table columns.
@@ -138,14 +136,9 @@ const RolesList = (props: RolesListProps): ReactElement => {
                 id: "name",
                 key: "name",
                 render: (role: RoleBasicInterface): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ componentId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${componentId}-item-heading`}>
                         <Header.Content>
-                            <div className="mt-1">{ role.name } </div>
+                            <div className="mt-1">{role.name} </div>
                         </Header.Content>
                     </Header>
                 ),
@@ -168,9 +161,8 @@ const RolesList = (props: RolesListProps): ReactElement => {
     const resolveTableActions = (): TableActionsInterface[] => {
         const actions: TableActionsInterface[] = [
             {
-                icon: (): SemanticICONS =>  "add",
-                onClick: (e: SyntheticEvent, role: RoleBasicInterface): void =>
-                    editRole(role),
+                icon: (): SemanticICONS => "add",
+                onClick: (e: SyntheticEvent, role: RoleBasicInterface): void => editRole(role),
                 popupText: (): string => t("extensions:console.applicationRoles.assignGroupWizard.heading"),
                 renderer: "semantic-icon"
             }
@@ -182,35 +174,35 @@ const RolesList = (props: RolesListProps): ReactElement => {
     return (
         <>
             <Grid>
-                <Grid.Row columns={ 1 } className="pb-0">
-                    <Grid.Column width={ 10 }>
+                <Grid.Row columns={1} className="pb-0">
+                    <Grid.Column width={10}>
                         <Input
-                            data-componentid={ `${ componentId }-application-list-search-input` }
-                            icon={ <Icon name="search" /> }
+                            data-componentid={`${componentId}-application-list-search-input`}
+                            icon={<Icon name="search" />}
                             iconPosition="left"
-                            onChange={ (e: ChangeEvent<HTMLInputElement>) => searchRoles(e.target.value) }
-                            value={ searchQuery }
-                            placeholder={ "Search role" }
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => searchRoles(e.target.value)}
+                            value={searchQuery}
+                            placeholder={"Search role"}
                             floated="left"
                             fluid
                             transparent
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column width={ 10 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column width={10}>
                         <DataTable<RoleBasicInterface>
-                            showHeader={ false }
-                            loadingStateOptions={ {
+                            showHeader={false}
+                            loadingStateOptions={{
                                 count: UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                                 imageType: "square"
-                            } }
-                            actions={ resolveTableActions() }
-                            columns={ resolveTableColumns() }
-                            data={ processedRolesList }
-                            onRowClick={ (e: SyntheticEvent, role: RoleBasicInterface) => editRole(role) }
-                            data-testid={ componentId }
-                            placeholders={ showPlaceholders() }
+                            }}
+                            actions={resolveTableActions()}
+                            columns={resolveTableColumns()}
+                            data={processedRolesList}
+                            onRowClick={(e: SyntheticEvent, role: RoleBasicInterface) => editRole(role)}
+                            data-testid={componentId}
+                            placeholders={showPlaceholders()}
                             transparent
                         />
                     </Grid.Column>
