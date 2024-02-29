@@ -19,9 +19,7 @@
 import { Field } from "@wso2is/form/src";
 import React, { ReactElement } from "react";
 import { TFunction } from "react-i18next";
-import {
-    GovernanceConnectorConstants
-} from "features/server-configurations/constants/governance-connector-constants";
+import { GovernanceConnectorConstants } from "../../../../server-configurations/constants/governance-connector-constants";
 
 export const generatePasswordExpiry = (
     componentId: string,
@@ -32,53 +30,49 @@ export const generatePasswordExpiry = (
 ): ReactElement => {
     return (
         <>
-            <h5>{ t("extensions:manage.serverConfigurations.passwordExpiry.heading") }</h5>
+            <h5>{t("extensions:manage.serverConfigurations.passwordExpiry.heading")}</h5>
             <div className="criteria">
                 <Field.Checkbox
                     ariaLabel="Enable/Disable Password Expiry"
                     name="passwordExpiryEnabled"
-                    label={ t("extensions:manage.serverConfigurations.passwordExpiry.label") }
-                    required={ false }
-                    disabled={ false }
-                    listen={ (value: boolean) => {
+                    label={t("extensions:manage.serverConfigurations.passwordExpiry.label")}
+                    required={false}
+                    disabled={false}
+                    listen={(value: boolean) => {
                         setPasswordExpiryEnabled(value);
-                    } }
-                    width={ 16 }
-                    data-testid={ `${ componentId }-password-expiry-toggle` }
-                    readOnly={ isReadOnly }
+                    }}
+                    width={16}
+                    data-testid={`${componentId}-password-expiry-toggle`}
+                    readOnly={isReadOnly}
                 />
                 <Field.Input
                     ariaLabel="Password Expiry Time"
                     inputType="number"
                     name="passwordExpiryTime"
-                    width={ 2 }
-                    required={ true }
-                    hidden={ false }
+                    width={2}
+                    required={true}
+                    hidden={false}
                     placeholder="30"
-                    min={
-                        GovernanceConnectorConstants.PASSWORD_EXPIRY_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_VALUE
-                    }
-                    max={
-                        GovernanceConnectorConstants.PASSWORD_EXPIRY_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_VALUE
-                    }
+                    min={GovernanceConnectorConstants.PASSWORD_EXPIRY_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_VALUE}
+                    max={GovernanceConnectorConstants.PASSWORD_EXPIRY_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_VALUE}
                     maxLength={
                         GovernanceConnectorConstants.PASSWORD_EXPIRY_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_LENGTH
                     }
                     minLength={
                         GovernanceConnectorConstants.PASSWORD_EXPIRY_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_LENGTH
                     }
-                    readOnly={ isReadOnly }
-                    disabled={ !passwordExpiryEnabled }
-                    data-testid={ `${ componentId }-password-expiry-time` }
-                    validation={ (value: string): string | undefined => {
+                    readOnly={isReadOnly}
+                    disabled={!passwordExpiryEnabled}
+                    data-testid={`${componentId}-password-expiry-time`}
+                    validation={(value: string): string | undefined => {
                         const numValue: number = parseInt(value);
 
                         if (numValue < 1) {
                             return t("common:minValidation", { min: 1 });
                         }
-                    } }
+                    }}
                 />
-                <label>{ t("extensions:manage.serverConfigurations.passwordExpiry.timeFormat") }</label>
+                <label>{t("extensions:manage.serverConfigurations.passwordExpiry.timeFormat")}</label>
             </div>
         </>
     );

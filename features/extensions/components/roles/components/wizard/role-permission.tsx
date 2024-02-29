@@ -27,7 +27,7 @@ import { AppConstants, store } from "../../../../../core";
 import { RoleConstants } from "../../../../../roles/constants";
 import { TreeNode } from "features/roles/models";
 import { RoleManagementUtils } from "features/roles/utils";
-import { ServerConfigurationsInterface, getServerConfigs } from "features/server-configurations";
+import { ServerConfigurationsInterface, getServerConfigs } from "../../../../../server-configurations";
 import { hiddenPermissions } from "../../meta";
 
 /**
