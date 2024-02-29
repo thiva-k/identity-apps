@@ -19,9 +19,9 @@
 import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
-import useRequest, { RequestErrorInterface, RequestResultInterface } from "features/core/hooks/use-request";
+import useRequest, { RequestErrorInterface, RequestResultInterface } from "../../../../../core/hooks/use-request";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { store } from "features/core/store";
+import { store } from "../../../../../core/store";
 import {
     AuthorizedAPIListItemInterface,
     AuthorizedPermissionListItemInterface,

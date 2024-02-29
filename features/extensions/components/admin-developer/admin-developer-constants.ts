@@ -16,13 +16,12 @@
  * under the License.
  */
 
-import { AppConstants } from "features/core";
+import { AppConstants } from "../../../core";
 
 /**
  * Class containing consumer users constants.
  */
 export class AdminDeveloperConstants {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
@@ -30,7 +29,7 @@ export class AdminDeveloperConstants {
      * @hideconstructor
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Get the consumer users paths as a map.
@@ -38,10 +37,8 @@ export class AdminDeveloperConstants {
      * @return {Map<string, string>}
      */
     public static getPaths(): Map<string, string> {
-
         return new Map<string, string>()
-            .set("ADMIN_DEVELOPER_PATH", `${ AppConstants.getAdminViewBasePath() }/admin-developer`)
-            .set("ADMIN_DEVELOPER_PATH", `${ AppConstants.getAdminViewBasePath() }/admin-developer/:id`);
+            .set("ADMIN_DEVELOPER_PATH", `${AppConstants.getAdminViewBasePath()}/admin-developer`)
+            .set("ADMIN_DEVELOPER_PATH", `${AppConstants.getAdminViewBasePath()}/admin-developer/:id`);
     }
-
 }

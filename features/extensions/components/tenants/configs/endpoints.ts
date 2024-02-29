@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { Config } from "features/core/configs";
+import { Config } from "../../../../core/configs";
 import { TenantResourceEndpointsInterface } from "../models";
 
 /**
@@ -28,7 +28,7 @@ export const getTenantResourceEndpoints = (): TenantResourceEndpointsInterface =
     return {
         tenantAssociationApi: Config.getDeploymentConfig().serverOrigin + "/api/asgardeo/v1/tenant/me",
         tenantManagementApi: Config.getDeploymentConfig().serverOrigin + "/api/asgardeo/v1/tenant",
-        tenantSubscriptionApi: Config.getDeploymentConfig().serverOrigin + 
-            Config.getDeploymentConfig().extensions?.subscriptionApiPath
+        tenantSubscriptionApi:
+            Config.getDeploymentConfig().serverOrigin + Config.getDeploymentConfig().extensions?.subscriptionApiPath
     };
 };

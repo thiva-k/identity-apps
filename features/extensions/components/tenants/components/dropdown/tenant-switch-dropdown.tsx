@@ -27,9 +27,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Dropdown, Grid, Icon, Input, Item, Loader, Segment } from "semantic-ui-react";
-import { getMiscellaneousIcons } from "features/core";
-import OrganizationSwitcherList from
-    "features/organizations/components/organization-switch/organization-switch-list";
+import { getMiscellaneousIcons } from "../../../../../core";
+import OrganizationSwitcherList from "features/organizations/components/organization-switch/organization-switch-list";
 import { OrganizationManagementConstants } from "features/organizations/constants";
 import { OrganizationInterface } from "features/organizations/models";
 import { ReactComponent as CrossIcon } from "../../../../../themes/default/assets/images/icons/cross-icon.svg";
@@ -50,12 +49,12 @@ const TenantSwitchDropdown: FunctionComponent<TenantSwitchDropdownInterface> = (
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ associatedOrganizations, setAssociatedOrganizations ] = useState<OrganizationInterface[]>([]);
-    const [ filteredOrganizations, setFilteredOrganizations ] = useState<OrganizationInterface[]>([]);
-    const [ isDropDownOpen, setIsDropDownOpen ] = useState<boolean>(false);
-    const [ search, setSearch ] = useState<string>("");
-    const [ isOrganizationsLoading, setIsOrganizationsLoading ] = useState<boolean>(false);
-    const [ showNewOrgWizard, setShowNewOrgWizard ] = useState<boolean>(false);
+    const [associatedOrganizations, setAssociatedOrganizations] = useState<OrganizationInterface[]>([]);
+    const [filteredOrganizations, setFilteredOrganizations] = useState<OrganizationInterface[]>([]);
+    const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false);
+    const [search, setSearch] = useState<string>("");
+    const [isOrganizationsLoading, setIsOrganizationsLoading] = useState<boolean>(false);
+    const [showNewOrgWizard, setShowNewOrgWizard] = useState<boolean>(false);
 
     const headerOrganization: OrganizationInterface = {
         ...OrganizationManagementConstants.ROOT_ORGANIZATION,
@@ -71,14 +70,14 @@ const TenantSwitchDropdown: FunctionComponent<TenantSwitchDropdownInterface> = (
         getOrganizationList();
     };
 
-    const getOrganizationList:  () => Promise<void> = useCallback(async () => {
+    const getOrganizationList: () => Promise<void> = useCallback(async () => {
         setIsOrganizationsLoading(true);
         getAssociatedTenants()
             .then((response: TenantRequestResponse) => {
                 const tenants: OrganizationInterface[] = [];
 
                 response.associatedTenants.forEach((tenant: TenantInfo) => {
-                    if (window[ "AppUtils" ].getConfig().tenant === tenant.domain) {
+                    if (window["AppUtils"].getConfig().tenant === tenant.domain) {
                         return;
                     }
 
@@ -140,7 +139,7 @@ const TenantSwitchDropdown: FunctionComponent<TenantSwitchDropdownInterface> = (
         }
 
         getOrganizationList();
-    }, [ getOrganizationList, isDropDownOpen ]);
+    }, [getOrganizationList, isDropDownOpen]);
 
     /**
      * Resets the dropdown states.
@@ -165,18 +164,18 @@ const TenantSwitchDropdown: FunctionComponent<TenantSwitchDropdownInterface> = (
     const tenantDropdownTrigger = (): ReactElement => (
         <div
             className="item breadcrumb"
-            onClick={ (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => e.stopPropagation() }
+            onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => e.stopPropagation()}
         >
             <span
-                onClick={ () => setIsDropDownOpen(!isDropDownOpen) }
+                onClick={() => setIsDropDownOpen(!isDropDownOpen)}
                 className="super"
-                data-componentid={ `${ componentId }-dropdown-trigger` }
+                data-componentid={`${componentId}-dropdown-trigger`}
             >
                 <GenericIcon
                     transparent
                     data-componentid="component-dropdown-trigger-icon"
                     data-testid="tenant-dropdown-trigger-icon"
-                    icon={ getMiscellaneousIcons().tenantIcon }
+                    icon={getMiscellaneousIcons().tenantIcon}
                     size="micro"
                     floated="left"
                 />
@@ -193,11 +192,11 @@ const TenantSwitchDropdown: FunctionComponent<TenantSwitchDropdownInterface> = (
      */
     const handleTenantSwitch = (tenant: OrganizationInterface): void => {
         const newOrgPath: string =
-            window[ "AppUtils" ].getConfig().clientOrigin +
+            window["AppUtils"].getConfig().clientOrigin +
             "/t/" +
             tenant.name +
             "/" +
-            window[ "AppUtils" ].getConfig().appBase +
+            window["AppUtils"].getConfig().appBase +
             "?disable_silent_sign_in=true&switch_tenant=true";
 
         // Clear the callback url of the previous organization.
@@ -209,41 +208,40 @@ const TenantSwitchDropdown: FunctionComponent<TenantSwitchDropdownInterface> = (
 
     return (
         <>
-            { showNewOrgWizard
-                && <AddTenantWizard openModal={ showNewOrgWizard } onCloseHandler={ closeNewOrgWizard } /> }
+            {showNewOrgWizard && <AddTenantWizard openModal={showNewOrgWizard} onCloseHandler={closeNewOrgWizard} />}
             <Dropdown
-                onBlur={ resetTenantDropdown }
+                onBlur={resetTenantDropdown}
                 item
                 floating
                 pointing="top left"
                 className="tenant-dropdown breadcrumb"
-                data-componentid={ `${ componentId }-organization-dropdown` }
-                open={ isDropDownOpen }
-                onClick={ handleCurrentOrgClick }
-                trigger={ tenantDropdownTrigger() }
-                icon={ null }
+                data-componentid={`${componentId}-organization-dropdown`}
+                open={isDropDownOpen}
+                onClick={handleCurrentOrgClick}
+                trigger={tenantDropdownTrigger()}
+                icon={null}
             >
                 <Dropdown.Menu
                     className="organization-dropdown-menu"
-                    onClick={ (e: SyntheticEvent) => e.stopPropagation() }
+                    onClick={(e: SyntheticEvent) => e.stopPropagation()}
                 >
-                    { isDropDownOpen && (
+                    {isDropDownOpen && (
                         <>
                             <Grid padded>
-                                <Grid.Row columns={ 2 }>
-                                    <Grid.Column width={ 12 } verticalAlign="middle">
+                                <Grid.Row columns={2}>
+                                    <Grid.Column width={12} verticalAlign="middle">
                                         <h5> Organizations </h5>
                                     </Grid.Column>
-                                    <Grid.Column width={ 4 }>
-                                        <Show when={ AccessControlConstants.ORGANIZATION_WRITE }>
+                                    <Grid.Column width={4}>
+                                        <Show when={AccessControlConstants.ORGANIZATION_WRITE}>
                                             <Button
                                                 basic
                                                 floated="right"
-                                                onClick={ handleNewClick }
-                                                data-componentid={ `${ componentId }-new-button` }
+                                                onClick={handleNewClick}
+                                                data-componentid={`${componentId}-new-button`}
                                             >
                                                 <PlusIcon fill="black" />
-                                                { t("common:new") }
+                                                {t("common:new")}
                                             </Button>
                                         </Show>
                                     </Grid.Column>
@@ -254,76 +252,76 @@ const TenantSwitchDropdown: FunctionComponent<TenantSwitchDropdownInterface> = (
                                     <div className="advanced-search-wrapper aligned-left fill-default">
                                         <Input
                                             className="advanced-search with-add-on"
-                                            data-componentid={ `${ componentId }-search-box` }
+                                            data-componentid={`${componentId}-search-box`}
                                             icon="search"
                                             iconPosition="left"
-                                            value={ search }
-                                            onChange={ (event: React.ChangeEvent<HTMLInputElement>) => {
+                                            value={search}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                                 setSearch(event.target.value);
-                                            } }
-                                            onKeyDown={ (event: React.KeyboardEvent) => {
+                                            }}
+                                            onKeyDown={(event: React.KeyboardEvent) => {
                                                 event.key === "Enter" && searchTenantList(search);
                                                 event.stopPropagation();
-                                            } }
-                                            placeholder={ t(
+                                            }}
+                                            placeholder={t(
                                                 "console:manage.features.organizations.switching.search.placeholder"
-                                            ) }
+                                            )}
                                             floated="right"
                                             size="small"
                                             action={
                                                 search ? (
                                                     <Popup
-                                                        trigger={ (
+                                                        trigger={
                                                             <Button
-                                                                data-componentid={ `${ componentId }-clear-button` }
+                                                                data-componentid={`${componentId}-clear-button`}
                                                                 basic
                                                                 compact
                                                                 className="input-add-on organizations"
-                                                                onClick={ () => {
+                                                                onClick={() => {
                                                                     setSearch("");
                                                                     searchTenantList("");
-                                                                } }
+                                                                }}
                                                             >
                                                                 <GenericIcon
                                                                     size="nano"
                                                                     defaultIcon
                                                                     transparent
-                                                                    icon={ CrossIcon }
+                                                                    icon={CrossIcon}
                                                                 />
                                                             </Button>
-                                                        ) }
+                                                        }
                                                         position="top center"
-                                                        content={ t("console:common.advancedSearch.popups.clear") }
-                                                        inverted={ true }
+                                                        content={t("console:common.advancedSearch.popups.clear")}
+                                                        inverted={true}
                                                     />
                                                 ) : null
                                             }
                                         />
                                     </div>
                                 </Item.Group>
-                                { filteredOrganizations ? (
+                                {filteredOrganizations ? (
                                     isOrganizationsLoading ? (
                                         <Segment basic>
                                             <Loader active inline="centered" />
                                         </Segment>
                                     ) : (
                                         <OrganizationSwitcherList
-                                            organizations={ filteredOrganizations }
-                                            handleOrgRowClick={ null }
-                                            handleBackButtonClick={ null }
-                                            parents={ [] }
-                                            hasMore={ false }
-                                            currentOrganization={ headerOrganization }
-                                            loadMore={ handlePaginationChange }
-                                            setShowDropdown={ setIsDropDownOpen }
-                                            handleOrganizationSwitch={ handleTenantSwitch }
-                                            showEdit={ false }
+                                            organizations={filteredOrganizations}
+                                            handleOrgRowClick={null}
+                                            handleBackButtonClick={null}
+                                            parents={[]}
+                                            hasMore={false}
+                                            currentOrganization={headerOrganization}
+                                            loadMore={handlePaginationChange}
+                                            setShowDropdown={setIsDropDownOpen}
+                                            handleOrganizationSwitch={handleTenantSwitch}
+                                            showEdit={false}
                                         />
                                     )
-                                ) : null }
+                                ) : null}
                             </Segment>
                         </>
-                    ) }
+                    )}
                 </Dropdown.Menu>
             </Dropdown>
         </>

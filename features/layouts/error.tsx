@@ -21,9 +21,9 @@ import { ContentLoader, ErrorLayout as ErrorLayoutSkeleton } from "@wso2is/react
 import React, { FunctionComponent, PropsWithChildren, ReactElement, Suspense, useEffect, useState } from "react";
 import { StaticContext } from "react-router";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
-import { ProtectedRoute } from "features/core/components";
-import { getErrorLayoutRoutes } from "features/core/configs";
-import { AppConstants } from "features/core/constants";
+import { ProtectedRoute } from "../core/components";
+import { getErrorLayoutRoutes } from "../core/configs";
+import { AppConstants } from "../core/constants";
 
 /**
  * Error layout Prop types.
@@ -46,47 +46,42 @@ export interface ErrorLayoutPropsInterface {
 export const ErrorLayout: FunctionComponent<PropsWithChildren<ErrorLayoutPropsInterface>> = (
     props: PropsWithChildren<ErrorLayoutPropsInterface>
 ): ReactElement => {
-
     const { fluid } = props;
 
-    const [ errorLayoutRoutes, setErrorLayoutRoutes ] = useState<RouteInterface[]>(getErrorLayoutRoutes());
+    const [errorLayoutRoutes, setErrorLayoutRoutes] = useState<RouteInterface[]>(getErrorLayoutRoutes());
 
     /**
      * Listen for base name changes and updates the layout routes.
      */
     useEffect(() => {
         setErrorLayoutRoutes(getErrorLayoutRoutes());
-    }, [ AppConstants.getTenantQualifiedAppBasename() ]);
+    }, [AppConstants.getTenantQualifiedAppBasename()]);
 
     return (
-        <ErrorLayoutSkeleton fluid={ fluid }>
-            <Suspense fallback={ <ContentLoader dimmer/> }>
+        <ErrorLayoutSkeleton fluid={fluid}>
+            <Suspense fallback={<ContentLoader dimmer />}>
                 <Switch>
-                    {
-                        errorLayoutRoutes.map((route: RouteInterface, index: number) => (
-                            route.redirectTo
-                                ? <Redirect key={ index } to={ route.redirectTo } />
-                                : route.protected
-                                    ? (
-                                        <ProtectedRoute
-                                            component={ route.component }
-                                            path={ route.path }
-                                            key={ index }
-                                        />
-                                    )
-                                    : (
-                                        <Route
-                                            path={ route.path }
-                                            render={ (renderProps: RouteComponentProps<{
-                                                [x: string]: string;
-                                            }, StaticContext, unknown>) =>
-                                                (<route.component { ...renderProps } />)
-                                            }
-                                            key={ index }
-                                        />
-                                    )
-                        ))
-                    }
+                    {errorLayoutRoutes.map((route: RouteInterface, index: number) =>
+                        route.redirectTo ? (
+                            <Redirect key={index} to={route.redirectTo} />
+                        ) : route.protected ? (
+                            <ProtectedRoute component={route.component} path={route.path} key={index} />
+                        ) : (
+                            <Route
+                                path={route.path}
+                                render={(
+                                    renderProps: RouteComponentProps<
+                                        {
+                                            [x: string]: string;
+                                        },
+                                        StaticContext,
+                                        unknown
+                                    >
+                                ) => <route.component {...renderProps} />}
+                                key={index}
+                            />
+                        )
+                    )}
                 </Switch>
             </Suspense>
         </ErrorLayoutSkeleton>

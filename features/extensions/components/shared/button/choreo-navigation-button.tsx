@@ -18,7 +18,7 @@
 
 import { Forms } from "@wso2is/forms";
 import { EmphasizedSegment, Text } from "@wso2is/react-components";
-import { store } from "features/core/store";
+import { store } from "../../../../core/store";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";

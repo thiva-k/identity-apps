@@ -20,12 +20,12 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import useRequest, { 
+import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
 } from "../../../../core/hooks/use-request";
-import { store } from "features/core/store";
+import { store } from "../../../../core/store";
 import { MyAccountManagementConstants } from "../constants";
 import {
     MyAccountConfigInterface,
@@ -53,13 +53,12 @@ const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance()
  * @throws IdentityAppsApiException
  */
 export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalStatusInterface> => {
-
     const config: MyAccountConfigInterface = {
         attributes: [
             {
-                key: "enable", 
+                key: "enable",
                 value: status
-            } 
+            }
         ],
         name: "status"
     };
@@ -67,7 +66,7 @@ export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalS
     const requestConfig: AxiosRequestConfig = {
         data: config,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -83,7 +82,8 @@ export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalS
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as MyAccountPortalStatusInterface);
@@ -95,7 +95,8 @@ export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalS
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -108,23 +109,22 @@ export const updateMyAccountStatus = (status: boolean): Promise<MyAccountPortalS
  * @throws IdentityAppsApiException
  */
 export const updateMyAccountMFAOptions = (options: MyAccountFormInterface): Promise<MyAccountPortalStatusInterface> => {
-
     const config: MyAccountConfigInterface = {
         attributes: [
             {
-                key: "email_otp_enabled", 
+                key: "email_otp_enabled",
                 value: options.emailOtpEnabled
             },
             {
-                key: "sms_otp_enabled", 
+                key: "sms_otp_enabled",
                 value: options.smsOtpEnabled
             },
             {
-                key: "totp_enabled", 
+                key: "totp_enabled",
                 value: options.totpEnabled
             },
             {
-                key: "backup_code_enabled", 
+                key: "backup_code_enabled",
                 value: options.backupCodeEnabled
             }
         ],
@@ -134,7 +134,7 @@ export const updateMyAccountMFAOptions = (options: MyAccountFormInterface): Prom
     const requestConfig: AxiosRequestConfig = {
         data: config,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -150,7 +150,8 @@ export const updateMyAccountMFAOptions = (options: MyAccountFormInterface): Prom
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as MyAccountPortalStatusInterface);
@@ -162,7 +163,8 @@ export const updateMyAccountMFAOptions = (options: MyAccountFormInterface): Prom
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -175,11 +177,10 @@ export const updateMyAccountMFAOptions = (options: MyAccountFormInterface): Prom
  * @throws IdentityAppsApiException
  */
 export const updateTotpConfigOptions = (options: MyAccountFormInterface): Promise<TotpConfigPortalStatusInterface> => {
-
     const config: TotpConfigInterface = {
         attributes: [
             {
-                key: "enrolUserInAuthenticationFlow", 
+                key: "enrolUserInAuthenticationFlow",
                 value: options.totpEnrollmentEnabled
             }
         ],
@@ -189,7 +190,7 @@ export const updateTotpConfigOptions = (options: MyAccountFormInterface): Promis
     const requestConfig: AxiosRequestConfig = {
         data: config,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -205,7 +206,8 @@ export const updateTotpConfigOptions = (options: MyAccountFormInterface): Promis
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as TotpConfigPortalStatusInterface);
@@ -217,7 +219,8 @@ export const updateTotpConfigOptions = (options: MyAccountFormInterface): Promis
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -226,12 +229,13 @@ export const updateTotpConfigOptions = (options: MyAccountFormInterface): Promis
  *
  * @returns Reponse of the My Account status retrieval request.
  */
-export const useMyAccountStatus = <Data = MyAccountPortalStatusInterface, Error = RequestErrorInterface>(
-): RequestResultInterface<Data, Error> => {
-
+export const useMyAccountStatus = <
+    Data = MyAccountPortalStatusInterface,
+    Error = RequestErrorInterface
+>(): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -257,12 +261,13 @@ export const useMyAccountStatus = <Data = MyAccountPortalStatusInterface, Error 
  *
  * @returns Reponse of the My Account data retrieval request.
  */
-export const useMyAccountData = <Data = MyAccountDataInterface, Error = RequestErrorInterface>(
-): RequestResultInterface<Data, Error> => {
-
+export const useMyAccountData = <
+    Data = MyAccountDataInterface,
+    Error = RequestErrorInterface
+>(): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -288,23 +293,24 @@ export const useMyAccountData = <Data = MyAccountDataInterface, Error = RequestE
  *
  * @returns Reponse of the My Account data retrieval request.
  */
-export const useTotpConfigData = <Data = MyAccountDataInterface, Error = RequestErrorInterface>(
-): RequestResultInterface<Data, Error> => {
-    
+export const useTotpConfigData = <
+    Data = MyAccountDataInterface,
+    Error = RequestErrorInterface
+>(): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
         params: {},
         url: store.getState().config.endpoints.myAccountConfigMgt + "/myaccount-TOTP-config"
     };
-    
+
     const { data, error, isValidating, mutate } = useRequest<Data, Error>(requestConfig, {
         shouldRetryOnError: false
     });
-    
+
     return {
         data,
         error: error,

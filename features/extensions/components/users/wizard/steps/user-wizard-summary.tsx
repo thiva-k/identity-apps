@@ -26,7 +26,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Grid, Icon } from "semantic-ui-react";
-import { AppState } from "features/core/store";
+import { AppState } from "../../../../../core/store";
 import { OrganizationType } from "features/organizations/constants";
 import { generateInviteLink } from "../../api";
 

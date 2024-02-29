@@ -26,14 +26,7 @@ import {
     LinkButton
 } from "@wso2is/react-components";
 import isEmpty from "lodash-es/isEmpty";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    ReactNode,
-    Suspense,
-    useEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, ReactNode, Suspense, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
@@ -46,7 +39,7 @@ import {
     RouteUtils,
     getEmptyPlaceholderIllustrations,
     getFullScreenViewRoutes
-} from "features/core";
+} from "../core";
 
 /**
  * Full Screen View Prop types.
@@ -67,36 +60,33 @@ interface FullScreenViewPropsInterface {
 export const FullScreenView: FunctionComponent<FullScreenViewPropsInterface> = (
     props: FullScreenViewPropsInterface & RouteComponentProps
 ): ReactElement => {
-
-    const {
-        location
-    } = props;
+    const { location } = props;
 
     const { t } = useTranslation();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
-    const [ filteredRoutes, setFilteredRoutes ] = useState<RouteInterface[]>(getFullScreenViewRoutes());
+    const [filteredRoutes, setFilteredRoutes] = useState<RouteInterface[]>(getFullScreenViewRoutes());
 
     useEffect(() => {
-
         // Allowed scopes is never empty. Wait until it's defined to filter the routes.
         if (isEmpty(allowedScopes)) {
             return;
         }
 
-        const [ routes, _sanitizedRoutes ] = CommonRouteUtils.filterEnabledRoutes<FeatureConfigInterface>(
+        const [routes, _sanitizedRoutes] = CommonRouteUtils.filterEnabledRoutes<FeatureConfigInterface>(
             getFullScreenViewRoutes(),
             featureConfig,
-            allowedScopes);
+            allowedScopes
+        );
 
         // Try to handle any un-expected routing issues. Returns a void if no issues are found.
         RouteUtils.gracefullyHandleRouting(routes, AppConstants.getFullScreenViewBasePath(), location.pathname);
 
         // Filter the routes and get only the enabled routes defined in the app config.
         setFilteredRoutes(routes);
-    }, [ featureConfig, getFullScreenViewRoutes, allowedScopes ]);
+    }, [featureConfig, getFullScreenViewRoutes, allowedScopes]);
 
     /**
      * Conditionally renders a route. If a route has defined a Redirect to
@@ -107,31 +97,24 @@ export const FullScreenView: FunctionComponent<FullScreenViewPropsInterface> = (
      * @param key - Index of the route.
      * @returns Resolved route to be rendered.
      */
-    const renderRoute = (route, key): ReactNode => (
-        route.redirectTo
-            ? <Redirect key={ key } to={ route.redirectTo }/>
-            : route.protected
-                ? (
-                    <ProtectedRoute
-                        component={ route.component ? route.component : null }
-                        path={ route.path }
-                        key={ key }
-                        exact={ route.exact }
-                    />
-                )
-                : (
-                    <Route
-                        path={ route.path }
-                        render={ (renderProps): ReactNode =>
-                            route.component
-                                ? <route.component { ...renderProps } />
-                                : null
-                        }
-                        key={ key }
-                        exact={ route.exact }
-                    />
-                )
-    );
+    const renderRoute = (route, key): ReactNode =>
+        route.redirectTo ? (
+            <Redirect key={key} to={route.redirectTo} />
+        ) : route.protected ? (
+            <ProtectedRoute
+                component={route.component ? route.component : null}
+                path={route.path}
+                key={key}
+                exact={route.exact}
+            />
+        ) : (
+            <Route
+                path={route.path}
+                render={(renderProps): ReactNode => (route.component ? <route.component {...renderProps} /> : null)}
+                key={key}
+                exact={route.exact}
+            />
+        );
 
     /**
      * Resolves the set of routes for the react router.
@@ -140,7 +123,7 @@ export const FullScreenView: FunctionComponent<FullScreenViewPropsInterface> = (
      *
      * @returns Set of resolved routes.
      */
-    const resolveRoutes = (): RouteInterface[] | ReactNode[]=> {
+    const resolveRoutes = (): RouteInterface[] | ReactNode[] => {
         const resolvedRoutes = [];
 
         const recurse = (routesArr): void => {
@@ -155,7 +138,7 @@ export const FullScreenView: FunctionComponent<FullScreenViewPropsInterface> = (
             });
         };
 
-        recurse([ ...filteredRoutes ]);
+        recurse([...filteredRoutes]);
 
         return resolvedRoutes;
     };
@@ -163,28 +146,26 @@ export const FullScreenView: FunctionComponent<FullScreenViewPropsInterface> = (
     return (
         <FullScreenLayoutSkeleton>
             <ErrorBoundary
-                onChunkLoadError={ AppUtils.onChunkLoadError }
-                fallback={ (
+                onChunkLoadError={AppUtils.onChunkLoadError}
+                fallback={
                     <EmptyPlaceholder
-                        action={ (
-                            <LinkButton onClick={ () => CommonUtils.refreshPage() }>
-                                { t("console:common.placeholders.brokenPage.action") }
+                        action={
+                            <LinkButton onClick={() => CommonUtils.refreshPage()}>
+                                {t("console:common.placeholders.brokenPage.action")}
                             </LinkButton>
-                        ) }
-                        image={ getEmptyPlaceholderIllustrations().brokenPage }
+                        }
+                        image={getEmptyPlaceholderIllustrations().brokenPage}
                         imageSize="tiny"
-                        subtitle={ [
+                        subtitle={[
                             t("console:common.placeholders.brokenPage.subtitles.0"),
                             t("console:common.placeholders.brokenPage.subtitles.1")
-                        ] }
-                        title={ t("console:common.placeholders.brokenPage.title") }
+                        ]}
+                        title={t("console:common.placeholders.brokenPage.title")}
                     />
-                ) }
+                }
             >
-                <Suspense fallback={ <ContentLoader dimmer={ false } /> }>
-                    <Switch>
-                        { resolveRoutes() as ReactNode[] }
-                    </Switch>
+                <Suspense fallback={<ContentLoader dimmer={false} />}>
+                    <Switch>{resolveRoutes() as ReactNode[]}</Switch>
                 </Suspense>
             </ErrorBoundary>
         </FullScreenLayoutSkeleton>

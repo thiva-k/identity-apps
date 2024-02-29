@@ -20,13 +20,7 @@ import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models
 import { addAlert } from "@wso2is/core/store";
 import { Heading, useDocumentation } from "@wso2is/react-components";
 import { AxiosError } from "axios";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    useEffect,
-    useLayoutEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, useEffect, useLayoutEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
@@ -42,9 +36,9 @@ import {
     ApplicationTemplateInterface,
     URLFragmentTypes
 } from "features/applications/models";
-import { history } from "features/core";
-import { getTechnologyLogos } from "features/core/configs";
-import { AppState } from "features/core/store";
+import { history } from "../../../../core";
+import { getTechnologyLogos } from "../../../../core/configs";
+import { AppState } from "../../../../core/store";
 import JavaLogo from "../../../assets/images/icons/java-logo.svg";
 import DotNetLogo from "../../../assets/images/icons/net-logo.svg";
 import NextJSLogo from "../../../assets/images/icons/next-js-logo.svg";
@@ -79,11 +73,9 @@ const QUICK_START_TAB_INDEX: number = 0;
  * @param props - Props injected into the component.
  * @returns traditional OIDC web application quick start.
  */
-const TraditionalOIDCWebApplicationQuickStart: 
-FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
+const TraditionalOIDCWebApplicationQuickStart: FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
     props: TraditionalOIDCWebApplicationQuickStartPropsInterface
 ): ReactElement => {
-
     const {
         application,
         defaultTabIndex,
@@ -91,7 +83,7 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
         onApplicationUpdate,
         onTriggerTabUpdate,
         template,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
@@ -100,15 +92,12 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ selectedIntegration, setSelectedIntegration ] = useState<QuickStartModes>(undefined);
-    const [
-        selectedTechnology,
-        setSelectedTechnology
-    ] = useState<SupportedTraditionalOIDCAppTechnologyTypes>(undefined);
-    const [ appList, setAppList ] = useState<ApplicationListInterface>(undefined);
+    const [selectedIntegration, setSelectedIntegration] = useState<QuickStartModes>(undefined);
+    const [selectedTechnology, setSelectedTechnology] = useState<SupportedTraditionalOIDCAppTechnologyTypes>(undefined);
+    const [appList, setAppList] = useState<ApplicationListInterface>(undefined);
     const isHelpPanelVisible: boolean = useSelector((state: AppState) => state.helpPanel.visibility);
-    const [ addedCallBackUrls ] = useState<string[]>([]);
-    const [ addedOrigins ] = useState<string[]>([]);
+    const [addedCallBackUrls] = useState<string[]>([]);
+    const [addedOrigins] = useState<string[]>([]);
 
     /**
      * Update the application only if any new callback urls are added.
@@ -125,27 +114,36 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
         getApplicationList(null, null, null)
             .then((response: ApplicationListInterface) => {
                 setAppList(response);
-
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.applications.notifications.fetchApplications." +
-                            "error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:develop.features.applications.notifications.fetchApplications." +
+                                    "error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.applications.notifications.fetchApplications" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.applications.notifications.fetchApplications." +
-                        "genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:develop.features.applications.notifications.fetchApplications" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:develop.features.applications.notifications.fetchApplications." +
+                                "genericError.message"
+                        )
+                    })
+                );
             });
     }, []);
 
@@ -154,7 +152,7 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
             return;
         }
 
-        if (!(window.location.hash).includes(URLFragmentTypes.VIEW)) {
+        if (!window.location.hash.includes(URLFragmentTypes.VIEW)) {
             if (appList?.applications?.length > 1) {
                 setSelectedIntegration(QuickStartModes.INTEGRATE);
 
@@ -162,7 +160,7 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
             }
             setSelectedIntegration(QuickStartModes.SAMPLES);
         }
-    }, [ appList ]);
+    }, [appList]);
 
     const handleIntegrateSelection = (selection: QuickStartModes): void => {
         setSelectedIntegration(selection);
@@ -172,12 +170,11 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
      * Called when the URL fragment updates
      */
     useEffect(() => {
-
-        if (!(window.location.hash).includes(URLFragmentTypes.VIEW)) {
+        if (!window.location.hash.includes(URLFragmentTypes.VIEW)) {
             return;
         }
 
-        const technologyType: string = (window.location.hash).split("&" + URLFragmentTypes.VIEW)[1].split("_")[1];
+        const technologyType: string = window.location.hash.split("&" + URLFragmentTypes.VIEW)[1].split("_")[1];
 
         if (SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE.toLowerCase() == unescape(technologyType)) {
             setSelectedTechnology(SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE);
@@ -186,15 +183,14 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
         } else {
             handleInvalidURL();
         }
-    }, [ window.location.hash ]);
+    }, [window.location.hash]);
 
     /**
      * Handles invalid URL fragments
      */
     const handleInvalidURL = (): void => {
-
         history.push({
-            hash: `${ URLFragmentTypes.TAB_INDEX }${ defaultTabIndex }`,
+            hash: `${URLFragmentTypes.TAB_INDEX}${defaultTabIndex}`,
             pathname: window.location.pathname
         });
 
@@ -202,30 +198,29 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
     };
 
     const resolveQuickStartMode = (): ReactElement => {
-
         switch (selectedIntegration) {
             case QuickStartModes.INTEGRATE:
                 return (
                     <IntegrateSDKs
-                        application={ application }
-                        template={ template }
-                        technology={ selectedTechnology }
-                        onApplicationUpdate={ onApplicationUpdate }
-                        inboundProtocolConfig={ inboundProtocolConfig }
-                        addedCallBackUrls={ addedCallBackUrls }
-                        addedOrigins={ addedOrigins }
+                        application={application}
+                        template={template}
+                        technology={selectedTechnology}
+                        onApplicationUpdate={onApplicationUpdate}
+                        inboundProtocolConfig={inboundProtocolConfig}
+                        addedCallBackUrls={addedCallBackUrls}
+                        addedOrigins={addedOrigins}
                     />
                 );
             case QuickStartModes.SAMPLES:
                 return (
                     <TryoutSamples
-                        application={ application }
-                        template={ template }
-                        technology={ selectedTechnology }
-                        onApplicationUpdate={ onApplicationUpdate }
-                        inboundProtocolConfig={ inboundProtocolConfig }
-                        addedCallBackUrls={ addedCallBackUrls }
-                        addedOrigins={ addedOrigins }
+                        application={application}
+                        template={template}
+                        technology={selectedTechnology}
+                        onApplicationUpdate={onApplicationUpdate}
+                        inboundProtocolConfig={inboundProtocolConfig}
+                        addedCallBackUrls={addedCallBackUrls}
+                        addedOrigins={addedOrigins}
                     />
                 );
             default:
@@ -234,9 +229,8 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
     };
 
     const resetTabState = () => {
-
         history.push({
-            hash: `${ URLFragmentTypes.TAB_INDEX }${ QUICK_START_TAB_INDEX }`,
+            hash: `${URLFragmentTypes.TAB_INDEX}${QUICK_START_TAB_INDEX}`,
             pathname: window.location.pathname
         });
 
@@ -244,7 +238,6 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
     };
 
     const resolveTechnologyLogo = (technology: SupportedTraditionalOIDCAppTechnologyTypes) => {
-
         if (technology === SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE) {
             return getTechnologyLogos().java;
         }
@@ -258,27 +251,25 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
 
     const resolveCustomConfiguration = (): ReactElement => {
         return (
-            <Grid.Row data-componentid={ `${ componentId }-custom-configuration-container` }>
+            <Grid.Row data-componentid={`${componentId}-custom-configuration-container`}>
                 <TraditionalOIDCWebApplicationCustomConfiguration
-                    onTriggerTabUpdate={ onTriggerTabUpdate }
-                    infoTabIndex={ INFO_TAB_INDEX }
-                    protocolTabIndex={ PROTOCOL_TAB_INDEX }
-                    inboundProtocolConfig={ inboundProtocolConfig }
-                    icons={ [
+                    onTriggerTabUpdate={onTriggerTabUpdate}
+                    infoTabIndex={INFO_TAB_INDEX}
+                    protocolTabIndex={PROTOCOL_TAB_INDEX}
+                    inboundProtocolConfig={inboundProtocolConfig}
+                    icons={[
                         { techIcon: NodeJSLogo, techIconTitle: "Node JS" },
                         { techIcon: DotNetLogo, techIconTitle: "DotNet" },
                         { techIcon: PythonLogo, techIconTitle: "Python" },
                         { techIcon: NextJSLogo, techIconTitle: "Next JS" },
                         { techIcon: JavaLogo, techIconTitle: "Java EE" }
-                    ] }
-                    data-componentid={ `${ componentId }-custom-configuration` }
-                    documentationLink={
-                        getLink(
-                            "develop.applications.editApplication." +
+                    ]}
+                    data-componentid={`${componentId}-custom-configuration`}
+                    documentationLink={getLink(
+                        "develop.applications.editApplication." +
                             "oidcApplication.quickStart." +
                             "customConfig.learnMore"
-                        )
-                    }
+                    )}
                 />
             </Grid.Row>
         );
@@ -286,9 +277,9 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
 
     const resolveTechnologySelection = (): ReactElement => {
         return (
-            <Grid.Row data-componentid={ `${ componentId }-technology-selection-container` }>
+            <Grid.Row data-componentid={`${componentId}-technology-selection-container`}>
                 <SPATechnologySelection<SupportedTraditionalOIDCAppTechnologyTypes>
-                    technologies={ [
+                    technologies={[
                         {
                             "data-componentid": "java-ee",
                             displayName: SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE,
@@ -296,11 +287,10 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
                             sampleAppURL: SDKMeta.tomcatOIDCAgent.sample.artifact,
                             type: SupportedTraditionalOIDCAppTechnologyTypes.JAVA_EE
                         }
-                    ] }
-                    data-componentid={ `${ componentId }-technology-selection` }
-                    onSelectedTechnologyChange={
-                        (technology: SupportedTraditionalOIDCAppTechnologyTypes) =>
-                            setSelectedTechnology(technology)
+                    ]}
+                    data-componentid={`${componentId}-technology-selection`}
+                    onSelectedTechnologyChange={(technology: SupportedTraditionalOIDCAppTechnologyTypes) =>
+                        setSelectedTechnology(technology)
                     }
                 />
             </Grid.Row>
@@ -308,48 +298,42 @@ FunctionComponent<TraditionalOIDCWebApplicationQuickStartPropsInterface> = (
     };
 
     return (
-        <Grid data-componentid={ componentId } className="ml-0 mr-0">
-            {
-                !(selectedTechnology || (window.location.hash).includes(URLFragmentTypes.VIEW))
-                    ? (
-                        <>
-                            <Grid.Row className="technology-selection-wrapper single-page-qsg">
-                                <Grid.Column width={ 8 } className="custom-config-container p-5">
-                                    { resolveCustomConfiguration() }
-                                </Grid.Column>
-                                <Grid.Column width={ 8 } className="p-5">
-                                    { resolveTechnologySelection() }
-                                </Grid.Column>
-                            </Grid.Row>
-                            <Divider className="or" vertical>
-                                <Heading as="h5">OR</Heading>
-                            </Divider>
-                        </>
-                    )
-                    : (
-                        <>
-                            <Grid.Row>
-                                <Grid.Column width={ isHelpPanelVisible ? 16 : 13 }>
-                                    <QuickStartPanelOverview
-                                        technology={ selectedTechnology }
-                                        applicationType={ template.id }
-                                        application={ application }
-                                        inboundProtocols={ application?.inboundProtocols }
-                                        onBackButtonClick={ () => resetTabState() }
-                                        handleIntegrateSelection={ handleIntegrateSelection }
-                                        technologyLogo={ resolveTechnologyLogo(selectedTechnology) }
-                                        defaultTabIndex={ defaultTabIndex }
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>
-                            <Grid.Row>
-                                <Grid.Column width={ isHelpPanelVisible ? 16 : 13 }>
-                                    { resolveQuickStartMode() }
-                                </Grid.Column>
-                            </Grid.Row>
-                        </>
-                    )
-            }
+        <Grid data-componentid={componentId} className="ml-0 mr-0">
+            {!(selectedTechnology || window.location.hash.includes(URLFragmentTypes.VIEW)) ? (
+                <>
+                    <Grid.Row className="technology-selection-wrapper single-page-qsg">
+                        <Grid.Column width={8} className="custom-config-container p-5">
+                            {resolveCustomConfiguration()}
+                        </Grid.Column>
+                        <Grid.Column width={8} className="p-5">
+                            {resolveTechnologySelection()}
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Divider className="or" vertical>
+                        <Heading as="h5">OR</Heading>
+                    </Divider>
+                </>
+            ) : (
+                <>
+                    <Grid.Row>
+                        <Grid.Column width={isHelpPanelVisible ? 16 : 13}>
+                            <QuickStartPanelOverview
+                                technology={selectedTechnology}
+                                applicationType={template.id}
+                                application={application}
+                                inboundProtocols={application?.inboundProtocols}
+                                onBackButtonClick={() => resetTabState()}
+                                handleIntegrateSelection={handleIntegrateSelection}
+                                technologyLogo={resolveTechnologyLogo(selectedTechnology)}
+                                defaultTabIndex={defaultTabIndex}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column width={isHelpPanelVisible ? 16 : 13}>{resolveQuickStartMode()}</Grid.Column>
+                    </Grid.Row>
+                </>
+            )}
         </Grid>
     );
 };

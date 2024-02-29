@@ -16,18 +16,17 @@
  * under the License.
  */
 
-import { AppConstants } from "features/core";
+import { AppConstants } from "../../../../core";
 
 /**
  * Class containing Groups constants.
  */
 export class GroupsConstants {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      */
-    private constructor() { }
+    private constructor() {}
 
     public static readonly APPLICATION_RESOURCE_DIR: string = "applications";
 
@@ -39,8 +38,9 @@ export class GroupsConstants {
      * @returns `Map<string, string>`
      */
     public static getPaths(): Map<string, string> {
-
-        return new Map<string, string>()
-            .set("APPLICATIONS", `${ AppConstants.getDeveloperViewBasePath() }/` + `${this.APPLICATION_RESOURCE_DIR}`);
+        return new Map<string, string>().set(
+            "APPLICATIONS",
+            `${AppConstants.getDeveloperViewBasePath()}/` + `${this.APPLICATION_RESOURCE_DIR}`
+        );
     }
 }

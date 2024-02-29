@@ -18,7 +18,7 @@
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import { EmptyPlaceholder, Hint, LinkButton, Message, PrimaryButton } from "@wso2is/react-components";
-import { getEmptyPlaceholderIllustrations } from "features/core";
+import { getEmptyPlaceholderIllustrations } from "../../../core";
 import React, { MutableRefObject, ReactElement, UIEventHandler, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Icon, Label } from "semantic-ui-react";

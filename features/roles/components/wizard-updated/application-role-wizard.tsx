@@ -37,7 +37,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownItemProps, DropdownProps, Grid, Header, Label, Modal } from "semantic-ui-react";
 import { Policy } from "../../../extensions/components/application/constants";
-import { history } from "../../../../features/core";
+import { history } from "../../../core";
 import { APIResourceCategories, APIResourcesConstants } from "../../../api-resources/constants";
 import { APIResourceInterface } from "../../../api-resources/models";
 import { APIResourceUtils } from "../../../api-resources/utils/api-resource-utils";
@@ -70,25 +70,19 @@ interface ApplicationRoleWizardPropsInterface extends IdentifiableComponentInter
 export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardPropsInterface> = (
     props: ApplicationRoleWizardPropsInterface
 ): ReactElement => {
-
-    const {
-        closeWizard,
-        application,
-        onRoleCreated,
-        ["data-componentid"]: componentId
-    } = props;
+    const { closeWizard, application, onRoleCreated, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ selectedPermissions, setSelectedPermissions ] = useState<SelectedPermissionsInterface[]>([]);
-    const [ selectedAPIResources, setSelectedAPIResources ] = useState<APIResourceInterface[]>([]);
-    const [ apiResourcesListOptions, setAPIResourcesListOptions ] = useState<DropdownProps[]>([]);
-    const [ applicationName, setApplicationName ] = useState<string>(application?.name);
-    const [ selectedApplication, setSelectedApplication ] = useState<DropdownItemProps[]>([]);
-    const [ isFormError, setIsFormError ] = useState<boolean>(false);
-    const [ roleNameSearchQuery, setRoleNameSearchQuery ] = useState<string>(undefined);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [selectedPermissions, setSelectedPermissions] = useState<SelectedPermissionsInterface[]>([]);
+    const [selectedAPIResources, setSelectedAPIResources] = useState<APIResourceInterface[]>([]);
+    const [apiResourcesListOptions, setAPIResourcesListOptions] = useState<DropdownProps[]>([]);
+    const [applicationName, setApplicationName] = useState<string>(application?.name);
+    const [selectedApplication, setSelectedApplication] = useState<DropdownItemProps[]>([]);
+    const [isFormError, setIsFormError] = useState<boolean>(false);
+    const [roleNameSearchQuery, setRoleNameSearchQuery] = useState<string>(undefined);
 
     const path: string[] = history.location.pathname.split("/");
     const appId: string = path[path.length - 1].split("#")[0];
@@ -101,11 +95,12 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
         error: subscribedAPIResourcesFetchRequestError
     } = useSubscribedAPIResources(appId);
 
-    const {
-        data: rolesList,
-        isLoading: isRolesListLoading,
-        isValidating: isRolesListValidating
-    } = useRolesList(undefined, undefined, roleNameSearchQuery, "users,groups,permissions,associatedApplications");
+    const { data: rolesList, isLoading: isRolesListLoading, isValidating: isRolesListValidating } = useRolesList(
+        undefined,
+        undefined,
+        roleNameSearchQuery,
+        "users,groups,permissions,associatedApplications"
+    );
 
     useEffect(() => {
         const selectedApplication: DropdownItemProps[] = [];
@@ -116,14 +111,15 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
             value: application?.name
         });
         setSelectedApplication(selectedApplication);
-    }, [ application ]);
+    }, [application]);
 
     useEffect(() => {
         const options: DropdownProps[] = [];
 
         subscribedAPIResourcesListData?.map((apiResource: AuthorizedAPIListItemInterface) => {
-            const isNotSelected: boolean = !selectedAPIResources
-                ?.find((selectedAPIResource: APIResourceInterface) => selectedAPIResource?.id === apiResource?.id);
+            const isNotSelected: boolean = !selectedAPIResources?.find(
+                (selectedAPIResource: APIResourceInterface) => selectedAPIResource?.id === apiResource?.id
+            );
 
             if (isNotSelected && apiResource.policyId == Policy.ROLE) {
                 options.push({
@@ -136,22 +132,24 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
             }
         });
         setAPIResourcesListOptions(options);
-    }, [ subscribedAPIResourcesListData, selectedAPIResources ]);
+    }, [subscribedAPIResourcesListData, selectedAPIResources]);
 
     /**
      * The following useEffect is used to handle if any error occurs while fetching API resources.
      */
     useEffect(() => {
         if (subscribedAPIResourcesFetchRequestError) {
-            dispatch(addAlert<AlertInterface>({
-                description: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("extensions:develop.apiResource.notifications.getAPIResources" +
-                    ".genericError.message")
-            }));
+            dispatch(
+                addAlert<AlertInterface>({
+                    description: t(
+                        "extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t("extensions:develop.apiResource.notifications.getAPIResources" + ".genericError.message")
+                })
+            );
         }
-    }, [ subscribedAPIResourcesFetchRequestError ]);
+    }, [subscribedAPIResourcesFetchRequestError]);
 
     /**
      * Handles the selection of an API resource.
@@ -160,11 +158,10 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
         event.preventDefault();
 
         // Add the selected resource to selectedAPIResources
-        const subscribedApiResourcesList: APIResourceInterface[] = [ ...selectedAPIResources ];
+        const subscribedApiResourcesList: APIResourceInterface[] = [...selectedAPIResources];
 
         const selectedApiResources: AuthorizedAPIListItemInterface[] = subscribedAPIResourcesListData.filter(
-            (permission: AuthorizedAPIListItemInterface) =>
-                permission?.id === data?.value
+            (permission: AuthorizedAPIListItemInterface) => permission?.id === data?.value
         );
 
         selectedApiResources.map((selectedAPIResource: AuthorizedAPIListItemInterface) => {
@@ -182,16 +179,13 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
 
     const onChangeScopes = (apiResource: APIResourceInterface, scopes: ScopeInterface[]): void => {
         const selectedScopes: SelectedPermissionsInterface[] = selectedPermissions.filter(
-            (selectedPermission: SelectedPermissionsInterface) =>
-                selectedPermission.apiResourceId !== apiResource.id
+            (selectedPermission: SelectedPermissionsInterface) => selectedPermission.apiResourceId !== apiResource.id
         );
 
-        selectedScopes.push(
-            {
-                apiResourceId: apiResource.id,
-                scopes: scopes
-            }
-        );
+        selectedScopes.push({
+            apiResourceId: apiResource.id,
+            scopes: scopes
+        });
 
         setSelectedPermissions(selectedScopes);
     };
@@ -201,14 +195,18 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
      */
     const onRemoveAPIResource = (apiResourceId: string): void => {
         // Remove the API resource from the selected API resources list.
-        setSelectedAPIResources(selectedAPIResources.filter((apiResource: APIResourceInterface) => {
-            return apiResource.id !== apiResourceId;
-        }));
+        setSelectedAPIResources(
+            selectedAPIResources.filter((apiResource: APIResourceInterface) => {
+                return apiResource.id !== apiResourceId;
+            })
+        );
 
         // Remove the scopes(permissions) of the removed API resource from the selected permissions list.
-        setSelectedPermissions(selectedPermissions.filter((selectedPermission: SelectedPermissionsInterface) => {
-            return selectedPermission.apiResourceId !== apiResourceId;
-        }));
+        setSelectedPermissions(
+            selectedPermissions.filter((selectedPermission: SelectedPermissionsInterface) => {
+                return selectedPermission.apiResourceId !== apiResourceId;
+            })
+        );
     };
 
     /**
@@ -216,13 +214,14 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
      *
      * @param basicData - basic data required to create role.
      */
-    const addRole = ( role: CreateRoleInterface): void => {
+    const addRole = (role: CreateRoleInterface): void => {
         setIsSubmitting(true);
 
-        const selectedPermissionsList: CreateRolePermissionInterface[] = selectedPermissions?.flatMap(
-            (permission: SelectedPermissionsInterface) => (
-                permission?.scopes?.map((scope: ScopeInterface) => ({ value: scope?.name })) || []
-            )) || [];
+        const selectedPermissionsList: CreateRolePermissionInterface[] =
+            selectedPermissions?.flatMap(
+                (permission: SelectedPermissionsInterface) =>
+                    permission?.scopes?.map((scope: ScopeInterface) => ({ value: scope?.name })) || []
+            ) || [];
 
         const roleData: CreateRoleInterface = {
             audience: {
@@ -238,39 +237,51 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
         createRole(roleData)
             .then((response: AxiosResponse) => {
                 if (response.status === 201) {
-                    dispatch(addAlert({
-                        description: t("console:manage.features.roles.notifications.createRole.success" +
-                            ".description"),
-                        level: AlertLevels.SUCCESS,
-                        message: t("console:manage.features.roles.notifications.createRole.success.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.roles.notifications.createRole.success" + ".description"
+                            ),
+                            level: AlertLevels.SUCCESS,
+                            message: t("console:manage.features.roles.notifications.createRole.success.message")
+                        })
+                    );
 
                     onRoleCreated();
                 }
             })
             .catch((error: AxiosError) => {
                 if (!error.response || error.response.status === 401) {
-                    dispatch(addAlert({
-                        description: t("console:manage.features.roles.notifications.createRole.error" +
-                            ".description"),
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.roles.notifications.createRole.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.roles.notifications.createRole.error" + ".description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.roles.notifications.createRole.error.message")
+                        })
+                    );
                 } else if (error.response && error.response.data.detail) {
-                    dispatch(addAlert({
-                        description: t("console:manage.features.roles.notifications.createRole.error" +
-                            ".description",
-                        { description: error.response.data.detail }),
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.roles.notifications.createRole.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.roles.notifications.createRole.error" + ".description",
+                                { description: error.response.data.detail }
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.roles.notifications.createRole.error.message")
+                        })
+                    );
                 } else {
-                    dispatch(addAlert({
-                        description: t("console:manage.features.roles.notifications.createRole.genericError" +
-                            ".description"),
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.roles.notifications.createRole.genericError.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.roles.notifications.createRole.genericError" + ".description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t("console:manage.features.roles.notifications.createRole.genericError.message")
+                        })
+                    );
                 }
             })
             .finally(() => {
@@ -295,14 +306,19 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
 
         // Handle the case where the user has not entered a role name.
         if (!values.displayName?.toString().trim()) {
-            errors.displayName = t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails.roleName." +
-                "validations.empty", { type: "Role" });
+            errors.displayName = t(
+                "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails.roleName." + "validations.empty",
+                { type: "Role" }
+            );
         } else {
             setRoleNameSearchQuery(`displayName eq ${values?.displayName} and audience.value eq ${audienceId}`);
             if (!isRolesListLoading || !isRolesListValidating) {
                 if (rolesList?.totalResults > 0) {
-                    errors.displayName = t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                        "roleName.validations.duplicate", { type: "Role" });
+                    errors.displayName = t(
+                        "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                            "roleName.validations.duplicate",
+                        { type: "Role" }
+                    );
                 }
             }
         }
@@ -318,242 +334,241 @@ export const ApplicationRoleWizard: FunctionComponent<ApplicationRoleWizardProps
 
     return (
         <Modal
-            data-testid={ componentId }
-            open={ true }
+            data-testid={componentId}
+            open={true}
             className="wizard application-create-wizard"
             dimmer="blurring"
             size="small"
-            onClose={ closeWizard }
-            closeOnDimmerClick={ false }
+            onClose={closeWizard}
+            closeOnDimmerClick={false}
             closeOnEscape
         >
             <Modal.Header>
-                { t("console:develop.features.applications.edit." +
-                "sections.roles.createApplicationRoleWizard.title") }
-                <Heading
-                    as="h6"
-                    subHeading>
-                    {
-                        t("console:develop.features.applications.edit." +
-                        "sections.roles.createApplicationRoleWizard.subTitle")
-                    }
+                {t("console:develop.features.applications.edit." + "sections.roles.createApplicationRoleWizard.title")}
+                <Heading as="h6" subHeading>
+                    {t(
+                        "console:develop.features.applications.edit." +
+                            "sections.roles.createApplicationRoleWizard.subTitle"
+                    )}
                 </Heading>
             </Modal.Header>
             <Modal.Content className="content-container" scrolling>
                 <Form
-                    id={ FORM_ID }
-                    uncontrolledForm={ true }
-                    onSubmit={ addRole }
-                    initialValues={ null }
-                    validate={ validateForm }
-                    ref={ formRef }
+                    id={FORM_ID}
+                    uncontrolledForm={true}
+                    onSubmit={addRole}
+                    initialValues={null}
+                    validate={validateForm}
+                    ref={formRef}
                 >
                     <Field.Input
                         ariaLabel="roleName"
                         inputType="roleName"
                         type="text"
                         name="displayName"
-                        label={
-                            t("extensions:develop.applications.edit.sections.roles.addRoleWizard.forms." +
-                                "roleBasicDetails.roleName.label")
-                        }
-                        placeholder={
-                            t("extensions:develop.applications.edit.sections.roles.addRoleWizard.forms." +
-                                "roleBasicDetails.roleName.placeholder")
-                        }
+                        label={t(
+                            "extensions:develop.applications.edit.sections.roles.addRoleWizard.forms." +
+                                "roleBasicDetails.roleName.label"
+                        )}
+                        placeholder={t(
+                            "extensions:develop.applications.edit.sections.roles.addRoleWizard.forms." +
+                                "roleBasicDetails.roleName.placeholder"
+                        )}
                         required
-                        message={ t("console:develop.features.authenticationProvider." +
-                            "forms.generalDetails.name.validations.empty") }
-                        value={ null }
-                        maxLength={ RoleConstants.ROLE_NAME_MAX_LENGTH }
-                        minLength={ RoleConstants.ROLE_NAME_MIN_LENGTH }
-                        data-testid={ `${ componentId }-role-name` }
-                        readOnly={ false }
+                        message={t(
+                            "console:develop.features.authenticationProvider." +
+                                "forms.generalDetails.name.validations.empty"
+                        )}
+                        value={null}
+                        maxLength={RoleConstants.ROLE_NAME_MAX_LENGTH}
+                        minLength={RoleConstants.ROLE_NAME_MIN_LENGTH}
+                        data-testid={`${componentId}-role-name`}
+                        readOnly={false}
                     />
                     <Field.Dropdown
                         ariaLabel="assignedApplicationId"
                         name="assignedApplicationId"
-                        label={ t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                            "assignedApplication.label") }
-                        required={ true }
-                        options={ selectedApplication }
-                        value={ applicationName }
+                        label={t(
+                            "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                                "assignedApplication.label"
+                        )}
+                        required={true}
+                        options={selectedApplication}
+                        value={applicationName}
                         search
-                        loading = { false }
-                        data-componentid={ `${componentId}-typography-font-family-dropdown` }
-                        hint={ t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                            "assignedApplication.note") }
-                        placeholder={ t("console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
-                            "assignedApplication.placeholder") }
-                        onChange={ (
-                            e: React.ChangeEvent<HTMLInputElement>,
-                            data: DropdownProps
-                        ) => {
+                        loading={false}
+                        data-componentid={`${componentId}-typography-font-family-dropdown`}
+                        hint={t(
+                            "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                                "assignedApplication.note"
+                        )}
+                        placeholder={t(
+                            "console:manage.features.roles.addRoleWizard.forms.roleBasicDetails." +
+                                "assignedApplication.placeholder"
+                        )}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>, data: DropdownProps) => {
                             setApplicationName(data.value.toString());
-                        } }
+                        }}
                         disabled
                     />
-                    {
-                        isSubscribedAPIResourcesListLoading
-                            ? <ContentLoader inline="centered" active />
-                            : (
-                                <Autocomplete
-                                    disablePortal
-                                    fullWidth
-                                    aria-label="API resource selection"
-                                    className="pt-2"
-                                    componentsProps={ {
-                                        paper: {
-                                            elevation: 2
+                    {isSubscribedAPIResourcesListLoading ? (
+                        <ContentLoader inline="centered" active />
+                    ) : (
+                        <Autocomplete
+                            disablePortal
+                            fullWidth
+                            aria-label="API resource selection"
+                            className="pt-2"
+                            componentsProps={{
+                                paper: {
+                                    elevation: 2
+                                },
+                                popper: {
+                                    modifiers: [
+                                        {
+                                            enabled: false,
+                                            name: "flip"
                                         },
-                                        popper: {
-                                            modifiers: [
-                                                {
-                                                    enabled: false,
-                                                    name: "flip"
-                                                },
-                                                {
-                                                    enabled: false,
-                                                    name: "preventOverflow"
-                                                }
-                                            ]
+                                        {
+                                            enabled: false,
+                                            name: "preventOverflow"
                                         }
-                                    } }
-                                    data-componentid={ `${componentId}-api` }
-                                    getOptionLabel={ (apiResourcesListOption: DropdownProps) =>
-                                        apiResourcesListOption.text }
-                                    renderOption={ (props: any, apiResourcesListOption: any) =>
-                                        (
-                                            <div { ...props }>
-                                                <Header.Content>
-                                                    { apiResourcesListOption.text }
-                                                    { apiResourcesListOption.type == APIResourcesConstants.BUSINESS && (
-                                                        <Header.Subheader>
-                                                            <Code
-                                                                className="inline-code compact transparent"
-                                                                withBackground={ false }
-                                                            >
-                                                                { apiResourcesListOption?.identifier }
-                                                            </Code>
-                                                            <Label
-                                                                pointing="left"
-                                                                size="mini"
-                                                                className="client-id-label">
-                                                                { t("extensions:develop.apiResource.table." +
-                                                                "identifier.label") }
-                                                            </Label>
-                                                        </Header.Subheader>
-                                                    ) }
-                                                </Header.Content>
-                                            </div>
-                                        ) }
-                                    groupBy={ (apiResourcesListOption: DropdownItemProps) =>
-                                        APIResourceUtils
-                                            .resolveApiResourceGroup(apiResourcesListOption?.type) }
-                                    isOptionEqualToValue={
-                                        (option: DropdownItemProps, value: DropdownItemProps) =>
-                                            option.value === value.value
-                                    }
-                                    options={
-                                        apiResourcesListOptions?.filter((item: DropdownProps) =>
-                                            item?.type === APIResourceCategories.TENANT ||
-                                            item?.type === APIResourceCategories.ORGANIZATION ||
-                                            item?.type === APIResourceCategories.BUSINESS
-                                        ).sort((a: DropdownProps, b: DropdownProps) =>
-                                            APIResourceUtils.resolveApiResourceGroup(a?.type)
-                                                ?.localeCompare(APIResourceUtils
-                                                    .resolveApiResourceGroup(b?.type))
-                                        )
-                                    }
-                                    onChange={ onAPIResourceSelected }
-                                    noOptionsText={ isSubscribedAPIResourcesListLoading
-                                        ? t("common:searching")
-                                        : t("common:noResultsFound")
-                                    }
-                                    key="apiResource"
-                                    placeholder={ t("console:manage.features.roles.addRoleWizard." +
-                                        "forms.rolePermission.apiResource.placeholder") }
-                                    renderInput={ (params: AutocompleteRenderInputParams) => (
-                                        <TextField
-                                            { ...params }
-                                            label={ t("extensions:develop.applications.edit." +
-                                                "sections.apiAuthorization.sections.apiSubscriptions." +
-                                                "wizards.authorizeAPIResource.fields.apiResource.label") }
-                                            placeholder={ t("extensions:develop.applications.edit." +
-                                                "sections.apiAuthorization.sections.apiSubscriptions." +
-                                                "wizards.authorizeAPIResource.fields.apiResource." +
-                                                "placeholder") }
-                                            size="small"
-                                            variant="outlined"
-                                        />
-                                    ) }
-                                />
-                            )
-                    }
-                </Form>
-                { selectedAPIResources?.length > 0
-                    ? (
-                        <div className="role-permission-list field">
-                            <label className="form-label">
-                                { t("console:manage.features.roles.addRoleWizard.forms.rolePermission" +
-                                    ".permissions.label") }
-                            </label>
-                            <EmphasizedSegment
-                                className="mt-2"
-                                data-componentid={ `${componentId}-segment` }
-                                basic
-                                loading={ false }
-                            >
-                                {
-                                    selectedAPIResources?.map((apiResource: APIResourceInterface) => {
-                                        return (
-                                            <RoleAPIResourcesListItem
-                                                key={ apiResource?.id }
-                                                apiResource={ apiResource }
-                                                onChangeScopes={ onChangeScopes }
-                                                onRemoveAPIResource={ onRemoveAPIResource }
-                                                selectedPermissions={
-                                                    selectedPermissions?.find(
-                                                        (selectedPermission: SelectedPermissionsInterface) =>
-                                                            selectedPermission.apiResourceId === apiResource?.id
-                                                    )?.scopes
-                                                }
-                                                errorMessage={ t("console:manage.features.roles.addRoleWizard." +
-                                                    "forms.rolePermission.permissions.validation.empty") }
-                                            />
-                                        );
-                                    })
+                                    ]
                                 }
-                            </EmphasizedSegment>
-                        </div>
-                    ) : null
-                }
+                            }}
+                            data-componentid={`${componentId}-api`}
+                            getOptionLabel={(apiResourcesListOption: DropdownProps) => apiResourcesListOption.text}
+                            renderOption={(props: any, apiResourcesListOption: any) => (
+                                <div {...props}>
+                                    <Header.Content>
+                                        {apiResourcesListOption.text}
+                                        {apiResourcesListOption.type == APIResourcesConstants.BUSINESS && (
+                                            <Header.Subheader>
+                                                <Code
+                                                    className="inline-code compact transparent"
+                                                    withBackground={false}
+                                                >
+                                                    {apiResourcesListOption?.identifier}
+                                                </Code>
+                                                <Label pointing="left" size="mini" className="client-id-label">
+                                                    {t("extensions:develop.apiResource.table." + "identifier.label")}
+                                                </Label>
+                                            </Header.Subheader>
+                                        )}
+                                    </Header.Content>
+                                </div>
+                            )}
+                            groupBy={(apiResourcesListOption: DropdownItemProps) =>
+                                APIResourceUtils.resolveApiResourceGroup(apiResourcesListOption?.type)
+                            }
+                            isOptionEqualToValue={(option: DropdownItemProps, value: DropdownItemProps) =>
+                                option.value === value.value
+                            }
+                            options={apiResourcesListOptions
+                                ?.filter(
+                                    (item: DropdownProps) =>
+                                        item?.type === APIResourceCategories.TENANT ||
+                                        item?.type === APIResourceCategories.ORGANIZATION ||
+                                        item?.type === APIResourceCategories.BUSINESS
+                                )
+                                .sort((a: DropdownProps, b: DropdownProps) =>
+                                    APIResourceUtils.resolveApiResourceGroup(a?.type)?.localeCompare(
+                                        APIResourceUtils.resolveApiResourceGroup(b?.type)
+                                    )
+                                )}
+                            onChange={onAPIResourceSelected}
+                            noOptionsText={
+                                isSubscribedAPIResourcesListLoading ? t("common:searching") : t("common:noResultsFound")
+                            }
+                            key="apiResource"
+                            placeholder={t(
+                                "console:manage.features.roles.addRoleWizard." +
+                                    "forms.rolePermission.apiResource.placeholder"
+                            )}
+                            renderInput={(params: AutocompleteRenderInputParams) => (
+                                <TextField
+                                    {...params}
+                                    label={t(
+                                        "extensions:develop.applications.edit." +
+                                            "sections.apiAuthorization.sections.apiSubscriptions." +
+                                            "wizards.authorizeAPIResource.fields.apiResource.label"
+                                    )}
+                                    placeholder={t(
+                                        "extensions:develop.applications.edit." +
+                                            "sections.apiAuthorization.sections.apiSubscriptions." +
+                                            "wizards.authorizeAPIResource.fields.apiResource." +
+                                            "placeholder"
+                                    )}
+                                    size="small"
+                                    variant="outlined"
+                                />
+                            )}
+                        />
+                    )}
+                </Form>
+                {selectedAPIResources?.length > 0 ? (
+                    <div className="role-permission-list field">
+                        <label className="form-label">
+                            {t(
+                                "console:manage.features.roles.addRoleWizard.forms.rolePermission" +
+                                    ".permissions.label"
+                            )}
+                        </label>
+                        <EmphasizedSegment
+                            className="mt-2"
+                            data-componentid={`${componentId}-segment`}
+                            basic
+                            loading={false}
+                        >
+                            {selectedAPIResources?.map((apiResource: APIResourceInterface) => {
+                                return (
+                                    <RoleAPIResourcesListItem
+                                        key={apiResource?.id}
+                                        apiResource={apiResource}
+                                        onChangeScopes={onChangeScopes}
+                                        onRemoveAPIResource={onRemoveAPIResource}
+                                        selectedPermissions={
+                                            selectedPermissions?.find(
+                                                (selectedPermission: SelectedPermissionsInterface) =>
+                                                    selectedPermission.apiResourceId === apiResource?.id
+                                            )?.scopes
+                                        }
+                                        errorMessage={t(
+                                            "console:manage.features.roles.addRoleWizard." +
+                                                "forms.rolePermission.permissions.validation.empty"
+                                        )}
+                                    />
+                                );
+                            })}
+                        </EmphasizedSegment>
+                    </div>
+                ) : null}
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
-                                data-testid={ `${componentId}-cancel-button` }
+                                data-testid={`${componentId}-cancel-button`}
                                 floated="left"
-                                onClick={ () => closeWizard() }
+                                onClick={() => closeWizard()}
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <PrimaryButton
-                                data-testid={ `${componentId}-finish-button` }
+                                data-testid={`${componentId}-finish-button`}
                                 floated="right"
-                                loading={ isSubmitting }
-                                disabled={ isFormError || isSubmitting }
-                                form={ FORM_ID }
+                                loading={isSubmitting}
+                                disabled={isFormError || isSubmitting}
+                                form={FORM_ID}
                                 type="button"
-                                onClick={ () => {
+                                onClick={() => {
                                     formRef?.current?.triggerSubmit();
-                                } }
+                                }}
                             >
-                                { t("common:create") }
+                                {t("common:create")}
                             </PrimaryButton>
                         </Grid.Column>
                     </Grid.Row>

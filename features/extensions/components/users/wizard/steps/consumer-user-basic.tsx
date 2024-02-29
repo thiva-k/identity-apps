@@ -22,8 +22,8 @@ import { FormValidation } from "@wso2is/validation";
 import React, { MutableRefObject, ReactElement, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Dropdown, DropdownItemProps, DropdownProps, Form, Grid, Menu, Message, Radio } from "semantic-ui-react";
-import { SharedUserStoreConstants } from "features/core";
-import { EventPublisher, SharedUserStoreUtils } from "features/core/utils";
+import { SharedUserStoreConstants } from "../../../../../core";
+import { EventPublisher, SharedUserStoreUtils } from "../../../../../core/utils";
 import { getUsersList } from "../../../../../users/api/users";
 import { 
     BasicUserDetailsInterface,

@@ -21,38 +21,17 @@ import { hasRequiredScopes } from "@wso2is/core/helpers";
 import { AlertLevels } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { Field, FormValue, Forms } from "@wso2is/forms";
-import {
-    DocumentationLink,
-    EmphasizedSegment,
-    PageLayout,
-    Text,
-    useDocumentation
-} from "@wso2is/react-components";
-import React, {
-    FunctionComponent,
-    MutableRefObject,
-    ReactElement,
-    useEffect,
-    useMemo,
-    useRef ,
-    useState
-} from "react";
+import { DocumentationLink, EmphasizedSegment, PageLayout, Text, useDocumentation } from "@wso2is/react-components";
+import React, { FunctionComponent, MutableRefObject, ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Grid, Placeholder, Ref } from "semantic-ui-react";
-import {
-    AppState,
-    FeatureConfigInterface
-} from "features/core";
+import { AppState, FeatureConfigInterface } from "../../../../core";
 import { ChoreoButton } from "../../shared/button/choreo-navigation-button";
 import { updateEventConfigurations, useEventConfig } from "../api";
 import { EventManagementConstants } from "../constants";
-import {
-    EventPublishingAPIResponseInterface,
-    EventsConfigPageInterface,
-    eventIconInterface
-} from "../models";
+import { EventPublishingAPIResponseInterface, EventsConfigPageInterface, eventIconInterface } from "../models";
 
 const FORM_ID: string = "event-configuration-edit-form";
 
@@ -63,29 +42,30 @@ const FORM_ID: string = "event-configuration-edit-form";
  * @returns Events config edit page component.
  */
 const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
-    props : EventsConfigPageInterface
+    props: EventsConfigPageInterface
 ): ReactElement => {
-
-    const {
-        ["data-componentid"]: componentId
-    } = props;
-    const dispatch : Dispatch<any> = useDispatch();
+    const { ["data-componentid"]: componentId } = props;
+    const dispatch: Dispatch<any> = useDispatch();
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
-    const [ eventCategories, setEventCategories ] = useState<string[]>(undefined);
-    const [ eventList , setEventList ] = useState<EventPublishingAPIResponseInterface[]>(undefined);
-    const [ selectedEvents , setSelectedEvents ] = useState<string[]>(undefined);
-    const [ isSubmitting , setIsSubmitting ] = useState<boolean>(undefined);
-    const featureConfig : FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
-    const allowedScopes : string = useSelector((state: AppState) => state?.auth?.allowedScopes);
-    const pageContextRef : MutableRefObject<HTMLElement> = useRef(null);
-    const checkboxRef : MutableRefObject<HTMLElement> = useRef<HTMLElement>();
+    const [eventCategories, setEventCategories] = useState<string[]>(undefined);
+    const [eventList, setEventList] = useState<EventPublishingAPIResponseInterface[]>(undefined);
+    const [selectedEvents, setSelectedEvents] = useState<string[]>(undefined);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(undefined);
+    const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
+    const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
+    const pageContextRef: MutableRefObject<HTMLElement> = useRef(null);
+    const checkboxRef: MutableRefObject<HTMLElement> = useRef<HTMLElement>();
 
-    const isReadOnly : boolean = useMemo(() => !hasRequiredScopes(
-        featureConfig?.eventPublishing,
-        featureConfig?.eventPublishing?.scopes?.update,
-        allowedScopes
-    ), [ featureConfig, allowedScopes ]);
+    const isReadOnly: boolean = useMemo(
+        () =>
+            !hasRequiredScopes(
+                featureConfig?.eventPublishing,
+                featureConfig?.eventPublishing?.scopes?.update,
+                allowedScopes
+            ),
+        [featureConfig, allowedScopes]
+    );
     const {
         data: originalEventList,
         isLoading: isEventConfigFetchRequestLoading,
@@ -96,7 +76,7 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
         if (!originalEventList) {
             return;
         }
-    }, [ originalEventList ]);
+    }, [originalEventList]);
 
     /**
      * Displays the error banner when unable to fetch event configurations.
@@ -104,11 +84,11 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
     const handleRetrieveError = (): void => {
         dispatch(
             addAlert({
-                description: t("extensions:develop.eventPublishing." +
-                "notifications.getConfiguration.error.description"),
+                description: t(
+                    "extensions:develop.eventPublishing." + "notifications.getConfiguration.error.description"
+                ),
                 level: AlertLevels.ERROR,
-                message: t("extensions:develop.eventPublishing." +
-                "notifications.getConfiguration.error.message")
+                message: t("extensions:develop.eventPublishing." + "notifications.getConfiguration.error.message")
             })
         );
     };
@@ -127,17 +107,17 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
             return;
         }
 
-        if (eventConfigFetchRequestError){
+        if (eventConfigFetchRequestError) {
             return;
         }
 
         setEventList(originalEventList);
         setEventList(originalEventList);
 
-        const categories : string[] = [];
-        const selectedEventsList : string[] = [];
+        const categories: string[] = [];
+        const selectedEventsList: string[] = [];
 
-        for (const eventType of originalEventList){
+        for (const eventType of originalEventList) {
             if (!categories.includes(eventType.category)) {
                 categories.push(eventType.category);
             }
@@ -147,13 +127,13 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
         }
         setSelectedEvents(selectedEventsList);
         setEventCategories(categories);
-    },[ originalEventList ]);
+    }, [originalEventList]);
 
     useEffect(() => {
         if (eventConfigFetchRequestError) {
             handleRetrieveError();
         }
-    },[ eventConfigFetchRequestError ]);
+    }, [eventConfigFetchRequestError]);
 
     /**
      * Handles the event selection when checkboxes are ticked.
@@ -170,11 +150,11 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
     const handleUpdateSuccess = () => {
         dispatch(
             addAlert({
-                description: t("extensions:develop.eventPublishing." +
-                "notifications.updateConfiguration.success.description"),
+                description: t(
+                    "extensions:develop.eventPublishing." + "notifications.updateConfiguration.success.description"
+                ),
                 level: AlertLevels.SUCCESS,
-                message: t("extensions:develop.eventPublishing." +
-                "notifications.updateConfiguration.success.message")
+                message: t("extensions:develop.eventPublishing." + "notifications.updateConfiguration.success.message")
             })
         );
     };
@@ -183,16 +163,20 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
      * Displays the error banner when unable to update event configurations.
      */
     const handleUpdateError = (error: IdentityAppsApiException) => {
-        const errorType : string = error.code === EventManagementConstants
-            .EVENT_UPDATE_ACTIVE_SUBS_ERROR_CODE_BE ? "activeSubs" : "generic";
+        const errorType: string =
+            error.code === EventManagementConstants.EVENT_UPDATE_ACTIVE_SUBS_ERROR_CODE_BE ? "activeSubs" : "generic";
 
         dispatch(
             addAlert({
-                description: t("extensions:develop.eventPublishing." +
-                `notifications.updateConfiguration.error.${errorType}.description`),
+                description: t(
+                    "extensions:develop.eventPublishing." +
+                        `notifications.updateConfiguration.error.${errorType}.description`
+                ),
                 level: AlertLevels.ERROR,
-                message: t("extensions:develop.eventPublishing." +
-                `notifications.updateConfiguration.error.${errorType}.message`)
+                message: t(
+                    "extensions:develop.eventPublishing." +
+                        `notifications.updateConfiguration.error.${errorType}.message`
+                )
             })
         );
     };
@@ -200,19 +184,17 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
     /**
      * Handles updating the event configurations.
      */
-    const handleSubmit = (values : Map<string, FormValue>) => {
-
+    const handleSubmit = (values: Map<string, FormValue>) => {
         const events: string[] = values.get("events-configuration") as string[];
 
         const updatedEventList: EventPublishingAPIResponseInterface[] = [];
 
         for (const event of eventList) {
-
-            let enabledEvent : EventPublishingAPIResponseInterface;
+            let enabledEvent: EventPublishingAPIResponseInterface;
 
             try {
-                enabledEvent= JSON.parse(JSON.stringify(event));
-            } catch (ex: any) {
+                enabledEvent = JSON.parse(JSON.stringify(event));
+            } catch (ex) {
                 return;
             }
 
@@ -245,15 +227,14 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
      * @returns the events belonging to the given category.
      */
     const getEventsofCategory = (
-        category : string,
-        eventList : EventPublishingAPIResponseInterface[]
+        category: string,
+        eventList: EventPublishingAPIResponseInterface[]
     ): eventIconInterface[] => {
-        const eventsInCategory : eventIconInterface[] = [];
+        const eventsInCategory: eventIconInterface[] = [];
 
-        for (const eventType of eventList){
+        for (const eventType of eventList) {
             if (eventType.category == category) {
-
-                const event : eventIconInterface = {
+                const event: eventIconInterface = {
                     label: eventType.displayName,
                     value: eventType.displayName
                 };
@@ -265,24 +246,18 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
         return eventsInCategory;
     };
 
-    const resolvePageDescription = () : ReactElement => {
+    const resolvePageDescription = (): ReactElement => {
         return (
             <div>
-                <div style={ { whiteSpace: "pre-line" } }>
-                    {
-                        t("extensions:develop.eventPublishing.eventsConfiguration.subHeading")
-                    }
-                    <DocumentationLink
-                        link={ getLink("develop.eventPublishing.learnMore") }
-                    >
-                        { t("extensions:common.learnMore") }
+                <div style={{ whiteSpace: "pre-line" }}>
+                    {t("extensions:develop.eventPublishing.eventsConfiguration.subHeading")}
+                    <DocumentationLink link={getLink("develop.eventPublishing.learnMore")}>
+                        {t("extensions:common.learnMore")}
                     </DocumentationLink>
                 </div>
-                <br/>
-                <div style={ { whiteSpace: "pre-line" } }>
-                    {
-                        t("extensions:develop.eventPublishing.eventsConfiguration.formHeading")
-                    }
+                <br />
+                <div style={{ whiteSpace: "pre-line" }}>
+                    {t("extensions:develop.eventPublishing.eventsConfiguration.formHeading")}
                 </div>
             </div>
         );
@@ -293,92 +268,85 @@ const EventsEditPage: FunctionComponent<EventsConfigPageInterface> = (
      */
     const renderLoadingPlaceholder = () => {
         return (
-            <div data-componentid={ `${ componentId }-form-loading` }>
-                {
-                    [ ...Array(3) ].map((key: number) => {
-                        return (
-                            <Placeholder key={ key }>
-                                <Placeholder.Line length="very short" />
-                                <div>
-                                    <Placeholder.Line length="long" />
-                                    <Placeholder.Line length="medium" />
-                                </div>
-                            </Placeholder>
-                        );
-                    })
-                }
+            <div data-componentid={`${componentId}-form-loading`}>
+                {[...Array(3)].map((key: number) => {
+                    return (
+                        <Placeholder key={key}>
+                            <Placeholder.Line length="very short" />
+                            <div>
+                                <Placeholder.Line length="long" />
+                                <Placeholder.Line length="medium" />
+                            </div>
+                        </Placeholder>
+                    );
+                })}
             </div>
         );
     };
 
     return (
         <PageLayout
-            title={ t("extensions:develop.eventPublishing.eventsConfiguration.heading") }
-            description={ resolvePageDescription() }
-            bottomMargin={ false }
-            contentTopMargin={ false }
-            pageHeaderMaxWidth={ true }
-            data-componentid={ `${ componentId }-form-layout` }
+            title={t("extensions:develop.eventPublishing.eventsConfiguration.heading")}
+            description={resolvePageDescription()}
+            bottomMargin={false}
+            contentTopMargin={false}
+            pageHeaderMaxWidth={true}
+            data-componentid={`${componentId}-form-layout`}
         >
-            <Ref innerRef={ pageContextRef }>
-                <Grid className={ "mt-2" } >
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 16 }>
-                            <EmphasizedSegment className="form-wrapper" padded={ "very" }>
-                                { isEventConfigFetchRequestLoading 
-                                    ? renderLoadingPlaceholder() 
-                                    : (
-                                        <Forms
-                                            id={ FORM_ID }
-                                            uncontrolledForm={ false }
-                                            onSubmit={ handleSubmit }
-                                        >
-                                            {
-                                                eventCategories?.map((category: string, index: number ) => {
-                                                    return (
-                                                        <div key={ index }>
-                                                            <Text className="mb-1"> { category } </Text>
-                                                            <Field
-                                                                ref={ checkboxRef }
-                                                                className="mb-3 ml-3"
-                                                                name="events-configuration"
-                                                                type="checkbox"
-                                                                required={ false }
-                                                                children= { getEventsofCategory(category,eventList) }
-                                                                value= { selectedEvents }
-                                                                readOnly={ isReadOnly }
-                                                                enableReinitialize={ true }
-                                                                listen={ (
-                                                                    values: Map<string, FormValue>
-                                                                ) => handleEventChange(values) }
-                                                                data-componentid={ `${ category }-edit-section` }
-                                                            />
-                                                        </div>
-                                                    );
-                                                })
-                                            }
-                                            <Divider hidden />
-                                            <Grid.Row columns={ 1 }>
-                                                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                                    <Button
-                                                        primary
-                                                        type="submit"
-                                                        size="small"
-                                                        className="form-button"
-                                                        data-componentid = { `${ componentId }-update-button` }
-                                                        disabled={ isReadOnly }
-                                                        loading={ isSubmitting }
-                                                    >
-                                                        { t("extensions:develop.eventPublishing." +
-                                                "eventsConfiguration.form.updateButton") }
-                                                    </Button>
-                                                </Grid.Column>
-                                            </Grid.Row>
-                                        </Forms>
-                                    )
-                                }
+            <Ref innerRef={pageContextRef}>
+                <Grid className={"mt-2"}>
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={16}>
+                            <EmphasizedSegment className="form-wrapper" padded={"very"}>
+                                {isEventConfigFetchRequestLoading ? (
+                                    renderLoadingPlaceholder()
+                                ) : (
+                                    <Forms id={FORM_ID} uncontrolledForm={false} onSubmit={handleSubmit}>
+                                        {eventCategories?.map((category: string, index: number) => {
+                                            return (
+                                                <div key={index}>
+                                                    <Text className="mb-1"> {category} </Text>
+                                                    <Field
+                                                        ref={checkboxRef}
+                                                        className="mb-3 ml-3"
+                                                        name="events-configuration"
+                                                        type="checkbox"
+                                                        required={false}
+                                                        children={getEventsofCategory(category, eventList)}
+                                                        value={selectedEvents}
+                                                        readOnly={isReadOnly}
+                                                        enableReinitialize={true}
+                                                        listen={(values: Map<string, FormValue>) =>
+                                                            handleEventChange(values)
+                                                        }
+                                                        data-componentid={`${category}-edit-section`}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                        <Divider hidden />
+                                        <Grid.Row columns={1}>
+                                            <Grid.Column mobile={16} tablet={16} computer={16}>
+                                                <Button
+                                                    primary
+                                                    type="submit"
+                                                    size="small"
+                                                    className="form-button"
+                                                    data-componentid={`${componentId}-update-button`}
+                                                    disabled={isReadOnly}
+                                                    loading={isSubmitting}
+                                                >
+                                                    {t(
+                                                        "extensions:develop.eventPublishing." +
+                                                            "eventsConfiguration.form.updateButton"
+                                                    )}
+                                                </Button>
+                                            </Grid.Column>
+                                        </Grid.Row>
+                                    </Forms>
+                                )}
                             </EmphasizedSegment>
-                            { !isEventConfigFetchRequestLoading && (<ChoreoButton />) }
+                            {!isEventConfigFetchRequestLoading && <ChoreoButton />}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>

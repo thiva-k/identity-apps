@@ -24,7 +24,7 @@ import useRequest, {
     RequestConfigInterface,
     RequestErrorInterface,
     RequestResultInterface
-} from "../../../features/core/hooks/use-request";
+} from "../../core/hooks/use-request";
 import { store } from "../../core";
 import { ValidationManagementConstants } from "../constants/validation-config-constants";
 import { ValidationConfInterface, ValidationDataInterface, ValidationFormInterface } from "../models";
@@ -56,13 +56,12 @@ export const updateValidationConfigData = (
         prepareUsernameValidationConfigData(formData)
     ];
 
-    const config: ValidationDataInterface[] = configArray.filter(
-        (item: ValidationDataInterface) => item != null);
+    const config: ValidationDataInterface[] = configArray.filter((item: ValidationDataInterface) => item != null);
 
     const requestConfig: AxiosRequestConfig = {
         data: config,
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.PUT,
@@ -78,7 +77,8 @@ export const updateValidationConfigData = (
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data as ValidationDataInterface[]);
@@ -90,7 +90,8 @@ export const updateValidationConfigData = (
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -102,10 +103,9 @@ export const updateValidationConfigData = (
 export const useValidationConfigData = <Data = ValidationDataInterface[], Error = RequestErrorInterface>(
     shouldFetch: boolean = true
 ): RequestResultInterface<Data, Error> => {
-
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
@@ -127,8 +127,7 @@ export const useValidationConfigData = <Data = ValidationDataInterface[], Error 
 };
 
 const preparePasswordValidationConfigData = (values: ValidationFormInterface): ValidationDataInterface => {
-
-    if(values.field==="username"){
+    if (values.field === "username") {
         return;
     }
 
@@ -221,7 +220,6 @@ const preparePasswordValidationConfigData = (values: ValidationFormInterface): V
 };
 
 const prepareUsernameValidationConfigData = (values: ValidationFormInterface): ValidationDataInterface => {
-
     if (!values || values?.field === "password") {
         return;
     }
@@ -229,17 +227,15 @@ const prepareUsernameValidationConfigData = (values: ValidationFormInterface): V
     const rules: ValidationConfInterface[] = [];
 
     if (values?.enableValidator === "false") {
-        rules.push(
-            {
-                properties: [
-                    {
-                        key: "enable.validator",
-                        value: "true"
-                    }
-                ],
-                validator: "EmailFormatValidator"
-            }
-        );
+        rules.push({
+            properties: [
+                {
+                    key: "enable.validator",
+                    value: "true"
+                }
+            ],
+            validator: "EmailFormatValidator"
+        });
     } else {
         rules.push(
             {

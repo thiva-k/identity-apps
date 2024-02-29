@@ -30,9 +30,9 @@ import CustomizeStepsIllustration from "./assets/customize-steps.png";
 import { getApplicationList } from "features/applications/api";
 import { ApplicationList } from "features/applications/components/application-list";
 import { ApplicationListInterface } from "features/applications/models";
-import { AdvancedSearchWithBasicFilters } from "features/core/components";
-import { AppConstants } from "features/core/constants";
-import { history } from "features/core/helpers";
+import { AdvancedSearchWithBasicFilters } from "../../../../core/components";
+import { AppConstants } from "../../../../core/constants";
+import { history } from "../../../../core/helpers";
 import {
     IdentityProviderInterface,
     IdentityProviderTemplateInterface

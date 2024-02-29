@@ -54,7 +54,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch as ReduxDispatch } from "redux";
 import { Divider, Grid, Header, Icon, Modal, PaginationProps, Table } from "semantic-ui-react";
 import { AdvancedSearchWithBasicFilters, UIConstants, 
-    getEmptyPlaceholderIllustrations } from "features/core";
+    getEmptyPlaceholderIllustrations } from "../../../../core";
 import {
     CreateGroupMemberInterface,
     GroupsInterface,

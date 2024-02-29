@@ -18,7 +18,7 @@
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import { PageLayout, ResourceTab } from "@wso2is/react-components";
-import { AppState, FeatureConfigInterface } from "features/core";
+import { AppState, FeatureConfigInterface } from "../../../../core";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";

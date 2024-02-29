@@ -45,7 +45,7 @@ import React, {
 } from "react";
 import { useTranslation } from "react-i18next";
 import { Grid, Header, Icon, Input, Modal, Table } from "semantic-ui-react";
-import { UIConstants, getEmptyPlaceholderIllustrations } from "features/core";
+import { UIConstants, getEmptyPlaceholderIllustrations } from "../../../../../core";
 import { getUsersList } from "../../../../../users/api/users";
 import { UserBasicInterface, UserListInterface } from "../../../../../users/models/user";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
@@ -75,7 +75,6 @@ interface AddRoleUserProps extends TestableComponentInterface, LoadableComponent
  * @returns AddRoleUsers component.
  */
 export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRoleUserProps): ReactElement => {
-
     const {
         triggerSubmit,
         onSubmit,
@@ -86,27 +85,26 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
         userStore,
         isReadOnly,
         handleTempUsersListChange,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ alert, , alertComponent ] = useWizardAlert();
+    const [alert, , alertComponent] = useWizardAlert();
 
-    const [ originalUserList, setOriginalUserList ] = useState<UserBasicInterface[]>([]);
-    const [ selectedUsers, setSelectedUsers ] = useState<UserBasicInterface[]>([]);
-    const [ newlySelectedUsers, setNewlySelectedUsers ] = useState<UserBasicInterface[]>([]);
-    const [ addModalUserList, setAddModalUserList ] = useState<UserBasicInterface[]>([]);
-    const [ editViewUserList, setEditViewUserList ] = useState<UserBasicInterface[]>([]);
-    const [ listOffset ] = useState<number>(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(0);
-    const [ userListMetaContent, setUserListMetaContent ] = useState(undefined);
-    const [ isSelectAllUsers, setIsSelectAllUsers ] = useState<boolean>(false);
-    const [ isUsersFetchRequestLoading, setIsUsersFetchRequestLoading ] = useState<boolean>(true);
-    const [ showAddNewUserModal, setAddNewUserModalView ] = useState<boolean>(false);
+    const [originalUserList, setOriginalUserList] = useState<UserBasicInterface[]>([]);
+    const [selectedUsers, setSelectedUsers] = useState<UserBasicInterface[]>([]);
+    const [newlySelectedUsers, setNewlySelectedUsers] = useState<UserBasicInterface[]>([]);
+    const [addModalUserList, setAddModalUserList] = useState<UserBasicInterface[]>([]);
+    const [editViewUserList, setEditViewUserList] = useState<UserBasicInterface[]>([]);
+    const [listOffset] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(0);
+    const [userListMetaContent, setUserListMetaContent] = useState(undefined);
+    const [isSelectAllUsers, setIsSelectAllUsers] = useState<boolean>(false);
+    const [isUsersFetchRequestLoading, setIsUsersFetchRequestLoading] = useState<boolean>(true);
+    const [showAddNewUserModal, setAddNewUserModalView] = useState<boolean>(false);
 
     useEffect(() => {
-
         if (!originalUserList) {
             return;
         }
@@ -115,10 +113,9 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
 
         setSelectedUsers(selectedUserList);
         setEditViewUserList(selectedUserList);
-    }, [ assignedUsers ]);
+    }, [assignedUsers]);
 
     useEffect(() => {
-
         let list: UserBasicInterface[] = [];
 
         if (isSelectAllUsers) {
@@ -127,20 +124,22 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
 
         setNewlySelectedUsers(list);
         handleTempUsersListChange && handleTempUsersListChange(list);
-    }, [ isSelectAllUsers ]);
+    }, [isSelectAllUsers]);
 
     useEffect(() => {
         setListItemLimit(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-        setUserListMetaContent(new Map<string, string>([
-            [ "name", "name" ],
-            [ "emails", "emails" ],
-            [ "name", "name" ],
-            [ "userName", "userName" ],
-            [ "id", "" ],
-            [ "profileUrl", "profileUrl" ],
-            [ "meta.lastModified", "meta.lastModified" ],
-            [ "meta.created", "" ]
-        ]));
+        setUserListMetaContent(
+            new Map<string, string>([
+                ["name", "name"],
+                ["emails", "emails"],
+                ["name", "name"],
+                ["userName", "userName"],
+                ["id", ""],
+                ["profileUrl", "profileUrl"],
+                ["meta.lastModified", "meta.lastModified"],
+                ["meta.created", ""]
+            ])
+        );
     }, []);
 
     useEffect(() => {
@@ -153,7 +152,7 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
                 getList(listItemLimit, listOffset, null, attributes, null);
             }
         }
-    }, [ listOffset, listItemLimit ]);
+    }, [listOffset, listItemLimit]);
 
     // Commented when the select all option for roles was removed.
     // Uncomment if select all option is reintroduced.
@@ -174,32 +173,35 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
      * @param userStore - Fetched userstore.
      */
     const getList = (limit: number, offset: number, filter: string, attribute: string, userStore: string): void => {
-
         setIsUsersFetchRequestLoading(true);
 
         getUsersList(limit, offset, filter, attribute, userStore)
             .then((response: UserListInterface) => {
-                const responseUsers: UserBasicInterface[] = response.Resources
-                    .filter((user: UserBasicInterface) => user.userName.split("/")[0] !== CONSUMER_USERSTORE);
+                const responseUsers: UserBasicInterface[] = response.Resources.filter(
+                    (user: UserBasicInterface) => user.userName.split("/")[0] !== CONSUMER_USERSTORE
+                );
 
                 responseUsers.sort((userObject: UserBasicInterface, comparedUserObject: UserBasicInterface) =>
                     userObject.name?.givenName?.localeCompare(comparedUserObject.name?.givenName)
                 );
 
-                setOriginalUserList([ ...responseUsers ]);
+                setOriginalUserList([...responseUsers]);
 
                 if (assignedUsers && assignedUsers.length !== 0) {
                     const selectedUserList: UserBasicInterface[] = [];
 
-                    if (responseUsers && responseUsers instanceof Array ) {
-                        responseUsers.slice().reverse().forEach((user: UserBasicInterface) => {
-                            assignedUsers.forEach((assignedUser: RolesMemberInterface) => {
-                                if (user.id === assignedUser.value) {
-                                    selectedUserList.push(user);
-                                    responseUsers.splice(responseUsers.indexOf(user), 1);
-                                }
+                    if (responseUsers && responseUsers instanceof Array) {
+                        responseUsers
+                            .slice()
+                            .reverse()
+                            .forEach((user: UserBasicInterface) => {
+                                assignedUsers.forEach((assignedUser: RolesMemberInterface) => {
+                                    if (user.id === assignedUser.value) {
+                                        selectedUserList.push(user);
+                                        responseUsers.splice(responseUsers.indexOf(user), 1);
+                                    }
+                                });
                             });
-                        });
 
                         selectedUserList.sort(
                             (userObject: UserBasicInterface, comparedUserObject: UserBasicInterface) =>
@@ -214,7 +216,7 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
                 if (initialValues && initialValues instanceof Array) {
                     const selectedUserList: UserBasicInterface[] = [];
 
-                    if (responseUsers && responseUsers instanceof Array ) {
+                    if (responseUsers && responseUsers instanceof Array) {
                         responseUsers.forEach((user: UserBasicInterface) => {
                             initialValues.forEach((assignedUser: UserBasicInterface) => {
                                 if (user.id === assignedUser.id) {
@@ -228,9 +230,11 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
                                 userObject.name?.givenName?.localeCompare(comparedUserObject.name?.givenName)
                         );
 
-                        setOriginalUserList(responseUsers.filter(function(user: UserBasicInterface) {
-                            return selectedUserList.indexOf(user) == -1;
-                        }));
+                        setOriginalUserList(
+                            responseUsers.filter(function(user: UserBasicInterface) {
+                                return selectedUserList.indexOf(user) == -1;
+                            })
+                        );
 
                         setSelectedUsers(selectedUserList);
                         setEditViewUserList(selectedUserList);
@@ -255,7 +259,6 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
         assignedMembers: RolesMemberInterface[],
         sort?: boolean
     ) => {
-
         if (isEmpty(assignedMembers)) {
             return [];
         }
@@ -265,7 +268,7 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
         if (isEmpty(assignedUsers) && initialValues && Array.isArray(initialValues) && initialValues.length > 0) {
             users = initialValues;
         } else {
-            users = [ ...assignedUsers ];
+            users = [...assignedUsers];
         }
 
         const resolvedUsers: UserBasicInterface[] = [];
@@ -315,23 +318,24 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
      */
     const handleSearchFieldChange = (
         e: FormEvent<HTMLInputElement>,
-        query: string, list: UserBasicInterface[],
+        query: string,
+        list: UserBasicInterface[],
         stateAction: Dispatch<SetStateAction<any>>
     ): void => {
-
         let isMatch: boolean = false;
         const filteredRoleList: UserBasicInterface[] = [];
 
         if (!isEmpty(query)) {
             const regExp: RegExp = new RegExp(escapeRegExp(query), "i");
 
-            list && list.map((user: UserBasicInterface) => {
-                isMatch = regExp.test(user.userName);
+            list &&
+                list.map((user: UserBasicInterface) => {
+                    isMatch = regExp.test(user.userName);
 
-                if (isMatch) {
-                    filteredRoleList.push(user);
-                }
-            });
+                    if (isMatch) {
+                        filteredRoleList.push(user);
+                    }
+                });
 
             stateAction(filteredRoleList);
 
@@ -347,7 +351,7 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
      * Handles assigned item checkbox change.
      */
     const handleAssignedItemCheckboxChange = (role: UserBasicInterface): void => {
-        const checkedRoles: UserBasicInterface[] = [ ...newlySelectedUsers ];
+        const checkedRoles: UserBasicInterface[] = [...newlySelectedUsers];
 
         if (checkedRoles.includes(role)) {
             checkedRoles.splice(checkedRoles.indexOf(role), 1);
@@ -395,115 +399,111 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
      */
     const renderAddUserModal = (): ReactElement => (
         <Modal
-            data-testid={ `${ testId }-assign-user-wizard-modal` }
+            data-testid={`${testId}-assign-user-wizard-modal`}
             dimmer="blurring"
-            open={ showAddNewUserModal }
+            open={showAddNewUserModal}
             size="small"
             className="user-roles"
         >
             <Modal.Header>
-                {
-                    t("console:manage.features.roles.addRoleWizard.users.assignUserModal.heading",
-                        { type: "Group" })
-                }
+                {t("console:manage.features.roles.addRoleWizard.users.assignUserModal.heading", { type: "Group" })}
                 <Heading subHeading ellipsis as="h6">
-                    {
-                        t("console:manage.features.roles.addRoleWizard.users.assignUserModal.subHeading",
-                            { type: "group" })
-                    }
+                    {t("console:manage.features.roles.addRoleWizard.users.assignUserModal.subHeading", {
+                        type: "group"
+                    })}
                 </Heading>
             </Modal.Header>
             <Modal.Content image>
-                { alert && alertComponent }
+                {alert && alertComponent}
                 <TransferComponent
                     compact
                     basic
                     bordered
                     className="one-column-selection"
                     selectionComponent
-                    searchPlaceholder={
-                        t("console:manage.features.roles.addRoleWizard.users.assignUserModal.list" +
-                            ".searchPlaceholder")
-                    }
-                    isLoading={ isUsersFetchRequestLoading }
-                    handleUnelectedListSearch={ (e: FormEvent<HTMLInputElement>, { value }: { value: string }) => {
+                    searchPlaceholder={t(
+                        "console:manage.features.roles.addRoleWizard.users.assignUserModal.list" + ".searchPlaceholder"
+                    )}
+                    isLoading={isUsersFetchRequestLoading}
+                    handleUnelectedListSearch={(e: FormEvent<HTMLInputElement>, { value }: { value: string }) => {
                         handleSearchFieldChange(e, value, originalUserList, setAddModalUserList);
-                    } }
-                    data-testid={ `${ testId }-user-list-transfer` }
+                    }}
+                    data-testid={`${testId}-user-list-transfer`}
                 >
                     <TransferList
                         selectionComponent
-                        isListEmpty={ false }
-                        isLoading={ isUsersFetchRequestLoading }
+                        isListEmpty={false}
+                        isLoading={isUsersFetchRequestLoading}
                         listType="unselected"
-                        data-testid={ `${ testId }-unselected-transfer-list` }
-                        emptyPlaceholderContent={ t("console:manage.features.transferList.list.emptyPlaceholders." +
-                            "roles.selected", { type: "users" }) }
-                        emptyPlaceholderDefaultContent={ t("console:manage.features.transferList.list."
-                            + "emptyPlaceholders.default") }
+                        data-testid={`${testId}-unselected-transfer-list`}
+                        emptyPlaceholderContent={t(
+                            "console:manage.features.transferList.list.emptyPlaceholders." + "roles.selected",
+                            { type: "users" }
+                        )}
+                        emptyPlaceholderDefaultContent={t(
+                            "console:manage.features.transferList.list." + "emptyPlaceholders.default"
+                        )}
                     >
-                        {
-                            addModalUserList?.map((user: UserBasicInterface, index: number) => {
-                                const resolvedGivenName: string = (user.name && user.name.givenName !== undefined)
+                        {addModalUserList?.map((user: UserBasicInterface, index: number) => {
+                            const resolvedGivenName: string =
+                                user.name && user.name.givenName !== undefined
                                     ? user.name.givenName + " " + (user.name.familyName ? user.name.familyName : "")
                                     : undefined;
 
-                                const resolvedUsername: string = user.userName.split("/")?.length > 1
-                                    ? user.userName.split("/")[ 1 ]
-                                    : user.userName.split("/")[ 0 ];
+                            const resolvedUsername: string =
+                                user.userName.split("/")?.length > 1
+                                    ? user.userName.split("/")[1]
+                                    : user.userName.split("/")[0];
 
-                                return (
-                                    <TransferListItem
-                                        handleItemChange={ () => handleAssignedItemCheckboxChange(user) }
-                                        key={ index }
-                                        listItem={ resolvedGivenName ?? resolvedUsername }
-                                        listItemId={ user.id }
-                                        listItemIndex={ index }
-                                        isItemChecked={
-                                            newlySelectedUsers && newlySelectedUsers.includes(user)
-                                        }
-                                        showSecondaryActions={ false }
-                                        showListSubItem={ true }
-                                        listSubItem={ resolvedGivenName && (
+                            return (
+                                <TransferListItem
+                                    handleItemChange={() => handleAssignedItemCheckboxChange(user)}
+                                    key={index}
+                                    listItem={resolvedGivenName ?? resolvedUsername}
+                                    listItemId={user.id}
+                                    listItemIndex={index}
+                                    isItemChecked={newlySelectedUsers && newlySelectedUsers.includes(user)}
+                                    showSecondaryActions={false}
+                                    showListSubItem={true}
+                                    listSubItem={
+                                        resolvedGivenName && (
                                             <Header as="h6">
                                                 <Header.Content>
-                                                    <Header.Subheader
-                                                        data-testid={ `${ testId }-item-sub-heading` }
-                                                    >
-                                                        { resolvedUsername }
+                                                    <Header.Subheader data-testid={`${testId}-item-sub-heading`}>
+                                                        {resolvedUsername}
                                                     </Header.Subheader>
                                                 </Header.Content>
                                             </Header>
-                                        ) }
-                                        data-testid={ `${ testId }-unselected-transfer-list-item-${ index }` }
-                                    />
-                                );
-                            })
-                        }
+                                        )
+                                    }
+                                    data-testid={`${testId}-unselected-transfer-list-item-${index}`}
+                                />
+                            );
+                        })}
                     </TransferList>
                 </TransferComponent>
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row columns={ 2 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row columns={2}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
-                                data-testid={ `${ testId }-assign-user-wizard-modal-cancel-button` }
-                                onClick={ handleCloseAddNewRoleModal }
+                                data-testid={`${testId}-assign-user-wizard-modal-cancel-button`}
+                                onClick={handleCloseAddNewRoleModal}
                                 floated="left"
                             >
-                                { t("common:cancel") }
+                                {t("common:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <PrimaryButton
-                                data-testid={ `${ testId }-assign-user-wizard-modal-save-button` }
-                                onClick={ () => {
+                                data-testid={`${testId}-assign-user-wizard-modal-save-button`}
+                                onClick={() => {
                                     handleAddUserSubmit();
-                                } }
+                                }}
                                 floated="right"
                             >
-                                { t("common:save") }
+                                {t("common:save")}
                             </PrimaryButton>
                         </Grid.Column>
                     </Grid.Row>
@@ -519,39 +519,30 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
      * @returns User table row component.
      */
     const renderUserTableRow = (user: UserBasicInterface): ReactElement => {
+        const resolvedGivenName: string =
+            user.name && user.name.givenName !== undefined
+                ? user.name.givenName + " " + (user.name.familyName ? user.name.familyName : "")
+                : undefined;
 
-        const resolvedGivenName: string = (user.name && user.name.givenName !== undefined)
-            ? user.name.givenName + " " + (user.name.familyName ? user.name.familyName : "")
-            : undefined;
-
-        const resolvedUsername: string = user.userName.split("/")?.length > 1
-            ? user.userName.split("/")[ 1 ]
-            : user.userName.split("/")[ 0 ];
+        const resolvedUsername: string =
+            user.userName.split("/")?.length > 1 ? user.userName.split("/")[1] : user.userName.split("/")[0];
 
         return (
-            <Table.Row key={ user.id }>
+            <Table.Row key={user.id}>
                 <Table.Cell>
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ testId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
                         <UserAvatar
-                            data-testid={
-                                `${ testId }-users-list-${
-                                    user.userName }-avatar`
-                            }
-                            name={ resolvedUsername }
+                            data-testid={`${testId}-users-list-${user.userName}-avatar`}
+                            name={resolvedUsername}
                             spaced="right"
                             size="mini"
                             floated="left"
-                            image={ user.profileUrl }
+                            image={user.profileUrl}
                         />
                         <Header.Content>
-                            { resolvedGivenName ?? resolvedUsername }
-                            <Header.Subheader data-testid={ `${ testId }-item-sub-heading` }>
-                                { resolvedGivenName && resolvedUsername }
+                            {resolvedGivenName ?? resolvedUsername}
+                            <Header.Subheader data-testid={`${testId}-item-sub-heading`}>
+                                {resolvedGivenName && resolvedUsername}
                             </Header.Subheader>
                         </Header.Content>
                     </Header>
@@ -566,96 +557,87 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
      * @returns Edit view component.
      */
     const renderEditView = (): ReactElement => {
-
         return (
             <Grid>
-                {
-                    selectedUsers?.length > 0
-                        ? (
-                            <>
-                                <Grid.Row>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
-                                        <Input
-                                            data-testid={ `${ testId }-users-list-search-input` }
-                                            icon={ <Icon name="search"/> }
-                                            onChange={ (e: FormEvent<HTMLInputElement>,
-                                                { value }: { value: string }) => {
-                                                handleSearchFieldChange(e, value, selectedUsers,
-                                                    setEditViewUserList);
-                                            } }
-                                            placeholder={
-                                                t("console:manage.features.roles.addRoleWizard." +
-                                                    "users.assignUserModal.list.searchPlaceholder")
-                                            }
-                                            floated="left"
-                                            size="small"
-                                        />
-                                        {
-                                            !isReadOnly && (
-                                                <Button
-                                                    data-testid={ `${ testId }-users-list-edit-button` }
-                                                    size="medium"
-                                                    icon="pencil"
-                                                    floated="right"
-                                                    onClick={ handleOpenAddNewRoleModal }
-                                                />
-                                            )
-                                        }
-                                    </Grid.Column>
-                                </Grid.Row>
-                                <Grid.Row>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
-                                        <Table singleLine compact>
-                                            <Table.Body>
-                                                {
-                                                    editViewUserList?.map((user: UserBasicInterface) => {
-                                                        return renderUserTableRow(user);
-                                                    })
-                                                }
-                                            </Table.Body>
-                                        </Table>
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </>
-                        )
-                        : (
-                            !isUsersFetchRequestLoading
-                                ? (
-                                    <Grid.Row>
-                                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
-                                            <EmphasizedSegment>
-                                                <EmptyPlaceholder
-                                                    title={ t("console:manage.features.roles.edit.users.list." +
-                                                        "emptyPlaceholder.title") }
-                                                    subtitle={ [
-                                                        t("console:manage.features.roles.edit.users.list." +
-                                                            "emptyPlaceholder.subtitles", { type: "role" })
-                                                    ] }
-                                                    action={
-                                                        !isReadOnly && (
-                                                            <PrimaryButton
-                                                                data-testid={
-                                                                    `${ testId }-users-list-empty-assign-users-button`
-                                                                }
-                                                                onClick={ handleOpenAddNewRoleModal }
-                                                                icon="plus"
-                                                            >
-                                                                { t("console:manage.features.roles.edit.users.list." +
-                                                                    "emptyPlaceholder.action") }
-                                                            </PrimaryButton>
-                                                        )
-                                                    }
-                                                    image={ getEmptyPlaceholderIllustrations().emptyList }
-                                                    imageSize="tiny"
-                                                />
-                                            </EmphasizedSegment>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                )
-                                : <ContentLoader/>
-                        )
-                }
-                { renderAddUserModal() }
+                {selectedUsers?.length > 0 ? (
+                    <>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={16} computer={12}>
+                                <Input
+                                    data-testid={`${testId}-users-list-search-input`}
+                                    icon={<Icon name="search" />}
+                                    onChange={(e: FormEvent<HTMLInputElement>, { value }: { value: string }) => {
+                                        handleSearchFieldChange(e, value, selectedUsers, setEditViewUserList);
+                                    }}
+                                    placeholder={t(
+                                        "console:manage.features.roles.addRoleWizard." +
+                                            "users.assignUserModal.list.searchPlaceholder"
+                                    )}
+                                    floated="left"
+                                    size="small"
+                                />
+                                {!isReadOnly && (
+                                    <Button
+                                        data-testid={`${testId}-users-list-edit-button`}
+                                        size="medium"
+                                        icon="pencil"
+                                        floated="right"
+                                        onClick={handleOpenAddNewRoleModal}
+                                    />
+                                )}
+                            </Grid.Column>
+                        </Grid.Row>
+                        <Grid.Row>
+                            <Grid.Column mobile={16} tablet={16} computer={12}>
+                                <Table singleLine compact>
+                                    <Table.Body>
+                                        {editViewUserList?.map((user: UserBasicInterface) => {
+                                            return renderUserTableRow(user);
+                                        })}
+                                    </Table.Body>
+                                </Table>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </>
+                ) : !isUsersFetchRequestLoading ? (
+                    <Grid.Row>
+                        <Grid.Column mobile={16} tablet={16} computer={12}>
+                            <EmphasizedSegment>
+                                <EmptyPlaceholder
+                                    title={t(
+                                        "console:manage.features.roles.edit.users.list." + "emptyPlaceholder.title"
+                                    )}
+                                    subtitle={[
+                                        t(
+                                            "console:manage.features.roles.edit.users.list." +
+                                                "emptyPlaceholder.subtitles",
+                                            { type: "role" }
+                                        )
+                                    ]}
+                                    action={
+                                        !isReadOnly && (
+                                            <PrimaryButton
+                                                data-testid={`${testId}-users-list-empty-assign-users-button`}
+                                                onClick={handleOpenAddNewRoleModal}
+                                                icon="plus"
+                                            >
+                                                {t(
+                                                    "console:manage.features.roles.edit.users.list." +
+                                                        "emptyPlaceholder.action"
+                                                )}
+                                            </PrimaryButton>
+                                        )
+                                    }
+                                    image={getEmptyPlaceholderIllustrations().emptyList}
+                                    imageSize="tiny"
+                                />
+                            </EmphasizedSegment>
+                        </Grid.Column>
+                    </Grid.Row>
+                ) : (
+                    <ContentLoader />
+                )}
+                {renderAddUserModal()}
             </Grid>
         );
     };
@@ -666,118 +648,110 @@ export const AddRoleUsers: FunctionComponent<AddRoleUserProps> = (props: AddRole
      * @returns Form view component.
      */
     const renderFormView = (): ReactElement => {
-
         return (
             <Forms
-                onSubmit={ () => {
+                onSubmit={() => {
                     onSubmit(newlySelectedUsers);
-                } }
-                submitState={ triggerSubmit }
+                }}
+                submitState={triggerSubmit}
             >
                 <Grid>
-                    <Grid.Row columns={ 2 }>
+                    <Grid.Row columns={2}>
                         <TransferComponent
                             compact
                             basic
                             bordered
                             className="one-column-selection"
                             selectionComponent
-                            searchPlaceholder={
-                                t("console:manage.features.roles.addRoleWizard.users.assignUserModal.list" +
-                                    ".searchPlaceholder")
-                            }
-                            isLoading={ isUsersFetchRequestLoading }
-                            handleUnelectedListSearch={ (
+                            searchPlaceholder={t(
+                                "console:manage.features.roles.addRoleWizard.users.assignUserModal.list" +
+                                    ".searchPlaceholder"
+                            )}
+                            isLoading={isUsersFetchRequestLoading}
+                            handleUnelectedListSearch={(
                                 e: FormEvent<HTMLInputElement>,
                                 { value }: { value: string }
                             ) => {
                                 handleSearchFieldChange(e, value, originalUserList, setAddModalUserList);
-                            } }
-                            data-testid={ `${ testId }-transfer-component` }
+                            }}
+                            data-testid={`${testId}-transfer-component`}
                         >
                             <TransferList
                                 selectionComponent
-                                isListEmpty={ !isUsersFetchRequestLoading && originalUserList?.length < 1 }
-                                isLoading={ isUsersFetchRequestLoading }
+                                isListEmpty={!isUsersFetchRequestLoading && originalUserList?.length < 1}
+                                isLoading={isUsersFetchRequestLoading}
                                 listType="unselected"
                                 selectAllCheckboxLabel="Select all users"
                                 emptyPlaceholderContent={
-                                    "There are no users available at the moment to assign " +
-                                    "to this role."
+                                    "There are no users available at the moment to assign " + "to this role."
                                 }
-                                data-testid={ `${ testId }-unselected-transfer-list` }
-                                emptyPlaceholderDefaultContent={ t("console:manage.features.transferList.list."
-                                    + "emptyPlaceholders.default") }
+                                data-testid={`${testId}-unselected-transfer-list`}
+                                emptyPlaceholderDefaultContent={t(
+                                    "console:manage.features.transferList.list." + "emptyPlaceholders.default"
+                                )}
                             >
-                                {
-                                    originalUserList?.map((user: UserBasicInterface, index: number) => {
-                                        const resolvedGivenName: string 
-                                            = (user.name && user.name.givenName !== undefined)
-                                                ? `${ user.name.givenName } ${ user.name.familyName ?? "" }`
-                                                : undefined;
+                                {originalUserList?.map((user: UserBasicInterface, index: number) => {
+                                    const resolvedGivenName: string =
+                                        user.name && user.name.givenName !== undefined
+                                            ? `${user.name.givenName} ${user.name.familyName ?? ""}`
+                                            : undefined;
 
-                                        const resolvedUsername: string = user.userName.split("/")?.length > 1
-                                            ? user.userName.split("/")[ 1 ]
-                                            : user.userName.split("/")[ 0 ];
+                                    const resolvedUsername: string =
+                                        user.userName.split("/")?.length > 1
+                                            ? user.userName.split("/")[1]
+                                            : user.userName.split("/")[0];
 
-                                        return (
-                                            <TransferListItem
-                                                handleItemChange={ () => handleAssignedItemCheckboxChange(user) }
-                                                key={ index }
-                                                listItem={ resolvedGivenName ?? resolvedUsername }
-                                                listItemId={ user.id }
-                                                listItemIndex={ index }
-                                                isItemChecked={ newlySelectedUsers.includes(user) }
-                                                showSecondaryActions={ false }
-                                                showListSubItem={ true }
-                                                listSubItem={ resolvedGivenName && (
+                                    return (
+                                        <TransferListItem
+                                            handleItemChange={() => handleAssignedItemCheckboxChange(user)}
+                                            key={index}
+                                            listItem={resolvedGivenName ?? resolvedUsername}
+                                            listItemId={user.id}
+                                            listItemIndex={index}
+                                            isItemChecked={newlySelectedUsers.includes(user)}
+                                            showSecondaryActions={false}
+                                            showListSubItem={true}
+                                            listSubItem={
+                                                resolvedGivenName && (
                                                     <Header as="h6">
                                                         <Header.Content>
                                                             <Header.Subheader
-                                                                data-testid={ `${ testId }-item-sub-heading` }
+                                                                data-testid={`${testId}-item-sub-heading`}
                                                             >
-                                                                { resolvedUsername }
+                                                                {resolvedUsername}
                                                             </Header.Subheader>
                                                         </Header.Content>
                                                     </Header>
-                                                ) }
-                                                data-testid={ `${ testId }-unselected-transfer-list-item-${ index }` }
-                                            />
-                                        );
-                                    })
-                                }
+                                                )
+                                            }
+                                            data-testid={`${testId}-unselected-transfer-list-item-${index}`}
+                                        />
+                                    );
+                                })}
                             </TransferList>
                         </TransferComponent>
                     </Grid.Row>
-                    { isEdit && (
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
+                    {isEdit && (
+                        <Grid.Row columns={1}>
+                            <Grid.Column mobile={16} tablet={16} computer={8}>
                                 <Button
-                                    data-testid={ `${ testId }-update-user-list-button` }
+                                    data-testid={`${testId}-update-user-list-button`}
                                     primary
                                     type="submit"
                                     size="small"
                                     className="form-button"
                                 >
-                                    { t("common.update") }
+                                    {t("common.update")}
                                 </Button>
                             </Grid.Column>
                         </Grid.Row>
-                    ) }
+                    )}
                 </Grid>
             </Forms>
         );
     };
 
-    return (
-        <>
-            {
-                isEdit
-                    ? renderEditView()
-                    : renderFormView()
-            }
-        </>
-    );
+    return <>{isEdit ? renderEditView() : renderFormView()}</>;
 };
 
 AddRoleUsers.defaultProps = {

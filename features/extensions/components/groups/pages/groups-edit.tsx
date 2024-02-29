@@ -22,27 +22,20 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Label } from "semantic-ui-react";
-import {
-    AppConstants,
-    AppState,
-    FeatureConfigInterface,
-    getSidePanelIcons,
-    history
-} from "features/core";
+import { AppConstants, AppState, FeatureConfigInterface, getSidePanelIcons, history } from "../../../../core";
 import { getGroupById } from "../../../../groups/api";
 import { GroupsInterface } from "../../../../groups/models";
 import GroupManagementProvider from "../../../../groups/providers/group-management-provider";
 import { EditGroup } from "../edit-group";
 
 const GroupEditPage: FunctionComponent<any> = (): ReactElement => {
-
     const { t } = useTranslation();
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
 
-    const [ roleId, setGroupId ] = useState<string>(undefined);
-    const [ group, setGroup ] = useState<GroupsInterface>();
-    const [ isGroupDetailsRequestLoading, setIsGroupDetailsRequestLoading ] = useState<boolean>(true);
+    const [roleId, setGroupId] = useState<string>(undefined);
+    const [group, setGroup] = useState<GroupsInterface>();
+    const [isGroupDetailsRequestLoading, setIsGroupDetailsRequestLoading] = useState<boolean>(true);
 
     const excludeMembers: string = "members";
 
@@ -51,7 +44,7 @@ const GroupEditPage: FunctionComponent<any> = (): ReactElement => {
      */
     useEffect(() => {
         const path: string[] = history.location.pathname.split("/");
-        const roleId: string = path[ path.length - 1 ];
+        const roleId: string = path[path.length - 1];
 
         setGroupId(roleId);
         getGroupDetails(roleId, excludeMembers);
@@ -65,8 +58,9 @@ const GroupEditPage: FunctionComponent<any> = (): ReactElement => {
                 if (response.status === 200) {
                     setGroup(response.data);
                 }
-            }).catch(() => {
-            // TODO: handle error
+            })
+            .catch(() => {
+                // TODO: handle error
             })
             .finally(() => {
                 setIsGroupDetailsRequestLoading(false);
@@ -84,15 +78,15 @@ const GroupEditPage: FunctionComponent<any> = (): ReactElement => {
     return (
         <GroupManagementProvider>
             <TabPageLayout
-                isLoading={ isGroupDetailsRequestLoading }
-                title={ group?.displayName?.split("/")[1] ?? t("console:manage.pages.rolesEdit.title") }
-                backButton={ {
+                isLoading={isGroupDetailsRequestLoading}
+                title={group?.displayName?.split("/")[1] ?? t("console:manage.pages.rolesEdit.title")}
+                backButton={{
                     onClick: handleBackButtonClick,
                     text: t("console:manage.pages.rolesEdit.backButton", { type: "Groups" })
-                } }
+                }}
                 titleTextAlign="left"
-                bottomMargin={ false }
-                description={ (
+                bottomMargin={false}
+                description={
                     <div>
                         {
                             <Label className="group-source-label">
@@ -102,23 +96,23 @@ const GroupEditPage: FunctionComponent<any> = (): ReactElement => {
                                     inline
                                     size="default"
                                     transparent
-                                    icon={ getSidePanelIcons().userStore }
+                                    icon={getSidePanelIcons().userStore}
                                     verticalAlign="middle"
                                 />
                                 <Label.Detail className="mt-1 ml-0 mb-1">
-                                    { group?.displayName?.split("/")[0] }
+                                    {group?.displayName?.split("/")[0]}
                                 </Label.Detail>
                             </Label>
                         }
                     </div>
-                ) }
+                }
             >
                 <EditGroup
-                    isGroupDetailsRequestLoading={ isGroupDetailsRequestLoading }
-                    group={ group }
-                    groupId={ roleId }
-                    onGroupUpdate={ onGroupUpdate }
-                    featureConfig={ featureConfig }
+                    isGroupDetailsRequestLoading={isGroupDetailsRequestLoading}
+                    group={group}
+                    groupId={roleId}
+                    onGroupUpdate={onGroupUpdate}
+                    featureConfig={featureConfig}
                 />
             </TabPageLayout>
         </GroupManagementProvider>

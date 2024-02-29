@@ -25,27 +25,13 @@ import {
     TopLoadingBar,
     useUIElementSizes
 } from "@wso2is/react-components";
-import React, {
-    FunctionComponent,
-    ReactElement,
-    Suspense,
-    useEffect,
-    useState
-} from "react";
+import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
 import { System } from "react-notification-system";
 import { useDispatch, useSelector } from "react-redux";
 import { StaticContext } from "react-router";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
 import { Dispatch } from "redux";
-import {
-    AppConstants,
-    AppState,
-    Footer,
-    Header,
-    ProtectedRoute,
-    UIConstants,
-    getDefaultLayoutRoutes
-} from "features/core";
+import { AppConstants, AppState, Footer, Header, ProtectedRoute, UIConstants, getDefaultLayoutRoutes } from "../core";
 
 /**
  * Default page layout component Prop types.
@@ -67,7 +53,6 @@ export interface DefaultLayoutPropsInterface {
 export const DefaultLayout: FunctionComponent<DefaultLayoutPropsInterface> = (
     props: DefaultLayoutPropsInterface
 ): ReactElement => {
-
     const { fluid } = props;
 
     const dispatch: Dispatch = useDispatch();
@@ -81,14 +66,14 @@ export const DefaultLayout: FunctionComponent<DefaultLayoutPropsInterface> = (
     const alertSystem: System = useSelector((state: AppState) => state.global.alertSystem);
     const isAJAXTopLoaderVisible: boolean = useSelector((state: AppState) => state.global.isAJAXTopLoaderVisible);
 
-    const [ defaultLayoutRoutes, setDefaultLayoutRoutes ] = useState<RouteInterface[]>(getDefaultLayoutRoutes());
+    const [defaultLayoutRoutes, setDefaultLayoutRoutes] = useState<RouteInterface[]>(getDefaultLayoutRoutes());
 
     /**
      * Listen for base name changes and updated the layout routes.
      */
     useEffect(() => {
         setDefaultLayoutRoutes(getDefaultLayoutRoutes());
-    }, [ AppConstants.getTenantQualifiedAppBasename() ]);
+    }, [AppConstants.getTenantQualifiedAppBasename()]);
 
     const handleAlertSystemInitialize = (system: any) => {
         dispatch(initializeAlertSystem(system));
@@ -96,69 +81,55 @@ export const DefaultLayout: FunctionComponent<DefaultLayoutPropsInterface> = (
 
     return (
         <DefaultLayoutSkeleton
-            fluid={ fluid }
-            alert={ (
+            fluid={fluid}
+            alert={
                 <Alert
-                    dismissInterval={ UIConstants.ALERT_DISMISS_INTERVAL }
+                    dismissInterval={UIConstants.ALERT_DISMISS_INTERVAL}
                     alertsPosition="br"
-                    alertSystem={ alertSystem }
-                    alert={ alert }
-                    onAlertSystemInitialize={ handleAlertSystemInitialize }
-                    withIcon={ true }
+                    alertSystem={alertSystem}
+                    alert={alert}
+                    onAlertSystemInitialize={handleAlertSystemInitialize}
+                    withIcon={true}
                 />
-            ) }
-            topLoadingBar={ (
-                <TopLoadingBar
-                    height={ UIConstants.AJAX_TOP_LOADING_BAR_HEIGHT }
-                    visibility={ isAJAXTopLoaderVisible }
-                />
-            ) }
-            footerHeight={ footerHeight }
-            headerHeight={ headerHeight }
-            desktopContentTopSpacing={ UIConstants.DASHBOARD_LAYOUT_DESKTOP_CONTENT_TOP_SPACING }
-            header={ (
-                <Header
-                    handleSidePanelToggleClick={ ()=> null }
-                />
-            ) }
-            footer={ (
-                <Footer
-                    fluid={ fluid }
-                />
-            ) }
+            }
+            topLoadingBar={
+                <TopLoadingBar height={UIConstants.AJAX_TOP_LOADING_BAR_HEIGHT} visibility={isAJAXTopLoaderVisible} />
+            }
+            footerHeight={footerHeight}
+            headerHeight={headerHeight}
+            desktopContentTopSpacing={UIConstants.DASHBOARD_LAYOUT_DESKTOP_CONTENT_TOP_SPACING}
+            header={<Header handleSidePanelToggleClick={() => null} />}
+            footer={<Footer fluid={fluid} />}
         >
-            <Suspense fallback={ <ContentLoader dimmer={ false } /> }>
+            <Suspense fallback={<ContentLoader dimmer={false} />}>
                 <Switch>
-                    {
-                        defaultLayoutRoutes.map((route: RouteInterface, index: number) => (
-                            route.redirectTo
-                                ? <Redirect to={ route.redirectTo } key={ index } />
-                                : route.protected
-                                    ? (
-                                        <ProtectedRoute
-                                            component={ route.component ? route.component : null }
-                                            path={ route.path }
-                                            key={ index }
-                                            exact={ route.exact }
-                                        />
-                                    )
-                                    : (
-                                        <Route
-                                            path={ route.path }
-                                            render={
-                                                (renderProps: RouteComponentProps<{
-                                                    [x: string]: string; },
-                                                    StaticContext, unknown>
-                                                ) => route.component
-                                                    ? <route.component { ...renderProps } />
-                                                    : null
-                                            }
-                                            key={ index }
-                                            exact={ route.exact }
-                                        />
-                                    )
-                        ))
-                    }
+                    {defaultLayoutRoutes.map((route: RouteInterface, index: number) =>
+                        route.redirectTo ? (
+                            <Redirect to={route.redirectTo} key={index} />
+                        ) : route.protected ? (
+                            <ProtectedRoute
+                                component={route.component ? route.component : null}
+                                path={route.path}
+                                key={index}
+                                exact={route.exact}
+                            />
+                        ) : (
+                            <Route
+                                path={route.path}
+                                render={(
+                                    renderProps: RouteComponentProps<
+                                        {
+                                            [x: string]: string;
+                                        },
+                                        StaticContext,
+                                        unknown
+                                    >
+                                ) => (route.component ? <route.component {...renderProps} /> : null)}
+                                key={index}
+                                exact={route.exact}
+                            />
+                        )
+                    )}
                 </Switch>
             </Suspense>
         </DefaultLayoutSkeleton>

@@ -33,11 +33,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, DropdownItemProps, DropdownProps, Form, Icon, Table } from "semantic-ui-react";
 import { IntegrateStepGeneratorFactory } from "./integrate-step-generator-factory";
-import {
-    ApplicationInterface,
-    ApplicationTemplateInterface
-} from "features/applications/models";
-import { AppState, ConfigReducerStateInterface } from "features/core";
+import { ApplicationInterface, ApplicationTemplateInterface } from "features/applications/models";
+import { AppState, ConfigReducerStateInterface } from "../../../../../core";
 import { SDKInitConfig } from "../../../shared";
 import { AddUserStepContent } from "../../../shared/components";
 import { SupportedSPATechnologyTypes } from "../models";
@@ -61,7 +58,7 @@ const PROTOCOL_TAB_INDEX: number = 2;
  * The set of scopes requested to have a smooth UX. If `profile` is not requested, the `username` etc.
  * claims will not return with the ID Token.
  */
-const DEFAULT_REQUESTED_SCOPES: string[] = [ "openid", "profile" ];
+const DEFAULT_REQUESTED_SCOPES: string[] = ["openid", "profile"];
 
 /**
  * Integrate SDKs to Single Page Applications.
@@ -71,12 +68,7 @@ const DEFAULT_REQUESTED_SCOPES: string[] = [ "openid", "profile" ];
 export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
     props: IntegrateSDKsPropsInterface
 ): ReactElement => {
-
-    const {
-        inboundProtocolConfig,
-        technology,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { inboundProtocolConfig, technology, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
@@ -84,24 +76,24 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
 
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
 
-    const [ SDKInitConfig, setSDKInitConfig ] = useState<SDKInitConfig>(undefined);
-    const [ configuredCallbacks, setConfiguredCallbacks ] = useState<DropdownItemProps[]>([]);
-    const [ selectedLoginCallBack, setSelectedLoginCallBack ] = useState<string>("");
-    const [ selectedLogoutCallBack, setSelectedLogoutCallBack ] = useState<string>("");
+    const [SDKInitConfig, setSDKInitConfig] = useState<SDKInitConfig>(undefined);
+    const [configuredCallbacks, setConfiguredCallbacks] = useState<DropdownItemProps[]>([]);
+    const [selectedLoginCallBack, setSelectedLoginCallBack] = useState<string>("");
+    const [selectedLogoutCallBack, setSelectedLogoutCallBack] = useState<string>("");
 
     /**
      * Runs when `inboundProtocolConfig` changes and sets the callback URLs.
      */
     useEffect(() => {
-
-        if (!inboundProtocolConfig?.oidc?.callbackURLs
-            || !Array.isArray(inboundProtocolConfig.oidc.callbackURLs)
-            || inboundProtocolConfig.oidc.callbackURLs.length < 1) {
-
+        if (
+            !inboundProtocolConfig?.oidc?.callbackURLs ||
+            !Array.isArray(inboundProtocolConfig.oidc.callbackURLs) ||
+            inboundProtocolConfig.oidc.callbackURLs.length < 1
+        ) {
             return;
         }
 
-        const callbacks: string[] = EncodeDecodeUtils.decodeURLRegex(inboundProtocolConfig.oidc.callbackURLs[ 0 ]);
+        const callbacks: string[] = EncodeDecodeUtils.decodeURLRegex(inboundProtocolConfig.oidc.callbackURLs[0]);
 
         if (callbacks && Array.isArray(callbacks) && callbacks.length > 1) {
             callbacks.forEach((url: string) => {
@@ -118,7 +110,7 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
             setSelectedLoginCallBack(callbacks[0]);
             setSelectedLogoutCallBack(callbacks[0]);
         }
-    }, [ inboundProtocolConfig ]);
+    }, [inboundProtocolConfig]);
 
     /**
      * Runs when `inboundProtocolConfig` changes and sets the SDK init configs.
@@ -132,27 +124,24 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
             baseUrl: config.deployment.customServerHost,
             clientID: inboundProtocolConfig.oidc.clientId,
             scope: DEFAULT_REQUESTED_SCOPES,
-            signInRedirectURL: (configuredCallbacks.length > 1)
-                ? selectedLoginCallBack
-                : inboundProtocolConfig.oidc.callbackURLs[ 0 ],
-            signOutRedirectURL: (configuredCallbacks.length > 1)
-                ? selectedLogoutCallBack
-                : inboundProtocolConfig.oidc.callbackURLs[ 0 ]
+            signInRedirectURL:
+                configuredCallbacks.length > 1 ? selectedLoginCallBack : inboundProtocolConfig.oidc.callbackURLs[0],
+            signOutRedirectURL:
+                configuredCallbacks.length > 1 ? selectedLogoutCallBack : inboundProtocolConfig.oidc.callbackURLs[0]
         };
 
         setSDKInitConfig(configs);
-    }, [ inboundProtocolConfig, configuredCallbacks, selectedLoginCallBack, selectedLogoutCallBack ]);
+    }, [inboundProtocolConfig, configuredCallbacks, selectedLoginCallBack, selectedLogoutCallBack]);
 
     const renderConfigurationOptions = (heading: ReactNode): ReactElement => {
-
         if (isEmpty(SDKInitConfig)) {
             return null;
         }
 
-        return  (
+        return (
             <Message
-                header={ heading }
-                content={ (
+                header={heading}
+                content={
                     <div>
                         <Table basic="very" celled collapsing>
                             <Table.Body>
@@ -160,32 +149,28 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                                     <Table.Cell>
                                         <Code>clientID</Code>
                                         <Hint popup>
-                                            {
-                                                t("extensions:develop.applications.quickstart.spa.integrate" +
-                                                    ".common.sdkConfigs.clientId.hint")
-                                            }
+                                            {t(
+                                                "extensions:develop.applications.quickstart.spa.integrate" +
+                                                    ".common.sdkConfigs.clientId.hint"
+                                            )}
                                         </Hint>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <Code withBackground={ false }>
-                                            { SDKInitConfig.clientID }
-                                        </Code>
+                                        <Code withBackground={false}>{SDKInitConfig.clientID}</Code>
                                     </Table.Cell>
                                 </Table.Row>
                                 <Table.Row>
                                     <Table.Cell>
                                         <Code>baseUrl</Code>
                                         <Hint popup>
-                                            {
-                                                t("extensions:develop.applications.quickstart.spa.integrate" +
-                                                    ".common.sdkConfigs.serverOrigin.hint")
-                                            }
+                                            {t(
+                                                "extensions:develop.applications.quickstart.spa.integrate" +
+                                                    ".common.sdkConfigs.serverOrigin.hint"
+                                            )}
                                         </Hint>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <Code withBackground={ false }>
-                                            { SDKInitConfig.baseUrl }
-                                        </Code>
+                                        <Code withBackground={false}>{SDKInitConfig.baseUrl}</Code>
                                     </Table.Cell>
                                 </Table.Row>
                                 <Table.Row>
@@ -193,26 +178,24 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                                         <Code>signInRedirectURL</Code>
                                         <Hint
                                             popup
-                                            popupOptions={ {
+                                            popupOptions={{
                                                 wide: true
-                                            } }
-                                            warning={ configuredCallbacks.length > 1 }
+                                            }}
+                                            warning={configuredCallbacks.length > 1}
                                         >
-                                            {
-                                                (configuredCallbacks.length > 1) && (
-                                                    <>
-                                                        <Message attached="top" warning>
-                                                            <Icon name="warning sign" />
-                                                            {
-                                                                t("extensions:develop.applications.quickstart" +
-                                                                    ".spa.integrate.common.sdkConfigs" +
-                                                                    ".signInRedirectURL.hint.multipleWarning")
-                                                            }
-                                                        </Message>
-                                                        <Divider hidden />
-                                                    </>
-                                                )
-                                            }
+                                            {configuredCallbacks.length > 1 && (
+                                                <>
+                                                    <Message attached="top" warning>
+                                                        <Icon name="warning sign" />
+                                                        {t(
+                                                            "extensions:develop.applications.quickstart" +
+                                                                ".spa.integrate.common.sdkConfigs" +
+                                                                ".signInRedirectURL.hint.multipleWarning"
+                                                        )}
+                                                    </Message>
+                                                    <Divider hidden />
+                                                </>
+                                            )}
 
                                             <Trans
                                                 i18nKey={
@@ -220,48 +203,40 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                                                     ".sdkConfigs.signInRedirectURL.hint.content"
                                                 }
                                             >
-                                                The URL that determines where the authorization 
-                                                code is sent to upon user authentication.
-
+                                                The URL that determines where the authorization code is sent to upon
+                                                user authentication.
                                                 <Divider hidden />
-
-                                                If your application is hosted on a different URL, go to the <Link
-                                                    link={ `#tab=${ PROTOCOL_TAB_INDEX }` }
+                                                If your application is hosted on a different URL, go to the{" "}
+                                                <Link
+                                                    link={`#tab=${PROTOCOL_TAB_INDEX}`}
                                                     target="_self"
-                                                    external={ false }
+                                                    external={false}
                                                 >
-                                                protocol
-                                                </Link> tab and configure the correct URL from the <Code>
-                                                Authorized redirect URLs</Code> field.
+                                                    protocol
+                                                </Link>{" "}
+                                                tab and configure the correct URL from the{" "}
+                                                <Code>Authorized redirect URLs</Code> field.
                                             </Trans>
                                         </Hint>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {
-                                            (configuredCallbacks.length > 1)
-                                                ? (
-                                                    <>
-                                                        <Form.Select
-                                                            fluid
-                                                            onChange={
-                                                                (
-                                                                    value: SyntheticEvent<HTMLElement>,
-                                                                    data: DropdownProps
-                                                                ) => {
-                                                                    setSelectedLoginCallBack(data.value as string);
-                                                                }
-                                                            }
-                                                            defaultValue={ configuredCallbacks[0].value }
-                                                            options={ configuredCallbacks }
-                                                        />
-                                                    </>
-                                                )
-                                                : (
-                                                    <Code withBackground={ false }>
-                                                        { SDKInitConfig.signInRedirectURL }
-                                                    </Code>
-                                                )
-                                        }
+                                        {configuredCallbacks.length > 1 ? (
+                                            <>
+                                                <Form.Select
+                                                    fluid
+                                                    onChange={(
+                                                        value: SyntheticEvent<HTMLElement>,
+                                                        data: DropdownProps
+                                                    ) => {
+                                                        setSelectedLoginCallBack(data.value as string);
+                                                    }}
+                                                    defaultValue={configuredCallbacks[0].value}
+                                                    options={configuredCallbacks}
+                                                />
+                                            </>
+                                        ) : (
+                                            <Code withBackground={false}>{SDKInitConfig.signInRedirectURL}</Code>
+                                        )}
                                     </Table.Cell>
                                 </Table.Row>
                                 <Table.Row>
@@ -269,26 +244,24 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                                         <Code>signOutRedirectURL</Code>
                                         <Hint
                                             popup
-                                            popupOptions={ {
+                                            popupOptions={{
                                                 wide: true
-                                            } }
-                                            warning={ configuredCallbacks.length > 1 }
+                                            }}
+                                            warning={configuredCallbacks.length > 1}
                                         >
-                                            {
-                                                (configuredCallbacks.length > 1) && (
-                                                    <>
-                                                        <Message attached="top" warning>
-                                                            <Icon name="warning sign" />
-                                                            {
-                                                                t("extensions:develop.applications.quickstart" +
-                                                                    ".spa.integrate.common.sdkConfigs" +
-                                                                    ".signOutRedirectURL.hint.multipleWarning")
-                                                            }
-                                                        </Message>
-                                                        <Divider hidden />
-                                                    </>
-                                                )
-                                            }
+                                            {configuredCallbacks.length > 1 && (
+                                                <>
+                                                    <Message attached="top" warning>
+                                                        <Icon name="warning sign" />
+                                                        {t(
+                                                            "extensions:develop.applications.quickstart" +
+                                                                ".spa.integrate.common.sdkConfigs" +
+                                                                ".signOutRedirectURL.hint.multipleWarning"
+                                                        )}
+                                                    </Message>
+                                                    <Divider hidden />
+                                                </>
+                                            )}
 
                                             <Trans
                                                 i18nKey={
@@ -297,45 +270,34 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                                                 }
                                             >
                                                 The URL that determines where the user is redirected to upon logout.
-
                                                 <Divider hidden />
-
-                                                If your application is hosted on a different URL, go to the <Link
-                                                    link={ `#tab=${ PROTOCOL_TAB_INDEX }` }
+                                                If your application is hosted on a different URL, go to the{" "}
+                                                <Link
+                                                    link={`#tab=${PROTOCOL_TAB_INDEX}`}
                                                     target="_self"
-                                                    external={ false }
+                                                    external={false}
                                                 >
                                                     protocol
-                                                </Link> tab and configure the correct URL from the <Code>
-                                                Authorized redirect URLs</Code> field.
+                                                </Link>{" "}
+                                                tab and configure the correct URL from the{" "}
+                                                <Code>Authorized redirect URLs</Code> field.
                                             </Trans>
                                         </Hint>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        {
-                                            (configuredCallbacks.length > 1)
-                                                ? (
-                                                    <Form.Select
-                                                        fluid
-                                                        onChange={
-                                                            (
-                                                                value: SyntheticEvent<HTMLElement>,
-                                                                data: DropdownProps
-                                                            ) => {
-                                                                setSelectedLogoutCallBack(data.value as string);
-                                                            }
-                                                        }
-                                                        defaultValue={ configuredCallbacks[0].value }
-                                                        options={ configuredCallbacks }
-                                                        placeholder="Sign-out Redirect URL"
-                                                    />
-                                                )
-                                                : (
-                                                    <Code withBackground={ false }>
-                                                        { SDKInitConfig.signOutRedirectURL }
-                                                    </Code>
-                                                )
-                                        }
+                                        {configuredCallbacks.length > 1 ? (
+                                            <Form.Select
+                                                fluid
+                                                onChange={(value: SyntheticEvent<HTMLElement>, data: DropdownProps) => {
+                                                    setSelectedLogoutCallBack(data.value as string);
+                                                }}
+                                                defaultValue={configuredCallbacks[0].value}
+                                                options={configuredCallbacks}
+                                                placeholder="Sign-out Redirect URL"
+                                            />
+                                        ) : (
+                                            <Code withBackground={false}>{SDKInitConfig.signOutRedirectURL}</Code>
+                                        )}
                                     </Table.Cell>
                                 </Table.Row>
                                 <Table.Row>
@@ -348,66 +310,62 @@ export const IntegrateSDKs: FunctionComponent<IntegrateSDKsPropsInterface> = (
                                                     ".spa.integrate.common.sdkConfigs.scope.hint"
                                                 }
                                             >
-                                                These are the set of scopes that are used to request
-                                                user attributes.
+                                                These are the set of scopes that are used to request user attributes.
                                                 <Divider hidden />
                                                 If you need to to add more scopes other than <Code>openid</Code> &
                                                 <Code>profile</Code>, you can append them to the array.
                                                 <Divider hidden />
-                                                Read through our <Link 
-                                                    link={
-                                                        getLink("develop.applications.editApplication.oidcApplication" +
-                                                        ".quickStart.applicationScopes.learnMore")
-                                                    }
-                                                >documentation</Link> to learn  more.
+                                                Read through our{" "}
+                                                <Link
+                                                    link={getLink(
+                                                        "develop.applications.editApplication.oidcApplication" +
+                                                            ".quickStart.applicationScopes.learnMore"
+                                                    )}
+                                                >
+                                                    documentation
+                                                </Link>{" "}
+                                                to learn more.
                                             </Trans>
                                         </Hint>
                                     </Table.Cell>
                                     <Table.Cell>
-                                        <Code withBackground={ false }>
-                                            {
-                                                `[${
-                                                    SDKInitConfig?.scope?.map((item: string) => {
-                                                        return `"${ item }"`;
-                                                    })
-                                                }]`
-                                            }
+                                        <Code withBackground={false}>
+                                            {`[${SDKInitConfig?.scope?.map((item: string) => {
+                                                return `"${item}"`;
+                                            })}]`}
                                         </Code>
                                     </Table.Cell>
                                 </Table.Row>
-
                             </Table.Body>
                         </Table>
                     </div>
-                ) }
+                }
             />
         );
     };
 
     return (
-        <Fragment data-componentid={ componentId }>
+        <Fragment data-componentid={componentId}>
             <IntegrateStepGeneratorFactory
-                technology={ technology }
-                configurationOptions={ (heading: ReactNode) => renderConfigurationOptions(heading) }
-                productName={ config.ui.productName }
-                sdkConfig={ {
+                technology={technology}
+                configurationOptions={(heading: ReactNode) => renderConfigurationOptions(heading)}
+                productName={config.ui.productName}
+                sdkConfig={{
                     baseUrl: SDKInitConfig?.baseUrl,
                     clientID: SDKInitConfig?.clientID,
                     scope: SDKInitConfig?.scope,
-                    signInRedirectURL: (configuredCallbacks.length > 1)
-                        ? selectedLoginCallBack
-                        : SDKInitConfig?.signInRedirectURL,
-                    signOutRedirectURL: (configuredCallbacks.length > 1)
-                        ? selectedLogoutCallBack
-                        : SDKInitConfig?.signOutRedirectURL
-                } }
+                    signInRedirectURL:
+                        configuredCallbacks.length > 1 ? selectedLoginCallBack : SDKInitConfig?.signInRedirectURL,
+                    signOutRedirectURL:
+                        configuredCallbacks.length > 1 ? selectedLogoutCallBack : SDKInitConfig?.signOutRedirectURL
+                }}
             />
-            <Divider hidden className="x2"/>
+            <Divider hidden className="x2" />
             <div className="mt-3 mb-6">
                 <Message
                     type="info"
-                    header={ t("extensions:develop.applications.quickstart.spa.common.addTestUser.title") }
-                    content={ <AddUserStepContent/> }
+                    header={t("extensions:develop.applications.quickstart.spa.common.addTestUser.title")}
+                    content={<AddUserStepContent />}
                 />
             </div>
         </Fragment>

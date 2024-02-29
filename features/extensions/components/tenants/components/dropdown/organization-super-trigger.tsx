@@ -16,11 +16,9 @@
  * under the License.
  */
 
-import {
-    GenericIcon
-} from "@wso2is/react-components";
+import { GenericIcon } from "@wso2is/react-components";
 import React, { ReactElement } from "react";
-import { getMiscellaneousIcons } from "features/core/configs";
+import { getMiscellaneousIcons } from "../../../../../core/configs";
 
 export const OrganizationSuperTrigger = (): ReactElement => {
     return (
@@ -30,7 +28,7 @@ export const OrganizationSuperTrigger = (): ReactElement => {
                 inline
                 className="tenant-dropdown-trigger-icon"
                 data-testid="tenant-dropdown-trigger-icon"
-                icon={ getMiscellaneousIcons().tenantIcon }
+                icon={getMiscellaneousIcons().tenantIcon}
                 size="micro"
             />
         </span>

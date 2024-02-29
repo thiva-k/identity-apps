@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { Config } from "features/core";
+import { Config } from "../../../../core";
 import { InviteResourceEndpointsInterface } from "../models";
 
 /**
@@ -28,6 +28,6 @@ export const getInviteResourceEndpoints = (): InviteResourceEndpointsInterface =
     return {
         inviteEndpoint: Config.getDeploymentConfig().serverOrigin + "/api/asgardeo-guest/v1/users/invite",
         resendEndpoint: Config.getDeploymentConfig().serverOrigin + "/api/asgardeo-guest/v1/invite/{}/resend",
-        userEndpoint:  Config.getDeploymentConfig().serverOrigin + "/api/asgardeo-guest/v1/users"
+        userEndpoint: Config.getDeploymentConfig().serverOrigin + "/api/asgardeo-guest/v1/users"
     };
 };

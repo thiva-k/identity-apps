@@ -38,7 +38,7 @@ import {
     FeatureConfigInterface,
     UIConstants,
     getEmptyPlaceholderIllustrations
-} from "features/core";
+} from "../../../../../core";
 import { deleteUser } from "../../../../../users/api";
 
 import { UserListInterface } from "features/users/models";

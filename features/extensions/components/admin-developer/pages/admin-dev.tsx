@@ -32,15 +32,10 @@ import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useE
 import { Trans, useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dropdown, DropdownProps, Header, Icon, Label, PaginationProps, SemanticICONS } from "semantic-ui-react";
-import {
-    AdvancedSearchWithBasicFilters,
-    UIConstants,
-    getEmptyPlaceholderIllustrations
-} from "features/core";
+import { AdvancedSearchWithBasicFilters, UIConstants, getEmptyPlaceholderIllustrations } from "../../../../core";
 import { deleteInvite, resendInvite, updateInvite } from "../api";
 import { InviteeRoleSelection } from "../components";
 import { InviteUserStatus, UserInviteInterface } from "../models";
-
 
 interface UsersPageInterface extends TestableComponentInterface {
     setUpdateInviteList: (value: boolean) => void;
@@ -64,10 +59,7 @@ const TEMP_RESOURCE_LIST_ITEM_LIMIT_OFFSET: number = 1;
  * @param {UsersPageInterface} props - Props injected to the component.
  * @return {React.ReactElement}
  */
-const AdminDevPage: FunctionComponent<UsersPageInterface> = (
-    props: UsersPageInterface
-): ReactElement => {
-
+const AdminDevPage: FunctionComponent<UsersPageInterface> = (props: UsersPageInterface): ReactElement => {
     const {
         ["data-testid"]: testId,
         setUpdateInviteList,
@@ -80,95 +72,112 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
 
     const dispatch = useDispatch();
 
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ changeStatus, setChangeStatus ] = useState<string>("");
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [changeStatus, setChangeStatus] = useState<string>("");
 
-    const [ listOffset, setListOffset ] = useState<number>(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [listOffset, setListOffset] = useState<number>(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
 
-    const [ showDeleteModal, setShowDeleteModal ] = useState<boolean>(false);
-    const [ deleteUserInvite, setDeleteUserInvite ] = useState<UserInviteInterface>(undefined);
-    const [ showResendConfirmationModal, setShowResendConfirmationModal ] = useState<boolean>(false);
-    const [ resendUserInvite, setResendUserInvite ] = useState<UserInviteInterface>(undefined);
-    const [ roleSelectionInvite, setRoleSelectionInvite ] = useState<UserInviteInterface>(undefined);
-    const [ showRoleSelectionModal, setShowRoleSelectionModal ] = useState<boolean>(false);
+    const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+    const [deleteUserInvite, setDeleteUserInvite] = useState<UserInviteInterface>(undefined);
+    const [showResendConfirmationModal, setShowResendConfirmationModal] = useState<boolean>(false);
+    const [resendUserInvite, setResendUserInvite] = useState<UserInviteInterface>(undefined);
+    const [roleSelectionInvite, setRoleSelectionInvite] = useState<UserInviteInterface>(undefined);
+    const [showRoleSelectionModal, setShowRoleSelectionModal] = useState<boolean>(false);
 
-    const [ paginateAdminDevList, setPaginateAdminDevList ] = useState<UserInviteInterface[]>([]);
-    const [ finalAdminDevList, setFinalAdminDevList ] = useState<UserInviteInterface[]>([]);
-    const [ filterAdminDevList, setFilterAdminDevList ] = useState<UserInviteInterface[]>([]);
-    const [ sortAdminDevList, setSortAdminDevList ] = useState<UserInviteInterface[]>([]);
+    const [paginateAdminDevList, setPaginateAdminDevList] = useState<UserInviteInterface[]>([]);
+    const [finalAdminDevList, setFinalAdminDevList] = useState<UserInviteInterface[]>([]);
+    const [filterAdminDevList, setFilterAdminDevList] = useState<UserInviteInterface[]>([]);
+    const [sortAdminDevList, setSortAdminDevList] = useState<UserInviteInterface[]>([]);
 
-    const [ isListUpdated, setListUpdated ] = useState(true);
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
+    const [isListUpdated, setListUpdated] = useState(true);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
 
-    const [ isNextPageAvailable, setIsNextPageAvailable ] = useState<boolean>(false);
-    const [ isPreviousPageAvailable, setIsPreviousPageAvailable ] = useState<boolean>(false);
+    const [isNextPageAvailable, setIsNextPageAvailable] = useState<boolean>(false);
+    const [isPreviousPageAvailable, setIsPreviousPageAvailable] = useState<boolean>(false);
 
     const HandleDeleteInvite = (traceID: string) => {
-
         deleteInvite(traceID)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:manage.features.invite.notifications.deleteInvite.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.invite.notifications.deleteInvite.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t("console:manage.features.invite.notifications.deleteInvite.success.description"),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:manage.features.invite.notifications.deleteInvite.success.message")
+                    })
+                );
                 setUpdateInviteList(true);
+            })
+            .catch(error => {
+                if (error?.response?.data?.description) {
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:manage.features.invite.notifications.deleteInvite.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:manage.features.invite.notifications.deleteInvite.error.message")
+                        })
+                    );
 
-            }).catch((error) => {
-            if (error?.response?.data?.description) {
-                dispatch(addAlert({
-                    description: error?.response?.data?.description ?? error?.response?.data?.detail
-                        ?? t("console:manage.features.invite.notifications.deleteInvite.error.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.response?.data?.message
-                        ?? t("console:manage.features.invite.notifications.deleteInvite.error.message")
-                }));
+                    return;
+                }
 
-                return;
-            }
-
-            dispatch(addAlert({
-                description: t("console:manage.features.invite.notifications.deleteInvite.genericError." +
-                    "description"),
-                level: AlertLevels.ERROR,
-                message: t("console:manage.features.invite.notifications.deleteInvite.genericError.message")
-            }));
-        });
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.invite.notifications.deleteInvite.genericError." + "description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.invite.notifications.deleteInvite.genericError.message")
+                    })
+                );
+            });
     };
 
     const HandleResendInvite = (traceID: string) => {
-
         resendInvite(traceID)
-            .then((response) => {
-                dispatch(addAlert({
-                    description: t("console:manage.features.invite.notifications.resendInvite.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.invite.notifications.resendInvite.success.message")
-                }));
+            .then(response => {
+                dispatch(
+                    addAlert({
+                        description: t("console:manage.features.invite.notifications.resendInvite.success.description"),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:manage.features.invite.notifications.resendInvite.success.message")
+                    })
+                );
+            })
+            .catch(error => {
+                if (error?.response?.data?.description) {
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:manage.features.invite.notifications.resendInvite.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:manage.features.invite.notifications.resendInvite.error.message")
+                        })
+                    );
 
-            }).catch((error) => {
-            if (error?.response?.data?.description) {
-                dispatch(addAlert({
-                    description: error?.response?.data?.description ?? error?.response?.data?.detail
-                        ?? t("console:manage.features.invite.notifications.resendInvite.error.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.response?.data?.message
-                        ?? t("console:manage.features.invite.notifications.resendInvite.error.message")
-                }));
+                    return;
+                }
 
-                return;
-            }
-
-            dispatch(addAlert({
-                description: t("console:manage.features.invite.notifications.resendInvite.genericError." +
-                    "description"),
-                level: AlertLevels.ERROR,
-                message: t("console:manage.features.invite.notifications.resendInvite.genericError.message")
-            }));
-        });
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.invite.notifications.resendInvite.genericError." + "description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.invite.notifications.resendInvite.genericError.message")
+                    })
+                );
+            });
     };
-
 
     /**
      * User effect to handle Invite List update.
@@ -178,11 +187,11 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
             setUpdateInviteList(true);
             setListUpdated(false);
         }
-    }, [ isListUpdated ]);
+    }, [isListUpdated]);
 
     useEffect(() => {
         setPaginateAdminDevList(totalAdminDevList);
-    }, [ totalAdminDevList ]);
+    }, [totalAdminDevList]);
 
     /**
      * User effect to handle Invite List update.
@@ -192,7 +201,7 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
             handleSearchQueryClear();
             setTriggerClearQuery(false);
         }
-    }, [ triggerClearQuery ]);
+    }, [triggerClearQuery]);
 
     /**
      * User effect to handle Pagination.
@@ -208,7 +217,7 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
             setFinalAdminDevList(finalInvitations);
             setIsNextPageAvailable(false);
         }
-    }, [ paginateAdminDevList, listOffset ]);
+    }, [paginateAdminDevList, listOffset]);
 
     /**
      * Handles the `onSearchQueryClear` callback action.
@@ -235,14 +244,13 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
             if (filterAdminDevList.length > 0) {
                 searchList = filterAdminDevList;
             }
-            searchList = searchList.filter((invite) => {
+            searchList = searchList.filter(invite => {
                 return invite.status.includes(changeStatus);
             });
             setPaginateAdminDevList(searchList);
             setSortAdminDevList(searchList);
         }
-    }, [ changeStatus ]);
-
+    }, [changeStatus]);
 
     useEffect(() => {
         setListOffset(0);
@@ -260,7 +268,7 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
                 searchList = sortAdminDevList;
             }
             const searchValue = searchQuery.split("co ")[1];
-            searchList = searchList.filter((invite) => {
+            searchList = searchList.filter(invite => {
                 return invite.email.includes(searchValue);
             });
             setPaginateAdminDevList(searchList);
@@ -271,13 +279,13 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
                 searchList = sortAdminDevList;
             }
             const searchValue = searchQuery.split("co ")[1];
-            searchList = searchList.filter((invite) => {
+            searchList = searchList.filter(invite => {
                 return invite.status.includes(searchValue);
             });
             setPaginateAdminDevList(searchList);
             setFilterAdminDevList(searchList);
         }
-    }, [ searchQuery ]);
+    }, [searchQuery]);
 
     const handleStatusChange = (event: React.MouseEvent<HTMLAnchorElement>, data: DropdownProps) => {
         setChangeStatus(data.value.toString());
@@ -301,18 +309,16 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
         setListUpdated(true);
     };
 
-
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setListOffset((data.activePage as number - 1) * listItemLimit);
+        setListOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     const determineInviteStatus = (status: InviteUserStatus): ReactNode => {
         if (status === InviteUserStatus.EXPIRED) {
-            return <Label color={ "red" }>{ status }</Label>;
+            return <Label color={"red"}>{status}</Label>;
         } else {
-            return <Label color={ "blue" }>{ status }</Label>;
+            return <Label color={"blue"}>{status}</Label>;
         }
-
     };
 
     /**
@@ -325,19 +331,20 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
         if (searchQuery) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ handleSearchQueryClear }>
-                            { t("console:manage.features.invite.placeholder.emptySearchResultPlaceholder.clearButton") }
+                    action={
+                        <LinkButton onClick={handleSearchQueryClear}>
+                            {t("console:manage.features.invite.placeholder.emptySearchResultPlaceholder.clearButton")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.invite.placeholder.emptySearchResultPlaceholder.title") }
-                    subtitle={ [
-                        t("console:manage.features.invite.placeholder.emptySearchResultPlaceholder.subTitle.0",
-                            { query: searchQuery }),
+                    title={t("console:manage.features.invite.placeholder.emptySearchResultPlaceholder.title")}
+                    subtitle={[
+                        t("console:manage.features.invite.placeholder.emptySearchResultPlaceholder.subTitle.0", {
+                            query: searchQuery
+                        }),
                         t("console:manage.features.invite.placeholder.emptySearchResultPlaceholder.subTitle.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -346,21 +353,19 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
             return (
                 <EmptyPlaceholder
                     action={
-                        <PrimaryButton
-                            onClick={ () => setShowWizard(true) }
-                        >
-                            <Icon name="add"/>
-                            { t("console:manage.features.invite.placeholder.emptyResultPlaceholder.addButton") }
+                        <PrimaryButton onClick={() => setShowWizard(true)}>
+                            <Icon name="add" />
+                            {t("console:manage.features.invite.placeholder.emptyResultPlaceholder.addButton")}
                         </PrimaryButton>
                     }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    title={ t("console:manage.features.invite.placeholder.emptyResultPlaceholder.title") }
-                    subtitle={ [
+                    title={t("console:manage.features.invite.placeholder.emptyResultPlaceholder.title")}
+                    subtitle={[
                         t("console:manage.features.invite.placeholder.emptyResultPlaceholder.subTitle.0"),
                         t("console:manage.features.invite.placeholder.emptyResultPlaceholder.subTitle.1"),
                         t("console:manage.features.invite.placeholder.emptyResultPlaceholder.subTitle.2")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -381,32 +386,42 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
 
         updateInvite(inviteeID, inviteeData)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:manage.features.invite.notifications.updateInvite.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:manage.features.invite.notifications.updateInvite.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t("console:manage.features.invite.notifications.updateInvite.success.description"),
+                        level: AlertLevels.SUCCESS,
+                        message: t("console:manage.features.invite.notifications.updateInvite.success.message")
+                    })
+                );
                 setUpdateInviteList(true);
+            })
+            .catch(error => {
+                if (error?.response?.data?.description) {
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t("console:manage.features.invite.notifications.updateInvite.error.description"),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t("console:manage.features.invite.notifications.updateInvite.error.message")
+                        })
+                    );
 
-            }).catch((error) => {
-            if (error?.response?.data?.description) {
-                dispatch(addAlert({
-                    description: error?.response?.data?.description ?? error?.response?.data?.detail
-                        ?? t("console:manage.features.invite.notifications.updateInvite.error.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.response?.data?.message
-                        ?? t("console:manage.features.invite.notifications.updateInvite.error.message")
-                }));
+                    return;
+                }
 
-                return;
-            }
-
-            dispatch(addAlert({
-                description: t("console:manage.features.invite.notifications.updateInvite.genericError." +
-                    "description"),
-                level: AlertLevels.ERROR,
-                message: t("console:manage.features.invite.notifications.updateInvite.genericError.message")
-            }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.invite.notifications.updateInvite.genericError." + "description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t("console:manage.features.invite.notifications.updateInvite.genericError.message")
+                    })
+                );
             });
 
         setShowRoleSelectionModal(false);
@@ -418,10 +433,10 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
     const resolveInviteeRoleSelection = () => {
         return (
             <InviteeRoleSelection
-                invitee={ roleSelectionInvite }
-                showSelectionModal={ showRoleSelectionModal }
-                handleSelectionModalClose={ () => setShowRoleSelectionModal(false) }
-                handleInviteeRolesUpdate={ handleInviteeRolesUpdate }
+                invitee={roleSelectionInvite}
+                showSelectionModal={showRoleSelectionModal}
+                handleSelectionModalClose={() => setShowRoleSelectionModal(false)}
+                handleInviteeRolesUpdate={handleInviteeRolesUpdate}
             />
         );
     };
@@ -429,52 +444,52 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
     return (
         <ListLayout
             // TODO add sorting functionality.
-            advancedSearch={ (
+            advancedSearch={
                 <AdvancedSearchWithBasicFilters
-                    onFilter={ handleUserFilter }
-                    filterAttributeOptions={ [
+                    onFilter={handleUserFilter}
+                    filterAttributeOptions={[
                         {
                             key: 1,
-                            text: t("console:manage.features.invite.advancedSearch.form.dropdown." +
-                                "filterAttributeOptions.email"),
+                            text: t(
+                                "console:manage.features.invite.advancedSearch.form.dropdown." +
+                                    "filterAttributeOptions.email"
+                            ),
                             value: "emails"
                         }
-                    ] }
-                    filterAttributePlaceholder={
-                        t("console:manage.features.invite.advancedSearch.form.inputs.filterAttribute.placeholder")
-                    }
-                    filterConditionsPlaceholder={
-                        t("console:manage.features.invite.advancedSearch.form.inputs.filterCondition" +
-                            ".placeholder")
-                    }
-                    filterValuePlaceholder={
-                        t("console:manage.features.invite.advancedSearch.form.inputs.filterValue" +
-                            ".placeholder")
-                    }
-                    placeholder={ t("console:manage.features.invite.advancedSearch.placeholder") }
+                    ]}
+                    filterAttributePlaceholder={t(
+                        "console:manage.features.invite.advancedSearch.form.inputs.filterAttribute.placeholder"
+                    )}
+                    filterConditionsPlaceholder={t(
+                        "console:manage.features.invite.advancedSearch.form.inputs.filterCondition" + ".placeholder"
+                    )}
+                    filterValuePlaceholder={t(
+                        "console:manage.features.invite.advancedSearch.form.inputs.filterValue" + ".placeholder"
+                    )}
+                    placeholder={t("console:manage.features.invite.advancedSearch.placeholder")}
                     defaultSearchAttribute="email"
                     defaultSearchOperator="co"
-                    triggerClearQuery={ triggerClearQuery }
+                    triggerClearQuery={triggerClearQuery}
                 />
-            ) }
-            currentListSize={ finalAdminDevList.length }
-            listItemLimit={ listItemLimit }
+            }
+            currentListSize={finalAdminDevList.length}
+            listItemLimit={listItemLimit}
             //Todo add handler for items per page change.
             // onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-            onPageChange={ handlePaginationChange }
-            showPagination={ totalAdminDevList.length > listItemLimit }
-            showTopActionPanel={ isUserListRequestLoading || !(totalAdminDevList.length < 5) }
-            totalPages={ Math.ceil(totalAdminDevList.length / listItemLimit) }
-            totalListSize={ totalAdminDevList.length }
-            paginationOptions={ {
+            onPageChange={handlePaginationChange}
+            showPagination={totalAdminDevList.length > listItemLimit}
+            showTopActionPanel={isUserListRequestLoading || !(totalAdminDevList.length < 5)}
+            totalPages={Math.ceil(totalAdminDevList.length / listItemLimit)}
+            totalListSize={totalAdminDevList.length}
+            paginationOptions={{
                 disableNextButton: !isNextPageAvailable,
                 disablePreviousButton: !isPreviousPageAvailable
-            } }
+            }}
             rightActionPanel={
                 <Dropdown
                     data-testid="user-mgt-user-list-userstore-dropdown"
                     selection
-                    options={ [
+                    options={[
                         {
                             key: "all",
                             text: "All",
@@ -490,22 +505,18 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
                             text: "Pending",
                             value: InviteUserStatus.PENDING
                         }
-                    ] }
-                    onChange={ handleStatusChange }
+                    ]}
+                    onChange={handleStatusChange}
                     defaultValue="all"
                 />
             }
         >
             <DataTable<UserInviteInterface>
                 padded
-                isLoading={ isUserListRequestLoading }
-                loadingStateOptions={
-                    { count: 5, imageType: "square" }
-                }
-                placeholders={
-                    showPlaceholders()
-                }
-                actions={ [
+                isLoading={isUserListRequestLoading}
+                loadingStateOptions={{ count: 5, imageType: "square" }}
+                placeholders={showPlaceholders()}
+                actions={[
                     {
                         icon: (): SemanticICONS => "briefcase",
                         onClick: (e: SyntheticEvent, invite: UserInviteInterface): void => {
@@ -533,9 +544,9 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
                         popupText: (): string => "delete",
                         renderer: "semantic-icon"
                     }
-                ] }
-                data={ finalAdminDevList }
-                columns={ [
+                ]}
+                data={finalAdminDevList}
+                columns={[
                     {
                         allowToggleVisibility: false,
                         dataIndex: "email",
@@ -544,20 +555,20 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
                         render: (invite: UserInviteInterface) => (
                             <Header as="h6" image>
                                 <AppAvatar
-                                    image={ (
+                                    image={
                                         <AnimatedAvatar
-                                            name={ invite.email }
+                                            name={invite.email}
                                             size="mini"
-                                            data-testid={ `${testId}-item-image-inner` }
+                                            data-testid={`${testId}-item-image-inner`}
                                         />
-                                    ) }
+                                    }
                                     size="mini"
                                     spaced="right"
-                                    data-testid={ `${testId}-item-image` }
+                                    data-testid={`${testId}-item-image`}
                                 />
                                 <Header.Content>
-                                    { invite.email }
-                                    <Header.Subheader>{ invite.roles.toString() }</Header.Subheader>
+                                    {invite.email}
+                                    <Header.Subheader>{invite.roles.toString()}</Header.Subheader>
                                 </Header.Content>
                             </Header>
                         ),
@@ -569,9 +580,7 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
                         id: "status",
                         textAlign: "right",
                         key: 1,
-                        render: (invite: UserInviteInterface) => (
-                            determineInviteStatus(invite.status)
-                        ),
+                        render: (invite: UserInviteInterface) => determineInviteStatus(invite.status),
                         title: "Status"
                     },
                     {
@@ -582,100 +591,86 @@ const AdminDevPage: FunctionComponent<UsersPageInterface> = (
                         textAlign: "right",
                         title: "Actions"
                     }
-                ] }
-                onRowClick={ null }
-                showHeader={ false }
-                transparent={ !isUserListRequestLoading && (showPlaceholders() !== null) }
+                ]}
+                onRowClick={null}
+                showHeader={false}
+                transparent={!isUserListRequestLoading && showPlaceholders() !== null}
             />
-            { resolveInviteeRoleSelection() }
-            {
-                showDeleteModal && (
-                    <ConfirmationModal
-                        data-testid={ `${testId}-confirmation-modal` }
-                        onClose={ (): void => setShowDeleteModal(false) }
-                        type="negative"
-                        open={ showDeleteModal }
-                        assertion={ deleteUserInvite.email }
-                        assertionHint={
-                            (
-                                <p>
-                                    <Trans
-                                        i18nKey={ "console:manage.features.invite.confirmationModal.deleteInvite." +
-                                        "assertionHint" }
-                                        tOptions={ { name: deleteUserInvite.email } }
-                                    >
-                                        Please type <strong>{ deleteUserInvite.email }</strong> to confirm.
-                                    </Trans>
-                                </p>
-                            )
-                        }
-                        assertionType="input"
-                        primaryAction="Confirm"
-                        secondaryAction="Cancel"
-                        onSecondaryActionClick={ (): void => setShowDeleteModal(false) }
-                        onPrimaryActionClick={ (): void => revokeUserInvite(deleteUserInvite.id) }
-                        closeOnDimmerClick={ false }
-                    >
-                        <ConfirmationModal.Header data-testid={ `${testId}-confirmation-modal-header` }>
-                            { t("console:manage.features.invite.confirmationModal.deleteInvite.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            data-testid={ `${testId}-confirmation-modal-message` }
-                            attached
-                            warning
-                        >
-                            { t("console:manage.features.invite.confirmationModal.deleteInvite.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-testid={ `${testId}-confirmation-modal-content` }>
-                            { t("console:manage.features.invite.confirmationModal.deleteInvite.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
-            {
-                showResendConfirmationModal && (
-                    <ConfirmationModal
-                        data-testid={ `${testId}-confirmation-modal` }
-                        onClose={ (): void => setShowResendConfirmationModal(false) }
-                        type="warning"
-                        open={ showResendConfirmationModal }
-                        assertion={ resendUserInvite.email }
-                        assertionHint={
-                            (
-                                <p>
-                                    <Trans
-                                        i18nKey={ "console:manage.features.invite.confirmationModal.resendInvite." +
-                                        "assertionHint" }
-                                        tOptions={ { name: resendUserInvite.email } }
-                                    >
-                                        Please type <strong>{ resendUserInvite.email }</strong> to confirm.
-                                    </Trans>
-                                </p>
-                            )
-                        }
-                        assertionType="input"
-                        primaryAction="Confirm"
-                        secondaryAction="Cancel"
-                        onSecondaryActionClick={ (): void => setShowResendConfirmationModal(false) }
-                        onPrimaryActionClick={ (): void => reSendUserInvite(resendUserInvite.id) }
-                        closeOnDimmerClick={ false }
-                    >
-                        <ConfirmationModal.Header data-testid={ `${testId}-confirmation-modal-header` }>
-                            { t("console:manage.features.invite.confirmationModal.resendInvite.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            data-testid={ `${testId}-confirmation-modal-message` }
-                            attached
-                            warning
-                        >
-                            { t("console:manage.features.invite.confirmationModal.resendInvite.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-testid={ `${testId}-confirmation-modal-content` }>
-                            { t("console:manage.features.invite.confirmationModal.resendInvite.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+            {resolveInviteeRoleSelection()}
+            {showDeleteModal && (
+                <ConfirmationModal
+                    data-testid={`${testId}-confirmation-modal`}
+                    onClose={(): void => setShowDeleteModal(false)}
+                    type="negative"
+                    open={showDeleteModal}
+                    assertion={deleteUserInvite.email}
+                    assertionHint={
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "console:manage.features.invite.confirmationModal.deleteInvite." + "assertionHint"
+                                }
+                                tOptions={{ name: deleteUserInvite.email }}
+                            >
+                                Please type <strong>{deleteUserInvite.email}</strong> to confirm.
+                            </Trans>
+                        </p>
+                    }
+                    assertionType="input"
+                    primaryAction="Confirm"
+                    secondaryAction="Cancel"
+                    onSecondaryActionClick={(): void => setShowDeleteModal(false)}
+                    onPrimaryActionClick={(): void => revokeUserInvite(deleteUserInvite.id)}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-confirmation-modal-header`}>
+                        {t("console:manage.features.invite.confirmationModal.deleteInvite.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message data-testid={`${testId}-confirmation-modal-message`} attached warning>
+                        {t("console:manage.features.invite.confirmationModal.deleteInvite.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-confirmation-modal-content`}>
+                        {t("console:manage.features.invite.confirmationModal.deleteInvite.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
+            {showResendConfirmationModal && (
+                <ConfirmationModal
+                    data-testid={`${testId}-confirmation-modal`}
+                    onClose={(): void => setShowResendConfirmationModal(false)}
+                    type="warning"
+                    open={showResendConfirmationModal}
+                    assertion={resendUserInvite.email}
+                    assertionHint={
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "console:manage.features.invite.confirmationModal.resendInvite." + "assertionHint"
+                                }
+                                tOptions={{ name: resendUserInvite.email }}
+                            >
+                                Please type <strong>{resendUserInvite.email}</strong> to confirm.
+                            </Trans>
+                        </p>
+                    }
+                    assertionType="input"
+                    primaryAction="Confirm"
+                    secondaryAction="Cancel"
+                    onSecondaryActionClick={(): void => setShowResendConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => reSendUserInvite(resendUserInvite.id)}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-confirmation-modal-header`}>
+                        {t("console:manage.features.invite.confirmationModal.resendInvite.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message data-testid={`${testId}-confirmation-modal-message`} attached warning>
+                        {t("console:manage.features.invite.confirmationModal.resendInvite.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-confirmation-modal-content`}>
+                        {t("console:manage.features.invite.confirmationModal.resendInvite.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </ListLayout>
     );
 };

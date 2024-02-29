@@ -38,14 +38,14 @@ import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Card, Divider, Form, Grid, Icon } from "semantic-ui-react";
 import { OIDCApplicationConfigurationInterface } from "features/applications/models";
-import { AppState, EventPublisher } from "features/core";
+import { AppState, EventPublisher } from "../../../../core";
 
 const DEFAULT_REQUESTED_SCOPES: string = "openid profile";
 
 type TechnologyArrayPropsInterface = {
     techIcon: GenericIconProps;
     techIconTitle?: string;
-}
+};
 
 interface MobileCustomConfigurationPropsInterface extends IdentifiableComponentInterface {
     icons: Array<GenericIconProps["icon"]> | TechnologyArrayPropsInterface[];
@@ -72,7 +72,6 @@ interface CustomConfigInterface {
 export const MobileCustomConfiguration: FC<MobileCustomConfigurationPropsInterface> = (
     props: MobileCustomConfigurationPropsInterface
 ): ReactElement => {
-
     const {
         icons,
         onTriggerTabUpdate,
@@ -88,10 +87,11 @@ export const MobileCustomConfiguration: FC<MobileCustomConfigurationPropsInterfa
     const { getLink } = useDocumentation();
 
     const oidcConfigurations: OIDCApplicationConfigurationInterface = useSelector(
-        (state: AppState) => state.application.oidcConfigurations);
+        (state: AppState) => state.application.oidcConfigurations
+    );
 
-    const [ isConfigOpen, setConfigOpen ] = useState<boolean>(true);
-    const [ sdkConfig, setSdkConfig ] = useState<CustomConfigInterface>(undefined);
+    const [isConfigOpen, setConfigOpen] = useState<boolean>(true);
+    const [sdkConfig, setSdkConfig] = useState<CustomConfigInterface>(undefined);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -104,10 +104,10 @@ export const MobileCustomConfiguration: FC<MobileCustomConfigurationPropsInterfa
         }
 
         const configuredCallbacks: string[] = [];
-        
+
         if (inboundProtocolConfig?.oidc?.callbackURLs.length > 0) {
-            const callbacks: string[] = EncodeDecodeUtils.decodeURLRegex(inboundProtocolConfig.oidc.callbackURLs[ 0 ]);
-    
+            const callbacks: string[] = EncodeDecodeUtils.decodeURLRegex(inboundProtocolConfig.oidc.callbackURLs[0]);
+
             if (callbacks.length > 0) {
                 callbacks.forEach((url: string) => {
                     configuredCallbacks.push(url);
@@ -126,9 +126,7 @@ export const MobileCustomConfiguration: FC<MobileCustomConfigurationPropsInterfa
     }, []);
 
     const onServerEndpointConfigTabClick = (): void => {
-        eventPublisher.publish(
-            "application-quick-start-visit-info-section"
-        );
+        eventPublisher.publish("application-quick-start-visit-info-section");
         onTriggerTabUpdate(infoTabIndex);
     };
 
@@ -140,130 +138,117 @@ export const MobileCustomConfiguration: FC<MobileCustomConfigurationPropsInterfa
         return (
             <>
                 <div className="custom-config-message">
-                    <Heading as="h6" compact>                     
+                    <Heading as="h6" compact>
                         <Trans
-                            i18nKey={
-                                "extensions:console.application.quickStart" +
-                                ".spa.customConfig.protocolConfig"
-                            }
+                            i18nKey={"extensions:console.application.quickStart" + ".spa.customConfig.protocolConfig"}
                         >
-                            Use the following configurations to integrate your application with Asgardeo. 
-                            For more details on configurations, go to the 
-                            <a
-                                className="link pointing"
-                                onClick={ onProtocolTabClick }
-                            >
+                            Use the following configurations to integrate your application with Asgardeo. For more
+                            details on configurations, go to the
+                            <a className="link pointing" onClick={onProtocolTabClick}>
                                 Protocol
-                            </a> tab.
+                            </a>{" "}
+                            tab.
                         </Trans>
                     </Heading>
                 </div>
-                <Grid className="custom-config-message mt-4 mb-4" >
+                <Grid className="custom-config-message mt-4 mb-4">
                     <Grid.Row>
-                        <Grid.Column computer={ 14 } widescreen={ 10 }>
+                        <Grid.Column computer={14} widescreen={10}>
                             <Form>
                                 <Form.Field>
                                     <label>
-                                        {
-                                            t("console:develop.features.applications.confirmations." +
-                                                "clientSecretHashDisclaimer.forms.clientIdSecretForm.clientId.label")
-                                        }
+                                        {t(
+                                            "console:develop.features.applications.confirmations." +
+                                                "clientSecretHashDisclaimer.forms.clientIdSecretForm.clientId.label"
+                                        )}
                                         <Hint className="mt-0 mb-0" popup>
-                                            {
-                                                t("extensions:develop.applications.quickstart.spa.integrate" +
-                                                    ".common.sdkConfigs.clientId.hint")
-                                            }
+                                            {t(
+                                                "extensions:develop.applications.quickstart.spa.integrate" +
+                                                    ".common.sdkConfigs.clientId.hint"
+                                            )}
                                         </Hint>
                                     </label>
                                     <CopyInputField
-                                        value={ sdkConfig?.clientId }
-                                        data-componentid={ `${ componentId }-client-id-readonly-input` }
+                                        value={sdkConfig?.clientId}
+                                        data-componentid={`${componentId}-client-id-readonly-input`}
                                     />
                                 </Form.Field>
                                 <Form.Field>
                                     <label>
-                                        {
-                                            t("extensions:develop.applications.quickstart.mobileApp" +
-                                                ".configurations.redirectURI.label")
-                                        }
+                                        {t(
+                                            "extensions:develop.applications.quickstart.mobileApp" +
+                                                ".configurations.redirectURI.label"
+                                        )}
                                         <Hint
                                             popup
-                                            popupOptions={ {
+                                            popupOptions={{
                                                 wide: true
-                                            } }
-                                            warning={ sdkConfig?.redirectUrl?.length > 1 }
+                                            }}
+                                            warning={sdkConfig?.redirectUrl?.length > 1}
                                             className="mt-0 mb-0"
                                         >
-                                            {
-                                                (sdkConfig?.redirectUrl?.length > 1) && (
-                                                    <>
-                                                        <Message attached="top" warning>
-                                                            <Icon name="warning sign" />
-                                                            {
-                                                                t("extensions:develop.applications.quickstart" +
-                                                                    ".spa.integrate.common.sdkConfigs." +
-                                                                    "signInRedirectURL.hint.multipleWarning")
-                                                            }
-                                                        </Message>
-                                                        <Divider hidden />
-                                                    </>
-                                                )
-                                            }
+                                            {sdkConfig?.redirectUrl?.length > 1 && (
+                                                <>
+                                                    <Message attached="top" warning>
+                                                        <Icon name="warning sign" />
+                                                        {t(
+                                                            "extensions:develop.applications.quickstart" +
+                                                                ".spa.integrate.common.sdkConfigs." +
+                                                                "signInRedirectURL.hint.multipleWarning"
+                                                        )}
+                                                    </Message>
+                                                    <Divider hidden />
+                                                </>
+                                            )}
                                             <Trans
                                                 i18nKey={
                                                     "extensions:develop.applications.quickstart.spa.integrate.common" +
-                                                        ".sdkConfigs.signInRedirectURL.hint.content"
+                                                    ".sdkConfigs.signInRedirectURL.hint.content"
                                                 }
                                             >
-                                                The URL that determines where the authorization 
-                                                code is sent to upon user authentication.
+                                                The URL that determines where the authorization code is sent to upon
+                                                user authentication.
                                                 <Divider hidden />
-                                                If your application is hosted on a different URL, go to the 
-                                                <Link
-                                                    link={ `#tab=${ protocolTabIndex }` }
-                                                    target="_self"
-                                                    external={ false }
-                                                >
+                                                If your application is hosted on a different URL, go to the
+                                                <Link link={`#tab=${protocolTabIndex}`} target="_self" external={false}>
                                                     Protocol
-                                                </Link> 
+                                                </Link>
                                                 tab and configure the correct URL from the
-                                                <Code>
-                                                    Authorized redirect URLs
-                                                </Code> 
+                                                <Code>Authorized redirect URLs</Code>
                                                 field.
                                             </Trans>
                                         </Hint>
                                     </label>
                                     <CopyInputField
-                                        value={ sdkConfig?.redirectUrl.join(", ").toString() }
-                                        data-testid={ `${ componentId }-redirect-url-readonly-input` }
+                                        value={sdkConfig?.redirectUrl.join(", ").toString()}
+                                        data-testid={`${componentId}-redirect-url-readonly-input`}
                                         className="mt-2"
                                     />
                                 </Form.Field>
                                 <Form.Field>
                                     <label>
-                                        {
-                                            t("extensions:develop.applications.quickstart.mobileApp" +
-                                            ".configurations.discoveryURI.label")
-                                        }
+                                        {t(
+                                            "extensions:develop.applications.quickstart.mobileApp" +
+                                                ".configurations.discoveryURI.label"
+                                        )}
                                         <Hint className="mt-0 mb-0" popup>
-                                            {
-                                                t("extensions:develop.applications.quickstart.mobileApp" +
-                                                ".configurations.discoveryURI.info")
-                                            }
+                                            {t(
+                                                "extensions:develop.applications.quickstart.mobileApp" +
+                                                    ".configurations.discoveryURI.info"
+                                            )}
                                         </Hint>
                                     </label>
                                     <CopyInputField
-                                        value={ sdkConfig?.discoveryUrl }
-                                        data-componentid={ `${ componentId }-redirect-url-readonly-input` }
+                                        value={sdkConfig?.discoveryUrl}
+                                        data-componentid={`${componentId}-redirect-url-readonly-input`}
                                     />
                                 </Form.Field>
                                 <Form.Field>
                                     <label>
-                                        {
-                                            t("extensions:develop.applications.quickstart.mobileApp" +
-                                                ".configurations.scope.label")
-                                        }
+                                        {t(
+                                            "extensions:develop.applications.quickstart.mobileApp" +
+                                                ".configurations.scope.label"
+                                        )}
                                         <Hint className="mt-0 mb-0" popup>
                                             <Trans
                                                 i18nKey={
@@ -271,26 +256,27 @@ export const MobileCustomConfiguration: FC<MobileCustomConfigurationPropsInterfa
                                                     ".spa.integrate.common.sdkConfigs.scope.hint"
                                                 }
                                             >
-                                                These are the set of scopes that are used to request
-                                                user attributes.
+                                                These are the set of scopes that are used to request user attributes.
                                                 <Divider hidden />
                                                 If you need to add more scopes other than <Code>openid</Code> &
                                                 <Code>profile</Code>, you can append them to the array.
                                                 <Divider hidden />
-                                                Read through our 
+                                                Read through our
                                                 <Link
-                                                    link={
-                                                        getLink("develop.applications.editApplication.oidcApplication" +
-                                                            ".quickStart.applicationScopes.learnMore")
-                                                    }>documentation
+                                                    link={getLink(
+                                                        "develop.applications.editApplication.oidcApplication" +
+                                                            ".quickStart.applicationScopes.learnMore"
+                                                    )}
+                                                >
+                                                    documentation
                                                 </Link>
-                                                to learn  more.
+                                                to learn more.
                                             </Trans>
                                         </Hint>
                                     </label>
                                     <CopyInputField
-                                        value={ sdkConfig?.scope }
-                                        data-componentid={ `${ componentId }-scope-readonly-input` }
+                                        value={sdkConfig?.scope}
+                                        data-componentid={`${componentId}-scope-readonly-input`}
                                     />
                                 </Form.Field>
                             </Form>
@@ -300,18 +286,13 @@ export const MobileCustomConfiguration: FC<MobileCustomConfigurationPropsInterfa
                 <div className="custom-config-message mb-4">
                     <Heading as="h6" compact>
                         <Trans
-                            i18nKey={
-                                "extensions:console.application.quickStart" +
-                                ".spa.customConfig.serverEndpoints"
-                            }
+                            i18nKey={"extensions:console.application.quickStart" + ".spa.customConfig.serverEndpoints"}
                         >
-                            Details on the server endpoints are available in the 
-                            <a
-                                className="link pointing"
-                                onClick={ onServerEndpointConfigTabClick }
-                            >
+                            Details on the server endpoints are available in the
+                            <a className="link pointing" onClick={onServerEndpointConfigTabClick}>
                                 Info
-                            </a> tab.
+                            </a>{" "}
+                            tab.
                         </Trans>
                     </Heading>
                 </div>
@@ -320,78 +301,62 @@ export const MobileCustomConfiguration: FC<MobileCustomConfigurationPropsInterfa
     };
 
     return (
-        <Card
-            fluid
-            className="basic-card no-hover quick-start-custom-config-message no-background"
-        >
+        <Card fluid className="basic-card no-hover quick-start-custom-config-message no-background">
             <Card.Content textAlign="left">
                 <Text muted>
-                    <Trans
-                        i18nKey={
-                            "extensions:develop.applications.quickstart" +
-                            ".mobileApp.configurations.heading"
-                        }
-                    >
-                        Follow 
-                        <DocumentationLink
-                            link={ documentationLink }
-                            showEmptyLinkText
-                        >
+                    <Trans i18nKey={"extensions:develop.applications.quickstart" + ".mobileApp.configurations.heading"}>
+                        Follow
+                        <DocumentationLink link={documentationLink} showEmptyLinkText>
                             this guide
-                        </DocumentationLink> to learn the OIDC Authorization Code Flow with PKCE 
-                        and use below details to configure any third-party OIDC SDK 
-                        for mobile applications.
+                        </DocumentationLink>{" "}
+                        to learn the OIDC Authorization Code Flow with PKCE and use below details to configure any
+                        third-party OIDC SDK for mobile applications.
                     </Trans>
-                </Text>  
+                </Text>
             </Card.Content>
             <Card.Content>
                 <div className="tech-array">
-                    { icons.map((icon: TechnologyArrayPropsInterface, index: number) => (
+                    {icons.map((icon: TechnologyArrayPropsInterface, index: number) => (
                         <Popup
                             basic
                             inverted
                             position="top center"
-                            key={ `extended-tech-icon-popup-${ index }` }
-                            content={ icon.techIconTitle }
+                            key={`extended-tech-icon-popup-${index}`}
+                            content={icon.techIconTitle}
                             trigger={
-                                (<div>
+                                <div>
                                     <GenericIcon
-                                        key={ `extended-tech-icon-${ index }` }
+                                        key={`extended-tech-icon-${index}`}
                                         transparent
                                         size="x30"
-                                        icon={ icon.techIcon }
+                                        icon={icon.techIcon}
                                     />
-                                </div>)
+                                </div>
                             }
                         />
-                    )) }
+                    ))}
                 </div>
-                <div>
-                    { t("extensions:develop.applications.quickstart.mobileApp.configurations.anyTechnology") }
-                </div>
+                <div>{t("extensions:develop.applications.quickstart.mobileApp.configurations.anyTechnology")}</div>
             </Card.Content>
             <Card.Content>
-                <SegmentedAccordion
-                    fluid
-                    data-componentid={ `${ componentId }-accordion` }
-                >
+                <SegmentedAccordion fluid data-componentid={`${componentId}-accordion`}>
                     <SegmentedAccordion.Title
-                        active={ isConfigOpen }
-                        data-componentid={ `${ componentId }-headings-accordion-item` }
-                        onClick={ () => setConfigOpen(!isConfigOpen) }
+                        active={isConfigOpen}
+                        data-componentid={`${componentId}-headings-accordion-item`}
+                        onClick={() => setConfigOpen(!isConfigOpen)}
                         className="spa-config-accordion-title"
                     >
                         <Heading as="h5">
-                            { t("extensions:console.application.quickStart.spa.customConfig.configurations") }
+                            {t("extensions:console.application.quickStart.spa.customConfig.configurations")}
                         </Heading>
                     </SegmentedAccordion.Title>
                     <SegmentedAccordion.Content
-                        secondary={ false }
-                        active={ isConfigOpen }
-                        data-componentid={ `${ componentId }-headings-accordion-content` }
+                        secondary={false}
+                        active={isConfigOpen}
+                        data-componentid={`${componentId}-headings-accordion-content`}
                         className="spa-config-accordion-content"
                     >
-                        { renderConfigurationFields() }
+                        {renderConfigurationFields()}
                     </SegmentedAccordion.Content>
                 </SegmentedAccordion>
             </Card.Content>

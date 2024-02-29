@@ -26,15 +26,10 @@ import { Card, Divider, Grid } from "semantic-ui-react";
 import { CategoryItem } from "./app-category-item";
 import { CardExpandedNavigationButton } from "./card-expanded-navigation-button";
 import { getApplicationTemplateIllustrations } from "../../../../applications/configs/ui";
-import CustomApplicationTemplate from
-    "../../../../applications/data/application-templates/templates/custom-application/custom-application.json";
-import {
-    ApplicationTemplateListItemInterface
-} from "features/applications/models";
-import {
-    ApplicationTemplateManagementUtils
-} from "../../../../applications/utils/application-template-management-utils";
-import { AppConstants, AppState, EventPublisher, history } from "features/core";
+import CustomApplicationTemplate from "../../../../applications/data/application-templates/templates/custom-application/custom-application.json";
+import { ApplicationTemplateListItemInterface } from "features/applications/models";
+import { ApplicationTemplateManagementUtils } from "../../../../applications/utils/application-template-management-utils";
+import { AppConstants, AppState, EventPublisher, history } from "../../../../core";
 
 export type DynamicApplicationContextCardPropsInterface = {
     onTemplateSelected: (group: ApplicationTemplateListItemInterface) => void;
@@ -45,17 +40,13 @@ export type Context = "TEMPLATES" | "RECENT_APPS";
 export const DynamicApplicationContextCard: FC<DynamicApplicationContextCardPropsInterface> = (
     props: DynamicApplicationContextCardPropsInterface
 ) => {
-
-    const {
-        onTemplateSelected,
-        ["data-componentid"]: testId
-    } = props;
+    const { onTemplateSelected, ["data-componentid"]: testId } = props;
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
     const applicationTemplates: ApplicationTemplateListItemInterface[] = useSelector(
         (state: AppState) => state?.application?.groupedTemplates
     );
-    const [ context, setContext ] = useState<Context | undefined>(undefined);
+    const [context, setContext] = useState<Context | undefined>(undefined);
 
     /**
      * Figure out which context should be shown initially.
@@ -74,15 +65,14 @@ export const DynamicApplicationContextCard: FC<DynamicApplicationContextCardProp
         if (applicationTemplates === undefined) {
             ApplicationTemplateManagementUtils.getApplicationTemplates().finally();
         }
-    }, [ applicationTemplates ]);
+    }, [applicationTemplates]);
 
     const handleTemplateSelection = (templateId: string): void => {
-
         if (!applicationTemplates) return;
 
-        let selected: ApplicationTemplateListItemInterface =
-            applicationTemplates.find(
-                ({ templateId: matcher }: ApplicationTemplateListItemInterface) => matcher === templateId);
+        let selected: ApplicationTemplateListItemInterface = applicationTemplates.find(
+            ({ templateId: matcher }: ApplicationTemplateListItemInterface) => matcher === templateId
+        );
 
         if (!selected) return;
 
@@ -111,88 +101,64 @@ export const DynamicApplicationContextCard: FC<DynamicApplicationContextCardProp
 
     const tile1: JSX.Element = (
         <CategoryItem
-            data-componentid={ `${ testId }-single-page-application-creation-tile` }
-            className={
-                classNames("ui scale transition", {
-                    "animating in visible": context === "TEMPLATES",
-                    "hidden animating out": context !== "TEMPLATES"
-                })
-            }
-            onClick={ () => {
-                handleTemplateSelection(
-                    "single-page-application"
-                );
-            } }
+            data-componentid={`${testId}-single-page-application-creation-tile`}
+            className={classNames("ui scale transition", {
+                "animating in visible": context === "TEMPLATES",
+                "hidden animating out": context !== "TEMPLATES"
+            })}
+            onClick={() => {
+                handleTemplateSelection("single-page-application");
+            }}
             iconSize="tiny"
-            techStackIcons={ [
-                getApplicationTemplateIllustrations().spa
-            ] }
+            techStackIcons={[getApplicationTemplateIllustrations().spa]}
             categoryName="Single-Page Application"
         />
     );
 
     const tile2: JSX.Element = (
         <CategoryItem
-            data-componentid={ `${ testId }-traditional-web-application-creation-tile` }
-            className={
-                classNames("ui scale transition", {
-                    "animating in visible": context === "TEMPLATES",
-                    "hidden animating out": context !== "TEMPLATES"
-                })
-            }
-            onClick={ () => {
-                handleTemplateSelection(
-                    "traditional-web-application"
-                );
-            } }
+            data-componentid={`${testId}-traditional-web-application-creation-tile`}
+            className={classNames("ui scale transition", {
+                "animating in visible": context === "TEMPLATES",
+                "hidden animating out": context !== "TEMPLATES"
+            })}
+            onClick={() => {
+                handleTemplateSelection("traditional-web-application");
+            }}
             iconSize="tiny"
-            techStackIcons={ [
-                getApplicationTemplateIllustrations().oidcWebApp
-            ] }
+            techStackIcons={[getApplicationTemplateIllustrations().oidcWebApp]}
             categoryName="Traditional Web Application"
         />
     );
 
     const tile3: JSX.Element = (
         <CategoryItem
-            data-componentid={ `${ testId }-mobile-application-creation-tile` }
-            onClick={ () => {
-                handleTemplateSelection(
-                    "mobile-application"
-                );
-            } }
+            data-componentid={`${testId}-mobile-application-creation-tile`}
+            onClick={() => {
+                handleTemplateSelection("mobile-application");
+            }}
             iconSize="tiny"
-            className={
-                classNames("ui scale transition", {
-                    "animating in visible": context === "TEMPLATES",
-                    "hidden animating out": context !== "TEMPLATES"
-                })
-            }
-            techStackIcons={ [
-                getApplicationTemplateIllustrations().oidcMobile
-            ] }
+            className={classNames("ui scale transition", {
+                "animating in visible": context === "TEMPLATES",
+                "hidden animating out": context !== "TEMPLATES"
+            })}
+            techStackIcons={[getApplicationTemplateIllustrations().oidcMobile]}
             categoryName="Mobile Application"
         />
     );
 
     const tile4: JSX.Element = (
         <CategoryItem
-            data-componentid={ `${ testId }-custom-application-creation-tile` }
-            onClick={ () => {
-                handleTemplateSelection(
-                    "custom-application"
-                );
-            } }
+            data-componentid={`${testId}-custom-application-creation-tile`}
+            onClick={() => {
+                handleTemplateSelection("custom-application");
+            }}
             iconSize="tiny"
-            className={
-                classNames("ui scale transition", {
-                    "animating in visible": context === "TEMPLATES",
-                    "hidden animating out": context !== "TEMPLATES"
-                })
-            }
-            techStackIcons={ [
-                getApplicationTemplateIllustrations().customApp
-            ] }
+            className={classNames("ui scale transition", {
+                "animating in visible": context === "TEMPLATES",
+                "hidden animating out": context !== "TEMPLATES"
+            })}
+            techStackIcons={[getApplicationTemplateIllustrations().customApp]}
             categoryName="Standard-Based Application"
         />
     );
@@ -202,38 +168,33 @@ export const DynamicApplicationContextCard: FC<DynamicApplicationContextCardProp
             fluid
             data-componentid="application-integration-card"
             data-testid="application-integration-card"
-            className="basic-card no-hover context-card">
-            { /*Card Heading*/ }
+            className="basic-card no-hover context-card"
+        >
+            {/*Card Heading*/}
             <Card.Content extra className="no-borders mb-0 pb-0">
                 <div className="card-heading mb-1">
                     <Heading className="mb-1" as="h2">
                         Onboard and manage apps
                     </Heading>
-                    <Text muted>
-                        Choose the type of application
-                    </Text>
+                    <Text muted>Choose the type of application</Text>
                 </div>
             </Card.Content>
-            <Divider className="0.5x" hidden/>
-            { /*Card Body*/ }
+            <Divider className="0.5x" hidden />
+            {/*Card Body*/}
             <Card.Content className="pt-0 px-2 no-borders">
                 <Grid>
-                    <Grid.Row columns={ 2 } style={ { rowGap: "13px" } }>
-                        {
-                            [ tile1, tile2, tile3, tile4 ].map((tile: JSX.Element, index: number) => (
-                                <Grid.Column width={ 8 } key={ `tile-${ index }` }>
-                                    <Text>{ tile }</Text>
-                                </Grid.Column>
-                            ))
-                        }
+                    <Grid.Row columns={2} style={{ rowGap: "13px" }}>
+                        {[tile1, tile2, tile3, tile4].map((tile: JSX.Element, index: number) => (
+                            <Grid.Column width={8} key={`tile-${index}`}>
+                                <Text>{tile}</Text>
+                            </Grid.Column>
+                        ))}
                     </Grid.Row>
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column width={ 16 }>
+                    <Grid.Row columns={1}>
+                        <Grid.Column width={16}>
                             <CardExpandedNavigationButton
-                                data-componentid={ `${
-                                    testId
-                                }-navigate-to-application-list-button` }
-                                onClick={ onViewAllApplicationsClick }
+                                data-componentid={`${testId}-navigate-to-application-list-button`}
+                                onClick={onViewAllApplicationsClick}
                                 text="View all applications"
                                 icon="angle right"
                                 iconPlacement="right"
@@ -245,7 +206,6 @@ export const DynamicApplicationContextCard: FC<DynamicApplicationContextCardProp
             </Card.Content>
         </Card>
     );
-
 };
 
 /**

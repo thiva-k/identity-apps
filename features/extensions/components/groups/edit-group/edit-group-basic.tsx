@@ -16,11 +16,7 @@
  * under the License.
  */
 
-import {
-    AlertInterface,
-    AlertLevels,
-    TestableComponentInterface
-} from "@wso2is/core/models";
+import { AlertInterface, AlertLevels, TestableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { Field, FormValue, Forms, Validation } from "@wso2is/forms";
 import {
@@ -37,7 +33,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Button, Divider, Form, Grid } from "semantic-ui-react";
-import { AppConstants, SharedUserStoreConstants, SharedUserStoreUtils, history } from "features/core";
+import { AppConstants, SharedUserStoreConstants, SharedUserStoreUtils, history } from "../../../../core";
 import {
     GroupsInterface,
     PatchGroupDataInterface,
@@ -103,14 +99,14 @@ export const BasicGroupDetails: FunctionComponent<BasicGroupProps> = (props: Bas
         isReadOnly,
         isUserstoreRemote,
         isReadOnlyLoading,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
-    const [ showGroupDeleteConfirmation, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ labelText, setLableText ] = useState<string>("");
-    const [ nameValue, setNameValue ] = useState<string>("");
-    const [ isRegExLoading, setRegExLoading ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [showGroupDeleteConfirmation, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [labelText, setLableText] = useState<string>("");
+    const [nameValue, setNameValue] = useState<string>("");
+    const [isRegExLoading, setRegExLoading] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
         if (groupObject && groupObject.displayName.indexOf("/") !== -1) {
@@ -119,7 +115,7 @@ export const BasicGroupDetails: FunctionComponent<BasicGroupProps> = (props: Bas
         } else if (groupObject) {
             setNameValue(groupObject.displayName);
         }
-    }, [ groupObject ]);
+    }, [groupObject]);
 
     /**
      * Dispatches the alert object to the redux store.
@@ -157,24 +153,25 @@ export const BasicGroupDetails: FunctionComponent<BasicGroupProps> = (props: Bas
     const validateGroupNamePattern = async (): Promise<string> => {
         let userStoreRegEx: string = "";
 
-        await SharedUserStoreUtils.getUserStoreRegEx(CONSUMER_USERSTORE,
-            SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.RolenameRegEx)
-            .then((response: string) => {
-                setRegExLoading(true);
-                userStoreRegEx = response;
-            });
+        await SharedUserStoreUtils.getUserStoreRegEx(
+            CONSUMER_USERSTORE,
+            SharedUserStoreConstants.USERSTORE_REGEX_PROPERTIES.RolenameRegEx
+        ).then((response: string) => {
+            setRegExLoading(true);
+            userStoreRegEx = response;
+        });
 
         setRegExLoading(false);
 
-        return new Promise((resolve: (value: string | PromiseLike<string>) => void, 
-            reject: (reason?: string) => void) => {
-            if (userStoreRegEx !== "") {
-                resolve(userStoreRegEx);
-            } else {
-                reject("");
+        return new Promise(
+            (resolve: (value: string | PromiseLike<string>) => void, reject: (reason?: string) => void) => {
+                if (userStoreRegEx !== "") {
+                    resolve(userStoreRegEx);
+                } else {
+                    reject("");
+                }
             }
-        });
-
+        );
     };
 
     /**
@@ -185,12 +182,14 @@ export const BasicGroupDetails: FunctionComponent<BasicGroupProps> = (props: Bas
         const newName: string = values?.get("groupName")?.toString();
 
         const groupData: PatchGroupDataInterface = {
-            Operations: [ {
-                "op": "replace",
-                "path": "displayName",
-                "value": labelText ? labelText + "/" + newName : newName
-            } ],
-            schemas: [ "urn:ietf:params:scim:api:messages:2.0:PatchOp" ]
+            Operations: [
+                {
+                    op: "replace",
+                    path: "displayName",
+                    value: labelText ? labelText + "/" + newName : newName
+                }
+            ],
+            schemas: ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
         };
 
         setIsSubmitting(true);
@@ -203,7 +202,8 @@ export const BasicGroupDetails: FunctionComponent<BasicGroupProps> = (props: Bas
                     level: AlertLevels.SUCCESS,
                     message: t("console:manage.features.groups.notifications.updateGroup.success.message")
                 });
-            }).catch(() => {
+            })
+            .catch(() => {
                 handleAlerts({
                     description: t("console:manage.features.groups.notifications.updateGroup.error.description"),
                     level: AlertLevels.ERROR,
@@ -217,225 +217,229 @@ export const BasicGroupDetails: FunctionComponent<BasicGroupProps> = (props: Bas
 
     return (
         <>
-            { !isReadOnlyLoading
-                ? (
-                    <EmphasizedSegment padded="very">
-                        <Forms
-                            onSubmit={ (values:  Map<string, FormValue>) => {
-                                updateGroupName(values);
-                            } }
-                        >
-                            <Grid className="form-container with-max-width">
-                                <Grid.Row columns={ 1 }>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                        <Form.Field>
-                                            <label
-                                                data-testid={
-                                                    isGroup
-                                                        ? `${ testId }-group-name-label`
-                                                        : `${ testId }-group-name-label`
-                                                }
-                                            >
-                                                {
-                                                    isGroup
-                                                        ? t("console:manage.features.groups.edit.basics.fields." +
-                                                            "groupName.name")
-                                                        : t("console:manage.features.roles.edit.basics.fields." +
-                                                            "groupName.name")
-                                                }
-                                            </label>
-                                            <Field
-                                                required={ true }
-                                                name={ "groupName" }
-                                                label={ null }
-                                                requiredErrorMessage={
-                                                    isGroup
-                                                        ? t("console:manage.features.groups.edit.basics.fields." +
-                                                            "groupName.required")
-                                                        : t("console:manage.features.roles.edit.basics.fields." +
-                                                            "groupName.required")
-                                                }
-                                                placeholder={
-                                                    isGroup
-                                                        ? t("console:manage.features.groups.edit.basics.fields." +
-                                                            "groupName.placeholder")
-                                                        : t("console:manage.features.roles.edit.basics.fields." +
-                                                            "groupName.placeholder")
-                                                }
-                                                value={ nameValue }
-                                                type="text"
-                                                data-testid={
-                                                    isGroup
-                                                        ? `${ testId }-group-name-input`
-                                                        : `${ testId }-role-name-input`
-                                                }
-                                                loading={ isRegExLoading }
-                                                readOnly={ isReadOnly }
-                                                validation={ async (value: string, validation: Validation) => {
-                                                    let isGroupNameValid: boolean = true;
+            {!isReadOnlyLoading ? (
+                <EmphasizedSegment padded="very">
+                    <Forms
+                        onSubmit={(values: Map<string, FormValue>) => {
+                            updateGroupName(values);
+                        }}
+                    >
+                        <Grid className="form-container with-max-width">
+                            <Grid.Row columns={1}>
+                                <Grid.Column mobile={16} tablet={16} computer={16}>
+                                    <Form.Field>
+                                        <label
+                                            data-testid={
+                                                isGroup ? `${testId}-group-name-label` : `${testId}-group-name-label`
+                                            }
+                                        >
+                                            {isGroup
+                                                ? t(
+                                                      "console:manage.features.groups.edit.basics.fields." +
+                                                          "groupName.name"
+                                                  )
+                                                : t(
+                                                      "console:manage.features.roles.edit.basics.fields." +
+                                                          "groupName.name"
+                                                  )}
+                                        </label>
+                                        <Field
+                                            required={true}
+                                            name={"groupName"}
+                                            label={null}
+                                            requiredErrorMessage={
+                                                isGroup
+                                                    ? t(
+                                                          "console:manage.features.groups.edit.basics.fields." +
+                                                              "groupName.required"
+                                                      )
+                                                    : t(
+                                                          "console:manage.features.roles.edit.basics.fields." +
+                                                              "groupName.required"
+                                                      )
+                                            }
+                                            placeholder={
+                                                isGroup
+                                                    ? t(
+                                                          "console:manage.features.groups.edit.basics.fields." +
+                                                              "groupName.placeholder"
+                                                      )
+                                                    : t(
+                                                          "console:manage.features.roles.edit.basics.fields." +
+                                                              "groupName.placeholder"
+                                                      )
+                                            }
+                                            value={nameValue}
+                                            type="text"
+                                            data-testid={
+                                                isGroup ? `${testId}-group-name-input` : `${testId}-role-name-input`
+                                            }
+                                            loading={isRegExLoading}
+                                            readOnly={isReadOnly}
+                                            validation={async (value: string, validation: Validation) => {
+                                                let isGroupNameValid: boolean = true;
 
-                                                    await validateGroupNamePattern().then((regex: string) => {
-                                                        isGroupNameValid = 
-                                                        SharedUserStoreUtils.validateInputAgainstRegEx(value
-                                                            , regex);
-                                                    });
+                                                await validateGroupNamePattern().then((regex: string) => {
+                                                    isGroupNameValid = SharedUserStoreUtils.validateInputAgainstRegEx(
+                                                        value,
+                                                        regex
+                                                    );
+                                                });
 
-                                                    if (!isGroupNameValid) {
-                                                        validation.isValid = false;
-                                                        validation.errorMessages.push(t("console:manage.features." +
-                                                            "businessGroups.fields.groupName." +
-                                                            "validations.invalid", { type: "group" }));
-                                                    }
+                                                if (!isGroupNameValid) {
+                                                    validation.isValid = false;
+                                                    validation.errorMessages.push(
+                                                        t(
+                                                            "console:manage.features." +
+                                                                "businessGroups.fields.groupName." +
+                                                                "validations.invalid",
+                                                            { type: "group" }
+                                                        )
+                                                    );
+                                                }
 
-                                                    const searchData: SearchGroupInterface = {
-                                                        filter: `displayName eq  ${ CONSUMER_USERSTORE }/${ value }`,
-                                                        schemas: [
-                                                            "urn:ietf:params:scim:api:messages:2.0:SearchRequest"
-                                                        ],
-                                                        startIndex: 1
-                                                    };
+                                                const searchData: SearchGroupInterface = {
+                                                    filter: `displayName eq  ${CONSUMER_USERSTORE}/${value}`,
+                                                    schemas: ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
+                                                    startIndex: 1
+                                                };
 
-                                                    await searchGroupList(searchData).then((response: any) => {
+                                                await searchGroupList(searchData)
+                                                    .then((response: any) => {
                                                         if (response?.data?.totalResults !== 0) {
                                                             if (response.data.Resources[0]?.id !== groupId) {
                                                                 validation.isValid = false;
                                                                 validation.errorMessages.push(
-                                                                    t("console:manage.features.roles.addRoleWizard." +
-                                                                        "forms.roleBasicDetails.roleName.validations." +
-                                                                        "duplicate", { type: "group" }));
+                                                                    t(
+                                                                        "console:manage.features.roles.addRoleWizard." +
+                                                                            "forms.roleBasicDetails.roleName.validations." +
+                                                                            "duplicate",
+                                                                        { type: "group" }
+                                                                    )
+                                                                );
                                                             }
                                                         }
-                                                    }).catch(() => {
-                                                        dispatch(addAlert({
-                                                            description: t("console:manage.features.groups." +
-                                                                "notifications.fetchGroups.genericError.description"),
-                                                            level: AlertLevels.ERROR,
-                                                            message: t("console:manage.features.groups." +
-                                                                "notifications.fetchGroups.genericError.message")
-                                                        }));
+                                                    })
+                                                    .catch(() => {
+                                                        dispatch(
+                                                            addAlert({
+                                                                description: t(
+                                                                    "console:manage.features.groups." +
+                                                                        "notifications.fetchGroups.genericError.description"
+                                                                ),
+                                                                level: AlertLevels.ERROR,
+                                                                message: t(
+                                                                    "console:manage.features.groups." +
+                                                                        "notifications.fetchGroups.genericError.message"
+                                                                )
+                                                            })
+                                                        );
                                                     });
-
-                                                } }
-                                            />
-                                        </Form.Field>
-                                        { !isReadOnly && (
-                                            <Hint>
-                                                A name for the group.
-                                                { " " }
-                                                Can contain between 3 to 30 alphanumeric characters, dashes 
-                                                (<Code>-</Code>),{ " " }
-                                                and underscores (<Code>_</Code>).
-                                            </Hint>)
-                                        }
-                                    </Grid.Column>
-                                </Grid.Row>
-                                <Grid.Row columns={ 1 }>
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                        {
-                                            !isReadOnly && (
-                                                <Button
-                                                    primary
-                                                    type="submit"
-                                                    size="small"
-                                                    className="form-button"
-                                                    data-testid={
-                                                        isGroup
-                                                            ? `${ testId }-group-update-button`
-                                                            : `${ testId }-role-update-button`
-                                                    }
-                                                    disabled={ isRegExLoading || isSubmitting }
-                                                    loading={ isSubmitting }
-                                                >
-                                                    { t("console:manage.features.roles.edit.basics.buttons.update") }
-                                                </Button>
-                                            )
-                                        }
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                        </Forms>
-                    </EmphasizedSegment>
-                ) : (
-                    <EmphasizedSegment padded>
-                        <ContentLoader inline="centered" active/>
-                    </EmphasizedSegment>
-                )
-            }
+                                            }}
+                                        />
+                                    </Form.Field>
+                                    {!isReadOnly && (
+                                        <Hint>
+                                            A name for the group. Can contain between 3 to 30 alphanumeric characters,
+                                            dashes (<Code>-</Code>), and underscores (<Code>_</Code>).
+                                        </Hint>
+                                    )}
+                                </Grid.Column>
+                            </Grid.Row>
+                            <Grid.Row columns={1}>
+                                <Grid.Column mobile={16} tablet={16} computer={16}>
+                                    {!isReadOnly && (
+                                        <Button
+                                            primary
+                                            type="submit"
+                                            size="small"
+                                            className="form-button"
+                                            data-testid={
+                                                isGroup
+                                                    ? `${testId}-group-update-button`
+                                                    : `${testId}-role-update-button`
+                                            }
+                                            disabled={isRegExLoading || isSubmitting}
+                                            loading={isSubmitting}
+                                        >
+                                            {t("console:manage.features.roles.edit.basics.buttons.update")}
+                                        </Button>
+                                    )}
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </Forms>
+                </EmphasizedSegment>
+            ) : (
+                <EmphasizedSegment padded>
+                    <ContentLoader inline="centered" active />
+                </EmphasizedSegment>
+            )}
             <Divider hidden />
-            {
-                !isReadOnlyLoading && (
-                    <DangerZoneGroup sectionHeader="Danger Zone">
-                        <DangerZone
-                            actionTitle={
-                                isGroup
-                                    ? t("console:manage.features.roles.edit.basics.dangerZone.actionTitle",
-                                        { type: "group" })
-                                    : t("console:manage.features.roles.edit.basics.dangerZone.actionTitle",
-                                        { type: "role" })
-                            }
-                            header={
-                                isGroup
-                                    ? t("console:manage.features.roles.edit.basics.dangerZone.header",
-                                        { type: "group" })
-                                    : t("console:manage.features.roles.edit.basics.dangerZone.header",
-                                        { type: "role" })
-                            }
-                            subheader={
-                                isGroup
-                                    ? t("console:manage.features.roles.edit.basics.dangerZone.subheader",
-                                        { type: "group" })
-                                    : t("console:manage.features.roles.edit.basics.dangerZone.subheader",
-                                        { type: "role" })
-                            }
-                            onActionClick={ () => setShowDeleteConfirmationModal(!showGroupDeleteConfirmation) }
-                            data-testid={
-                                isGroup
-                                    ? `${ testId }-group-danger-zone`
-                                    : `${ testId }-role-danger-zone`
-                            }
-                            isButtonDisabled={ isReadOnly || isUserstoreRemote }
-                            buttonDisableHint = { 
-                                isGroup
-                                    ? t("console:manage.features.roles.edit.basics.dangerZone." +
-                                        "buttonDisableHint", { type: "group" })
-                                    : t("console:manage.features.roles.edit.basics.dangerZone." +
-                                    "buttonDisableHint", { type: "role" })
-                            }
-                        />
-                    </DangerZoneGroup>
-                )
-            }
-            {
-                showGroupDeleteConfirmation &&
-                (<ConfirmationModal
-                    onClose={ (): void => setShowDeleteConfirmationModal(false) }
+            {!isReadOnlyLoading && (
+                <DangerZoneGroup sectionHeader="Danger Zone">
+                    <DangerZone
+                        actionTitle={
+                            isGroup
+                                ? t("console:manage.features.roles.edit.basics.dangerZone.actionTitle", {
+                                      type: "group"
+                                  })
+                                : t("console:manage.features.roles.edit.basics.dangerZone.actionTitle", {
+                                      type: "role"
+                                  })
+                        }
+                        header={
+                            isGroup
+                                ? t("console:manage.features.roles.edit.basics.dangerZone.header", { type: "group" })
+                                : t("console:manage.features.roles.edit.basics.dangerZone.header", { type: "role" })
+                        }
+                        subheader={
+                            isGroup
+                                ? t("console:manage.features.roles.edit.basics.dangerZone.subheader", { type: "group" })
+                                : t("console:manage.features.roles.edit.basics.dangerZone.subheader", { type: "role" })
+                        }
+                        onActionClick={() => setShowDeleteConfirmationModal(!showGroupDeleteConfirmation)}
+                        data-testid={isGroup ? `${testId}-group-danger-zone` : `${testId}-role-danger-zone`}
+                        isButtonDisabled={isReadOnly || isUserstoreRemote}
+                        buttonDisableHint={
+                            isGroup
+                                ? t("console:manage.features.roles.edit.basics.dangerZone." + "buttonDisableHint", {
+                                      type: "group"
+                                  })
+                                : t("console:manage.features.roles.edit.basics.dangerZone." + "buttonDisableHint", {
+                                      type: "role"
+                                  })
+                        }
+                    />
+                </DangerZoneGroup>
+            )}
+            {showGroupDeleteConfirmation && (
+                <ConfirmationModal
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
                     type="negative"
-                    open={ showGroupDeleteConfirmation }
-                    assertionHint={ t("console:manage.features.roles.edit.basics.confirmation.assertionHint") }
+                    open={showGroupDeleteConfirmation}
+                    assertionHint={t("console:manage.features.roles.edit.basics.confirmation.assertionHint")}
                     assertionType="checkbox"
                     primaryAction="Confirm"
                     secondaryAction="Cancel"
-                    onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                    onPrimaryActionClick={ (): void => handleOnDelete(groupObject.id) }
-                    data-testid={
-                        isGroup
-                            ? `${ testId }-group-confirmation-modal`
-                            : `${ testId }-role-confirmation-modal`
-                    }
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => handleOnDelete(groupObject.id)}
+                    data-testid={isGroup ? `${testId}-group-confirmation-modal` : `${testId}-role-confirmation-modal`}
                 >
                     <ConfirmationModal.Header>
-                        { t("console:manage.features.roles.edit.basics.confirmation.header") }
+                        {t("console:manage.features.roles.edit.basics.confirmation.header")}
                     </ConfirmationModal.Header>
                     <ConfirmationModal.Message attached negative>
-                        { t("console:manage.features.roles.edit.basics.confirmation.message",
-                            { type: isGroup ? "group." : "role." }) }
+                        {t("console:manage.features.roles.edit.basics.confirmation.message", {
+                            type: isGroup ? "group." : "role."
+                        })}
                     </ConfirmationModal.Message>
                     <ConfirmationModal.Content>
-                        If you delete this group, the users attached to it will no longer be able to perform{ " " }
-                        intended actions that were previously allowed via this group. Please proceed with caution.
+                        If you delete this group, the users attached to it will no longer be able to perform intended
+                        actions that were previously allowed via this group. Please proceed with caution.
                     </ConfirmationModal.Content>
-                </ConfirmationModal>)
-            }
+                </ConfirmationModal>
+            )}
         </>
     );
 };

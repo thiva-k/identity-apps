@@ -37,8 +37,14 @@ import kebabCase from "lodash-es/kebabCase";
 import React, { FormEvent, ReactElement, useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Divider, DropdownProps, Grid, Header } from "semantic-ui-react";
-import { SharedUserStoreUtils, UIConstants, UserBasicInterface, UserRoleInterface, getUsersList } from "features/core";
-import { EventPublisher } from "features/core/utils";
+import {
+    SharedUserStoreUtils,
+    UIConstants,
+    UserBasicInterface,
+    UserRoleInterface,
+    getUsersList
+} from "../../../../../core";
+import { EventPublisher } from "../../../../../core/utils";
 import { getRolesList } from "../../../../../roles/api";
 import { administratorConfig } from "../../../../configs/administrator";
 import { SCIMConfigs } from "../../../../configs/scim";
@@ -129,7 +135,7 @@ export const AddAdminUserBasic: React.FunctionComponent<AddAdminUserBasicProps> 
                             role.displayName !== "everyone" &&
                             role.displayName !== "selfsignup" &&
                             role.displayName?.split("/")?.length < 2 &&
-                                role.displayName?.split("/")[0] !== "Application"
+                            role.displayName?.split("/")[0] !== "Application"
                         ) {
                             roleOption = {
                                 key: index,
