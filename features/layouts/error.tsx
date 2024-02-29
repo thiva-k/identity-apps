@@ -21,9 +21,9 @@ import { ContentLoader, ErrorLayout as ErrorLayoutSkeleton } from "@wso2is/react
 import React, { FunctionComponent, PropsWithChildren, ReactElement, Suspense, useEffect, useState } from "react";
 import { StaticContext } from "react-router";
 import { Redirect, Route, RouteComponentProps, Switch } from "react-router-dom";
-import { ProtectedRoute } from "features/core/components";
-import { getErrorLayoutRoutes } from "features/core/configs";
-import { AppConstants } from "features/core/constants";
+import { ProtectedRoute } from "../core/components";
+import { getErrorLayoutRoutes } from "../core/configs";
+import { AppConstants } from "../core/constants";
 
 /**
  * Error layout Prop types.

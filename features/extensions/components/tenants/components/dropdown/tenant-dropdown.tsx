@@ -47,12 +47,12 @@ import {
     Placeholder,
     SemanticICONS
 } from "semantic-ui-react";
-import { getMiscellaneousIcons } from "features/core/configs";
-import { AppConstants } from "features/core/constants";
-import { history } from "features/core/helpers/history";
-import { AppState } from "features/core/store";
-import { OrganizationType } from "features/organizations/constants";
-import { useGetCurrentOrganizationType } from "features/organizations/hooks/use-get-organization-type";
+import { getMiscellaneousIcons } from "../../../../../core/configs";
+import { AppConstants } from "../../../../../core/constants";
+import { history } from "../../../../../core/helpers/history";
+import { AppState } from "../../../../../core/store";
+import { OrganizationType } from "../../../../../organizations/constants";
+import { useGetCurrentOrganizationType } from "../../../../../organizations/hooks/use-get-organization-type";
 import { FeatureGateConstants } from "../../../feature-gate/constants/feature-gate";
 import { getAssociatedTenants, makeTenantDefault } from "../../api";
 import { TenantInfo, TenantRequestResponse, TriggerPropTypesInterface } from "../../models";

@@ -30,12 +30,12 @@ import { Grid, Icon, Modal } from "semantic-ui-react";
 import { RoleBasics } from "./role-basics";
 import { CreateRoleSummary } from "./role-sumary";
 import { AddRoleUsers } from "./role-user-assign";
-import { AppConstants } from "features/core/constants";
-import { history } from "features/core/helpers";
+import { AppConstants } from "../../../../../core/constants";
+import { history } from "../../../../../core/helpers";
 import { CreateGroupMemberInterface } from "../../../../../groups/models";
 import { createRole } from "../../../../../roles/api";
-import { getRolesWizardStepIcons } from "features/roles/configs";
-import { CreateRoleInterface, CreateRoleMemberInterface, TreeNode } from "features/roles/models";
+import { getRolesWizardStepIcons } from "../../../../../roles/configs";
+import { CreateRoleInterface, CreateRoleMemberInterface, TreeNode } from "../../../../../roles/models";
 import { UserBasicInterface } from "../../../../../users/models/user";
 import { CONSUMER_USERSTORE } from "../../../users/constants";
 

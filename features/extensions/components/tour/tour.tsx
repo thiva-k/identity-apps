@@ -21,8 +21,8 @@ import { LocalStorageUtils } from "@wso2is/core/utils";
 import { GenericIcon, Heading, PrimaryButton, Text } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
 import Tour, { ReactourStep } from "reactour";
-import { AppConstants } from "features/core/constants";
-import { history } from "features/core/helpers";
+import { AppConstants } from "../../../core/constants";
+import { history } from "../../../core/helpers";
 import {
     ReactComponent as AsgardioTourWelcomeIllustration
 } from "../../assets/illustrations/asgardio-tour-welcome-illustration.svg";

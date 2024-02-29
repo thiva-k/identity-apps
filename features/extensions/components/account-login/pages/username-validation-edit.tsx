@@ -26,13 +26,13 @@ import {
     PageLayout,
     Text
 } from "@wso2is/react-components";
-import { updateValidationConfigData, useValidationConfigData } from "features/validation/api";
+import { updateValidationConfigData, useValidationConfigData } from "../../../../validation/api";
 import {
     ValidationConfInterface,
     ValidationDataInterface,
     ValidationFormInterface,
     ValidationPropertyInterface
-} from "features/validation/models";
+} from "../../../../validation/models";
 import { AxiosError } from "axios";
 import React, {
     FunctionComponent,
@@ -46,8 +46,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Ref } from "semantic-ui-react";
-import { ApplicationManagementConstants } from "features/applications/constants";
-import { AppConstants, history } from "features/core";
+import { ApplicationManagementConstants } from "../../../../applications/constants";
+import { AppConstants, history } from "../../../../core";
 import { UsernameValidationConstants } from "../constants/username-validation-constants";
 import { UsernameTypes } from "../models";
 

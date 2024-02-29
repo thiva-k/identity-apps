@@ -36,8 +36,8 @@ import {
     ResourceTabPaneInterface
 } from "@wso2is/react-components";
 import { AxiosError, AxiosResponse } from "axios";
-import { UsersConstants } from "features/extensions/components/users/constants";
-import { InvitationStatus } from "features/extensions/components/users/models";
+import { UsersConstants } from "../../extensions/components/users/constants";
+import { InvitationStatus } from "../../extensions/components/users/models";
 import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";

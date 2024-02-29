@@ -25,15 +25,15 @@ import { Dispatch } from "redux";
 import { DropdownProps, Grid, Modal, PaginationProps } from "semantic-ui-react";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
 import CustomizeStepsIllustration from "./assets/customize-steps.png";
-import { useApplicationList } from "features/applications/api";
-import { ApplicationList } from "features/applications/components/application-list";
-import { AdvancedSearchWithBasicFilters } from "features/core/components";
-import { AppConstants } from "features/core/constants";
-import { history } from "features/core/helpers";
+import { useApplicationList } from "../../../../applications/api";
+import { ApplicationList } from "../../../../applications/components/application-list";
+import { AdvancedSearchWithBasicFilters } from "../../../../core/components";
+import { AppConstants } from "../../../../core/constants";
+import { history } from "../../../../core/helpers";
 import {
     IdentityProviderInterface,
     IdentityProviderTemplateInterface
-} from "features/identity-providers/models/identity-provider";
+} from "../../../../identity-providers/models/identity-provider";
 import { VerticalStepper, VerticalStepperStepInterface } from "../../../components/component-extensions";
 
 /**

@@ -37,11 +37,11 @@ import { Grid } from "semantic-ui-react";
 import {
     updateIdentityProviderAssignedGroups,
     useIdentityProviderAssignedGroups
-} from "features/extensions/components/application/api";
+} from "../../../extensions/components/application/api";
 import {
     ApplicationRoleGroupInterface,
     ApplicationRoleGroupsUpdatePayloadInterface
-} from "features/extensions/components/application/models";
+} from "../../../extensions/components/application/models";
 import { getIdentityProviderDetail } from "../../../identity-providers/api";
 import { IdentityProviderGroupInterface, IdentityProviderInterface } from "../../../identity-providers/models";
 
