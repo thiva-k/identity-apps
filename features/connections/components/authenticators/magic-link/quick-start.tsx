@@ -26,7 +26,7 @@ import { GenericIcon, Heading, Link, PageHeader, Text } from "@wso2is/react-comp
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
-import ApplicationSelectionModal from "features/extensions/components/shared/application-selection-modal";
+import ApplicationSelectionModal from "../../../../extensions/components/shared/application-selection-modal";
 
 /**
  * Prop types of the component.
@@ -43,14 +43,11 @@ type MagicLinkQuickStartPropsInterface = TestableComponentInterface;
 const MagicLinkQuickStart: FunctionComponent<MagicLinkQuickStartPropsInterface> = (
     props: MagicLinkQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        ["data-testid"]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     /**
      * Vertical Stepper steps.
@@ -68,37 +65,38 @@ const MagicLinkQuickStart: FunctionComponent<MagicLinkQuickStartPropsInterface> 
                                 ".quickStart.steps.selectApplication.content"
                             }
                         >
-                            Choose the <Link
-                                external={ false }
-                                onClick={ () => setShowApplicationModal(true) }>
-                                application </Link>
+                            Choose the{" "}
+                            <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                                application{" "}
+                            </Link>
                             for which you want to set up Magic Link login.
                         </Trans>
                     </Text>
                 </>
             ),
-            stepTitle: t("extensions:develop.identityProviders.magicLink" +
-                ".quickStart.steps.selectApplication.heading")
+            stepTitle: t(
+                "extensions:develop.identityProviders.magicLink" + ".quickStart.steps.selectApplication.heading"
+            )
         },
         {
             stepContent: (
                 <>
                     <Text>
                         <Trans
-                            i18nKey={ "extensions:develop.identityProviders.magicLink.quickStart.steps" +
-                            ".selectMagicLink.content" }
+                            i18nKey={
+                                "extensions:develop.identityProviders.magicLink.quickStart.steps" +
+                                ".selectMagicLink.content"
+                            }
                         >
                             Go to <strong>Login Flow</strong> tab and click on the <strong>Magic Link</strong>
                             option from the Passwordless login section to configure a basic Magic Link flow.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
-                <Trans
-                    i18nKey="extensions:develop.identityProviders.magicLink.quickStart.steps.selectMagicLink.heading"
-                >
+                <Trans i18nKey="extensions:develop.identityProviders.magicLink.quickStart.steps.selectMagicLink.heading">
                     Select <strong>Magic Link</strong> option
                 </Trans>
             )
@@ -107,41 +105,32 @@ const MagicLinkQuickStart: FunctionComponent<MagicLinkQuickStartPropsInterface> 
 
     return (
         <>
-            <Grid container spacing={ { md: 3, xs: 2 } } columns={ { md: 12, sm: 8, xs: 4 } }>
-                <Grid md={ 12 } sm={ 8 } xs={ 4 }>
+            <Grid container spacing={{ md: 3, xs: 2 }} columns={{ md: 12, sm: 8, xs: 4 }}>
+                <Grid md={12} sm={8} xs={4}>
                     <PageHeader
                         className="mb-2"
-                        imageSpaced={ false }
-                        bottomMargin={ false }
-                        title={ t("extensions:develop.identityProviders.magicLink.quickStart.heading") }
+                        imageSpaced={false}
+                        bottomMargin={false}
+                        title={t("extensions:develop.identityProviders.magicLink.quickStart.heading")}
                     />
                     <Heading subHeading as="h6">
-                        { t("extensions:develop.identityProviders.magicLink.quickStart.subHeading") }
+                        {t("extensions:develop.identityProviders.magicLink.quickStart.subHeading")}
                     </Heading>
                 </Grid>
-                <Grid md={ 12 } sm={ 8 } xs={ 4 }>
-                    <VerticalStepper
-                        alwaysOpen
-                        isSidePanelOpen
-                        stepContent={ steps }
-                        isNextEnabled={ true }
-                    />
+                <Grid md={12} sm={8} xs={4}>
+                    <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                 </Grid>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ testId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={ t("extensions:develop.identityProviders.magicLink.quickStart.addLoginModal.heading") }
-                        subHeading={
-                            t("extensions:develop.identityProviders.magicLink.quickStart.addLoginModal.subHeading")
-                        }
-                        data-componentid="connections"
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${testId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.magicLink.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.magicLink.quickStart.addLoginModal.subHeading")}
+                    data-componentid="connections"
+                />
+            )}
         </>
     );
 };

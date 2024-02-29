@@ -62,7 +62,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Header, Icon, ItemHeader, SemanticICONS } from "semantic-ui-react";
 import { EditExternalClaim } from "./edit";
-import { attributeConfig } from "features/extensions";
+import { attributeConfig } from "../../extensions";
 import {
     AppConstants,
     AppState,

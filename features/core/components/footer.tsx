@@ -26,7 +26,7 @@ import * as moment from "moment";
 import React, { FunctionComponent, ReactElement } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { commonConfig } from "features/extensions";
+import { commonConfig } from "../../extensions";
 import { AppConstants } from "../constants";
 import { ConfigReducerStateInterface } from "../models";
 import { AppState } from "../store";
@@ -42,21 +42,15 @@ type FooterPropsInterface = ReusableFooterPropsInterface;
  * @param props - Props injected to the component.
  * @returns Footer component.
  */
-export const Footer: FunctionComponent<FooterPropsInterface> = (
-    props: FooterPropsInterface
-): ReactElement => {
-
-    const {
-        currentLanguage,
-        showLanguageSwitcher,
-        ...rest
-    } = props;
+export const Footer: FunctionComponent<FooterPropsInterface> = (props: FooterPropsInterface): ReactElement => {
+    const { currentLanguage, showLanguageSwitcher, ...rest } = props;
 
     const { t } = useTranslation();
 
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
     const supportedI18nLanguages: SupportedLanguagesMeta = useSelector(
-        (state: AppState) => state.global.supportedI18nLanguages);
+        (state: AppState) => state.global.supportedI18nLanguages
+    );
 
     /**
      * Handles language switch action.
@@ -65,10 +59,9 @@ export const Footer: FunctionComponent<FooterPropsInterface> = (
      */
     const handleLanguageSwitch = (language: string): void => {
         moment.locale(language ?? "en");
-        I18n.instance.changeLanguage(language)
-            .catch((error: string | Record<string, unknown>) => {
-                throw new LanguageChangeException(language, error);
-            });
+        I18n.instance.changeLanguage(language).catch((error: string | Record<string, unknown>) => {
+            throw new LanguageChangeException(language, error);
+        });
     };
 
     /**
@@ -77,7 +70,6 @@ export const Footer: FunctionComponent<FooterPropsInterface> = (
      * @returns footer links.
      */
     const generateFooterLinks = (): FooterLinkInterface[] => {
-
         const links: FooterLinkInterface[] = [];
 
         if (config.ui?.privacyPolicyConfigs?.visibleOnFooter) {
@@ -92,18 +84,14 @@ export const Footer: FunctionComponent<FooterPropsInterface> = (
 
     return (
         <ReusableFooter
-            currentLanguage={ currentLanguage ?? I18n.instance?.language }
-            className={ commonConfig?.footer?.customClassName }
-            supportedLanguages={ supportedI18nLanguages }
-            onLanguageChange={ handleLanguageSwitch }
-            copyright={
-                config.ui.appCopyright
-                    ? config.ui.appCopyright
-                    : null
-            }
-            links={ generateFooterLinks() }
-            showLanguageSwitcher={ config.ui.i18nConfigs?.showLanguageSwitcher ?? showLanguageSwitcher }
-            { ...rest }
+            currentLanguage={currentLanguage ?? I18n.instance?.language}
+            className={commonConfig?.footer?.customClassName}
+            supportedLanguages={supportedI18nLanguages}
+            onLanguageChange={handleLanguageSwitch}
+            copyright={config.ui.appCopyright ? config.ui.appCopyright : null}
+            links={generateFooterLinks()}
+            showLanguageSwitcher={config.ui.i18nConfigs?.showLanguageSwitcher ?? showLanguageSwitcher}
+            {...rest}
         />
     );
 };

@@ -37,7 +37,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { AccordionTitleProps, CheckboxProps, Grid, Icon } from "semantic-ui-react";
-import { identityProviderConfig } from "features/extensions";
+import { identityProviderConfig } from "../../../../extensions";
 import { AppState, ConfigReducerStateInterface, getEmptyPlaceholderIllustrations } from "../../../../core";
 import { AuthenticatorAccordion } from "../../../../core/components";
 import {

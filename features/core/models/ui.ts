@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { AppViewExtensionTypes } from "features/extensions";
+import { AppViewExtensionTypes } from "../../extensions";
 
 /**
  * Types of views supported by default in the application.

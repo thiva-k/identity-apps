@@ -28,7 +28,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownItemProps, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
-import { attributeConfig } from "features/extensions";
+import { attributeConfig } from "../../extensions";
 import { AccessControlConstants } from "../../access-control/constants/access-control";
 import { getAllLocalClaims } from "../../claims/api";
 import {
@@ -59,10 +59,7 @@ type LocalClaimsPageInterface = TestableComponentInterface;
 const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
     props: LocalClaimsPageInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
@@ -88,38 +85,41 @@ const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
     ];
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
-    const enableIdentityClaims: boolean = useSelector(
-        (state: AppState) => state?.config?.ui?.enableIdentityClaims);
+    const enableIdentityClaims: boolean = useSelector((state: AppState) => state?.config?.ui?.enableIdentityClaims);
 
-    const [ claims, setClaims ] = useState<Claim[]>(null);
-    const [ offset, setOffset ] = useState(0);
-    const [ listItemLimit, setListItemLimit ] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
-    const [ openModal, setOpenModal ] = useState(false);
-    const [ claimURIBase, setClaimURIBase ] = useState("");
-    const [ filteredClaims, setFilteredClaims ] = useState<Claim[]>(null);
-    const [ sortBy, setSortBy ] = useState<DropdownItemProps>(SORT_BY[ 0 ]);
-    const [ sortOrder, setSortOrder ] = useState(true);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ isLoading, setIsLoading ] = useState(true);
-    const [ triggerClearQuery, setTriggerClearQuery ] = useState<boolean>(false);
+    const [claims, setClaims] = useState<Claim[]>(null);
+    const [offset, setOffset] = useState(0);
+    const [listItemLimit, setListItemLimit] = useState<number>(UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT);
+    const [openModal, setOpenModal] = useState(false);
+    const [claimURIBase, setClaimURIBase] = useState("");
+    const [filteredClaims, setFilteredClaims] = useState<Claim[]>(null);
+    const [sortBy, setSortBy] = useState<DropdownItemProps>(SORT_BY[0]);
+    const [sortOrder, setSortOrder] = useState(true);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [triggerClearQuery, setTriggerClearQuery] = useState<boolean>(false);
 
-    const [ resetPagination, setResetPagination ] = useTrigger();
+    const [resetPagination, setResetPagination] = useTrigger();
 
     const dispatch: Dispatch = useDispatch();
 
     const initialRender: MutableRefObject<boolean> = useRef(true);
 
-
     /**
- * Fetches all the local claims.
- *
- * @param limit - Maximum Limit.
- * @param offset - Offset.
- * @param sort - Sort Order.
- * @param filter - Search Filter.
- */
-    const getLocalClaims = (limit?: number, sort?: string, offset?: number, filter?: string,
-        excludeIdentity: boolean = !enableIdentityClaims) => {
+     * Fetches all the local claims.
+     *
+     * @param limit - Maximum Limit.
+     * @param offset - Offset.
+     * @param sort - Sort Order.
+     * @param filter - Search Filter.
+     */
+    const getLocalClaims = (
+        limit?: number,
+        sort?: string,
+        offset?: number,
+        filter?: string,
+        excludeIdentity: boolean = !enableIdentityClaims
+    ) => {
         setIsLoading(true);
         const params: ClaimsGetParams = {
             "exclude-identity-claims": excludeIdentity,
@@ -129,22 +129,27 @@ const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
             sort: sort || null
         };
 
-        getAllLocalClaims(params).then((response: Claim[]) => {
-            setClaims(response);
-            setFilteredClaims(sortList(response, sortBy.value as string, sortOrder));
-        }).catch((error: IdentityAppsApiException) => {
-            dispatch(addAlert(
-                {
-                    description: error?.response?.data?.description
-                        || t("console:manage.features.claims.local.notifications.getClaims.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.response?.data?.message
-                        || t("console:manage.features.claims.local.notifications.getClaims.genericError.message")
-                }
-            ));
-        }).finally(() => {
-            setIsLoading(false);
-        });
+        getAllLocalClaims(params)
+            .then((response: Claim[]) => {
+                setClaims(response);
+                setFilteredClaims(sortList(response, sortBy.value as string, sortOrder));
+            })
+            .catch((error: IdentityAppsApiException) => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.response?.data?.description ||
+                            t("console:manage.features.claims.local.notifications.getClaims.genericError.description"),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.response?.data?.message ||
+                            t("console:manage.features.claims.local.notifications.getClaims.genericError.message")
+                    })
+                );
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
 
     useEffect(() => {
@@ -153,34 +158,40 @@ const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
         } else {
             setFilteredClaims(sortList(filteredClaims, sortBy.value as string, sortOrder));
         }
-    }, [ sortBy, sortOrder ]);
+    }, [sortBy, sortOrder]);
 
     useEffect(() => {
         getLocalClaims(null, null, null, null, !enableIdentityClaims);
-        getADialect("local").then((response: any) => {
-            setClaimURIBase(response.dialectURI);
-        }).catch((error: IdentityAppsError) => {
-            dispatch(addAlert(
-                {
-                    description: error?.description
-                        || t("console:manage.features.claims.local.notifications.getLocalDialect.genericError.message"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message
-                        || t("console:manage.features.claims.local.notifications.getLocalDialect.genericError.message")
-                }
-            ));
-        });
+        getADialect("local")
+            .then((response: any) => {
+                setClaimURIBase(response.dialectURI);
+            })
+            .catch((error: IdentityAppsError) => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "console:manage.features.claims.local.notifications.getLocalDialect.genericError.message"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t("console:manage.features.claims.local.notifications.getLocalDialect.genericError.message")
+                    })
+                );
+            });
     }, []);
 
     /**
- * This slices a portion of the list to display.
+     * This slices a portion of the list to display.
      *
- * @param list - List of claims.
- * @param limit - Maximum Limit.
- * @param offset - Offset.
+     * @param list - List of claims.
+     * @param limit - Maximum Limit.
+     * @param offset - Offset.
      *
- * @returns Paginated List.
- */
+     * @returns Paginated List.
+     */
     const paginate = (list: Claim[], limit: number, offset: number): Claim[] => {
         return list?.slice(offset, offset + limit);
     };
@@ -202,7 +213,7 @@ const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
      * @param data - Pagination props.
      */
     const handlePaginationChange = (event: React.MouseEvent<HTMLAnchorElement>, data: PaginationProps) => {
-        setOffset((data.activePage as number - 1) * listItemLimit);
+        setOffset(((data.activePage as number) - 1) * listItemLimit);
     };
 
     /**
@@ -212,14 +223,14 @@ const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
      * @param  data - Dropdown data.
      */
     const handleSortStrategyChange = (event: React.SyntheticEvent<HTMLElement>, data: DropdownProps) => {
-        setSortBy(SORT_BY.filter((option: DropdownProps) => option.value === data.value)[ 0 ]);
+        setSortBy(SORT_BY.filter((option: DropdownProps) => option.value === data.value)[0]);
     };
 
     /**
- * Handles sort order change.
- *
- * @param isAscending - Flag to determine the order.
- */
+     * Handles sort order change.
+     *
+     * @param isAscending - Flag to determine the order.
+     */
     const handleSortOrderChange = (isAscending: boolean) => {
         setSortOrder(isAscending);
     };
@@ -251,21 +262,21 @@ const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
         let UserFriendlyQuery: string = "";
 
         if (queryElements) {
-            switch (queryElements[ 1 ]) {
+            switch (queryElements[1]) {
                 case "eq":
-                    UserFriendlyQuery = `${ queryElements[ 0 ] } equals to ${ queryElements[ 2 ] }`;
+                    UserFriendlyQuery = `${queryElements[0]} equals to ${queryElements[2]}`;
 
                     break;
                 case "co":
-                    UserFriendlyQuery = `${ queryElements[ 0 ] } containing ${ queryElements[ 2 ] }`;
+                    UserFriendlyQuery = `${queryElements[0]} containing ${queryElements[2]}`;
 
                     break;
                 case "sw":
-                    UserFriendlyQuery = `${ queryElements[ 0 ] } starting with ${ queryElements[ 2 ] }`;
+                    UserFriendlyQuery = `${queryElements[0]} starting with ${queryElements[2]}`;
 
                     break;
                 case "ew":
-                    UserFriendlyQuery = `${ queryElements[ 0 ] } ending with ${ queryElements[ 2 ] }`;
+                    UserFriendlyQuery = `${queryElements[0]} ending with ${queryElements[2]}`;
 
                     break;
 
@@ -288,62 +299,59 @@ const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
 
     return (
         <>
-            {
-                openModal
-                    ? (
-                        <AddLocalClaims
-                            open={ openModal }
-                            onClose={ () => { setOpenModal(false); } }
-                            update={ getLocalClaims }
-                            claimURIBase={ claimURIBase }
-                            data-testid={ `${ testId }-add-local-claims-wizard` }
-                        />
-                    ) : null
-            }
+            {openModal ? (
+                <AddLocalClaims
+                    open={openModal}
+                    onClose={() => {
+                        setOpenModal(false);
+                    }}
+                    update={getLocalClaims}
+                    claimURIBase={claimURIBase}
+                    data-testid={`${testId}-add-local-claims-wizard`}
+                />
+            ) : null}
             <PageLayout
                 action={
-                    (isLoading || !(!searchQuery && filteredClaims?.length <= 0))
-                    && attributeConfig.attributes.addAttribute && (
-                        <Show
-                            when={ AccessControlConstants.ATTRIBUTE_WRITE }
-                        >
+                    (isLoading || !(!searchQuery && filteredClaims?.length <= 0)) &&
+                    attributeConfig.attributes.addAttribute && (
+                        <Show when={AccessControlConstants.ATTRIBUTE_WRITE}>
                             <PrimaryButton
-                                onClick={ () => {
+                                onClick={() => {
                                     setOpenModal(true);
-                                } }
-                                data-testid={ `${ testId }-list-layout-add-button` }
+                                }}
+                                data-testid={`${testId}-list-layout-add-button`}
                             >
                                 <Icon name="add" />
-                                { t("console:manage.features.claims.local.pageLayout.local.action") }
+                                {t("console:manage.features.claims.local.pageLayout.local.action")}
                             </PrimaryButton>
                         </Show>
                     )
                 }
-                isLoading={ isLoading }
-                title={ t("console:manage.features.claims.local.pageLayout.local.title") }
-                pageTitle={ t("console:manage.features.claims.local.pageLayout.local.title") }
-                description={ (
+                isLoading={isLoading}
+                title={t("console:manage.features.claims.local.pageLayout.local.title")}
+                pageTitle={t("console:manage.features.claims.local.pageLayout.local.title")}
+                description={
                     <>
-                        { t(attributeConfig.attributes.description) }
-                        <DocumentationLink
-                            link={ getLink("manage.attributes.attributes.learnMore") }
-                        >
-                            { t("common:learnMore") }
+                        {t(attributeConfig.attributes.description)}
+                        <DocumentationLink link={getLink("manage.attributes.attributes.learnMore")}>
+                            {t("common:learnMore")}
                         </DocumentationLink>
                     </>
-                ) }
-                backButton={ {
-                    onClick: () => { history.push(AppConstants.getPaths().get("CLAIM_DIALECTS")); },
+                }
+                backButton={{
+                    onClick: () => {
+                        history.push(AppConstants.getPaths().get("CLAIM_DIALECTS"));
+                    },
                     text: t("console:manage.features.claims.local.pageLayout.local.back")
-                } }
-                data-testid={ `${ testId }-page-layout` }
+                }}
+                data-testid={`${testId}-page-layout`}
             >
                 <ListLayout
-                    resetPagination={ resetPagination }
-                    advancedSearch={ (
+                    resetPagination={resetPagination}
+                    advancedSearch={
                         <AdvancedSearchWithBasicFilters
-                            onFilter={ handleLocalClaimsFilter }
-                            filterAttributeOptions={ [
+                            onFilter={handleLocalClaimsFilter}
+                            filterAttributeOptions={[
                                 {
                                     key: 0,
                                     text: t("common:name"),
@@ -354,46 +362,46 @@ const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
                                     text: t("console:manage.features.claims.local.attributes.attributeURI"),
                                     value: "claimURI"
                                 }
-                            ] }
-                            filterAttributePlaceholder={
-                                t("console:manage.features.claims.local.advancedSearch.form." +
-                                    "inputs.filterAttribute.placeholder")
-                            }
-                            filterConditionsPlaceholder={
-                                t("console:manage.features.claims.local.advancedSearch.form." +
-                                    "inputs.filterCondition.placeholder")
-                            }
-                            filterValuePlaceholder={
-                                t("console:manage.features.claims.local.advancedSearch.form.inputs." +
-                                    "filterValue.placeholder")
-                            }
-                            placeholder={ t("console:manage.features.claims.local.advancedSearch.placeholder") }
+                            ]}
+                            filterAttributePlaceholder={t(
+                                "console:manage.features.claims.local.advancedSearch.form." +
+                                    "inputs.filterAttribute.placeholder"
+                            )}
+                            filterConditionsPlaceholder={t(
+                                "console:manage.features.claims.local.advancedSearch.form." +
+                                    "inputs.filterCondition.placeholder"
+                            )}
+                            filterValuePlaceholder={t(
+                                "console:manage.features.claims.local.advancedSearch.form.inputs." +
+                                    "filterValue.placeholder"
+                            )}
+                            placeholder={t("console:manage.features.claims.local.advancedSearch.placeholder")}
                             defaultSearchAttribute="displayName"
                             defaultSearchOperator="co"
-                            triggerClearQuery={ triggerClearQuery }
-                            data-testid={ `${ testId }-list-advanced-search` }
+                            triggerClearQuery={triggerClearQuery}
+                            data-testid={`${testId}-list-advanced-search`}
                         />
-                    ) }
-                    currentListSize={ listItemLimit }
-                    listItemLimit={ listItemLimit }
-                    onItemsPerPageDropdownChange={ handleItemsPerPageDropdownChange }
-                    onPageChange={ handlePaginationChange }
-                    onSortStrategyChange={ handleSortStrategyChange }
-                    leftActionPanel={ null }
-                    showPagination={ true }
-                    sortOptions={ SORT_BY }
-                    sortStrategy={ sortBy }
-                    showTopActionPanel={ isLoading || !(!searchQuery && filteredClaims?.length <= 0) }
-                    totalPages={ Math.ceil(filteredClaims?.length / listItemLimit) }
-                    totalListSize={ filteredClaims?.length }
-                    onSortOrderChange={ handleSortOrderChange }
-                    data-testid={ `${ testId }-list-layout` }
+                    }
+                    currentListSize={listItemLimit}
+                    listItemLimit={listItemLimit}
+                    onItemsPerPageDropdownChange={handleItemsPerPageDropdownChange}
+                    onPageChange={handlePaginationChange}
+                    onSortStrategyChange={handleSortStrategyChange}
+                    leftActionPanel={null}
+                    showPagination={true}
+                    sortOptions={SORT_BY}
+                    sortStrategy={sortBy}
+                    showTopActionPanel={isLoading || !(!searchQuery && filteredClaims?.length <= 0)}
+                    totalPages={Math.ceil(filteredClaims?.length / listItemLimit)}
+                    totalListSize={filteredClaims?.length}
+                    onSortOrderChange={handleSortOrderChange}
+                    data-testid={`${testId}-list-layout`}
                 >
                     <ClaimsList
-                        advancedSearch={ (
+                        advancedSearch={
                             <AdvancedSearchWithBasicFilters
-                                onFilter={ handleLocalClaimsFilter }
-                                filterAttributeOptions={ [
+                                onFilter={handleLocalClaimsFilter}
+                                filterAttributeOptions={[
                                     {
                                         key: 0,
                                         text: t("common:name"),
@@ -404,36 +412,36 @@ const LocalClaimsPage: FunctionComponent<LocalClaimsPageInterface> = (
                                         text: t("console:manage.features.claims.local.attributes.attributeURI"),
                                         value: "claimURI"
                                     }
-                                ] }
-                                filterAttributePlaceholder={
-                                    t("console:manage.features.claims.local.advancedSearch.form." +
-                                        "inputs.filterAttribute.placeholder")
-                                }
-                                filterConditionsPlaceholder={
-                                    t("console:manage.features.claims.local.advancedSearch.form." +
-                                        "inputs.filterCondition.placeholder")
-                                }
-                                filterValuePlaceholder={
-                                    t("console:manage.features.claims.local.advancedSearch.form.inputs." +
-                                        "filterValue.placeholder")
-                                }
-                                placeholder={ t("console:manage.features.claims.local.advancedSearch.placeholder") }
+                                ]}
+                                filterAttributePlaceholder={t(
+                                    "console:manage.features.claims.local.advancedSearch.form." +
+                                        "inputs.filterAttribute.placeholder"
+                                )}
+                                filterConditionsPlaceholder={t(
+                                    "console:manage.features.claims.local.advancedSearch.form." +
+                                        "inputs.filterCondition.placeholder"
+                                )}
+                                filterValuePlaceholder={t(
+                                    "console:manage.features.claims.local.advancedSearch.form.inputs." +
+                                        "filterValue.placeholder"
+                                )}
+                                placeholder={t("console:manage.features.claims.local.advancedSearch.placeholder")}
                                 defaultSearchAttribute="displayName"
                                 defaultSearchOperator="co"
-                                triggerClearQuery={ triggerClearQuery }
-                                data-testid={ `${ testId }-list-advanced-search` }
+                                triggerClearQuery={triggerClearQuery}
+                                data-testid={`${testId}-list-advanced-search`}
                             />
-                        ) }
-                        showTableHeaders={ true }
-                        isLoading={ isLoading }
-                        list={ paginate(filteredClaims, listItemLimit, offset) }
-                        localClaim={ ListType.LOCAL }
-                        update={ getLocalClaims }
-                        onEmptyListPlaceholderActionClick={ () => setOpenModal(true) }
-                        onSearchQueryClear={ handleSearchQueryClear }
-                        searchQuery={ searchQuery }
-                        data-testid={ `${ testId }-list` }
-                        featureConfig={ featureConfig }
+                        }
+                        showTableHeaders={true}
+                        isLoading={isLoading}
+                        list={paginate(filteredClaims, listItemLimit, offset)}
+                        localClaim={ListType.LOCAL}
+                        update={getLocalClaims}
+                        onEmptyListPlaceholderActionClick={() => setOpenModal(true)}
+                        onSearchQueryClear={handleSearchQueryClear}
+                        searchQuery={searchQuery}
+                        data-testid={`${testId}-list`}
+                        featureConfig={featureConfig}
                     />
                 </ListLayout>
             </PageLayout>

@@ -20,41 +20,35 @@ import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models
 import { addAlert } from "@wso2is/core/store";
 import { AnimatedAvatar, TabPageLayout } from "@wso2is/react-components";
 import { AxiosError } from "axios";
-import React, {
-    ReactElement, 
-    useEffect, 
-    useState 
-} from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
-import { getApplicationRolesList } from "features/extensions/components/application/api";
+import { getApplicationRolesList } from "../../extensions/components/application/api";
 import {
     ApplicationRolesResponseInterface,
     RoleListItemInterface
-} from "features/extensions/components/application/models";
+} from "../../extensions/components/application/models";
 import { AppConstants, history } from "../../core";
 import EditApplicationRoles from "../components/edit-application-role";
 
-type ApplicationRoleEditPageProps = IdentifiableComponentInterface
+type ApplicationRoleEditPageProps = IdentifiableComponentInterface;
 
 const ApplicationRoleEditPage = (props: ApplicationRoleEditPageProps): ReactElement => {
-    const {
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const isSubOrg: boolean = window[ "AppUtils" ].getConfig().organizationName;
+    const isSubOrg: boolean = window["AppUtils"].getConfig().organizationName;
 
-    const [ roleId, setRoleId ] = useState<string>(undefined);
-    const [ appId, setAppId ] = useState<string>(undefined);
-    const [ isRoleDetailsRequestLoading, setIsRoleDetailsRequestLoading ] = useState<boolean>(true);
-    const [ isRoleExisting, setIsRoleExisting ] = useState<boolean>(false);
+    const [roleId, setRoleId] = useState<string>(undefined);
+    const [appId, setAppId] = useState<string>(undefined);
+    const [isRoleDetailsRequestLoading, setIsRoleDetailsRequestLoading] = useState<boolean>(true);
+    const [isRoleExisting, setIsRoleExisting] = useState<boolean>(false);
 
     const checkRoleExists = (roleId: string): void => {
-        setIsRoleDetailsRequestLoading(true);        
+        setIsRoleDetailsRequestLoading(true);
 
         getApplicationRolesList(appId, null, null, null, null)
             .then((response: ApplicationRolesResponseInterface) => {
@@ -64,28 +58,43 @@ const ApplicationRoleEditPage = (props: ApplicationRoleEditPageProps): ReactElem
                 } else {
                     setIsRoleExisting(false);
                 }
-            }).catch((error: AxiosError) => {
+            })
+            .catch((error: AxiosError) => {
                 if (error?.response?.data?.description) {
-                    dispatch(addAlert({
-                        description: error?.response?.data?.description ?? 
-                            error?.response?.data?.detail ?? 
-                            t("extensions:develop.applications.edit.sections.roles.notifications." + 
-                                "fetchApplicationRoles.error.description"),
-                        level: AlertLevels.ERROR,
-                        message: error?.response?.data?.message ?? 
-                            t("extensions:develop.applications.edit.sections.roles.notifications." + 
-                                "fetchApplicationRoles.error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description:
+                                error?.response?.data?.description ??
+                                error?.response?.data?.detail ??
+                                t(
+                                    "extensions:develop.applications.edit.sections.roles.notifications." +
+                                        "fetchApplicationRoles.error.description"
+                                ),
+                            level: AlertLevels.ERROR,
+                            message:
+                                error?.response?.data?.message ??
+                                t(
+                                    "extensions:develop.applications.edit.sections.roles.notifications." +
+                                        "fetchApplicationRoles.error.message"
+                                )
+                        })
+                    );
 
                     return;
                 }
-                dispatch(addAlert({
-                    description: t("extensions:develop.applications.edit.sections.roles.notifications." + 
-                        "fetchApplicationRoles.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:develop.applications.edit.sections.roles.notifications." + 
-                        "fetchApplicationRoles.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "extensions:develop.applications.edit.sections.roles.notifications." +
+                                "fetchApplicationRoles.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "extensions:develop.applications.edit.sections.roles.notifications." +
+                                "fetchApplicationRoles.genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsRoleDetailsRequestLoading(false);
@@ -97,24 +106,23 @@ const ApplicationRoleEditPage = (props: ApplicationRoleEditPageProps): ReactElem
      */
     useEffect(() => {
         const path: string[] = history.location.pathname.split("/");
-        const roleId: string = path[ path.length - 1 ];
-        const appId: string = path[ path.length - 2 ];
-        
+        const roleId: string = path[path.length - 1];
+        const appId: string = path[path.length - 2];
+
         setRoleId(roleId);
         setAppId(appId);
     }, []);
 
     useEffect(() => {
         if (!roleId || !appId) {
-    
             return;
         }
 
         checkRoleExists(roleId);
-    }, [ roleId, appId ]);
+    }, [roleId, appId]);
 
     const handleBackButtonClick = () => {
-        if(isSubOrg) {
+        if (isSubOrg) {
             history.push(AppConstants.getPaths().get("APPLICATION_ROLES_SUB"));
         } else {
             history.push(AppConstants.getPaths().get("APPLICATION_ROLES"));
@@ -124,44 +132,26 @@ const ApplicationRoleEditPage = (props: ApplicationRoleEditPageProps): ReactElem
     return (
         <TabPageLayout
             pageTitle="Edit Role"
-            title={ (
-                <span>{ roleId }</span>
-            ) }
-            contentTopMargin={ true }
-            description={ null }
-            image={ (
-                <AnimatedAvatar
-                    name={ roleId }
-                    size="tiny"
-                    floated="left"
-                />
-
-            ) }
-            loadingStateOptions={ {
+            title={<span>{roleId}</span>}
+            contentTopMargin={true}
+            description={null}
+            image={<AnimatedAvatar name={roleId} size="tiny" floated="left" />}
+            loadingStateOptions={{
                 count: 5,
                 imageType: "square"
-            } }
-            isLoading={ isRoleDetailsRequestLoading }
-            backButton={ {
+            }}
+            isLoading={isRoleDetailsRequestLoading}
+            backButton={{
                 onClick: handleBackButtonClick,
                 text: t("console:manage.pages.rolesEdit.backButton", { type: "application roles" })
-            } }
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            pageHeaderMaxWidth={ true }
-            data-testid={ `${ componentId }-page-layout` }
-            truncateContent={ true }
+            bottomMargin={false}
+            pageHeaderMaxWidth={true}
+            data-testid={`${componentId}-page-layout`}
+            truncateContent={true}
         >
-            {
-                isRoleExisting
-                    ? (
-                        <EditApplicationRoles
-                            appId={ appId }
-                            roleId={ roleId }
-                        />
-                    ) 
-                    : null
-            }
+            {isRoleExisting ? <EditApplicationRoles appId={appId} roleId={roleId} /> : null}
         </TabPageLayout>
     );
 };

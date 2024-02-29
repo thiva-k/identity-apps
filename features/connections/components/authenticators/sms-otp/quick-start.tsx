@@ -26,7 +26,7 @@ import { GenericIcon, Heading, Link, PageHeader, Text } from "@wso2is/react-comp
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
-import ApplicationSelectionModal from "features/extensions/components/shared/application-selection-modal";
+import ApplicationSelectionModal from "../../../../extensions/components/shared/application-selection-modal";
 
 /**
  * Prop types of the component.
@@ -43,14 +43,11 @@ type SMSOTPQuickStartPropsInterface = IdentifiableComponentInterface;
 const SMSOTPQuickStart: FunctionComponent<SMSOTPQuickStartPropsInterface> = (
     props: SMSOTPQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     /**
      * Vertical Stepper steps.
@@ -66,8 +63,11 @@ const SMSOTPQuickStart: FunctionComponent<SMSOTPQuickStartPropsInterface> = (
                                 "extensions:develop.identityProviders.smsOTP.quickStart.steps.selectApplication.content"
                             }
                         >
-                            Choose the <Link external={ false } onClick={ () => setShowApplicationModal(true) }>
-                            application </Link> for which you want to set up SMS OTP login.
+                            Choose the{" "}
+                            <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                                application{" "}
+                            </Link>{" "}
+                            for which you want to set up SMS OTP login.
                         </Trans>
                     </Text>
                 </>
@@ -79,14 +79,16 @@ const SMSOTPQuickStart: FunctionComponent<SMSOTPQuickStartPropsInterface> = (
                 <>
                     <Text>
                         <Trans
-                            i18nKey={ "extensions:develop.identityProviders.smsOTP.quickStart.steps.selectSMSOTP" +
-                                ".content" }
+                            i18nKey={
+                                "extensions:develop.identityProviders.smsOTP.quickStart.steps.selectSMSOTP" + ".content"
+                            }
                         >
-                            Go to <strong>Login Flow</strong> tab and click on the <strong>Username & Password + SMS OTP
-                            </strong> option from the Multi-factor login section to configure a basic SMS OTP flow.
+                            Go to <strong>Login Flow</strong> tab and click on the{" "}
+                            <strong>Username & Password + SMS OTP</strong> option from the Multi-factor login section to
+                            configure a basic SMS OTP flow.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
@@ -99,43 +101,32 @@ const SMSOTPQuickStart: FunctionComponent<SMSOTPQuickStartPropsInterface> = (
 
     return (
         <>
-            <Grid container spacing={ { md: 3, xs: 2  } } columns={ { md: 12, sm: 8, xs: 4 } }>
-                <Grid columns={ { md: 12, sm: 8, xs: 4 } }>
+            <Grid container spacing={{ md: 3, xs: 2 }} columns={{ md: 12, sm: 8, xs: 4 }}>
+                <Grid columns={{ md: 12, sm: 8, xs: 4 }}>
                     <PageHeader
                         className="mb-2"
-                        title={ t("extensions:develop.identityProviders.smsOTP.quickStart.heading") }
-                        imageSpaced={ false }
-                        bottomMargin={ false }
+                        title={t("extensions:develop.identityProviders.smsOTP.quickStart.heading")}
+                        imageSpaced={false}
+                        bottomMargin={false}
                     />
                     <Heading subHeading as="h6">
-                        { t("extensions:develop.identityProviders.smsOTP.quickStart.subHeading") }
+                        {t("extensions:develop.identityProviders.smsOTP.quickStart.subHeading")}
                     </Heading>
                 </Grid>
-                <Grid columns={ { md: 12, sm: 8, xs: 4 } }>
-                    <VerticalStepper
-                        alwaysOpen
-                        isSidePanelOpen
-                        stepContent={ steps }
-                        isNextEnabled={ true }
-                    />
+                <Grid columns={{ md: 12, sm: 8, xs: 4 }}>
+                    <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                 </Grid>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ componentId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={
-                            t("extensions:develop.identityProviders.smsOTP.quickStart.addLoginModal.heading")
-                        }
-                        subHeading={
-                            t("extensions:develop.identityProviders.smsOTP.quickStart.addLoginModal.subHeading")
-                        }
-                        data-componentid="connections"
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${componentId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.smsOTP.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.smsOTP.quickStart.addLoginModal.subHeading")}
+                    data-componentid="connections"
+                />
+            )}
         </>
     );
 };

@@ -26,7 +26,7 @@ import { GenericIcon, Heading, Link, PageHeader, Text } from "@wso2is/react-comp
 import React, { FunctionComponent, ReactElement, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import BuildLoginFlowIllustration from "./assets/build-login-flow.png";
-import ApplicationSelectionModal from "features/extensions/components/shared/application-selection-modal";
+import ApplicationSelectionModal from "../../../../extensions/components/shared/application-selection-modal";
 
 /**
  * Prop types of the component.
@@ -42,14 +42,11 @@ type TOTPQuickStartPropsInterface = TestableComponentInterface;
 const TOTPQuickStart: FunctionComponent<TOTPQuickStartPropsInterface> = (
     props: TOTPQuickStartPropsInterface
 ): ReactElement => {
-
-    const {
-        ["data-testid"]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [ showApplicationModal, setShowApplicationModal ] = useState<boolean>(false);
+    const [showApplicationModal, setShowApplicationModal] = useState<boolean>(false);
 
     /**
      * Vertical Stepper steps.
@@ -65,10 +62,11 @@ const TOTPQuickStart: FunctionComponent<TOTPQuickStartPropsInterface> = (
                                 "extensions:develop.identityProviders.totp.quickStart.steps.selectApplication.content"
                             }
                         >
-                            Choose the <Link
-                                external={ false }
-                                onClick={ () => setShowApplicationModal(true) }
-                            > application </Link>
+                            Choose the{" "}
+                            <Link external={false} onClick={() => setShowApplicationModal(true)}>
+                                {" "}
+                                application{" "}
+                            </Link>
                             for which you want to set up TOTP login.
                         </Trans>
                     </Text>
@@ -81,13 +79,14 @@ const TOTPQuickStart: FunctionComponent<TOTPQuickStartPropsInterface> = (
                 <>
                     <Text>
                         <Trans
-                            i18nKey={ "extensions:develop.identityProviders.totp.quickStart.steps.selectTOTP.content" }
+                            i18nKey={"extensions:develop.identityProviders.totp.quickStart.steps.selectTOTP.content"}
                         >
-                            Go to <strong>Login Flow</strong> tab and click on the <strong>Username & Password + TOTP
-                            </strong> option from the Multi-factor login section to configure a basic TOTP flow.
+                            Go to <strong>Login Flow</strong> tab and click on the{" "}
+                            <strong>Username & Password + TOTP</strong> option from the Multi-factor login section to
+                            configure a basic TOTP flow.
                         </Trans>
                     </Text>
-                    <GenericIcon inline transparent icon={ BuildLoginFlowIllustration } size="huge"/>
+                    <GenericIcon inline transparent icon={BuildLoginFlowIllustration} size="huge" />
                 </>
             ),
             stepTitle: (
@@ -100,41 +99,32 @@ const TOTPQuickStart: FunctionComponent<TOTPQuickStartPropsInterface> = (
 
     return (
         <>
-            <Grid container spacing={ { md: 3, xs: 2 } } columns={ { md: 12, sm: 8, xs: 4 } }>
-                <Grid xs={ 4 } sm={ 8 } md={ 12 }>
+            <Grid container spacing={{ md: 3, xs: 2 }} columns={{ md: 12, sm: 8, xs: 4 }}>
+                <Grid xs={4} sm={8} md={12}>
                     <PageHeader
                         className="mb-2"
-                        imageSpaced={ false }
-                        bottomMargin={ false }
-                        title={ t("extensions:develop.identityProviders.totp.quickStart.heading") }
+                        imageSpaced={false}
+                        bottomMargin={false}
+                        title={t("extensions:develop.identityProviders.totp.quickStart.heading")}
                     />
                     <Heading subHeading as="h6">
-                        { t("extensions:develop.identityProviders.totp.quickStart.subHeading") }
+                        {t("extensions:develop.identityProviders.totp.quickStart.subHeading")}
                     </Heading>
                 </Grid>
-                <Grid xs={ 4 } sm={ 8 } md={ 12 }>
-                    <VerticalStepper
-                        alwaysOpen
-                        isSidePanelOpen
-                        stepContent={ steps }
-                        isNextEnabled={ true }
-                    />
+                <Grid xs={4} sm={8} md={12}>
+                    <VerticalStepper alwaysOpen isSidePanelOpen stepContent={steps} isNextEnabled={true} />
                 </Grid>
             </Grid>
-            {
-                showApplicationModal && (
-                    <ApplicationSelectionModal
-                        data-testid={ `${ testId }-application-selection-modal` }
-                        open={ showApplicationModal }
-                        onClose={ () => setShowApplicationModal(false) }
-                        heading={ t("extensions:develop.identityProviders.totp.quickStart.addLoginModal.heading") }
-                        subHeading={
-                            t("extensions:develop.identityProviders.totp.quickStart.addLoginModal.subHeading")
-                        }
-                        data-componentid="connections"
-                    />
-                )
-            }
+            {showApplicationModal && (
+                <ApplicationSelectionModal
+                    data-testid={`${testId}-application-selection-modal`}
+                    open={showApplicationModal}
+                    onClose={() => setShowApplicationModal(false)}
+                    heading={t("extensions:develop.identityProviders.totp.quickStart.addLoginModal.heading")}
+                    subHeading={t("extensions:develop.identityProviders.totp.quickStart.addLoginModal.subHeading")}
+                    data-componentid="connections"
+                />
+            )}
         </>
     );
 };

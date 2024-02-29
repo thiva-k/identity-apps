@@ -35,11 +35,10 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, Header, Icon, Input } from "semantic-ui-react";
 import {
-    useApplicationRoleInvitedUserGroups, useDescendantsOfSubOrg
-} from "features/extensions/components/application/api";
-import {
-    ApplicationRoleGroupInterface, DescendantDataInterface
-} from "features/extensions/components/application/models";
+    useApplicationRoleInvitedUserGroups,
+    useDescendantsOfSubOrg
+} from "../../extensions/components/application/api";
+import { ApplicationRoleGroupInterface, DescendantDataInterface } from "../../extensions/components/application/models";
 import { UIConstants } from "../../core";
 import { CONSUMER_USERSTORE } from "../../userstores/constants";
 
@@ -52,18 +51,14 @@ interface ApplicationRoleGroupsProps extends IdentifiableComponentInterface {
  * Application role groups component.
  */
 const ApplicationRoleInvitedUserGroups = (props: ApplicationRoleGroupsProps): ReactElement => {
-    const {
-        appId,
-        roleId,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { appId, roleId, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ processedGroupsList, setProcessedGroupsList ] = useState<ApplicationRoleGroupInterface[]>([]);
-    const [ initialGroupsList, setInitialGroupsList ] = useState<ApplicationRoleGroupInterface[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [processedGroupsList, setProcessedGroupsList] = useState<ApplicationRoleGroupInterface[]>([]);
+    const [initialGroupsList, setInitialGroupsList] = useState<ApplicationRoleGroupInterface[]>([]);
 
     const {
         data: originalApplicationRoleGroupData,
@@ -77,41 +72,34 @@ const ApplicationRoleInvitedUserGroups = (props: ApplicationRoleGroupsProps): Re
         error: descendantDataFetchRequestError
     } = useDescendantsOfSubOrg();
 
-    useEffect(() => {                                                
-        if (originalApplicationRoleGroupData instanceof IdentityAppsApiException 
-                || applicationRoleGroupDataFetchRequestError) {
+    useEffect(() => {
+        if (
+            originalApplicationRoleGroupData instanceof IdentityAppsApiException ||
+            applicationRoleGroupDataFetchRequestError
+        ) {
             handleAlerts({
-                description: t(
-                    "extensions:console.applicationRoles.roleGroups.fetchGroups.error.description"
-                ),
+                description: t("extensions:console.applicationRoles.roleGroups.fetchGroups.error.description"),
                 level: AlertLevels.ERROR,
-                message: t(
-                    "extensions:console.applicationRoles.roleGroups.fetchGroups.error.message"
-                )
+                message: t("extensions:console.applicationRoles.roleGroups.fetchGroups.error.message")
             });
         }
-    }, [ originalApplicationRoleGroupData ]);
+    }, [originalApplicationRoleGroupData]);
 
-    useEffect(() => {                                                  
-        if (originalDescendantData instanceof IdentityAppsApiException 
-                || descendantDataFetchRequestError) {
+    useEffect(() => {
+        if (originalDescendantData instanceof IdentityAppsApiException || descendantDataFetchRequestError) {
             handleAlerts({
-                description: t(
-                    "extensions:console.applicationRoles.roleGroups.fetchGroups.error.description"
-                ),
+                description: t("extensions:console.applicationRoles.roleGroups.fetchGroups.error.description"),
                 level: AlertLevels.ERROR,
-                message: t(
-                    "extensions:console.applicationRoles.roleGroups.fetchGroups.error.message"
-                )
+                message: t("extensions:console.applicationRoles.roleGroups.fetchGroups.error.message")
             });
         }
-    }, [ originalDescendantData ]);
+    }, [originalDescendantData]);
 
     useEffect(() => {
         if (originalApplicationRoleGroupData?.groups?.length > 0 && originalDescendantData?.length > 0) {
             mapOrganizationsToRoleGroupData();
         }
-    }, [ originalApplicationRoleGroupData, originalDescendantData ]);
+    }, [originalApplicationRoleGroupData, originalDescendantData]);
 
     /**
      * This will map the organization name to the group data.
@@ -131,7 +119,8 @@ const ApplicationRoleInvitedUserGroups = (props: ApplicationRoleGroupsProps): Re
 
                     return group;
                 }
-            });
+            }
+        );
 
         setInitialGroupsList(filteredGroups);
         setProcessedGroupsList(filteredGroups);
@@ -155,14 +144,15 @@ const ApplicationRoleInvitedUserGroups = (props: ApplicationRoleGroupsProps): Re
 
         if (query === "") {
             setProcessedGroupsList(initialGroupsList);
-            
+
             return;
         }
 
-        const filteredGroupsList: ApplicationRoleGroupInterface[] = 
-        initialGroupsList.filter((group: ApplicationRoleGroupInterface) => {
-            return group.name.toLowerCase().includes(query.toLowerCase());
-        });
+        const filteredGroupsList: ApplicationRoleGroupInterface[] = initialGroupsList.filter(
+            (group: ApplicationRoleGroupInterface) => {
+                return group.name.toLowerCase().includes(query.toLowerCase());
+            }
+        );
 
         setProcessedGroupsList(filteredGroupsList);
     };
@@ -180,21 +170,22 @@ const ApplicationRoleInvitedUserGroups = (props: ApplicationRoleGroupsProps): Re
         if (searchQuery && processedGroupsList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    data-testid={ `${ componentId }-search-empty-placeholder` }
-                    action={ (
+                    data-testid={`${componentId}-search-empty-placeholder`}
+                    action={
                         <LinkButton
-                            data-testid={ `${ componentId }-search-empty-placeholder-clear-button` }
-                            onClick={ onSearchQueryClear }
+                            data-testid={`${componentId}-search-empty-placeholder-clear-button`}
+                            onClick={onSearchQueryClear}
                         >
-                            { t("console:manage.features.roles.list.emptyPlaceholders.search.action") }
+                            {t("console:manage.features.roles.list.emptyPlaceholders.search.action")}
                         </LinkButton>
-                    ) }
-                    title={ t("console:manage.features.roles.list.emptyPlaceholders.search.title") }
-                    subtitle={ [
-                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0",
-                            { searchQuery: searchQuery }),
+                    }
+                    title={t("console:manage.features.roles.list.emptyPlaceholders.search.title")}
+                    subtitle={[
+                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0", {
+                            searchQuery: searchQuery
+                        }),
                         t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.1")
-                    ] }
+                    ]}
                 />
             );
         }
@@ -202,18 +193,16 @@ const ApplicationRoleInvitedUserGroups = (props: ApplicationRoleGroupsProps): Re
         if (processedGroupsList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    data-testid={ `${ componentId }-search-empty-placeholder` }
-                    title={ t("extensions:console.applicationRoles.roleGroups.placeholder.title") }
-                    subtitle={ [
-                        t("extensions:console.applicationRoles.roleGroups.placeholder.subTitle.0")
-                    ] }
+                    data-testid={`${componentId}-search-empty-placeholder`}
+                    title={t("extensions:console.applicationRoles.roleGroups.placeholder.title")}
+                    subtitle={[t("extensions:console.applicationRoles.roleGroups.placeholder.subTitle.0")]}
                 />
             );
         }
 
         return null;
     };
-        
+
     /**
      * Resolves data table columns.
      */
@@ -225,26 +214,21 @@ const ApplicationRoleInvitedUserGroups = (props: ApplicationRoleGroupsProps): Re
                 id: "name",
                 key: "name",
                 render: (group: ApplicationRoleGroupInterface): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ componentId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${componentId}-item-heading`}>
                         <AppAvatar
-                            image={ (
+                            image={
                                 <AnimatedAvatar
-                                    name={ group?.name?.split("/")[1] }
+                                    name={group?.name?.split("/")[1]}
                                     size="mini"
-                                    data-testid={ `${ componentId }-item-image-inner` }
+                                    data-testid={`${componentId}-item-image-inner`}
                                 />
-                            ) }
+                            }
                             size="mini"
                             spaced="right"
-                            data-testid={ `${ componentId }-item-image` }
+                            data-testid={`${componentId}-item-image`}
                         />
                         <Header.Content>
-                            <div className="mt-1">{ group?.name?.split("/")[1] } </div>
+                            <div className="mt-1">{group?.name?.split("/")[1]} </div>
                         </Header.Content>
                     </Header>
                 ),
@@ -282,13 +266,13 @@ const ApplicationRoleInvitedUserGroups = (props: ApplicationRoleGroupsProps): Re
                 },
                 title: (
                     <>
-                        { t("console:manage.features.groups.list.columns.source") }
+                        {t("console:manage.features.groups.list.columns.source")}
                         <Popup
-                            trigger={ (
-                                <div className="inline" >
+                            trigger={
+                                <div className="inline">
                                     <Icon disabled name="info circle" className="link pointing pl-1" />
                                 </div>
-                            ) }
+                            }
                             content="Where group is managed."
                             position="top center"
                             size="mini"
@@ -301,52 +285,47 @@ const ApplicationRoleInvitedUserGroups = (props: ApplicationRoleGroupsProps): Re
         ];
     };
 
-    return (
-        !(isApplicationRoleGroupDataFetchRequestLoading && isDescendantDataFetchRequestLoading)
-            ? (
-                <>
-                    <Grid>
-                        {
-                            (searchQuery || processedGroupsList?.length !== 0) && (
-                                <Grid.Row columns={ 1 } className="pb-0">
-                                    <Grid.Column width={ 6 }>
-                                        <Input
-                                            data-componentid={ `${ componentId }-groups-list-search-input` }
-                                            icon={ <Icon name="search" /> }
-                                            iconPosition="left"
-                                            onChange={ (e: ChangeEvent<HTMLInputElement>) => 
-                                                searchGroups(e.target.value) }
-                                            value={ searchQuery }
-                                            placeholder={ t("extensions:console.applicationRoles.roleGroups." +
-                                                "searchGroup") }
-                                            floated="left"
-                                            fluid
-                                        />
-                                    </Grid.Column>
-                                </Grid.Row>
-                            )
-                        }
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column width={ 16 }>
-                                <DataTable<ApplicationRoleGroupInterface[]>
-                                    loadingStateOptions={ {
-                                        count: UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
-                                        imageType: "square"
-                                    } }
-                                    columns={ resolveTableColumns() }
-                                    data={ processedGroupsList }
-                                    onRowClick={ () => null }
-                                    data-testid={ componentId }
-                                    placeholders={ showPlaceholders() }
-                                    isLoading={ isApplicationRoleGroupDataFetchRequestLoading ||
-                                        isDescendantDataFetchRequestLoading }
-                                />
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
-                </>
-            )
-            : <ContentLoader />
+    return !(isApplicationRoleGroupDataFetchRequestLoading && isDescendantDataFetchRequestLoading) ? (
+        <>
+            <Grid>
+                {(searchQuery || processedGroupsList?.length !== 0) && (
+                    <Grid.Row columns={1} className="pb-0">
+                        <Grid.Column width={6}>
+                            <Input
+                                data-componentid={`${componentId}-groups-list-search-input`}
+                                icon={<Icon name="search" />}
+                                iconPosition="left"
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => searchGroups(e.target.value)}
+                                value={searchQuery}
+                                placeholder={t("extensions:console.applicationRoles.roleGroups." + "searchGroup")}
+                                floated="left"
+                                fluid
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                )}
+                <Grid.Row columns={1}>
+                    <Grid.Column width={16}>
+                        <DataTable<ApplicationRoleGroupInterface[]>
+                            loadingStateOptions={{
+                                count: UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
+                                imageType: "square"
+                            }}
+                            columns={resolveTableColumns()}
+                            data={processedGroupsList}
+                            onRowClick={() => null}
+                            data-testid={componentId}
+                            placeholders={showPlaceholders()}
+                            isLoading={
+                                isApplicationRoleGroupDataFetchRequestLoading || isDescendantDataFetchRequestLoading
+                            }
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </>
+    ) : (
+        <ContentLoader />
     );
 };
 

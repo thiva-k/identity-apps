@@ -23,12 +23,13 @@ import {
     DocumentationLink,
     EmphasizedSegment,
     Message,
-    useDocumentation } from "@wso2is/react-components";
+    useDocumentation
+} from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider } from "semantic-ui-react";
-import { applicationConfig } from "features/extensions";
+import { applicationConfig } from "../../../extensions";
 import { AppConstants, AppState, UIConfigInterface } from "../../../core";
 import { OrganizationType } from "../../../organizations/constants";
 import { useMyAccountStatus } from "../../api";
@@ -140,7 +141,6 @@ const FORM_ID: string = "application-general-details";
 export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterface> = (
     props: GeneralDetailsFormPopsInterface
 ): ReactElement => {
-
     const {
         appId,
         name,
@@ -155,7 +155,7 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
         isSubmitting,
         isManagementApp,
         application,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
@@ -164,18 +164,17 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
 
     const UIConfig: UIConfigInterface = useSelector((state: AppState) => state?.config?.ui);
 
-    const [ isDiscoverable, setDiscoverability ] = useState<boolean>(discoverability);
+    const [isDiscoverable, setDiscoverability] = useState<boolean>(discoverability);
 
-    const [ isMyAccountEnabled, setMyAccountStatus ] = useState<boolean>(AppConstants.DEFAULT_MY_ACCOUNT_STATUS);
-    const [ isM2MApplication, setM2MApplication ] = useState<boolean>(false);
+    const [isMyAccountEnabled, setMyAccountStatus] = useState<boolean>(AppConstants.DEFAULT_MY_ACCOUNT_STATUS);
+    const [isM2MApplication, setM2MApplication] = useState<boolean>(false);
 
-    const isSubOrg: boolean = window[ "AppUtils" ].getConfig().organizationName;
+    const isSubOrg: boolean = window["AppUtils"].getConfig().organizationName;
     const orgType: OrganizationType = useSelector((state: AppState) => state?.organization?.organizationType);
 
-    const {
-        data: myAccountStatus,
-        isLoading: isMyAccountStatusLoading
-    } = useMyAccountStatus(!isSubOrg && applicationConfig?.advancedConfigurations?.showMyAccountStatus);
+    const { data: myAccountStatus, isLoading: isMyAccountStatusLoading } = useMyAccountStatus(
+        !isSubOrg && applicationConfig?.advancedConfigurations?.showMyAccountStatus
+    );
 
     /**
      * Prepare form values for submitting.
@@ -192,7 +191,7 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
             description: values.description?.toString().trim(),
             id: appId,
             name: values.name?.toString(),
-            ...!hiddenFields?.includes("imageUrl") && { imageUrl: values.imageUrl?.toString() }
+            ...(!hiddenFields?.includes("imageUrl") && { imageUrl: values.imageUrl?.toString() })
         });
     };
 
@@ -202,16 +201,15 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
      * @param values - Form Values.
      * @returns Form validation.
      */
-    const validateForm = (values: GeneralDetailsFormValuesInterface):
-        GeneralDetailsFormErrorValidationsInterface => {
-
+    const validateForm = (values: GeneralDetailsFormValuesInterface): GeneralDetailsFormErrorValidationsInterface => {
         const errors: GeneralDetailsFormErrorValidationsInterface = {
             accessUrl: undefined
         };
 
         if (isDiscoverable && !values.accessUrl) {
-            errors.accessUrl = t("console:develop.features.applications.forms.generalDetails.fields.accessUrl" +
-                ".validations.empty");
+            errors.accessUrl = t(
+                "console:develop.features.applications.forms.generalDetails.fields.accessUrl" + ".validations.empty"
+            );
         }
 
         return errors;
@@ -224,10 +222,8 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
      * @returns Name validation.
      */
     const validateName = (name: string): string | void => {
-
-        const isValid: boolean = name && !!name.match(
-            ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_NAME_PATTERN
-        );
+        const isValid: boolean =
+            name && !!name.match(ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_NAME_PATTERN);
 
         if (!isValid) {
             return "Please enter a valid input.";
@@ -241,10 +237,9 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
      * @returns Description validation.
      */
     const validateDescription = (description: string): string | void => {
-
-        const isValid: boolean = description && !!description.match(
-            ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_DESCRIPTION_PATTERN
-        );
+        const isValid: boolean =
+            description &&
+            !!description.match(ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_DESCRIPTION_PATTERN);
 
         if (!isValid) {
             return "Please enter a valid input.";
@@ -256,7 +251,7 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
      */
     useEffect(() => {
         setM2MApplication(application?.templateId === ApplicationManagementConstants.M2M_APP_TEMPLATE_ID);
-    }, [ application ]);
+    }, [application]);
 
     /**
      * Sets the initial spinner.
@@ -269,233 +264,196 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
             const enableProperty: string = myAccountStatus["value"];
 
             if (enableProperty && enableProperty === "false") {
-
                 status = false;
             }
         }
 
         setMyAccountStatus(status);
-    }, [ isMyAccountStatusLoading ]);
+    }, [isMyAccountStatusLoading]);
 
     if (isMyAccountStatusLoading) {
         return (
             <EmphasizedSegment padded="very">
-                <ContentLoader inline="centered" active/>
+                <ContentLoader inline="centered" active />
             </EmphasizedSegment>
         );
     }
 
     return (
         <Form
-            id={ FORM_ID }
-            uncontrolledForm={ false }
-            onSubmit={ (values: GeneralDetailsFormValuesInterface) => {
+            id={FORM_ID}
+            uncontrolledForm={false}
+            onSubmit={(values: GeneralDetailsFormValuesInterface) => {
                 updateConfigurations(values);
-            } }
-            initialValues={ {
+            }}
+            initialValues={{
                 accessUrl: accessUrl,
                 description: description,
                 name: name
-            } }
-            validate={ validateForm }
+            }}
+            validate={validateForm}
         >
-            { getLink("develop.connections.newConnection.enterprise.saml.learnMore") === undefined
-                ? null
-                : <Divider hidden/>
-            }
-            { isManagementApp && (
+            {getLink("develop.connections.newConnection.enterprise.saml.learnMore") === undefined ? null : (
+                <Divider hidden />
+            )}
+            {isManagementApp && (
                 <Message
                     type="info"
-                    content={ (
+                    content={
                         <>
-                            { t("console:develop.features.applications.forms.generalDetails.managementAppBanner") }
-                            <DocumentationLink
-                                link={ getLink("develop.applications.managementApplication.learnMore") }>
-                                {
-                                    t("common:learnMore")
-                                }
+                            {t("console:develop.features.applications.forms.generalDetails.managementAppBanner")}
+                            <DocumentationLink link={getLink("develop.applications.managementApplication.learnMore")}>
+                                {t("common:learnMore")}
                             </DocumentationLink>
                         </>
-                    ) }
+                    }
                 />
-            ) }
-            { !UIConfig.systemAppsIdentifiers.includes(name) && (
+            )}
+            {!UIConfig.systemAppsIdentifiers.includes(name) && (
                 <Field.Input
                     ariaLabel="Application name"
                     inputType="name"
                     name="name"
-                    label={
-                        t("console:develop.features.applications.forms.generalDetails.fields.name" +
-                            ".label")
-                    }
-                    required={ true }
-                    placeholder={
-                        t("console:develop.features.applications.forms.generalDetails.fields.name" +
-                            ".placeholder")
-                    }
-                    value={ name }
-                    readOnly={ readOnly || orgType === OrganizationType.SUBORGANIZATION }
-                    validation ={ (value: string) => validateName(value.toString().trim()) }
-                    maxLength={ ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_NAME_MAX_LENGTH }
-                    minLength={ 3 }
-                    data-testid={ `${ testId }-application-name-input` }
-                    width={ 16 }
+                    label={t("console:develop.features.applications.forms.generalDetails.fields.name" + ".label")}
+                    required={true}
+                    placeholder={t(
+                        "console:develop.features.applications.forms.generalDetails.fields.name" + ".placeholder"
+                    )}
+                    value={name}
+                    readOnly={readOnly || orgType === OrganizationType.SUBORGANIZATION}
+                    validation={(value: string) => validateName(value.toString().trim())}
+                    maxLength={ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.APP_NAME_MAX_LENGTH}
+                    minLength={3}
+                    data-testid={`${testId}-application-name-input`}
+                    width={16}
                 />
-            ) }
-            {
-                name !== ApplicationManagementConstants.MY_ACCOUNT_APP_NAME && (
-                    <Field.Textarea
-                        ariaLabel="Application description"
-                        name="description"
-                        label={
-                            t("console:develop.features.applications.forms.generalDetails.fields.description" +
-                                ".label")
-                        }
-                        required={ false }
-                        placeholder={
-                            t("console:develop.features.applications.forms.generalDetails.fields.description" +
-                                ".placeholder")
-                        }
-                        value={ description }
-                        readOnly={ readOnly }
-                        validation ={ (value: string) => validateDescription(value.toString().trim()) }
-                        maxLength={ 300 }
-                        minLength={ 3 }
-                        data-testid={ `${ testId }-application-description-textarea` }
-                        width={ 16 }
-                    />
-                )
-            }
+            )}
+            {name !== ApplicationManagementConstants.MY_ACCOUNT_APP_NAME && (
+                <Field.Textarea
+                    ariaLabel="Application description"
+                    name="description"
+                    label={t(
+                        "console:develop.features.applications.forms.generalDetails.fields.description" + ".label"
+                    )}
+                    required={false}
+                    placeholder={t(
+                        "console:develop.features.applications.forms.generalDetails.fields.description" + ".placeholder"
+                    )}
+                    value={description}
+                    readOnly={readOnly}
+                    validation={(value: string) => validateDescription(value.toString().trim())}
+                    maxLength={300}
+                    minLength={3}
+                    data-testid={`${testId}-application-description-textarea`}
+                    width={16}
+                />
+            )}
             {
                 <Field.Input
                     ariaLabel="Application image URL"
                     inputType="url"
                     name="imageUrl"
-                    label={
-                        t("console:develop.features.applications.forms.generalDetails" +
-                            ".fields.imageUrl.label")
-                    }
-                    required={ false }
-                    placeholder={
-                        t("console:develop.features.applications.forms.generalDetails" +
-                            ".fields.imageUrl.placeholder")
-                    }
-                    value={ imageUrl }
-                    readOnly={ readOnly }
-                    data-testid={ `${ testId }-application-image-url-input` }
-                    maxLength={ 200 }
-                    minLength={ 3 }
-                    hint={
-                        t("console:develop.features.applications.forms.generalDetails" +
-                            ".fields.imageUrl.hint")
-                    }
-                    width={ 16 }
-                    hidden={ hiddenFields?.includes("imageUrl") }
+                    label={t("console:develop.features.applications.forms.generalDetails" + ".fields.imageUrl.label")}
+                    required={false}
+                    placeholder={t(
+                        "console:develop.features.applications.forms.generalDetails" + ".fields.imageUrl.placeholder"
+                    )}
+                    value={imageUrl}
+                    readOnly={readOnly}
+                    data-testid={`${testId}-application-image-url-input`}
+                    maxLength={200}
+                    minLength={3}
+                    hint={t("console:develop.features.applications.forms.generalDetails" + ".fields.imageUrl.hint")}
+                    width={16}
+                    hidden={hiddenFields?.includes("imageUrl")}
                 />
             }
-            { (
-                !isM2MApplication
-                && (
-                    isMyAccountEnabled
-                    || isSubOrg
-                )
-            ) ? (
-                    <Field.Checkbox
-                        ariaLabel="Make application discoverable by end users"
-                        name="discoverableByEndUsers"
-                        required={ false }
-                        label={ t("console:develop.features.applications.forms.generalDetails.fields" +
-                            ".discoverable.label") }
-                        initialValue={ isDiscoverable }
-                        readOnly={ readOnly }
-                        data-testid={ `${ testId }-application-discoverable-checkbox` }
-                        listen={ (value: boolean) => setDiscoverability(value) }
-                        hint={ (
-                            <Trans
-                                i18nKey={
-                                    application.templateId === ApplicationManagementConstants.MOBILE
-                                        ? "console:develop.features.applications.forms.inboundOIDC.mobileApp" +
-                                            ".discoverableHint"
-                                        : "console:develop.features.applications.forms.generalDetails.fields." +
-                                            "discoverable.hint"
-                                }
-                                tOptions={ { myAccount: "My Account" } }
-                            >
-                                { " " }
-                                { getLink("develop.applications.managementApplication.selfServicePortal") === undefined
-                                    ? (
-                                        <strong data-testid="application-name-assertion">
-                                            My Account
-                                        </strong>
-                                    )
-                                    : (
-                                        <strong
-                                            className="link pointing"
-                                            data-testid="application-name-assertion"
-                                            onClick={
-                                                () => window.open(getLink("develop.applications.managementApplication"+
-                                                            ".selfServicePortal"), "_blank")
-                                            }
-                                        >
-                                            My Account
-                                        </strong>
-                                    )
-                                }
-                            </Trans>
-                        ) }
-                        width={ 16 }
-                    /> ) : null
-            }
-            {
-                !isM2MApplication && (
-                    <Field.Input
-                        ariaLabel={
-                            t("console:develop.features.applications.forms.generalDetails.fields.accessUrl.ariaLabel")
-                        }
-                        inputType="url"
-                        name="accessUrl"
-                        label={
-                            t("console:develop.features.applications.forms.generalDetails.fields.accessUrl.label")
-                        }
-                        required={ isDiscoverable }
-                        placeholder={
-                            t("console:develop.features.applications.forms.generalDetails.fields.accessUrl" +
-                                ".placeholder")
-                        }
-                        value={ accessUrl }
-                        readOnly={
-                            !hasRequiredScope || (
-                                readOnly
-                                && applicationConfig.generalSettings.getFieldReadOnlyStatus(
-                                    application, "ACCESS_URL"
-                                )
-                            )
-                        }
-                        maxLength={ ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.ACCESS_URL_MAX_LENGTH }
-                        minLength={ ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.ACCESS_URL_MIN_LENGTH }
-                        data-testid={ `${ testId }-application-access-url-input` }
-                        hint={ t("console:develop.features.applications.forms.generalDetails.fields.accessUrl.hint") }
-                        width={ 16 }
-                    />)
-            }
+            {!isM2MApplication && (isMyAccountEnabled || isSubOrg) ? (
+                <Field.Checkbox
+                    ariaLabel="Make application discoverable by end users"
+                    name="discoverableByEndUsers"
+                    required={false}
+                    label={t(
+                        "console:develop.features.applications.forms.generalDetails.fields" + ".discoverable.label"
+                    )}
+                    initialValue={isDiscoverable}
+                    readOnly={readOnly}
+                    data-testid={`${testId}-application-discoverable-checkbox`}
+                    listen={(value: boolean) => setDiscoverability(value)}
+                    hint={
+                        <Trans
+                            i18nKey={
+                                application.templateId === ApplicationManagementConstants.MOBILE
+                                    ? "console:develop.features.applications.forms.inboundOIDC.mobileApp" +
+                                      ".discoverableHint"
+                                    : "console:develop.features.applications.forms.generalDetails.fields." +
+                                      "discoverable.hint"
+                            }
+                            tOptions={{ myAccount: "My Account" }}
+                        >
+                            {" "}
+                            {getLink("develop.applications.managementApplication.selfServicePortal") === undefined ? (
+                                <strong data-testid="application-name-assertion">My Account</strong>
+                            ) : (
+                                <strong
+                                    className="link pointing"
+                                    data-testid="application-name-assertion"
+                                    onClick={() =>
+                                        window.open(
+                                            getLink(
+                                                "develop.applications.managementApplication" + ".selfServicePortal"
+                                            ),
+                                            "_blank"
+                                        )
+                                    }
+                                >
+                                    My Account
+                                </strong>
+                            )}
+                        </Trans>
+                    }
+                    width={16}
+                />
+            ) : null}
+            {!isM2MApplication && (
+                <Field.Input
+                    ariaLabel={t(
+                        "console:develop.features.applications.forms.generalDetails.fields.accessUrl.ariaLabel"
+                    )}
+                    inputType="url"
+                    name="accessUrl"
+                    label={t("console:develop.features.applications.forms.generalDetails.fields.accessUrl.label")}
+                    required={isDiscoverable}
+                    placeholder={t(
+                        "console:develop.features.applications.forms.generalDetails.fields.accessUrl" + ".placeholder"
+                    )}
+                    value={accessUrl}
+                    readOnly={
+                        !hasRequiredScope ||
+                        (readOnly &&
+                            applicationConfig.generalSettings.getFieldReadOnlyStatus(application, "ACCESS_URL"))
+                    }
+                    maxLength={ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.ACCESS_URL_MAX_LENGTH}
+                    minLength={ApplicationManagementConstants.FORM_FIELD_CONSTRAINTS.ACCESS_URL_MIN_LENGTH}
+                    data-testid={`${testId}-application-access-url-input`}
+                    hint={t("console:develop.features.applications.forms.generalDetails.fields.accessUrl.hint")}
+                    width={16}
+                />
+            )}
 
             <Field.Button
-                form={ FORM_ID }
+                form={FORM_ID}
                 size="small"
                 buttonType="primary_btn"
                 ariaLabel="Update button"
                 name="update-button"
-                data-testid={ `${ testId }-submit-button` }
-                disabled={ isSubmitting }
-                loading={ isSubmitting }
-                label={ t("common:update") }
+                data-testid={`${testId}-submit-button`}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                label={t("common:update")}
                 hidden={
-                    !hasRequiredScope || (
-                        readOnly
-                        && applicationConfig.generalSettings.getFieldReadOnlyStatus(
-                            application, "ACCESS_URL"
-                        )
-                    )
+                    !hasRequiredScope ||
+                    (readOnly && applicationConfig.generalSettings.getFieldReadOnlyStatus(application, "ACCESS_URL"))
                 }
             />
         </Form>

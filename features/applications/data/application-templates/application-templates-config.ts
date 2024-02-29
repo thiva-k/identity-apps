@@ -24,16 +24,14 @@ import GeneralApplicationTemplateCategory from "./categories/general-application
 import DesktopApplicationTemplateGroup from "./groups/desktop-application-template-group.json";
 import WebApplicationTemplateGroup from "./groups/web-application-template-group.json";
 import CustomApplicationTemplate from "./templates/custom-application/custom-application.json";
-import CustomProtocolApplicationTemplate from
-    "./templates/custom-protocol-application/custom-protocol-application.json";
+import CustomProtocolApplicationTemplate from "./templates/custom-protocol-application/custom-protocol-application.json";
 import M2MApplicationTemplate from "./templates/m2m-application/m2m-application.json";
 import MobileApplicationTemplate from "./templates/mobile-application/mobile-application.json";
 import OIDCWebApplicationTemplate from "./templates/oidc-web-application/oidc-web-application.json";
 import SAMLWebApplicationTemplate from "./templates/saml-web-application/saml-web-application.json";
 import SinglePageApplicationTemplate from "./templates/single-page-application/single-page-application.json";
-import WindowsDesktopApplicationTemplate
-    from "./templates/windows-desktop-application/windows-desktop-application.json";
-import { ExtensionsManager, applicationConfig } from "features/extensions";
+import WindowsDesktopApplicationTemplate from "./templates/windows-desktop-application/windows-desktop-application.json";
+import { ExtensionsManager, applicationConfig } from "../../../extensions";
 import {
     ApplicationTemplateCategoryInterface,
     ApplicationTemplateGroupInterface,
@@ -54,7 +52,7 @@ export interface TemplateConfigInterface<T = Record<string, unknown>> {
 }
 
 export interface TemplateContentInterface extends StrictTemplateContentInterface {
-    [ key: string ]: any;
+    [key: string]: any;
 }
 
 export interface StrictTemplateContentInterface {
@@ -64,111 +62,123 @@ export interface StrictTemplateContentInterface {
 }
 
 export const getApplicationTemplatesConfig = (): ApplicationTemplatesConfigInterface => {
-
     const extensionsManager: ExtensionsManager = ExtensionsManager.getInstance();
 
     return {
         categories: values(
             merge(
-                keyBy([
-                    {
-                        enabled: true,
-                        id: GeneralApplicationTemplateCategory.id,
-                        resource: GeneralApplicationTemplateCategory
-                    }
-                ], "id"),
+                keyBy(
+                    [
+                        {
+                            enabled: true,
+                            id: GeneralApplicationTemplateCategory.id,
+                            resource: GeneralApplicationTemplateCategory
+                        }
+                    ],
+                    "id"
+                ),
                 keyBy(extensionsManager.getApplicationTemplatesConfig().categories, "id")
             )
         ),
         groups: values(
             merge(
-                keyBy([
-                    {
-                        enabled: true,
-                        id: WebApplicationTemplateGroup.id,
-                        resource: WebApplicationTemplateGroup
-                    },
-                    {
-                        enabled: true,
-                        id: DesktopApplicationTemplateGroup.id,
-                        resource: DesktopApplicationTemplateGroup
-                    }
-                ], "id"),
+                keyBy(
+                    [
+                        {
+                            enabled: true,
+                            id: WebApplicationTemplateGroup.id,
+                            resource: WebApplicationTemplateGroup
+                        },
+                        {
+                            enabled: true,
+                            id: DesktopApplicationTemplateGroup.id,
+                            resource: DesktopApplicationTemplateGroup
+                        }
+                    ],
+                    "id"
+                ),
                 keyBy(extensionsManager.getApplicationTemplatesConfig().groups, "id")
             )
         ),
         templates: values(
             merge(
-                keyBy([
-                    {
-                        content: {
-                            wizardHelp: lazy(() => import("./templates/oidc-web-application/create-wizard-help"))
+                keyBy(
+                    [
+                        {
+                            content: {
+                                wizardHelp: lazy(() => import("./templates/oidc-web-application/create-wizard-help"))
+                            },
+                            enabled: applicationConfig.templates.oidc,
+                            id: OIDCWebApplicationTemplate.id,
+                            resource: OIDCWebApplicationTemplate
                         },
-                        enabled: applicationConfig.templates.oidc,
-                        id: OIDCWebApplicationTemplate.id,
-                        resource: OIDCWebApplicationTemplate
-                    },
-                    {
-                        content: {
-                            wizardHelp: lazy(() => import("./templates/saml-web-application/create-wizard-help")),
-                            wizardHelp2:
-                                lazy(() => import("./templates/saml-web-application/create-file-based-wizard-help")),
-                            wizardHelp3:
-                                lazy(() => import("./templates/saml-web-application/create-url-based-wizard-help"))
+                        {
+                            content: {
+                                wizardHelp: lazy(() => import("./templates/saml-web-application/create-wizard-help")),
+                                wizardHelp2: lazy(() =>
+                                    import("./templates/saml-web-application/create-file-based-wizard-help")
+                                ),
+                                wizardHelp3: lazy(() =>
+                                    import("./templates/saml-web-application/create-url-based-wizard-help")
+                                )
+                            },
+                            enabled: applicationConfig.templates.saml,
+                            id: SAMLWebApplicationTemplate.id,
+                            resource: SAMLWebApplicationTemplate
                         },
-                        enabled: applicationConfig.templates.saml,
-                        id: SAMLWebApplicationTemplate.id,
-                        resource: SAMLWebApplicationTemplate
-                    },
-                    {
-                        content: {
-                            wizardHelp: lazy(() => import("./templates/single-page-application/create-wizard-help"))
+                        {
+                            content: {
+                                wizardHelp: lazy(() => import("./templates/single-page-application/create-wizard-help"))
+                            },
+                            enabled: applicationConfig.templates.spa,
+                            id: SinglePageApplicationTemplate.id,
+                            resource: SinglePageApplicationTemplate
                         },
-                        enabled: applicationConfig.templates.spa,
-                        id: SinglePageApplicationTemplate.id,
-                        resource: SinglePageApplicationTemplate
-                    },
-                    {
-                        content: {
-                            wizardHelp: lazy(() => import("./templates/windows-desktop-application/create-wizard-help"))
+                        {
+                            content: {
+                                wizardHelp: lazy(() =>
+                                    import("./templates/windows-desktop-application/create-wizard-help")
+                                )
+                            },
+                            enabled: applicationConfig.templates.windows,
+                            id: WindowsDesktopApplicationTemplate.id,
+                            resource: WindowsDesktopApplicationTemplate
                         },
-                        enabled: applicationConfig.templates.windows,
-                        id: WindowsDesktopApplicationTemplate.id,
-                        resource: WindowsDesktopApplicationTemplate
-                    },
-                    {
-                        content: {
-                            wizardHelp: null
+                        {
+                            content: {
+                                wizardHelp: null
+                            },
+                            enabled: applicationConfig.templates.custom,
+                            id: CustomApplicationTemplate.id,
+                            resource: CustomApplicationTemplate
                         },
-                        enabled: applicationConfig.templates.custom,
-                        id: CustomApplicationTemplate.id,
-                        resource: CustomApplicationTemplate
-                    },
-                    {
-                        content: {
-                            wizardHelp: lazy(() => import("./templates/mobile-application/create-wizard-help"))
+                        {
+                            content: {
+                                wizardHelp: lazy(() => import("./templates/mobile-application/create-wizard-help"))
+                            },
+                            enabled: applicationConfig.templates.mobile,
+                            id: MobileApplicationTemplate.id,
+                            resource: MobileApplicationTemplate
                         },
-                        enabled: applicationConfig.templates.mobile,
-                        id: MobileApplicationTemplate.id,
-                        resource: MobileApplicationTemplate
-                    },
-                    {
-                        content: {
-                            wizardHelp: null
+                        {
+                            content: {
+                                wizardHelp: null
+                            },
+                            enabled: applicationConfig.templates.m2m,
+                            id: M2MApplicationTemplate.id,
+                            resource: M2MApplicationTemplate
                         },
-                        enabled: applicationConfig.templates.m2m,
-                        id: M2MApplicationTemplate.id,
-                        resource: M2MApplicationTemplate
-                    },
-                    {
-                        content: {
-                            wizardHelp: null
-                        },
-                        enabled: applicationConfig.templates.customProtocol,
-                        id: CustomProtocolApplicationTemplate.id,
-                        resource: CustomProtocolApplicationTemplate
-                    }
-                ], "id"),
+                        {
+                            content: {
+                                wizardHelp: null
+                            },
+                            enabled: applicationConfig.templates.customProtocol,
+                            id: CustomProtocolApplicationTemplate.id,
+                            resource: CustomProtocolApplicationTemplate
+                        }
+                    ],
+                    "id"
+                ),
                 keyBy(extensionsManager.getApplicationTemplatesConfig().templates, "id")
             )
         )
