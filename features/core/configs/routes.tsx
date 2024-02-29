@@ -148,7 +148,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("../../server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -171,7 +171,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("../../server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -223,9 +223,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-listing-page")
-                        ),
+                        component: lazy(() => import("../../server-configurations/pages/connector-listing-page")),
                         exact: false,
                         icon: {
                             icon: <ArrowRightToBracketPencilIcon />
@@ -685,7 +683,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         children: [
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("../../server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -702,7 +700,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("../../server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -722,7 +720,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                             },
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("../../server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -738,9 +736,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-listing-page")
-                        ),
+                        component: lazy(() => import("../../server-configurations/pages/connector-listing-page")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().connectors[
@@ -760,9 +756,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         category: "extensions:manage.sidePanel.categories.AccountManagement",
                         children: [
                             {
-                                component: lazy(() =>
-                                    import("../../../features/server-configurations/pages/connector-edit-page")
-                                ),
+                                component: lazy(() => import("../../server-configurations/pages/connector-edit-page")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -783,9 +777,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             },
                             {
-                                component: lazy(() =>
-                                    import("../../../features/server-configurations/pages/connector-edit-page")
-                                ),
+                                component: lazy(() => import("../../server-configurations/pages/connector-edit-page")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -807,9 +799,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-listing-page")
-                        ),
+                        component: lazy(() => import("../../server-configurations/pages/connector-listing-page")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().connectors[
@@ -830,7 +820,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         children: [
                             {
                                 component: lazy(() =>
-                                    import("../../../features/server-configurations/" + "pages/connector-edit-page")
+                                    import("../../server-configurations/" + "pages/connector-edit-page")
                                 ),
                                 exact: true,
                                 icon: {
@@ -852,9 +842,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             },
                             {
-                                component: lazy(() =>
-                                    import("../../../features/server-configurations/pages/connector-edit-page")
-                                ),
+                                component: lazy(() => import("../../server-configurations/pages/connector-edit-page")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().childIcon
@@ -903,9 +891,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-listing-page")
-                        ),
+                        component: lazy(() => import("../../server-configurations/pages/connector-listing-page")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().connectors[
@@ -970,9 +956,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     },
                     {
                         category: "extensions:manage.sidePanel.categories.monitor",
-                        component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-edit-page")
-                        ),
+                        component: lazy(() => import("../../server-configurations/pages/connector-edit-page")),
                         exact: true,
                         icon: {
                             icon: <LinearNodesIcon fill="black" className="icon" />
@@ -988,9 +972,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     },
                     {
-                        component: lazy(() =>
-                            import("../../../features/server-configurations/pages/connector-edit-page")
-                        ),
+                        component: lazy(() => import("../../server-configurations/pages/connector-edit-page")),
                         exact: true,
                         icon: {
                             icon: <LinearNodesIcon fill="black" className="icon" />

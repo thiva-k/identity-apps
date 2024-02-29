@@ -34,7 +34,7 @@ import { UserProfile } from "./user-profile";
 import { UserRolesList } from "./user-roles-list";
 import { UserRolesV1List } from "./user-roles-v1-list";
 import { UserSessions } from "./user-sessions";
-import { ServerConfigurationsInterface, getServerConfigs } from "../../../features/server-configurations";
+import { ServerConfigurationsInterface, getServerConfigs } from "../../server-configurations";
 import { FeatureConfigInterface } from "../../core/models";
 import { AppState, store } from "../../core/store";
 import { SCIMConfigs } from "../../extensions/configs/scim";

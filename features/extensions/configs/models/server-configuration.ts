@@ -19,7 +19,7 @@
 import { ReactElement, ReactNode } from "react";
 import { TFunction } from "react-i18next";
 import { RequestErrorInterface, RequestResultInterface } from "../../../core/hooks/use-request";
-import { GovernanceConnectorInterface } from "features/server-configurations";
+import { GovernanceConnectorInterface } from "../../../server-configurations";
 import { ValidationFormInterface } from "features/validation/models";
 
 export interface ServerConfigurationConfig {

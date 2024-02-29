@@ -26,7 +26,7 @@ import { AlertLevels, Claim, ClaimsGetParams, IdentifiableComponentInterface, Pr
 import { addAlert } from "@wso2is/core/store";
 import { Field, Form } from "@wso2is/form";
 import { ContentLoader, EmphasizedSegment, Message, PageLayout } from "@wso2is/react-components";
-import { ServerConfigurationsConstants } from "features/server-configurations/constants";
+import { ServerConfigurationsConstants } from "../../../../server-configurations/constants";
 import { AxiosError } from "axios";
 import isEmpty from "lodash-es/isEmpty";
 import { IdentityAppsError } from "modules/core/dist/types/errors";

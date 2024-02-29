@@ -21,7 +21,7 @@ import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { store } from "../../../../core";
-import { UpdateMultipleGovernanceConnectorsInterface } from "features/server-configurations";
+import { UpdateMultipleGovernanceConnectorsInterface } from "../../../../server-configurations";
 
 /**
  * Initialize an axios Http client.

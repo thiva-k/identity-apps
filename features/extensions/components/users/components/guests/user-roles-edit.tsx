@@ -45,7 +45,7 @@ import { Divider, Form, Grid, Modal } from "semantic-ui-react";
 import { AppState, FeatureConfigInterface, updateResources } from "../../../../../core";
 import { getRolesList } from "../../../../../roles/api";
 import { APPLICATION_DOMAIN, INTERNAL_DOMAIN } from "../../../../../roles/constants";
-import { RealmConfigInterface } from "features/server-configurations/models";
+import { RealmConfigInterface } from "../../../../../server-configurations/models";
 import { UserRolePermissions } from "../../../../../users/components/user-role-permissions";
 import { RolePermissions } from "../../../../../users/components/wizard/user-role-permissions";
 

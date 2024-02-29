@@ -31,7 +31,7 @@ import {
     ConnectorPropertyInterface,
     GovernanceConnectorInterface,
     ServerConfigurationsConstants
-} from "../../../features/server-configurations";
+} from "../../server-configurations";
 import { GovernanceConnectorConstants } from "../constants/governance-connector-constants";
 
 /**
@@ -84,7 +84,6 @@ const FORM_ID: string = "governance-connectors-analytics-form";
 export const AnalyticsConfigurationForm: FunctionComponent<AnalyticsConfigurationFormPropsInterface> = (
     props: AnalyticsConfigurationFormPropsInterface
 ): ReactElement => {
-
     const {
         hideUpdateButton,
         initialValues,
@@ -98,8 +97,7 @@ export const AnalyticsConfigurationForm: FunctionComponent<AnalyticsConfiguratio
     } = props;
 
     const { t } = useTranslation();
-    const [ initialConnectorValues, setInitialConnectorValues ]
-        = useState<AnalyticsFormValuesInterface>(undefined);
+    const [initialConnectorValues, setInitialConnectorValues] = useState<AnalyticsFormValuesInterface>(undefined);
 
     /**
      * Flattens and resolved form initial values and field metadata.
@@ -169,11 +167,10 @@ export const AnalyticsConfigurationForm: FunctionComponent<AnalyticsConfiguratio
                     };
 
                     break;
-
             }
         });
         setInitialConnectorValues(resolvedInitialValues);
-    }, [ initialValues ]);
+    }, [initialValues]);
 
     /**
      * Prepare form values for submitting.
@@ -201,209 +198,193 @@ export const AnalyticsConfigurationForm: FunctionComponent<AnalyticsConfiguratio
     }
 
     return (
-        <div className={ "connector-form analytics" }>
+        <div className={"connector-form analytics"}>
             <Form
-                id={ FORM_ID }
-                initialValues={ initialConnectorValues }
-                onSubmit={ (values: AnalyticsFormValuesInterface) => onSubmit(getUpdatedConfigurations(values)) }
-                uncontrolledForm={ false }
-                triggerSubmit={ (submitFunction: () => void) => triggerSubmission(submitFunction) }
+                id={FORM_ID}
+                initialValues={initialConnectorValues}
+                onSubmit={(values: AnalyticsFormValuesInterface) => onSubmit(getUpdatedConfigurations(values))}
+                uncontrolledForm={false}
+                triggerSubmit={(submitFunction: () => void) => triggerSubmission(submitFunction)}
             >
                 <Field.Input
                     ariaLabel="Analytics Host URL"
                     inputType="default"
                     name="receiver"
-                    label={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostUrl.label") }
-                    placeholder={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostUrl.placeholder") }
-                    required={ true }
-                    maxLength={ null }
-                    minLength={ null }
-                    readOnly={ readOnly }
-                    width={ isModalForm ? 16 : 12 }
-                    disabled={ !isConnectorEnabled }
-                    data-componentid={ `${componentId}-analytics-host-url` }
-                    hint={
-                        t("extensions:manage.serverConfigurations.analytics." +
-                            "form.fields.hostUrl.hint")
-                    }
+                    label={t("extensions:manage.serverConfigurations.analytics." + "form.fields.hostUrl.label")}
+                    placeholder={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostUrl.placeholder"
+                    )}
+                    required={true}
+                    maxLength={null}
+                    minLength={null}
+                    readOnly={readOnly}
+                    width={isModalForm ? 16 : 12}
+                    disabled={!isConnectorEnabled}
+                    data-componentid={`${componentId}-analytics-host-url`}
+                    hint={t("extensions:manage.serverConfigurations.analytics." + "form.fields.hostUrl.hint")}
                 />
                 <Field.Checkbox
                     ariaLabel="Analytics Enable Basic Auth"
                     name="basicAuthEnabled"
-                    label={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostBasicAuthEnable.label") }
-                    required={ false }
-                    readOnly={ readOnly }
-                    width={ isModalForm ? 16 : 12 }
-                    disabled={ !isConnectorEnabled }
-                    data-componentid={ `${componentId}-analytics-success` }
-                    hint={
-                        t("extensions:manage.serverConfigurations.analytics." +
-                            "form.fields.hostBasicAuthEnable.hint")
-                    }
+                    label={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostBasicAuthEnable.label"
+                    )}
+                    required={false}
+                    readOnly={readOnly}
+                    width={isModalForm ? 16 : 12}
+                    disabled={!isConnectorEnabled}
+                    data-componentid={`${componentId}-analytics-success`}
+                    hint={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostBasicAuthEnable.hint"
+                    )}
                     toggle
                 />
                 <Field.Input
                     ariaLabel="Analytics Host Username"
                     inputType="default"
                     name="basicAuthUsername"
-                    label={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostUsername.label") }
-                    placeholder={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostUsername.placeholder") }
-                    required={ true }
-                    maxLength={ null }
-                    minLength={ null }
-                    readOnly={ readOnly }
-                    width={ isModalForm ? 16 : 12 }
-                    disabled={ !isConnectorEnabled }
-                    data-componentid={ `${componentId}-host-username` }
-                    hint={
-                        t("extensions:manage.serverConfigurations.analytics." +
-                            "form.fields.hostUsername.hint")
-                    }
+                    label={t("extensions:manage.serverConfigurations.analytics." + "form.fields.hostUsername.label")}
+                    placeholder={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostUsername.placeholder"
+                    )}
+                    required={true}
+                    maxLength={null}
+                    minLength={null}
+                    readOnly={readOnly}
+                    width={isModalForm ? 16 : 12}
+                    disabled={!isConnectorEnabled}
+                    data-componentid={`${componentId}-host-username`}
+                    hint={t("extensions:manage.serverConfigurations.analytics." + "form.fields.hostUsername.hint")}
                 />
                 <Field.Input
                     ariaLabel="Analytics Host Password"
                     inputType="password"
                     type="password"
                     name="basicAuthPassword"
-                    label={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostPassword.label") }
-                    placeholder={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostPassword.placeholder") }
-                    required={ true }
-                    maxLength={ null }
-                    minLength={ null }
-                    readOnly={ readOnly }
-                    width={ isModalForm ? 16 : 12 }
-                    disabled={ !isConnectorEnabled }
-                    hint={
-                        t("extensions:manage.serverConfigurations.analytics." +
-                            "form.fields.hostPassword.hint")
-                    }
-                    data-componentid={ `${componentId}-host-password` }
+                    label={t("extensions:manage.serverConfigurations.analytics." + "form.fields.hostPassword.label")}
+                    placeholder={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostPassword.placeholder"
+                    )}
+                    required={true}
+                    maxLength={null}
+                    minLength={null}
+                    readOnly={readOnly}
+                    width={isModalForm ? 16 : 12}
+                    disabled={!isConnectorEnabled}
+                    hint={t("extensions:manage.serverConfigurations.analytics." + "form.fields.hostPassword.hint")}
+                    data-componentid={`${componentId}-host-password`}
                 />
                 <Field.Input
                     ariaLabel="Analytics HTTP Connection Timeout"
                     inputType="number"
-                    min={ GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS
-                        .TIMEOUT_MIN_LENGTH }
+                    min={GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS.TIMEOUT_MIN_LENGTH}
                     name="httpConnectionTimeout"
-                    label={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostConnectionTimeout.label") }
-                    placeholder={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostConnectionTimeout.placeholder") }
-                    required={ true }
-                    maxLength={ null }
-                    minLength={ GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS
-                        .TIMEOUT_MIN_LENGTH }
-                    readOnly={ readOnly }
-                    width={ isModalForm ? 16 : 12 }
+                    label={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostConnectionTimeout.label"
+                    )}
+                    placeholder={t(
+                        "extensions:manage.serverConfigurations.analytics." +
+                            "form.fields.hostConnectionTimeout.placeholder"
+                    )}
+                    required={true}
+                    maxLength={null}
+                    minLength={GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS.TIMEOUT_MIN_LENGTH}
+                    readOnly={readOnly}
+                    width={isModalForm ? 16 : 12}
                     labelPosition="right"
-                    disabled={ !isConnectorEnabled }
-                    hint={
-                        t("extensions:manage.serverConfigurations.analytics." +
-                            "form.fields.hostConnectionTimeout.hint")
-                    }
-                    data-componentid={ `${componentId}-host-connection-timeout` }
+                    disabled={!isConnectorEnabled}
+                    hint={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostConnectionTimeout.hint"
+                    )}
+                    data-componentid={`${componentId}-host-connection-timeout`}
                 >
-                    <input/>
-                    <Label
-                        content={ "milliseconds" }
-                    />
+                    <input />
+                    <Label content={"milliseconds"} />
                 </Field.Input>
                 <Field.Input
                     ariaLabel="Analytics HTTP Read Timeout"
                     inputType="number"
-                    min={ GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS
-                        .TIMEOUT_MIN_LENGTH }
+                    min={GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS.TIMEOUT_MIN_LENGTH}
                     name="httpReadTimeout"
-                    label={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostReadTimeout.label") }
-                    placeholder={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostReadTimeout.placeholder") }
-                    required={ true }
-                    maxLength={ null }
-                    minLength={ GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS
-                        .TIMEOUT_MIN_LENGTH }
-                    readOnly={ readOnly }
-                    width={ isModalForm ? 16 : 12 }
+                    label={t("extensions:manage.serverConfigurations.analytics." + "form.fields.hostReadTimeout.label")}
+                    placeholder={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostReadTimeout.placeholder"
+                    )}
+                    required={true}
+                    maxLength={null}
+                    minLength={GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS.TIMEOUT_MIN_LENGTH}
+                    readOnly={readOnly}
+                    width={isModalForm ? 16 : 12}
                     labelPosition="right"
-                    disabled={ !isConnectorEnabled }
-                    hint={
-                        t("extensions:manage.serverConfigurations.analytics." +
-                            "form.fields.hostReadTimeout.hint")
-                    }
-                    data-componentid={ `${componentId}-host-read-timeout` }
+                    disabled={!isConnectorEnabled}
+                    hint={t("extensions:manage.serverConfigurations.analytics." + "form.fields.hostReadTimeout.hint")}
+                    data-componentid={`${componentId}-host-read-timeout`}
                 >
-                    <input/>
-                    <Label
-                        content={ "milliseconds" }
-                    />
+                    <input />
+                    <Label content={"milliseconds"} />
                 </Field.Input>
                 <Field.Input
                     ariaLabel="Analytics HTTP Connection Request Timeout"
                     inputType="number"
-                    min={ GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS
-                        .TIMEOUT_MIN_LENGTH }
+                    min={GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS.TIMEOUT_MIN_LENGTH}
                     name="httpConnectionRequestTimeout"
-                    label={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostConnectionRequestTimeout.label") }
-                    placeholder={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostConnectionRequestTimeout.placeholder") }
-                    required={ true }
-                    maxLength={ null }
-                    minLength={ GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS
-                        .TIMEOUT_MIN_LENGTH }
-                    readOnly={ readOnly }
-                    width={ isModalForm ? 16 : 12 }
+                    label={t(
+                        "extensions:manage.serverConfigurations.analytics." +
+                            "form.fields.hostConnectionRequestTimeout.label"
+                    )}
+                    placeholder={t(
+                        "extensions:manage.serverConfigurations.analytics." +
+                            "form.fields.hostConnectionRequestTimeout.placeholder"
+                    )}
+                    required={true}
+                    maxLength={null}
+                    minLength={GovernanceConnectorConstants.ANALYTICS_FORM_FIELD_CONSTRAINTS.TIMEOUT_MIN_LENGTH}
+                    readOnly={readOnly}
+                    width={isModalForm ? 16 : 12}
                     labelPosition="right"
-                    disabled={ !isConnectorEnabled }
-                    hint={
-                        t("extensions:manage.serverConfigurations.analytics." +
-                            "form.fields.hostConnectionRequestTimeout.hint")
-                    }
-                    data-componentid={ `${componentId}-host-connection-request-timeout` }
+                    disabled={!isConnectorEnabled}
+                    hint={t(
+                        "extensions:manage.serverConfigurations.analytics." +
+                            "form.fields.hostConnectionRequestTimeout.hint"
+                    )}
+                    data-componentid={`${componentId}-host-connection-request-timeout`}
                 >
-                    <input/>
-                    <Label
-                        content={ "milliseconds" }
-                    />
+                    <input />
+                    <Label content={"milliseconds"} />
                 </Field.Input>
                 <Field.Input
                     ariaLabel="Analytics Host Name Verification"
                     inputType="default"
                     name="hostNameVerfier"
-                    label={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostNameVerification.label") }
-                    placeholder={ t("extensions:manage.serverConfigurations.analytics." +
-                        "form.fields.hostNameVerification.placeholder") }
-                    required={ true }
-                    maxLength={ null }
-                    minLength={ null }
-                    readOnly={ readOnly }
-                    width={ isModalForm ? 16 : 12 }
-                    disabled={ !isConnectorEnabled }
-                    hint={
-                        t("extensions:manage.serverConfigurations.analytics." +
-                            "form.fields.hostNameVerification.hint")
-                    }
-                    data-componentid={ `${componentId}-host-name-verifier` }
+                    label={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostNameVerification.label"
+                    )}
+                    placeholder={t(
+                        "extensions:manage.serverConfigurations.analytics." +
+                            "form.fields.hostNameVerification.placeholder"
+                    )}
+                    required={true}
+                    maxLength={null}
+                    minLength={null}
+                    readOnly={readOnly}
+                    width={isModalForm ? 16 : 12}
+                    disabled={!isConnectorEnabled}
+                    hint={t(
+                        "extensions:manage.serverConfigurations.analytics." + "form.fields.hostNameVerification.hint"
+                    )}
+                    data-componentid={`${componentId}-host-name-verifier`}
                 />
                 <Field.Button
-                    form={ FORM_ID }
+                    form={FORM_ID}
                     size="small"
                     buttonType="primary_btn"
                     ariaLabel="Analytics config update button"
                     name="update-button"
-                    data-componentid={ `${componentId}-submit-button` }
-                    disabled={ isSubmitting }
-                    loading={ isSubmitting }
-                    label={ t("common:update") }
-                    hidden={ !isConnectorEnabled || readOnly || hideUpdateButton }
+                    data-componentid={`${componentId}-submit-button`}
+                    disabled={isSubmitting}
+                    loading={isSubmitting}
+                    label={t("common:update")}
+                    hidden={!isConnectorEnabled || readOnly || hideUpdateButton}
                 />
             </Form>
         </div>

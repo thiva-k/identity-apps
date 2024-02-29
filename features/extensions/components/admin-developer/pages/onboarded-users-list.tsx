@@ -40,7 +40,7 @@ import {
     getEmptyPlaceholderIllustrations,
     history
 } from "../../../../core";
-import { RealmConfigInterface } from "features/server-configurations";
+import { RealmConfigInterface } from "../../../../server-configurations";
 import { UserManagementConstants } from "../../../../users/constants/user-management-constants";
 import { UserBasicInterface, UserListInterface } from "../../../../users/models/user";
 

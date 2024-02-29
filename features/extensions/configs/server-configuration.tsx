@@ -33,7 +33,7 @@ import {
     UpdateGovernanceConnectorConfigInterface,
     UpdateGovernanceConnectorConfigPropertyInterface,
     UpdateMultipleGovernanceConnectorsInterface
-} from "features/server-configurations";
+} from "../../server-configurations";
 import { ValidationFormInterface } from "features/validation/models";
 import {
     updatePasswordExpiryProperties,

@@ -28,7 +28,7 @@ import { ConsumerUserGroupsList } from "./consumer-user-groupslist";
 import { ConsumerUserProfile } from "./consumer-user-profile";
 import { FeatureConfigInterface } from "../../../../../core";
 import { GroupsInterface, useGroupList } from "../../../../../groups";
-import { ConnectorPropertyInterface } from "features/server-configurations";
+import { ConnectorPropertyInterface } from "../../../../../server-configurations";
 import { UserSessions } from "../../../../../users/components/user-sessions";
 import useUserManagement from "../../../../../users/hooks/use-user-management";
 import { SCIMConfigs } from "../../../../configs/scim";
