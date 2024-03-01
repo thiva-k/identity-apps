@@ -29,7 +29,7 @@ import { getUserStoreList } from "../../../../userstores/api";
 import { updateJITProvisioningConfigs } from "../../../api/connections";
 import { JITProvisioningResponseInterface } from "../../../models/connection";
 import { JITProvisioningConfigurationsForm } from "../forms";
-import { useGetCurrentOrganizationType } from "features/organizations/hooks/use-get-organization-type";
+import { useGetCurrentOrganizationType } from "../../../../organizations/hooks/use-get-organization-type";
 
 /**
  * Proptypes for the identity provider general details component.

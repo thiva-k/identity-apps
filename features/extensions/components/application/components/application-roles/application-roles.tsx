@@ -57,7 +57,7 @@ import { CreateApplicationRoleWizard } from "./create-app-role-wizard";
 import { EditApplicationRole } from "./edit-app-role";
 import { ApplicationInterface } from "../../../../../applications/models";
 import { AppState, UIConstants, getEmptyPlaceholderIllustrations, history } from "../../../../../core";
-import { OrganizationResponseInterface } from "features/organizations/models";
+import { OrganizationResponseInterface } from "../../../../../organizations/models";
 import { deleteRole, getApplicationRolesList, useSharedApplicationData } from "../../api/application-roles";
 import {
     ApplicationRolesResponseInterface,

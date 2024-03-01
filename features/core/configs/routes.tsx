@@ -471,9 +471,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                     {
                         children: [
                             {
-                                component: lazy(() =>
-                                    import("../../../features/organizations/pages/organization-edit")
-                                ),
+                                component: lazy(() => import("../../organizations/pages/organization-edit")),
                                 exact: true,
                                 icon: {
                                     icon: getSidePanelIcons().organization
@@ -485,7 +483,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../../features/organizations/pages/organizations")),
+                        component: lazy(() => import("../../organizations/pages/organizations")),
                         exact: true,
                         icon: {
                             icon: <BuildingIcon />
@@ -1415,7 +1413,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     },
                     {
-                        component: lazy(() => import("../../../features/organizations/pages/organization-roles")),
+                        component: lazy(() => import("../../organizations/pages/organization-roles")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().roles
@@ -1427,7 +1425,7 @@ export const getAppViewRoutes = (useExtendedRoutes: boolean = false): RouteInter
                         showOnSidePanel: false
                     },
                     {
-                        component: lazy(() => import("../../../features/organizations/pages/organization-roles-edit")),
+                        component: lazy(() => import("../../organizations/pages/organization-roles-edit")),
                         exact: true,
                         icon: {
                             icon: getSidePanelIcons().roles
