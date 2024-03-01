@@ -20,7 +20,7 @@ import { AlertLevels, ClaimDialect, ExternalClaim, IdentifiableComponentInterfac
 import { addAlert } from "@wso2is/core/store";
 import { Field, Form } from "@wso2is/form";
 import { Code, Hint, Message, Text } from "@wso2is/react-components";
-import { getDialects, getExternalClaims } from "features/claims/api";
+import { getDialects, getExternalClaims } from "../../../../claims/api";
 import { IdentityAppsApiException } from "modules/core/dist/types/exceptions";
 import React, { Dispatch, FunctionComponent, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

@@ -31,7 +31,7 @@ import {
     SegmentedAccordionTitleActionInterface,
     useDocumentation
 } from "@wso2is/react-components";
-import { OIDCScopesClaimsListInterface } from "features/oidc-scopes";
+import { OIDCScopesClaimsListInterface } from "../../../../oidc-scopes";
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import React, {
     ChangeEvent,

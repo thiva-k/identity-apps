@@ -29,11 +29,8 @@ import {
 } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { ConfirmationModal, ContentLoader, EmphasizedSegment } from "@wso2is/react-components";
-import { useOIDCScopesList } from "features/oidc-scopes/api/oidc-scopes";
-import {
-    OIDCScopesClaimsListInterface,
-    OIDCScopesListInterface
-} from "features/oidc-scopes/models/oidc-scopes";
+import { useOIDCScopesList } from "../../../../oidc-scopes/api/oidc-scopes";
+import { OIDCScopesClaimsListInterface, OIDCScopesListInterface } from "../../../../oidc-scopes/models/oidc-scopes";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
 import sortBy from "lodash-es/sortBy";
@@ -94,11 +91,12 @@ export interface ExtendedExternalClaimInterface extends ExternalClaim {
 export interface AdvanceSettingsSubmissionInterface {
     subject: SubjectConfigInterface;
     role: RoleConfigInterface;
-    oidc: OIDCDataInterface
+    oidc: OIDCDataInterface;
 }
 
-interface AttributeSettingsPropsInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
+interface AttributeSettingsPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Id of the application.
      */
@@ -134,17 +132,15 @@ interface AttributeSettingsPropsInterface extends SBACInterface<FeatureConfigInt
 }
 
 export const getLocalDialectURI = (): string => {
-
     let localDialect: string = "http://wso2.org/claims";
 
-    getAllLocalClaims(null)
-        .then((response: Claim[]) => {
-            const retrieved: string = response.slice(0, 1)[0].dialectURI;
+    getAllLocalClaims(null).then((response: Claim[]) => {
+        const retrieved: string = response.slice(0, 1)[0].dialectURI;
 
-            if (!isEmpty(retrieved)) {
-                localDialect = retrieved;
-            }
-        });
+        if (!isEmpty(retrieved)) {
+            localDialect = retrieved;
+        }
+    });
 
     return localDialect;
 };
@@ -159,7 +155,6 @@ export const LocalDialectURI: string = "http://wso2.org/claims";
 export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterface> = (
     props: AttributeSettingsPropsInterface
 ): ReactElement => {
-
     const {
         appId,
         applicationTemplateId,
@@ -170,56 +165,57 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
         onUpdate,
         readOnly,
         inboundProtocolConfig,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const enableIdentityClaims: boolean = useSelector(
-        (state: AppState) => state?.config?.ui?.enableIdentityClaims);
+    const enableIdentityClaims: boolean = useSelector((state: AppState) => state?.config?.ui?.enableIdentityClaims);
 
-    const [ localDialectURI, setLocalDialectURI ] = useState("");
+    const [localDialectURI, setLocalDialectURI] = useState("");
 
-    const [ dialect, setDialect ] = useState<ClaimDialect[]>([]);
+    const [dialect, setDialect] = useState<ClaimDialect[]>([]);
 
-    const [ selectedDialect, setSelectedDialect ] = useState<SelectedDialectInterface>();
+    const [selectedDialect, setSelectedDialect] = useState<SelectedDialectInterface>();
 
     // Get OIDC scope-use attributes list
-    const [ scopes, setScopes ] = useState<OIDCScopesListInterface[]>(null);
-    const [ externalClaimsGroupedByScopes, setExternalClaimsGroupedByScopes ]
-        = useState<OIDCScopesClaimsListInterface[]>(null);
-    const [ unfilteredExternalClaimsGroupedByScopes, setUnfilteredExternalClaimsGroupedByScopes ]
-        = useState<OIDCScopesClaimsListInterface[]>([]);
+    const [scopes, setScopes] = useState<OIDCScopesListInterface[]>(null);
+    const [externalClaimsGroupedByScopes, setExternalClaimsGroupedByScopes] = useState<OIDCScopesClaimsListInterface[]>(
+        null
+    );
+    const [unfilteredExternalClaimsGroupedByScopes, setUnfilteredExternalClaimsGroupedByScopes] = useState<
+        OIDCScopesClaimsListInterface[]
+    >([]);
 
     // Manage available claims in local and external dialects.
-    const [ isClaimRequestLoading, setIsClaimRequestLoading ] = useState(true);
-    const [ claims, setClaims ] = useState<ExtendedClaimInterface[]>([]);
-    const [ externalClaims, setExternalClaims ] = useState<ExtendedExternalClaimInterface[]>([]);
-    const [ unfilteredExternalClaims, setUnfilteredExternalClaims ] = useState<ExtendedExternalClaimInterface[]>([]);
-    const [ isScopeExternalClaimMappingLoading, setIsScopeExternalClaimMappingLoading ] = useState(true);
+    const [isClaimRequestLoading, setIsClaimRequestLoading] = useState(true);
+    const [claims, setClaims] = useState<ExtendedClaimInterface[]>([]);
+    const [externalClaims, setExternalClaims] = useState<ExtendedExternalClaimInterface[]>([]);
+    const [unfilteredExternalClaims, setUnfilteredExternalClaims] = useState<ExtendedExternalClaimInterface[]>([]);
+    const [isScopeExternalClaimMappingLoading, setIsScopeExternalClaimMappingLoading] = useState(true);
 
     // Selected claims in local and external dialects.
-    const [ selectedClaims, setSelectedClaims ] = useState<ExtendedClaimInterface[]>([]);
-    const [ selectedExternalClaims, setSelectedExternalClaims ] = useState<ExtendedExternalClaimInterface[]>([]);
-    const [ showClaimMappingConfirmation, setShowClaimMappingConfirmation ] = useState<boolean>(false);
+    const [selectedClaims, setSelectedClaims] = useState<ExtendedClaimInterface[]>([]);
+    const [selectedExternalClaims, setSelectedExternalClaims] = useState<ExtendedExternalClaimInterface[]>([]);
+    const [showClaimMappingConfirmation, setShowClaimMappingConfirmation] = useState<boolean>(false);
 
     // Mapping operation.
-    const [ claimMapping, setClaimMapping ] = useState<ExtendedClaimMappingInterface[]>([]);
-    const [ claimMappingOn, setClaimMappingOn ] = useState(false);
+    const [claimMapping, setClaimMapping] = useState<ExtendedClaimMappingInterface[]>([]);
+    const [claimMappingOn, setClaimMappingOn] = useState(false);
     // Form submitted with EmptyClaim Mapping
-    const [ claimMappingError, setClaimMappingError ] = useState(false);
+    const [claimMappingError, setClaimMappingError] = useState(false);
 
     //Advance Settings.
-    const [ advanceSettingValues, setAdvanceSettingValues ] = useState<AdvanceSettingsSubmissionInterface>();
-    const [ selectedSubjectValue, setSelectedSubjectValue ] = useState<string>();
+    const [advanceSettingValues, setAdvanceSettingValues] = useState<AdvanceSettingsSubmissionInterface>();
+    const [selectedSubjectValue, setSelectedSubjectValue] = useState<string>();
 
     // Role Mapping.
-    const [ roleMapping, setRoleMapping ] = useState<RoleMappingInterface[]>(claimConfigurations?.role?.mappings ?? []);
+    const [roleMapping, setRoleMapping] = useState<RoleMappingInterface[]>(claimConfigurations?.role?.mappings ?? []);
 
-    const [ isClaimLoading, setIsClaimLoading ] = useState<boolean>(true);
-    const [ isUserAttributesLoading, setUserAttributesLoading ] = useState<boolean>(undefined);
+    const [isClaimLoading, setIsClaimLoading] = useState<boolean>(true);
+    const [isUserAttributesLoading, setUserAttributesLoading] = useState<boolean>(undefined);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
@@ -230,35 +226,36 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
         isValidating: isOIDCScopeListValidating
     } = useOIDCScopesList();
 
-    const [ duplicatedMappingValues,setDuplicatedMappingValues ] = useState<Array<string>>([]);
+    const [duplicatedMappingValues, setDuplicatedMappingValues] = useState<Array<string>>([]);
 
     /**
      * Get local mapped claim display name for external claims
      */
     useEffect(() => {
-        const filteredExternalClaims: ExtendedExternalClaimInterface[] = unfilteredExternalClaims
-            .filter((claim: ExtendedExternalClaimInterface) => {
-                const matchedLocalClaim: ExtendedClaimInterface[] = claims
-                    .filter((localClaim: ExtendedClaimInterface) => {
+        const filteredExternalClaims: ExtendedExternalClaimInterface[] = unfilteredExternalClaims.filter(
+            (claim: ExtendedExternalClaimInterface) => {
+                const matchedLocalClaim: ExtendedClaimInterface[] = claims.filter(
+                    (localClaim: ExtendedClaimInterface) => {
                         return localClaim.claimURI === claim.mappedLocalClaimURI;
-                    });
+                    }
+                );
 
                 return matchedLocalClaim.length !== 0;
-            });
+            }
+        );
 
         filteredExternalClaims.forEach((externalClaim: ExtendedExternalClaimInterface) => {
             const mappedLocalClaimUri: string = externalClaim.mappedLocalClaimURI;
-            const matchedLocalClaim: ExtendedClaimInterface[] = claims
-                .filter((localClaim: ExtendedClaimInterface) => {
-                    return localClaim.claimURI === mappedLocalClaimUri;
-                });
+            const matchedLocalClaim: ExtendedClaimInterface[] = claims.filter((localClaim: ExtendedClaimInterface) => {
+                return localClaim.claimURI === mappedLocalClaimUri;
+            });
 
             if (matchedLocalClaim && matchedLocalClaim[0] && matchedLocalClaim[0].displayName) {
                 externalClaim.localClaimDisplayName = matchedLocalClaim[0].displayName;
             }
         });
         setExternalClaims(filteredExternalClaims);
-    }, [ claims, unfilteredExternalClaims ]);
+    }, [claims, unfilteredExternalClaims]);
 
     useEffect(() => {
         if (!isOIDCScopeListLoading && !isOIDCScopeListValidating) {
@@ -269,11 +266,11 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
 
             return;
         }
-    }, [ isOIDCScopeListLoading, isOIDCScopeListValidating, OIDCScopeList ]);
+    }, [isOIDCScopeListLoading, isOIDCScopeListValidating, OIDCScopeList]);
 
     useEffect(() => {
         getExternalClaimsGroupedByScopes();
-    }, [ externalClaims ]);
+    }, [externalClaims]);
 
     /**
      * Set the dialects for inbound protocols
@@ -293,7 +290,7 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
 
         setIsClaimRequestLoading(false);
         changeSelectedDialect(localDialectURI);
-    }, [ onlyOIDCConfigured, dialect ]);
+    }, [onlyOIDCConfigured, dialect]);
 
     useEffect(() => {
         if (advanceSettingValues) {
@@ -303,7 +300,7 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                 submitUpdateRequest(mappingList);
             }
         }
-    }, [ advanceSettingValues ]);
+    }, [advanceSettingValues]);
 
     /**
      * Set initial value for claim mapping.
@@ -312,7 +309,7 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
         if (claimConfigurations?.dialect === "CUSTOM") {
             setClaimMappingOn(true);
         }
-    }, [ claimConfigurations ]);
+    }, [claimConfigurations]);
 
     /**
      * Check whether claim is mandatory or not
@@ -322,13 +319,15 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      * @returns If initially requested as mandatory.
      */
     const checkInitialRequestMandatory = (uri: string): boolean => {
-        const externalClaim: ExtendedExternalClaimInterface = externalClaims
-            .find((claim: ExtendedExternalClaimInterface) => claim.claimURI === uri);
+        const externalClaim: ExtendedExternalClaimInterface = externalClaims.find(
+            (claim: ExtendedExternalClaimInterface) => claim.claimURI === uri
+        );
 
-        if (externalClaim){
+        if (externalClaim) {
             const requestURI: boolean = claimConfigurations.requestedClaims.find(
-                (requestClaims: RequestedClaimConfigurationInterface) => (
-                    requestClaims?.claim?.uri === externalClaim.mappedLocalClaimURI))?.mandatory;
+                (requestClaims: RequestedClaimConfigurationInterface) =>
+                    requestClaims?.claim?.uri === externalClaim.mappedLocalClaimURI
+            )?.mandatory;
 
             if (requestURI !== undefined) {
                 return requestURI;
@@ -346,13 +345,15 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      * @returns If initially requested or not.
      */
     const checkInitialRequested = (uri: string): boolean => {
-        const externalClaim: ExtendedExternalClaimInterface = externalClaims
-            .find((claim: ExtendedExternalClaimInterface) => claim.claimURI === uri);
+        const externalClaim: ExtendedExternalClaimInterface = externalClaims.find(
+            (claim: ExtendedExternalClaimInterface) => claim.claimURI === uri
+        );
 
-        if (externalClaim){
-            const requestURI: RequestedClaimConfigurationInterface = claimConfigurations.requestedClaims
-                .find((requestClaims: RequestedClaimConfigurationInterface) =>
-                    requestClaims?.claim?.uri === externalClaim.mappedLocalClaimURI);
+        if (externalClaim) {
+            const requestURI: RequestedClaimConfigurationInterface = claimConfigurations.requestedClaims.find(
+                (requestClaims: RequestedClaimConfigurationInterface) =>
+                    requestClaims?.claim?.uri === externalClaim.mappedLocalClaimURI
+            );
 
             return requestURI !== undefined;
         }
@@ -364,18 +365,18 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      * Grouped Scopes and external claims
      */
     const getExternalClaimsGroupedByScopes = () => {
-        const tempClaims: ExtendedExternalClaimInterface[] = [ ...externalClaims ];
+        const tempClaims: ExtendedExternalClaimInterface[] = [...externalClaims];
         const updatedScopes: OIDCScopesClaimsListInterface[] = [];
         const scopedClaims: ExtendedExternalClaimInterface[] = [];
 
-        if ((scopes !== null) && (scopes !== undefined) && (scopes.length !== 0) && (claims.length !== 0)) {
+        if (scopes !== null && scopes !== undefined && scopes.length !== 0 && claims.length !== 0) {
             scopes.map((scope: OIDCScopesListInterface) => {
-                if (scope.name !== "openid"){
+                if (scope.name !== "openid") {
                     const updatedClaims: ExtendedExternalClaimInterface[] = [];
                     let scopeSelected: boolean = false;
 
                     scope.claims.map((scopeClaim: string) => {
-                        tempClaims.map( (tempClaim: ExtendedExternalClaimInterface) => {
+                        tempClaims.map((tempClaim: ExtendedExternalClaimInterface) => {
                             if (scopeClaim === tempClaim.claimURI) {
                                 const updatedClaim: ExtendedExternalClaimInterface = {
                                     ...tempClaim,
@@ -402,7 +403,8 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
             });
 
             const scopelessClaims: ExtendedExternalClaimInterface[] = tempClaims.filter(
-                (tempClaim: ExtendedExternalClaimInterface) => !scopedClaims.includes(tempClaim));
+                (tempClaim: ExtendedExternalClaimInterface) => !scopedClaims.includes(tempClaim)
+            );
             const updatedScopelessClaims: ExtendedExternalClaimInterface[] = [];
             let isScopelessClaimRequested: boolean = false;
 
@@ -418,12 +420,18 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
             });
             updatedScopes.push({
                 claims: updatedScopelessClaims,
-                description: t("console:develop.features.applications.edit.sections.attributes" +
-                    ".selection.scopelessAttributes.description"),
-                displayName: t("console:develop.features.applications.edit.sections.attributes" +
-                    ".selection.scopelessAttributes.displayName"),
-                name: t("console:develop.features.applications.edit.sections.attributes" +
-                    ".selection.scopelessAttributes.name"),
+                description: t(
+                    "console:develop.features.applications.edit.sections.attributes" +
+                        ".selection.scopelessAttributes.description"
+                ),
+                displayName: t(
+                    "console:develop.features.applications.edit.sections.attributes" +
+                        ".selection.scopelessAttributes.displayName"
+                ),
+                name: t(
+                    "console:develop.features.applications.edit.sections.attributes" +
+                        ".selection.scopelessAttributes.name"
+                ),
                 selected: isScopelessClaimRequested
             });
         }
@@ -450,14 +458,21 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                 setClaims(response);
             })
             .catch(() => {
-                dispatch(addAlert({
-                    description: t("console:manage.features.claims.local.notifications.fetchLocalClaims.genericError" +
-                        ".description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.claims.local.notifications.fetchLocalClaims." +
-                        "genericError.message")
-                }));
-            }).finally(() => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.claims.local.notifications.fetchLocalClaims.genericError" +
+                                ".description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.claims.local.notifications.fetchLocalClaims." +
+                                "genericError.message"
+                        )
+                    })
+                );
+            })
+            .finally(() => {
                 setIsClaimLoading(false);
             });
     };
@@ -471,13 +486,19 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                 setDialect(response);
             })
             .catch(() => {
-                dispatch(addAlert({
-                    description: t("console:manage.features.claims.dialects.notifications.fetchDialects" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:manage.features.claims.dialects.notifications.fetchDialects." +
-                        "genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "console:manage.features.claims.dialects.notifications.fetchDialects" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "console:manage.features.claims.dialects.notifications.fetchDialects." +
+                                "genericError.message"
+                        )
+                    })
+                );
             });
     };
 
@@ -493,13 +514,19 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                     setUnfilteredExternalClaims(response);
                 })
                 .catch(() => {
-                    dispatch(addAlert({
-                        description: t("console:manage.features.claims.external.notifications.fetchExternalClaims" +
-                            ".genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("console:manage.features.claims.external.notifications.fetchExternalClaims" +
-                            ".genericError.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "console:manage.features.claims.external.notifications.fetchExternalClaims" +
+                                    ".genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "console:manage.features.claims.external.notifications.fetchExternalClaims" +
+                                    ".genericError.message"
+                            )
+                        })
+                    );
                 })
                 .finally(() => {
                     setIsClaimRequestLoading(false);
@@ -521,7 +548,7 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
 
     const createMapping = (claims: Claim[]) => {
         if (selectedDialect.localDialect) {
-            const claimMappingList: ExtendedClaimMappingInterface[] = [ ...claimMapping ];
+            const claimMappingList: ExtendedClaimMappingInterface[] = [...claimMapping];
 
             claims.map((claim: Claim) => {
                 const newClaimMapping: ExtendedClaimMappingInterface = {
@@ -534,8 +561,11 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                     }
                 };
 
-                if (!(claimMappingList.some((claimMapping: ExtendedClaimMappingInterface) =>
-                    claimMapping.localClaim.uri === claim.claimURI))) {
+                if (
+                    !claimMappingList.some(
+                        (claimMapping: ExtendedClaimMappingInterface) => claimMapping.localClaim.uri === claim.claimURI
+                    )
+                ) {
                     claimMappingList.push(newClaimMapping);
                 }
                 setClaimMapping(claimMappingList);
@@ -551,7 +581,7 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      */
     const updateMappings = (addedClaims: Claim[], removedClaims: Claim[]) => {
         if (selectedDialect.localDialect) {
-            const claimMappingList: ExtendedClaimMappingInterface[] = [ ...claimMapping ];
+            const claimMappingList: ExtendedClaimMappingInterface[] = [...claimMapping];
 
             addedClaims.map((claim: Claim) => {
                 const newClaimMapping: ExtendedClaimMappingInterface = {
@@ -564,15 +594,17 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                     }
                 };
 
-                if (!(claimMappingList
-                    .some((claimMap: ExtendedClaimMappingInterface) => claimMap.localClaim.uri === claim.claimURI))) {
-
+                if (
+                    !claimMappingList.some(
+                        (claimMap: ExtendedClaimMappingInterface) => claimMap.localClaim.uri === claim.claimURI
+                    )
+                ) {
                     claimMappingList.push(newClaimMapping);
                 }
             });
 
             removedClaims.map((claim: Claim) => {
-                let mappedClaim : ExtendedClaimMappingInterface;
+                let mappedClaim: ExtendedClaimMappingInterface;
 
                 claimMappingList.map((mapping: ExtendedClaimMappingInterface) => {
                     if (mapping.localClaim.uri === claim.claimURI) {
@@ -593,8 +625,8 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      * @param claimURI - URI of the mapping removed
      */
     const removeMapping = (claimURI: string) => {
-        const claimMappingList: ExtendedClaimMappingInterface[] = [ ...claimMapping ];
-        let mappedClaim : ExtendedClaimMappingInterface;
+        const claimMappingList: ExtendedClaimMappingInterface[] = [...claimMapping];
+        let mappedClaim: ExtendedClaimMappingInterface;
 
         claimMappingList.map((mapping: ExtendedClaimMappingInterface) => {
             if (mapping.localClaim.uri === claimURI) {
@@ -615,7 +647,7 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      * @returns external claim with mapping
      */
     const getCurrentMapping = (claimURI: string): ExtendedClaimMappingInterface => {
-        const claimMappingList: ExtendedClaimMappingInterface[] = [ ...claimMapping ];
+        const claimMappingList: ExtendedClaimMappingInterface[] = [...claimMapping];
         let result: ExtendedClaimMappingInterface;
 
         claimMappingList.map((mapping: ExtendedClaimMappingInterface) => {
@@ -636,9 +668,9 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      *
      */
     const updateClaimMapping = (claimURI: string, mappedValue: string, isUpdatingOnInputChange?: boolean) => {
-        const claimMappingList: ExtendedClaimMappingInterface[] = [ ...claimMapping ];
+        const claimMappingList: ExtendedClaimMappingInterface[] = [...claimMapping];
 
-        const alreadySeen: Record<string,boolean> = {};
+        const alreadySeen: Record<string, boolean> = {};
         const duplicatedMappings: Array<string> = [];
 
         claimMappingList.forEach((mapping: ExtendedClaimMappingInterface) => {
@@ -677,7 +709,7 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      * @param addMapping - Whether add or not add the mapping
      */
     const addToClaimMapping = (claimURI: string, addMapping: boolean) => {
-        const claimMappingList: ExtendedClaimMappingInterface[] = [ ...claimMapping ];
+        const claimMappingList: ExtendedClaimMappingInterface[] = [...claimMapping];
 
         claimMappingList.forEach((mapping: ExtendedClaimMappingInterface) => {
             if (mapping.localClaim.uri === claimURI) {
@@ -730,7 +762,7 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
             if (claimMappingOn) {
                 let usernameAdded: boolean = false;
                 const claimMappingOption: DropdownOptionsInterface[] = [];
-                const claimMappingList: ExtendedClaimMappingInterface[] = [ ...claimMapping ];
+                const claimMappingList: ExtendedClaimMappingInterface[] = [...claimMapping];
 
                 claimMapping.map((element: ExtendedClaimMappingInterface) => {
                     if (!element || !element.localClaim) {
@@ -740,11 +772,12 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                         key: element?.localClaim.uri,
                         text: (
                             <SubjectAttributeListItem
-                                key={ element.localClaim.id }
-                                displayName={ element.applicationClaim ?
-                                    element.applicationClaim : element.localClaim.uri }
-                                claimURI={ element.localClaim.uri }
-                                value={ element.applicationClaim }
+                                key={element.localClaim.id}
+                                displayName={
+                                    element.applicationClaim ? element.applicationClaim : element.localClaim.uri
+                                }
+                                claimURI={element.localClaim.uri}
+                                value={element.applicationClaim}
                             />
                         ),
                         value: element.applicationClaim
@@ -757,17 +790,18 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                 });
                 if (claimMappingList.length === 0 || !usernameAdded) {
                     const userclaim: ExtendedClaimInterface = claims.filter(
-                        (element: ExtendedClaimInterface) => element.claimURI === DefaultSubjectAttribute)[ 0 ];
+                        (element: ExtendedClaimInterface) => element.claimURI === DefaultSubjectAttribute
+                    )[0];
 
                     if (userclaim !== null && typeof userclaim !== "undefined") {
                         const option: DropdownOptionsInterface = {
                             key: userclaim.claimURI,
                             text: (
                                 <SubjectAttributeListItem
-                                    key={ userclaim.id }
-                                    displayName={ userclaim.displayName }
-                                    claimURI={ userclaim.claimURI }
-                                    value={ userclaim.claimURI }
+                                    key={userclaim.id}
+                                    displayName={userclaim.displayName}
+                                    claimURI={userclaim.claimURI}
+                                    value={userclaim.claimURI}
                                 />
                             ),
                             value: userclaim.claimURI
@@ -786,10 +820,10 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                         key: element.claimURI,
                         text: (
                             <SubjectAttributeListItem
-                                key={ element.id }
-                                displayName={ element.displayName }
-                                claimURI={ element.claimURI }
-                                value={ element.claimURI }
+                                key={element.id}
+                                displayName={element.displayName}
+                                claimURI={element.claimURI}
+                                value={element.claimURI}
                             />
                         ),
                         value: element.claimURI
@@ -802,17 +836,18 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                 });
                 if (!usernameAdded) {
                     const userclaim: ExtendedClaimInterface = claims.filter(
-                        (element: ExtendedClaimInterface) => element.claimURI === DefaultSubjectAttribute)[ 0 ];
+                        (element: ExtendedClaimInterface) => element.claimURI === DefaultSubjectAttribute
+                    )[0];
 
                     if (userclaim !== null && typeof userclaim !== "undefined") {
                         const option: DropdownOptionsInterface = {
                             key: userclaim.claimURI,
                             text: (
                                 <SubjectAttributeListItem
-                                    key={ userclaim.id }
-                                    displayName={ userclaim.displayName }
-                                    claimURI={ userclaim.claimURI }
-                                    value={ userclaim.claimURI }
+                                    key={userclaim.id}
+                                    displayName={userclaim.displayName}
+                                    claimURI={userclaim.claimURI}
+                                    value={userclaim.claimURI}
                                 />
                             ),
                             value: userclaim.claimURI
@@ -830,10 +865,10 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                     key: element.claimURI,
                     text: (
                         <SubjectAttributeListItem
-                            key={ element.id }
-                            displayName={ element.localClaimDisplayName }
-                            claimURI={ element.claimURI }
-                            value={ element.mappedLocalClaimURI }
+                            key={element.id}
+                            displayName={element.localClaimDisplayName}
+                            claimURI={element.claimURI}
+                            value={element.mappedLocalClaimURI}
                         />
                     ),
                     value: element.mappedLocalClaimURI
@@ -846,21 +881,22 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
             });
             if (!usernameAdded) {
                 const allExternalClaims: ExtendedExternalClaimInterface[] = [
-                    ...externalClaims, ...selectedExternalClaims
+                    ...externalClaims,
+                    ...selectedExternalClaims
                 ];
                 const userclaim: ExtendedExternalClaimInterface = allExternalClaims.filter(
-                    (element: ExtendedExternalClaimInterface) =>
-                        element.mappedLocalClaimURI === DefaultSubjectAttribute)[ 0 ];
+                    (element: ExtendedExternalClaimInterface) => element.mappedLocalClaimURI === DefaultSubjectAttribute
+                )[0];
 
                 if (userclaim !== null && typeof userclaim !== "undefined") {
                     const option: DropdownOptionsInterface = {
                         key: userclaim.claimURI,
                         text: (
                             <SubjectAttributeListItem
-                                key={ userclaim.id }
-                                displayName={ userclaim.localClaimDisplayName }
-                                claimURI={ userclaim.claimURI }
-                                value={ userclaim.mappedLocalClaimURI }
+                                key={userclaim.id}
+                                displayName={userclaim.localClaimDisplayName}
+                                claimURI={userclaim.claimURI}
+                                value={userclaim.mappedLocalClaimURI}
                             />
                         ),
                         value: userclaim.mappedLocalClaimURI
@@ -883,41 +919,46 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
 
         if (!claimMappingOn || mappedValues.size === claimMapping.length) {
             submitAdvanceForm();
-        }
-        else {
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.notifications.updateClaimConfig" +
-                    ".error.description", { description: "Mapped user attributes cannot be duplicated." }),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.notifications.updateClaimConfig.error" +
-                    ".message")
-            }));
+        } else {
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.notifications.updateClaimConfig" + ".error.description",
+                        { description: "Mapped user attributes cannot be duplicated." }
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "console:develop.features.applications.notifications.updateClaimConfig.error" + ".message"
+                    )
+                })
+            );
         }
     };
 
     /**
      *  Get the mapping for given URI
      */
-    const getMapping = ((uri: string, claimMappings: ExtendedClaimMappingInterface[]) => {
+    const getMapping = (uri: string, claimMappings: ExtendedClaimMappingInterface[]) => {
         let requestURI: string = uri;
 
         if (claimMappings.length > 0) {
             requestURI = claimMappings.find(
-                (mapping: ExtendedClaimMappingInterface) => mapping?.localClaim?.uri === uri)?.applicationClaim;
+                (mapping: ExtendedClaimMappingInterface) => mapping?.localClaim?.uri === uri
+            )?.applicationClaim;
         }
 
         return requestURI;
-    });
+    };
 
     /**
      *  Generate final claim mapping list.
      */
-    const getFinalMappingList = ((): ExtendedClaimMappingInterface[] => {
+    const getFinalMappingList = (): ExtendedClaimMappingInterface[] => {
         const claimMappingFinal: ExtendedClaimMappingInterface[] = [];
         let returnList: boolean = true;
 
         setClaimMappingError(false);
-        const createdClaimMappings: ExtendedClaimMappingInterface[] = [ ...claimMapping ];
+        const createdClaimMappings: ExtendedClaimMappingInterface[] = [...claimMapping];
 
         createdClaimMappings.map((claimMapping: ExtendedClaimMappingInterface) => {
             if (claimMapping.addMapping) {
@@ -942,7 +983,7 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
         } else {
             return null;
         }
-    });
+    };
 
     /**
      *  Submit update request
@@ -957,8 +998,8 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
         if (selectedDialect.localDialect) {
             selectedClaims.map((claim: ExtendedClaimInterface) => {
                 // If claim mapping is there then check whether claim is requested or not.
-                const claimMappingURI: string = claimMappingFinal.length > 0 ?
-                    getMapping(claim.claimURI, claimMappingFinal) : null;
+                const claimMappingURI: string =
+                    claimMappingFinal.length > 0 ? getMapping(claim.claimURI, claimMappingFinal) : null;
 
                 if (claimMappingURI) {
                     if (claim.requested) {
@@ -966,9 +1007,10 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                             claim: {
                                 uri: claimMappingURI
                             },
-                            mandatory: (subjectClaim && claimMappingURI === subjectClaim.toString())
-                                ? applicationConfig.attributeSettings.makeSubjectMandatory
-                                : claim.mandatory
+                            mandatory:
+                                subjectClaim && claimMappingURI === subjectClaim.toString()
+                                    ? applicationConfig.attributeSettings.makeSubjectMandatory
+                                    : claim.mandatory
                         };
 
                         RequestedClaims.push(requestedClaim);
@@ -978,9 +1020,10 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                         claim: {
                             uri: claim.claimURI
                         },
-                        mandatory: (subjectClaim && claim.claimURI === subjectClaim.toString())
-                            ? applicationConfig.attributeSettings.makeSubjectMandatory
-                            : claim.mandatory
+                        mandatory:
+                            subjectClaim && claim.claimURI === subjectClaim.toString()
+                                ? applicationConfig.attributeSettings.makeSubjectMandatory
+                                : claim.mandatory
                     };
 
                     RequestedClaims.push(requestedClaim);
@@ -997,8 +1040,12 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
                             mandatory: claim.mandatory
                         };
 
-                        if (!RequestedClaims.find((claimRequested: RequestedClaimConfigurationInterface) =>
-                            claimRequested.claim.uri === requestedClaim.claim.uri)) {
+                        if (
+                            !RequestedClaims.find(
+                                (claimRequested: RequestedClaimConfigurationInterface) =>
+                                    claimRequested.claim.uri === requestedClaim.claim.uri
+                            )
+                        ) {
                             RequestedClaims.push(requestedClaim);
                         }
                     }
@@ -1006,10 +1053,13 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
             });
         }
 
-        if (claimMappingFinal
-            .findIndex((mapping: ExtendedClaimMappingInterface) =>
-                mapping.localClaim.uri === DefaultSubjectAttribute) < 0
-            && subjectClaim && subjectClaim.toString() === DefaultSubjectAttribute) {
+        if (
+            claimMappingFinal.findIndex(
+                (mapping: ExtendedClaimMappingInterface) => mapping.localClaim.uri === DefaultSubjectAttribute
+            ) < 0 &&
+            subjectClaim &&
+            subjectClaim.toString() === DefaultSubjectAttribute
+        ) {
             isSubjectSelectedWithoutMapping = true;
         }
 
@@ -1069,13 +1119,19 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
          * update failure alert.
          */
         const onClaimConfigUpdateError = () => {
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.notifications.updateClaimConfig" +
-                    ".genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.applications.notifications.updateClaimConfig.genericError" +
-                    ".message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.notifications.updateClaimConfig" +
+                            ".genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "console:develop.features.applications.notifications.updateClaimConfig.genericError" +
+                            ".message"
+                    )
+                })
+            );
         };
 
         /**
@@ -1084,16 +1140,20 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
          */
         const onSuccessfulClaimConfigUpdate = () => {
             onUpdate(appId);
-            dispatch(addAlert({
-                description: t("console:develop.features.applications.notifications.updateClaimConfig.success" +
-                    ".description"),
-                level: AlertLevels.SUCCESS,
-                message: t("console:develop.features.applications.notifications.updateClaimConfig.success.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "console:develop.features.applications.notifications.updateClaimConfig.success" + ".description"
+                    ),
+                    level: AlertLevels.SUCCESS,
+                    message: t("console:develop.features.applications.notifications.updateClaimConfig.success.message")
+                })
+            );
         };
 
-        const isProtocolOAuth: boolean = !!technology?.find((protocol: InboundProtocolListItemInterface) =>
-            protocol.type === SupportedAuthProtocolTypes.OAUTH2);
+        const isProtocolOAuth: boolean = !!technology?.find(
+            (protocol: InboundProtocolListItemInterface) => protocol.type === SupportedAuthProtocolTypes.OAUTH2
+        );
 
         updateClaimConfiguration(appId, submitValue)
             .then(() => {
@@ -1128,207 +1188,197 @@ export const AttributeSettings: FunctionComponent<AttributeSettingsPropsInterfac
      */
     let submitAdvanceForm: () => void;
 
-    return (
-        !isClaimRequestLoading && selectedDialect && !(isClaimLoading && isEmpty(externalClaims))
-        && !isScopeExternalClaimMappingLoading
-            ? (
-                <EmphasizedSegment padded="very">
-                    <Grid className="claim-mapping">
-                        <div className="form-container with-max-width">
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 12 }>
-                                {
-                                    onlyOIDCConfigured
-                                        ? (
-                                            <AttributeSelectionOIDC
-                                                claims={ claims }
-                                                externalClaims={ externalClaims }
-                                                externalClaimsGroupedByScopes = { externalClaimsGroupedByScopes }
-                                                setExternalClaimsGroupedByScopes = { setExternalClaimsGroupedByScopes }
-                                                unfilteredExternalClaimsGroupedByScopes = {
-                                                    unfilteredExternalClaimsGroupedByScopes
-                                                }
-                                                setUnfilteredExternalClaimsGroupedByScopes = {
-                                                    setUnfilteredExternalClaimsGroupedByScopes
-                                                }
-                                                setExternalClaims={ setExternalClaims }
-                                                selectedExternalClaims={ selectedExternalClaims }
-                                                setSelectedExternalClaims={ setSelectedExternalClaims }
-                                                selectedDialect={ selectedDialect }
-                                                selectedSubjectValue={ selectedSubjectValue }
-                                                claimMapping={ claimMapping }
-                                                claimConfigurations={ claimConfigurations }
-                                                defaultSubjectAttribute={ DefaultSubjectAttribute }
-                                                readOnly={
-                                                    readOnly
-                                                || !hasRequiredScopes(featureConfig?.applications,
-                                                    featureConfig?.applications?.scopes?.update,
-                                                    allowedScopes)
-                                                }
-                                                isUserAttributesLoading={ isUserAttributesLoading }
-                                                setUserAttributesLoading={ setUserAttributesLoading }
-                                                onlyOIDCConfigured={ onlyOIDCConfigured }
-                                                data-testid={ `${ componentId }-attribute-selection-oidc` }
-                                                data-componentid={ `${ componentId }-attribute-selection-oidc` }
-                                            />
-                                        )
-                                        : (
-                                            <AttributeSelection
-                                                claims={ claims }
-                                                setClaims={ setClaims }
-                                                externalClaims={ externalClaims }
-                                                setExternalClaims={ setExternalClaims }
-                                                selectedClaims={ selectedClaims }
-                                                selectedExternalClaims={ selectedExternalClaims }
-                                                setSelectedClaims={ setSelectedClaims }
-                                                setSelectedExternalClaims={ setSelectedExternalClaims }
-                                                selectedDialect={ selectedDialect }
-                                                selectedSubjectValue={ selectedSubjectValue }
-                                                claimMapping={ claimMapping }
-                                                setClaimMapping={ setClaimMapping }
-                                                createMapping={ createMapping }
-                                                removeMapping={ removeMapping }
-                                                updateMappings={ updateMappings }
-                                                getCurrentMapping={ getCurrentMapping }
-                                                updateClaimMapping={ updateClaimMapping }
-                                                addToClaimMapping={ addToClaimMapping }
-                                                claimConfigurations={ claimConfigurations }
-                                                claimMappingOn={ claimMappingOn }
-                                                defaultSubjectAttribute={ DefaultSubjectAttribute }
-                                                showClaimMappingRevertConfirmation={ setShowClaimMappingConfirmation }
-                                                setClaimMappingOn={ setClaimMappingOn }
-                                                claimMappingError={ claimMappingError }
-                                                readOnly={
-                                                    readOnly
-                                                || !hasRequiredScopes(featureConfig?.applications,
-                                                    featureConfig?.applications?.scopes?.update,
-                                                    allowedScopes)
-                                                }
-                                                isUserAttributesLoading={ isUserAttributesLoading }
-                                                setUserAttributesLoading={ setUserAttributesLoading }
-                                                onlyOIDCConfigured={ onlyOIDCConfigured }
-                                                duplicatedMappingValues={ duplicatedMappingValues }
-                                                data-testid={ `${ componentId }-attribute-selection` }
-                                            />
-                                        )
+    return !isClaimRequestLoading &&
+        selectedDialect &&
+        !(isClaimLoading && isEmpty(externalClaims)) &&
+        !isScopeExternalClaimMappingLoading ? (
+        <EmphasizedSegment padded="very">
+            <Grid className="claim-mapping">
+                <div className="form-container with-max-width">
+                    <Grid.Column mobile={16} tablet={16} computer={12}>
+                        {onlyOIDCConfigured ? (
+                            <AttributeSelectionOIDC
+                                claims={claims}
+                                externalClaims={externalClaims}
+                                externalClaimsGroupedByScopes={externalClaimsGroupedByScopes}
+                                setExternalClaimsGroupedByScopes={setExternalClaimsGroupedByScopes}
+                                unfilteredExternalClaimsGroupedByScopes={unfilteredExternalClaimsGroupedByScopes}
+                                setUnfilteredExternalClaimsGroupedByScopes={setUnfilteredExternalClaimsGroupedByScopes}
+                                setExternalClaims={setExternalClaims}
+                                selectedExternalClaims={selectedExternalClaims}
+                                setSelectedExternalClaims={setSelectedExternalClaims}
+                                selectedDialect={selectedDialect}
+                                selectedSubjectValue={selectedSubjectValue}
+                                claimMapping={claimMapping}
+                                claimConfigurations={claimConfigurations}
+                                defaultSubjectAttribute={DefaultSubjectAttribute}
+                                readOnly={
+                                    readOnly ||
+                                    !hasRequiredScopes(
+                                        featureConfig?.applications,
+                                        featureConfig?.applications?.scopes?.update,
+                                        allowedScopes
+                                    )
                                 }
-                            </Grid.Column>
-                        </div>
-                    </Grid>
-                    { isUserAttributesLoading === false ? (
-                        <Grid>
-                            <Grid.Row columns={ 1 }>
-                                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                    <AdvanceAttributeSettings
-                                        dropDownOptions={ createDropdownOption() }
-                                        triggerSubmission={ (submitFunction: () => void) => {
-                                            submitAdvanceForm = submitFunction;
-                                        } }
-                                        claimConfigurations={ claimConfigurations }
-                                        setSubmissionValues={ setAdvanceSettingValues }
-                                        setSelectedValue={ setSelectedSubjectValue }
-                                        defaultSubjectAttribute={ DefaultSubjectAttribute }
-                                        initialRole={ claimConfigurations?.role }
-                                        initialSubject={ claimConfigurations?.subject }
-                                        claimMappingOn={ claimMappingOn }
-                                        readOnly={
-                                            readOnly
-                                            || !hasRequiredScopes(featureConfig?.applications,
-                                                featureConfig?.applications?.scopes?.update,
-                                                allowedScopes)
-                                        }
-                                        technology={ technology }
-                                        applicationTemplateId={ applicationTemplateId }
-                                        onlyOIDCConfigured={ onlyOIDCConfigured }
-                                        oidcInitialValues={
-                                            get(
-                                                inboundProtocolConfig,
-                                                SupportedAuthProtocolTypes.OIDC
-                                            )
-                                                ? inboundProtocolConfig[SupportedAuthProtocolTypes.OIDC]
-                                                : undefined
-                                        }
-                                        data-testid={ `${ componentId }-advanced-attribute-settings-form` }
-                                    />
-                                </Grid.Column>
-                            </Grid.Row>
-                            <ConfirmationModal
-                                onClose={ (): void => setShowClaimMappingConfirmation(false) }
-                                type={ "warning" }
-                                open={ showClaimMappingConfirmation }
-                                primaryAction={
-                                    t("console:develop.features.applications.edit.sections.attributes.selection" +
-                                        ".mappingTable.mappingRevert.confirmPrimaryAction")
+                                isUserAttributesLoading={isUserAttributesLoading}
+                                setUserAttributesLoading={setUserAttributesLoading}
+                                onlyOIDCConfigured={onlyOIDCConfigured}
+                                data-testid={`${componentId}-attribute-selection-oidc`}
+                                data-componentid={`${componentId}-attribute-selection-oidc`}
+                            />
+                        ) : (
+                            <AttributeSelection
+                                claims={claims}
+                                setClaims={setClaims}
+                                externalClaims={externalClaims}
+                                setExternalClaims={setExternalClaims}
+                                selectedClaims={selectedClaims}
+                                selectedExternalClaims={selectedExternalClaims}
+                                setSelectedClaims={setSelectedClaims}
+                                setSelectedExternalClaims={setSelectedExternalClaims}
+                                selectedDialect={selectedDialect}
+                                selectedSubjectValue={selectedSubjectValue}
+                                claimMapping={claimMapping}
+                                setClaimMapping={setClaimMapping}
+                                createMapping={createMapping}
+                                removeMapping={removeMapping}
+                                updateMappings={updateMappings}
+                                getCurrentMapping={getCurrentMapping}
+                                updateClaimMapping={updateClaimMapping}
+                                addToClaimMapping={addToClaimMapping}
+                                claimConfigurations={claimConfigurations}
+                                claimMappingOn={claimMappingOn}
+                                defaultSubjectAttribute={DefaultSubjectAttribute}
+                                showClaimMappingRevertConfirmation={setShowClaimMappingConfirmation}
+                                setClaimMappingOn={setClaimMappingOn}
+                                claimMappingError={claimMappingError}
+                                readOnly={
+                                    readOnly ||
+                                    !hasRequiredScopes(
+                                        featureConfig?.applications,
+                                        featureConfig?.applications?.scopes?.update,
+                                        allowedScopes
+                                    )
                                 }
-                                secondaryAction={
-                                    t("console:develop.features.applications.edit.sections.attributes.selection" +
-                                        ".mappingTable.mappingRevert.confirmSecondaryAction")
+                                isUserAttributesLoading={isUserAttributesLoading}
+                                setUserAttributesLoading={setUserAttributesLoading}
+                                onlyOIDCConfigured={onlyOIDCConfigured}
+                                duplicatedMappingValues={duplicatedMappingValues}
+                                data-testid={`${componentId}-attribute-selection`}
+                            />
+                        )}
+                    </Grid.Column>
+                </div>
+            </Grid>
+            {isUserAttributesLoading === false ? (
+                <Grid>
+                    <Grid.Row columns={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={16}>
+                            <AdvanceAttributeSettings
+                                dropDownOptions={createDropdownOption()}
+                                triggerSubmission={(submitFunction: () => void) => {
+                                    submitAdvanceForm = submitFunction;
+                                }}
+                                claimConfigurations={claimConfigurations}
+                                setSubmissionValues={setAdvanceSettingValues}
+                                setSelectedValue={setSelectedSubjectValue}
+                                defaultSubjectAttribute={DefaultSubjectAttribute}
+                                initialRole={claimConfigurations?.role}
+                                initialSubject={claimConfigurations?.subject}
+                                claimMappingOn={claimMappingOn}
+                                readOnly={
+                                    readOnly ||
+                                    !hasRequiredScopes(
+                                        featureConfig?.applications,
+                                        featureConfig?.applications?.scopes?.update,
+                                        allowedScopes
+                                    )
                                 }
-                                onSecondaryActionClick={ (): void => handleClaimMapping(true) }
-                                onPrimaryActionClick={ (): void => handleClaimMapping(false) }
-                            >
-                                <ConfirmationModal.Header>
-                                    {
-                                        t("console:develop.features.applications.edit.sections.attributes.selection" +
-                                            ".mappingTable.mappingRevert.confirmationHeading")
-                                    }
-                                </ConfirmationModal.Header>
-                                <ConfirmationModal.Message warning>
-                                    {
-                                        t("console:develop.features.applications.edit.sections.attributes.selection" +
-                                            ".mappingTable.mappingRevert.confirmationMessage")
-                                    }
-                                </ConfirmationModal.Message>
-                                <ConfirmationModal.Content>
-                                    {
-                                        t("console:develop.features.applications.edit.sections.attributes.selection" +
-                                            ".mappingTable.mappingRevert.confirmationContent")
-                                    }
-                                </ConfirmationModal.Content>
-                            </ConfirmationModal>
-                            { !readOnly && applicationConfig.attributeSettings.roleMapping && (
-                                <RoleMapping
-                                    onChange={ setRoleMapping }
-                                    initialMappings={ claimConfigurations?.role?.mappings }
-                                    readOnly={
-                                        readOnly
-                                        || !hasRequiredScopes(featureConfig?.applications,
-                                            featureConfig?.applications?.scopes?.update,
-                                            allowedScopes)
-                                    }
-                                    data-testid={ `${ componentId }-role-mapping` }
-                                />
-                            ) }
-                            {
-                                !readOnly
-                                && (
-                                    <Show
-                                        when={ AccessControlConstants.APPLICATION_EDIT }
-                                    >
-                                        <Divider hidden/>
-                                        <Grid.Row>
-                                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                                <Button
-                                                    primary
-                                                    size="small"
-                                                    onClick={ updateValues }
-                                                    data-testid={ `${ componentId }-submit-button` }
-                                                >
-                                                    { t("common:update") }
-                                                </Button>
-                                            </Grid.Column>
-                                        </Grid.Row>
-                                    </Show>
+                                technology={technology}
+                                applicationTemplateId={applicationTemplateId}
+                                onlyOIDCConfigured={onlyOIDCConfigured}
+                                oidcInitialValues={
+                                    get(inboundProtocolConfig, SupportedAuthProtocolTypes.OIDC)
+                                        ? inboundProtocolConfig[SupportedAuthProtocolTypes.OIDC]
+                                        : undefined
+                                }
+                                data-testid={`${componentId}-advanced-attribute-settings-form`}
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                    <ConfirmationModal
+                        onClose={(): void => setShowClaimMappingConfirmation(false)}
+                        type={"warning"}
+                        open={showClaimMappingConfirmation}
+                        primaryAction={t(
+                            "console:develop.features.applications.edit.sections.attributes.selection" +
+                                ".mappingTable.mappingRevert.confirmPrimaryAction"
+                        )}
+                        secondaryAction={t(
+                            "console:develop.features.applications.edit.sections.attributes.selection" +
+                                ".mappingTable.mappingRevert.confirmSecondaryAction"
+                        )}
+                        onSecondaryActionClick={(): void => handleClaimMapping(true)}
+                        onPrimaryActionClick={(): void => handleClaimMapping(false)}
+                    >
+                        <ConfirmationModal.Header>
+                            {t(
+                                "console:develop.features.applications.edit.sections.attributes.selection" +
+                                    ".mappingTable.mappingRevert.confirmationHeading"
+                            )}
+                        </ConfirmationModal.Header>
+                        <ConfirmationModal.Message warning>
+                            {t(
+                                "console:develop.features.applications.edit.sections.attributes.selection" +
+                                    ".mappingTable.mappingRevert.confirmationMessage"
+                            )}
+                        </ConfirmationModal.Message>
+                        <ConfirmationModal.Content>
+                            {t(
+                                "console:develop.features.applications.edit.sections.attributes.selection" +
+                                    ".mappingTable.mappingRevert.confirmationContent"
+                            )}
+                        </ConfirmationModal.Content>
+                    </ConfirmationModal>
+                    {!readOnly && applicationConfig.attributeSettings.roleMapping && (
+                        <RoleMapping
+                            onChange={setRoleMapping}
+                            initialMappings={claimConfigurations?.role?.mappings}
+                            readOnly={
+                                readOnly ||
+                                !hasRequiredScopes(
+                                    featureConfig?.applications,
+                                    featureConfig?.applications?.scopes?.update,
+                                    allowedScopes
                                 )
                             }
-                        </Grid>
-                    ) : null
-                    }
-                </EmphasizedSegment>
-            ) : (
-                <EmphasizedSegment padded="very">
-                    <ContentLoader inline="centered" active/>
-                </EmphasizedSegment>
-            )
+                            data-testid={`${componentId}-role-mapping`}
+                        />
+                    )}
+                    {!readOnly && (
+                        <Show when={AccessControlConstants.APPLICATION_EDIT}>
+                            <Divider hidden />
+                            <Grid.Row>
+                                <Grid.Column mobile={16} tablet={16} computer={16}>
+                                    <Button
+                                        primary
+                                        size="small"
+                                        onClick={updateValues}
+                                        data-testid={`${componentId}-submit-button`}
+                                    >
+                                        {t("common:update")}
+                                    </Button>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Show>
+                    )}
+                </Grid>
+            ) : null}
+        </EmphasizedSegment>
+    ) : (
+        <EmphasizedSegment padded="very">
+            <ContentLoader inline="centered" active />
+        </EmphasizedSegment>
     );
 };
 
