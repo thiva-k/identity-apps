@@ -32,8 +32,6 @@ import {
     UserGroupIcon
 } from "@oxygen-ui/react-icons";
 import { LegacyModeInterface, RouteInterface } from "@wso2is/core/models";
-// import ApplicationsPage from "@wso2is/features/applications/pages/applications";
-// import UsersPage  from "@wso2is/features/users/pages/users";
 import compact from "lodash-es/compact";
 import keyBy from "lodash-es/keyBy";
 import merge from "lodash-es/merge";

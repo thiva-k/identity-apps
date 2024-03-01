@@ -20,14 +20,14 @@ import { IdentifiableComponentInterface } from "@wso2is/core/models";
 import { ResourceTab } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
 import { Grid } from "semantic-ui-react";
-import { ApplicationInterface } from "features/applications/models";
+import { ApplicationInterface } from "../../../../applications/models";
 import { ApplicationRoles } from "../../application/components/application-roles";
 
 interface ApplicationRolesTabInterface extends IdentifiableComponentInterface {
     /**
      * Application.
      */
-    application?: ApplicationInterface
+    application?: ApplicationInterface;
     /**
      * on application update callback
      */
@@ -46,8 +46,8 @@ const ApplicationRolesTab: FunctionComponent<ApplicationRolesTabInterface> = (
         <ResourceTab.Pane controlledSegmentation>
             <Grid>
                 <Grid.Row>
-                    <Grid.Column width={ 16 } >
-                        <ApplicationRoles application={ application } onUpdate={ onUpdate }/>
+                    <Grid.Column width={16}>
+                        <ApplicationRoles application={application} onUpdate={onUpdate} />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

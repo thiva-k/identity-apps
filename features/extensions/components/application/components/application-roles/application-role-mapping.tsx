@@ -26,12 +26,12 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid } from "semantic-ui-react";
-import { updateApplicationDetails } from "features/applications/api";
+import { updateApplicationDetails } from "../../../../../applications/api";
 import {
     AuthenticatorInterface as ApplicationAuthenticatorInterface,
     ApplicationInterface,
     IdpRoleMappingInterface
-} from "features/applications/models";
+} from "../../../../../applications/models";
 import { getAuthenticators } from "../../../../../identity-providers/api";
 import { AuthenticatorInterface, AuthenticatorTypes } from "../../../../../identity-providers/models";
 import { ApplicationRolesConstants } from "../../constants";

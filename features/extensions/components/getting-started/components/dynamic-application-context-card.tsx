@@ -27,7 +27,7 @@ import { CategoryItem } from "./app-category-item";
 import { CardExpandedNavigationButton } from "./card-expanded-navigation-button";
 import { getApplicationTemplateIllustrations } from "../../../../applications/configs/ui";
 import CustomApplicationTemplate from "../../../../applications/data/application-templates/templates/custom-application/custom-application.json";
-import { ApplicationTemplateListItemInterface } from "features/applications/models";
+import { ApplicationTemplateListItemInterface } from "../../../../applications/models";
 import { ApplicationTemplateManagementUtils } from "../../../../applications/utils/application-template-management-utils";
 import { AppConstants, AppState, EventPublisher, history } from "../../../../core";
 

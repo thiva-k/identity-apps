@@ -31,7 +31,7 @@ import React, { FC, ReactElement, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Card, Form, Grid } from "semantic-ui-react";
-import { SAMLApplicationConfigurationInterface } from "features/applications/models";
+import { SAMLApplicationConfigurationInterface } from "../../../../applications/models";
 import { AppState, EventPublisher } from "../../../../core";
 
 type TechnologyArrayPropsInterface = {

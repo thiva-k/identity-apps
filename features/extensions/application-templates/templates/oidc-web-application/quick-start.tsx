@@ -29,13 +29,13 @@ import { IntegrateSDKs } from "./integrate-sdks";
 import { SDKMeta } from "./meta";
 import { SupportedTraditionalOIDCAppTechnologyTypes } from "./models";
 import { TryoutSamples } from "./tryout-samples";
-import { getApplicationList } from "features/applications/api";
+import { getApplicationList } from "../../../../applications/api";
 import {
     ApplicationInterface,
     ApplicationListInterface,
     ApplicationTemplateInterface,
     URLFragmentTypes
-} from "features/applications/models";
+} from "../../../../applications/models";
 import { history } from "../../../../core";
 import { getTechnologyLogos } from "../../../../core/configs";
 import { AppState } from "../../../../core/store";

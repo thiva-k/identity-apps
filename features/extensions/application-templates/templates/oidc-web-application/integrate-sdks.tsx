@@ -48,13 +48,13 @@ import {
 } from "./code-blocks";
 import { SDKMeta } from "./meta";
 import { SupportedTraditionalOIDCAppTechnologyTypes } from "./models";
-import { updateAuthProtocolConfig } from "features/applications/api";
+import { updateAuthProtocolConfig } from "../../../../applications/api";
 import {
     ApplicationInterface,
     ApplicationTemplateInterface,
     OIDCDataInterface,
     SupportedAuthProtocolTypes
-} from "features/applications/models";
+} from "../../../../applications/models";
 import { ApplicationManagementUtils } from "../../../../applications/utils/application-management-utils";
 import { Config } from "../../../../core/configs";
 import MavenLogo from "../../../assets/images/icons/maven-logo.svg";

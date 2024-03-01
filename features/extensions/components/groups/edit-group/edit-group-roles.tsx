@@ -54,8 +54,8 @@ import React, {
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Checkbox, Divider, Grid, Header, Icon, Input, Label, Modal, Table } from "semantic-ui-react";
-import { getApplicationList } from "features/applications/api";
-import { ApplicationListInterface, ApplicationListItemInterface } from "features/applications/models";
+import { getApplicationList } from "../../../../applications/api";
+import { ApplicationListInterface, ApplicationListItemInterface } from "../../../../applications/models";
 import { getEmptyPlaceholderIllustrations, history } from "../../../../core";
 import { GroupsInterface } from "../../../../groups";
 import {

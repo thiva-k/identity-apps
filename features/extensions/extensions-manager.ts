@@ -24,12 +24,12 @@ import {
     ExtensionsConfigInterface,
     IdentityProviderTemplateExtensionsConfigInterface
 } from "./models";
-import { TemplateConfigInterface, TemplateContentInterface } from "features/applications/data/application-templates";
+import { TemplateConfigInterface, TemplateContentInterface } from "../applications/data/application-templates";
 import {
     ApplicationTemplateCategoryInterface,
     ApplicationTemplateGroupInterface,
     ApplicationTemplateInterface
-} from "features/applications/models";
+} from "../applications/models";
 import {
     IdentityProviderTemplateCategoryInterface,
     IdentityProviderTemplateGroupInterface,

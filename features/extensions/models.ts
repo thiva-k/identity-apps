@@ -17,7 +17,7 @@
  */
 
 import { RouteInterface } from "@wso2is/core/models";
-import { ApplicationTemplatesConfigInterface } from "features/applications/data/application-templates";
+import { ApplicationTemplatesConfigInterface } from "../applications/data/application-templates";
 import { IdentityProviderTemplatesConfigInterface } from "../identity-providers/data/identity-provider-templates";
 
 /**

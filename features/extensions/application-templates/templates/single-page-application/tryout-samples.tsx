@@ -39,13 +39,13 @@ import { Button, Divider, Icon } from "semantic-ui-react";
 import { ReactComponent as JavaScriptLogo } from "./assets/javascript-logo.svg";
 import { SDKMeta } from "./meta";
 import { SupportedSPATechnologyTypes } from "./models";
-import { updateAuthProtocolConfig } from "features/applications/api";
+import { updateAuthProtocolConfig } from "../../../../applications/api";
 import {
     ApplicationInterface,
     ApplicationTemplateInterface,
     OIDCDataInterface,
     SupportedAuthProtocolTypes
-} from "features/applications/models";
+} from "../../../../applications/models";
 import { ApplicationManagementUtils } from "../../../../applications/utils/application-management-utils";
 import { Config } from "../../../../core/configs";
 import { EventPublisher } from "../../../../core/utils";

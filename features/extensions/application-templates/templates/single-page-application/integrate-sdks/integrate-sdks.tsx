@@ -33,7 +33,7 @@ import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Divider, DropdownItemProps, DropdownProps, Form, Icon, Table } from "semantic-ui-react";
 import { IntegrateStepGeneratorFactory } from "./integrate-step-generator-factory";
-import { ApplicationInterface, ApplicationTemplateInterface } from "features/applications/models";
+import { ApplicationInterface, ApplicationTemplateInterface } from "../../../../../applications/models";
 import { AppState, ConfigReducerStateInterface } from "../../../../../core";
 import { SDKInitConfig } from "../../../shared";
 import { AddUserStepContent } from "../../../shared/components";

@@ -24,9 +24,9 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { DropdownProps, Grid, Modal, ModalProps, PaginationProps } from "semantic-ui-react";
-import { getApplicationList } from "features/applications/api";
-import { ApplicationList } from "features/applications/components/application-list";
-import { ApplicationListInterface } from "features/applications/models";
+import { getApplicationList } from "../../../applications/api";
+import { ApplicationList } from "../../../applications/components/application-list";
+import { ApplicationListInterface } from "../../../applications/models";
 import { AppConstants, UIConstants, history } from "../../../core";
 
 /**

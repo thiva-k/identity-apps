@@ -17,24 +17,15 @@
  */
 
 import { IdentifiableComponentInterface } from "@wso2is/core/models";
-import { 
-    ResourceTab,
-    useDocumentation
-} from "@wso2is/react-components";
-import React, {
-    FunctionComponent,
-    ReactElement
-} from "react";
+import { ResourceTab, useDocumentation } from "@wso2is/react-components";
+import React, { FunctionComponent, ReactElement } from "react";
 import { Grid } from "semantic-ui-react";
 import AndroidLogo from "./assets/android-logo.svg";
 import FlutterLogo from "./assets/flutter-logo.svg";
 import IonicLogo from "./assets/ionic-logo.svg";
 import ReactNativeLogo from "./assets/react-native-logo.svg";
 import SwiftLogo from "./assets/swift-logo.svg";
-import {
-    ApplicationInterface,
-    ApplicationTemplateInterface
-} from "features/applications/models";
+import { ApplicationInterface, ApplicationTemplateInterface } from "../../../../applications/models";
 import { MobileCustomConfiguration } from "../../shared/components";
 
 /**
@@ -58,51 +49,43 @@ const INFO_TAB_INDEX: number = 9;
  * @param  props - Props injected into the component.
  * @returns Mobile App QuickStart.
  */
-const MobileApplicationQuickStart:
-    FunctionComponent<MobileApplicationQuickStartPropsInterface> = (
-        props:MobileApplicationQuickStartPropsInterface
-    ): ReactElement => {
+const MobileApplicationQuickStart: FunctionComponent<MobileApplicationQuickStartPropsInterface> = (
+    props: MobileApplicationQuickStartPropsInterface
+): ReactElement => {
+    const { inboundProtocolConfig, onTriggerTabUpdate, ["data-componentid"]: componentId } = props;
 
-        const {
-            inboundProtocolConfig,
-            onTriggerTabUpdate,
-            [ "data-componentid" ]: componentId
-        } = props;
+    const { getLink } = useDocumentation();
 
-        const { getLink } = useDocumentation();
-
-        return (
-            <ResourceTab.Pane controlledSegmentation>
-                <Grid data-componentid={ componentId } className="ml-0 mr-0">
-                    <Grid.Row className="technology-selection-wrapper single-page-qsg">
-                        <Grid.Column computer={ 10 } widescreen={ 8 } className="custom-config-container p-0">
-                            <MobileCustomConfiguration
-                                onTriggerTabUpdate={ onTriggerTabUpdate }
-                                protocolTabIndex={ PROTOCOL_TAB_INDEX }
-                                infoTabIndex={ INFO_TAB_INDEX }
-                                inboundProtocolConfig={ inboundProtocolConfig }
-                                icons={ [
-                                    { techIcon: FlutterLogo, techIconTitle: "Flutter" },
-                                    { techIcon: AndroidLogo, techIconTitle: "Android" },
-                                    { techIcon: SwiftLogo, techIconTitle: "Swift" },
-                                    { techIcon: ReactNativeLogo, techIconTitle: "React Native" },
-                                    { techIcon: IonicLogo, techIconTitle: "Ionic" }
-                                ] }
-                                data-componentid={ `${ componentId }-custom-configuration` }
-                                documentationLink={
-                                    getLink(
-                                        "develop.applications.editApplication." +
-                                        "oidcApplication.quickStart.mobileApp." +
-                                        "learnMore"
-                                    )
-                                }
-                            />
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </ResourceTab.Pane>
-        );
-    };
+    return (
+        <ResourceTab.Pane controlledSegmentation>
+            <Grid data-componentid={componentId} className="ml-0 mr-0">
+                <Grid.Row className="technology-selection-wrapper single-page-qsg">
+                    <Grid.Column computer={10} widescreen={8} className="custom-config-container p-0">
+                        <MobileCustomConfiguration
+                            onTriggerTabUpdate={onTriggerTabUpdate}
+                            protocolTabIndex={PROTOCOL_TAB_INDEX}
+                            infoTabIndex={INFO_TAB_INDEX}
+                            inboundProtocolConfig={inboundProtocolConfig}
+                            icons={[
+                                { techIcon: FlutterLogo, techIconTitle: "Flutter" },
+                                { techIcon: AndroidLogo, techIconTitle: "Android" },
+                                { techIcon: SwiftLogo, techIconTitle: "Swift" },
+                                { techIcon: ReactNativeLogo, techIconTitle: "React Native" },
+                                { techIcon: IonicLogo, techIconTitle: "Ionic" }
+                            ]}
+                            data-componentid={`${componentId}-custom-configuration`}
+                            documentationLink={getLink(
+                                "develop.applications.editApplication." +
+                                    "oidcApplication.quickStart.mobileApp." +
+                                    "learnMore"
+                            )}
+                        />
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </ResourceTab.Pane>
+    );
+};
 
 /**
  * Default props for the component

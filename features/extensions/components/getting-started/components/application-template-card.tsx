@@ -28,7 +28,7 @@ import { ApplicationAddTile } from "./application-add-tile";
 import { ApplicationTile } from "./application-tile";
 import { getApplicationTemplateIllustrations } from "../../../../applications/configs/ui";
 import CustomApplicationTemplate from "../../../../applications/data/application-templates/templates/custom-application/custom-application.json";
-import { ApplicationListItemInterface, ApplicationTemplateListItemInterface } from "features/applications/models";
+import { ApplicationListItemInterface, ApplicationTemplateListItemInterface } from "../../../../applications/models";
 import { ApplicationTemplateManagementUtils } from "../../../../applications/utils/application-template-management-utils";
 import { AppState, EventPublisher } from "../../../../core";
 

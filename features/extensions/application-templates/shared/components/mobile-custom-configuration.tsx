@@ -37,7 +37,7 @@ import React, { FC, ReactElement, useEffect, useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Card, Divider, Form, Grid, Icon } from "semantic-ui-react";
-import { OIDCApplicationConfigurationInterface } from "features/applications/models";
+import { OIDCApplicationConfigurationInterface } from "../../../../applications/models";
 import { AppState, EventPublisher } from "../../../../core";
 
 const DEFAULT_REQUESTED_SCOPES: string = "openid profile";

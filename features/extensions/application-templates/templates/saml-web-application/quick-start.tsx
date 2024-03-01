@@ -24,7 +24,7 @@ import { IntegrateSDKs } from "./integrate-sdks";
 import { SDKMeta } from "./meta";
 import { SupportedTraditionalSAMLAppTechnologyTypes } from "./models";
 import { TryoutSamples } from "./tryout-samples";
-import { ApplicationInterface, ApplicationTemplateInterface, URLFragmentTypes } from "features/applications/models";
+import { ApplicationInterface, ApplicationTemplateInterface, URLFragmentTypes } from "../../../../applications/models";
 import { history } from "../../../../core";
 import { getTechnologyLogos } from "../../../../core/configs";
 import JavaLogo from "../../../assets/images/icons/java-logo.svg";
