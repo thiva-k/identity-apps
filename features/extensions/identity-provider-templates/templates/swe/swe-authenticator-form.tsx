@@ -31,7 +31,7 @@ import {
     CommonAuthenticatorFormMetaInterface,
     CommonAuthenticatorFormPropertyInterface,
     CommonPluggableComponentMetaPropertyInterface
-} from "features/identity-providers/models";
+} from "../../../../identity-providers/models";
 import { SIWEConstants } from "../../../components/identity-providers/constants";
 
 /**

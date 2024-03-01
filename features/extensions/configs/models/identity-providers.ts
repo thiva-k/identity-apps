@@ -23,7 +23,7 @@ import { ConnectionTabTypes } from "features/connections/models/connection";
 import {
     AuthenticatorInterface,
     GenericIdentityProviderCreateWizardPropsInterface
-} from "features/identity-providers/models";
+} from "../../../identity-providers/models";
 
 export interface ExtendedSamlConfigInterface {
     isArtifactBindingEnabled: boolean;

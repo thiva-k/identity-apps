@@ -19,12 +19,7 @@
 import { AlertInterface, AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
 import { Field, Form, FormPropsInterface } from "@wso2is/form";
-import {
-    ContentLoader,
-    EmphasizedSegment,
-    Heading,
-    PrimaryButton
-} from "@wso2is/react-components";
+import { ContentLoader, EmphasizedSegment, Heading, PrimaryButton } from "@wso2is/react-components";
 import { IdentityAppsApiException } from "modules/core/dist/types/exceptions";
 import React, { MutableRefObject, ReactElement, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -37,8 +32,8 @@ import {
     ApplicationInterface,
     IdpRoleMappingInterface
 } from "features/applications/models";
-import { getAuthenticators } from "features/identity-providers/api";
-import { AuthenticatorInterface, AuthenticatorTypes } from "features/identity-providers/models";
+import { getAuthenticators } from "../../../../../identity-providers/api";
+import { AuthenticatorInterface, AuthenticatorTypes } from "../../../../../identity-providers/models";
 import { ApplicationRolesConstants } from "../../constants";
 
 const FORM_ID: string = "application-role-mapping-form";
@@ -48,7 +43,7 @@ const FORM_ID: string = "application-role-mapping-form";
  */
 interface AssignGroupProps extends IdentifiableComponentInterface {
     application: ApplicationInterface;
-    isReadOnly: boolean
+    isReadOnly: boolean;
     onUpdate: () => void;
 }
 
@@ -57,48 +52,44 @@ interface AssignGroupProps extends IdentifiableComponentInterface {
  *
  */
 const ApplicationRoleMapping = (props: AssignGroupProps): ReactElement => {
-    const {
-        application,
-        isReadOnly,
-        onUpdate,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { application, isReadOnly, onUpdate, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
     const formRef: MutableRefObject<FormPropsInterface> = useRef<FormPropsInterface>(null);
 
-    const [ isAuthenticatorRequestLoading, setAuthenticatorRequestLoading ] = useState<boolean>(true);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ attributeStepAuthenticators, setAttributeStepAuthenticators ] 
-        = useState<ApplicationAuthenticatorInterface[]>([]);
-    const [ formInitialValues, setFormInitialValues ] = useState<Record<string, boolean>>({});
-    const [ federatedAuthenticators, setFederatedAuthenticators ] = useState<AuthenticatorInterface[]>([]);
-    const [ authenticatorGroups, setAuthenticatorGroups ] = useState<ApplicationAuthenticatorInterface[]>([]);
+    const [isAuthenticatorRequestLoading, setAuthenticatorRequestLoading] = useState<boolean>(true);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [attributeStepAuthenticators, setAttributeStepAuthenticators] = useState<ApplicationAuthenticatorInterface[]>(
+        []
+    );
+    const [formInitialValues, setFormInitialValues] = useState<Record<string, boolean>>({});
+    const [federatedAuthenticators, setFederatedAuthenticators] = useState<AuthenticatorInterface[]>([]);
+    const [authenticatorGroups, setAuthenticatorGroups] = useState<ApplicationAuthenticatorInterface[]>([]);
 
     useEffect(() => {
         getFederatedAuthenticators();
     }, []);
 
-    useEffect(() => {        
+    useEffect(() => {
         getAttributeStepAuthenticators();
-    }, [ application ]);
+    }, [application]);
 
     useEffect(() => {
-        if(federatedAuthenticators.length <= 0 || attributeStepAuthenticators.length <= 0) {
+        if (federatedAuthenticators.length <= 0 || attributeStepAuthenticators.length <= 0) {
             return;
         }
 
         getAutheticatorGroups();
-    }, [ federatedAuthenticators, attributeStepAuthenticators ]);
+    }, [federatedAuthenticators, attributeStepAuthenticators]);
 
     /**
      * This functions gets the authenticators of the attribute step.
      */
     const getAttributeStepAuthenticators = () => {
         const attributeStepId: number = application?.authenticationSequence?.attributeStepId;
-        
-        if (attributeStepId) {            
+
+        if (attributeStepId) {
             setAttributeStepAuthenticators(application?.authenticationSequence?.steps[attributeStepId - 1]?.options);
         }
     };
@@ -112,10 +103,11 @@ const ApplicationRoleMapping = (props: AssignGroupProps): ReactElement => {
         getAuthenticators(null, AuthenticatorTypes.FEDERATED)
             .then((response: AuthenticatorInterface[]) => {
                 // Remove Organization Login federated authenticator from the list
-                const filteredFederatedAuthenticators: AuthenticatorInterface[] 
-                = response.filter((authenticator: AuthenticatorInterface) => {
-                    return authenticator.name !== ApplicationRolesConstants.ORGANIZATION_LOGIN;
-                });
+                const filteredFederatedAuthenticators: AuthenticatorInterface[] = response.filter(
+                    (authenticator: AuthenticatorInterface) => {
+                        return authenticator.name !== ApplicationRolesConstants.ORGANIZATION_LOGIN;
+                    }
+                );
 
                 setFederatedAuthenticators(filteredFederatedAuthenticators);
             })
@@ -125,7 +117,7 @@ const ApplicationRoleMapping = (props: AssignGroupProps): ReactElement => {
                         addAlert({
                             description: t(
                                 "console:develop.features.authenticationProvider.notifications" +
-                                ".getIDPList.error.message",
+                                    ".getIDPList.error.message",
                                 { description: error.response.data.description }
                             ),
                             level: AlertLevels.ERROR,
@@ -134,35 +126,37 @@ const ApplicationRoleMapping = (props: AssignGroupProps): ReactElement => {
                             )
                         })
                     );
-            
+
                     return;
                 }
                 dispatch(
                     addAlert({
                         description: t(
                             "console:develop.features.authenticationProvider.notifications" +
-                            ".getIDPList.genericError.description"
+                                ".getIDPList.genericError.description"
                         ),
                         level: AlertLevels.ERROR,
                         message: t(
                             "console:develop.features.authenticationProvider.notifications" +
-                            ".getIDPList.genericError.message"
+                                ".getIDPList.genericError.message"
                         )
                     })
                 );
-            }).finally(() => {
+            })
+            .finally(() => {
                 setAuthenticatorRequestLoading(false);
             });
     };
 
     const getAutheticatorGroups = () => {
         // Filter the federated autheticators that are in the attribute step
-        const filteredFederatedAuthenticators: ApplicationAuthenticatorInterface[] 
-        = attributeStepAuthenticators.filter((attributeStepAuthenticator: ApplicationAuthenticatorInterface) => {
-            return federatedAuthenticators.find((federatedAuthenticator: AuthenticatorInterface) => {
-                return federatedAuthenticator.name === attributeStepAuthenticator.idp;
-            });
-        });
+        const filteredFederatedAuthenticators: ApplicationAuthenticatorInterface[] = attributeStepAuthenticators.filter(
+            (attributeStepAuthenticator: ApplicationAuthenticatorInterface) => {
+                return federatedAuthenticators.find((federatedAuthenticator: AuthenticatorInterface) => {
+                    return federatedAuthenticator.name === attributeStepAuthenticator.idp;
+                });
+            }
+        );
 
         resolveApplicationRoleConfigurationFormValues(filteredFederatedAuthenticators);
         setAuthenticatorGroups(filteredFederatedAuthenticators);
@@ -184,14 +178,14 @@ const ApplicationRoleMapping = (props: AssignGroupProps): ReactElement => {
         const appRoleConfigurationData: IdpRoleMappingInterface[] = [];
 
         // Iterate through the object
-        for (const [ key, value ] of Object.entries(data)) {
+        for (const [key, value] of Object.entries(data)) {
             const appRoleConfiguration: IdpRoleMappingInterface = {
                 idp: key,
                 useAppRoleMappings: value
             };
 
             appRoleConfigurationData.push(appRoleConfiguration);
-        }        
+        }
 
         const applicationData: ApplicationInterface = {
             appRoleConfigurations: appRoleConfigurationData,
@@ -203,23 +197,31 @@ const ApplicationRoleMapping = (props: AssignGroupProps): ReactElement => {
         updateApplicationDetails(applicationData)
             .then(() => {
                 handleAlerts({
-                    description: t("extensions:console.applicationRoles.roleMapping.notifications.updateRole."+
-                        "success.description"),
+                    description: t(
+                        "extensions:console.applicationRoles.roleMapping.notifications.updateRole." +
+                            "success.description"
+                    ),
                     level: AlertLevels.SUCCESS,
-                    message: t("extensions:console.applicationRoles.roleMapping.notifications.updateRole."+
-                        "success.message")
+                    message: t(
+                        "extensions:console.applicationRoles.roleMapping.notifications.updateRole." + "success.message"
+                    )
                 });
                 onUpdate();
             })
             .catch(() => {
                 handleAlerts({
-                    description: t("extensions:console.applicationRoles.roleMapping.notifications.updateRole."+
-                    "genericError.description"),
+                    description: t(
+                        "extensions:console.applicationRoles.roleMapping.notifications.updateRole." +
+                            "genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("extensions:console.applicationRoles.roleMapping.notifications.updateRole."+
-                    "genericError.message")
+                    message: t(
+                        "extensions:console.applicationRoles.roleMapping.notifications.updateRole." +
+                            "genericError.message"
+                    )
                 });
-            }).finally(() => {
+            })
+            .finally(() => {
                 setIsSubmitting(false);
             });
     };
@@ -231,10 +233,9 @@ const ApplicationRoleMapping = (props: AssignGroupProps): ReactElement => {
         const appRoleConfigurations: IdpRoleMappingInterface[] = application.appRoleConfigurations;
 
         if (appRoleConfigurations.length > 0) {
-            const appRoleConfiguration: IdpRoleMappingInterface =  appRoleConfigurations.find(
-                (appRoleConfiguration: IdpRoleMappingInterface) => (
-                    appRoleConfiguration.idp === idpName
-                ));
+            const appRoleConfiguration: IdpRoleMappingInterface = appRoleConfigurations.find(
+                (appRoleConfiguration: IdpRoleMappingInterface) => appRoleConfiguration.idp === idpName
+            );
 
             return appRoleConfiguration?.useAppRoleMappings ?? false;
         }
@@ -245,7 +246,7 @@ const ApplicationRoleMapping = (props: AssignGroupProps): ReactElement => {
     /**
      * Resolves the initial form values.
      */
-    const resolveApplicationRoleConfigurationFormValues = (authenticators: ApplicationAuthenticatorInterface[] ) => {
+    const resolveApplicationRoleConfigurationFormValues = (authenticators: ApplicationAuthenticatorInterface[]) => {
         const initialFormValues: Record<string, boolean> = {};
 
         authenticators?.forEach((authenticator: ApplicationAuthenticatorInterface) => {
@@ -258,86 +259,71 @@ const ApplicationRoleMapping = (props: AssignGroupProps): ReactElement => {
     if (isAuthenticatorRequestLoading) {
         return (
             <EmphasizedSegment padded="very">
-                <ContentLoader/>
+                <ContentLoader />
             </EmphasizedSegment>
         );
     }
 
-    return (
-        authenticatorGroups?.length > 0
-            ? (
-                <>
-                    <Grid>
-                        <Grid.Row>
-                            <Grid.Column className="heading-wrapper" computer={ 10 }>
-                                <Heading as="h4">
-                                    {
-                                        t("extensions:console.applicationRoles.roleMapping.heading")
-                                    }
-                                </Heading>
-                                <Heading subHeading ellipsis as="h6" >
-                                    {
-                                        t("extensions:console.applicationRoles.roleMapping.subHeading")
-                                    }
-                                </Heading>
-                            </Grid.Column >
-                        </Grid.Row>
-                    </Grid>
-                    <Grid>
-                        <Grid.Row>
-                            <Grid.Column computer={ 10 }>
-                                <Form
-                                    id={ FORM_ID }
-                                    onSubmit={ (values: any) => updateApplicationRoleConfigurations(values) }
-                                    ref={ formRef }
-                                    uncontrolledForm={ false }
-                                    initialValues={ formInitialValues }
+    return authenticatorGroups?.length > 0 ? (
+        <>
+            <Grid>
+                <Grid.Row>
+                    <Grid.Column className="heading-wrapper" computer={10}>
+                        <Heading as="h4">{t("extensions:console.applicationRoles.roleMapping.heading")}</Heading>
+                        <Heading subHeading ellipsis as="h6">
+                            {t("extensions:console.applicationRoles.roleMapping.subHeading")}
+                        </Heading>
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+            <Grid>
+                <Grid.Row>
+                    <Grid.Column computer={10}>
+                        <Form
+                            id={FORM_ID}
+                            onSubmit={(values: any) => updateApplicationRoleConfigurations(values)}
+                            ref={formRef}
+                            uncontrolledForm={false}
+                            initialValues={formInitialValues}
+                        >
+                            {authenticatorGroups?.map(
+                                (authenticator: ApplicationAuthenticatorInterface, index: number) => {
+                                    return (
+                                        <Field.Checkbox
+                                            key={index}
+                                            ariaLabel={`${authenticator.idp}-checkbox`}
+                                            name={authenticator.idp}
+                                            label={authenticator.idp}
+                                            tabIndex={3}
+                                            width={16}
+                                            data-componentid={`${componentId}-${authenticator.idp}-checkbox`}
+                                        />
+                                    );
+                                }
+                            )}
+                        </Form>
+                        <Divider hidden />
+                        <Grid.Row columns={1} className="mt-6">
+                            <Grid.Column mobile={16} tablet={16} computer={16}>
+                                <PrimaryButton
+                                    size="small"
+                                    loading={isSubmitting}
+                                    disabled={isReadOnly}
+                                    onClick={() => {
+                                        formRef?.current?.triggerSubmit();
+                                    }}
+                                    ariaLabel="Email provider form update button"
+                                    data-componentid={`${componentId}-update-button`}
                                 >
-                                    {
-                                        authenticatorGroups?.map((
-                                            authenticator: ApplicationAuthenticatorInterface,
-                                            index: number
-                                        ) => {
-                                            return (
-                                                <Field.Checkbox
-                                                    key={ index }
-                                                    ariaLabel={ `${ authenticator.idp }-checkbox` }
-                                                    name={ authenticator.idp }
-                                                    label={ authenticator.idp }
-                                                    tabIndex={ 3 }
-                                                    width={ 16 }
-                                                    data-componentid={ 
-                                                        `${ componentId }-${ authenticator.idp }-checkbox` }
-                                                />
-                                            );
-                                        })
-                                    }
-                                </Form>
-                                <Divider hidden />
-                                <Grid.Row columns={ 1 } className="mt-6">
-                                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
-                                        <PrimaryButton
-                                            size="small"
-                                            loading={ isSubmitting }
-                                            disabled={ isReadOnly }
-                                            onClick={ () => {
-                                                formRef?.current?.triggerSubmit();
-                                            } }
-                                            ariaLabel="Email provider form update button"
-                                            data-componentid={ `${ componentId }-update-button` }
-                                        >
-                                            { t("extensions:develop.emailProviders" +
-                                                    ".updateButton") }
-                                        </PrimaryButton>
-                                    </Grid.Column>
-                                </Grid.Row>
+                                    {t("extensions:develop.emailProviders" + ".updateButton")}
+                                </PrimaryButton>
                             </Grid.Column>
                         </Grid.Row>
-                    </Grid>
-                </>
-            )
-            : null
-    );
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
+        </>
+    ) : null;
 };
 
 export default ApplicationRoleMapping;

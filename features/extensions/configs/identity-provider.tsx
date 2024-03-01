@@ -27,7 +27,7 @@ import {
     AuthenticatorLabels,
     GenericIdentityProviderCreateWizardPropsInterface,
     IdentityProviderTabTypes
-} from "features/identity-providers/models";
+} from "../../identity-providers/models";
 import { SmsOTPAuthenticator } from "../components/authenticators/sms-otp/sms-otp-authenticator";
 import QuickStartTab from "../components/component-extensions/application/quick-start-tab";
 import { getIdPIcons } from "../components/identity-providers/configs/ui";

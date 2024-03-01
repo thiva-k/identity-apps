@@ -25,10 +25,13 @@ import {
     SIWEAuthenticationProviderCreateWizardFormErrorValidationsInterface,
     SIWEAuthenticationProviderCreateWizardFormValuesInterface
 } from "./swe-authentication-provider-create-wizard";
-import { useIdentityProviderList } from "features/identity-providers/api";
-import { handleGetIDPListCallError } from "features/identity-providers/components/utils";
+import { useIdentityProviderList } from "../../../../../identity-providers/api";
+import { handleGetIDPListCallError } from "../../../../../identity-providers/components/utils";
 import { IdentityProviderManagementConstants } from "../../../../../identity-providers/constants";
-import { IdentityProviderTemplateInterface, StrictIdentityProviderInterface } from "features/identity-providers/models";
+import {
+    IdentityProviderTemplateInterface,
+    StrictIdentityProviderInterface
+} from "../../../../../identity-providers/models";
 
 /**
  * Prop-types for the SIWE Authentication Wizard From.

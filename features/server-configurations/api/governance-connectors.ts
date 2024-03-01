@@ -20,7 +20,7 @@ import { AsgardeoSPAClient, HttpClientInstance } from "@asgardeo/auth-react";
 import { IdentityAppsApiException } from "@wso2is/core/exceptions";
 import { HttpMethods } from "@wso2is/core/models";
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
-import { LocalAuthenticatorInterface } from "../../../features/identity-providers/models/identity-provider";
+import { LocalAuthenticatorInterface } from "../../identity-providers/models/identity-provider";
 import { store } from "../../core";
 import useRequest, {
     RequestConfigInterface,
@@ -40,29 +40,30 @@ import {
  *
  */
 const httpClient: HttpClientInstance = AsgardeoSPAClient.getInstance().httpRequest.bind(
-    AsgardeoSPAClient.getInstance());
+    AsgardeoSPAClient.getInstance()
+);
 
 /**
  * Get governance connector categories.
- * 
+ *
  * @returns the governance connector categories.
  */
 export const useGovernanceConnectorCategories = <
-    Data = GovernanceCategoryForOrgsInterface[], 
+    Data = GovernanceCategoryForOrgsInterface[],
     Error = RequestErrorInterface
-> 
-    (shouldFetch: boolean = true): RequestResultInterface<Data, Error> => {
-
+>(
+    shouldFetch: boolean = true
+): RequestResultInterface<Data, Error> => {
     const requestConfig: RequestConfigInterface = {
         headers: {
-            "Accept": "application/json",
+            Accept: "application/json",
             "Content-Type": "application/json"
         },
         method: HttpMethods.GET,
         url: store.getState().config.endpoints.governanceConnectorCategories
     };
 
-    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig: null);
+    const { data, error, isValidating, mutate } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
 
     return {
         data,
@@ -92,7 +93,8 @@ export const getData = (url: string): Promise<any> => {
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -104,7 +106,8 @@ export const getData = (url: string): Promise<any> => {
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -128,7 +131,8 @@ export const updateConfigurations = (data: UpdateGovernanceConnectorConfigInterf
                     response.status,
                     response.request,
                     response,
-                    response.config);
+                    response.config
+                );
             }
 
             return Promise.resolve(response.data);
@@ -140,7 +144,8 @@ export const updateConfigurations = (data: UpdateGovernanceConnectorConfigInterf
                 error.code,
                 error.request,
                 error.response,
-                error.config);
+                error.config
+            );
         });
 };
 
@@ -170,10 +175,17 @@ export const getConnectorCategory = (categoryId: string): Promise<any> => {
  * @param connectorId - ID of the connector
  * @returns a promise containing the response.
  */
-export const updateGovernanceConnector = (data: UpdateGovernanceConnectorConfigInterface, categoryId: string,
-    connectorId: string): Promise<any> => {
-    const url: string = store.getState().config.endpoints.governanceConnectorCategories +
-        "/" + categoryId + "/connectors/" + connectorId;
+export const updateGovernanceConnector = (
+    data: UpdateGovernanceConnectorConfigInterface,
+    categoryId: string,
+    connectorId: string
+): Promise<any> => {
+    const url: string =
+        store.getState().config.endpoints.governanceConnectorCategories +
+        "/" +
+        categoryId +
+        "/connectors/" +
+        connectorId;
 
     return updateConfigurations(data, url);
 };
@@ -185,8 +197,8 @@ export const updateGovernanceConnector = (data: UpdateGovernanceConnectorConfigI
  * @returns a promise containing the response.
  */
 export const getGovernanceConnectors = (categoryId: string): Promise<GovernanceConnectorInterface[]> => {
-    const url: string = store.getState().config.endpoints.governanceConnectorCategories +
-        "/" + categoryId + "/connectors/";
+    const url: string =
+        store.getState().config.endpoints.governanceConnectorCategories + "/" + categoryId + "/connectors/";
 
     return getData(url);
 };
@@ -217,8 +229,13 @@ export const updateServerConfigurations = (data: UpdateGovernanceConnectorConfig
  * @returns a promise containing the data.
  */
 export const getConnectorDetails = (categoryId: string, connectorId: string): Promise<any> => {
-    return getData(store.getState().config.endpoints.governanceConnectorCategories + "/" + categoryId +
-        "/connectors/" + connectorId);
+    return getData(
+        store.getState().config.endpoints.governanceConnectorCategories +
+            "/" +
+            categoryId +
+            "/connectors/" +
+            connectorId
+    );
 };
 
 interface ServerConfigurationCorsInterface {
@@ -228,7 +245,7 @@ interface ServerConfigurationCorsInterface {
     exposedHeaders: string[];
     maxAge: number;
     supportAnyHeader: boolean;
-    supportedHeaders: {[key: string]: string}[];
+    supportedHeaders: { [key: string]: string }[];
     supportedMethods: string[];
     supportsCredentials: boolean;
 }
