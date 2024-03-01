@@ -22,7 +22,7 @@ import { AppConfigProvider } from "@wso2is/common/src/providers/app-config-provi
 import { ContextUtils, StringUtils } from "@wso2is/core/utils";
 import axios, { AxiosResponse } from "axios";
 import * as React from "react";
-import { ReactElement } from "react";
+import { ReactElement,createContext, useState } from "react";
 import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter, Link, Route, Router, Switch } from "react-router-dom";
@@ -48,7 +48,7 @@ ContextUtils.setRuntimeConfig(Config.getDeploymentConfig());
 export const getAuthParams = (): Promise<AuthParams> => {
     if (
         !SPAUtils.hasAuthSearchParamsInURL() &&
-        Config.getDeploymentConfig()?.idpConfigs?.responseMode === ResponseMode.formPost
+        (ResponseMode.formPost as string === "query")                 // HARD CODED
     ) {
         const contextPath: string = window["AppUtils"].getConfig().appBase
             ? `/${StringUtils.removeSlashesFromPath(window["AppUtils"].getConfig().appBase)}`
@@ -72,6 +72,7 @@ const Root = (): ReactElement => {
     return (
         <RootWithConfig>
             <ProtectedApp>
+              <ConfigContext.Provider value={configs}>
                 <Router history={history}>
                     <div>
                         <div> <h1> B2B Admin Portal </h1> </div>
@@ -96,6 +97,7 @@ const Root = (): ReactElement => {
                         </Switch>
                     </div>
                 </Router>
+              </ConfigContext.Provider>
             </ProtectedApp>
         </RootWithConfig>
     );
@@ -142,3 +144,15 @@ ReactDOM.render(<Root />, rootElement);
   {/* Home Page
  <PopupOpener /> */}
 
+
+ export type ConfigurationsType = {
+  organizationPrefix: string;
+  appBaseNameWithoutTenant: string;
+};
+
+ const configs :ConfigurationsType ={
+  organizationPrefix: "o",
+  appBaseNameWithoutTenant: "/console"
+}
+
+export const ConfigContext = createContext(configs);

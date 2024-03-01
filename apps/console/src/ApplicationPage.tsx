@@ -402,14 +402,14 @@ export const ApplicationPage: FunctionComponent<Record<string, never>> = (): Rea
                                 >
                                     <>
                                         <Helmet>
-                                            <title>{appTitle}</title>
+                                            {/* <title>{appTitle}</title>
                                             {window?.themeHash && window?.publicPath && theme ? (
                                                 <link
                                                     href={`${window?.origin}${window?.publicPath}/libs/themes/${theme}/theme.${window?.themeHash}.min.css`}
                                                     rel="stylesheet"
                                                     type="text/css"
                                                 />
-                                            ) : null}
+                                            ) : null} */}
                                         </Helmet>
                                         <NetworkErrorModal
                                             heading={

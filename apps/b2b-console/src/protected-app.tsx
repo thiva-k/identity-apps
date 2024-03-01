@@ -34,7 +34,7 @@ import {
 import { GovernanceConnectorProvider } from "@wso2is/react-components";
 import axios, { AxiosResponse } from "axios";
 import has from "lodash-es/has";
-import React, { FunctionComponent, LazyExoticComponent, ReactElement, ReactNode, lazy, useEffect, useState } from "react";
+import React, { FunctionComponent, LazyExoticComponent, ReactElement, ReactNode, lazy, useEffect, useState, useContext } from "react";
 import { I18nextProvider } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
@@ -63,6 +63,8 @@ import { history } from "@wso2is/features/core";
 import useRoutes from "./use-routes";
 import useOrganizationSwitch from "@wso2is/features/organizations/hooks/use-organization-switch";
 import { GovernanceCategoryForOrgsInterface, useGovernanceConnectorCategories } from "@wso2is/features/server-configurations";
+import {ConfigContext, ConfigurationsType} from "./index"
+import { use } from "i18next";
 
 
 
@@ -74,7 +76,6 @@ type AppPropsInterface = IdentifiableComponentInterface;
 type ProtectedAppProps = {
     children: ReactNode;
 };
-
 
 /**
  * This component warps the `App` component with the `SecureApp` component to provide automatic authentication.
@@ -88,6 +89,8 @@ export const ProtectedApp: FunctionComponent<ProtectedAppProps> = ({ children }:
         state: { isAuthenticated }
     } = useAuthContext();
 
+    const Configurations: ConfigurationsType= useContext(ConfigContext)
+    
     const dispatch: Dispatch<any> = useDispatch();
 
     const { onSignIn } = useSignIn();
@@ -147,7 +150,7 @@ export const ProtectedApp: FunctionComponent<ProtectedAppProps> = ({ children }:
                         window.location.pathname;
                     const pathChunks: string[] = path.split("/");
 
-                    const orgPrefixIndex: number = pathChunks.indexOf(Config.getDeploymentConfig().organizationPrefix);
+                    const orgPrefixIndex: number = pathChunks.indexOf(Configurations.organizationPrefix);
 
                     if (orgPrefixIndex !== -1) {
                         return pathChunks[orgPrefixIndex + 1];
@@ -159,7 +162,7 @@ export const ProtectedApp: FunctionComponent<ProtectedAppProps> = ({ children }:
                 try {
                     // The organization switch is not needed for organization users who directly SSO to the organization.
                     if (getOrganizationName() && signInResponse.userOrg != signInResponse.orgId) {
-                        response = await switchOrganization(getOrganizationName());
+                        response = await switchOrganization(await getOrganizationName());
                     } else {
                         response = { ...signInResponse };
                     }
@@ -274,9 +277,9 @@ export const ProtectedApp: FunctionComponent<ProtectedAppProps> = ({ children }:
 
         // If `appBaseNameWithoutTenant` is "", avoids adding a forward slash.
         const resolvedAppBaseNameWithoutTenant: string = StringUtils.removeSlashesFromPath(
-            Config.getDeploymentConfig().appBaseNameWithoutTenant
+            Configurations.appBaseNameWithoutTenant
         )
-            ? `/${StringUtils.removeSlashesFromPath(Config.getDeploymentConfig().appBaseNameWithoutTenant)}`
+            ? `/${StringUtils.removeSlashesFromPath(Configurations.appBaseNameWithoutTenant)}`
             : "";
 
         const metaFileNames: string[] = I18nModuleConstants.META_FILENAME.split(".");

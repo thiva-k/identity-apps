@@ -85,8 +85,8 @@ const useRoutes = (): useRoutesInterface => {
                 ...AppConstants.ORGANIZATION_ONLY_ROUTES
             ];
 
-            function getAdditionalRoutes() {
-                if (!isOrganizationManagementEnabled) {
+            function getAdditionalRoutes() {   //HARD CODED
+                if (false) {
                     return [ ...AppUtils.getHiddenRoutes(), ...AppConstants.ORGANIZATION_ROUTES ];
                 }
 
