@@ -22,7 +22,7 @@ import { ResourceTabPaneInterface } from "@wso2is/react-components";
 import React, { ElementType, FunctionComponent, ReactElement, SVGProps, lazy } from "react";
 import { IdentityProviderConfig } from "./models";
 import { ConnectionTabTypes } from "features/connections";
-import { IdentityProviderManagementConstants } from "features/identity-providers/constants";
+import { IdentityProviderManagementConstants } from "../../identity-providers/constants";
 import {
     AuthenticatorLabels,
     GenericIdentityProviderCreateWizardPropsInterface,

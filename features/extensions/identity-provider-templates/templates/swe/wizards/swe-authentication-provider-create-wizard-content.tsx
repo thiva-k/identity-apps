@@ -27,7 +27,7 @@ import {
 } from "./swe-authentication-provider-create-wizard";
 import { useIdentityProviderList } from "features/identity-providers/api";
 import { handleGetIDPListCallError } from "features/identity-providers/components/utils";
-import { IdentityProviderManagementConstants } from "features/identity-providers/constants";
+import { IdentityProviderManagementConstants } from "../../../../../identity-providers/constants";
 import { IdentityProviderTemplateInterface, StrictIdentityProviderInterface } from "features/identity-providers/models";
 
 /**
