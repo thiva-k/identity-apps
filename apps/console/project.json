@@ -62,12 +62,12 @@
                     },
                     {
                         "glob": "**/*",
-                        "input": "modules/i18n/dist/bundle",
+                        "input": "apps/console/i18n",
                         "output": "resources/i18n"
                     },
                     {
                         "glob": "meta.*.json",
-                        "input": "apps/console/src/extensions/i18n/tmp",
+                        "input": "apps/console/i18n",
                         "output": "resources/i18n"
                     },
                     {
