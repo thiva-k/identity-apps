@@ -16,13 +16,22 @@
  * under the License.
  */
 
-import { meta } from "./meta";
-import * as features from "./features";
-import { LocaleBundle } from "../../models";
+import { I18nModuleException } from "./i18n-module-exception";
 
-export const EN_US: LocaleBundle = {
-    meta,
-    resources: {
-        features
+/**
+ * Exception class to handle unsupported i18n frameworks on module initialization.
+ */
+export class UnsupportedI18nFrameworkException extends I18nModuleException {
+
+    public framework: string;
+
+    /**
+     * Constructor.
+     * @param {string} framework - Requested framework.
+     * @param {string | Record<string, unknown>} stack - Stack trace.
+     */
+    constructor(framework?: string, stack?: string | Record<string, unknown>) {
+        super(`The requested i18n framework (${ framework }) is currently not supported`, stack);
+        this.framework = framework;
     }
-};
+}

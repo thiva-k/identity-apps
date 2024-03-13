@@ -16,13 +16,20 @@
  * under the License.
  */
 
-import { meta } from "./meta";
-import * as features from "./features";
-import { LocaleBundle } from "../../models";
+import { IdentityAppsModuleException } from "@wso2is/core/exceptions";
+import { I18nModuleConstants } from "../constants";
 
-export const EN_US: LocaleBundle = {
-    meta,
-    resources: {
-        features
+/**
+ * Base exception class for all i18n module exceptions.
+ */
+export class I18nModuleException extends IdentityAppsModuleException {
+
+    /**
+     * Constructor.
+     * @param {string} message - Message for the exception.
+     * @param {string | Record<string, unknown>} stack - Stack trace.
+     */
+    constructor(message?: string, stack?: string | Record<string, unknown>) {
+        super(message, stack, I18nModuleConstants.MODULE_NAME);
     }
-};
+}

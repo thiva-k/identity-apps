@@ -65,7 +65,7 @@ createDirectory(outputPath, true);
 const translations = require(translationsPath);
 
 // Object to store the meta info of all the languages.
-let metaFileContent = {};
+// let metaFileContent = {};
 
 // Create directories to store the locales for the corresponding language.
 for (const value of Object.values(translations)) {
@@ -111,21 +111,21 @@ for (const value of Object.values(translations)) {
         }
     }
 
-    metaFileContent = {
-        ...metaFileContent,
-        [ value.meta.code ] : {
-            ...value.meta,
-            paths: resourcePaths
-        }
-    };
+    // metaFileContent = {
+    //     ...metaFileContent,
+    //     [ value.meta.code ] : {
+    //         ...value.meta,
+    //         paths: resourcePaths
+    //     }
+    // };
 }
 
-const hash = crypto.createHash("sha1").update(JSON.stringify(metaFileContent)).digest("hex");
+// const hash = crypto.createHash("sha1").update(JSON.stringify(metaFileContent)).digest("hex");
 
-createFile(path.join(outputPath, META_FILE_NAME.replace("{hash}", hash.substr(0, 8))),
-    JSON.stringify(metaFileContent, undefined, 4), null, true);
+// createFile(path.join(outputPath, META_FILE_NAME.replace("{hash}", hash.substr(0, 8))),
+//     JSON.stringify(metaFileContent, undefined, 4), null, true);
 
-log("\nCreated the locale meta file.");
+// log("\nCreated the locale meta file.");
 
 log("\nSuccessfully generated the locale bundle.");
 

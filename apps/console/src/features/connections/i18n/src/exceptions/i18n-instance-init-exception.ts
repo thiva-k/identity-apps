@@ -16,13 +16,18 @@
  * under the License.
  */
 
-import { meta } from "./meta";
-import * as features from "./features";
-import { LocaleBundle } from "../../models";
+import { I18nModuleException } from "./i18n-module-exception";
 
-export const EN_US: LocaleBundle = {
-    meta,
-    resources: {
-        features
+/**
+ * Exception class to handle i18n instance init failure.
+ */
+export class I18nInstanceInitException extends I18nModuleException {
+
+    /**
+     * Constructor.
+     * @param {string | Record<string, unknown>} stack - Stack trace.
+     */
+    constructor(stack?: string | Record<string, unknown>) {
+        super("Failed to initialize the i18n instance", stack);
     }
-};
+}

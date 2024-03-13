@@ -16,13 +16,19 @@
  * under the License.
  */
 
-import { meta } from "./meta";
-import * as features from "./features";
-import { LocaleBundle } from "../../models";
+import { I18nModuleException } from "./i18n-module-exception";
 
-export const EN_US: LocaleBundle = {
-    meta,
-    resources: {
-        features
+/**
+ * Exception class to handle i18n language change exceptions.
+ */
+export class LanguageChangeException extends I18nModuleException {
+
+    /**
+     * Constructor.
+     * @param {string} language - Attempted language.
+     * @param {string | Record<string, unknown>} stack - Stack trace.
+     */
+    constructor(language: string, stack?: string | Record<string, unknown>) {
+        super(`Failed to change the language to ${ language }`, stack);
     }
-};
+}

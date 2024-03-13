@@ -16,13 +16,14 @@
  * under the License.
  */
 
-import { meta } from "./meta";
-import * as features from "./features";
-import { LocaleBundle } from "../../models";
+import { I18nModuleConstants } from "../../constants";
+import { LocaleMeta } from "../../models";
 
-export const EN_US: LocaleBundle = {
-    meta,
-    resources: {
-        features
-    }
+export const meta: LocaleMeta = {
+    code: "en-US",
+    flag: "us",
+    name: "English (United States)",
+    namespaces: [
+        "groups"
+    ]
 };

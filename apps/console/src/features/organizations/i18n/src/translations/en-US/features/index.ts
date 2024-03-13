@@ -16,13 +16,5 @@
  * under the License.
  */
 
-import { meta } from "./meta";
-import * as features from "./features";
-import { LocaleBundle } from "../../models";
+export * from "./organizations";
 
-export const EN_US: LocaleBundle = {
-    meta,
-    resources: {
-        features
-    }
-};

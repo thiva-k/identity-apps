@@ -18,6 +18,8 @@
         "compile": "pnpm tsc -p tsconfig.json --incremental",
         "compile:i18n": "pnpm tsc -p src/extensions/i18n",
         "compile:i18n:organizations": "pnpm tsc -p src/features/organizations/i18n",
+        "compile:i18n:groups": "pnpm tsc -p src/features/groups/i18n",
+        "compile:i18n:connections": "pnpm tsc -p src/features/connections/i18n",
         "clean:i18n:dist": "rimraf src/extensions/i18n/dist",
         "copy:themes:src": "node scripts/copy-themes-to-source.js",
         "copy:branding:i18n:defaults": "node scripts/populate-branding-i18n-defaults.js",

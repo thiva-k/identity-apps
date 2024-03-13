@@ -16,6 +16,19 @@
  * under the License.
  */
 
-export * from "./common";
-export * from "./organizations";
+import { I18nModuleException } from "./i18n-module-exception";
 
+/**
+ * Exception class to handle i18n language change exceptions.
+ */
+export class LanguageChangeException extends I18nModuleException {
+
+    /**
+     * Constructor.
+     * @param {string} language - Attempted language.
+     * @param {string | Record<string, unknown>} stack - Stack trace.
+     */
+    constructor(language: string, stack?: string | Record<string, unknown>) {
+        super(`Failed to change the language to ${ language }`, stack);
+    }
+}
