@@ -689,7 +689,7 @@ const getThemeConfigs = (theme: string) => {
 };
 
 const getI18nConfigs = () => {
-    const I18N_DIR: string = path.resolve(__dirname, "i18n" );
+    const I18N_DIR: string = path.resolve(__dirname,"src","features", "i18n" );
 
     let metaFiles: string[] = null;
 

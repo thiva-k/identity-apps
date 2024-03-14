@@ -11,7 +11,7 @@ const TRANSLATIONS_FOLDER_NAME = "translations";
 const featureFolders = [ "groups","connections", "organizations"]; // Add more feature folders as needed
 const dist = path.join(__dirname, "..", "src", "features");
 const BASE_COMPILE_COMMAND = "pnpm compile:i18n:";
-const outputPath = path.join(__dirname, "..", "i18n");
+const outputPath = path.join(__dirname, "..","src","features", "i18n");
 
 // Delete existing js dist folders for each feature 
 featureFolders.forEach(feature => {
@@ -22,9 +22,9 @@ featureFolders.forEach(feature => {
     }})
 
 // Delete existing i18n folder
-if (fs.existsSync(path.join(__dirname, "..", "i18n"))) {
+if (fs.existsSync(path.join(__dirname, "..","src","features" ,"i18n"))) {
     log(`\nDeleting existing "i18n" folder`);
-    fs.removeSync(path.join(__dirname, "..", "i18n"));
+    fs.removeSync(path.join(__dirname, "..","src","features", "i18n"));
 }
 
 // Construct the full js compile command by concatenating the feature with the base command
