@@ -439,12 +439,12 @@ const ConnectionsPage: FC<ConnectionsPropsInterface> = (props: ConnectionsPropsI
             }
             title={
                 identityProviderConfig.useNewConnectionsView
-                    ? t("console:develop.pages.authenticationProvider.title")
+                    ? t("connections:develop.pages.authenticationProvider.title")
                     : t("console:develop.pages.idp.title")
             }
             description={
                 (<>
-                    { t("console:develop.pages.authenticationProvider.subTitle") }
+                    { t("connections:develop.pages.authenticationProvider.subTitle") }
                     <DocumentationLink link={ getLink("develop.connections.learnMore") }>
                         { t("common:learnMore") }
                     </DocumentationLink>

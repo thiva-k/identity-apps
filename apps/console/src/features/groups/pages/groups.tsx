@@ -299,9 +299,9 @@ const GroupsPage: FunctionComponent<any> = (): ReactElement => {
                     </Show>
                 )
             }
-            title={ t("console:manage.pages.groups.title") }
-            pageTitle={ t("console:manage.pages.groups.title") }
-            description={ t("console:manage.pages.groups.subTitle") }
+            title={ t("groups:manage.pages.groups.title") }
+            pageTitle={ t("groups:manage.pages.groups.title") }
+            description={ t("groups:manage.pages.groups.subTitle") }
         >
             <ListLayout
                 advancedSearch={ (

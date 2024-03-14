@@ -324,6 +324,8 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
             Config.getI18nConfig().resourcePath
         ) }/${ metaFileName }`;
 
+        console.log("metaPath", metaPath)
+
 
         // Fetch the meta file to get the supported languages and paths.
         axios

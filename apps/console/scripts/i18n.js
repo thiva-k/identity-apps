@@ -8,17 +8,35 @@ const log = console.log;
 const OUTPUT_DIR_NAME = "bundle";
 const META_FILE_NAME = "meta.{hash}.json";
 const TRANSLATIONS_FOLDER_NAME = "translations";
-
+const featureFolders = [ "groups","connections", "organizations"]; // Add more feature folders as needed
 const dist = path.join(__dirname, "..", "src", "features");
-execSync("pnpm compile:i18n:groups", { cwd: path.join(__dirname, "..") });
-execSync("pnpm compile:i18n:organizations", { cwd: path.join(__dirname, "..") });
-execSync("pnpm compile:i18n:connections", { cwd: path.join(__dirname, "..") });
-
-const featureFolders = ["organizations", "groups","connections"]; // Add more feature folders as needed
-
-log("Running @wso2is/i18n module's post build script.");
-
+const BASE_COMPILE_COMMAND = "pnpm compile:i18n:";
 const outputPath = path.join(__dirname, "..", "i18n");
+
+// Delete existing js dist folders for each feature 
+featureFolders.forEach(feature => {
+    const featureFolderDist = path.join(dist, feature, "i18n", "dist");
+    if (fs.existsSync(featureFolderDist)) {
+        log(`\nDeleting existing "dist" folder for feature: ${feature}`);
+        fs.removeSync(featureFolderDist);
+    }})
+
+// Delete existing i18n folder
+if (fs.existsSync(path.join(__dirname, "..", "i18n"))) {
+    log(`\nDeleting existing "i18n" folder`);
+    fs.removeSync(path.join(__dirname, "..", "i18n"));
+}
+
+// Construct the full js compile command by concatenating the feature with the base command
+featureFolders.forEach(feature => {
+    
+    const compileCommand = `${BASE_COMPILE_COMMAND}${feature}`;
+
+    log(`\nCompiling i18n for feature: ${feature}`);
+    execSync(compileCommand, { cwd: path.join(__dirname, "..") });
+});
+
+
 let metaFileContent = {};
 
 featureFolders.forEach(feature => {
