@@ -86,11 +86,11 @@ featureFolders.forEach(feature => {
             }
         }
 
-        metaFileContent[value.meta.code] = metaFileContent[value.meta.code] || {  };
+        metaFileContent[value.meta.code] = metaFileContent[value.meta.code] || {};
         metaFileContent[value.meta.code].code = value.meta.code;
         metaFileContent[value.meta.code].flag = value.meta.flag;
         metaFileContent[value.meta.code].name = value.meta.name;
-        metaFileContent[value.meta.code].paths ? metaFileContent[value.meta.code].paths :{}
+        metaFileContent[value.meta.code].paths = metaFileContent[value.meta.code].paths || {}
         metaFileContent[value.meta.code].paths = { ...metaFileContent[value.meta.code].paths, ...resourcePaths };
         metaFileContent[value.meta.code].namespaces = metaFileContent[value.meta.code].namespaces || [];
         metaFileContent[value.meta.code].namespaces = [
