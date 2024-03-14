@@ -22,7 +22,6 @@ const path = require("path");
 const fs = require("fs-extra");
 
 function createFile(filePath, data, options, checkIfExists) {
-
     if (!checkIfExists) {
         fs.writeFileSync(filePath, data, options);
 
@@ -50,7 +49,7 @@ execSync("pnpm copy:branding:i18n:defaults");
 
 // Path of the build directory.
 const distDirectory = path.join(__dirname, "..", "src", "extensions", "i18n", "dist", "src");
-const i18nNodeModulesDir = path.join(__dirname,"..", "node_modules", "@wso2is", "i18n", "dist", "bundle");
+const i18nNodeModulesDir = path.join(__dirname, "..", "node_modules", "@wso2is", "i18n", "dist", "bundle");
 
 log("Compiling i18N extensions...");
 
@@ -64,7 +63,7 @@ log("Completed compiling i18n extensions.");
 const i18NTempExtensionsPath = path.join(distDirectory, "resources");
 const i18nExtensions = require(i18NTempExtensionsPath);
 const files = fs.readdirSync(i18nNodeModulesDir);
-const metaJsonFileName = files.filter(file => file.startsWith("meta"))[ 0 ];
+const metaJsonFileName = files.filter(file => file.startsWith("meta"))[0];
 const metaFilePath = path.join(i18nNodeModulesDir, metaJsonFileName);
 const meta = require(metaFilePath);
 
@@ -78,28 +77,34 @@ for (const value of Object.values(i18nExtensions)) {
     }
 
     const fileContent = JSON.stringify(value.extensions, undefined, 4);
-    const hash = crypto.createHash("sha1").update(JSON.stringify(fileContent)).digest("hex");
-    const fileName = `extensions.${ hash.substr(0, 8) }.json`;
+    const hash = crypto
+        .createHash("sha1")
+        .update(JSON.stringify(fileContent))
+        .digest("hex");
+    const fileName = `extensions.${hash.substr(0, 8)}.json`;
     const filePath = path.join(i18nNodeModulesDir, value.name, "portals", fileName);
 
     createFile(filePath, fileContent, null, true);
 
     // Update the name of the extensions file in the meta.json file.
-    meta[ value.name ].paths.extensions = meta[ value.name ].paths.extensions.replace("{hash}", hash.substr(0, 8));
+    meta[value.name].paths.extensions = meta[value.name].paths.extensions.replace("{hash}", hash.substr(0, 8));
 
     // Capture existing namespaces.
     namespaces.push(value.name);
 }
 
 // Remove non-existent namespaces from the meta.json file.
-Object.keys(meta).forEach((key) => {
+Object.keys(meta).forEach(key => {
     if (!namespaces.includes(key)) {
-        delete meta[ key ].paths.extensions;
+        delete meta[key].paths.extensions;
     }
 });
 
 // Regenerate the meta.json file hash.
-const hash = crypto.createHash("sha1").update(JSON.stringify(meta)).digest("hex");
+const hash = crypto
+    .createHash("sha1")
+    .update(JSON.stringify(meta))
+    .digest("hex");
 const newMetaFileName = "meta." + hash.substr(0, 8) + ".json";
 const tmpDir = path.join(__dirname, "..", "src", "extensions", "i18n", "tmp");
 
@@ -114,14 +119,25 @@ createFile(newMetaFilePath, JSON.stringify(meta, undefined, 4));
 log("Cleaning the tmp directory...");
 execSync("pnpm clean:i18n:dist");
 
+execSync("node scripts/i18n.js");
+
 // Path of the build directory.
-const layoutsDirectory = path.join(__dirname, "..", "..", "..", "identity-apps-core", "components", "login-portal-layouts", "layouts");
+const layoutsDirectory = path.join(
+    __dirname,
+    "..",
+    "..",
+    "..",
+    "identity-apps-core",
+    "components",
+    "login-portal-layouts",
+    "layouts"
+);
 const layoutsSrc = path.join(__dirname, "..", "src", "login-portal-layouts");
 
 // Remove the src directory if it exists.
 if (fs.existsSync(layoutsSrc)) {
-  log("Removing existing layouts directory in src");
-  fs.removeSync(layoutsSrc);
+    log("Removing existing layouts directory in src");
+    fs.removeSync(layoutsSrc);
 }
 
 // Copy the layouts directory to the src directory.
