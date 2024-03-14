@@ -32,9 +32,7 @@
         },
         "build-base": {
             "executor": "@nrwl/web:webpack",
-            "outputs": [
-                "{options.outputPath}"
-            ],
+            "outputs": ["{options.outputPath}"],
             "defaultConfiguration": "production",
             "options": {
                 "compiler": "babel",
@@ -62,12 +60,12 @@
                     },
                     {
                         "glob": "**/*",
-                        "input": "modules/i18n/dist/bundle",
+                        "input": "apps/console/i18n",
                         "output": "resources/i18n"
                     },
                     {
                         "glob": "meta.*.json",
-                        "input": "apps/console/src/extensions/i18n/tmp",
+                        "input": "apps/console/i18n",
                         "output": "resources/i18n"
                     },
                     {
@@ -179,10 +177,7 @@
         "serve": {
             "executor": "@nrwl/workspace:run-commands",
             "options": {
-                "commands": [
-                    "pnpm nx run console:serve-prepare",
-                    "pnpm nx run console:serve-base"
-                ],
+                "commands": ["pnpm nx run console:serve-prepare", "pnpm nx run console:serve-base"],
                 "cwd": "apps/console",
                 "parallel": false
             }
