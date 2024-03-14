@@ -26,8 +26,8 @@ import { getEmptyPlaceholderIllustrations } from "../../../../core";
 
 // Component constants.
 
-const AUTH_PROV_PLACEHOLDER_EMPTY_I18N_KEY = "console:develop.features.authenticationProvider" +
-    ".placeHolders.emptyCertificateList";
+const AUTH_PROV_PLACEHOLDER_EMPTY_I18N_KEY =
+    "idp:develop.features.authenticationProvider" + ".placeHolders.emptyCertificateList";
 
 /**
  * Props interface of {@link EmptyCertificatesPlaceholder}
@@ -46,7 +46,6 @@ export interface EmptyCertificatesPlaceholderProps extends IdentifiableComponent
 export const EmptyCertificatesPlaceholder: FC<EmptyCertificatesPlaceholderProps> = (
     props: EmptyCertificatesPlaceholderProps
 ): ReactElement => {
-
     const { ["data-componentid"]: testId, onAddCertificateClicked } = props;
 
     const { t } = useTranslation();
@@ -54,29 +53,29 @@ export const EmptyCertificatesPlaceholder: FC<EmptyCertificatesPlaceholderProps>
     return (
         <Segment>
             <EmptyPlaceholder
-                title={ t(`${ AUTH_PROV_PLACEHOLDER_EMPTY_I18N_KEY }.title`) }
-                image={ getEmptyPlaceholderIllustrations().emptyList }
-                subtitle={ [
-                    t(`${ AUTH_PROV_PLACEHOLDER_EMPTY_I18N_KEY }.subtitles.0`),
-                    t(`${ AUTH_PROV_PLACEHOLDER_EMPTY_I18N_KEY }.subtitles.1`)
-                ] }
+                title={t(`${AUTH_PROV_PLACEHOLDER_EMPTY_I18N_KEY}.title`)}
+                image={getEmptyPlaceholderIllustrations().emptyList}
+                subtitle={[
+                    t(`${AUTH_PROV_PLACEHOLDER_EMPTY_I18N_KEY}.subtitles.0`),
+                    t(`${AUTH_PROV_PLACEHOLDER_EMPTY_I18N_KEY}.subtitles.1`)
+                ]}
                 imageSize="tiny"
-                action={ (
-                    <Show when={ AccessControlConstants.IDP_EDIT }>
+                action={
+                    <Show when={AccessControlConstants.IDP_EDIT}>
                         <PrimaryButton
-                            onClick={ onAddCertificateClicked }
-                            data-testid={ `${ testId }-emptyPlaceholder-add-certificate-button` }
-                            type="button">
-                            <Icon name="add"/>
-                            { t("console:develop.features.authenticationProvider.buttons.addCertificate") }
+                            onClick={onAddCertificateClicked}
+                            data-testid={`${testId}-emptyPlaceholder-add-certificate-button`}
+                            type="button"
+                        >
+                            <Icon name="add" />
+                            {t("idp:develop.features.authenticationProvider.buttons.addCertificate")}
                         </PrimaryButton>
                     </Show>
-                ) }
-                data-testid={ `${ testId }-empty-placeholder` }
+                }
+                data-testid={`${testId}-empty-placeholder`}
             />
         </Segment>
     );
-
 };
 
 /**

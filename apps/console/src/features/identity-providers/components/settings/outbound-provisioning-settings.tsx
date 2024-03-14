@@ -98,41 +98,30 @@ interface ProvisioningSettingsPropsInterface extends TestableComponentInterface 
 export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSettingsPropsInterface> = (
     props: ProvisioningSettingsPropsInterface
 ): ReactElement => {
-
-    const {
-        identityProvider,
-        outboundConnectors,
-        isLoading,
-        onUpdate,
-        isReadOnly,
-        [ "data-testid" ]: testId
-    } = props;
+    const { identityProvider, outboundConnectors, isLoading, onUpdate, isReadOnly, ["data-testid"]: testId } = props;
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [
-        availableConnectors,
-        setAvailableConnectors
-    ] = useState<OutboundProvisioningConnectorWithMetaInterface[]>([]);
-    const [
-        deletingConnector,
-        setDeletingConnector
-    ] = useState<OutboundProvisioningConnectorWithMetaInterface>(undefined);
-    const [ accordionActiveIndexes, setAccordionActiveIndexes ] = useState<number[]>([]);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [availableConnectors, setAvailableConnectors] = useState<OutboundProvisioningConnectorWithMetaInterface[]>(
+        []
+    );
+    const [deletingConnector, setDeletingConnector] = useState<OutboundProvisioningConnectorWithMetaInterface>(
+        undefined
+    );
+    const [accordionActiveIndexes, setAccordionActiveIndexes] = useState<number[]>([]);
 
     /**
      * Fetch available connectors for the identity provider.
      */
     useEffect(() => {
         setAvailableConnectors([]);
-        fetchConnectors()
-            .then((response: OutboundProvisioningConnectorWithMetaInterface[]) => {
-                setAvailableConnectors(response);
-            });
-    }, [ identityProvider ]);
+        fetchConnectors().then((response: OutboundProvisioningConnectorWithMetaInterface[]) => {
+            setAvailableConnectors(response);
+        });
+    }, [identityProvider]);
 
     /**
      * Fetch data and metadata of a given connector id and return a promise.
@@ -157,25 +146,37 @@ export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSetting
                 })
                 .catch((error: AxiosError) => {
                     if (error.response && error.response.data && error.response.data.description) {
-                        dispatch(addAlert({
-                            description: t("console:develop.features.authenticationProvider.notifications." +
-                                "getOutboundProvisioningConnector.error.description",
-                            { description: error.response.data.description } ),
-                            level: AlertLevels.ERROR,
-                            message: t("console:develop.features.authenticationProvider.notifications." +
-                                "getOutboundProvisioningConnector.error.message")
-                        }));
+                        dispatch(
+                            addAlert({
+                                description: t(
+                                    "idp:develop.features.authenticationProvider.notifications." +
+                                        "getOutboundProvisioningConnector.error.description",
+                                    { description: error.response.data.description }
+                                ),
+                                level: AlertLevels.ERROR,
+                                message: t(
+                                    "idp:develop.features.authenticationProvider.notifications." +
+                                        "getOutboundProvisioningConnector.error.message"
+                                )
+                            })
+                        );
 
                         return;
                     }
 
-                    dispatch(addAlert({
-                        description: t("console:develop.features.authenticationProvider.notifications." +
-                            "getOutboundProvisioningConnector.genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider.notifications." +
-                            "getOutboundProvisioningConnector.genericError.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "idp:develop.features.authenticationProvider.notifications." +
+                                    "getOutboundProvisioningConnector.genericError.description"
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "idp:develop.features.authenticationProvider.notifications." +
+                                    "getOutboundProvisioningConnector.genericError.message"
+                            )
+                        })
+                    );
                 });
         });
     };
@@ -204,15 +205,21 @@ export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSetting
     const handleConnectorConfigFormSubmit = (values: OutboundProvisioningConnectorInterface): void => {
         updateOutboundProvisioningConnector(identityProvider.id, values)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateOutboundProvisioningConnector." +
-                        "success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateOutboundProvisioningConnector." +
-                        "success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider." +
+                                "notifications.updateOutboundProvisioningConnector." +
+                                "success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:develop.features.authenticationProvider." +
+                                "notifications.updateOutboundProvisioningConnector." +
+                                "success.message"
+                        )
+                    })
+                );
 
                 onUpdate(identityProvider.id);
             })
@@ -225,7 +232,6 @@ export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSetting
      * Handles the outbound provisioning connector deletion.
      */
     const handleDeleteConnector = (deletingConnector: OutboundProvisioningConnectorWithMetaInterface): void => {
-
         const EMPTY_STRING: string = "";
         const connectorList: FederatedAuthenticatorInterface[] = [];
 
@@ -245,40 +251,56 @@ export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSetting
 
         updateOutboundProvisioningConnectors(data, identityProvider.id)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications." +
-                        "updateOutboundProvisioningConnectors" +
-                        ".success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateOutboundProvisioningConnectors" +
-                        ".success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider.notifications." +
+                                "updateOutboundProvisioningConnectors" +
+                                ".success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:develop.features.authenticationProvider." +
+                                "notifications.updateOutboundProvisioningConnectors" +
+                                ".success.message"
+                        )
+                    })
+                );
 
                 onUpdate(identityProvider.id);
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: error.response.data.description,
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider.notifications." +
-                            "updateOutboundProvisioningConnectors" +
-                            ".error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: error.response.data.description,
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "idp:develop.features.authenticationProvider.notifications." +
+                                    "updateOutboundProvisioningConnectors" +
+                                    ".error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications." +
-                        "updateOutboundProvisioningConnectors" +
-                        ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateOutboundProvisioningConnectors" +
-                        ".genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider.notifications." +
+                                "updateOutboundProvisioningConnectors" +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "idp:develop.features.authenticationProvider." +
+                                "notifications.updateOutboundProvisioningConnectors" +
+                                ".genericError.message"
+                        )
+                    })
+                );
             });
 
         setDeletingConnector(undefined);
@@ -297,7 +319,8 @@ export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSetting
         }
 
         const deletingConnector: OutboundProvisioningConnectorWithMetaInterface = availableConnectors.find(
-            (connector: OutboundProvisioningConnectorWithMetaInterface) => connector.id == id);
+            (connector: OutboundProvisioningConnectorWithMetaInterface) => connector.id == id
+        );
 
         if (!deletingConnector) {
             return;
@@ -316,7 +339,8 @@ export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSetting
      */
     const handleConnectorEnableToggle = (e: FormEvent<HTMLInputElement>, data: CheckboxProps, id: string): void => {
         const connector: FederatedAuthenticatorInterface = availableConnectors.find(
-            (connector: OutboundProvisioningConnectorWithMetaInterface) => (connector.id === id)).data;
+            (connector: OutboundProvisioningConnectorWithMetaInterface) => connector.id === id
+        ).data;
 
         connector.isEnabled = data.checked;
         handleConnectorConfigFormSubmit(connector);
@@ -329,9 +353,10 @@ export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSetting
             // Toggle Switch which enables/disables the connector state.
             {
                 defaultChecked: connector.data?.isEnabled,
-                label: t(connector.data?.isEnabled ?
-                    "console:develop.features.authenticationProvider.forms.outboundConnectorAccordion.enable.0" :
-                    "console:develop.features.authenticationProvider.forms.outboundConnectorAccordion.enable.1"
+                label: t(
+                    connector.data?.isEnabled
+                        ? "idp:develop.features.authenticationProvider.forms.outboundConnectorAccordion.enable.0"
+                        : "idp:develop.features.authenticationProvider.forms.outboundConnectorAccordion.enable.1"
                 ),
                 onChange: handleConnectorEnableToggle,
                 type: "toggle"
@@ -350,7 +375,7 @@ export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSetting
             return;
         }
 
-        const newIndexes: number[] = [ ...accordionActiveIndexes ];
+        const newIndexes: number[] = [...accordionActiveIndexes];
 
         if (newIndexes.includes(data.accordionIndex)) {
             const removingIndex: number = newIndexes.indexOf(data.accordionIndex);
@@ -366,203 +391,190 @@ export const OutboundProvisioningSettings: FunctionComponent<ProvisioningSetting
     return (
         <EmphasizedSegment>
             <Grid.Row>
-                <Grid.Column width={ 8 }>
+                <Grid.Column width={8}>
                     <Heading as="h4">OutBound Provisioning Connectors</Heading>
                 </Grid.Column>
             </Grid.Row>
 
-            {
-                outboundConnectors.connectors.length > 0 ? (
-                    (!isLoading)
-                        ? (
-                            <div className="default-provisioning-connector-section">
-                                <Grid>
-                                    <Grid.Row>
-                                        <Grid.Column>
-                                            <Show when={ AccessControlConstants.IDP_EDIT }>
-                                                <PrimaryButton
-                                                    floated="right"
-                                                    onClick={ () => setShowWizard(true) }
-                                                    data-testid={ `${ testId }-add-connector-button` }
-                                                >
-                                                    <Icon name="add"/>
-                                                    { t("console:develop.features.authenticationProvider." +
-                                                            "buttons.addConnector") }
-                                                </PrimaryButton>
-                                            </Show>
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                    <Grid.Row>
-                                        <Grid.Column>
-                                            {
-                                                availableConnectors.map((
-                                                    connector: OutboundProvisioningConnectorWithMetaInterface,
-                                                    index: number
-                                                ) => {
-                                                    return (
-                                                        <AuthenticatorAccordion
-                                                            key={ index }
-                                                            globalActions = {
-                                                                [
-                                                                    {
-                                                                        disabled: connector.data?.isEnabled,
-                                                                        icon: "trash alternate",
-                                                                        onClick: handleAuthenticatorDeleteOnClick,
-                                                                        type: "icon"
-                                                                    }
-                                                                ]
-                                                            }
-                                                            authenticators={
-                                                                [
-                                                                    {
-                                                                        actions: createAccordionActions(connector),
-                                                                        content: (
-                                                                            <OutboundProvisioningConnectorFormFactory
-                                                                                mode={
-                                                                                    AuthenticatorSettingsFormModes.EDIT
-                                                                                }
-                                                                                metadata={ connector.meta }
-                                                                                initialValues={ connector.data }
-                                                                                onSubmit={
-                                                                                    handleConnectorConfigFormSubmit }
-                                                                                type={ connector.meta?.name }
-                                                                                data-testid={ `${testId}-${
-                                                                                    connector.meta?.name }-content` }
-                                                                                isReadOnly={ isReadOnly }
-                                                                            />
-                                                                        ),
-                                                                        id: connector?.id,
-                                                                        title: connector?.meta?.displayName
-                                                                    }
-                                                                ]
-                                                            }
-                                                            data-testid={ `${ testId }-accordion` }
-                                                            accordionActiveIndexes = { accordionActiveIndexes }
-                                                            accordionIndex = { index }
-                                                            handleAccordionOnClick = { handleAccordionOnClick }
-                                                        />
-                                                    );
-                                                })
-                                            }
-                                        </Grid.Column>
-                                    </Grid.Row>
-                                </Grid>
-                            </div>
-                        )
-                        : <ContentLoader/>
+            {outboundConnectors.connectors.length > 0 ? (
+                !isLoading ? (
+                    <div className="default-provisioning-connector-section">
+                        <Grid>
+                            <Grid.Row>
+                                <Grid.Column>
+                                    <Show when={AccessControlConstants.IDP_EDIT}>
+                                        <PrimaryButton
+                                            floated="right"
+                                            onClick={() => setShowWizard(true)}
+                                            data-testid={`${testId}-add-connector-button`}
+                                        >
+                                            <Icon name="add" />
+                                            {t("idp:develop.features.authenticationProvider." + "buttons.addConnector")}
+                                        </PrimaryButton>
+                                    </Show>
+                                </Grid.Column>
+                            </Grid.Row>
+                            <Grid.Row>
+                                <Grid.Column>
+                                    {availableConnectors.map(
+                                        (connector: OutboundProvisioningConnectorWithMetaInterface, index: number) => {
+                                            return (
+                                                <AuthenticatorAccordion
+                                                    key={index}
+                                                    globalActions={[
+                                                        {
+                                                            disabled: connector.data?.isEnabled,
+                                                            icon: "trash alternate",
+                                                            onClick: handleAuthenticatorDeleteOnClick,
+                                                            type: "icon"
+                                                        }
+                                                    ]}
+                                                    authenticators={[
+                                                        {
+                                                            actions: createAccordionActions(connector),
+                                                            content: (
+                                                                <OutboundProvisioningConnectorFormFactory
+                                                                    mode={AuthenticatorSettingsFormModes.EDIT}
+                                                                    metadata={connector.meta}
+                                                                    initialValues={connector.data}
+                                                                    onSubmit={handleConnectorConfigFormSubmit}
+                                                                    type={connector.meta?.name}
+                                                                    data-testid={`${testId}-${connector.meta?.name}-content`}
+                                                                    isReadOnly={isReadOnly}
+                                                                />
+                                                            ),
+                                                            id: connector?.id,
+                                                            title: connector?.meta?.displayName
+                                                        }
+                                                    ]}
+                                                    data-testid={`${testId}-accordion`}
+                                                    accordionActiveIndexes={accordionActiveIndexes}
+                                                    accordionIndex={index}
+                                                    handleAccordionOnClick={handleAccordionOnClick}
+                                                />
+                                            );
+                                        }
+                                    )}
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
+                    </div>
                 ) : (
-                    <Grid>
-                        <Grid.Row>
-                            <Grid.Column width={ 8 }>
-                                <Divider hidden />
-                                <Segment>
-                                    <EmptyPlaceholder
-                                        title={ t("console:develop.features.authenticationProvider." +
-                                                "placeHolders.emptyConnectorList." +
-                                            "title") }
-                                        image={ getEmptyPlaceholderIllustrations().emptyList }
-                                        subtitle={ [
-                                            t("console:develop.features.authenticationProvider." +
-                                                "placeHolders.emptyConnectorList." +
-                                                "subtitles.0"),
-                                            t("console:develop.features.authenticationProvider." +
-                                                "placeHolders.emptyConnectorList." +
-                                                "subtitles.1")
-                                        ] }
-                                        imageSize="tiny"
-                                        action={ (
-                                            <Show when={ AccessControlConstants.IDP_EDIT }>
-                                                <PrimaryButton
-                                                    onClick={ () => setShowWizard(true) }
-                                                    data-testid={ `${ testId }-add-connector-button` }>
-                                                    <Icon name="add"/>
-                                                    { t("console:develop.features.authenticationProvider." +
-                                                            "buttons.addConnector") }
-                                                </PrimaryButton>
-                                            </Show>
-                                        ) }
-                                        data-testid={ `${ testId }-empty-placeholder` }
-                                    />
-                                </Segment>
-                                <Divider hidden />
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
+                    <ContentLoader />
                 )
-            }
-            {
-                deletingConnector && (
-                    <ConfirmationModal
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertion={ deletingConnector?.meta.name }
-                        assertionHint={ (
-                            <p>
-                                <Trans
-                                    i18nKey={ "console:develop.features.authenticationProvider."+
-                                    "confirmations.deleteConnector.assertionHint" }
-                                    tOptions={ { name: deletingConnector?.meta.name } }
-                                >
-                                    Please type <strong>{ deletingConnector?.meta.name }</strong> to confirm.
-                                </Trans>
-                            </p>
-                        ) }
-                        assertionType="input"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                        onPrimaryActionClick={
-                            (): void => handleDeleteConnector(deletingConnector)
-                        }
-                        data-testid={ `${ testId }-authenticator-delete-confirmation` }
-                        closeOnDimmerClick={ false }
+            ) : (
+                <Grid>
+                    <Grid.Row>
+                        <Grid.Column width={8}>
+                            <Divider hidden />
+                            <Segment>
+                                <EmptyPlaceholder
+                                    title={t(
+                                        "idp:develop.features.authenticationProvider." +
+                                            "placeHolders.emptyConnectorList." +
+                                            "title"
+                                    )}
+                                    image={getEmptyPlaceholderIllustrations().emptyList}
+                                    subtitle={[
+                                        t(
+                                            "idp:develop.features.authenticationProvider." +
+                                                "placeHolders.emptyConnectorList." +
+                                                "subtitles.0"
+                                        ),
+                                        t(
+                                            "idp:develop.features.authenticationProvider." +
+                                                "placeHolders.emptyConnectorList." +
+                                                "subtitles.1"
+                                        )
+                                    ]}
+                                    imageSize="tiny"
+                                    action={
+                                        <Show when={AccessControlConstants.IDP_EDIT}>
+                                            <PrimaryButton
+                                                onClick={() => setShowWizard(true)}
+                                                data-testid={`${testId}-add-connector-button`}
+                                            >
+                                                <Icon name="add" />
+                                                {t(
+                                                    "idp:develop.features.authenticationProvider." +
+                                                        "buttons.addConnector"
+                                                )}
+                                            </PrimaryButton>
+                                        </Show>
+                                    }
+                                    data-testid={`${testId}-empty-placeholder`}
+                                />
+                            </Segment>
+                            <Divider hidden />
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            )}
+            {deletingConnector && (
+                <ConfirmationModal
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertion={deletingConnector?.meta.name}
+                    assertionHint={
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "idp:develop.features.authenticationProvider." +
+                                    "confirmations.deleteConnector.assertionHint"
+                                }
+                                tOptions={{ name: deletingConnector?.meta.name }}
+                            >
+                                Please type <strong>{deletingConnector?.meta.name}</strong> to confirm.
+                            </Trans>
+                        </p>
+                    }
+                    assertionType="input"
+                    primaryAction={t("idp:confirm")}
+                    secondaryAction={t("idp:cancel")}
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => handleDeleteConnector(deletingConnector)}
+                    data-testid={`${testId}-authenticator-delete-confirmation`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-authenticator-delete-confirmation`}>
+                        {t("idp:develop.features.authenticationProvider.confirmations." + "deleteConnector.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        attached
+                        negative
+                        data-testid={`${testId}-authenticator-delete-confirmation`}
                     >
-                        <ConfirmationModal.Header data-testid={ `${ testId }-authenticator-delete-confirmation` }>
-                            { t("console:develop.features.authenticationProvider.confirmations." +
-                                "deleteConnector.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${ testId }-authenticator-delete-confirmation` }>
-                            { t("console:develop.features.authenticationProvider.confirmations." +
-                                "deleteConnector.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-testid={ `${ testId }-authenticator-delete-confirmation` }>
-                            { t("console:develop.features.authenticationProvider.confirmations." +
-                                "deleteConnector.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
-            {
-                showWizard && (
-                    <OutboundProvisioningConnectorCreateWizard
-                        closeWizard={ () => setShowWizard(false) }
-                        updateIdentityProvider={ onUpdate }
-                        identityProvider={ identityProvider }
-                        onUpdate={ onUpdate }
-                        data-testid={ `${ testId }-connector-create-wizard` }
-                    />
-                )
-            }
+                        {t("idp:develop.features.authenticationProvider.confirmations." + "deleteConnector.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-authenticator-delete-confirmation`}>
+                        {t("idp:develop.features.authenticationProvider.confirmations." + "deleteConnector.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
+            {showWizard && (
+                <OutboundProvisioningConnectorCreateWizard
+                    closeWizard={() => setShowWizard(false)}
+                    updateIdentityProvider={onUpdate}
+                    identityProvider={identityProvider}
+                    onUpdate={onUpdate}
+                    data-testid={`${testId}-connector-create-wizard`}
+                />
+            )}
 
-            {
-                (identityProvider?.roles && !isLoading)
-                    ? (
-                        <RootOnlyComponent>
-                            <OutboundProvisioningRoles
-                                idpRoles={ identityProvider?.roles }
-                                idpId={ identityProvider?.id }
-                                data-testid={ `${ testId }-roles` }
-                                isReadOnly={ isReadOnly }
-                                onUpdate={ onUpdate }
-                            />
-                        </RootOnlyComponent>
-                    )
-                    : <ContentLoader/>
-            }
+            {identityProvider?.roles && !isLoading ? (
+                <RootOnlyComponent>
+                    <OutboundProvisioningRoles
+                        idpRoles={identityProvider?.roles}
+                        idpId={identityProvider?.id}
+                        data-testid={`${testId}-roles`}
+                        isReadOnly={isReadOnly}
+                        onUpdate={onUpdate}
+                    />
+                </RootOnlyComponent>
+            ) : (
+                <ContentLoader />
+            )}
         </EmphasizedSegment>
     );
 };

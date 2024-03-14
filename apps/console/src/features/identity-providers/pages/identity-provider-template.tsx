@@ -74,11 +74,7 @@ type IdentityProviderTemplateSelectPagePropsInterface = TestableComponentInterfa
 const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemplateSelectPagePropsInterface> = (
     props: IdentityProviderTemplateSelectPagePropsInterface
 ): ReactElement => {
-
-    const {
-        location,
-        [ "data-testid" ]: testId
-    } = props;
+    const { location, ["data-testid"]: testId } = props;
 
     const urlSearchParams: URLSearchParams = new URLSearchParams(location.search);
 
@@ -89,28 +85,25 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
 
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
     const availableAuthenticators: FederatedAuthenticatorListItemInterface[] = useSelector(
-        (state: AppState) => state.identityProvider.meta.authenticators);
+        (state: AppState) => state.identityProvider.meta.authenticators
+    );
     const identityProviderTemplates: IdentityProviderTemplateItemInterface[] = useSelector(
-        (state: AppState) => state.identityProvider?.groupedTemplates);
+        (state: AppState) => state.identityProvider?.groupedTemplates
+    );
 
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ templateType, setTemplateType ] = useState<string>(undefined);
-    const [
-        originalCategorizedTemplates,
-        setOriginalCategorizedTemplates
-    ] = useState<IdentityProviderTemplateCategoryInterface[]>([]);
-    const [
-        filteredCategorizedTemplates,
-        setFilteredCategorizedTemplates
-    ] = useState<IdentityProviderTemplateCategoryInterface[]>([]);
-    const [
-        isIDPTemplateRequestLoading,
-        setIDPTemplateRequestLoadingStatus
-    ] = useState<boolean>(false);
-    const [ selectedTemplate, setSelectedTemplate ] = useState<IdentityProviderTemplateInterface>(undefined);
-    const [ filterTags, setFilterTags ] = useState<string[]>([]);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
-    const [ useNewConnectionsView, setUseNewConnectionsView ] = useState<boolean>(undefined);
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [templateType, setTemplateType] = useState<string>(undefined);
+    const [originalCategorizedTemplates, setOriginalCategorizedTemplates] = useState<
+        IdentityProviderTemplateCategoryInterface[]
+    >([]);
+    const [filteredCategorizedTemplates, setFilteredCategorizedTemplates] = useState<
+        IdentityProviderTemplateCategoryInterface[]
+    >([]);
+    const [isIDPTemplateRequestLoading, setIDPTemplateRequestLoadingStatus] = useState<boolean>(false);
+    const [selectedTemplate, setSelectedTemplate] = useState<IdentityProviderTemplateInterface>(undefined);
+    const [filterTags, setFilterTags] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [useNewConnectionsView, setUseNewConnectionsView] = useState<boolean>(undefined);
 
     const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
@@ -118,30 +111,27 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
      * Checks if the listing view defined in the config is the new connections view.
      */
     useEffect(() => {
-
         if (useNewConnectionsView !== undefined) {
             return;
         }
 
         setUseNewConnectionsView(identityProviderConfig.useNewConnectionsView);
-    }, [ identityProviderConfig ]);
+    }, [identityProviderConfig]);
 
     /**
      * Update the internal filtered templates state when the original changes.
      */
     useEffect(() => {
-
         if (!originalCategorizedTemplates) {
             return;
         }
         setFilteredCategorizedTemplates(originalCategorizedTemplates);
-    }, [ originalCategorizedTemplates ]);
+    }, [originalCategorizedTemplates]);
 
     /**
      *  Get IDP templates.
      */
     useEffect(() => {
-
         if (identityProviderTemplates !== undefined) {
             return;
         }
@@ -150,40 +140,43 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
 
         const useAPI: boolean = config.ui.identityProviderTemplateLoadingStrategy
             ? config.ui.identityProviderTemplateLoadingStrategy === IdentityProviderTemplateLoadingStrategies.REMOTE
-            : (IdentityProviderManagementConstants.DEFAULT_IDP_TEMPLATE_LOADING_STRATEGY ===
-            IdentityProviderTemplateLoadingStrategies.REMOTE);
+            : IdentityProviderManagementConstants.DEFAULT_IDP_TEMPLATE_LOADING_STRATEGY ===
+              IdentityProviderTemplateLoadingStrategies.REMOTE;
 
         /**
          * With {@link skipGrouping} being false we say
          * we need to group the existing templates based on their
          * template-group.
          */
-        const skipGrouping: boolean = false, sortTemplates: boolean = true;
+        const skipGrouping: boolean = false,
+            sortTemplates: boolean = true;
 
-        IdentityProviderTemplateManagementUtils
-            .getIdentityProviderTemplates(useAPI, skipGrouping, sortTemplates)
-            .finally(() => setIDPTemplateRequestLoadingStatus(false));
-
-    }, [ identityProviderTemplates ]);
+        IdentityProviderTemplateManagementUtils.getIdentityProviderTemplates(
+            useAPI,
+            skipGrouping,
+            sortTemplates
+        ).finally(() => setIDPTemplateRequestLoadingStatus(false));
+    }, [identityProviderTemplates]);
 
     /**
      * Categorize the IDP templates.
      */
     useEffect(() => {
-
-        if (!identityProviderTemplates || !Array.isArray(identityProviderTemplates)
-            || !(identityProviderTemplates.length > 0)) {
+        if (
+            !identityProviderTemplates ||
+            !Array.isArray(identityProviderTemplates) ||
+            !(identityProviderTemplates.length > 0)
+        ) {
             return;
         }
 
         IdentityProviderTemplateManagementUtils.categorizeTemplates(identityProviderTemplates)
             .then((response: IdentityProviderTemplateCategoryInterface[]) => {
-
                 let tags: string[] = [];
 
                 response.filter((category: IdentityProviderTemplateCategoryInterface) => {
                     // Order the templates by pushing coming soon items to the end.
-                    category.templates = orderBy(category.templates, [ "comingSoon" ], [ "desc" ]);
+                    category.templates = orderBy(category.templates, ["comingSoon"], ["desc"]);
 
                     category.templates.filter((template: IdentityProviderTemplateInterface) => {
                         if (!(template?.tags && Array.isArray(template.tags) && template.tags.length > 0)) {
@@ -204,7 +197,7 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
             .catch(() => {
                 setOriginalCategorizedTemplates([]);
             });
-    }, [ identityProviderTemplates ]);
+    }, [identityProviderTemplates]);
 
     /**
      * Subscribe to the URS search params to check for IDP create wizard triggers.
@@ -212,25 +205,24 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
      * it'll open up the IDP create template with ID `8ea23303-49c0-4253-b81f-82c0fe6fb4a0`.
      */
     useEffect(() => {
-
         if (!urlSearchParams.get(IdentityProviderManagementConstants.IDP_CREATE_WIZARD_TRIGGER_URL_SEARCH_PARAM_KEY)) {
             return;
         }
 
-        if (urlSearchParams.get(IdentityProviderManagementConstants.IDP_CREATE_WIZARD_TRIGGER_URL_SEARCH_PARAM_KEY)
-            === IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GOOGLE) {
-
+        if (
+            urlSearchParams.get(IdentityProviderManagementConstants.IDP_CREATE_WIZARD_TRIGGER_URL_SEARCH_PARAM_KEY) ===
+            IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GOOGLE
+        ) {
             handleTemplateSelection(null, IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GOOGLE);
 
             return;
         }
-    }, [ urlSearchParams.get(IdentityProviderManagementConstants.IDP_CREATE_WIZARD_TRIGGER_URL_SEARCH_PARAM_KEY) ]);
+    }, [urlSearchParams.get(IdentityProviderManagementConstants.IDP_CREATE_WIZARD_TRIGGER_URL_SEARCH_PARAM_KEY)]);
 
     /**
      * Handles back button click.
      */
     const handleBackButtonClick = (): void => {
-
         if (availableAuthenticators) {
             dispatch(setAvailableAuthenticatorsMeta(undefined));
         }
@@ -245,13 +237,13 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
      * @param id - Id of the template.
      */
     const handleTemplateSelection = (e: SyntheticEvent, id: string): void => {
-
         /**
          * Find the matching template for the selected card.
          * if found then set the template to state.
          */
         const selectedTemplate: IdentityProviderTemplateItemInterface = identityProviderTemplates.find(
-            ({ id: templateId }: { id: string }) => (templateId === id));
+            ({ id: templateId }: { id: string }) => templateId === id
+        );
 
         if (selectedTemplate) {
             setSelectedTemplate(selectedTemplate);
@@ -269,11 +261,12 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
      * @param id - ID of the created IDP.
      */
     const handleSuccessfulIDPCreation = (id: string): void => {
-
         // If ID is present, navigate to the edit page of the created IDP.
         if (id) {
             history.push({
-                pathname: AppConstants.getPaths().get("IDP_EDIT").replace(":id", id),
+                pathname: AppConstants.getPaths()
+                    .get("IDP_EDIT")
+                    .replace(":id", id),
                 search: IdentityProviderManagementConstants.NEW_IDP_URL_SEARCH_PARAM
             });
 
@@ -293,26 +286,22 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
      * @returns IdentityProviderTemplateCategoryInterface[]
      */
     const getSearchResults = (query: string, filterLabels: string[]): IdentityProviderTemplateCategoryInterface[] => {
-
         /**
          * Checks if any of the filters are matching.
          * @param template - Template object.
          * @returns boolean
          */
         const isFiltersMatched = (template: IdentityProviderTemplateInterface): boolean => {
-
             if (isEmpty(filterLabels)) {
                 return true;
             }
 
-            return template.tags
-                .some((selectedLabel: string) => filterLabels.includes(selectedLabel));
+            return template.tags.some((selectedLabel: string) => filterLabels.includes(selectedLabel));
         };
 
         const templatesClone: IdentityProviderTemplateCategoryInterface[] = cloneDeep(originalCategorizedTemplates);
 
         templatesClone.map((category: IdentityProviderTemplateCategoryInterface) => {
-
             category.templates = category.templates.filter((template: IdentityProviderTemplateInterface) => {
                 if (!query) {
                     return isFiltersMatched(template);
@@ -320,10 +309,16 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
 
                 const name: string = template.name.toLocaleLowerCase();
 
-                if (name.includes(query)
-                    || template.tags.some((tag: string) => tag.toLocaleLowerCase().includes(query)
-                        || startCase(tag).toLocaleLowerCase().includes(query))) {
-
+                if (
+                    name.includes(query) ||
+                    template.tags.some(
+                        (tag: string) =>
+                            tag.toLocaleLowerCase().includes(query) ||
+                            startCase(tag)
+                                .toLocaleLowerCase()
+                                .includes(query)
+                    )
+                ) {
                     return isFiltersMatched(template);
                 }
             });
@@ -339,7 +334,6 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
      * @param selectedFilters - Array of selected filters.
      */
     const handleConnectionTypeSearch = (query: string, selectedFilters: string[]): void => {
-
         // Update the internal state to manage placeholders etc.
         setSearchQuery(query);
         // Filter out the templates.
@@ -353,7 +347,6 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
      * @param selectedFilters - Array of the selected filters.
      */
     const handleConnectionTypeFilter = (query: string, selectedFilters: string[]): void => {
-
         // Update the internal state to manage placeholders etc.
         setSearchQuery(query);
         // Filter out the templates.
@@ -366,19 +359,18 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
      * @returns React.ReactElement
      */
     const showPlaceholders = (list: any[]): ReactElement => {
-
         // When the search returns empty.
         if (searchQuery) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:develop.placeholders.emptySearchResult.title") }
-                    subtitle={ [
-                        t("console:develop.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
-                        t("console:develop.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder` }
+                    title={t("idp:develop.placeholders.emptySearchResult.title")}
+                    subtitle={[
+                        t("idp:develop.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
+                        t("idp:develop.placeholders.emptySearchResult.subtitles.1")
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder`}
                 />
             );
         }
@@ -387,18 +379,20 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
         if (list.length === 0) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    title={
-                        t("console:develop.features.authenticationProvider.placeHolders.emptyConnectionTypeList.title")
-                    }
-                    subtitle={ [
-                        t("console:develop.features.authenticationProvider.placeHolders.emptyConnectionTypeList" +
-                            ".subtitles.0"),
-                        t("console:develop.features.authenticationProvider.placeHolders.emptyConnectionTypeList" +
-                            ".subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-placeholder` }
+                    title={t("idp:develop.features.authenticationProvider.placeHolders.emptyConnectionTypeList.title")}
+                    subtitle={[
+                        t(
+                            "idp:develop.features.authenticationProvider.placeHolders.emptyConnectionTypeList" +
+                                ".subtitles.0"
+                        ),
+                        t(
+                            "idp:develop.features.authenticationProvider.placeHolders.emptyConnectionTypeList" +
+                                ".subtitles.1"
+                        )
+                    ]}
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             );
         }
@@ -408,123 +402,118 @@ const IdentityProviderTemplateSelectPage: FunctionComponent<IdentityProviderTemp
 
     return (
         <PageLayout
-            pageTitle={ "Create New Connection" }
-            isLoading={ useNewConnectionsView === undefined }
+            pageTitle={"Create New Connection"}
+            isLoading={useNewConnectionsView === undefined}
             title={
                 useNewConnectionsView
-                    ? t("console:develop.pages.authenticationProviderTemplate.title")
-                    : t("console:develop.pages.idpTemplate.title")
+                    ? t("idp:develop.pages.authenticationProviderTemplate.title")
+                    : t("idp:develop.pages.idpTemplate.title")
             }
-            contentTopMargin={ true }
+            contentTopMargin={true}
             description={
-                useNewConnectionsView
-                    ?   (<>
-                        { t("console:develop.pages.authenticationProviderTemplate.subTitle") }
-                        <DocumentationLink
-                            link={ getLink("develop.connections.newConnection.learnMore") }
-                        >
-                            { t("common:learnMore") }
+                useNewConnectionsView ? (
+                    <>
+                        {t("idp:develop.pages.authenticationProviderTemplate.subTitle")}
+                        <DocumentationLink link={getLink("develop.connections.newConnection.learnMore")}>
+                            {t("idp:learnMore")}
                         </DocumentationLink>
-                    </>)
-                    :   t("console:develop.pages.idpTemplate.subTitle")
+                    </>
+                ) : (
+                    t("idp:develop.pages.idpTemplate.subTitle")
+                )
             }
-            backButton={ {
-                "data-testid": `${ testId }-page-back-button`,
+            backButton={{
+                "data-testid": `${testId}-page-back-button`,
                 onClick: handleBackButtonClick,
                 text: useNewConnectionsView
-                    ? t("console:develop.pages.authenticationProviderTemplate.backButton")
-                    : t("console:develop.pages.idpTemplate.backButton")
-            } }
+                    ? t("idp:develop.pages.authenticationProviderTemplate.backButton")
+                    : t("idp:develop.pages.idpTemplate.backButton")
+            }}
             titleTextAlign="left"
-            bottomMargin={ false }
-            data-testid={ `${ testId }-page-layout` }
+            bottomMargin={false}
+            data-testid={`${testId}-page-layout`}
             showBottomDivider
         >
             <GridLayout
-                search={ (
+                search={
                     <SearchWithFilterLabels
-                        placeholder={ t("console:develop.pages.authenticationProviderTemplate.search.placeholder") }
-                        onSearch={ handleConnectionTypeSearch }
-                        onFilter={ handleConnectionTypeFilter }
-                        filterLabels={ filterTags }
+                        placeholder={t("idp:develop.pages.authenticationProviderTemplate.search.placeholder")}
+                        onSearch={handleConnectionTypeSearch}
+                        onFilter={handleConnectionTypeFilter}
+                        filterLabels={filterTags}
                     />
-                ) }
-                isLoading={ useNewConnectionsView === undefined || isIDPTemplateRequestLoading }
-            >
-                {
-                    (filteredCategorizedTemplates && !isIDPTemplateRequestLoading)
-                        ? (
-                            filteredCategorizedTemplates
-                                .map((category: IdentityProviderTemplateCategoryInterface, index: number) => (
-                                    <ResourceGrid
-                                        key={ index }
-                                        isEmpty={
-                                            !(category?.templates
-                                                && Array.isArray(category.templates)
-                                                && category.templates.length > 0)
-                                        }
-                                        emptyPlaceholder={ showPlaceholders(category.templates) }
-                                    >
-                                        {
-                                            category.templates.map((
-                                                template: IdentityProviderTemplateInterface,
-                                                templateIndex: number
-                                            ) => {
-                                                // if the template is "organization-enterprise-idp",
-                                                // then prevent rendering it.
-                                                if (template.id === ORG_ENTERPRISE_IDP_ID) {
-                                                    return null;
-                                                }
-
-                                                return (
-                                                    <ResourceGrid.Card
-                                                        key={ templateIndex }
-                                                        resourceName={
-                                                            template.name === "Enterprise" ? "Standard-Based IdP"
-                                                                : template.name
-                                                        }
-                                                        isResourceComingSoon={ template.comingSoon }
-                                                        disabled={ template.disabled }
-                                                        comingSoonRibbonLabel={ t("common:comingSoon") }
-                                                        resourceDescription={ template.description }
-                                                        showSetupGuideButton={ getLink(template.docLink) !== undefined }
-                                                        resourceDocumentationLink={ 
-                                                            getLink(template.docLink)
-                                                        }
-                                                        resourceImage={
-                                                            IdentityProviderManagementUtils
-                                                                .resolveTemplateImage(template.image, getIdPIcons())
-                                                        }
-                                                        tags={ template.tags }
-                                                        onClick={ (e: SyntheticEvent) => {
-                                                            handleTemplateSelection(e, template.id);
-                                                        } }
-                                                        showTooltips={ 
-                                                            { 
-                                                                description: true, 
-                                                                header: false 
-                                                            } 
-                                                        }
-                                                        data-testid={ `${ testId }-${ template.name }` }
-                                                    />
-                                                );
-                                            })
-                                        }
-                                    </ResourceGrid>
-                                ))
-                        )
-                        : <ContentLoader dimmer/>
                 }
+                isLoading={useNewConnectionsView === undefined || isIDPTemplateRequestLoading}
+            >
+                {filteredCategorizedTemplates && !isIDPTemplateRequestLoading ? (
+                    filteredCategorizedTemplates.map(
+                        (category: IdentityProviderTemplateCategoryInterface, index: number) => (
+                            <ResourceGrid
+                                key={index}
+                                isEmpty={
+                                    !(
+                                        category?.templates &&
+                                        Array.isArray(category.templates) &&
+                                        category.templates.length > 0
+                                    )
+                                }
+                                emptyPlaceholder={showPlaceholders(category.templates)}
+                            >
+                                {category.templates.map(
+                                    (template: IdentityProviderTemplateInterface, templateIndex: number) => {
+                                        // if the template is "organization-enterprise-idp",
+                                        // then prevent rendering it.
+                                        if (template.id === ORG_ENTERPRISE_IDP_ID) {
+                                            return null;
+                                        }
+
+                                        return (
+                                            <ResourceGrid.Card
+                                                key={templateIndex}
+                                                resourceName={
+                                                    template.name === "Enterprise"
+                                                        ? "Standard-Based IdP"
+                                                        : template.name
+                                                }
+                                                isResourceComingSoon={template.comingSoon}
+                                                disabled={template.disabled}
+                                                comingSoonRibbonLabel={t("idp:comingSoon")}
+                                                resourceDescription={template.description}
+                                                showSetupGuideButton={getLink(template.docLink) !== undefined}
+                                                resourceDocumentationLink={getLink(template.docLink)}
+                                                resourceImage={IdentityProviderManagementUtils.resolveTemplateImage(
+                                                    template.image,
+                                                    getIdPIcons()
+                                                )}
+                                                tags={template.tags}
+                                                onClick={(e: SyntheticEvent) => {
+                                                    handleTemplateSelection(e, template.id);
+                                                }}
+                                                showTooltips={{
+                                                    description: true,
+                                                    header: false
+                                                }}
+                                                data-testid={`${testId}-${template.name}`}
+                                            />
+                                        );
+                                    }
+                                )}
+                            </ResourceGrid>
+                        )
+                    )
+                ) : (
+                    <ContentLoader dimmer />
+                )}
             </GridLayout>
             <AuthenticatorCreateWizardFactory
-                open={ showWizard }
-                type={ templateType }
-                selectedTemplate={ selectedTemplate }
-                onIDPCreate={ handleSuccessfulIDPCreation }
-                onWizardClose={ () => {
+                open={showWizard}
+                type={templateType}
+                selectedTemplate={selectedTemplate}
+                onIDPCreate={handleSuccessfulIDPCreation}
+                onWizardClose={() => {
                     setTemplateType(undefined);
                     setShowWizard(false);
-                } }
+                }}
             />
         </PageLayout>
     );

@@ -51,18 +51,11 @@ const FORM_ID: string = "idp-attribute-selection-v2-form";
 export const AttributesSelectionV2: FunctionComponent<AttributesSelectionV2Props> = (
     props: AttributesSelectionV2Props
 ): ReactElement => {
+    const { attributeList, mappedAttributesList, onAttributesSelected, isReadOnly, ["data-testid"]: testId } = props;
 
-    const {
-        attributeList,
-        mappedAttributesList,
-        onAttributesSelected,
-        isReadOnly,
-        [ "data-testid" ]: testId
-    } = props;
-
-    const [ showAddModal, setShowAddModal ] = useState<boolean>(false);
-    const [ searchQuery, setSearchQuery ] = useState<string | undefined>(undefined);
-    const [ mappedAttrIds, setMappedAttrIds ] = useState<string[]>([]);
+    const [showAddModal, setShowAddModal] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
+    const [mappedAttrIds, setMappedAttrIds] = useState<string[]>([]);
 
     const { t } = useTranslation();
 
@@ -74,7 +67,7 @@ export const AttributesSelectionV2: FunctionComponent<AttributesSelectionV2Props
         }
 
         setMappedAttrIds(ids);
-    }, [ attributeList ]);
+    }, [attributeList]);
 
     /**
      * Check if there are mapped attibutes.
@@ -82,8 +75,7 @@ export const AttributesSelectionV2: FunctionComponent<AttributesSelectionV2Props
      * @returns Has mapped attributes or not.
      */
     const hasMappedAttributes = (): boolean => {
-        return mappedAttributesList &&
-            mappedAttributesList.length > 0;
+        return mappedAttributesList && mappedAttributesList.length > 0;
     };
 
     /**
@@ -93,24 +85,24 @@ export const AttributesSelectionV2: FunctionComponent<AttributesSelectionV2Props
      */
     const _noAttributesSelectedModalPlaceholder = (): ReactElement => {
         return (
-            <Segment component data-testid={ testId }>
+            <Segment component data-testid={testId}>
                 <EmptyPlaceholder
-                    title={
-                        t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                            "placeHolder.title")
-                    }
-                    subtitle={ [
-                        t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                            "placeHolder.subtitle")
-                    ] }
+                    title={t(
+                        "idp:develop.features.idp.forms.attributeSettings.attributeMapping." + "placeHolder.title"
+                    )}
+                    subtitle={[
+                        t("idp:develop.features.idp.forms.attributeSettings.attributeMapping." + "placeHolder.subtitle")
+                    ]}
                     action={
-                        (<PrimaryButton onClick={ () => setShowAddModal(true) }>
+                        <PrimaryButton onClick={() => setShowAddModal(true)}>
                             <Icon name="plus" />
-                            { t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                            "placeHolder.action") }
-                        </PrimaryButton>)
+                            {t(
+                                "idp:develop.features.idp.forms.attributeSettings.attributeMapping." +
+                                    "placeHolder.action"
+                            )}
+                        </PrimaryButton>
                     }
-                    data-testid={ `${testId}-empty-placeholder` }
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             </Segment>
         );
@@ -125,17 +117,17 @@ export const AttributesSelectionV2: FunctionComponent<AttributesSelectionV2Props
     const _attributesListSearchResultsEmptyPlaceholder = (): ReactElement => {
         return (
             <EmptyPlaceholder
-                action={ (
-                    <LinkButton onClick={ () => setSearchQuery(undefined) }>
-                        { t("console:manage.placeholders.emptySearchResult.action") }
+                action={
+                    <LinkButton onClick={() => setSearchQuery(undefined)}>
+                        {t("idp:manage.placeholders.emptySearchResult.action")}
                     </LinkButton>
-                ) }
-                title={ t("console:manage.placeholders.emptySearchResult.title") }
-                subtitle={ [
-                    t("console:manage.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
-                    t("console:manage.placeholders.emptySearchResult.subtitles.1")
-                ] }
-                data-testid={ `${ testId }-empty-search-placeholder` }
+                }
+                title={t("idp:manage.placeholders.emptySearchResult.title")}
+                subtitle={[
+                    t("idp:manage.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
+                    t("idp:manage.placeholders.emptySearchResult.subtitles.1")
+                ]}
+                data-testid={`${testId}-empty-search-placeholder`}
             />
         );
     };
@@ -155,63 +147,60 @@ export const AttributesSelectionV2: FunctionComponent<AttributesSelectionV2Props
      * @param mappingsToBeAdded - Set of mappings.
      */
     const onSave = (mappingsToBeAdded: IdentityProviderCommonClaimMappingInterface[]) => {
-        onAttributesSelected([ ...mappedAttributesList, ...mappingsToBeAdded ]);
+        onAttributesSelected([...mappedAttributesList, ...mappingsToBeAdded]);
         setShowAddModal(false);
     };
 
     return (
         <>
             <Grid.Row>
-                <Grid.Column computer={ 16 } tablet={ 16 } largeScreen={ 16 } widescreen={ 16 }>
+                <Grid.Column computer={16} tablet={16} largeScreen={16} widescreen={16}>
                     <Heading as="h4">
-                        { t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                            "heading") }
+                        {t("idp:develop.features.idp.forms.attributeSettings.attributeMapping." + "heading")}
                     </Heading>
                     <Heading as="h6" color="grey">
-                        { t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                            "subheading") }
+                        {t("idp:develop.features.idp.forms.attributeSettings.attributeMapping." + "subheading")}
                     </Heading>
-                    { hasMappedAttributes() ? (
+                    {hasMappedAttributes() ? (
                         <>
                             <Grid.Row className="user-role-edit-header-segment attributes">
-                                <Table
-                                    data-testid={ `${ testId }-action-bar` }
-                                    basic="very"
-                                    compact
-                                >
+                                <Table data-testid={`${testId}-action-bar`} basic="very" compact>
                                     <Table.Body>
                                         <Table.Row>
                                             <Table.Cell collapsing width="6">
                                                 <Form
-                                                    id={ FORM_ID }
+                                                    id={FORM_ID}
                                                     // eslint-disable-next-line @typescript-eslint/no-empty-function
-                                                    onSubmit={ () => {} }
-                                                    uncontrolledForm={ false }
+                                                    onSubmit={() => {}}
+                                                    uncontrolledForm={false}
                                                 >
                                                     <Field.Input
                                                         icon="search"
                                                         iconPosition="left"
                                                         inputType="default"
-                                                        maxLength={ 120 }
-                                                        minLength={ 1 }
-                                                        width={ 16 }
-                                                        placeholder={
-                                                            t("console:develop.features.idp.forms.attributeSettings." +
-                                                                "attributeMapping.search.placeHolder")
-                                                        }
-                                                        listen={ (query: string) => setSearchQuery(query) }
-                                                        ariaLabel={ "Search Field" }
-                                                        name={ "searchQuery" }/>
+                                                        maxLength={120}
+                                                        minLength={1}
+                                                        width={16}
+                                                        placeholder={t(
+                                                            "idp:develop.features.idp.forms.attributeSettings." +
+                                                                "attributeMapping.search.placeHolder"
+                                                        )}
+                                                        listen={(query: string) => setSearchQuery(query)}
+                                                        ariaLabel={"Search Field"}
+                                                        name={"searchQuery"}
+                                                    />
                                                 </Form>
                                             </Table.Cell>
                                             <Table.Cell textAlign="right">
                                                 <PrimaryButton
-                                                    onClick={ () => setShowAddModal(true) }
-                                                    data-testid={ `${ testId }-list-layout-add-button` }
+                                                    onClick={() => setShowAddModal(true)}
+                                                    data-testid={`${testId}-list-layout-add-button`}
                                                 >
                                                     <Icon name="plus" />
-                                                    { t("console:develop.features.idp.forms.attributeSettings." +
-                                                            "attributeMapping.placeHolder.action") }
+                                                    {t(
+                                                        "idp:develop.features.idp.forms.attributeSettings." +
+                                                            "attributeMapping.placeHolder.action"
+                                                    )}
                                                 </PrimaryButton>
                                             </Table.Cell>
                                         </Table.Row>
@@ -220,112 +209,102 @@ export const AttributesSelectionV2: FunctionComponent<AttributesSelectionV2Props
                             </Grid.Row>
                             <Segment className="user-role-edit-header-segment attributes">
                                 <Grid.Row>
-                                    <Table
-                                        singleLine
-                                        compact
-                                        data-testid={ `${ testId }-list` }
-                                        fixed
-                                    >
+                                    <Table singleLine compact data-testid={`${testId}-list`} fixed>
                                         <Table.Header>
                                             <Table.Row>
                                                 <Table.HeaderCell width="10">
                                                     <strong>
-                                                        {
-                                                            t("console:develop.features.idp.forms.attributeSettings." +
+                                                        {t(
+                                                            "idp:develop.features.idp.forms.attributeSettings." +
                                                                 "attributeMapping.attributeMapTable." +
-                                                                "externalAttributeColumnHeader")
-                                                        }
+                                                                "externalAttributeColumnHeader"
+                                                        )}
                                                     </strong>
                                                 </Table.HeaderCell>
                                                 <Table.HeaderCell width="10">
                                                     <strong>
-                                                        {
-                                                            t("console:develop.features.idp.forms.attributeSettings." +
+                                                        {t(
+                                                            "idp:develop.features.idp.forms.attributeSettings." +
                                                                 "attributeMapping.attributeMapTable." +
-                                                                "mappedAttributeColumnHeader")
-                                                        }
+                                                                "mappedAttributeColumnHeader"
+                                                        )}
                                                     </strong>
                                                 </Table.HeaderCell>
-                                                <Table.HeaderCell width="2">
-                                                </Table.HeaderCell>
+                                                <Table.HeaderCell width="2"></Table.HeaderCell>
                                             </Table.Row>
                                         </Table.Header>
                                         <Table.Body>
                                             <AttributeMappingList
-                                                alreadyMappedAttributesList={ [ ...mappedAttributesList ] }
-                                                attributeMappingsListToShow={
-                                                    mappedAttributesList.filter(
-                                                        (
-                                                            mappedAttribute: IdentityProviderCommonClaimMappingInterface
-                                                        ) => {
-                                                            if (searchQuery) {
-                                                                return (
-                                                                    mappedAttribute.mappedValue.startsWith(
-                                                                        searchQuery
-                                                                    ) ||
-                                                                    mappedAttribute.claim.id.startsWith(
-                                                                        searchQuery
-                                                                    )
-                                                                );
-                                                            }
-
-                                                            return true;
+                                                alreadyMappedAttributesList={[...mappedAttributesList]}
+                                                attributeMappingsListToShow={mappedAttributesList.filter(
+                                                    (mappedAttribute: IdentityProviderCommonClaimMappingInterface) => {
+                                                        if (searchQuery) {
+                                                            return (
+                                                                mappedAttribute.mappedValue.startsWith(searchQuery) ||
+                                                                mappedAttribute.claim.id.startsWith(searchQuery)
+                                                            );
                                                         }
-                                                    )
-                                                }
-                                                noDataPlaceholder={ _attributesListSearchResultsEmptyPlaceholder() }
-                                                availableAttributesList={ [
+
+                                                        return true;
+                                                    }
+                                                )}
+                                                noDataPlaceholder={_attributesListSearchResultsEmptyPlaceholder()}
+                                                availableAttributesList={[
                                                     ...attributeList.filter(
                                                         (attribute: IdentityProviderClaimInterface) =>
-                                                            !mappedAttrIds.includes(attribute.id))
-                                                ] }
-                                                onMappingDeleted={
-                                                    (
-                                                        deletedMapping: IdentityProviderCommonClaimMappingInterface
-                                                    ) => {
-                                                        onAttributesSelected([
-                                                            ...mappedAttributesList?.filter(
-                                                                (mappedAttribute:
-                                                                    IdentityProviderCommonClaimMappingInterface
-                                                                ) =>
-                                                                    mappedAttribute.claim.id !== deletedMapping.claim.id
-                                                            )
-                                                        ]);
-                                                    }
-                                                }
-                                                onMappingEdited={ (
+                                                            !mappedAttrIds.includes(attribute.id)
+                                                    )
+                                                ]}
+                                                onMappingDeleted={(
+                                                    deletedMapping: IdentityProviderCommonClaimMappingInterface
+                                                ) => {
+                                                    onAttributesSelected([
+                                                        ...mappedAttributesList?.filter(
+                                                            (
+                                                                mappedAttribute: IdentityProviderCommonClaimMappingInterface
+                                                            ) => mappedAttribute.claim.id !== deletedMapping.claim.id
+                                                        )
+                                                    ]);
+                                                }}
+                                                onMappingEdited={(
                                                     oldMapping: IdentityProviderCommonClaimMappingInterface,
                                                     newMapping: IdentityProviderCommonClaimMappingInterface
                                                 ) => {
                                                     onAttributesSelected([
                                                         ...mappedAttributesList.filter(
-                                                            ({ claim }: { claim: IdentityProviderClaimInterface}) =>
-                                                                (claim.id !== oldMapping.claim.id)
+                                                            ({ claim }: { claim: IdentityProviderClaimInterface }) =>
+                                                                claim.id !== oldMapping.claim.id
                                                         ),
                                                         newMapping
                                                     ]);
-                                                } }
-                                                readOnly={ isReadOnly }/>
+                                                }}
+                                                readOnly={isReadOnly}
+                                            />
                                         </Table.Body>
                                     </Table>
                                 </Grid.Row>
                             </Segment>
                         </>
-                    ) : _noAttributesSelectedModalPlaceholder() }
+                    ) : (
+                        _noAttributesSelectedModalPlaceholder()
+                    )}
                 </Grid.Column>
             </Grid.Row>
-            { showAddModal && (
+            {showAddModal && (
                 <AddAttributeSelectionModal
-                    attributeList={ [ ...attributeList.filter((attribute: IdentityProviderClaimInterface) =>
-                        !mappedAttrIds.includes(attribute.id)) ] }
-                    alreadyMappedAttributesList={ [ ...mappedAttributesList ] }
-                    show={ showAddModal }
-                    onClose={ onCancel }
-                    onSave={ onSave }/>
-            ) }
+                    attributeList={[
+                        ...attributeList.filter(
+                            (attribute: IdentityProviderClaimInterface) => !mappedAttrIds.includes(attribute.id)
+                        )
+                    ]}
+                    alreadyMappedAttributesList={[...mappedAttributesList]}
+                    show={showAddModal}
+                    onClose={onCancel}
+                    onSave={onSave}
+                />
+            )}
         </>
     );
-
 };
 
 /**

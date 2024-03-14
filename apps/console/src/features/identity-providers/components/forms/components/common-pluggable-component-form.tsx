@@ -42,7 +42,6 @@ import { CommonConstants, FieldType, getFieldType, getPropertyField } from "../h
 export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComponentFormPropsInterface> = (
     props: CommonPluggableComponentFormPropsInterface
 ): ReactElement => {
-
     const {
         metadata,
         mode,
@@ -53,15 +52,15 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
         showCustomProperties,
         readOnly,
         isSubmitting,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
     // Used for field elements which needs to listen for any onChange events in the form.
-    const [ dynamicValues, setDynamicValues ] = useState<CommonPluggableComponentInterface>(undefined);
-    const [ customProperties, setCustomProperties ] = useState<string>(undefined);
-    const [ manualMode, setManualMode ] = useState<boolean>(true);
+    const [dynamicValues, setDynamicValues] = useState<CommonPluggableComponentInterface>(undefined);
+    const [customProperties, setCustomProperties] = useState<string>(undefined);
+    const [manualMode, setManualMode] = useState<boolean>(true);
 
     const samlManualkeys: string[] = [
         "isAssertionSigned",
@@ -94,9 +93,7 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
         "ISAuthnReqSigned"
     ];
 
-    const samlFileBasedkeys: string[] = [
-        "meta_data_saml"
-    ];
+    const samlFileBasedkeys: string[] = ["meta_data_saml"];
 
     const enum SelectModeTypes {
         MANUAL = "Manual Configuration",
@@ -128,15 +125,16 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
      * @returns Sanitized form values.
      */
     const getUpdatedConfigurations = (values: Map<string, FormValue>): any => {
-
         const properties: CommonPluggableComponentPropertyInterface[] = [];
         const resolvedCustomProperties: string | string[] = showCustomProperties
             ? values.get("customProperties")
             : customProperties;
 
         values?.forEach((value: FormValue, key: string) => {
-            const propertyMetadata: CommonPluggableComponentMetaPropertyInterface
-                = getPropertyMetadata(key, metadata?.properties);
+            const propertyMetadata: CommonPluggableComponentMetaPropertyInterface = getPropertyMetadata(
+                key,
+                metadata?.properties
+            );
 
             if (key !== undefined && !isEmpty(value) && key !== "customProperties") {
                 properties.push({
@@ -144,31 +142,31 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
                     value: interpretValueByType(value, key, propertyMetadata?.type) as string
                 });
             }
-
         });
 
-        const modifiedCustomProperties: CommonPluggableComponentPropertyInterface[]
-            = resolvedCustomProperties?.toString()?.split(",")
-                ?.map((customProperty: string) => {
-                    const keyValuePair: string[] = customProperty.split("=");
+        const modifiedCustomProperties: CommonPluggableComponentPropertyInterface[] = resolvedCustomProperties
+            ?.toString()
+            ?.split(",")
+            ?.map((customProperty: string) => {
+                const keyValuePair: string[] = customProperty.split("=");
 
-                    return {
-                        key: keyValuePair[ 0 ],
-                        value: keyValuePair[ 1 ]
-                    };
-                });
+                return {
+                    key: keyValuePair[0],
+                    value: keyValuePair[1]
+                };
+            });
 
         modifiedCustomProperties?.length > 0 && properties.push(...modifiedCustomProperties);
 
         if (initialValues?.properties) {
             return {
                 ...initialValues,
-                properties: [ ...properties ]
+                properties: [...properties]
             };
         } else {
             return {
                 ...metadata,
-                properties: [ ...properties ]
+                properties: [...properties]
             };
         }
     };
@@ -179,8 +177,9 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
      * @param propertyMetadata - Metadata of the property.
      */
     const isCheckboxWithSubProperties = (propertyMetadata: CommonPluggableComponentMetaPropertyInterface): boolean => {
-        return propertyMetadata?.subProperties?.length > 0
-            && getFieldType(propertyMetadata, mode) === FieldType.CHECKBOX;
+        return (
+            propertyMetadata?.subProperties?.length > 0 && getFieldType(propertyMetadata, mode) === FieldType.CHECKBOX
+        );
     };
 
     /**
@@ -188,8 +187,9 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
      *
      * @param propertyMetadata - Metadata of the property.
      */
-    const isRadioButtonWithSubProperties = (propertyMetadata
-        : CommonPluggableComponentMetaPropertyInterface): boolean => {
+    const isRadioButtonWithSubProperties = (
+        propertyMetadata: CommonPluggableComponentMetaPropertyInterface
+    ): boolean => {
         return propertyMetadata?.subProperties?.length > 0 && getFieldType(propertyMetadata, mode) === FieldType.RADIO;
     };
 
@@ -198,10 +198,13 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
      *
      */
     const isScopesDefined = (): boolean => {
-        return !!(initialValues?.properties?.find(
-            (queryParam: CommonPluggableComponentPropertyInterface) =>
-                queryParam.key === CommonConstants.QUERY_PARAMETERS_KEY)?.
-            value?.toLowerCase().includes("scope="));
+        return !!initialValues?.properties
+            ?.find(
+                (queryParam: CommonPluggableComponentPropertyInterface) =>
+                    queryParam.key === CommonConstants.QUERY_PARAMETERS_KEY
+            )
+            ?.value?.toLowerCase()
+            .includes("scope=");
     };
 
     /**
@@ -209,27 +212,29 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
      *
      */
     const isScopesEmpty = (): boolean => {
-        return isEmpty(initialValues?.properties?.find(
-            (scopes: CommonPluggableComponentPropertyInterface) =>
-                scopes.key === CommonConstants.FIELD_COMPONENT_SCOPES)?.value);
+        return isEmpty(
+            initialValues?.properties?.find(
+                (scopes: CommonPluggableComponentPropertyInterface) =>
+                    scopes.key === CommonConstants.FIELD_COMPONENT_SCOPES
+            )?.value
+        );
     };
 
-    const getField = (property: CommonPluggableComponentPropertyInterface,
+    const getField = (
+        property: CommonPluggableComponentPropertyInterface,
         eachPropertyMeta: CommonPluggableComponentMetaPropertyInterface,
         isSub?: boolean,
         testId?: string,
         listen?: (key: string, values: Map<string, FormValue>) => void,
-        showField?: boolean):
-        ReactElement => {
-
+        showField?: boolean
+    ): ReactElement => {
         if (isSub) {
             return (
-                showField && (<Grid.Row columns={ 2 } key={ eachPropertyMeta?.displayOrder }>
-                    <Grid.Column mobile={ 2 } tablet={ 2 } computer={ 1 }>
-                    </Grid.Column>
-                    <Grid.Column mobile={ 14 } tablet={ 14 } computer={ 7 }>
-                        {
-                            getPropertyField(
+                showField && (
+                    <Grid.Row columns={2} key={eachPropertyMeta?.displayOrder}>
+                        <Grid.Column mobile={2} tablet={2} computer={1}></Grid.Column>
+                        <Grid.Column mobile={14} tablet={14} computer={7}>
+                            {getPropertyField(
                                 property,
                                 {
                                     ...eachPropertyMeta,
@@ -239,17 +244,17 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
                                 listen,
                                 testId,
                                 showField
-                            )
-                        }
-                    </Grid.Column>
-                </Grid.Row>)
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                )
             );
         } else if (eachPropertyMeta?.key === "meta_data_saml") {
             return (
-                showField && (<Grid.Row key={ eachPropertyMeta?.displayOrder }>
-                    <Grid.Column computer={ 16 }>
-                        {
-                            getPropertyField(
+                showField && (
+                    <Grid.Row key={eachPropertyMeta?.displayOrder}>
+                        <Grid.Column computer={16}>
+                            {getPropertyField(
                                 property,
                                 {
                                     ...eachPropertyMeta,
@@ -259,17 +264,17 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
                                 listen,
                                 testId,
                                 showField
-                            )
-                        }
-                    </Grid.Column>
-                </Grid.Row>)
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                )
             );
         } else {
             return (
-                showField && (<Grid.Row columns={ 1 } key={ eachPropertyMeta?.displayOrder }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
-                        {
-                            getPropertyField(
+                showField && (
+                    <Grid.Row columns={1} key={eachPropertyMeta?.displayOrder}>
+                        <Grid.Column mobile={16} tablet={16} computer={8}>
+                            {getPropertyField(
                                 property,
                                 {
                                     ...eachPropertyMeta,
@@ -279,17 +284,18 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
                                 listen,
                                 testId,
                                 showField
-                            )
-                        }
-                    </Grid.Column>
-                </Grid.Row>)
+                            )}
+                        </Grid.Column>
+                    </Grid.Row>
+                )
             );
         }
     };
 
-    const getSortedPropertyFields = (metaProperties: CommonPluggableComponentMetaPropertyInterface[], isSub: boolean):
-        ReactElement[] => {
-
+    const getSortedPropertyFields = (
+        metaProperties: CommonPluggableComponentMetaPropertyInterface[],
+        isSub: boolean
+    ): ReactElement[] => {
         const bucket: ReactElement[] = [];
 
         metaProperties?.forEach((metaProperty: CommonPluggableComponentMetaPropertyInterface) => {
@@ -299,96 +305,120 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
             // send a displayName for such required elements.
             if (!isEmpty(metaProperty?.displayName)) {
                 const property: CommonPluggableComponentPropertyInterface = dynamicValues?.properties?.find(
-                    (property: CommonPluggableComponentPropertyInterface) => property.key === metaProperty.key);
+                    (property: CommonPluggableComponentPropertyInterface) => property.key === metaProperty.key
+                );
                 let field: ReactElement;
 
                 if (!isCheckboxWithSubProperties(metaProperty)) {
-
-                    if (metaProperty?.key === CommonConstants.FIELD_COMPONENT_SCOPES
-                        && !isScopesDefined() && isScopesEmpty()) {
+                    if (
+                        metaProperty?.key === CommonConstants.FIELD_COMPONENT_SCOPES &&
+                        !isScopesDefined() &&
+                        isScopesEmpty()
+                    ) {
                         const updatedProperty: CommonPluggableComponentPropertyInterface = {
                             key: CommonConstants.FIELD_COMPONENT_SCOPES,
                             value: metaProperty.defaultValue
                         };
 
-                        field = getField(updatedProperty, metaProperty, isSub,
-                            `${ testId }-form`, handleParentPropertyChange, manualMode);
+                        field = getField(
+                            updatedProperty,
+                            metaProperty,
+                            isSub,
+                            `${testId}-form`,
+                            handleParentPropertyChange,
+                            manualMode
+                        );
+                    } else if (samlManualkeys.includes(metaProperty?.key)) {
+                        field = getField(
+                            property,
+                            metaProperty,
+                            isSub,
+                            `${testId}-form`,
+                            handleParentPropertyChange,
+                            manualMode
+                        );
+                    } else if (samlFileBasedkeys.includes(metaProperty?.key)) {
+                        field = getField(
+                            property,
+                            metaProperty,
+                            isSub,
+                            `${testId}-form`,
+                            handleParentPropertyChange,
+                            !manualMode
+                        );
+                    } else {
+                        field = getField(
+                            property,
+                            metaProperty,
+                            isSub,
+                            `${testId}-form`,
+                            handleParentPropertyChange,
+                            true
+                        );
                     }
-                    else if (
-                        samlManualkeys.includes(metaProperty?.key)
-                    ) {
-                        field = getField(property, metaProperty, isSub, `${ testId }-form`,
-                            handleParentPropertyChange, manualMode);
-                    }
-                    else if (
-                        samlFileBasedkeys.includes(metaProperty?.key)
-                    ) {
-                        field = getField(property, metaProperty, isSub, `${ testId }-form`,
-                            handleParentPropertyChange, !manualMode);
-                    }
-                    else {
-                        field = getField(property, metaProperty, isSub, `${ testId }-form`,
-                            handleParentPropertyChange, true);
-                    }
-                }
-                else if (isRadioButtonWithSubProperties(metaProperty)) {
-                    field =
-                        (
-                            <React.Fragment key={ metaProperty?.key }>
-                                {
-                                // Render parent property.
-                                    getField(property, metaProperty, isSub, `${ testId }-form`,
-                                        handleParentPropertyChange, manualMode)
-                                }
-                            </React.Fragment>);
+                } else if (isRadioButtonWithSubProperties(metaProperty)) {
+                    field = (
+                        <React.Fragment key={metaProperty?.key}>
+                            {// Render parent property.
+                            getField(
+                                property,
+                                metaProperty,
+                                isSub,
+                                `${testId}-form`,
+                                handleParentPropertyChange,
+                                manualMode
+                            )}
+                        </React.Fragment>
+                    );
                 } else {
-                    field =
-                        (<React.Fragment key={ metaProperty?.key }>
-                            {
-                                // Render parent property.
-                                getField(property, metaProperty, isSub, `${ testId }-form`,
-                                    handleParentPropertyChange, manualMode)
-                            }
-                            {
-                                getSortedPropertyFields(metaProperty?.subProperties, true)
-                            }
-                        </React.Fragment>);
+                    field = (
+                        <React.Fragment key={metaProperty?.key}>
+                            {// Render parent property.
+                            getField(
+                                property,
+                                metaProperty,
+                                isSub,
+                                `${testId}-form`,
+                                handleParentPropertyChange,
+                                manualMode
+                            )}
+                            {getSortedPropertyFields(metaProperty?.subProperties, true)}
+                        </React.Fragment>
+                    );
                 }
 
                 bucket.push(field);
             }
         });
 
-        return bucket.sort((
-            a: React.ReactElement<any, string | React.JSXElementConstructor<any>>,
-            b: React.ReactElement<any, string | React.JSXElementConstructor<any>>
-        ) => Number( Number(a.key) - Number(b.key)) );
+        return bucket.sort(
+            (
+                a: React.ReactElement<any, string | React.JSXElementConstructor<any>>,
+                b: React.ReactElement<any, string | React.JSXElementConstructor<any>>
+            ) => Number(Number(a.key) - Number(b.key))
+        );
     };
 
     const triggerAlgorithmSelectionDropdowns = (key: string, values: Map<string, FormValue>) => {
-
         if (key === "IsLogoutReqSigned" || key === "ISAuthnReqSigned") {
-
             const enableField = (formKey: string): void => {
-                const props: CommonPluggableComponentMetaPropertyInterface = metadata
-                    ?.properties
-                    .find(({ key }: { key: string } ) => key === formKey);
+                const props: CommonPluggableComponentMetaPropertyInterface = metadata?.properties.find(
+                    ({ key }: { key: string }) => key === formKey
+                );
 
                 if (props) props.isDisabled = false;
             };
 
             const disableField = (formKey: string): void => {
-                const props: CommonPluggableComponentMetaPropertyInterface = metadata
-                    ?.properties
-                    ?.find(( { key }: { key: string } ) => key === formKey);
+                const props: CommonPluggableComponentMetaPropertyInterface = metadata?.properties?.find(
+                    ({ key }: { key: string }) => key === formKey
+                );
 
                 if (props) props.isDisabled = true;
             };
 
             const isChecked = (value: FormValue): boolean =>
-                value &&
-            (Array.isArray(value) && value.length > 0) ||
-            (typeof value === "string" && value === "true");
+                (value && Array.isArray(value) && value.length > 0) || (typeof value === "string" && value === "true");
 
             const logoutRequestSigned: FormValue = values.get("IsLogoutReqSigned");
             const authenticationRequestSigned: FormValue = values.get("ISAuthnReqSigned");
@@ -407,52 +437,61 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
         const selectedMode: FormValue = values.get("SelectMode");
 
         if (key === "SelectMode") {
-
             if (selectedMode === SelectModeTypes.MANUAL) {
                 setManualMode(true);
-            } else if (selectedMode === SelectModeTypes.FILEBASED){
+            } else if (selectedMode === SelectModeTypes.FILEBASED) {
                 setManualMode(false);
             }
         }
     };
 
-
     const handleParentPropertyChange = (key: string, values: Map<string, FormValue>) => {
-
         triggerAlgorithmSelectionDropdowns(key, values);
         changeMode(key, values);
 
         setDynamicValues({
             ...dynamicValues,
-            properties: dynamicValues?.properties ? dynamicValues?.properties?.map(
-                (prop: CommonPluggableComponentPropertyInterface):
-                    CommonPluggableComponentPropertyInterface => {
-                    return prop.key === key ? {
-                        key: key,
-                        value: values?.get(key)?.includes(key)?.toString()
-                    } : prop;
-                }) : [ {
-                key: key,
-                value: values?.get(key)?.includes(key)?.toString()
-            } ]
+            properties: dynamicValues?.properties
+                ? dynamicValues?.properties?.map(
+                      (prop: CommonPluggableComponentPropertyInterface): CommonPluggableComponentPropertyInterface => {
+                          return prop.key === key
+                              ? {
+                                    key: key,
+                                    value: values
+                                        ?.get(key)
+                                        ?.includes(key)
+                                        ?.toString()
+                                }
+                              : prop;
+                      }
+                  )
+                : [
+                      {
+                          key: key,
+                          value: values
+                              ?.get(key)
+                              ?.includes(key)
+                              ?.toString()
+                      }
+                  ]
         });
     };
 
     const getSubmitButton = (content: string) => {
         return (
-            <Grid.Row columns={ 1 }>
-                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
-                    <Show when={ AccessControlConstants.IDP_EDIT }>
+            <Grid.Row columns={1}>
+                <Grid.Column mobile={16} tablet={16} computer={8}>
+                    <Show when={AccessControlConstants.IDP_EDIT}>
                         <Button
                             primary
                             type="submit"
                             size="small"
                             className="form-button"
-                            isSubmitting={ isSubmitting }
-                            loading={ isSubmitting }
-                            data-testid={ `${ testId }-submit-button` }
+                            isSubmitting={isSubmitting}
+                            loading={isSubmitting}
+                            data-testid={`${testId}-submit-button`}
                         >
-                            { content }
+                            {content}
                         </Button>
                     </Show>
                 </Grid.Column>
@@ -461,74 +500,74 @@ export const CommonPluggableComponentForm: FunctionComponent<CommonPluggableComp
     };
 
     useEffect(() => {
-
         setDynamicValues(initialValues);
 
-        const initialFormValues: Map<string, FormValue>
-            = initialValues?.properties?.reduce((
-                values: Map<string, FormValue>,
-                { key, value }: CommonPluggableComponentPropertyInterface
-            ) => {
-                return values.set(key, value);
-            }, new Map<string, FormValue>()) || new Map<string, FormValue>();
+        const initialFormValues: Map<string, FormValue> =
+            initialValues?.properties?.reduce(
+                (values: Map<string, FormValue>, { key, value }: CommonPluggableComponentPropertyInterface) => {
+                    return values.set(key, value);
+                },
+                new Map<string, FormValue>()
+            ) || new Map<string, FormValue>();
 
         triggerAlgorithmSelectionDropdowns("IsLogoutReqSigned", initialFormValues);
         triggerAlgorithmSelectionDropdowns("ISAuthnReqSigned", initialFormValues);
         changeMode("SelectMode", initialFormValues);
-
     }, []);
 
     /**
- * This set all the custom properties.
- */
+     * This set all the custom properties.
+     */
     useEffect(() => {
         if (!dynamicValues) {
             return;
         }
         const values: string[] = [];
 
-        dynamicValues?.properties?.forEach(
-            (property: CommonPluggableComponentPropertyInterface) => {
-                if (!metadata?.properties?.find((
-                    meta: CommonPluggableComponentMetaPropertyInterface)=>
-                    meta.key === property.key
-                )) {
-                    values.push(property.key + "=" + property.value);
-                }
-            });
+        dynamicValues?.properties?.forEach((property: CommonPluggableComponentPropertyInterface) => {
+            if (
+                !metadata?.properties?.find(
+                    (meta: CommonPluggableComponentMetaPropertyInterface) => meta.key === property.key
+                )
+            ) {
+                values.push(property.key + "=" + property.value);
+            }
+        });
 
         setCustomProperties(values.join(", "));
-    }, [ dynamicValues ]);
+    }, [dynamicValues]);
 
     return (
         <Forms
-            onSubmit={ (values: Map<string, FormValue>) => {
+            onSubmit={(values: Map<string, FormValue>) => {
                 onSubmit(getUpdatedConfigurations(values));
-            } }
-            submitState={ triggerSubmit }
-            data-testid={ `${ testId }-form` }
+            }}
+            submitState={triggerSubmit}
+            data-testid={`${testId}-form`}
         >
             <Grid>
-                { getSortedPropertyFields(metadata?.properties, false) }
-                { showCustomProperties && customProperties && (
-                    <Grid.Row columns={ 1 }>
-                        <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
+                {getSortedPropertyFields(metadata?.properties, false)}
+                {showCustomProperties && customProperties && (
+                    <Grid.Row columns={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={8}>
                             <Field
                                 name="customProperties"
-                                label={ t("console:develop.features.authenticationProvider.forms.common." +
-                                    "customProperties") }
-                                required={ false }
-                                requiredErrorMessage={ t("console:develop.features.authenticationProvider.forms." +
-                                    "common.requiredErrorMessage") }
+                                label={t(
+                                    "idp:develop.features.authenticationProvider.forms.common." + "customProperties"
+                                )}
+                                required={false}
+                                requiredErrorMessage={t(
+                                    "idp:develop.features.authenticationProvider.forms." + "common.requiredErrorMessage"
+                                )}
                                 type="queryParams"
-                                value={ customProperties }
-                                data-testid={ `${ testId }-${ "customProperties" }` }
-                                readOnly={ readOnly }
+                                value={customProperties}
+                                data-testid={`${testId}-${"customProperties"}`}
+                                readOnly={readOnly}
                             />
                         </Grid.Column>
                     </Grid.Row>
-                ) }
-                { enableSubmitButton && getSubmitButton("Update") }
+                )}
+                {enableSubmitButton && getSubmitButton("Update")}
             </Grid>
         </Forms>
     );

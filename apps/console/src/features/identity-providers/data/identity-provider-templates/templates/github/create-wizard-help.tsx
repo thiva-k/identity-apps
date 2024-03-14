@@ -38,158 +38,148 @@ type GithubIdentityProviderCreateWizardHelpPropsInterface = TestableComponentInt
  *
  * @returns React Element for Github IDP Create Wizard
  */
-const GithubIdentityProviderCreateWizardHelp: FunctionComponent<
-    GithubIdentityProviderCreateWizardHelpPropsInterface> = (
-        props: GithubIdentityProviderCreateWizardHelpPropsInterface
-    ): ReactElement => {
+const GithubIdentityProviderCreateWizardHelp: FunctionComponent<GithubIdentityProviderCreateWizardHelpPropsInterface> = (
+    props: GithubIdentityProviderCreateWizardHelpPropsInterface
+): ReactElement => {
+    const { ["data-testid"]: testId } = props;
 
-        const {
-            [ "data-testid" ]: testId
-        } = props;
+    const { t } = useTranslation();
+    const { getLink } = useDocumentation();
 
-        const { t } = useTranslation();
-        const { getLink } = useDocumentation();
+    const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
 
-        const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
+    const [useNewConnectionsView, setUseNewConnectionsView] = useState<boolean>(undefined);
 
-        const [ useNewConnectionsView, setUseNewConnectionsView ] = useState<boolean>(undefined);
+    /**
+     * Checks if the listing view defined in the config is the new connections view.
+     */
+    useEffect(() => {
+        if (useNewConnectionsView !== undefined) {
+            return;
+        }
 
-        /**
-         * Checks if the listing view defined in the config is the new connections view.
-         */
-        useEffect(() => {
+        setUseNewConnectionsView(identityProviderConfig.useNewConnectionsView);
+    }, [identityProviderConfig]);
 
-            if (useNewConnectionsView !== undefined) {
-                return;
-            }
-
-            setUseNewConnectionsView(identityProviderConfig.useNewConnectionsView);
-        }, [ identityProviderConfig ]);
-
-        return (
-            <div data-testid={ testId }>
-                <Message
-                    type="info"
-                    header={
-                        t("console:develop.features.authenticationProvider.templates.github.wizardHelp." +
-                            "preRequisites.heading")
-                    }
-                    content={
-                        (<>
-                            <p>
-                                <Trans
-                                    i18nKey={
-                                        "console:develop.features.authenticationProvider.templates.github.wizardHelp." +
-                                        "preRequisites.getCredentials"
-                                    }
-                                >
-                                    Before you begin, create an <strong>OAuth application</strong> <DocumentationLink
-                                        link={ 
-                                            getLink("develop.connections.newConnection.github.help.developerConsole")
-                                        }
-                                        showEmptyLinkText
-                                    >on GitHub</DocumentationLink>, and obtain a <strong>client ID & secret</strong>.
-                                </Trans>
-                            </p>
-                            <p>
-
-                                <Trans
-                                    i18nKey={
-                                        "console:develop.features.authenticationProvider.templates.github.wizardHelp" +
-                                        ".preRequisites.configureHomePageURL"
-                                    }
-                                >
-                                    Use the following URL as the <strong>Homepage URL</strong>.
-                                </Trans>
-
-                                <CopyInputField
-                                    className="copy-input-dark spaced"
-                                    value={ config?.deployment?.customServerHost }
-                                />
-                            </p>
-                            <p>
-                                <Trans
-                                    i18nKey={
-                                        "console:develop.features.authenticationProvider.templates.github.wizardHelp" +
-                                        ".preRequisites.configureRedirectURL"
-                                    }
-                                >
-                                    Add the following URL as the <strong>Authorization callback URL</strong>.
-                                </Trans>
-
-                                <CopyInputField
-                                    className="copy-input-dark spaced"
-                                    value={ config?.deployment?.customServerHost + "/commonauth" }
-                                />
-
+    return (
+        <div data-testid={testId}>
+            <Message
+                type="info"
+                header={t(
+                    "idp:develop.features.authenticationProvider.templates.github.wizardHelp." + "preRequisites.heading"
+                )}
+                content={
+                    <>
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "idp:develop.features.authenticationProvider.templates.github.wizardHelp." +
+                                    "preRequisites.getCredentials"
+                                }
+                            >
+                                Before you begin, create an <strong>OAuth application</strong>{" "}
                                 <DocumentationLink
-                                    link={ getLink("develop.connections.newConnection.google.help.configureOAuth") }
+                                    link={getLink("develop.connections.newConnection.github.help.developerConsole")}
                                     showEmptyLinkText
                                 >
-                                    {
-                                        t("console:develop.features.authenticationProvider.templates.github." +
-                                            "wizardHelp.preRequisites.configureOAuthApps")
-                                    }
+                                    on GitHub
                                 </DocumentationLink>
-                            </p>
-                        </>)
+                                , and obtain a <strong>client ID & secret</strong>.
+                            </Trans>
+                        </p>
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "idp:develop.features.authenticationProvider.templates.github.wizardHelp" +
+                                    ".preRequisites.configureHomePageURL"
+                                }
+                            >
+                                Use the following URL as the <strong>Homepage URL</strong>.
+                            </Trans>
+
+                            <CopyInputField
+                                className="copy-input-dark spaced"
+                                value={config?.deployment?.customServerHost}
+                            />
+                        </p>
+                        <p>
+                            <Trans
+                                i18nKey={
+                                    "idp:develop.features.authenticationProvider.templates.github.wizardHelp" +
+                                    ".preRequisites.configureRedirectURL"
+                                }
+                            >
+                                Add the following URL as the <strong>Authorization callback URL</strong>.
+                            </Trans>
+
+                            <CopyInputField
+                                className="copy-input-dark spaced"
+                                value={config?.deployment?.customServerHost + "/commonauth"}
+                            />
+
+                            <DocumentationLink
+                                link={getLink("develop.connections.newConnection.google.help.configureOAuth")}
+                                showEmptyLinkText
+                            >
+                                {t(
+                                    "idp:develop.features.authenticationProvider.templates.github." +
+                                        "wizardHelp.preRequisites.configureOAuthApps"
+                                )}
+                            </DocumentationLink>
+                        </p>
+                    </>
+                }
+            />
+
+            <Heading as="h5">
+                {t("idp:develop.features.authenticationProvider.templates.github" + ".wizardHelp.name.heading")}
+            </Heading>
+            <p>
+                {useNewConnectionsView
+                    ? t(
+                          "idp:develop.features.authenticationProvider.templates.github." +
+                              "wizardHelp.name.connectionDescription"
+                      )
+                    : t(
+                          "idp:develop.features.authenticationProvider.templates.github." +
+                              "wizardHelp.name.idpDescription"
+                      )}
+            </p>
+
+            <Divider />
+
+            <Heading as="h5">
+                {t("idp:develop.features.authenticationProvider." + "templates.github.wizardHelp.clientId.heading")}
+            </Heading>
+            <p>
+                <Trans
+                    i18nKey={
+                        "idp:develop.features.authenticationProvider.templates.github" +
+                        ".wizardHelp.clientId.description"
                     }
-                />
+                >
+                    Provide the <Code>Client ID</Code> obtained from GitHub.
+                </Trans>
+            </p>
 
-                <Heading as="h5">
-                    {
-                        t("console:develop.features.authenticationProvider.templates.github" +
-                            ".wizardHelp.name.heading")
+            <Divider />
+
+            <Heading as="h5">
+                {t("idp:develop.features.authenticationProvider.templates.github" + ".wizardHelp.clientSecret.heading")}
+            </Heading>
+            <p>
+                <Trans
+                    i18nKey={
+                        "idp:develop.features.authenticationProvider.templates.github" +
+                        ".wizardHelp.clientSecret.description"
                     }
-                </Heading>
-                <p>
-                    {
-                        useNewConnectionsView
-                            ? t("console:develop.features.authenticationProvider.templates.github." +
-                                "wizardHelp.name.connectionDescription")
-                            : t("console:develop.features.authenticationProvider.templates.github." +
-                                "wizardHelp.name.idpDescription")
-                    }
-                </p>
-
-                <Divider/>
-
-                <Heading as="h5">
-                    { t("console:develop.features.authenticationProvider." +
-                        "templates.github.wizardHelp.clientId.heading") }
-                </Heading>
-                <p>
-                    <Trans
-                        i18nKey={
-                            "console:develop.features.authenticationProvider.templates.github" +
-                            ".wizardHelp.clientId.description"
-                        }
-                    >
-                        Provide the <Code>Client ID</Code> obtained from GitHub.
-                    </Trans>
-                </p>
-
-                <Divider/>
-
-                <Heading as="h5">
-                    {
-                        t("console:develop.features.authenticationProvider.templates.github" +
-                            ".wizardHelp.clientSecret.heading")
-                    }
-                </Heading>
-                <p>
-                    <Trans
-                        i18nKey={
-                            "console:develop.features.authenticationProvider.templates.github" +
-                            ".wizardHelp.clientSecret.description"
-                        }
-                    >
-                        Provide the <Code>Client Secret</Code> obtained from GitHub.
-                    </Trans>
-                </p>
-            </div>
-        );
-    };
+                >
+                    Provide the <Code>Client Secret</Code> obtained from GitHub.
+                </Trans>
+            </p>
+        </div>
+    );
+};
 
 /**
  * Default props for the component

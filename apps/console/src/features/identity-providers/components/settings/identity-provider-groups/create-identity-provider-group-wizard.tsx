@@ -44,27 +44,20 @@ interface CreateGroupProps extends IdentifiableComponentInterface {
  * Component to handle addition of a new group to the system.
  */
 export const CreateIdPGroupWizard: FunctionComponent<CreateGroupProps> = (props: CreateGroupProps): ReactElement => {
-
-    const {
-        closeWizard,
-        updateList,
-        idpId,
-        groupsList,
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { closeWizard, updateList, idpId, groupsList, ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ groupName, setGroupName ] = useState<string>("");
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [groupName, setGroupName] = useState<string>("");
 
     /**
      * Function to create the idp group.
      */
     const createIdpGroup = (): void => {
         setIsSubmitting(true);
-        const newIdpGroupList: IdentityProviderGroupInterface[] = [ 
+        const newIdpGroupList: IdentityProviderGroupInterface[] = [
             ...groupsList,
             {
                 id: "",
@@ -74,13 +67,19 @@ export const CreateIdPGroupWizard: FunctionComponent<CreateGroupProps> = (props:
 
         // Check if the group name is aleady present in the groupsList
         if (groupsList.some((group: IdentityProviderGroupInterface) => group.name === groupName.trim())) {
-            dispatch(addAlert({
-                description: t("extensions:console.identityProviderGroups.createGroupWizard.notifications." +
-                    "duplicateGroupError.description"),
-                level: AlertLevels.ERROR,
-                message: t("extensions:console.identityProviderGroups.createGroupWizard.notifications." +
-                    "duplicateGroupError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "idp:console.identityProviderGroups.createGroupWizard.notifications." +
+                            "duplicateGroupError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "idp:console.identityProviderGroups.createGroupWizard.notifications." +
+                            "duplicateGroupError.message"
+                    )
+                })
+            );
             closeWizard();
             setIsSubmitting(false);
 
@@ -89,98 +88,104 @@ export const CreateIdPGroupWizard: FunctionComponent<CreateGroupProps> = (props:
 
         updateIdentityProviderGroup(idpId, newIdpGroupList)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("extensions:console.identityProviderGroups.createGroupWizard.notifications." +
-                        "createIdentityProviderGroup.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("extensions:console.identityProviderGroups.createGroupWizard.notifications." +
-                        "createIdentityProviderGroup.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:console.identityProviderGroups.createGroupWizard.notifications." +
+                                "createIdentityProviderGroup.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:console.identityProviderGroups.createGroupWizard.notifications." +
+                                "createIdentityProviderGroup.success.message"
+                        )
+                    })
+                );
                 closeWizard();
                 updateList();
             })
             .catch(() => {
-                dispatch(addAlert({
-                    description: t("extensions:console.identityProviderGroups.createGroupWizard.notifications." +
-                        "createIdentityProviderGroup.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:console.identityProviderGroups.createGroupWizard.notifications." +
-                        "createIdentityProviderGroup.genericError.message")
-                }));
-            }).finally(() => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:console.identityProviderGroups.createGroupWizard.notifications." +
+                                "createIdentityProviderGroup.genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "idp:console.identityProviderGroups.createGroupWizard.notifications." +
+                                "createIdentityProviderGroup.genericError.message"
+                        )
+                    })
+                );
+            })
+            .finally(() => {
                 setIsSubmitting(false);
             });
     };
 
     return (
         <Modal
-            open={ true }
+            open={true}
             className="wizard create-role-wizard"
             dimmer="blurring"
             size="small"
-            onClose={ closeWizard }
-            closeOnDimmerClick={ false }
-            closeOnEscape= { false }
-            data-componentid={ componentId }
-            as={ Form }
-            onSubmit={ createIdpGroup }
-            id={ FORM_ID }
+            onClose={closeWizard}
+            closeOnDimmerClick={false}
+            closeOnEscape={false}
+            data-componentid={componentId}
+            as={Form}
+            onSubmit={createIdpGroup}
+            id={FORM_ID}
         >
             <Modal.Header className="wizard-header">
-                {
-                    t("console:manage.features.roles.addRoleWizard.heading", { type: "Group" })
-                }
-                <Heading as="h6">
-                    { t("extensions:console.identityProviderGroups.createGroupWizard.subHeading") }
-                </Heading>
+                {t("idp:manage.features.roles.addRoleWizard.heading", { type: "Group" })}
+                <Heading as="h6">{t("idp:console.identityProviderGroups.createGroupWizard.subHeading")}</Heading>
             </Modal.Header>
             <Modal.Content className="pb-6" scrolling>
                 <Grid>
-                    <Grid.Row columns={ 1 } key={ 1 }>
-                        <Grid.Column  mobile={ 16 } tablet={ 16 } computer={ 10 } key="identityProviderGroupName">
+                    <Grid.Row columns={1} key={1}>
+                        <Grid.Column mobile={16} tablet={16} computer={10} key="identityProviderGroupName">
                             <Form.Input
                                 name="identityProviderGroupName"
-                                label={ t("extensions:console.identityProviderGroups.createGroupWizard." +
-                                    "groupNameLabel") }
-                                placeholder={ t("extensions:console.identityProviderGroups.createGroupWizard." +
-                                    "groupNamePlaceHolder") }
-                                onChange={ (e: any) => setGroupName(e.target.value) }
-                                value={ groupName }
-                                required={ true }
-                                maxLength={ IdentityProviderConstants.CLAIM_CONFIG_FIELD_MAX_LENGTH }
-                                minLength={ IdentityProviderConstants.CLAIM_CONFIG_FIELD_MIN_LENGTH }
-                                width={ 16 }
-                                data-componentid={ `${ componentId }-group-name` }
+                                label={t("idp:console.identityProviderGroups.createGroupWizard." + "groupNameLabel")}
+                                placeholder={t(
+                                    "idp:console.identityProviderGroups.createGroupWizard." + "groupNamePlaceHolder"
+                                )}
+                                onChange={(e: any) => setGroupName(e.target.value)}
+                                value={groupName}
+                                required={true}
+                                maxLength={IdentityProviderConstants.CLAIM_CONFIG_FIELD_MAX_LENGTH}
+                                minLength={IdentityProviderConstants.CLAIM_CONFIG_FIELD_MIN_LENGTH}
+                                width={16}
+                                data-componentid={`${componentId}-group-name`}
                             />
-                            <Hint>
-                                { t("extensions:console.identityProviderGroups.createGroupWizard." +
-                                    "groupNameHint") }
-                            </Hint>
+                            <Hint>{t("idp:console.identityProviderGroups.createGroupWizard." + "groupNameHint")}</Hint>
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 } key={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1} key={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
                                 floated="left"
-                                onClick={ () => closeWizard() }
-                                data-componentid={ `${ componentId }-cancel-button` }
+                                onClick={() => closeWizard()}
+                                data-componentid={`${componentId}-cancel-button`}
                             >
-                                { t("common:cancel") }
+                                {t("idp:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <PrimaryButton
                                 floated="right"
-                                data-componentid={ `${ componentId }-finish-button` }
-                                disabled={ (groupName.trim().length <= 0) || isSubmitting }
-                                loading={ isSubmitting }
+                                data-componentid={`${componentId}-finish-button`}
+                                disabled={groupName.trim().length <= 0 || isSubmitting}
+                                loading={isSubmitting}
                                 type="submit"
                             >
-                                { t("console:manage.features.roles.addRoleWizard.buttons.finish") }
+                                {t("idp:manage.features.roles.addRoleWizard.buttons.finish")}
                             </PrimaryButton>
                         </Grid.Column>
                     </Grid.Row>
@@ -189,7 +194,6 @@ export const CreateIdPGroupWizard: FunctionComponent<CreateGroupProps> = (props:
         </Modal>
     );
 };
-
 
 CreateIdPGroupWizard.defaultProps = {
     "data-componentid": "identity-provider-group-create-wizard"

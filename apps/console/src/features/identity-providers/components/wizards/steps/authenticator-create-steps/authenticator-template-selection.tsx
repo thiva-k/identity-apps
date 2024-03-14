@@ -50,25 +50,22 @@ interface AuthenticatorTemplateSelectionWizardFormPropsInterface extends Identif
  * @param props - Props injected to the component.
  * @returns Authenticator Selection Component.
  */
-export const AuthenticatorTemplateSelection: FunctionComponent<
-    AuthenticatorTemplateSelectionWizardFormPropsInterface
-> = (
+export const AuthenticatorTemplateSelection: FunctionComponent<AuthenticatorTemplateSelectionWizardFormPropsInterface> = (
     props: AuthenticatorTemplateSelectionWizardFormPropsInterface
 ): ReactElement => {
-
     const {
         triggerSubmit,
         onSubmit,
         manualModeOptions,
         authenticatorTemplates,
         onTemplateSelect,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ selectedTemplate, setSelectedTemplate ] = useState<IdentityProviderInterface>(undefined);
-    const [ selectedManualModeOption, setSelectedManualModeOption ] = useState<any>(undefined);
+    const [selectedTemplate, setSelectedTemplate] = useState<IdentityProviderInterface>(undefined);
+    const [selectedManualModeOption, setSelectedManualModeOption] = useState<any>(undefined);
 
     /**
      * Handles template selection.
@@ -94,7 +91,7 @@ export const AuthenticatorTemplateSelection: FunctionComponent<
 
     return (
         <Forms
-            onSubmit={ (): void => {
+            onSubmit={(): void => {
                 if (selectedTemplate) {
                     onSubmit({
                         templateId: selectedTemplate.id
@@ -104,155 +101,128 @@ export const AuthenticatorTemplateSelection: FunctionComponent<
                         manualModeOptionId: selectedManualModeOption.authenticatorId
                     });
                 }
-            } }
-            submitState={ triggerSubmit }
+            }}
+            submitState={triggerSubmit}
         >
             <Grid>
-                {
-                    (
-                        authenticatorTemplates
-                        && authenticatorTemplates instanceof Array
-                        && authenticatorTemplates.length > 0
-                    )
-                        && (
-                            <Grid.Row columns={ 1 }>
-                                <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
+                {authenticatorTemplates &&
+                    authenticatorTemplates instanceof Array &&
+                    authenticatorTemplates.length > 0 && (
+                        <Grid.Row columns={1}>
+                            <Grid.Column mobile={16} tablet={16} computer={16}>
+                                <Heading as="h4">
+                                    {t(
+                                        "idp:develop.features.authenticationProvider.wizards." +
+                                            "addAuthenticator.steps.authenticatorSelection.quickSetup.title"
+                                    )}
+                                </Heading>
+                                <Hint>
+                                    {t(
+                                        "idp:develop.features.authenticationProvider.wizards." +
+                                            "addAuthenticator.steps.authenticatorSelection.quickSetup.subTitle"
+                                    )}
+                                </Hint>
+                                <Divider hidden />
+                                <ResourceGrid>
+                                    {authenticatorTemplates.map(
+                                        (template: IdentityProviderTemplateInterface, templateIndex: number) => (
+                                            <ResourceGrid.Card
+                                                key={templateIndex}
+                                                resourceName={
+                                                    template.name === "Enterprise"
+                                                        ? "Standard-Based IdP"
+                                                        : template.name
+                                                }
+                                                isResourceComingSoon={template.comingSoon}
+                                                disabled={template.disabled}
+                                                comingSoonRibbonLabel={t("idp:comingSoon")}
+                                                resourceDescription={template.description}
+                                                resourceImage={IdentityProviderManagementUtils.resolveTemplateImage(
+                                                    template.image,
+                                                    getIdPIcons()
+                                                )}
+                                                tags={template.tags}
+                                                onClick={() => {
+                                                    handleTemplateSelection(template);
+                                                }}
+                                                showTooltips={{
+                                                    description: true,
+                                                    header: false
+                                                }}
+                                                selected={selectedTemplate?.id === template.id}
+                                                data-testid={`${componentId}-${template.name}`}
+                                            />
+                                        )
+                                    )}
+                                </ResourceGrid>
+                            </Grid.Column>
+                        </Grid.Row>
+                    )}
+                {manualModeOptions && manualModeOptions instanceof Array && manualModeOptions.length > 0 && (
+                    <>
+                        {authenticatorTemplates &&
+                            authenticatorTemplates instanceof Array &&
+                            authenticatorTemplates.length > 0 && (
+                                <>
                                     <Heading as="h4">
-                                        {
-                                            t("console:develop.features.authenticationProvider.wizards." +
-                                                "addAuthenticator.steps.authenticatorSelection.quickSetup.title")
-                                        }
+                                        {t(
+                                            "idp:develop.features.authenticationProvider." +
+                                                "wizards.addAuthenticator.steps.authenticatorSelection." +
+                                                "manualSetup.title"
+                                        )}
                                     </Heading>
                                     <Hint>
-                                        {
-                                            t("console:develop.features.authenticationProvider.wizards." +
-                                                "addAuthenticator.steps.authenticatorSelection.quickSetup.subTitle")
-                                        }
+                                        {t(
+                                            "idp:develop.features.authenticationProvider.wizards." +
+                                                "addAuthenticator.steps.authenticatorSelection." +
+                                                "manualSetup.subTitle"
+                                        )}
                                     </Hint>
-                                    <Divider hidden />
-                                    <ResourceGrid>
-                                        {
-                                            authenticatorTemplates.map((
-                                                template: IdentityProviderTemplateInterface,
-                                                templateIndex: number
-                                            ) => (
-                                                <ResourceGrid.Card
-                                                    key={ templateIndex }
-                                                    resourceName={
-                                                        template.name === "Enterprise"
-                                                            ? "Standard-Based IdP"
-                                                            : template.name
-                                                    }
-                                                    isResourceComingSoon={ template.comingSoon }
-                                                    disabled={ template.disabled }
-                                                    comingSoonRibbonLabel={ t("common:comingSoon") }
-                                                    resourceDescription={ template.description }
-                                                    resourceImage={
-                                                        IdentityProviderManagementUtils
-                                                            .resolveTemplateImage(template.image, getIdPIcons())
-                                                    }
-                                                    tags={ template.tags }
-                                                    onClick={ () => {
-                                                        handleTemplateSelection(template);
-                                                    } }
-                                                    showTooltips={ {
-                                                        description: true,
-                                                        header: false
-                                                    } }
-                                                    selected={ selectedTemplate?.id === template.id }
-                                                    data-testid={ `${ componentId }-${ template.name }` }
-                                                />
-                                            ))
+                                </>
+                            )}
+                        <Divider hidden />
+                        <Card.Group className="authenticators-grid">
+                            {manualModeOptions.map(
+                                (template: FederatedAuthenticatorMetaDataInterface, templateIndex: number) => (
+                                    <Card
+                                        key={templateIndex}
+                                        onClick={() => {
+                                            handleManualModeOptionSelection(template);
+                                        }}
+                                        data-testid={`${componentId}-${template.name}`}
+                                        selected={
+                                            selectedManualModeOption?.authenticatorId === template.authenticatorId
                                         }
-                                    </ResourceGrid>
-                                </Grid.Column>
-                            </Grid.Row>
-                        )
-                }
-                {
-                    (
-                        manualModeOptions
-                        && manualModeOptions instanceof Array
-                        && manualModeOptions.length > 0
-                    )
-                        && (
-                            <>
-                                {
-                                    authenticatorTemplates
-                                    && authenticatorTemplates instanceof Array
-                                    && authenticatorTemplates.length > 0 && (
-                                        <>
-                                            <Heading as="h4">
-                                                {
-                                                    t("console:develop.features.authenticationProvider." +
-                                                        "wizards.addAuthenticator.steps.authenticatorSelection." +
-                                                        "manualSetup.title")
-                                                }
-                                            </Heading>
-                                            <Hint>
-                                                {
-                                                    t("console:develop.features.authenticationProvider.wizards." +
-                                                        "addAuthenticator.steps.authenticatorSelection." +
-                                                        "manualSetup.subTitle")
-                                                }
-                                            </Hint>
-                                        </>
-                                    )
-                                }
-                                <Divider hidden />
-                                <Card.Group className="authenticators-grid">
-                                    {
-                                        manualModeOptions.map((
-                                            template: FederatedAuthenticatorMetaDataInterface,
-                                            templateIndex: number
-                                        ) => (
-                                            <Card
-                                                key={ templateIndex }
-                                                onClick={ () => {
-                                                    handleManualModeOptionSelection(template);
-                                                } }
-                                                data-testid={ `${ componentId }-${ template.name }` }
-                                                selected={
-                                                    selectedManualModeOption?.authenticatorId === template
-                                                        .authenticatorId
-                                                }
-                                                className={ 
-                                                    selectedManualModeOption?.authenticatorId === template
-                                                        .authenticatorId 
-                                                        ? "selection-info-card selected" 
-                                                        : "selection-info-card"  
-                                                }
-                                                size="small"
-                                            >
-                                                <Card.Content className="p-4">
-                                                    <GenericIcon
-                                                        icon={ template.icon || getIdPIcons().default }
-                                                        size="micro"
-                                                        floated="left"
-                                                        shape="square"
-                                                        className="theme-icon hover-rounded card-image"
-                                                        inline
-                                                        transparent
-                                                    />
-                                                    <Card.Header 
-                                                        textAlign="left" 
-                                                        className="card-header ellipsis pt-1"
-                                                    >
-                                                        { template.displayName || template.name }
-                                                    </Card.Header>
-                                                    <Card.Description 
-                                                        className="card-description"
-                                                    >
-                                                        { template.description }
-                                                    </Card.Description>
-                                                </Card.Content>
-                                            </Card>
-                                        ))
-                                    }
-                                </Card.Group>
-                            </>
-                        )
-                }
+                                        className={
+                                            selectedManualModeOption?.authenticatorId === template.authenticatorId
+                                                ? "selection-info-card selected"
+                                                : "selection-info-card"
+                                        }
+                                        size="small"
+                                    >
+                                        <Card.Content className="p-4">
+                                            <GenericIcon
+                                                icon={template.icon || getIdPIcons().default}
+                                                size="micro"
+                                                floated="left"
+                                                shape="square"
+                                                className="theme-icon hover-rounded card-image"
+                                                inline
+                                                transparent
+                                            />
+                                            <Card.Header textAlign="left" className="card-header ellipsis pt-1">
+                                                {template.displayName || template.name}
+                                            </Card.Header>
+                                            <Card.Description className="card-description">
+                                                {template.description}
+                                            </Card.Description>
+                                        </Card.Content>
+                                    </Card>
+                                )
+                            )}
+                        </Card.Group>
+                    </>
+                )}
             </Grid>
         </Forms>
     );

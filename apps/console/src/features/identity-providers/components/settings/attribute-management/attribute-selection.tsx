@@ -55,21 +55,20 @@ export interface AttributeSelectionUIPropsInterface {
 export const AttributeSelection: FunctionComponent<AttributeSelectionPropsInterface> = (
     props: AttributeSelectionPropsInterface
 ): ReactElement => {
-
     const {
         attributeList,
         setSelectedAttributesWithMapping,
         selectedAttributesWithMapping,
         uiProps,
         isReadOnly,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ showSelectionModal, setShowSelectionModal ] = useState<boolean>(false);
+    const [showSelectionModal, setShowSelectionModal] = useState<boolean>(false);
 
-    const [ searchFilter, setSearchFilter ] = useState<string>("");
+    const [searchFilter, setSearchFilter] = useState<string>("");
 
     const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
         const changedValue: string = event.target.value;
@@ -84,57 +83,53 @@ export const AttributeSelection: FunctionComponent<AttributeSelectionPropsInterf
     const addSelectionModal = (): ReactElement => {
         return (
             <AttributeSelectionWizard
-                attributesList={ attributeList }
-                selectedAttributes={ selectedAttributesWithMapping }
-                setSelectedAttributes={ setSelectedAttributesWithMapping }
-                showAddModal={ showSelectionModal }
-                setShowAddModal={ setShowSelectionModal }
-                data-testid={ `${ testId }-wizard` }
+                attributesList={attributeList}
+                selectedAttributes={selectedAttributesWithMapping}
+                setSelectedAttributes={setSelectedAttributesWithMapping}
+                showAddModal={showSelectionModal}
+                setShowAddModal={setShowSelectionModal}
+                data-testid={`${testId}-wizard`}
             />
         );
     };
 
     const updateAttributeMapping = (mapping: IdentityProviderCommonClaimMappingInterface): void => {
-        setSelectedAttributesWithMapping(
-            [
-                ...selectedAttributesWithMapping.filter(
-                    (element: IdentityProviderCommonClaimMappingInterface) => element.claim.uri !== mapping.claim.uri),
-                mapping
-            ]
-        );
+        setSelectedAttributesWithMapping([
+            ...selectedAttributesWithMapping.filter(
+                (element: IdentityProviderCommonClaimMappingInterface) => element.claim.uri !== mapping.claim.uri
+            ),
+            mapping
+        ]);
     };
 
     const renderMappingTable = (): ReactElement => (
-        <Grid 
-            data-testid={ testId } 
-            className="user-role-edit-header-segment clearing attributes ml-0 mr-0"
-        >
+        <Grid data-testid={testId} className="user-role-edit-header-segment clearing attributes ml-0 mr-0">
             <Grid.Row>
-                <Table data-testid={ `${ testId }-action-bar` } basic="very" compact>
+                <Table data-testid={`${testId}-action-bar`} basic="very" compact>
                     <Table.Body>
                         <Table.Row>
                             <Table.Cell>
                                 <Input
-                                    icon={ <Icon name="search"/> }
-                                    onChange={ handleSearch }
-                                    placeholder={
-                                        t("console:develop.features.authenticationProvider.forms." +
+                                    icon={<Icon name="search" />}
+                                    onChange={handleSearch}
+                                    placeholder={t(
+                                        "idp:develop.features.authenticationProvider.forms." +
                                             "attributeSettings.attributeSelection." +
-                                            "searchAttributes.placeHolder")
-                                    }
+                                            "searchAttributes.placeHolder"
+                                    )}
                                     floated="left"
                                     size="small"
-                                    data-testid={ `${ testId }-search` }
+                                    data-testid={`${testId}-search`}
                                 />
                             </Table.Cell>
                             <Table.Cell textAlign="right">
-                                <Show when={ AccessControlConstants.IDP_EDIT }>
+                                <Show when={AccessControlConstants.IDP_EDIT}>
                                     <Button
                                         size="medium"
                                         icon="pencil"
                                         floated="right"
-                                        onClick={ handleOpenSelectionModal }
-                                        data-testid={ `${ testId }-edit-button` }
+                                        onClick={handleOpenSelectionModal}
+                                        data-testid={`${testId}-edit-button`}
                                     />
                                 </Show>
                             </Table.Cell>
@@ -143,111 +138,92 @@ export const AttributeSelection: FunctionComponent<AttributeSelectionPropsInterf
                 </Table>
             </Grid.Row>
             <Grid.Row>
-                <Table data-testid={ `${ testId }-list` } singleLine compact>
+                <Table data-testid={`${testId}-list`} singleLine compact>
                     <Table.Header>
                         {
-                            (
-                                <Table.Row>
-                                    <Table.HeaderCell>
-                                        <strong>
-                                            { uiProps.attributeColumnHeader }
-                                        </strong>
-                                    </Table.HeaderCell>
-                                    <Table.HeaderCell>
-                                        <strong>
-                                            { uiProps.attributeMapColumnHeader }
-                                        </strong>
-                                    </Table.HeaderCell>
-                                </Table.Row>
-                            )
+                            <Table.Row>
+                                <Table.HeaderCell>
+                                    <strong>{uiProps.attributeColumnHeader}</strong>
+                                </Table.HeaderCell>
+                                <Table.HeaderCell>
+                                    <strong>{uiProps.attributeMapColumnHeader}</strong>
+                                </Table.HeaderCell>
+                            </Table.Row>
                         }
                     </Table.Header>
                     <Table.Body>
-                        {
-                            selectedAttributesWithMapping?.filter(
-                                (mapping:IdentityProviderCommonClaimMappingInterface) =>
-                                    isEmpty(searchFilter)
-                                        ? true
-                                        : mapping?.claim?.displayName?.startsWith(searchFilter)
-                            )?.sort((
-                                a:IdentityProviderCommonClaimMappingInterface,
-                                b:IdentityProviderCommonClaimMappingInterface
-                            ) => a.claim.displayName.localeCompare(b.claim.displayName)
-                            )?.map((mapping: IdentityProviderCommonClaimMappingInterface) => {
+                        {selectedAttributesWithMapping
+                            ?.filter((mapping: IdentityProviderCommonClaimMappingInterface) =>
+                                isEmpty(searchFilter) ? true : mapping?.claim?.displayName?.startsWith(searchFilter)
+                            )
+                            ?.sort(
+                                (
+                                    a: IdentityProviderCommonClaimMappingInterface,
+                                    b: IdentityProviderCommonClaimMappingInterface
+                                ) => a.claim.displayName.localeCompare(b.claim.displayName)
+                            )
+                            ?.map((mapping: IdentityProviderCommonClaimMappingInterface) => {
                                 return (
                                     <AttributeListItem
-                                        key={ mapping?.claim.id }
-                                        attribute={ mapping?.claim }
+                                        key={mapping?.claim.id}
+                                        attribute={mapping?.claim}
                                         placeholder={
-                                            uiProps.attributeMapInputPlaceholderPrefix
-                                            + mapping?.claim.displayName
+                                            uiProps.attributeMapInputPlaceholderPrefix + mapping?.claim.displayName
                                         }
-                                        updateMapping={ updateAttributeMapping }
-                                        mapping={ mapping?.mappedValue }
-                                        data-testid={
-                                            `${ testId }-attribute-list-item-${
-                                                mapping?.claim.id }`
-                                        }
-                                        isReadOnly={ isReadOnly }
+                                        updateMapping={updateAttributeMapping}
+                                        mapping={mapping?.mappedValue}
+                                        data-testid={`${testId}-attribute-list-item-${mapping?.claim.id}`}
+                                        isReadOnly={isReadOnly}
                                     />
                                 );
-                            }
-                            )
-                        }
+                            })}
                     </Table.Body>
                 </Table>
             </Grid.Row>
         </Grid>
     );
 
-    return (
-        (selectedAttributesWithMapping || searchFilter)
-            ? (
-                <>
-                    <Grid.Row data-testid={ `${ testId }-section` }>
-                        <Grid.Column>
-                            { uiProps.enablePrecedingDivider && <Divider/> }
-                            <Heading as="h4">
-                                { uiProps.componentHeading }
-                            </Heading>
-                            <Hint>
-                                { uiProps.hint }
-                            </Hint>
-                            <Divider hidden/>
-                            {
-                                (selectedAttributesWithMapping?.length > 0)
-                                    ? renderMappingTable()
-                                    : (
-                                        <Segment data-testid={ testId }>
-                                            <EmptyPlaceholder
-                                                title={ t("console:develop.features.authenticationProvider." +
-                                                    "placeHolders.noAttributes." +
-                                                    "title") }
-                                                subtitle={ [
-                                                    t("console:develop.features.authenticationProvider." +
-                                                        "placeHolders.noAttributes." +
-                                                        "subtitles.0")
-                                                ] }
-                                                action={ (
-                                                    <Show when={ AccessControlConstants.IDP_EDIT }>
-                                                        <PrimaryButton onClick={ handleOpenSelectionModal } icon="plus">
-                                                            { t("console:develop.features.authenticationProvider." +
-                                                                "buttons.addAttribute") }
-                                                        </PrimaryButton>
-                                                    </Show>
-                                                ) }
-                                                data-testid={ `${ testId }-empty-placeholder` }
-                                            />
-                                        </Segment>
+    return selectedAttributesWithMapping || searchFilter ? (
+        <>
+            <Grid.Row data-testid={`${testId}-section`}>
+                <Grid.Column>
+                    {uiProps.enablePrecedingDivider && <Divider />}
+                    <Heading as="h4">{uiProps.componentHeading}</Heading>
+                    <Hint>{uiProps.hint}</Hint>
+                    <Divider hidden />
+                    {selectedAttributesWithMapping?.length > 0 ? (
+                        renderMappingTable()
+                    ) : (
+                        <Segment data-testid={testId}>
+                            <EmptyPlaceholder
+                                title={t(
+                                    "idp:develop.features.authenticationProvider." +
+                                        "placeHolders.noAttributes." +
+                                        "title"
+                                )}
+                                subtitle={[
+                                    t(
+                                        "idp:develop.features.authenticationProvider." +
+                                            "placeHolders.noAttributes." +
+                                            "subtitles.0"
                                     )
-                            }
-                        </Grid.Column>
-                    </Grid.Row>
-                    { addSelectionModal() }
-                </>
-            )
-            : null
-    );
+                                ]}
+                                action={
+                                    <Show when={AccessControlConstants.IDP_EDIT}>
+                                        <PrimaryButton onClick={handleOpenSelectionModal} icon="plus">
+                                            {t("idp:develop.features.authenticationProvider." + "buttons.addAttribute")}
+                                        </PrimaryButton>
+                                    </Show>
+                                }
+                                data-testid={`${testId}-empty-placeholder`}
+                            />
+                        </Segment>
+                    )}
+                </Grid.Column>
+            </Grid.Row>
+            {addSelectionModal()}
+        </>
+    ) : null;
 };
 
 /**

@@ -32,10 +32,7 @@ import { Grid, Icon } from "semantic-ui-react";
 import { AuthenticatorSettings, GeneralSettings, OutboundProvisioningSettings, WizardSummary } from "./steps";
 import { identityProviderConfig } from "../../../../extensions/configs";
 import { AppState, ModalWithSidePanel } from "../../../core";
-import {
-    createIdentityProvider,
-    getFederatedAuthenticatorMetadata
-} from "../../api";
+import { createIdentityProvider, getFederatedAuthenticatorMetadata } from "../../api";
 import { getIdentityProviderWizardStepIcons } from "../../configs/ui";
 import { IdentityProviderManagementConstants } from "../../constants";
 import {
@@ -55,8 +52,9 @@ import { handleGetFederatedAuthenticatorMetadataAPICallError } from "../utils";
 /**
  * Proptypes for the identity provider creation wizard component.
  */
-interface IdentityProviderCreateWizardPropsInterface extends TestableComponentInterface,
-    GenericIdentityProviderCreateWizardPropsInterface { }
+interface IdentityProviderCreateWizardPropsInterface
+    extends TestableComponentInterface,
+        GenericIdentityProviderCreateWizardPropsInterface {}
 
 /**
  * Enum for wizard.
@@ -105,43 +103,37 @@ interface WizardStepInterface {
 export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCreateWizardPropsInterface> = (
     props: IdentityProviderCreateWizardPropsInterface
 ): ReactElement => {
+    const { onWizardClose, onIDPCreate, currentStep, title, subTitle, template, ["data-testid"]: testId } = props;
 
-    const {
-        onWizardClose,
-        onIDPCreate,
-        currentStep,
-        title,
-        subTitle,
-        template,
-        [ "data-testid" ]: testId
-    } = props;
-
-    const [ initWizard, setInitWizard ] = useState<boolean>(false);
-    const [ wizardSteps, setWizardSteps ] = useState<WizardStepInterface[]>(undefined);
+    const [initWizard, setInitWizard] = useState<boolean>(false);
+    const [wizardSteps, setWizardSteps] = useState<WizardStepInterface[]>(undefined);
     //TODO: Check the usage of this state variable and remove if not needed.
-    const [ isSelectionHidden ] = useState<boolean>(false);
-    const [ wizardState, setWizardState ] = useState<WizardStateInterface>(undefined);
-    const [ partiallyCompletedStep, setPartiallyCompletedStep ] = useState<number>(undefined);
-    const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(currentStep);
-    const [ defaultAuthenticatorMetadata, setDefaultAuthenticatorMetadata ] =
-        useState<FederatedAuthenticatorMetaInterface>(undefined);
-    const [ defaultOutboundProvisioningConnectorMetadata, setDefaultOutboundProvisioningConnectorMetadata ] =
-        useState<OutboundProvisioningConnectorMetaInterface>(undefined);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [isSelectionHidden] = useState<boolean>(false);
+    const [wizardState, setWizardState] = useState<WizardStateInterface>(undefined);
+    const [partiallyCompletedStep, setPartiallyCompletedStep] = useState<number>(undefined);
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(currentStep);
+    const [defaultAuthenticatorMetadata, setDefaultAuthenticatorMetadata] = useState<
+        FederatedAuthenticatorMetaInterface
+    >(undefined);
+    const [defaultOutboundProvisioningConnectorMetadata, setDefaultOutboundProvisioningConnectorMetadata] = useState<
+        OutboundProvisioningConnectorMetaInterface
+    >(undefined);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const dispatch: Dispatch = useDispatch();
     const { t } = useTranslation();
 
-    const availableAuthenticators: FederatedAuthenticatorListItemInterface[] = useSelector((state: AppState) =>
-        state.identityProvider.meta.authenticators);
+    const availableAuthenticators: FederatedAuthenticatorListItemInterface[] = useSelector(
+        (state: AppState) => state.identityProvider.meta.authenticators
+    );
 
     // Triggers for each wizard step.
-    const [ submitGeneralSettings, setSubmitGeneralSettings ] = useTrigger();
-    const [ submitAuthenticator, setSubmitAuthenticator ] = useTrigger();
-    const [ submitOutboundProvisioningSettings, setSubmitOutboundProvisioningSettings ] = useTrigger();
-    const [ finishSubmit, setFinishSubmit ] = useTrigger();
+    const [submitGeneralSettings, setSubmitGeneralSettings] = useTrigger();
+    const [submitAuthenticator, setSubmitAuthenticator] = useTrigger();
+    const [submitOutboundProvisioningSettings, setSubmitOutboundProvisioningSettings] = useTrigger();
+    const [finishSubmit, setFinishSubmit] = useTrigger();
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     /**
      * Creates a new identity provider.
@@ -149,19 +141,22 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
      * @param identityProvider - Identity provider object.
      */
     const createNewIdentityProvider = (identityProvider: IdentityProviderInterface): void => {
-
         identityProvider.templateId = template.templateId;
         setIsSubmitting(true);
 
         createIdentityProvider(identityProvider)
             .then((response: AxiosResponse) => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications." +
-                        "addIDP.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider.notifications." +
-                        "addIDP.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider.notifications." + "addIDP.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:develop.features.authenticationProvider.notifications." + "addIDP.success.message"
+                        )
+                    })
+                );
 
                 // The created resource's id is sent as a location header.
                 // If that's available, navigate to the edit page.
@@ -182,19 +177,12 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
                     ? IdentityProviderManagementConstants.ERROR_CREATE_LIMIT_REACHED
                     : IdentityProviderManagementConstants.ERROR_CREATE_LIMIT_REACHED_IDP;
 
-                if (error.response.status === 403 &&
-                    error?.response?.data?.code ===
-                    identityAppsError.getErrorCode()) {
-
+                if (error.response.status === 403 && error?.response?.data?.code === identityAppsError.getErrorCode()) {
                     setAlert({
                         code: identityAppsError.getErrorCode(),
-                        description: t(
-                            identityAppsError.getErrorDescription()
-                        ),
+                        description: t(identityAppsError.getErrorDescription()),
                         level: AlertLevels.ERROR,
-                        message: t(
-                            identityAppsError.getErrorMessage()
-                        ),
+                        message: t(identityAppsError.getErrorMessage()),
                         traceId: identityAppsError.getErrorTraceId()
                     });
 
@@ -203,23 +191,27 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
 
                 if (error.response && error.response.data && error.response.data.description) {
                     setAlert({
-                        description: t("console:develop.features.authenticationProvider.notifications." +
-                            "addIDP.error.description",
-                        { description: error.response.data.description }),
+                        description: t(
+                            "idp:develop.features.authenticationProvider.notifications." + "addIDP.error.description",
+                            { description: error.response.data.description }
+                        ),
                         level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider.notifications." +
-                            "addIDP.error.message")
+                        message: t(
+                            "idp:develop.features.authenticationProvider.notifications." + "addIDP.error.message"
+                        )
                     });
 
                     return;
                 }
 
                 setAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications." +
-                        "addIDP.genericError.description"),
+                    description: t(
+                        "idp:develop.features.authenticationProvider.notifications." + "addIDP.genericError.description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider.notifications." +
-                        "addIDP.genericError.message")
+                    message: t(
+                        "idp:develop.features.authenticationProvider.notifications." + "addIDP.genericError.message"
+                    )
                 });
             })
             .finally(() => {
@@ -274,10 +266,12 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
      */
     const handleWizardFormSubmit = (values: any, formType: WizardConstants): void => {
         !isEnterpriseMode() && setCurrentWizardStep(currentWizardStep + 1);
-        if (wizardSteps[currentWizardStep]?.name === WizardSteps.AUTHENTICATOR_SETTINGS ||
-            wizardSteps[currentWizardStep]?.name === WizardSteps.OUTBOUND_PROVISIONING_SETTINGS) {
+        if (
+            wizardSteps[currentWizardStep]?.name === WizardSteps.AUTHENTICATOR_SETTINGS ||
+            wizardSteps[currentWizardStep]?.name === WizardSteps.OUTBOUND_PROVISIONING_SETTINGS
+        ) {
             setWizardState({
-                [ WizardConstants.IDENTITY_PROVIDER ]: values
+                [WizardConstants.IDENTITY_PROVIDER]: values
             });
         } else {
             setWizardState(merge(wizardState, { [formType]: values }));
@@ -301,19 +295,16 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
      * @param identityProvider - Identity provider data.
      */
     const handleWizardFormFinish = (identityProvider: IdentityProviderInterface): void => {
-
         const connector: OutboundProvisioningConnectorInterface =
             identityProvider?.provisioning?.outboundConnectors?.connectors[0];
 
-        const isGoogleConnector: boolean = get(connector,
-            IdentityProviderManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME) ===
+        const isGoogleConnector: boolean =
+            get(connector, IdentityProviderManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME) ===
             IdentityProviderManagementConstants.PROVISIONING_CONNECTOR_GOOGLE;
 
         // If the outbound connector is Google, remove the displayName from the connector.
         if (connector && isGoogleConnector) {
-            delete connector[
-                IdentityProviderManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME
-            ];
+            delete connector[IdentityProviderManagementConstants.PROVISIONING_CONNECTOR_DISPLAY_NAME];
         }
 
         createNewIdentityProvider(identityProvider);
@@ -323,7 +314,6 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
      * Called when modal close event is triggered.
      */
     const handleWizardClose = (): void => {
-
         // Clear data.
         setDefaultOutboundProvisioningConnectorMetadata(undefined);
         setDefaultAuthenticatorMetadata(undefined);
@@ -357,54 +347,53 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
             case WizardSteps.GENERAL_DETAILS: {
                 return (
                     <GeneralSettings
-                        triggerSubmit={ submitGeneralSettings }
-                        initialValues={ wizardState && wizardState[WizardConstants.IDENTITY_PROVIDER] }
-                        onSubmit={ (values: IdentityProviderInterface): void => {
-                            handleWizardFormSubmit(values,
-                                WizardConstants.IDENTITY_PROVIDER);
+                        triggerSubmit={submitGeneralSettings}
+                        initialValues={wizardState && wizardState[WizardConstants.IDENTITY_PROVIDER]}
+                        onSubmit={(values: IdentityProviderInterface): void => {
+                            handleWizardFormSubmit(values, WizardConstants.IDENTITY_PROVIDER);
 
                             isEnterpriseMode() && handleWizardFormFinish(generateWizardSummary());
-
-                        }
-                        }
-                        template={ template }
-                        data-testid={ `${ testId }-general-settings` }
+                        }}
+                        template={template}
+                        data-testid={`${testId}-general-settings`}
                     />
                 );
             }
             case WizardSteps.AUTHENTICATOR_SETTINGS: {
                 return (
                     <AuthenticatorSettings
-                        metadata={ defaultAuthenticatorMetadata }
-                        initialValues={ wizardState[WizardConstants.IDENTITY_PROVIDER] }
-                        onSubmit={ (values: IdentityProviderInterface): void => handleWizardFormSubmit(
-                            values, WizardConstants.IDENTITY_PROVIDER) }
-                        triggerSubmit={ submitAuthenticator }
-                        data-testid={ `${ testId }-authenticator-settings` }
+                        metadata={defaultAuthenticatorMetadata}
+                        initialValues={wizardState[WizardConstants.IDENTITY_PROVIDER]}
+                        onSubmit={(values: IdentityProviderInterface): void =>
+                            handleWizardFormSubmit(values, WizardConstants.IDENTITY_PROVIDER)
+                        }
+                        triggerSubmit={submitAuthenticator}
+                        data-testid={`${testId}-authenticator-settings`}
                     />
                 );
             }
             case WizardSteps.OUTBOUND_PROVISIONING_SETTINGS: {
                 return (
                     <OutboundProvisioningSettings
-                        metadata={ defaultOutboundProvisioningConnectorMetadata }
-                        initialValues={ wizardState[WizardConstants.IDENTITY_PROVIDER] }
-                        onSubmit={ (values: IdentityProviderInterface): void => handleWizardFormSubmit(
-                            values, WizardConstants.IDENTITY_PROVIDER) }
-                        triggerSubmit={ submitOutboundProvisioningSettings }
-                        data-testid={ `${ testId }-outbound-provisioning-settings` }
+                        metadata={defaultOutboundProvisioningConnectorMetadata}
+                        initialValues={wizardState[WizardConstants.IDENTITY_PROVIDER]}
+                        onSubmit={(values: IdentityProviderInterface): void =>
+                            handleWizardFormSubmit(values, WizardConstants.IDENTITY_PROVIDER)
+                        }
+                        triggerSubmit={submitOutboundProvisioningSettings}
+                        data-testid={`${testId}-outbound-provisioning-settings`}
                     />
                 );
             }
             case WizardSteps.SUMMARY: {
                 return (
                     <WizardSummary
-                        provisioningConnectorMetadata={ defaultOutboundProvisioningConnectorMetadata }
-                        authenticatorMetadata={ defaultAuthenticatorMetadata }
-                        triggerSubmit={ finishSubmit }
-                        identityProvider={ generateWizardSummary() }
-                        onSubmit={ handleWizardFormFinish }
-                        data-testid={ `${ testId }-summary` }
+                        provisioningConnectorMetadata={defaultOutboundProvisioningConnectorMetadata}
+                        authenticatorMetadata={defaultAuthenticatorMetadata}
+                        triggerSubmit={finishSubmit}
+                        identityProvider={generateWizardSummary()}
+                        onSubmit={handleWizardFormFinish}
+                        data-testid={`${testId}-summary`}
                     />
                 );
             }
@@ -450,12 +439,15 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
      * Called when `availableAuthenticators` are changed.
      */
     useEffect(() => {
-        if (availableAuthenticators?.find((
-            eachAuthenticator: FederatedAuthenticatorListItemInterface
-        ) => eachAuthenticator.authenticatorId === template?.idp?.federatedAuthenticators?.defaultAuthenticatorId)) {
+        if (
+            availableAuthenticators?.find(
+                (eachAuthenticator: FederatedAuthenticatorListItemInterface) =>
+                    eachAuthenticator.authenticatorId === template?.idp?.federatedAuthenticators?.defaultAuthenticatorId
+            )
+        ) {
             setAuthenticatorMetadata(template?.idp?.federatedAuthenticators?.defaultAuthenticatorId);
         }
-    }, [ availableAuthenticators ]);
+    }, [availableAuthenticators]);
 
     /**
      * Update initial elements with a matching element form the source elements, if exists. Matching is done via the
@@ -474,41 +466,47 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
         return initial?.map(
             (eachInitialElement: AuthenticatorPropertyInterface | CommonPluggableComponentPropertyInterface) => {
                 const match: CommonPluggableComponentPropertyInterface = source.find(
-                    (eachSourceElement: CommonPluggableComponentPropertyInterface) => eachSourceElement[key] === 
-                        eachInitialElement[key]);
+                    (eachSourceElement: CommonPluggableComponentPropertyInterface) =>
+                        eachSourceElement[key] === eachInitialElement[key]
+                );
 
                 return match ? match : eachInitialElement;
-            });
+            }
+        );
     };
 
     /**
      * Validate and get federate authenticators.
      */
     const getValidatedAuthenticators = () => {
-        const defaultAuthenticatorPropertiesFromMetadata: AuthenticatorPropertyInterface[] = 
-            defaultAuthenticatorMetadata?.properties.map(
-                (eachProp: CommonPluggableComponentMetaPropertyInterface): AuthenticatorPropertyInterface => {
-                    return {
-                        key: eachProp?.key,
-                        value: eachProp?.defaultValue
-                    };
-                });
+        const defaultAuthenticatorPropertiesFromMetadata: AuthenticatorPropertyInterface[] = defaultAuthenticatorMetadata?.properties.map(
+            (eachProp: CommonPluggableComponentMetaPropertyInterface): AuthenticatorPropertyInterface => {
+                return {
+                    key: eachProp?.key,
+                    value: eachProp?.defaultValue
+                };
+            }
+        );
 
         // For the default authenticator, update values of it's properties with the corresponding value from the
         // template, if any.
         // todo Need to do the same for rest of the configured authenticators in the template.
-        const authenticatorsInTemplate: FederatedAuthenticatorListItemInterface[] = template?.
-            idp?.federatedAuthenticators.authenticators;
+        const authenticatorsInTemplate: FederatedAuthenticatorListItemInterface[] =
+            template?.idp?.federatedAuthenticators.authenticators;
 
         return {
             authenticators: authenticatorsInTemplate.map((authenticator: FederatedAuthenticatorListItemInterface) => {
-                return authenticator.authenticatorId === template?.idp?.federatedAuthenticators.defaultAuthenticatorId ?
-                    {
-                        ...authenticator,
-                        properties: getUpdatedElementsByKey(defaultAuthenticatorPropertiesFromMetadata,
-                            authenticator.properties, "key")
-                        // properties: merge(defaultAuthenticatorPropertiesFromMetadata, authenticator.properties)
-                    } : authenticator;
+                return authenticator.authenticatorId === template?.idp?.federatedAuthenticators.defaultAuthenticatorId
+                    ? {
+                          ...authenticator,
+                          properties: getUpdatedElementsByKey(
+                              defaultAuthenticatorPropertiesFromMetadata,
+                              authenticator.properties,
+                              "key"
+                          )
+                          // properties: merge(defaultAuthenticatorPropertiesFromMetadata, authenticator.properties)
+                      }
+                    : authenticator;
             }),
             defaultAuthenticatorId: template?.idp?.federatedAuthenticators.defaultAuthenticatorId
         };
@@ -518,31 +516,35 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
      * Validate and get outbound provisioning connectors.
      */
     const getValidatedOutboundProvisioningConnectors = () => {
-        const defaultConnectorPropertiesFromMetadata: CommonPluggableComponentPropertyInterface[] = 
-            defaultOutboundProvisioningConnectorMetadata?.properties.map(
-                // eslint-disable-next-line max-len
-                (eachProp: CommonPluggableComponentMetaPropertyInterface): CommonPluggableComponentPropertyInterface => {
-                    return {
-                        key: eachProp?.key,
-                        value: eachProp?.defaultValue
-                    };
-                });
+        const defaultConnectorPropertiesFromMetadata: CommonPluggableComponentPropertyInterface[] = defaultOutboundProvisioningConnectorMetadata?.properties.map(
+            // eslint-disable-next-line max-len
+            (eachProp: CommonPluggableComponentMetaPropertyInterface): CommonPluggableComponentPropertyInterface => {
+                return {
+                    key: eachProp?.key,
+                    value: eachProp?.defaultValue
+                };
+            }
+        );
 
         // For the default connector, update values of it's properties with the corresponding value from the
         // template, if any.
         // todo Need to do the same for rest of the configured authenticators in the template.
-        const connectorsInTemplate: OutboundProvisioningConnectorInterface[] = template?.
-            idp?.provisioning.outboundConnectors.connectors;
+        const connectorsInTemplate: OutboundProvisioningConnectorInterface[] =
+            template?.idp?.provisioning.outboundConnectors.connectors;
 
         return {
             connectors: connectorsInTemplate.map((templateConnector: OutboundProvisioningConnectorInterface) => {
-                return templateConnector.connectorId === template?.idp?.provisioning.outboundConnectors
-                    .defaultConnectorId ?
-                    {
-                        ...templateConnector,
-                        properties: getUpdatedElementsByKey(defaultConnectorPropertiesFromMetadata,
-                            templateConnector?.properties, "key")
-                    } : templateConnector;
+                return templateConnector.connectorId ===
+                    template?.idp?.provisioning.outboundConnectors.defaultConnectorId
+                    ? {
+                          ...templateConnector,
+                          properties: getUpdatedElementsByKey(
+                              defaultConnectorPropertiesFromMetadata,
+                              templateConnector?.properties,
+                              "key"
+                          )
+                      }
+                    : templateConnector;
             }),
             defaultConnectorId: template.provisioning.outboundConnectors.defaultConnectorId
         } as IdentityProviderInterface;
@@ -562,7 +564,7 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
                 icon: getIdentityProviderWizardStepIcons().general,
                 name: WizardSteps.GENERAL_DETAILS,
                 submitCallback: setSubmitGeneralSettings,
-                title: t("console:develop.features.authenticationProvider.wizards.addIDP.steps.generalSettings.title")
+                title: t("idp:develop.features.authenticationProvider.wizards.addIDP.steps.generalSettings.title")
             }
         ];
 
@@ -573,8 +575,10 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
                     icon: getIdentityProviderWizardStepIcons().authenticatorSettings,
                     name: WizardSteps.AUTHENTICATOR_SETTINGS,
                     submitCallback: setSubmitAuthenticator,
-                    title: t("console:develop.features.authenticationProvider.wizards.addIDP.steps." +
-                        "authenticatorConfiguration.title")
+                    title: t(
+                        "idp:develop.features.authenticationProvider.wizards.addIDP.steps." +
+                            "authenticatorConfiguration.title"
+                    )
                 }
             ];
         }
@@ -586,8 +590,10 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
                     icon: getIdentityProviderWizardStepIcons().outboundProvisioningSettings,
                     name: WizardSteps.OUTBOUND_PROVISIONING_SETTINGS,
                     submitCallback: setSubmitOutboundProvisioningSettings(),
-                    title: t("console:develop.features.authenticationProvider.wizards.addIDP.steps." +
-                        "provisioningConfiguration.title")
+                    title: t(
+                        "idp:develop.features.authenticationProvider.wizards.addIDP.steps." +
+                            "provisioningConfiguration.title"
+                    )
                 }
             ];
         }
@@ -600,7 +606,7 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
                     icon: getIdentityProviderWizardStepIcons().summary,
                     name: WizardSteps.SUMMARY,
                     submitCallback: setFinishSubmit,
-                    title: t("console:develop.features.authenticationProvider.wizards.addIDP.steps.summary.title")
+                    title: t("idp:develop.features.authenticationProvider.wizards.addIDP.steps.summary.title")
                 }
             ];
         }
@@ -630,12 +636,14 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
             };
         }
 
-        setWizardState(merge(wizardState, {
-            [WizardConstants.IDENTITY_PROVIDER]: {
-                ...template?.idp,
-                ...validatedIdpAttributes
-            }
-        }));
+        setWizardState(
+            merge(wizardState, {
+                [WizardConstants.IDENTITY_PROVIDER]: {
+                    ...template?.idp,
+                    ...validatedIdpAttributes
+                }
+            })
+        );
         setWizardSteps(getWizardSteps());
     };
 
@@ -650,32 +658,33 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
         initializeWizard();
 
         setInitWizard(false);
-    }, [ initWizard ]);
+    }, [initWizard]);
 
-    const isAuthenticatorSettingsStepReady =
-        (authenticatorMetadata: FederatedAuthenticatorMetaInterface): boolean => {
-            return isAuthenticatorSettingsStepAvailable() ? authenticatorMetadata !== undefined : true;
-        };
+    const isAuthenticatorSettingsStepReady = (authenticatorMetadata: FederatedAuthenticatorMetaInterface): boolean => {
+        return isAuthenticatorSettingsStepAvailable() ? authenticatorMetadata !== undefined : true;
+    };
 
-    const isOutboundProvisioningSettingsStepReady =
-        (connectorMetadata: OutboundProvisioningConnectorMetaInterface): boolean => {
-            return isOutboundProvisioningSettingsStepAvailable() ? connectorMetadata !== undefined : true;
-        };
+    const isOutboundProvisioningSettingsStepReady = (
+        connectorMetadata: OutboundProvisioningConnectorMetaInterface
+    ): boolean => {
+        return isOutboundProvisioningSettingsStepAvailable() ? connectorMetadata !== undefined : true;
+    };
 
     const isWizardReady = () => {
-        return isAuthenticatorSettingsStepReady(defaultAuthenticatorMetadata)
-            && isOutboundProvisioningSettingsStepReady(defaultOutboundProvisioningConnectorMetadata);
+        return (
+            isAuthenticatorSettingsStepReady(defaultAuthenticatorMetadata) &&
+            isOutboundProvisioningSettingsStepReady(defaultOutboundProvisioningConnectorMetadata)
+        );
     };
 
     /**
      * Called to initialize the wizard, once all the data gathered from the backend.
      */
     useEffect(() => {
-
         if (isWizardReady()) {
             setInitWizard(true);
         }
-    }, [ defaultAuthenticatorMetadata, defaultOutboundProvisioningConnectorMetadata ]);
+    }, [defaultAuthenticatorMetadata, defaultOutboundProvisioningConnectorMetadata]);
 
     /**
      * Sets the current wizard step to the previous on every `partiallyCompletedStep`
@@ -687,49 +696,53 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
         }
         setCurrentWizardStep(currentWizardStep - 1);
         setPartiallyCompletedStep(undefined);
-    }, [ partiallyCompletedStep ]);
+    }, [partiallyCompletedStep]);
 
     const renderModalActions = (): ReactElement => {
         return (
             <Grid>
-                <Grid.Row column={ 1 }>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                <Grid.Row column={1}>
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
                         <LinkButton
                             floated="left"
-                            onClick={ handleWizardClose }
-                            data-testid={ `${ testId }-modal-cancel-button` }>
-                            { t("common:cancel") }
+                            onClick={handleWizardClose}
+                            data-testid={`${testId}-modal-cancel-button`}
+                        >
+                            {t("idp:cancel")}
                         </LinkButton>
                     </Grid.Column>
-                    <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                        { currentWizardStep < wizardSteps.length - 1 && (
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
+                        {currentWizardStep < wizardSteps.length - 1 && (
                             <PrimaryButton
                                 floated="right"
-                                onClick={ navigateToNext }
-                                data-testid={ `${ testId }-modal-next-button` }>
-                                { t("console:develop.features.authenticationProvider.wizards.buttons.next") }
+                                onClick={navigateToNext}
+                                data-testid={`${testId}-modal-next-button`}
+                            >
+                                {t("idp:develop.features.authenticationProvider.wizards.buttons.next")}
                                 <Icon name="arrow right" />
                             </PrimaryButton>
-                        ) }
-                        { currentWizardStep === wizardSteps.length - 1 && (
+                        )}
+                        {currentWizardStep === wizardSteps.length - 1 && (
                             <PrimaryButton
                                 floated="right"
-                                onClick={ navigateToNext }
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
-                                data-testid={ `${ testId }-modal-finish-button` }>
-                                { t("console:develop.features.authenticationProvider.wizards.buttons.finish") }
+                                onClick={navigateToNext}
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
+                                data-testid={`${testId}-modal-finish-button`}
+                            >
+                                {t("idp:develop.features.authenticationProvider.wizards.buttons.finish")}
                             </PrimaryButton>
-                        ) }
-                        { currentWizardStep > 0 && (
+                        )}
+                        {currentWizardStep > 0 && (
                             <LinkButton
                                 floated="right"
-                                onClick={ navigateToPrevious }
-                                data-testid={ `${ testId }-modal-previous-button` }>
+                                onClick={navigateToPrevious}
+                                data-testid={`${testId}-modal-previous-button`}
+                            >
                                 <Icon name="arrow left" />
-                                { t("console:develop.features.authenticationProvider.wizards.buttons.previous") }
+                                {t("idp:develop.features.authenticationProvider.wizards.buttons.previous")}
                             </LinkButton>
-                        ) }
+                        )}
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
@@ -742,25 +755,22 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
      * @returns Help panel component.
      */
     const renderHelpPanel = (): ReactElement => {
-
         // Return null when `showHelpPanel` is false or `wizardHelp` is not defined in `selectedTemplate` object.
         if (!template?.content?.wizardHelp) {
             return null;
         }
 
-        const {
-            wizardHelp: WizardHelp
-        } = template?.content;
+        const { wizardHelp: WizardHelp } = template?.content;
 
         return (
             <ModalWithSidePanel.SidePanel>
                 <ModalWithSidePanel.Header className="wizard-header help-panel-header muted">
                     <div className="help-panel-header-text">
-                        { t("console:develop.features.applications.wizards.minimalAppCreationWizard.help.heading") }
+                        {t("idp:develop.features.applications.wizards.minimalAppCreationWizard.help.heading")}
                     </div>
                 </ModalWithSidePanel.Header>
                 <ModalWithSidePanel.Content>
-                    <Suspense fallback={ <ContentLoader /> }>
+                    <Suspense fallback={<ContentLoader />}>
                         <WizardHelp />
                     </Suspense>
                 </ModalWithSidePanel.Content>
@@ -768,38 +778,32 @@ export const IdentityProviderCreateWizard: FunctionComponent<IdentityProviderCre
         );
     };
 
-    return (
-        (
-            wizardSteps ?
-                (<ModalWithSidePanel
-                    open={ true }
-                    className="wizard identity-provider-create-wizard"
-                    dimmer="blurring"
-                    onClose={ handleWizardClose }
-                    closeOnDimmerClick={ false }
-                    closeOnEscape
-                    data-testid={ `${ testId }-modal` }
-                >
-                    <ModalWithSidePanel.MainPanel>
-                        <ModalWithSidePanel.Header className="wizard-header" data-testid={ `${ testId }-modal-header` }>
-                            { title }
-                            { subTitle && <Heading as="h6">{ subTitle }</Heading> }
-                        </ModalWithSidePanel.Header>
-                        <ModalWithSidePanel.Content
-                            className="content-container"
-                            data-testid={ `${ testId }-modal-content-2` }
-                        >
-                            { alert && alertComponent }
-                            { resolveStepContent(currentWizardStep) }
-                        </ModalWithSidePanel.Content>
-                        <ModalWithSidePanel.Actions data-testid={ `${ testId }-modal-actions` }>
-                            { renderModalActions() }
-                        </ModalWithSidePanel.Actions>
-                    </ModalWithSidePanel.MainPanel>
-                    { renderHelpPanel() }
-                </ModalWithSidePanel>) : null
-        )
-    );
+    return wizardSteps ? (
+        <ModalWithSidePanel
+            open={true}
+            className="wizard identity-provider-create-wizard"
+            dimmer="blurring"
+            onClose={handleWizardClose}
+            closeOnDimmerClick={false}
+            closeOnEscape
+            data-testid={`${testId}-modal`}
+        >
+            <ModalWithSidePanel.MainPanel>
+                <ModalWithSidePanel.Header className="wizard-header" data-testid={`${testId}-modal-header`}>
+                    {title}
+                    {subTitle && <Heading as="h6">{subTitle}</Heading>}
+                </ModalWithSidePanel.Header>
+                <ModalWithSidePanel.Content className="content-container" data-testid={`${testId}-modal-content-2`}>
+                    {alert && alertComponent}
+                    {resolveStepContent(currentWizardStep)}
+                </ModalWithSidePanel.Content>
+                <ModalWithSidePanel.Actions data-testid={`${testId}-modal-actions`}>
+                    {renderModalActions()}
+                </ModalWithSidePanel.Actions>
+            </ModalWithSidePanel.MainPanel>
+            {renderHelpPanel()}
+        </ModalWithSidePanel>
+    ) : null;
 };
 
 /**

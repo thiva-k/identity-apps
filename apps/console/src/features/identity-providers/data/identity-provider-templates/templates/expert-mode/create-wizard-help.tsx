@@ -37,58 +37,55 @@ type ExpertModeIdPCreateWizardHelpPropsInterface = IdentifiableComponentInterfac
 const ExpertModeIdPCreateWizardHelp: FunctionComponent<ExpertModeIdPCreateWizardHelpPropsInterface> = (
     props: ExpertModeIdPCreateWizardHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
 
-    const [ useNewConnectionsView, setUseNewConnectionsView ] = useState<boolean>(undefined);
+    const [useNewConnectionsView, setUseNewConnectionsView] = useState<boolean>(undefined);
 
     /**
      * Checks if the listing view defined in the config is the new connections view.
      */
     useEffect(() => {
-
         if (useNewConnectionsView !== undefined) {
             return;
         }
 
         setUseNewConnectionsView(identityProviderConfig.useNewConnectionsView);
-    }, [ identityProviderConfig ]);
+    }, [identityProviderConfig]);
 
     return (
-        <div data-componentid={ componentId }>
+        <div data-componentid={componentId}>
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.expert" +
-                        ".wizardHelp.name.heading")
-                }
+                {t("idp:develop.features.authenticationProvider.templates.expert" + ".wizardHelp.name.heading")}
             </Heading>
             <p>
-                {
-                    useNewConnectionsView
-                        ? t("console:develop.features.authenticationProvider.templates.expert." +
-                            "wizardHelp.name.connectionDescription")
-                        : t("console:develop.features.authenticationProvider.templates.expert." +
-                            "wizardHelp.name.idpDescription")
-                }
+                {useNewConnectionsView
+                    ? t(
+                          "idp:develop.features.authenticationProvider.templates.expert." +
+                              "wizardHelp.name.connectionDescription"
+                      )
+                    : t(
+                          "idp:develop.features.authenticationProvider.templates.expert." +
+                              "wizardHelp.name.idpDescription"
+                      )}
             </p>
 
-            <Divider/>
+            <Divider />
 
             <Heading as="h5">
-                { t("console:develop.features.authenticationProvider.templates.expert.wizardHelp.description.heading") }
+                {t("idp:develop.features.authenticationProvider.templates.expert.wizardHelp.description.heading")}
             </Heading>
             <p>
-                {
-                    useNewConnectionsView
-                        ? t("console:develop.features.authenticationProvider.templates.expert." +
-                            "wizardHelp.description.connectionDescription")
-                        : t("console:develop.features.authenticationProvider.templates.expert." +
-                            "wizardHelp.description.idpDescription")
-                }
+                {useNewConnectionsView
+                    ? t(
+                          "idp:develop.features.authenticationProvider.templates.expert." +
+                              "wizardHelp.description.connectionDescription"
+                      )
+                    : t(
+                          "idp:develop.features.authenticationProvider.templates.expert." +
+                              "wizardHelp.description.idpDescription"
+                      )}
             </p>
         </div>
     );

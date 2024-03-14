@@ -110,8 +110,8 @@ const FORM_ID: string = "idp-general-details-form";
  * @returns Functional component.
  */
 export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterface> = (
-    props: GeneralDetailsFormPopsInterface): ReactElement => {
-
+    props: GeneralDetailsFormPopsInterface
+): ReactElement => {
     const {
         onSubmit,
         onUpdate,
@@ -122,7 +122,7 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
         isSaml,
         isTrustedTokenIssuer,
         isSubmitting,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const certificateOptionsForTemplate: {
@@ -144,8 +144,7 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
      */
     const idpNameValidation = (value: string): string => {
         if (!FormValidation.isValidResourceName(value)) {
-            return t("console:develop.features.authenticationProvider." +
-                "templates.enterprise.validation.name");
+            return t("idp:develop.features.authenticationProvider." + "templates.enterprise.validation.name");
         }
         let nameExist: boolean = false;
 
@@ -157,35 +156,41 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
             });
         }
         if (nameExist) {
-            return t("console:develop.features." +
-                "authenticationProvider.forms.generalDetails.name." +
-                "validations.duplicate");
+            return t(
+                "idp:develop.features." + "authenticationProvider.forms.generalDetails.name." + "validations.duplicate"
+            );
         }
     };
 
     /**
      * Validate issuer value.
-     * 
+     *
      * @param value - Issuer value
      * @returns error msg if issuer is not valid.
      */
     const issuerValidation = (value: string): string => {
         if (!FormValidation.resourceName(value)) {
-            return t("console:develop.features.authenticationProvider." +
-                "templates.trustedTokenIssuer.forms.issuer.validation.notValid", { issuer: value });
+            return t(
+                "idp:develop.features.authenticationProvider." +
+                    "templates.trustedTokenIssuer.forms.issuer.validation.notValid",
+                { issuer: value }
+            );
         }
     };
 
     /**
      * Validate alias value.
-     * 
+     *
      * @param value - Alias value
      * @returns error msg if alias is not valid.
      */
     const aliasValidation = (value: string): string => {
         if (!FormValidation.resourceName(value)) {
-            return t("console:develop.features.authenticationProvider." +
-            "templates.trustedTokenIssuer.forms.alias.validation.notValid", { alias: value });
+            return t(
+                "idp:develop.features.authenticationProvider." +
+                    "templates.trustedTokenIssuer.forms.alias.validation.notValid",
+                { alias: value }
+            );
         }
     };
 
@@ -237,12 +242,13 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
      * @returns Should show/hide certificates.
      */
     const shouldShowCertificates = (): boolean => {
-
         let showCertificate: boolean = identityProviderConfig.generalDetailsForm.showCertificate;
 
-        if (certificateOptionsForTemplate !== undefined
-            && !certificateOptionsForTemplate.JWKS
-            && !certificateOptionsForTemplate.PEM) {
+        if (
+            certificateOptionsForTemplate !== undefined &&
+            !certificateOptionsForTemplate.JWKS &&
+            !certificateOptionsForTemplate.PEM
+        ) {
             showCertificate = false;
         }
 
@@ -253,161 +259,168 @@ export const GeneralDetailsForm: FunctionComponent<GeneralDetailsFormPopsInterfa
         <React.Fragment>
             <EmphasizedSegment padded="very">
                 <Form
-                    id={ FORM_ID }
-                    uncontrolledForm={ false }
-                    onSubmit={ (values: GeneralDetailsFormValuesInterface): void => {
+                    id={FORM_ID}
+                    uncontrolledForm={false}
+                    onSubmit={(values: GeneralDetailsFormValuesInterface): void => {
                         updateConfigurations(values);
-                    } }
-                    data-testid={ testId }
+                    }}
+                    data-testid={testId}
                 >
                     <Field.Input
                         ariaLabel="name"
                         inputType="resource_name"
                         name="name"
-                        label={ t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.name.label") }
+                        label={t("idp:develop.features.authenticationProvider.forms." + "generalDetails.name.label")}
                         required
-                        message={ t("console:develop.features.authenticationProvider." +
-                            "forms.generalDetails.name.validations.empty") }
-                        placeholder={ editingIDP.name }
-                        validation={ (value: string) => idpNameValidation(value) }
-                        value={ editingIDP.name }
-                        maxLength={ IDP_NAME_MAX_LENGTH }
-                        minLength={ IdentityProviderConstants.IDP_NAME_MIN_LENGTH }
-                        data-testid={ `${ testId }-idp-name` }
-                        hint={ t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.name.hint") }
-                        readOnly={ isReadOnly }
+                        message={t(
+                            "idp:develop.features.authenticationProvider." +
+                                "forms.generalDetails.name.validations.empty"
+                        )}
+                        placeholder={editingIDP.name}
+                        validation={(value: string) => idpNameValidation(value)}
+                        value={editingIDP.name}
+                        maxLength={IDP_NAME_MAX_LENGTH}
+                        minLength={IdentityProviderConstants.IDP_NAME_MIN_LENGTH}
+                        data-testid={`${testId}-idp-name`}
+                        hint={t("idp:develop.features.authenticationProvider.forms." + "generalDetails.name.hint")}
+                        readOnly={isReadOnly}
                     />
-                    {
-                        isTrustedTokenIssuer && (
-                            <Field.Input
-                                ariaLabel="idpIssuerName"
-                                inputType="resource_name"
-                                name="idpIssuerName"
-                                label={ t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.issuer.label") }
-                                hint={ t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.issuer.hint") }
-                                required
-                                placeholder={ editingIDP.idpIssuerName }
-                                validation={ (value: string) => issuerValidation(value) }
-                                value={ editingIDP.idpIssuerName }
-                                maxLength={ IdentityProviderConstants.IDP_NAME_MAX_LENGTH }
-                                minLength={ IdentityProviderConstants.IDP_NAME_MIN_LENGTH }
-                                data-testid={ `${ testId }-issuer` }
-                                readOnly={ isReadOnly }
-                            />
-                        )
-                    }
-                    {
-                        isTrustedTokenIssuer && (
-                            <Field.Input
-                                ariaLabel="alias"
-                                inputType="resource_name"
-                                name="alias"
-                                label={ t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.alias.label") }
-                                required={ false }
-                                message={ t("console:develop.features.authenticationProvider." +
-                                    "forms.generalDetails.name.validations.empty") }
-                                placeholder={ t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.alias.placeholder") }
-                                hint={ t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.alias.hint", { productName: config.ui.productName }) }
-                                validation={ (value: string) => aliasValidation(value) }
-                                value={ editingIDP.alias }
-                                maxLength={ IdentityProviderConstants.IDP_NAME_MAX_LENGTH }
-                                minLength={ IdentityProviderConstants.IDP_NAME_MIN_LENGTH }
-                                data-testid={ `${ testId }-alias` }
-                                readOnly={ isReadOnly }
-                            />
-                        )
-                    }
+                    {isTrustedTokenIssuer && (
+                        <Field.Input
+                            ariaLabel="idpIssuerName"
+                            inputType="resource_name"
+                            name="idpIssuerName"
+                            label={t(
+                                "idp:develop.features.authenticationProvider.forms." + "generalDetails.issuer.label"
+                            )}
+                            hint={t(
+                                "idp:develop.features.authenticationProvider.forms." + "generalDetails.issuer.hint"
+                            )}
+                            required
+                            placeholder={editingIDP.idpIssuerName}
+                            validation={(value: string) => issuerValidation(value)}
+                            value={editingIDP.idpIssuerName}
+                            maxLength={IdentityProviderConstants.IDP_NAME_MAX_LENGTH}
+                            minLength={IdentityProviderConstants.IDP_NAME_MIN_LENGTH}
+                            data-testid={`${testId}-issuer`}
+                            readOnly={isReadOnly}
+                        />
+                    )}
+                    {isTrustedTokenIssuer && (
+                        <Field.Input
+                            ariaLabel="alias"
+                            inputType="resource_name"
+                            name="alias"
+                            label={t(
+                                "idp:develop.features.authenticationProvider.forms." + "generalDetails.alias.label"
+                            )}
+                            required={false}
+                            message={t(
+                                "idp:develop.features.authenticationProvider." +
+                                    "forms.generalDetails.name.validations.empty"
+                            )}
+                            placeholder={t(
+                                "idp:develop.features.authenticationProvider.forms." +
+                                    "generalDetails.alias.placeholder"
+                            )}
+                            hint={t(
+                                "idp:develop.features.authenticationProvider.forms." + "generalDetails.alias.hint",
+                                { productName: config.ui.productName }
+                            )}
+                            validation={(value: string) => aliasValidation(value)}
+                            value={editingIDP.alias}
+                            maxLength={IdentityProviderConstants.IDP_NAME_MAX_LENGTH}
+                            minLength={IdentityProviderConstants.IDP_NAME_MIN_LENGTH}
+                            data-testid={`${testId}-alias`}
+                            readOnly={isReadOnly}
+                        />
+                    )}
                     <Field.Textarea
                         name="description"
                         ariaLabel="description"
-                        label={ t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.description.label") }
-                        required={ false }
-                        placeholder={ t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.description.placeholder") }
-                        value={ editingIDP.description }
-                        data-testid={ `${ testId }-idp-description` }
-                        maxLength={ IdentityProviderConstants.IDP_DESCRIPTION_MAX_LENGTH }
-                        minLength={ IdentityProviderConstants.IDP_DESCRIPTION_MIN_LENGTH }
-                        hint={ t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.description.hint") }
-                        readOnly={ isReadOnly }
+                        label={t(
+                            "idp:develop.features.authenticationProvider.forms." + "generalDetails.description.label"
+                        )}
+                        required={false}
+                        placeholder={t(
+                            "idp:develop.features.authenticationProvider.forms." +
+                                "generalDetails.description.placeholder"
+                        )}
+                        value={editingIDP.description}
+                        data-testid={`${testId}-idp-description`}
+                        maxLength={IdentityProviderConstants.IDP_DESCRIPTION_MAX_LENGTH}
+                        minLength={IdentityProviderConstants.IDP_DESCRIPTION_MIN_LENGTH}
+                        hint={t(
+                            "idp:develop.features.authenticationProvider.forms." + "generalDetails.description.hint"
+                        )}
+                        readOnly={isReadOnly}
                     />
-                    { !hideIdPLogoEditField && (
+                    {!hideIdPLogoEditField && (
                         <Field.Input
                             name="image"
                             ariaLabel="image"
                             inputType="url"
-                            label={ t("console:develop.features.authenticationProvider." +
-                                "forms.generalDetails.image.label") }
-                            required={ false }
-                            placeholder={ t("console:develop.features.authenticationProvider." +
-                                "forms.generalDetails.image." +
-                                "placeholder") }
-                            value={ editingIDP.image }
-                            data-testid={ `${ testId }-idp-image` }
+                            label={t(
+                                "idp:develop.features.authenticationProvider." + "forms.generalDetails.image.label"
+                            )}
+                            required={false}
+                            placeholder={t(
+                                "idp:develop.features.authenticationProvider." +
+                                    "forms.generalDetails.image." +
+                                    "placeholder"
+                            )}
+                            value={editingIDP.image}
+                            data-testid={`${testId}-idp-image`}
                             maxLength={
-                                IdentityProviderManagementConstants
-                                    .GENERAL_FORM_CONSTRAINTS.IMAGE_URL_MAX_LENGTH as number
+                                IdentityProviderManagementConstants.GENERAL_FORM_CONSTRAINTS
+                                    .IMAGE_URL_MAX_LENGTH as number
                             }
                             minLength={
-                                IdentityProviderManagementConstants
-                                    .GENERAL_FORM_CONSTRAINTS.IMAGE_URL_MIN_LENGTH as number
+                                IdentityProviderManagementConstants.GENERAL_FORM_CONSTRAINTS
+                                    .IMAGE_URL_MIN_LENGTH as number
                             }
-                            hint={ t("console:develop.features.authenticationProvider.forms." +
-                                "generalDetails.image.hint") }
-                            readOnly={ isReadOnly }
+                            hint={t("idp:develop.features.authenticationProvider.forms." + "generalDetails.image.hint")}
+                            readOnly={isReadOnly}
                         />
-                    ) }
-                    { !isReadOnly && (
+                    )}
+                    {!isReadOnly && (
                         <Field.Button
-                            form={ FORM_ID }
+                            form={FORM_ID}
                             ariaLabel="Update General Details"
                             size="small"
                             buttonType="primary_btn"
-                            label={ t("common:update") }
+                            label={t("idp:update")}
                             name="submit"
-                            disabled={ isSubmitting }
-                            loading={ isSubmitting }
+                            disabled={isSubmitting}
+                            loading={isSubmitting}
                         />
-                    ) }
+                    )}
                 </Form>
             </EmphasizedSegment>
-            { shouldShowCertificates() && (
+            {shouldShowCertificates() && (
                 <React.Fragment>
-                    <Divider hidden/>
+                    <Divider hidden />
                     <Grid>
-                        <Grid.Row columns={ 1 }>
-                            <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
+                        <Grid.Row columns={1}>
+                            <Grid.Column mobile={16} tablet={16} computer={16}>
                                 <Heading as="h4">Certificates</Heading>
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
                     <IdpCertificates
                         isJWKSEnabled={
-                            certificateOptionsForTemplate !== undefined
-                                ? certificateOptionsForTemplate.JWKS
-                                : !isSaml
+                            certificateOptionsForTemplate !== undefined ? certificateOptionsForTemplate.JWKS : !isSaml
                         }
-                        isTrustedTokenIssuer={ isTrustedTokenIssuer }
-                        isReadOnly={ isReadOnly }
-                        editingIDP={ editingIDP }
-                        onUpdate={ onUpdate }
+                        isTrustedTokenIssuer={isTrustedTokenIssuer}
+                        isReadOnly={isReadOnly}
+                        editingIDP={editingIDP}
+                        onUpdate={onUpdate}
                         isPEMEnabled={
-                            certificateOptionsForTemplate !== undefined
-                                ? certificateOptionsForTemplate.PEM
-                                : true
+                            certificateOptionsForTemplate !== undefined ? certificateOptionsForTemplate.PEM : true
                         }
                     />
                 </React.Fragment>
-            ) }
+            )}
         </React.Fragment>
     );
 };

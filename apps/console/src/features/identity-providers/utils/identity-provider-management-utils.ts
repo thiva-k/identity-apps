@@ -47,14 +47,13 @@ import { setAvailableAuthenticatorsMeta } from "../store/actions";
  * Utility class for identity provider operations.
  */
 export class IdentityProviderManagementUtils {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
      *
      */
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Gets the list of available authenticator list and sets them in the redux store.
@@ -62,22 +61,20 @@ export class IdentityProviderManagementUtils {
     public static getAuthenticators(): Promise<void> {
         return getFederatedAuthenticatorsList()
             .then((response: FederatedAuthenticatorListItemInterface[]): void => {
-                store.dispatch(
-                    setAvailableAuthenticatorsMeta(response)
-                );
+                store.dispatch(setAvailableAuthenticatorsMeta(response));
             })
             .catch((error: AxiosError) => {
                 if (error.response && error.response.data && error.response.data.description) {
                     store.dispatch(
                         addAlert({
                             description: I18n.instance.t(
-                                "console:develop.features.authenticationProvider.notifications." +
+                                "idp:develop.features.authenticationProvider.notifications." +
                                     "getFederatedAuthenticatorsList.error.description",
                                 { description: error.response.data.description }
                             ),
                             level: AlertLevels.ERROR,
                             message: I18n.instance.t(
-                                "console:develop.features.authenticationProvider.notifications." +
+                                "idp:develop.features.authenticationProvider.notifications." +
                                     "getFederatedAuthenticatorsList.error.message"
                             )
                         })
@@ -89,12 +86,12 @@ export class IdentityProviderManagementUtils {
                 store.dispatch(
                     addAlert({
                         description: I18n.instance.t(
-                            "console:develop.features.authenticationProvider.notifications." +
+                            "idp:develop.features.authenticationProvider.notifications." +
                                 "getFederatedAuthenticatorsList.genericError.description"
                         ),
                         level: AlertLevels.ERROR,
                         message: I18n.instance.t(
-                            "console:develop.features.authenticationProvider.notifications." +
+                            "idp:develop.features.authenticationProvider.notifications." +
                                 "getFederatedAuthenticatorsList.genericError.message"
                         )
                     })
@@ -111,30 +108,25 @@ export class IdentityProviderManagementUtils {
      * @returns Combined response as a Promise.
      */
     public static getAllAuthenticators(skipFederated?: boolean): Promise<GenericAuthenticatorInterface[][]> {
-
         // Loads the federated authenticators. ATM, the IDP listing API has a default pagination
         // limit of 15. Until there is a proper solution from the backend, we are continuously
         // fetching the items until the limit is reached.
         // TODO: Refactor this block once there is a solution from the APIs side.
         // Tracked here - https://github.com/wso2/product-is/issues/11913
         const loadFederatedAuthenticators = (): Promise<IdentityProviderListResponseInterface> => {
-
             let idp: IdentityProviderListResponseInterface = {};
             const limit: number = 15;
             let offset: number = 0;
 
-            const getIdPs = ():Promise<IdentityProviderListResponseInterface> => {
+            const getIdPs = (): Promise<IdentityProviderListResponseInterface> => {
                 const attrs: string = "federatedAuthenticators,provisioning";
 
-                return getIdentityProviderList(limit, offset, "isEnabled eq \"true\"", attrs)
-                    .then((response: IdentityProviderListResponseInterface) => {
+                return getIdentityProviderList(limit, offset, 'isEnabled eq "true"', attrs).then(
+                    (response: IdentityProviderListResponseInterface) => {
                         if (!isEmpty(idp)) {
                             idp = {
                                 ...idp,
-                                identityProviders: [
-                                    ...idp.identityProviders,
-                                    ...response.identityProviders
-                                ]
+                                identityProviders: [...idp.identityProviders, ...response.identityProviders]
                             };
                         } else {
                             idp = { ...response };
@@ -148,7 +140,8 @@ export class IdentityProviderManagementUtils {
                         } else {
                             return Promise.resolve(idp);
                         }
-                    });
+                    }
+                );
             };
 
             return getIdPs();
@@ -167,96 +160,98 @@ export class IdentityProviderManagementUtils {
          * @returns Promise containing list of LocalAuthenticatorInterface.
          */
         const getPromises = (): (Promise<LocalAuthenticatorInterface[]> | any)[] => {
-
             if (skipFederated) {
-                return [ loadLocalAuthenticators() ];
+                return [loadLocalAuthenticators()];
             }
 
-            return [ loadLocalAuthenticators(), loadFederatedAuthenticators() ];
+            return [loadLocalAuthenticators(), loadFederatedAuthenticators()];
         };
 
-        return axios.all(getPromises())
-            .then(axios.spread((local: LocalAuthenticatorInterface[],
-                federated: IdentityProviderListResponseInterface) => {
+        return axios
+            .all(getPromises())
+            .then(
+                axios.spread(
+                    (local: LocalAuthenticatorInterface[], federated: IdentityProviderListResponseInterface) => {
+                        const localAuthenticators: GenericAuthenticatorInterface[] = [];
 
-                const localAuthenticators: GenericAuthenticatorInterface[] = [];
+                        local.forEach((authenticator: LocalAuthenticatorInterface) => {
+                            if (!authenticator.isEnabled) {
+                                return;
+                            }
 
-                local.forEach((authenticator: LocalAuthenticatorInterface) => {
-                    if (!authenticator.isEnabled) {
-                        return;
-                    }
-
-                    localAuthenticators.push({
-                        authenticators: [
-                            {
-                                authenticatorId: authenticator.id,
+                            localAuthenticators.push({
+                                authenticators: [
+                                    {
+                                        authenticatorId: authenticator.id,
+                                        isEnabled: authenticator.isEnabled,
+                                        name: authenticator.name
+                                    }
+                                ],
+                                defaultAuthenticator: {
+                                    authenticatorId: authenticator.id,
+                                    isEnabled: authenticator.isEnabled,
+                                    name: authenticator.name,
+                                    tags: authenticator.tags ? authenticator.tags : []
+                                },
+                                description: AuthenticatorMeta.getAuthenticatorDescription(authenticator.id),
+                                displayName: authenticator.displayName,
+                                id: authenticator.id,
+                                idp: IdentityProviderManagementConstants.LOCAL_IDP_IDENTIFIER,
+                                image: AuthenticatorMeta.getAuthenticatorIcon(authenticator.id),
                                 isEnabled: authenticator.isEnabled,
                                 name: authenticator.name
-                            }
-                        ],
-                        defaultAuthenticator: {
-                            authenticatorId: authenticator.id,
-                            isEnabled: authenticator.isEnabled,
-                            name: authenticator.name,
-                            tags: authenticator.tags
-                                ? authenticator.tags
-                                : []
-                        },
-                        description: AuthenticatorMeta.getAuthenticatorDescription(authenticator.id),
-                        displayName: authenticator.displayName,
-                        id: authenticator.id,
-                        idp: IdentityProviderManagementConstants.LOCAL_IDP_IDENTIFIER,
-                        image: AuthenticatorMeta.getAuthenticatorIcon(authenticator.id),
-                        isEnabled: authenticator.isEnabled,
-                        name: authenticator.name
-                    });
-                });
+                            });
+                        });
 
-                const federatedAuthenticators: GenericAuthenticatorInterface[] = [];
+                        const federatedAuthenticators: GenericAuthenticatorInterface[] = [];
 
-                if (federated?.identityProviders
-                    && federated.identityProviders instanceof Array
-                    && federated.identityProviders.length > 0) {
+                        if (
+                            federated?.identityProviders &&
+                            federated.identityProviders instanceof Array &&
+                            federated.identityProviders.length > 0
+                        ) {
+                            federated.identityProviders.forEach((authenticator: StrictIdentityProviderInterface) => {
+                                if (
+                                    isEmpty(authenticator?.federatedAuthenticators?.authenticators) ||
+                                    !authenticator?.federatedAuthenticators?.defaultAuthenticatorId
+                                ) {
+                                    return;
+                                }
 
-                    federated.identityProviders.forEach((authenticator: StrictIdentityProviderInterface) => {
+                                const defaultAuthenticator: FederatedAuthenticatorInterface = authenticator.federatedAuthenticators.authenticators.find(
+                                    (item: FederatedAuthenticatorListItemInterface) => {
+                                        return (
+                                            item.authenticatorId ===
+                                            authenticator.federatedAuthenticators.defaultAuthenticatorId
+                                        );
+                                    }
+                                );
 
-                        if (isEmpty(authenticator?.federatedAuthenticators?.authenticators)
-                            || !authenticator?.federatedAuthenticators?.defaultAuthenticatorId) {
-
-                            return;
+                                federatedAuthenticators.push({
+                                    authenticators: authenticator.federatedAuthenticators.authenticators,
+                                    defaultAuthenticator: defaultAuthenticator,
+                                    description: !isEmpty(authenticator.description)
+                                        ? authenticator.description
+                                        : AuthenticatorMeta.getAuthenticatorDescription(
+                                              defaultAuthenticator?.authenticatorId
+                                          ),
+                                    displayName: authenticator.name,
+                                    id: authenticator.id,
+                                    idp: authenticator.name,
+                                    image: authenticator.image
+                                        ? authenticator.image
+                                        : AuthenticatorMeta.getAuthenticatorIcon(authenticator.id),
+                                    isEnabled: authenticator.isEnabled,
+                                    name: authenticator.name,
+                                    provisioning: authenticator["provisioning"] as ProvisioningInterface
+                                } as any);
+                            });
                         }
 
-                        const defaultAuthenticator: FederatedAuthenticatorInterface = authenticator
-                            .federatedAuthenticators
-                            .authenticators
-                            .find((item: FederatedAuthenticatorListItemInterface) => {
-                                return (item.authenticatorId ===
-                                    authenticator.federatedAuthenticators.defaultAuthenticatorId);
-                            });
-
-                        federatedAuthenticators.push({
-                            authenticators: authenticator.federatedAuthenticators.authenticators,
-                            defaultAuthenticator: defaultAuthenticator,
-                            description: !isEmpty(authenticator.description)
-                                ? authenticator.description
-                                : AuthenticatorMeta.getAuthenticatorDescription(
-                                    defaultAuthenticator?.authenticatorId),
-                            displayName: authenticator.name,
-                            id: authenticator.id,
-                            idp: authenticator.name,
-                            image: authenticator.image
-                                ? authenticator.image
-                                : AuthenticatorMeta.getAuthenticatorIcon(authenticator.id),
-                            isEnabled: authenticator.isEnabled,
-                            name: authenticator.name,
-                            provisioning: authenticator[ "provisioning" ] as ProvisioningInterface
-                        } as any);
-                    });
-
-                }
-
-                return Promise.resolve([ localAuthenticators, federatedAuthenticators ]);
-            }))
+                        return Promise.resolve([localAuthenticators, federatedAuthenticators]);
+                    }
+                )
+            )
             .catch((error: AxiosError) => {
                 throw new IdentityAppsApiException(
                     IdentityProviderManagementConstants.COMBINED_AUTHENTICATOR_FETCH_ERROR,
@@ -264,7 +259,8 @@ export class IdentityProviderManagementUtils {
                     error.code,
                     error.request,
                     error.response,
-                    error.config);
+                    error.config
+                );
             });
     }
 
@@ -282,7 +278,7 @@ export class IdentityProviderManagementUtils {
 
         const templates: DocPanelUICardInterface[] = [];
 
-        for (const [ key, value ] of Object.entries(raw)) {
+        for (const [key, value] of Object.entries(raw)) {
             templates.push({
                 displayName: key,
                 docs: value.toString(),
@@ -302,7 +298,6 @@ export class IdentityProviderManagementUtils {
      * @returns Labels.
      */
     public static getAuthenticatorLabels(authenticator: GenericAuthenticatorInterface): string[] {
-
         return AuthenticatorMeta.getAuthenticatorLabels(authenticator?.defaultAuthenticator)
             ? AuthenticatorMeta.getAuthenticatorLabels(authenticator?.defaultAuthenticator)
             : [];
@@ -316,7 +311,6 @@ export class IdentityProviderManagementUtils {
      * @returns Authenticator label display name.
      */
     public static getAuthenticatorLabelDisplayName(name: string): string {
-
         return name;
     }
 
@@ -329,7 +323,6 @@ export class IdentityProviderManagementUtils {
      * @returns Predefined image if available. If not, return input parameter.
      */
     public static resolveTemplateImage(image: string | any, icons: Record<string, any>): string | any {
-
         if (image) {
             if (typeof image !== "string") {
                 return image;
@@ -349,7 +342,7 @@ export class IdentityProviderManagementUtils {
         }
         const match: string = Object.keys(icons).find((key: string) => key.toString() === image);
 
-        return match ? icons[ match ] : icons[ "default" ] ?? image;
+        return match ? icons[match] : icons["default"] ?? image;
     }
 
     /**
@@ -359,28 +352,25 @@ export class IdentityProviderManagementUtils {
      *
      * @returns Whether the connector is IdentityProviderInterface.
      */
-    public static isConnectorIdentityProvider(connector: IdentityProviderInterface
-        | MultiFactorAuthenticatorInterface): connector is IdentityProviderInterface {
-
+    public static isConnectorIdentityProvider(
+        connector: IdentityProviderInterface | MultiFactorAuthenticatorInterface
+    ): connector is IdentityProviderInterface {
         return (connector as IdentityProviderInterface)?.federatedAuthenticators !== undefined;
     }
 
     public static buildAuthenticatorsFilterQuery(searchQuery: string, filters: string[]): string {
-
         if (isEmpty(filters) || !Array.isArray(filters) || filters.length <= 0) {
             return searchQuery;
         }
 
-        let query: string = searchQuery
-            ? `${ searchQuery } and (`
-            : "(";
+        let query: string = searchQuery ? `${searchQuery} and (` : "(";
 
         if (filters.length > 1) {
             filters.map((filter: string, index: number) => {
-                query = `${ query }tag eq ${ filter }${ (index === filters.length - 1) ? ")" : " or " }`;
+                query = `${query}tag eq ${filter}${index === filters.length - 1 ? ")" : " or "}`;
             });
         } else {
-            query = `${ query }tag eq ${ filters[ 0 ] })`;
+            query = `${query}tag eq ${filters[0]})`;
         }
 
         return query.trim();
@@ -396,17 +386,18 @@ export class IdentityProviderManagementUtils {
      * @returns Tags.
      */
     public static resolveIDPTags(federatedAuthenticators: FederatedAuthenticatorListResponseInterface): string[] {
-
-        if (!federatedAuthenticators?.defaultAuthenticatorId
-            || !Array.isArray(federatedAuthenticators.authenticators)) {
-
+        if (
+            !federatedAuthenticators?.defaultAuthenticatorId ||
+            !Array.isArray(federatedAuthenticators.authenticators)
+        ) {
             return [];
         }
 
-        const found: FederatedAuthenticatorListItemInterface = federatedAuthenticators.authenticators
-            .find((authenticator: FederatedAuthenticatorListItemInterface) => {
+        const found: FederatedAuthenticatorListItemInterface = federatedAuthenticators.authenticators.find(
+            (authenticator: FederatedAuthenticatorListItemInterface) => {
                 return authenticator.authenticatorId === federatedAuthenticators.defaultAuthenticatorId;
-            });
+            }
+        );
 
         return Array.isArray(found.tags) ? found.tags : [];
     }
@@ -417,7 +408,6 @@ export class IdentityProviderManagementUtils {
      * @returns commonauth endpoint.
      */
     public static getCommonAuthEndpoint(): string {
-
-        return `${ Config.getDeploymentConfig().customServerHost }/commonauth`;
+        return `${Config.getDeploymentConfig().customServerHost}/commonauth`;
     }
 }

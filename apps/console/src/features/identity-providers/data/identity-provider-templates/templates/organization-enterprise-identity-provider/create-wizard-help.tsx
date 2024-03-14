@@ -25,7 +25,7 @@ import { Divider } from "semantic-ui-react";
 /**
  * Prop types of the component.
  */
-type OrganizationEnterpriseIdentityProviderCreateWizardHelpPropsInterface = TestableComponentInterface
+type OrganizationEnterpriseIdentityProviderCreateWizardHelpPropsInterface = TestableComponentInterface;
 
 /**
  * Help content for the custom IDP template creation wizard.
@@ -33,60 +33,56 @@ type OrganizationEnterpriseIdentityProviderCreateWizardHelpPropsInterface = Test
  * @param props - Props injected into the component.
  * @returns OrganizationEnterpriseIdentityProviderCreateWizardHelp component.
  */
-const OrganizationEnterpriseIdentityProviderCreateWizardHelp:
-    FunctionComponent<OrganizationEnterpriseIdentityProviderCreateWizardHelpPropsInterface> = (
-        props: OrganizationEnterpriseIdentityProviderCreateWizardHelpPropsInterface
-    ): ReactElement => {
+const OrganizationEnterpriseIdentityProviderCreateWizardHelp: FunctionComponent<OrganizationEnterpriseIdentityProviderCreateWizardHelpPropsInterface> = (
+    props: OrganizationEnterpriseIdentityProviderCreateWizardHelpPropsInterface
+): ReactElement => {
+    const { ["data-testid"]: testId } = props;
 
-        const {
-            ["data-testid"]: testId
-        } = props;
+    const { t } = useTranslation();
 
-        const { t } = useTranslation();
+    return (
+        <>
+            <div data-testid={testId}>
+                <Heading as="h5">
+                    {t(
+                        "idp:develop.features.authenticationProvider.templates.organizationIDP" +
+                            ".wizardHelp.name.heading"
+                    )}
+                </Heading>
+                <p>
+                    {t(
+                        "idp:develop.features.authenticationProvider.templates.organizationIDP" +
+                            ".wizardHelp.name.description"
+                    )}
+                </p>
+                <p>E.g., MyOrgEnterpriseAuthProvider.</p>
+            </div>
 
-        return (
-            <>
-                <div data-testid={ testId }>
-                    <Heading as="h5">
-                        {
-                            t("console:develop.features.authenticationProvider.templates.organizationIDP" +
-                                ".wizardHelp.name.heading")
-                        }
-                    </Heading>
-                    <p>
-                        {
-                            t("console:develop.features.authenticationProvider.templates.organizationIDP" +
-                                ".wizardHelp.name.description")
-                        }
-                    </p>
-                    <p>E.g., MyOrgEnterpriseAuthProvider.</p>
-                </div>
+            <Divider />
 
-                <Divider/>
-
-                <div data-testid={ testId }>
-                    <Heading as="h5">
-                        {
-                            t("console:develop.features.authenticationProvider.templates.organizationIDP" +
-                                ".wizardHelp.description.heading")
-                        }
-                    </Heading>
-                    <p>
-                        {
-                            t("console:develop.features.authenticationProvider.templates.organizationIDP" +
-                                ".wizardHelp.description.description")
-                        }
-                    </p>
-                    <p>
-                        {
-                            t("console:develop.features.authenticationProvider.templates.organizationIDP" +
-                                ".wizardHelp.description.example")
-                        }
-                    </p>
-                </div>
-            </>
-        );
-    };
+            <div data-testid={testId}>
+                <Heading as="h5">
+                    {t(
+                        "idp:develop.features.authenticationProvider.templates.organizationIDP" +
+                            ".wizardHelp.description.heading"
+                    )}
+                </Heading>
+                <p>
+                    {t(
+                        "idp:develop.features.authenticationProvider.templates.organizationIDP" +
+                            ".wizardHelp.description.description"
+                    )}
+                </p>
+                <p>
+                    {t(
+                        "idp:develop.features.authenticationProvider.templates.organizationIDP" +
+                            ".wizardHelp.description.example"
+                    )}
+                </p>
+            </div>
+        </>
+    );
+};
 
 /**
  * Default props for the component

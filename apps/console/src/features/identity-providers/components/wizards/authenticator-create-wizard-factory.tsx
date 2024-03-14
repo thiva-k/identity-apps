@@ -31,9 +31,7 @@ import { GoogleAuthenticationProviderCreateWizard } from "./google";
 import { HyprAuthenticationProviderCreateWizard } from "./hypr";
 import { MicrosoftAuthenticationProviderCreateWizard } from "./microsoft";
 import { OidcAuthenticationProviderCreateWizard } from "./oidc-authentication-provider-create-wizard";
-import {
-    OrganizationEnterpriseAuthenticationProviderCreateWizard
-} from "./organization-enterprise/organization-enterprise-authentication-provider-create-wizard";
+import { OrganizationEnterpriseAuthenticationProviderCreateWizard } from "./organization-enterprise/organization-enterprise-authentication-provider-create-wizard";
 import { TrustedTokenIssuerCreateWizard } from "./trusted-token-issuer/trusted-token-issuer-create-wizard";
 import { identityProviderConfig } from "../../../../extensions/configs/identity-provider";
 import { AppState, ConfigReducerStateInterface } from "../../../core";
@@ -53,7 +51,6 @@ import { handleGetIDPTemplateAPICallError } from "../utils";
  * Proptypes for the Authenticator Create Wizard factory.
  */
 interface AuthenticatorCreateWizardFactoryInterface extends TestableComponentInterface {
-
     /**
      * Show/Hide the wizard
      */
@@ -61,11 +58,11 @@ interface AuthenticatorCreateWizardFactoryInterface extends TestableComponentInt
     /**
      * Callback to be triggered on wizard close.
      */
-    onWizardClose: GenericIdentityProviderCreateWizardPropsInterface[ "onWizardClose" ];
+    onWizardClose: GenericIdentityProviderCreateWizardPropsInterface["onWizardClose"];
     /**
      * Callback to be triggered on successful IDP create.
      */
-    onIDPCreate: GenericIdentityProviderCreateWizardPropsInterface[ "onIDPCreate" ];
+    onIDPCreate: GenericIdentityProviderCreateWizardPropsInterface["onIDPCreate"];
     /**
      * Type of the wizard.
      */
@@ -89,7 +86,6 @@ interface AuthenticatorCreateWizardFactoryInterface extends TestableComponentInt
 export const AuthenticatorCreateWizardFactory: FunctionComponent<AuthenticatorCreateWizardFactoryInterface> = (
     props: AuthenticatorCreateWizardFactoryInterface
 ): ReactElement => {
-
     const {
         open,
         onWizardClose,
@@ -107,26 +103,24 @@ export const AuthenticatorCreateWizardFactory: FunctionComponent<AuthenticatorCr
 
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
 
-    const [ possibleListOfDuplicateIDPs, setPossibleListOfDuplicateIDPs ] = useState<string[]>(undefined);
-    const [ showWizard, setShowWizard ] = useState<boolean>(open);
-    const [ selectedTemplate, setSelectedTemplate ] = useState<IdentityProviderTemplateInterface>(undefined);
-    const [
-        selectedTemplateWithUniqueName,
-        setSelectedTemplateWithUniqueName
-    ] = useState<IdentityProviderTemplateInterface>(undefined);
+    const [possibleListOfDuplicateIDPs, setPossibleListOfDuplicateIDPs] = useState<string[]>(undefined);
+    const [showWizard, setShowWizard] = useState<boolean>(open);
+    const [selectedTemplate, setSelectedTemplate] = useState<IdentityProviderTemplateInterface>(undefined);
+    const [selectedTemplateWithUniqueName, setSelectedTemplateWithUniqueName] = useState<
+        IdentityProviderTemplateInterface
+    >(undefined);
     const { t } = useTranslation();
 
     /**
      * Load the template based on the passed in template type.
      */
     useEffect(() => {
-
         if (!type) {
             return;
         }
 
         getTemplate(type);
-    }, [ type ]);
+    }, [type]);
 
     /**
      * Called when template is selected. If the selected template
@@ -134,17 +128,14 @@ export const AuthenticatorCreateWizardFactory: FunctionComponent<AuthenticatorCr
      */
     useEffect(() => {
         if (!selectedTemplate) return;
-        getPossibleListOfDuplicateIDPs(
-            selectedTemplate.idp?.name || selectedTemplate.name
-        );
+        getPossibleListOfDuplicateIDPs(selectedTemplate.idp?.name || selectedTemplate.name);
         setShowWizard(true);
-    }, [ selectedTemplate ]);
+    }, [selectedTemplate]);
 
     /**
      * Called when there are duplicate IDPs and a unique name should be added to the newly created one.
      */
     useEffect(() => {
-
         if (!showWizard) {
             return;
         }
@@ -170,10 +161,7 @@ export const AuthenticatorCreateWizardFactory: FunctionComponent<AuthenticatorCr
                 ...selectedTemplate,
                 idp: {
                     ...selectedTemplate.idp,
-                    name: generateUniqueIDPName(
-                        selectedTemplate.idp.name,
-                        possibleListOfDuplicateIDPs
-                    )
+                    name: generateUniqueIDPName(selectedTemplate.idp.name, possibleListOfDuplicateIDPs)
                 }
             });
         } else {
@@ -184,25 +172,21 @@ export const AuthenticatorCreateWizardFactory: FunctionComponent<AuthenticatorCr
              */
             setSelectedTemplateWithUniqueName({
                 ...selectedTemplate,
-                name: generateUniqueIDPName(
-                    selectedTemplate?.name,
-                    possibleListOfDuplicateIDPs
-                )
+                name: generateUniqueIDPName(selectedTemplate?.name, possibleListOfDuplicateIDPs)
             });
         }
 
         setShowWizard(true);
-    }, [ possibleListOfDuplicateIDPs, selectedTemplate, showWizard ]);
+    }, [possibleListOfDuplicateIDPs, selectedTemplate, showWizard]);
 
     /**
      * Retrieve Identity Provider template.
      */
     const getTemplate = (templateId: string): void => {
-
         const useAPI: boolean = config.ui.identityProviderTemplateLoadingStrategy
             ? config.ui.identityProviderTemplateLoadingStrategy === IdentityProviderTemplateLoadingStrategies.REMOTE
-            : (IdentityProviderManagementConstants.DEFAULT_IDP_TEMPLATE_LOADING_STRATEGY
-                === IdentityProviderTemplateLoadingStrategies.REMOTE);
+            : IdentityProviderManagementConstants.DEFAULT_IDP_TEMPLATE_LOADING_STRATEGY ===
+              IdentityProviderTemplateLoadingStrategies.REMOTE;
 
         if (useAPI) {
             getIdentityProviderTemplate(templateId)
@@ -248,14 +232,15 @@ export const AuthenticatorCreateWizardFactory: FunctionComponent<AuthenticatorCr
      * @param idpName - Name of the IDP.
      */
     const getPossibleListOfDuplicateIDPs = (idpName: string): void => {
-
-        getIdentityProviderList(null, null, "name sw " + idpName)
-            .then((response: IdentityProviderListResponseInterface) => {
-                setPossibleListOfDuplicateIDPs(response?.totalResults
-                    ? response?.identityProviders?.map((eachIdp: StrictIdentityProviderInterface) => eachIdp.name)
-                    : []
+        getIdentityProviderList(null, null, "name sw " + idpName).then(
+            (response: IdentityProviderListResponseInterface) => {
+                setPossibleListOfDuplicateIDPs(
+                    response?.totalResults
+                        ? response?.identityProviders?.map((eachIdp: StrictIdentityProviderInterface) => eachIdp.name)
+                        : []
                 );
-            });
+            }
+        );
     };
 
     /**
@@ -266,7 +251,6 @@ export const AuthenticatorCreateWizardFactory: FunctionComponent<AuthenticatorCr
      * @returns A unique name from the provided list of names.
      */
     const generateUniqueIDPName = (initialIdpName: string, idpList: string[]): string => {
-
         let idpName: string = initialIdpName;
 
         for (let i: number = 2; ; i++) {
@@ -276,7 +260,7 @@ export const AuthenticatorCreateWizardFactory: FunctionComponent<AuthenticatorCr
 
             // If the IdP has spaces, append the number after a space.
             if (idpName.split(" ").length > 1) {
-                idpName = initialIdpName + " " +  i;
+                idpName = initialIdpName + " " + i;
             } else {
                 idpName = initialIdpName + i;
             }
@@ -287,223 +271,207 @@ export const AuthenticatorCreateWizardFactory: FunctionComponent<AuthenticatorCr
 
     switch (type) {
         case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.FACEBOOK:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? (
-                    <FacebookAuthenticationProviderCreateWizard
-                        title={ selectedTemplateWithUniqueName?.name }
-                        subTitle={ selectedTemplateWithUniqueName?.description }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GOOGLE:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? (
-                    <GoogleAuthenticationProviderCreateWizard
-                        title={ selectedTemplateWithUniqueName?.name }
-                        subTitle={ selectedTemplateWithUniqueName?.description }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GITHUB:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? (
-                    <GitHubAuthenticationProviderCreateWizard
-                        title={ selectedTemplateWithUniqueName?.name }
-                        subTitle={ selectedTemplateWithUniqueName?.description }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.MICROSOFT:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? (
-                    <MicrosoftAuthenticationProviderCreateWizard
-                        title={ selectedTemplateWithUniqueName?.name }
-                        subTitle={ selectedTemplateWithUniqueName?.description }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.APPLE:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? (
-                    <AppleAuthenticationProviderCreateWizard
-                        title={ selectedTemplateWithUniqueName?.name }
-                        subTitle={ selectedTemplateWithUniqueName?.description }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.OIDC:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? (
-                    <OidcAuthenticationProviderCreateWizard
-                        title={ selectedTemplateWithUniqueName?.name }
-                        subTitle={ selectedTemplateWithUniqueName?.description }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.ORGANIZATION_ENTERPRISE_IDP:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? (
-                    <OrganizationEnterpriseAuthenticationProviderCreateWizard
-                        title={ selectedTemplateWithUniqueName?.name }
-                        subTitle={ selectedTemplateWithUniqueName?.description }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.EXPERT_MODE:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? (
-                    <ExpertModeAuthenticationProviderCreateWizard
-                        title={ 
-                            selectedTemplateWithUniqueName?.name === "Expert Mode"
-                                ? "Custom Connector"
-                                : selectedTemplateWithUniqueName?.name
-                        }
-                        subTitle={ selectedTemplateWithUniqueName?.description }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.HYPR:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? (
-                    <HyprAuthenticationProviderCreateWizard
-                        title={ selectedTemplateWithUniqueName?.name }
-                        subTitle={ selectedTemplateWithUniqueName?.description }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER:
-            return showWizard && !isEmpty(selectedTemplateWithUniqueName)
-                ? (
-                    <TrustedTokenIssuerCreateWizard
-                        title= { t("console:develop.features.authenticationProvider.templates.trustedTokenIssuer." +
-                            "addWizard.title") }
-                        subTitle= { t("console:develop.features.authenticationProvider.templates.trustedTokenIssuer." +
-                            "addWizard.subtitle") }
-                        onWizardClose={ () => {
-                            setSelectedTemplateWithUniqueName(undefined);
-                            setSelectedTemplate(undefined);
-                            setShowWizard(false);
-                            onWizardClose();
-                        } }
-                        template={ selectedTemplateWithUniqueName }
-                        data-componentid={ selectedTemplate?.templateId }
-                        { ...rest }
-                    />
-                )
-                : null;
-        default:
-            return (showWizard && !isEmpty(selectedTemplateWithUniqueName))
-                ? identityProviderConfig.createIdentityProvider.getOverriddenCreateWizard(type, {
-                    onIDPCreate: rest.onIDPCreate,
-                    onWizardClose: () => {
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <FacebookAuthenticationProviderCreateWizard
+                    title={selectedTemplateWithUniqueName?.name}
+                    subTitle={selectedTemplateWithUniqueName?.description}
+                    onWizardClose={() => {
                         setSelectedTemplateWithUniqueName(undefined);
                         setSelectedTemplate(undefined);
                         setShowWizard(false);
                         onWizardClose();
-                    },
-                    subTitle: selectedTemplateWithUniqueName?.description,
-                    template: selectedTemplateWithUniqueName,
-                    title: selectedTemplateWithUniqueName?.name,
-                    ...rest
-                })
-                    ?? (
-                        <EnterpriseIDPCreateWizard
-                            title= { t("console:develop.features.authenticationProvider.templates.enterprise." +
-                                "addWizard.title") }
-                            subTitle= { t("console:develop.features.authenticationProvider.templates.enterprise." +
-                                "addWizard.subtitle") }
-                            onWizardClose={ () => {
-                                setSelectedTemplateWithUniqueName(undefined);
-                                setSelectedTemplate(undefined);
-                                setShowWizard(false);
-                                onWizardClose();
-                            } }
-                            template={ selectedTemplateWithUniqueName }
-                            data-componentid={ selectedTemplate?.templateId }
-                            { ...rest }
-                        />
-                    )
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GOOGLE:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <GoogleAuthenticationProviderCreateWizard
+                    title={selectedTemplateWithUniqueName?.name}
+                    subTitle={selectedTemplateWithUniqueName?.description}
+                    onWizardClose={() => {
+                        setSelectedTemplateWithUniqueName(undefined);
+                        setSelectedTemplate(undefined);
+                        setShowWizard(false);
+                        onWizardClose();
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.GITHUB:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <GitHubAuthenticationProviderCreateWizard
+                    title={selectedTemplateWithUniqueName?.name}
+                    subTitle={selectedTemplateWithUniqueName?.description}
+                    onWizardClose={() => {
+                        setSelectedTemplateWithUniqueName(undefined);
+                        setSelectedTemplate(undefined);
+                        setShowWizard(false);
+                        onWizardClose();
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.MICROSOFT:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <MicrosoftAuthenticationProviderCreateWizard
+                    title={selectedTemplateWithUniqueName?.name}
+                    subTitle={selectedTemplateWithUniqueName?.description}
+                    onWizardClose={() => {
+                        setSelectedTemplateWithUniqueName(undefined);
+                        setSelectedTemplate(undefined);
+                        setShowWizard(false);
+                        onWizardClose();
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.APPLE:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <AppleAuthenticationProviderCreateWizard
+                    title={selectedTemplateWithUniqueName?.name}
+                    subTitle={selectedTemplateWithUniqueName?.description}
+                    onWizardClose={() => {
+                        setSelectedTemplateWithUniqueName(undefined);
+                        setSelectedTemplate(undefined);
+                        setShowWizard(false);
+                        onWizardClose();
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.OIDC:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <OidcAuthenticationProviderCreateWizard
+                    title={selectedTemplateWithUniqueName?.name}
+                    subTitle={selectedTemplateWithUniqueName?.description}
+                    onWizardClose={() => {
+                        setSelectedTemplateWithUniqueName(undefined);
+                        setSelectedTemplate(undefined);
+                        setShowWizard(false);
+                        onWizardClose();
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.ORGANIZATION_ENTERPRISE_IDP:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <OrganizationEnterpriseAuthenticationProviderCreateWizard
+                    title={selectedTemplateWithUniqueName?.name}
+                    subTitle={selectedTemplateWithUniqueName?.description}
+                    onWizardClose={() => {
+                        setSelectedTemplateWithUniqueName(undefined);
+                        setSelectedTemplate(undefined);
+                        setShowWizard(false);
+                        onWizardClose();
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.EXPERT_MODE:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <ExpertModeAuthenticationProviderCreateWizard
+                    title={
+                        selectedTemplateWithUniqueName?.name === "Expert Mode"
+                            ? "Custom Connector"
+                            : selectedTemplateWithUniqueName?.name
+                    }
+                    subTitle={selectedTemplateWithUniqueName?.description}
+                    onWizardClose={() => {
+                        setSelectedTemplateWithUniqueName(undefined);
+                        setSelectedTemplate(undefined);
+                        setShowWizard(false);
+                        onWizardClose();
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.HYPR:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <HyprAuthenticationProviderCreateWizard
+                    title={selectedTemplateWithUniqueName?.name}
+                    subTitle={selectedTemplateWithUniqueName?.description}
+                    onWizardClose={() => {
+                        setSelectedTemplateWithUniqueName(undefined);
+                        setSelectedTemplate(undefined);
+                        setShowWizard(false);
+                        onWizardClose();
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        case IdentityProviderManagementConstants.IDP_TEMPLATE_IDS.TRUSTED_TOKEN_ISSUER:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName) ? (
+                <TrustedTokenIssuerCreateWizard
+                    title={t(
+                        "idp:develop.features.authenticationProvider.templates.trustedTokenIssuer." + "addWizard.title"
+                    )}
+                    subTitle={t(
+                        "idp:develop.features.authenticationProvider.templates.trustedTokenIssuer." +
+                            "addWizard.subtitle"
+                    )}
+                    onWizardClose={() => {
+                        setSelectedTemplateWithUniqueName(undefined);
+                        setSelectedTemplate(undefined);
+                        setShowWizard(false);
+                        onWizardClose();
+                    }}
+                    template={selectedTemplateWithUniqueName}
+                    data-componentid={selectedTemplate?.templateId}
+                    {...rest}
+                />
+            ) : null;
+        default:
+            return showWizard && !isEmpty(selectedTemplateWithUniqueName)
+                ? identityProviderConfig.createIdentityProvider.getOverriddenCreateWizard(type, {
+                      onIDPCreate: rest.onIDPCreate,
+                      onWizardClose: () => {
+                          setSelectedTemplateWithUniqueName(undefined);
+                          setSelectedTemplate(undefined);
+                          setShowWizard(false);
+                          onWizardClose();
+                      },
+                      subTitle: selectedTemplateWithUniqueName?.description,
+                      template: selectedTemplateWithUniqueName,
+                      title: selectedTemplateWithUniqueName?.name,
+                      ...rest
+                  }) ?? (
+                      <EnterpriseIDPCreateWizard
+                          title={t(
+                              "idp:develop.features.authenticationProvider.templates.enterprise." + "addWizard.title"
+                          )}
+                          subTitle={t(
+                              "idp:develop.features.authenticationProvider.templates.enterprise." + "addWizard.subtitle"
+                          )}
+                          onWizardClose={() => {
+                              setSelectedTemplateWithUniqueName(undefined);
+                              setSelectedTemplate(undefined);
+                              setShowWizard(false);
+                              onWizardClose();
+                          }}
+                          template={selectedTemplateWithUniqueName}
+                          data-componentid={selectedTemplate?.templateId}
+                          {...rest}
+                      />
+                  )
                 : null;
     }
 };

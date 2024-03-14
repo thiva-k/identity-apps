@@ -41,180 +41,164 @@ type AppleIdentityProviderCreateWizardHelpPropsInterface = IdentifiableComponent
 const AppleIdentityProviderCreateWizardHelp: FunctionComponent<AppleIdentityProviderCreateWizardHelpPropsInterface> = (
     props: AppleIdentityProviderCreateWizardHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-componentid" ]: componentId
-    } = props;
+    const { ["data-componentid"]: componentId } = props;
 
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
 
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
 
-    const [ useNewConnectionsView, setUseNewConnectionsView ] = useState<boolean>(undefined);
+    const [useNewConnectionsView, setUseNewConnectionsView] = useState<boolean>(undefined);
 
     /**
      * Checks if the listing view defined in the config is the new connections view.
      */
     useEffect(() => {
-
         if (useNewConnectionsView !== undefined) {
             return;
         }
 
         setUseNewConnectionsView(identityProviderConfig.useNewConnectionsView);
-    }, [ identityProviderConfig ]);
-    
+    }, [identityProviderConfig]);
+
     return (
-        <div data-componentid={ componentId }>
+        <div data-componentid={componentId}>
             <Message
                 type="info"
-                header={
-                    t("console:develop.features.authenticationProvider.templates.apple." +
-                    "wizardHelp.preRequisites.heading")
-                }
+                header={t(
+                    "idp:develop.features.authenticationProvider.templates.apple." + "wizardHelp.preRequisites.heading"
+                )}
                 content={
-                    (<>
+                    <>
                         <p>
                             <Trans
                                 i18nKey={
-                                    "console:develop.features.authenticationProvider.templates.apple." +
+                                    "idp:develop.features.authenticationProvider.templates.apple." +
                                     "wizardHelp.preRequisites.getCredentials"
                                 }
                             >
-                                Before you begin, create a <strong>Sign in With Apple</strong> enabled 
-                                application on <DocumentationLink
-                                    link={ getLink("develop.connections.newConnection.apple.help.developerConsole") }
+                                Before you begin, create a <strong>Sign in With Apple</strong> enabled application on{" "}
+                                <DocumentationLink
+                                    link={getLink("develop.connections.newConnection.apple.help.developerConsole")}
                                     showEmptyLinkText
-                                >Apple Developer Portal</DocumentationLink> with a <strong
-                                >Services ID</strong> and a <strong>Private Key</strong>.
+                                >
+                                    Apple Developer Portal
+                                </DocumentationLink>{" "}
+                                with a <strong>Services ID</strong> and a <strong>Private Key</strong>.
                             </Trans>
                         </p>
                         <p>
                             <Trans
                                 i18nKey={
-                                    "console:develop.features.authenticationProvider.templates.apple." +
+                                    "idp:develop.features.authenticationProvider.templates.apple." +
                                     "wizardHelp.preRequisites.configureWebDomain"
                                 }
                             >
-                            Use the following as a <strong>Web Domain</strong>.
+                                Use the following as a <strong>Web Domain</strong>.
                             </Trans>
                             <CopyInputField
                                 className="copy-input-dark spaced"
-                                value={ new URL(config?.deployment?.serverOrigin)?.hostname }
+                                value={new URL(config?.deployment?.serverOrigin)?.hostname}
                             />
                         </p>
                         <p>
                             <Trans
                                 i18nKey={
-                                    "console:develop.features.authenticationProvider.templates.apple." +
+                                    "idp:develop.features.authenticationProvider.templates.apple." +
                                     "wizardHelp.preRequisites.configureReturnURL"
                                 }
                             >
-                            Add the following URL as a <strong>Return URL</strong>.
+                                Add the following URL as a <strong>Return URL</strong>.
                             </Trans>
                             <CopyInputField
                                 className="copy-input-dark spaced"
-                                value={ config?.deployment?.customServerHost + "/commonauth" }
+                                value={config?.deployment?.customServerHost + "/commonauth"}
                             />
                             <DocumentationLink
-                                link={ getLink("develop.connections.newConnection.apple.help.configureSignIn") }
+                                link={getLink("develop.connections.newConnection.apple.help.configureSignIn")}
                                 showEmptyLinkText
                             >
-                                {
-                                    t("console:develop.features.authenticationProvider.templates.apple" +
-                                    ".wizardHelp.preRequisites.configureAppleSignIn")
-                                }
+                                {t(
+                                    "idp:develop.features.authenticationProvider.templates.apple" +
+                                        ".wizardHelp.preRequisites.configureAppleSignIn"
+                                )}
                             </DocumentationLink>
                         </p>
-                    </>)
+                    </>
                 }
             />
 
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.apple" +
-                            ".wizardHelp.name.heading")
-                }
+                {t("idp:develop.features.authenticationProvider.templates.apple" + ".wizardHelp.name.heading")}
             </Heading>
             <p>
-                {
-                    useNewConnectionsView
-                        ? t("console:develop.features.authenticationProvider.templates.apple." +
-                                "wizardHelp.name.connectionDescription")
-                        : t("console:develop.features.authenticationProvider.templates.apple." +
-                                "wizardHelp.name.idpDescription")
-                }
+                {useNewConnectionsView
+                    ? t(
+                          "idp:develop.features.authenticationProvider.templates.apple." +
+                              "wizardHelp.name.connectionDescription"
+                      )
+                    : t(
+                          "idp:develop.features.authenticationProvider.templates.apple." +
+                              "wizardHelp.name.idpDescription"
+                      )}
             </p>
 
-            <Divider/>
+            <Divider />
 
             <Heading as="h5">
-                { t("console:develop.features.authenticationProvider." +
-                        "templates.apple.wizardHelp.clientId.heading") }
+                {t("idp:develop.features.authenticationProvider." + "templates.apple.wizardHelp.clientId.heading")}
             </Heading>
             <p>
                 <Trans
                     i18nKey={
-                        "console:develop.features.authenticationProvider.templates.apple" +
-                            ".wizardHelp.clientId.description"
+                        "idp:develop.features.authenticationProvider.templates.apple" +
+                        ".wizardHelp.clientId.description"
                     }
                 >
                     Provide the <Code>Services ID</Code> created at Apple.
                 </Trans>
             </p>
 
-            <Divider/>
+            <Divider />
 
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.apple" +
-                            ".wizardHelp.teamId.heading")
-                }
+                {t("idp:develop.features.authenticationProvider.templates.apple" + ".wizardHelp.teamId.heading")}
             </Heading>
             <p>
                 <Trans
                     i18nKey={
-                        "console:develop.features.authenticationProvider.templates.apple." +
-                            "wizardHelp.teamId.description"
+                        "idp:develop.features.authenticationProvider.templates.apple." + "wizardHelp.teamId.description"
                     }
                 >
                     Provide the Apple developer <Code>Team ID</Code>.
                 </Trans>
             </p>
 
-            <Divider/>
+            <Divider />
 
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.apple" +
-                            ".wizardHelp.keyId.heading")
-                }
+                {t("idp:develop.features.authenticationProvider.templates.apple" + ".wizardHelp.keyId.heading")}
             </Heading>
             <p>
                 <Trans
                     i18nKey={
-                        "console:develop.features.authenticationProvider.templates.apple." +
-                            "wizardHelp.keyId.description"
+                        "idp:develop.features.authenticationProvider.templates.apple." + "wizardHelp.keyId.description"
                     }
                 >
                     Provide the <Code>Key Identifier</Code> of the private key generated.
                 </Trans>
             </p>
 
-            <Divider/>
+            <Divider />
 
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.apple" +
-                            ".wizardHelp.privateKey.heading")
-                }
+                {t("idp:develop.features.authenticationProvider.templates.apple" + ".wizardHelp.privateKey.heading")}
             </Heading>
             <p>
                 <Trans
                     i18nKey={
-                        "console:develop.features.authenticationProvider.templates.apple." +
-                            "wizardHelp.privateKey.description"
+                        "idp:develop.features.authenticationProvider.templates.apple." +
+                        "wizardHelp.privateKey.description"
                     }
                 >
                     Provide the <Code>Private Key</Code> generated for the application.

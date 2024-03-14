@@ -53,7 +53,7 @@ import {
  * Optionally you can pass this key to {@link useTranslation}
  * to avoid concatenate strings.
  */
-const I18N_TARGET_KEY: string = "console:develop.features.authenticationProvider.forms.authenticatorSettings.saml";
+const I18N_TARGET_KEY: string = "idp:develop.features.authenticationProvider.forms.authenticatorSettings.saml";
 
 /**
  * SamlSettingsForm Properties interface. The data-testid is added in
@@ -106,44 +106,36 @@ const FORM_ID: string = "saml-authenticator-form";
 export const SamlAuthenticatorSettingsForm: FunctionComponent<SamlSettingsFormPropsInterface> = (
     props: SamlSettingsFormPropsInterface
 ): ReactElement => {
-
-    const {
-        authenticator,
-        onSubmit,
-        readOnly,
-        isSubmitting,
-        [ "data-testid" ]: testId
-    } = props;
+    const { authenticator, onSubmit, readOnly, isSubmitting, ["data-testid"]: testId } = props;
 
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
     const { t } = useTranslation();
 
-    const [ formValues, setFormValues ] = useState<SamlPropertiesInterface>({} as SamlPropertiesInterface);
+    const [formValues, setFormValues] = useState<SamlPropertiesInterface>({} as SamlPropertiesInterface);
 
-    const [ isSLORequestAccepted, setIsSLORequestAccepted ] = useState<boolean>(false);
-    const [ includeProtocolBinding, setIncludeProtocolBinding ] = useState<boolean>(false);
-    const [ isUserIdInClaims, setIsUserIdInClaims ] = useState<boolean>(false);
-    const [ isLogoutEnabled, setIsLogoutEnabled ] = useState<boolean>(false);
+    const [isSLORequestAccepted, setIsSLORequestAccepted] = useState<boolean>(false);
+    const [includeProtocolBinding, setIncludeProtocolBinding] = useState<boolean>(false);
+    const [isUserIdInClaims, setIsUserIdInClaims] = useState<boolean>(false);
+    const [isLogoutEnabled, setIsLogoutEnabled] = useState<boolean>(false);
 
-    const authorizedRedirectURL: string = config?.deployment?.customServerHost + "/commonauth" ;
+    const authorizedRedirectURL: string = config?.deployment?.customServerHost + "/commonauth";
 
     /**
      * ISAuthnReqSigned, IsLogoutReqSigned these two fields states will be used by other
      * fields states. Basically, algorithms fields enable and disable states will be
      * determine by these two states.
      */
-    const [ isLogoutReqSigned, setIsLogoutReqSigned ] = useState<boolean>(false);
-    const [ isAuthnReqSigned, setIsAuthnReqSigned ] = useState<boolean>(false);
+    const [isLogoutReqSigned, setIsLogoutReqSigned] = useState<boolean>(false);
+    const [isAuthnReqSigned, setIsAuthnReqSigned] = useState<boolean>(false);
 
     /**
      * This isAlgorithmsEnabled state will control the enable and disable state of
      * algorithm dropdowns (Signature and Digest)
      */
-    const [ isAlgorithmsEnabled, setIsAlgorithmsEnabled ] = useState<boolean>(false);
+    const [isAlgorithmsEnabled, setIsAlgorithmsEnabled] = useState<boolean>(false);
 
     const initialFormValues: SamlPropertiesInterface = useMemo<SamlPropertiesInterface>(() => {
-
-        const [ findPropVal, findMeta ] = fastSearch(authenticator);
+        const [findPropVal, findMeta] = fastSearch(authenticator);
 
         return {
             AuthRedirectUrl: findPropVal<string>({ defaultValue: authorizedRedirectURL, key: "AuthRedirectUrl" }),
@@ -175,7 +167,6 @@ export const SamlAuthenticatorSettingsForm: FunctionComponent<SamlSettingsFormPr
             SignatureAlgorithm: findPropVal<string>({ defaultValue: "RSA with SHA256", key: "SignatureAlgorithm" }),
             commonAuthQueryParams: findPropVal<string>({ defaultValue: "", key: "commonAuthQueryParams" })
         } as SamlPropertiesInterface;
-
     }, []);
 
     useEffect(() => {
@@ -186,39 +177,38 @@ export const SamlAuthenticatorSettingsForm: FunctionComponent<SamlSettingsFormPr
         setIsLogoutReqSigned(initialFormValues.IsLogoutReqSigned);
         setIsAuthnReqSigned(initialFormValues.ISAuthnReqSigned);
         setFormValues({ ...initialFormValues });
-    }, [ initialFormValues ]);
+    }, [initialFormValues]);
 
     useEffect(() => {
         const ifEitherOneOfThemIsChecked: boolean = isLogoutReqSigned || isAuthnReqSigned;
 
         setIsAlgorithmsEnabled(ifEitherOneOfThemIsChecked);
-    }, [ isLogoutReqSigned, isAuthnReqSigned ]);
+    }, [isLogoutReqSigned, isAuthnReqSigned]);
 
-    const onFormSubmit = (values: { [ key: string ]: any }): void => {
+    const onFormSubmit = (values: { [key: string]: any }): void => {
         const manualOverride: { [key: string]: boolean } = {
-            "ISAuthnReqSigned": isAuthnReqSigned,
-            "IncludeProtocolBinding": includeProtocolBinding,
-            "IsLogoutEnabled": isLogoutEnabled,
-            "IsLogoutReqSigned": isLogoutReqSigned,
-            "IsSLORequestAccepted": isSLORequestAccepted,
-            "IsUserIdInClaims": isUserIdInClaims
+            ISAuthnReqSigned: isAuthnReqSigned,
+            IncludeProtocolBinding: includeProtocolBinding,
+            IsLogoutEnabled: isLogoutEnabled,
+            IsLogoutReqSigned: isLogoutReqSigned,
+            IsSLORequestAccepted: isSLORequestAccepted,
+            IsUserIdInClaims: isUserIdInClaims
         };
         const manualOverrideKeys: Set<string> = new Set<string>(Object.keys(manualOverride));
-        const authn: FederatedAuthenticatorInterface = ({
+        const authn: FederatedAuthenticatorInterface = {
             ...authenticator.data,
             properties: [
                 ...Object.keys(values)
                     .filter((key: string) => !manualOverrideKeys.has(key))
                     .map((key: string) => ({ key, value: values[key] })),
-                ...Object.keys(manualOverride)
-                    .map((key: string) => ({ key, value: manualOverride[key] })) as any
+                ...(Object.keys(manualOverride).map((key: string) => ({ key, value: manualOverride[key] })) as any)
             ]
-        });
+        };
 
         onSubmit(authn);
     };
 
-    const getAlgorithmsDropdownFieldValidators = (): (value: string) => string | undefined => {
+    const getAlgorithmsDropdownFieldValidators = (): ((value: string) => string | undefined) => {
         if (isLogoutReqSigned || isAuthnReqSigned) {
             return required;
         }
@@ -227,387 +217,354 @@ export const SamlAuthenticatorSettingsForm: FunctionComponent<SamlSettingsFormPr
     };
 
     return (
-        <Form
-            id={ FORM_ID }
-            onSubmit={ onFormSubmit }
-            uncontrolledForm={ true }
-            initialValues={ formValues }
-        >
+        <Form id={FORM_ID} onSubmit={onFormSubmit} uncontrolledForm={true} initialValues={formValues}>
             <Field.Input
-                required={ true }
+                required={true}
                 name="SPEntityId"
-                value={ formValues?.SPEntityId }
-                placeholder={ t(`${ I18N_TARGET_KEY }.SPEntityId.placeholder`) }
-                ariaLabel={ t(`${ I18N_TARGET_KEY }.SPEntityId.ariaLabel`) }
+                value={formValues?.SPEntityId}
+                placeholder={t(`${I18N_TARGET_KEY}.SPEntityId.placeholder`)}
+                ariaLabel={t(`${I18N_TARGET_KEY}.SPEntityId.ariaLabel`)}
                 inputType="default"
-                maxLength={ SERVICE_PROVIDER_ENTITY_ID_LENGTH.max }
-                minLength={ SERVICE_PROVIDER_ENTITY_ID_LENGTH.min }
-                label={ (
-                    <FormInputLabel htmlFor="SPEntityId">
-                        { t(`${ I18N_TARGET_KEY }.SPEntityId.label`) }
-                    </FormInputLabel>
-                ) }
-                validate={ composeValidators(
-                    required,
-                    hasLength(SERVICE_PROVIDER_ENTITY_ID_LENGTH)
-                ) }
-                hint={ (
+                maxLength={SERVICE_PROVIDER_ENTITY_ID_LENGTH.max}
+                minLength={SERVICE_PROVIDER_ENTITY_ID_LENGTH.min}
+                label={<FormInputLabel htmlFor="SPEntityId">{t(`${I18N_TARGET_KEY}.SPEntityId.label`)}</FormInputLabel>}
+                validate={composeValidators(required, hasLength(SERVICE_PROVIDER_ENTITY_ID_LENGTH))}
+                hint={
                     <>
-                        This value will be used as the <Code>&lt;saml2:Issuer&gt;</Code> in
-                        the SAML requests initiated from { config.ui.productName } to external
-                        Identity Provider (IdP). You need to provide a unique value
-                        as the service provider <Code>entityId</Code>.
+                        This value will be used as the <Code>&lt;saml2:Issuer&gt;</Code> in the SAML requests initiated
+                        from {config.ui.productName} to external Identity Provider (IdP). You need to provide a unique
+                        value as the service provider <Code>entityId</Code>.
                     </>
-                ) }
-                readOnly={ readOnly }
+                }
+                readOnly={readOnly}
             />
 
             <Field.Input
-                required={ true }
+                required={true}
                 name="SSOUrl"
-                value={ formValues?.SSOUrl }
+                value={formValues?.SSOUrl}
                 inputType="default"
-                placeholder={ t(`${ I18N_TARGET_KEY }.SSOUrl.placeholder`) }
-                ariaLabel={ t(`${ I18N_TARGET_KEY }.SSOUrl.ariaLabel`) }
-                data-testid={ `${ testId }-SSOUrl-field` }
-                label={ (
-                    <FormInputLabel htmlFor="SSOUrl">
-                        { t(`${ I18N_TARGET_KEY }.SSOUrl.label`) }
-                    </FormInputLabel>
-                ) }
-                maxLength={ SSO_URL_LENGTH.max }
-                minLength={ SSO_URL_LENGTH.min }
-                validate={ composeValidators(
-                    required,
-                    isUrl,
-                    hasLength(SSO_URL_LENGTH)
-                ) }
-                hint={ t(`${ I18N_TARGET_KEY }.SSOUrl.hint`, {
+                placeholder={t(`${I18N_TARGET_KEY}.SSOUrl.placeholder`)}
+                ariaLabel={t(`${I18N_TARGET_KEY}.SSOUrl.ariaLabel`)}
+                data-testid={`${testId}-SSOUrl-field`}
+                label={<FormInputLabel htmlFor="SSOUrl">{t(`${I18N_TARGET_KEY}.SSOUrl.label`)}</FormInputLabel>}
+                maxLength={SSO_URL_LENGTH.max}
+                minLength={SSO_URL_LENGTH.min}
+                validate={composeValidators(required, isUrl, hasLength(SSO_URL_LENGTH))}
+                hint={t(`${I18N_TARGET_KEY}.SSOUrl.hint`, {
                     productName: config.ui.productName
-                }) }
-                readOnly={ readOnly }
+                })}
+                readOnly={readOnly}
             />
 
             <Field.Input
                 name="AuthRedirectUrl"
-                value={ formValues?.AuthRedirectUrl }
+                value={formValues?.AuthRedirectUrl}
                 inputType="copy_input"
-                placeholder={ t(`${ I18N_TARGET_KEY }.AuthRedirectUrl.placeholder`) }
-                ariaLabel={ t(`${ I18N_TARGET_KEY }.AuthRedirectUrl.ariaLabel`) }
-                data-testid={ `${ testId }-authorized-redirect-url` }
-                label={ (
-                    <FormInputLabel htmlFor="AuthRedirectUrl" disabled={ true }>
-                        { t(`${ I18N_TARGET_KEY }.AuthRedirectUrl.label`) }
+                placeholder={t(`${I18N_TARGET_KEY}.AuthRedirectUrl.placeholder`)}
+                ariaLabel={t(`${I18N_TARGET_KEY}.AuthRedirectUrl.ariaLabel`)}
+                data-testid={`${testId}-authorized-redirect-url`}
+                label={
+                    <FormInputLabel htmlFor="AuthRedirectUrl" disabled={true}>
+                        {t(`${I18N_TARGET_KEY}.AuthRedirectUrl.label`)}
                     </FormInputLabel>
-                ) }
-                maxLength={ IDENTITY_PROVIDER_AUTHORIZED_REDIRECT_URL_LENGTH.max }
-                minLength={ IDENTITY_PROVIDER_AUTHORIZED_REDIRECT_URL_LENGTH.min }
-                hint={ t(`${ I18N_TARGET_KEY }.AuthRedirectUrl.hint`, {
+                }
+                maxLength={IDENTITY_PROVIDER_AUTHORIZED_REDIRECT_URL_LENGTH.max}
+                minLength={IDENTITY_PROVIDER_AUTHORIZED_REDIRECT_URL_LENGTH.min}
+                hint={t(`${I18N_TARGET_KEY}.AuthRedirectUrl.hint`, {
                     productName: config.ui.productName
-                }) }
-                readOnly={ readOnly }
+                })}
+                readOnly={readOnly}
             />
 
             <Field.Input
-                required={ true }
+                required={true}
                 name="IdPEntityId"
-                value={ formValues?.IdPEntityId }
+                value={formValues?.IdPEntityId}
                 inputType="default"
-                placeholder={ t(`${ I18N_TARGET_KEY }.IdPEntityId.placeholder`) }
-                ariaLabel={ t(`${ I18N_TARGET_KEY }.IdPEntityId.ariaLabel`) }
-                data-testid={ `${ testId }-IdPEntityId-field` }
-                label={ (
-                    <FormInputLabel htmlFor="IdPEntityId" disabled={ true }>
-                        { t(`${ I18N_TARGET_KEY }.IdPEntityId.label`) }
+                placeholder={t(`${I18N_TARGET_KEY}.IdPEntityId.placeholder`)}
+                ariaLabel={t(`${I18N_TARGET_KEY}.IdPEntityId.ariaLabel`)}
+                data-testid={`${testId}-IdPEntityId-field`}
+                label={
+                    <FormInputLabel htmlFor="IdPEntityId" disabled={true}>
+                        {t(`${I18N_TARGET_KEY}.IdPEntityId.label`)}
                     </FormInputLabel>
-                ) }
-                maxLength={ IDENTITY_PROVIDER_ENTITY_ID_LENGTH.max }
-                minLength={ IDENTITY_PROVIDER_ENTITY_ID_LENGTH.min }
-                validate={ composeValidators(
-                    required,
-                    hasLength(IDENTITY_PROVIDER_ENTITY_ID_LENGTH)
-                ) }
-                hint={ (
+                }
+                maxLength={IDENTITY_PROVIDER_ENTITY_ID_LENGTH.max}
+                minLength={IDENTITY_PROVIDER_ENTITY_ID_LENGTH.min}
+                validate={composeValidators(required, hasLength(IDENTITY_PROVIDER_ENTITY_ID_LENGTH))}
+                hint={
                     <>
-                        This is the <Code>&lt;saml2:Issuer&gt;</Code> value specified in
-                        the SAML responses issued by the external IdP. Also, this needs to
-                        be a unique value to identify the external IdP within your
+                        This is the <Code>&lt;saml2:Issuer&gt;</Code> value specified in the SAML responses issued by
+                        the external IdP. Also, this needs to be a unique value to identify the external IdP within your
                         organization.
                     </>
-                ) }
-                readOnly={ readOnly }
+                }
+                readOnly={readOnly}
             />
 
             <Field.Dropdown
-                required={ true }
+                required={true}
                 name="NameIDType"
-                value={ formValues?.NameIDType }
-                defaultValue={ formValues?.NameIDType }
-                placeholder={ t(`${ I18N_TARGET_KEY }.NameIDType.placeholder`) }
-                ariaLabel={ t(`${ I18N_TARGET_KEY }.NameIDType.ariaLabel`) }
-                data-testid={ `${ testId }-NameIDType-field` }
-                options={ getAvailableNameIDFormats() }
-                label={ (
-                    <FormInputLabel htmlFor="NameIDType">
-                        { t(`${ I18N_TARGET_KEY }.NameIDType.label`) }
-                    </FormInputLabel>
-                ) }
-                validate={ required }
-                hint={ t(`${ I18N_TARGET_KEY }.NameIDType.hint`, {
+                value={formValues?.NameIDType}
+                defaultValue={formValues?.NameIDType}
+                placeholder={t(`${I18N_TARGET_KEY}.NameIDType.placeholder`)}
+                ariaLabel={t(`${I18N_TARGET_KEY}.NameIDType.ariaLabel`)}
+                data-testid={`${testId}-NameIDType-field`}
+                options={getAvailableNameIDFormats()}
+                label={<FormInputLabel htmlFor="NameIDType">{t(`${I18N_TARGET_KEY}.NameIDType.label`)}</FormInputLabel>}
+                validate={required}
+                hint={t(`${I18N_TARGET_KEY}.NameIDType.hint`, {
                     productName: config.ui.productName
-                }) }
-                readOnly={ readOnly }
+                })}
+                readOnly={readOnly}
             />
 
             <Field.Dropdown
-                required={ true }
+                required={true}
                 name="RequestMethod"
-                value={ formValues?.RequestMethod }
-                defaultValue={ formValues?.RequestMethod }
-                placeholder={ t(`${ I18N_TARGET_KEY }.RequestMethod.placeholder`) }
-                ariaLabel={ t(`${ I18N_TARGET_KEY }.RequestMethod.ariaLabel`) }
-                data-testid={ `${ testId }-RequestMethod-field` }
-                options={ getAvailableProtocolBindingTypes() }
-                label={ (
+                value={formValues?.RequestMethod}
+                defaultValue={formValues?.RequestMethod}
+                placeholder={t(`${I18N_TARGET_KEY}.RequestMethod.placeholder`)}
+                ariaLabel={t(`${I18N_TARGET_KEY}.RequestMethod.ariaLabel`)}
+                data-testid={`${testId}-RequestMethod-field`}
+                options={getAvailableProtocolBindingTypes()}
+                label={
                     <FormInputLabel htmlFor="RequestMethod">
-                        { t(`${ I18N_TARGET_KEY }.RequestMethod.label`) }
+                        {t(`${I18N_TARGET_KEY}.RequestMethod.label`)}
                     </FormInputLabel>
-                ) }
-                validate={ required }
-                hint={ t(`${ I18N_TARGET_KEY }.RequestMethod.hint`) }
-                readOnly={ readOnly }
+                }
+                validate={required}
+                hint={t(`${I18N_TARGET_KEY}.RequestMethod.hint`)}
+                readOnly={readOnly}
             />
 
-            <div/>
+            <div />
 
             <FormSection heading="Single Logout">
                 <Grid>
                     <SectionRow>
                         <Field.Checkbox
                             name="IsSLORequestAccepted"
-                            initialValue={ isSLORequestAccepted }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.IsSLORequestAccepted.ariaLabel`) }
-                            data-testid={ `${ testId }-IsSLORequestAccepted-field` }
-                            label={ (
+                            initialValue={isSLORequestAccepted}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.IsSLORequestAccepted.ariaLabel`)}
+                            data-testid={`${testId}-IsSLORequestAccepted-field`}
+                            label={
                                 <FormInputLabel htmlFor="IsSLORequestAccepted">
-                                    { t(`${ I18N_TARGET_KEY }.IsSLORequestAccepted.label`) }
+                                    {t(`${I18N_TARGET_KEY}.IsSLORequestAccepted.label`)}
                                 </FormInputLabel>
-                            ) }
-                            hint={
-                                t(`${ I18N_TARGET_KEY }.IsSLORequestAccepted.hint`, {
-                                    productName: config.ui.productName
-                                })
                             }
-                            listen={ (value: any) => setIsSLORequestAccepted(Boolean(value)) }
-                            readOnly={ readOnly }
+                            hint={t(`${I18N_TARGET_KEY}.IsSLORequestAccepted.hint`, {
+                                productName: config.ui.productName
+                            })}
+                            listen={(value: any) => setIsSLORequestAccepted(Boolean(value))}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                     <SectionRow>
                         <Field.Checkbox
-                            required={ false }
+                            required={false}
                             name="IsLogoutEnabled"
-                            initialValue={ isLogoutEnabled }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.IsLogoutEnabled.ariaLabel`) }
-                            data-testid={ `${ testId }-IsLogoutEnabled-field` }
-                            label={ (
+                            initialValue={isLogoutEnabled}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.IsLogoutEnabled.ariaLabel`)}
+                            data-testid={`${testId}-IsLogoutEnabled-field`}
+                            label={
                                 <FormInputLabel htmlFor="IsLogoutEnabled">
-                                    { t(`${ I18N_TARGET_KEY }.IsLogoutEnabled.label`) }
+                                    {t(`${I18N_TARGET_KEY}.IsLogoutEnabled.label`)}
                                 </FormInputLabel>
-                            ) }
-                            hint={ t(`${ I18N_TARGET_KEY }.IsLogoutEnabled.hint`) }
-                            listen={ (value: any) => setIsLogoutEnabled(Boolean(value)) }
-                            readOnly={ readOnly }
+                            }
+                            hint={t(`${I18N_TARGET_KEY}.IsLogoutEnabled.hint`)}
+                            listen={(value: any) => setIsLogoutEnabled(Boolean(value))}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                     <SectionRow>
                         <Field.Input
                             name="LogoutReqUrl"
-                            value={ formValues?.LogoutReqUrl }
+                            value={formValues?.LogoutReqUrl}
                             inputType="url"
-                            disabled={ !isLogoutEnabled }
-                            placeholder={ t(`${ I18N_TARGET_KEY }.LogoutReqUrl.placeholder`) }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.LogoutReqUrl.ariaLabel`) }
-                            data-testid={ `${ testId }-LogoutReqUrl-field` }
-                            label={ (
+                            disabled={!isLogoutEnabled}
+                            placeholder={t(`${I18N_TARGET_KEY}.LogoutReqUrl.placeholder`)}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.LogoutReqUrl.ariaLabel`)}
+                            data-testid={`${testId}-LogoutReqUrl-field`}
+                            label={
                                 <FormInputLabel htmlFor="LogoutReqUrl">
-                                    { t(`${ I18N_TARGET_KEY }.LogoutReqUrl.label`) }
+                                    {t(`${I18N_TARGET_KEY}.LogoutReqUrl.label`)}
                                 </FormInputLabel>
-                            ) }
-                            maxLength={ LOGOUT_URL_LENGTH.max }
-                            minLength={ LOGOUT_URL_LENGTH.min }
-                            hint={ t(`${ I18N_TARGET_KEY }.LogoutReqUrl.hint`) }
-                            readOnly={ readOnly }
+                            }
+                            maxLength={LOGOUT_URL_LENGTH.max}
+                            minLength={LOGOUT_URL_LENGTH.min}
+                            hint={t(`${I18N_TARGET_KEY}.LogoutReqUrl.hint`)}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                 </Grid>
-                <Divider hidden/>
+                <Divider hidden />
             </FormSection>
 
             <FormSection heading="Request & Response Signing">
                 <Grid>
                     <SectionRow>
                         <Field.Checkbox
-                            required={ false }
-                            disabled={ false }
+                            required={false}
+                            disabled={false}
                             name="IsAuthnRespSigned"
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.IsAuthnRespSigned.ariaLabel`) }
-                            data-testid={ `${ testId }-IsAuthnRespSigned-field` }
-                            label={ (
+                            ariaLabel={t(`${I18N_TARGET_KEY}.IsAuthnRespSigned.ariaLabel`)}
+                            data-testid={`${testId}-IsAuthnRespSigned-field`}
+                            label={
                                 <FormInputLabel htmlFor="IsAuthnRespSigned">
-                                    { t(`${ I18N_TARGET_KEY }.IsAuthnRespSigned.label`) }
+                                    {t(`${I18N_TARGET_KEY}.IsAuthnRespSigned.label`)}
                                 </FormInputLabel>
-                            ) }
-                            hint={ t(`${ I18N_TARGET_KEY }.IsAuthnRespSigned.hint`) }
-                            readOnly={ readOnly }
+                            }
+                            hint={t(`${I18N_TARGET_KEY}.IsAuthnRespSigned.hint`)}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                     <SectionRow>
                         <Field.Checkbox
-                            required={ false }
+                            required={false}
                             name="IsLogoutReqSigned"
-                            initialValue={ isLogoutReqSigned }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.IsLogoutReqSigned.ariaLabel`) }
-                            data-testid={ `${ testId }-IsLogoutReqSigned-field` }
-                            label={ (
+                            initialValue={isLogoutReqSigned}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.IsLogoutReqSigned.ariaLabel`)}
+                            data-testid={`${testId}-IsLogoutReqSigned-field`}
+                            label={
                                 <FormInputLabel htmlFor="IsLogoutEnabled">
-                                    { t(`${ I18N_TARGET_KEY }.IsLogoutReqSigned.label`) }
+                                    {t(`${I18N_TARGET_KEY}.IsLogoutReqSigned.label`)}
                                 </FormInputLabel>
-                            ) }
-                            hint={ t(`${ I18N_TARGET_KEY }.IsLogoutReqSigned.hint`, {
+                            }
+                            hint={t(`${I18N_TARGET_KEY}.IsLogoutReqSigned.hint`, {
                                 productName: config.ui.productName
-                            }) }
-                            listen={ (checked: any) => setIsLogoutReqSigned(Boolean(checked)) }
-                            readOnly={ readOnly }
+                            })}
+                            listen={(checked: any) => setIsLogoutReqSigned(Boolean(checked))}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                     <SectionRow>
                         <Field.Checkbox
-                            required={ false }
+                            required={false}
                             name="ISAuthnReqSigned"
-                            initialValue={ isAuthnReqSigned }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.ISAuthnReqSigned.ariaLabel`) }
-                            data-testid={ `${ testId }-ISAuthnReqSigned-field` }
-                            label={ (
+                            initialValue={isAuthnReqSigned}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.ISAuthnReqSigned.ariaLabel`)}
+                            data-testid={`${testId}-ISAuthnReqSigned-field`}
+                            label={
                                 <FormInputLabel htmlFor="ISAuthnReqSigned">
-                                    { t(`${ I18N_TARGET_KEY }.ISAuthnReqSigned.label`) }
+                                    {t(`${I18N_TARGET_KEY}.ISAuthnReqSigned.label`)}
                                 </FormInputLabel>
-                            ) }
-                            hint={ t(`${ I18N_TARGET_KEY }.ISAuthnReqSigned.hint`, {
+                            }
+                            hint={t(`${I18N_TARGET_KEY}.ISAuthnReqSigned.hint`, {
                                 productName: config.ui.productName
-                            }) }
-                            listen={ (value: any) => setIsAuthnReqSigned(Boolean(value)) }
-                            readOnly={ readOnly }
+                            })}
+                            listen={(value: any) => setIsAuthnReqSigned(Boolean(value))}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                     <SectionRow>
                         <Field.Dropdown
-                            value={ formValues?.SignatureAlgorithm }
-                            required={ isAlgorithmsEnabled }
+                            value={formValues?.SignatureAlgorithm}
+                            required={isAlgorithmsEnabled}
                             name="SignatureAlgorithm"
                             type="select"
-                            disabled={ !isAlgorithmsEnabled }
-                            placeholder={ t(`${ I18N_TARGET_KEY }.SignatureAlgorithm.placeholder`) }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.SignatureAlgorithm.ariaLabel`) }
-                            data-testid={ `${ testId }-SignatureAlgorithm-field` }
-                            options={ getSignatureAlgorithmOptionsMapped(authenticator.meta) }
-                            label={ (
+                            disabled={!isAlgorithmsEnabled}
+                            placeholder={t(`${I18N_TARGET_KEY}.SignatureAlgorithm.placeholder`)}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.SignatureAlgorithm.ariaLabel`)}
+                            data-testid={`${testId}-SignatureAlgorithm-field`}
+                            options={getSignatureAlgorithmOptionsMapped(authenticator.meta)}
+                            label={
                                 <FormInputLabel htmlFor="SignatureAlgorithm">
-                                    { t(`${ I18N_TARGET_KEY }.SignatureAlgorithm.label`) }
+                                    {t(`${I18N_TARGET_KEY}.SignatureAlgorithm.label`)}
                                 </FormInputLabel>
-                            ) }
-                            validate={ getAlgorithmsDropdownFieldValidators() }
-                            readOnly={ readOnly }
+                            }
+                            validate={getAlgorithmsDropdownFieldValidators()}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                     <SectionRow>
                         <Field.Dropdown
-                            required={ isAlgorithmsEnabled }
+                            required={isAlgorithmsEnabled}
                             name="DigestAlgorithm"
-                            value={ formValues?.DigestAlgorithm }
+                            value={formValues?.DigestAlgorithm}
                             type="select"
-                            disabled={ !isAlgorithmsEnabled }
-                            placeholder={ t(`${ I18N_TARGET_KEY }.DigestAlgorithm.placeholder`) }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.DigestAlgorithm.ariaLabel`) }
-                            data-testid={ `${ testId }-DigestAlgorithm-field` }
-                            options={ getDigestAlgorithmOptionsMapped(authenticator.meta) }
-                            label={ (
+                            disabled={!isAlgorithmsEnabled}
+                            placeholder={t(`${I18N_TARGET_KEY}.DigestAlgorithm.placeholder`)}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.DigestAlgorithm.ariaLabel`)}
+                            data-testid={`${testId}-DigestAlgorithm-field`}
+                            options={getDigestAlgorithmOptionsMapped(authenticator.meta)}
+                            label={
                                 <FormInputLabel htmlFor="DigestAlgorithm">
-                                    { t(`${ I18N_TARGET_KEY }.DigestAlgorithm.label`) }
+                                    {t(`${I18N_TARGET_KEY}.DigestAlgorithm.label`)}
                                 </FormInputLabel>
-                            ) }
-                            validate={ getAlgorithmsDropdownFieldValidators() }
-                            readOnly={ readOnly }
+                            }
+                            validate={getAlgorithmsDropdownFieldValidators()}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                 </Grid>
-                <Divider hidden/>
+                <Divider hidden />
             </FormSection>
 
             <FormSection heading="Advanced">
                 <Grid>
                     <SectionRow>
                         <Field.Checkbox
-                            required={ false }
+                            required={false}
                             name="IncludeProtocolBinding"
-                            initialValue={ includeProtocolBinding }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.IncludeProtocolBinding.ariaLabel`) }
-                            data-testid={ `${ testId }-IncludeProtocolBinding-field` }
-                            label={ (
+                            initialValue={includeProtocolBinding}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.IncludeProtocolBinding.ariaLabel`)}
+                            data-testid={`${testId}-IncludeProtocolBinding-field`}
+                            label={
                                 <FormInputLabel htmlFor="IncludeProtocolBinding">
-                                    { t(`${ I18N_TARGET_KEY }.IncludeProtocolBinding.label`) }
+                                    {t(`${I18N_TARGET_KEY}.IncludeProtocolBinding.label`)}
                                 </FormInputLabel>
-                            ) }
-                            hint={ t(`${ I18N_TARGET_KEY }.IncludeProtocolBinding.hint`) }
-                            listen={ (value: any) => setIncludeProtocolBinding(Boolean(value)) }
-                            readOnly={ readOnly }
+                            }
+                            hint={t(`${I18N_TARGET_KEY}.IncludeProtocolBinding.hint`)}
+                            listen={(value: any) => setIncludeProtocolBinding(Boolean(value))}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                     <SectionRow>
                         <Field.Checkbox
-                            required={ false }
+                            required={false}
                             name="IsUserIdInClaims"
-                            initialValue={ isUserIdInClaims }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.IsUserIdInClaims.ariaLabel`) }
-                            data-testid={ `${ testId }-IsUserIdInClaims-field` }
-                            label={ (
+                            initialValue={isUserIdInClaims}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.IsUserIdInClaims.ariaLabel`)}
+                            data-testid={`${testId}-IsUserIdInClaims-field`}
+                            label={
                                 <FormInputLabel htmlFor="IsUserIdInClaims">
-                                    { t(`${ I18N_TARGET_KEY }.IsUserIdInClaims.label`) }
+                                    {t(`${I18N_TARGET_KEY}.IsUserIdInClaims.label`)}
                                 </FormInputLabel>
-                            ) }
-                            hint={ t(`${ I18N_TARGET_KEY }.IsUserIdInClaims.hint`) }
-                            listen={ (value: any) => setIsUserIdInClaims(Boolean(value)) }
-                            readOnly={ readOnly }
+                            }
+                            hint={t(`${I18N_TARGET_KEY}.IsUserIdInClaims.hint`)}
+                            listen={(value: any) => setIsUserIdInClaims(Boolean(value))}
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                     <SectionRow>
                         <Field.QueryParams
-                            value={ formValues?.commonAuthQueryParams }
-                            label={ t(`${ I18N_TARGET_KEY }.commonAuthQueryParams.label`) }
-                            ariaLabel={ t(`${ I18N_TARGET_KEY }.commonAuthQueryParams.ariaLabel`) }
+                            value={formValues?.commonAuthQueryParams}
+                            label={t(`${I18N_TARGET_KEY}.commonAuthQueryParams.label`)}
+                            ariaLabel={t(`${I18N_TARGET_KEY}.commonAuthQueryParams.ariaLabel`)}
                             name="commonAuthQueryParams"
-                            readOnly={ readOnly }
+                            readOnly={readOnly}
                         />
                     </SectionRow>
                 </Grid>
-                <Divider hidden/>
+                <Divider hidden />
             </FormSection>
 
             <Field.Button
-                form={ FORM_ID }
+                form={FORM_ID}
                 size="small"
                 buttonType="primary_btn"
                 ariaLabel="SAML authenticator update button"
                 name="update-button"
-                data-testid={ `${ testId }-submit-button` }
-                disabled={ isSubmitting }
-                loading={ isSubmitting }
-                label={ t("common:update") }
-                hidden={ readOnly }
+                data-testid={`${testId}-submit-button`}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                label={t("idp:update")}
+                hidden={readOnly}
             />
-
         </Form>
     );
-
 };
 
 /**
@@ -617,14 +574,13 @@ SamlAuthenticatorSettingsForm.defaultProps = {
     "data-testid": "saml-authenticator-settings-form"
 };
 
-const SectionRow: FunctionComponent<PropsWithChildren<{ width?: SemanticWIDTHS }>> = (
-    { width = 16, children }: PropsWithChildren<{ width?: SemanticWIDTHS }>
-): ReactElement => {
+const SectionRow: FunctionComponent<PropsWithChildren<{ width?: SemanticWIDTHS }>> = ({
+    width = 16,
+    children
+}: PropsWithChildren<{ width?: SemanticWIDTHS }>): ReactElement => {
     return (
-        <Grid.Row columns={ 1 }>
-            <Grid.Column width={ width }>
-                { children }
-            </Grid.Column>
+        <Grid.Row columns={1}>
+            <Grid.Column width={width}>{children}</Grid.Column>
         </Grid.Row>
     );
 };

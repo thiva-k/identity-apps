@@ -22,7 +22,6 @@ import { I18nModuleConstants } from "@wso2is/i18n";
  * Class containing portal specific i18n constants.
  */
 export class I18nConstants {
-
     /**
      * Private constructor to avoid object instantiation from outside
      * the class.
@@ -30,7 +29,7 @@ export class I18nConstants {
      * @hideconstructor
      */
     /* eslint-disable @typescript-eslint/no-empty-function */
-    private constructor() { }
+    private constructor() {}
 
     /**
      * Common namespace.
@@ -63,12 +62,13 @@ export class I18nConstants {
      * @default
      */
     public static readonly BUNDLE_NAMESPACE_DIRECTORIES: Map<string, string> = new Map<string, string>([
-        [ I18nConstants.COMMON_NAMESPACE, "portals" ],
-        [ I18nConstants.CONSOLE_PORTAL_NAMESPACE, "portals" ],
-        [ I18nConstants.EXTENSIONS_NAMESPACE, "portals" ],
-        ["connections","features"],
-        ["groups","features"],
-        ["organizations","features"]
+        [I18nConstants.COMMON_NAMESPACE, "portals"],
+        [I18nConstants.CONSOLE_PORTAL_NAMESPACE, "portals"],
+        [I18nConstants.EXTENSIONS_NAMESPACE, "portals"],
+        ["connections", "features"],
+        ["groups", "features"],
+        ["organizations", "features"],
+        ["idp", "features"]
     ]);
 
     /**

@@ -72,12 +72,9 @@ const FORM_ID: string = "microsoft-authenticator-wizard-form";
  * @param props - Props injected to the component.
  * @returns Functional component.
  */
-export const MicrosoftAuthenticationProviderCreateWizardContent: FunctionComponent<
-    MicrosoftAuthenticationProviderCreateWizardContentPropsInterface
-> = (
+export const MicrosoftAuthenticationProviderCreateWizardContent: FunctionComponent<MicrosoftAuthenticationProviderCreateWizardContentPropsInterface> = (
     props: MicrosoftAuthenticationProviderCreateWizardContentPropsInterface
 ): ReactElement => {
-
     const {
         triggerSubmission,
         triggerPrevious,
@@ -85,19 +82,18 @@ export const MicrosoftAuthenticationProviderCreateWizardContent: FunctionCompone
         template,
         setTotalPage,
         onSubmit,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ idpList, setIdPList ] = useState<IdentityProviderListResponseInterface>({});
-    const [ isIdPListRequestLoading, setIdPListRequestLoading ] = useState<boolean>(undefined);
+    const [idpList, setIdPList] = useState<IdentityProviderListResponseInterface>({});
+    const [isIdPListRequestLoading, setIdPListRequestLoading] = useState<boolean>(undefined);
 
     /**
      * Loads the identity provider authenticators on initial component load.
      */
     useEffect(() => {
-
         getIDPlist();
     }, []);
 
@@ -105,14 +101,13 @@ export const MicrosoftAuthenticationProviderCreateWizardContent: FunctionCompone
      * Get Idp List.
      */
     const getIDPlist = (): void => {
-
         setIdPListRequestLoading(true);
 
         getIdentityProviderList(null, null, null)
-            .then((response) => {
+            .then(response => {
                 setIdPList(response);
             })
-            .catch((error) => {
+            .catch(error => {
                 handleGetIDPListCallError(error);
             })
             .finally(() => {
@@ -127,21 +122,19 @@ export const MicrosoftAuthenticationProviderCreateWizardContent: FunctionCompone
      * @returns error msg if name is already taken.
      */
     const idpNameValidation = (value): string => {
-
         let nameExist = false;
 
         if (idpList?.count > 0) {
-            idpList?.identityProviders.map((idp) => {
+            idpList?.identityProviders.map(idp => {
                 if (idp?.name === value) {
                     nameExist = true;
-
                 }
             });
         }
         if (nameExist) {
-            return t("console:develop.features." +
-                "authenticationProvider.forms.generalDetails.name." +
-                "validations.duplicate");
+            return t(
+                "idp:develop.features." + "authenticationProvider.forms.generalDetails.name." + "validations.duplicate"
+            );
         }
     };
 
@@ -151,9 +144,9 @@ export const MicrosoftAuthenticationProviderCreateWizardContent: FunctionCompone
      * @param values - Form Values.
      * @returns Form validation.
      */
-    const validateForm = (values: MicrosoftAuthenticationProviderCreateWizardFormValuesInterface):
-        MicrosoftAuthenticationProviderCreateWizardFormErrorValidationsInterface => {
-
+    const validateForm = (
+        values: MicrosoftAuthenticationProviderCreateWizardFormValuesInterface
+    ): MicrosoftAuthenticationProviderCreateWizardFormErrorValidationsInterface => {
         const errors: MicrosoftAuthenticationProviderCreateWizardFormErrorValidationsInterface = {
             clientId: undefined,
             clientSecret: undefined,
@@ -161,130 +154,119 @@ export const MicrosoftAuthenticationProviderCreateWizardContent: FunctionCompone
         };
 
         if (!values.name) {
-            errors.name = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.name = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
         if (!values.clientId) {
-            errors.clientId = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.clientId = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
         if (!values.clientSecret) {
-            errors.clientSecret = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.clientSecret = t(
+                "idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage"
+            );
         }
 
         return errors;
     };
 
-    return (
-        (isIdPListRequestLoading !== undefined && isIdPListRequestLoading === false)
-            ? (
-                <Wizard
-                    id={ FORM_ID }
-                    initialValues={ { name: template?.idp?.name } }
-                    onSubmit={
-                        (values: MicrosoftAuthenticationProviderCreateWizardFormValuesInterface) => onSubmit(values)
+    return isIdPListRequestLoading !== undefined && isIdPListRequestLoading === false ? (
+        <Wizard
+            id={FORM_ID}
+            initialValues={{ name: template?.idp?.name }}
+            onSubmit={(values: MicrosoftAuthenticationProviderCreateWizardFormValuesInterface) => onSubmit(values)}
+            triggerSubmit={submitFunction => triggerSubmission(submitFunction)}
+            triggerPrevious={previousFunction => triggerPrevious(previousFunction)}
+            changePage={(step: number) => changePageNumber(step)}
+            setTotalPage={(step: number) => setTotalPage(step)}
+            data-testid={testId}
+        >
+            <WizardPage validate={validateForm}>
+                <Field.Input
+                    ariaLabel="Microsoft IDP Name"
+                    inputType="name"
+                    name="name"
+                    label={t("idp:develop.features.authenticationProvider.forms." + "generalDetails.name.label")}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms." + "generalDetails.name.placeholder"
+                    )}
+                    required={true}
+                    validation={value => idpNameValidation(value)}
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_NAME_MAX_LENGTH as number
                     }
-                    triggerSubmit={ (submitFunction) => triggerSubmission(submitFunction) }
-                    triggerPrevious={ (previousFunction) => triggerPrevious(previousFunction) }
-                    changePage={ (step: number) => changePageNumber(step) }
-                    setTotalPage={ (step: number) => setTotalPage(step) }
-                    data-testid={ testId }
-                >
-                    <WizardPage validate={ validateForm }>
-                        <Field.Input
-                            ariaLabel="Microsoft IDP Name"
-                            inputType="name"
-                            name="name"
-                            label={
-                                t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.name.label")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.name.placeholder")
-                            }
-                            required={ true }
-                            validation={ (value) => idpNameValidation(value) }
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MIN_LENGTH as number
-                            }
-                            data-testid={ `${ testId }-idp-name` }
-                            width={ 13 }
-                        />
-                        <Field.Input
-                            ariaLabel="Microsoft Client ID"
-                            inputType="client_id"
-                            name="clientId"
-                            label={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.microsoft.clientId.label")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.microsoft.clientId.placeholder")
-                            }
-                            required={ true }
-                            message={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.microsoft.clientId.validations.required")
-                            }
-                            type="text"
-                            autoComplete={ "" + Math.random() }
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
-                            }
-                            data-testid={ `${ testId }-idp-client-id` }
-                            width={ 13 }
-                        />
-                        <Field.Input
-                            ariaLabel="Microsoft Client Secret"
-                            inputType="password"
-                            className="addon-field-wrapper"
-                            name="clientSecret"
-                            label={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.microsoft.clientSecret.label")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.microsoft.clientSecret.placeholder")
-                            }
-                            required={ true }
-                            message={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.microsoft.clientSecret.validations.required")
-                            }
-                            type="password"
-                            hidePassword={ t("common:hide") }
-                            showPassword={ t("common:show") }
-                            autoComplete={ "" + Math.random() }
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MIN_LENGTH as number
-                            }
-                            data-testid={ `${ testId }-idp-client-secret` }
-                            width={ 13 }
-                        />
-                    </WizardPage>
-                </Wizard>
-            )
-            : null
-    );
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_NAME_MIN_LENGTH as number
+                    }
+                    data-testid={`${testId}-idp-name`}
+                    width={13}
+                />
+                <Field.Input
+                    ariaLabel="Microsoft Client ID"
+                    inputType="client_id"
+                    name="clientId"
+                    label={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.microsoft.clientId.label"
+                    )}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.microsoft.clientId.placeholder"
+                    )}
+                    required={true}
+                    message={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.microsoft.clientId.validations.required"
+                    )}
+                    type="text"
+                    autoComplete={"" + Math.random()}
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_ID_MAX_LENGTH as number
+                    }
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_ID_MIN_LENGTH as number
+                    }
+                    data-testid={`${testId}-idp-client-id`}
+                    width={13}
+                />
+                <Field.Input
+                    ariaLabel="Microsoft Client Secret"
+                    inputType="password"
+                    className="addon-field-wrapper"
+                    name="clientSecret"
+                    label={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.microsoft.clientSecret.label"
+                    )}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.microsoft.clientSecret.placeholder"
+                    )}
+                    required={true}
+                    message={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.microsoft.clientSecret.validations.required"
+                    )}
+                    type="password"
+                    hidePassword={t("idp:hide")}
+                    showPassword={t("idp:show")}
+                    autoComplete={"" + Math.random()}
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_SECRET_MAX_LENGTH as number
+                    }
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_SECRET_MIN_LENGTH as number
+                    }
+                    data-testid={`${testId}-idp-client-secret`}
+                    width={13}
+                />
+            </WizardPage>
+        </Wizard>
+    ) : null;
 };
 
 /**

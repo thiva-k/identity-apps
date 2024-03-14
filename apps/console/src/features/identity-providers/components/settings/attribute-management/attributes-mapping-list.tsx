@@ -47,7 +47,6 @@ export interface AttributeMappingListProps extends TestableComponentInterface {
 export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> = (
     props: AttributeMappingListProps
 ): ReactElement => {
-
     const {
         availableAttributesList,
         attributeMappingsListToShow,
@@ -60,13 +59,13 @@ export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> 
 
     const { t } = useTranslation();
 
-    const [ editingMappings, setEditingMappings ] = useState<string[]>([]);
+    const [editingMappings, setEditingMappings] = useState<string[]>([]);
 
     const handleOnSubmit = (
         editedMapping: IdentityProviderCommonClaimMappingInterface,
         mapping: IdentityProviderCommonClaimMappingInterface
     ) => {
-    // Remove it from currently editing mappings.
+        // Remove it from currently editing mappings.
         setEditingMappings([
             ...editingMappings
                 .filter((id: string) => id !== mapping.claim.id)
@@ -80,95 +79,82 @@ export const AttributeMappingList: FunctionComponent<AttributeMappingListProps> 
     if (attributeMappingsListToShow.length === 0) {
         return (
             <Table.Row>
-                <Table.Cell colSpan="3">
-                    { noDataPlaceholder }
-                </Table.Cell>
+                <Table.Cell colSpan="3">{noDataPlaceholder}</Table.Cell>
             </Table.Row>
         );
     }
 
     return (
         <>
-            { attributeMappingsListToShow.map(
-                (
-                    mapping: IdentityProviderCommonClaimMappingInterface,
-                    index: number
-                ) => (
-                    mapping.mappedValue ? (
-                        <Table.Row key={ index }>
-                            { editingMappings.includes(mapping?.claim?.id)
-                                ? (
-                                    <Table.Cell colSpan="3">
-                                        <AttributeMappingListItem
-                                            mapping={ mapping }
-                                            availableAttributeList={ availableAttributesList }
-                                            alreadyMappedAttributesList={ alreadyMappedAttributesList }
-                                            onSubmit={ (editedMapping: IdentityProviderCommonClaimMappingInterface) =>
-                                                handleOnSubmit(editedMapping, mapping)
+            {attributeMappingsListToShow.map((mapping: IdentityProviderCommonClaimMappingInterface, index: number) =>
+                mapping.mappedValue ? (
+                    <Table.Row key={index}>
+                        {editingMappings.includes(mapping?.claim?.id) ? (
+                            <Table.Cell colSpan="3">
+                                <AttributeMappingListItem
+                                    mapping={mapping}
+                                    availableAttributeList={availableAttributesList}
+                                    alreadyMappedAttributesList={alreadyMappedAttributesList}
+                                    onSubmit={(editedMapping: IdentityProviderCommonClaimMappingInterface) =>
+                                        handleOnSubmit(editedMapping, mapping)
+                                    }
+                                />
+                            </Table.Cell>
+                        ) : (
+                            <>
+                                <Table.Cell>
+                                    <div>{mapping?.mappedValue}</div>
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <div>{mapping?.claim?.displayName}</div>
+                                    <Popup
+                                        content={mapping?.claim?.uri}
+                                        inverted
+                                        trigger={<Code>{mapping?.claim?.uri}</Code>}
+                                        position="bottom left"
+                                    ></Popup>
+                                </Table.Cell>
+                                {!readOnly || !editingMappings.includes(mapping?.claim?.id) ? (
+                                    <Table.Cell textAlign="right">
+                                        <Popup
+                                            trigger={
+                                                <Icon
+                                                    link={true}
+                                                    className="list-icon pr-4"
+                                                    size="small"
+                                                    color="grey"
+                                                    name="pencil alternate"
+                                                    onClick={() =>
+                                                        setEditingMappings([...editingMappings, mapping?.claim?.id])
+                                                    }
+                                                />
                                             }
+                                            position="top right"
+                                            content={t("idp:edit")}
+                                            inverted
+                                        />
+                                        <Popup
+                                            trigger={
+                                                <Icon
+                                                    link={true}
+                                                    className="list-icon pr-4"
+                                                    size="small"
+                                                    color="grey"
+                                                    name="trash alternate"
+                                                    onClick={() => onMappingDeleted(mapping)}
+                                                />
+                                            }
+                                            position="top right"
+                                            content={t("idp:remove")}
+                                            inverted
                                         />
                                     </Table.Cell>
-                                )
-                                : (
-                                    <>
-                                        <Table.Cell>
-                                            <div>{ mapping?.mappedValue }</div>
-                                        </Table.Cell>
-                                        <Table.Cell>
-                                            <div>{ mapping?.claim?.displayName }</div>
-                                            <Popup
-                                                content={ mapping?.claim?.uri }
-                                                inverted
-                                                trigger={ <Code>{ mapping?.claim?.uri }</Code> }
-                                                position="bottom left"
-                                            ></Popup>
-                                        </Table.Cell>
-                                        { (!readOnly || !editingMappings.includes(mapping?.claim?.id)) ? (
-                                            <Table.Cell textAlign="right">
-                                                <Popup
-                                                    trigger={ (
-                                                        <Icon
-                                                            link={ true }
-                                                            className="list-icon pr-4"
-                                                            size="small"
-                                                            color="grey"
-                                                            name="pencil alternate"
-                                                            onClick={ () =>
-                                                                setEditingMappings([
-                                                                    ...editingMappings,
-                                                                    mapping?.claim?.id
-                                                                ])
-                                                            }
-                                                        />
-                                                    ) }
-                                                    position="top right"
-                                                    content={ t("common:edit") }
-                                                    inverted
-                                                />
-                                                <Popup
-                                                    trigger={ (
-                                                        <Icon
-                                                            link={ true }
-                                                            className="list-icon pr-4"
-                                                            size="small"
-                                                            color="grey"
-                                                            name="trash alternate"
-                                                            onClick={ () => onMappingDeleted(mapping) }
-                                                        />
-                                                    ) }
-                                                    position="top right"
-                                                    content={ t("common:remove") }
-                                                    inverted
-                                                />
-                                            </Table.Cell>
-                                        ) : null }
-                                    </>
-                                )
-                            }
-                        </Table.Row>
-                    ) : null
-                )
-            ) }
+                                ) : null}
+                            </>
+                        )}
+                    </Table.Row>
+                ) : null
+            )}
         </>
     );
 };

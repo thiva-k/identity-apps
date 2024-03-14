@@ -55,7 +55,6 @@ interface AdvanceAttributeSettingsPropsInterface extends TestableComponentInterf
 export const UriAttributesSettings: FunctionComponent<AdvanceAttributeSettingsPropsInterface> = (
     props: AdvanceAttributeSettingsPropsInterface
 ): ReactElement => {
-
     const {
         dropDownOptions,
         initialSubjectUri,
@@ -68,16 +67,15 @@ export const UriAttributesSettings: FunctionComponent<AdvanceAttributeSettingsPr
         isReadOnly,
         isMappingEmpty,
         isSaml,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
     const getValidatedInitialValue = (initialValue: string) => {
-        return find(
-            dropDownOptions,
-            (option: DropdownOptionsInterface) => option?.value === initialValue
-        ) !== undefined ? initialValue : "";
+        return find(dropDownOptions, (option: DropdownOptionsInterface) => option?.value === initialValue) !== undefined
+            ? initialValue
+            : "";
     };
 
     return (
@@ -85,128 +83,134 @@ export const UriAttributesSettings: FunctionComponent<AdvanceAttributeSettingsPr
             <Grid.Row>
                 <Grid.Column>
                     <Heading as="h4">
-                        { t("console:develop.features.authenticationProvider.forms.uriAttributeSettings." +
-                            "subject.heading") }
+                        {t(
+                            "idp:develop.features.authenticationProvider.forms.uriAttributeSettings." +
+                                "subject.heading"
+                        )}
                     </Heading>
                     <Form>
                         <Form.Select
                             fluid
-                            options={
-                                dropDownOptions.concat(
-                                    {
-                                        key: "default_subject",
-                                        text: t("console:develop.features.authenticationProvider.forms." +
-                                            "uriAttributeSettings.subject." +
-                                            "placeHolder"),
-                                        value: ""
-                                    } as DropdownOptionsInterface
-                                )
-                            }
-                            value={ getValidatedInitialValue(initialSubjectUri) }
-                            placeholder={ t("console:develop.features.authenticationProvider.forms." +
-                                "uriAttributeSettings.subject." +
-                                "placeHolder") }
-                            onChange={
-                                (_event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
-                                    updateSubject(data.value.toString());
+                            options={dropDownOptions.concat({
+                                key: "default_subject",
+                                text: t(
+                                    "idp:develop.features.authenticationProvider.forms." +
+                                        "uriAttributeSettings.subject." +
+                                        "placeHolder"
+                                ),
+                                value: ""
+                            } as DropdownOptionsInterface)}
+                            value={getValidatedInitialValue(initialSubjectUri)}
+                            placeholder={t(
+                                "idp:develop.features.authenticationProvider.forms." +
+                                    "uriAttributeSettings.subject." +
+                                    "placeHolder"
+                            )}
+                            onChange={(_event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
+                                updateSubject(data.value.toString());
+                            }}
+                            search
+                            fullTextSearch={false}
+                            label={t(
+                                "idp:develop.features.authenticationProvider.forms." +
+                                    "uriAttributeSettings.subject.label"
+                            )}
+                            data-testid={`${testId}-form-element-subject`}
+                            error={
+                                subjectError && {
+                                    content: t(
+                                        "idp:develop.features.authenticationProvider" +
+                                            ".forms.uriAttributeSettings.subject." +
+                                            "validation.empty"
+                                    ),
+                                    pointing: "above"
                                 }
                             }
-                            search
-                            fullTextSearch={ false }
-                            label={ t("console:develop.features.authenticationProvider.forms." +
-                                "uriAttributeSettings.subject.label") }
-                            data-testid={ `${ testId }-form-element-subject` }
-                            error={ subjectError && {
-                                content: t("console:develop.features.authenticationProvider" +
-                                    ".forms.uriAttributeSettings.subject." +
-                                    "validation.empty"),
-                                pointing: "above"
-                            } }
-                            readOnly={ isReadOnly }
-                            disabled={ isMappingEmpty }
+                            readOnly={isReadOnly}
+                            disabled={isMappingEmpty}
                         />
                     </Form>
                     <Hint>
-                        { isSaml
-                            ? (
-                                <Trans
-                                    i18nKey={
-                                        "console:console:develop.features.authenticationProvider.forms" +
-                                        ".uriAttributeSettings.subject.hint"
-                                    }
-                                >
-                                The attribute that identifies the user at the enterprise identity provider.
-                                When attributes are configured based on the authentication response of this
-                                IdP connection, you can use one of them as the subject. Otherwise, the
-                                default <Code>saml2:Subject</Code> in the SAML response is used as the
-                                subject attribute.
-                                </Trans>
-                            )
-                            : (
-                                <Trans
-                                    i18nKey={
-                                        "console:console:develop.features.idp.forms.uriAttributeSettings" +
-                                        ".subject.hint"
-                                    }
-                                >
+                        {isSaml ? (
+                            <Trans
+                                i18nKey={
+                                    "idp:console:develop.features.authenticationProvider.forms" +
+                                    ".uriAttributeSettings.subject.hint"
+                                }
+                            >
+                                The attribute that identifies the user at the enterprise identity provider. When
+                                attributes are configured based on the authentication response of this IdP connection,
+                                you can use one of them as the subject. Otherwise, the default{" "}
+                                <Code>saml2:Subject</Code> in the SAML response is used as the subject attribute.
+                            </Trans>
+                        ) : (
+                            <Trans
+                                i18nKey={
+                                    "idp:console:develop.features.idp.forms.uriAttributeSettings" + ".subject.hint"
+                                }
+                            >
                                 Specifies the attribute that identifies the user at the Connection.
-                                </Trans>
-                            )
-                        }
+                            </Trans>
+                        )}
                     </Hint>
                 </Grid.Column>
             </Grid.Row>
-            <Divider hidden/>
-            {
-                claimMappingOn && (
-                    <Grid.Row columns={ 2 }>
-                        <Grid.Column>
-                            <Heading as="h4">
-                                { t("console:develop.features.authenticationProvider.forms.uriAttributeSettings." +
-                                    "group.heading") }
-                            </Heading>
-                            <Form>
-                                <Form.Select
-                                    fluid
-                                    options={
-                                        dropDownOptions.concat(
-                                            {
-                                                key: "default_subject",
-                                                text: t("console:develop.features.authenticationProvider" +
-                                                    ".forms.uriAttributeSettings.group.placeHolder"),
-                                                value: ""
-                                            } as DropdownOptionsInterface
-                                        )
-                                    }
-                                    value={ getValidatedInitialValue(initialRoleUri) }
-                                    placeholder={ t("console:develop.features.authenticationProvider" +
-                                        ".forms.uriAttributeSettings.group.placeHolder") }
-                                    onChange={
-                                        (_event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
-                                            updateRole(data.value.toString());
-                                        }
-                                    }
-                                    search
-                                    fullTextSearch={ false }
-                                    label={ t("console:develop.features.authenticationProvider.forms." +
-                                        "forms.uriAttributeSettings.group.label") }
-                                    data-testid={ `${ testId }-form-element-role` }
-                                    error={ roleError && {
-                                        content: t("console:develop.features.authenticationProvider" +
-                                            ".forms.uriAttributeSettings.group.validation.empty"),
+            <Divider hidden />
+            {claimMappingOn && (
+                <Grid.Row columns={2}>
+                    <Grid.Column>
+                        <Heading as="h4">
+                            {t(
+                                "idp:develop.features.authenticationProvider.forms.uriAttributeSettings." +
+                                    "group.heading"
+                            )}
+                        </Heading>
+                        <Form>
+                            <Form.Select
+                                fluid
+                                options={dropDownOptions.concat({
+                                    key: "default_subject",
+                                    text: t(
+                                        "idp:develop.features.authenticationProvider" +
+                                            ".forms.uriAttributeSettings.group.placeHolder"
+                                    ),
+                                    value: ""
+                                } as DropdownOptionsInterface)}
+                                value={getValidatedInitialValue(initialRoleUri)}
+                                placeholder={t(
+                                    "idp:develop.features.authenticationProvider" +
+                                        ".forms.uriAttributeSettings.group.placeHolder"
+                                )}
+                                onChange={(_event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => {
+                                    updateRole(data.value.toString());
+                                }}
+                                search
+                                fullTextSearch={false}
+                                label={t(
+                                    "idp:develop.features.authenticationProvider.forms." +
+                                        "forms.uriAttributeSettings.group.label"
+                                )}
+                                data-testid={`${testId}-form-element-role`}
+                                error={
+                                    roleError && {
+                                        content: t(
+                                            "idp:develop.features.authenticationProvider" +
+                                                ".forms.uriAttributeSettings.group.validation.empty"
+                                        ),
                                         pointing: "above"
-                                    } }
-                                    readOnly={ isReadOnly }
-                                />
-                            </Form>
-                            <Hint>
-                                { t("console:develop.features.authenticationProvider." +
-                                    "forms.uriAttributeSettings.group.hint") }
-                            </Hint>
-                        </Grid.Column>
-                    </Grid.Row>
-                )
-            }
+                                    }
+                                }
+                                readOnly={isReadOnly}
+                            />
+                        </Form>
+                        <Hint>
+                            {t(
+                                "idp:develop.features.authenticationProvider." + "forms.uriAttributeSettings.group.hint"
+                            )}
+                        </Hint>
+                    </Grid.Column>
+                </Grid.Row>
+            )}
         </>
     );
 };

@@ -35,29 +35,22 @@ import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid } from "semantic-ui-react";
-import {
-    HyprAuthenticationProviderCreateWizardContent
-} from "./hypr-authentication-provider-create-wizard-content";
+import { HyprAuthenticationProviderCreateWizardContent } from "./hypr-authentication-provider-create-wizard-content";
 import { identityProviderConfig } from "../../../../../extensions/configs";
-import {
-    EventPublisher,
-    ModalWithSidePanel
-} from "../../../../../features/core";
+import { EventPublisher, ModalWithSidePanel } from "../../../../../features/core";
 import { TierLimitReachErrorModal } from "../../../../core/components/tier-limit-reach-error-modal";
 import { createIdentityProvider } from "../../../api";
 import { getIdPIcons } from "../../../configs/ui";
 import { IdentityProviderManagementConstants } from "../../../constants";
-import {
-    GenericIdentityProviderCreateWizardPropsInterface,
-    IdentityProviderInterface
-} from "../../../models";
+import { GenericIdentityProviderCreateWizardPropsInterface, IdentityProviderInterface } from "../../../models";
 
 /**
  * Proptypes for the Hypr Authentication Provider Create Wizard.
  */
-interface HyprAuthenticationProviderCreateWizardPropsInterface extends TestableComponentInterface,
-    GenericIdentityProviderCreateWizardPropsInterface, IdentifiableComponentInterface {
-}
+interface HyprAuthenticationProviderCreateWizardPropsInterface
+    extends TestableComponentInterface,
+        GenericIdentityProviderCreateWizardPropsInterface,
+        IdentifiableComponentInterface {}
 
 /**
  * Proptypes for the Hypr Authentication Wizard Form values.
@@ -88,363 +81,344 @@ export interface HyprAuthenticationProviderCreateWizardFormValuesInterface {
  *
  * @returns React Element
  */
-export const HyprAuthenticationProviderCreateWizard: FunctionComponent<
-    HyprAuthenticationProviderCreateWizardPropsInterface
-    > = (
-        props: HyprAuthenticationProviderCreateWizardPropsInterface
-    ): ReactElement => {
+export const HyprAuthenticationProviderCreateWizard: FunctionComponent<HyprAuthenticationProviderCreateWizardPropsInterface> = (
+    props: HyprAuthenticationProviderCreateWizardPropsInterface
+): ReactElement => {
+    const {
+        onWizardClose,
+        onIDPCreate,
+        currentStep,
+        title,
+        subTitle,
+        template,
+        ["data-testid"]: testId,
+        ["data-componentid"]: componentId
+    } = props;
 
-        const {
-            onWizardClose,
-            onIDPCreate,
-            currentStep,
-            title,
-            subTitle,
-            template,
-            [ "data-testid" ]: testId,
-            [ "data-componentid" ]: componentId
-        } = props;
+    const dispatch: Dispatch<any> = useDispatch();
+    const { t } = useTranslation();
+    const { getLink } = useDocumentation();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(currentStep);
+    const [wizStep, setWizStep] = useState<number>(0);
+    const [totalStep, setTotalStep] = useState<number>(0);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [openLimitReachedModal, setOpenLimitReachedModal] = useState<boolean>(false);
+    const eventPublisher: EventPublisher = EventPublisher.getInstance();
 
-        const dispatch: Dispatch<any> = useDispatch();
-        const { t } = useTranslation();
-        const { getLink } = useDocumentation();
-        const [ alert, setAlert, alertComponent ] = useWizardAlert();
-        const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(currentStep);
-        const [ wizStep, setWizStep ] = useState<number>(0);
-        const [ totalStep, setTotalStep ] = useState<number>(0);
-        const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-        const [ openLimitReachedModal, setOpenLimitReachedModal ] = useState<boolean>(false);
-        const eventPublisher: EventPublisher = EventPublisher.getInstance();
+    /**
+     * Track wizard steps from wizard component.
+     */
+    useEffect(() => {
+        setCurrentWizardStep(wizStep + 1);
+    }, [wizStep]);
 
-        /**
-        * Track wizard steps from wizard component.
-        */
-        useEffect(() => {
-            setCurrentWizardStep(wizStep + 1);
-        }, [ wizStep ]);
+    /**
+     * Called when modal close event is triggered.
+     */
+    const handleWizardClose = (): void => {
+        // Trigger the close method from props.
+        onWizardClose();
+    };
 
-        /**
-        * Called when modal close event is triggered.
-        */
-        const handleWizardClose = (): void => {
+    /**
+     * Close the limit reached modal.
+     */
+    const handleLimitReachedModalClose = (): void => {
+        setOpenLimitReachedModal(false);
+        handleWizardClose();
+    };
 
-            // Trigger the close method from props.
-            onWizardClose();
-        };
+    /**
+     * Callback triggered when the form is submitted.
+     *
+     * @param values - Form values.
+     */
+    const onSubmitWizard = (values: HyprAuthenticationProviderCreateWizardFormValuesInterface): void => {
+        const identityProvider: IdentityProviderInterface = { ...template.idp };
 
-        /**
-        * Close the limit reached modal.
-        */
-        const handleLimitReachedModalClose = (): void => {
+        identityProvider.name = values.name.toString();
+        identityProvider.templateId = template.templateId;
+        identityProvider.description = template.description;
 
-            setOpenLimitReachedModal(false);
-            handleWizardClose();
-        };
+        identityProvider.federatedAuthenticators.authenticators[0].properties = [
+            {
+                key: "appId",
+                value: values.appId.toString()
+            },
+            {
+                key: "apiToken",
+                value: values.apiToken.toString()
+            },
+            {
+                key: "baseUrl",
+                value: values.baseUrl.toString()
+            }
+        ];
 
-        /**
-        * Callback triggered when the form is submitted.
-        *
-        * @param values - Form values.
-        */
-        const onSubmitWizard = (values: HyprAuthenticationProviderCreateWizardFormValuesInterface): void => {
+        identityProvider.image = "assets/images/logos/hypr.svg";
 
-            const identityProvider: IdentityProviderInterface = { ...template.idp };
+        createNewIdentityProvider(identityProvider);
+    };
 
-            identityProvider.name = values.name.toString();
-            identityProvider.templateId = template.templateId;
-            identityProvider.description = template.description;
-
-            identityProvider.federatedAuthenticators.authenticators[0].properties = [
-                {
-                    "key": "appId",
-                    "value": values.appId.toString()
-                },
-                {
-                    "key": "apiToken",
-                    "value": values.apiToken.toString()
-                },
-                {
-                    "key": "baseUrl",
-                    "value": values.baseUrl.toString()
-                }
-            ];
-
-            identityProvider.image = "assets/images/logos/hypr.svg";
-
-            createNewIdentityProvider(identityProvider);
-        };
-
-        /**
-        * Creates a new identity provider.
-        *
-        * @param identityProvider - Identity provider object.
-        */
-        const createNewIdentityProvider = (identityProvider: IdentityProviderInterface): void => {
-
-            setIsSubmitting(true);
-            createIdentityProvider(identityProvider)
-                .then((response: any) => {
-                    eventPublisher.publish("connections-finish-adding-connection", {
-                        type: componentId
-                    });
-
-                    dispatch(addAlert({
-                        description: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                            "success.description"),
-                        level: AlertLevels.SUCCESS,
-                        message: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                            "success.message")
-                    }));
-
-                    // The created resource's id is sent as a location header.
-                    // If that's available, navigate to the edit page.
-                    if (!isEmpty(response.headers.location)) {
-                        const location: any = response.headers.location;
-                        const createdIdpID: any = location.substring(location.lastIndexOf("/") + 1);
-
-                        onIDPCreate(createdIdpID);
-
-                        return;
-                    }
-
-                    // Since the location header is not present, trigger callback without the id.
-                    onIDPCreate();
-                })
-                .catch((error: any) => {
-                    const identityAppsError: IdentityAppsError = identityProviderConfig.useNewConnectionsView
-                        ? IdentityProviderManagementConstants.ERROR_CREATE_LIMIT_REACHED
-                        : IdentityProviderManagementConstants.ERROR_CREATE_LIMIT_REACHED_IDP;
-
-                    if (error.response.status === 403 &&
-                        error?.response?.data?.code === identityAppsError.getErrorCode()) {
-                        setOpenLimitReachedModal(true);
-
-                        return;
-                    }
-
-                    if (error.response && error.response.data && error.response.data.description) {
-                        setAlert({
-                            description: t("console:develop.features.authenticationProvider.notifications." +
-                                "addIDP.error.description",
-                            { description: error.response.data.description }),
-                            level: AlertLevels.ERROR,
-                            message: t("console:develop.features.authenticationProvider.notifications." +
-                                "addIDP.error.message")
-                        });
-
-                        return;
-                    }
-
-                    setAlert({
-                        description: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                            "genericError.description"),
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider.notifications.addIDP." +
-                            "genericError.message")
-                    });
-                })
-                .finally(() => {
-                    setIsSubmitting(false);
+    /**
+     * Creates a new identity provider.
+     *
+     * @param identityProvider - Identity provider object.
+     */
+    const createNewIdentityProvider = (identityProvider: IdentityProviderInterface): void => {
+        setIsSubmitting(true);
+        createIdentityProvider(identityProvider)
+            .then((response: any) => {
+                eventPublisher.publish("connections-finish-adding-connection", {
+                    type: componentId
                 });
-        };
 
-        /**
-        * Resolve the step wizard actions.
-        *
-        * @returns React Element
-        */
-        const resolveStepActions = (): ReactElement => {
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider.notifications.addIDP." + "success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:develop.features.authenticationProvider.notifications.addIDP." + "success.message"
+                        )
+                    })
+                );
 
-            return (
-                <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                            <LinkButton
-                                floated="left"
-                                onClick={ handleWizardClose }
-                                data-testid={ `${ testId }-modal-cancel-button` }
+                // The created resource's id is sent as a location header.
+                // If that's available, navigate to the edit page.
+                if (!isEmpty(response.headers.location)) {
+                    const location: any = response.headers.location;
+                    const createdIdpID: any = location.substring(location.lastIndexOf("/") + 1);
+
+                    onIDPCreate(createdIdpID);
+
+                    return;
+                }
+
+                // Since the location header is not present, trigger callback without the id.
+                onIDPCreate();
+            })
+            .catch((error: any) => {
+                const identityAppsError: IdentityAppsError = identityProviderConfig.useNewConnectionsView
+                    ? IdentityProviderManagementConstants.ERROR_CREATE_LIMIT_REACHED
+                    : IdentityProviderManagementConstants.ERROR_CREATE_LIMIT_REACHED_IDP;
+
+                if (error.response.status === 403 && error?.response?.data?.code === identityAppsError.getErrorCode()) {
+                    setOpenLimitReachedModal(true);
+
+                    return;
+                }
+
+                if (error.response && error.response.data && error.response.data.description) {
+                    setAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider.notifications." + "addIDP.error.description",
+                            { description: error.response.data.description }
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "idp:develop.features.authenticationProvider.notifications." + "addIDP.error.message"
+                        )
+                    });
+
+                    return;
+                }
+
+                setAlert({
+                    description: t(
+                        "idp:develop.features.authenticationProvider.notifications.addIDP." + "genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "idp:develop.features.authenticationProvider.notifications.addIDP." + "genericError.message"
+                    )
+                });
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+            });
+    };
+
+    /**
+     * Resolve the step wizard actions.
+     *
+     * @returns React Element
+     */
+    const resolveStepActions = (): ReactElement => {
+        return (
+            <Grid>
+                <Grid.Row column={1}>
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
+                        <LinkButton
+                            floated="left"
+                            onClick={handleWizardClose}
+                            data-testid={`${testId}-modal-cancel-button`}
+                        >
+                            {t("idp:cancel")}
+                        </LinkButton>
+                    </Grid.Column>
+                    <Grid.Column mobile={8} tablet={8} computer={8}>
+                        {currentWizardStep !== totalStep ? (
+                            <PrimaryButton
+                                floated="right"
+                                onClick={() => {
+                                    submitForm();
+                                }}
+                                data-testid={`${testId}-modal-finish-button`}
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
                             >
-                                { t("common:cancel") }
-                            </LinkButton>
-                        </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                            { currentWizardStep !== totalStep ? (
+                                {t("idp:develop.features.authenticationProvider.wizards.buttons.next")}
+                            </PrimaryButton>
+                        ) : (
+                            <>
                                 <PrimaryButton
                                     floated="right"
-                                    onClick={ () => {
+                                    onClick={() => {
                                         submitForm();
-                                    } }
-                                    data-testid={ `${ testId }-modal-finish-button` }
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
+                                    }}
+                                    data-testid={`${testId}-modal-finish-button`}
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
                                 >
-                                    { t("console:develop.features.authenticationProvider.wizards.buttons.next") }
+                                    {t("idp:develop.features.authenticationProvider.wizards.buttons.finish")}
                                 </PrimaryButton>
-                            ) : (
-                                <>
-                                    <PrimaryButton
-                                        floated="right"
-                                        onClick={ () => {
-                                            submitForm();
-                                        } }
-                                        data-testid={ `${ testId }-modal-finish-button` }
-                                        loading={ isSubmitting }
-                                        disabled={ isSubmitting }
-                                    >
-                                        { t("console:develop.features.authenticationProvider.wizards.buttons.finish") }
-                                    </PrimaryButton>
-                                </>
-                            ) }
-                            {
-                                currentWizardStep > 1 &&
-                            (<LinkButton
+                            </>
+                        )}
+                        {currentWizardStep > 1 && (
+                            <LinkButton
                                 floated="right"
-                                onClick={ () => {
+                                onClick={() => {
                                     triggerPreviousForm();
-                                } }
-                                data-testid={ `${ testId }-modal-previous-button` }
+                                }}
+                                data-testid={`${testId}-modal-previous-button`}
                             >
-                                { t("console:develop.features.authenticationProvider.wizards.buttons.previous") }
-                            </LinkButton>)
-                            }
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            );
-        };
-
-        /**
-        * Renders the help panel containing wizard help.
-        *
-        * @returns React Element
-        */
-        const renderHelpPanel = (): ReactElement => {
-
-            // Return null when `showHelpPanel` is false or `wizardHelp` is not defined in `selectedTemplate` object.
-            if (!template?.content?.wizardHelp || currentWizardStep === 0) {
-                return null;
-            }
-
-            const { wizardHelp: WizardHelp } = template?.content;
-
-            return (
-                <ModalWithSidePanel.SidePanel>
-                    <ModalWithSidePanel.Header className="wizard-header help-panel-header muted">
-                        <div className="help-panel-header-text">
-                            { t("console:develop.features.authenticationProvider" +
-                            ".templates.microsoft.wizardHelp.heading") }
-                        </div>
-                    </ModalWithSidePanel.Header>
-                    <ModalWithSidePanel.Content>
-                        <Suspense fallback={ <ContentLoader/> }>
-                            <WizardHelp/>
-                        </Suspense>
-                    </ModalWithSidePanel.Content>
-                </ModalWithSidePanel.SidePanel>
-            );
-        };
-
-        /**
-        * Closure to submit form.
-        */
-        let submitForm: () => void;
-
-        /**
-        * Closure to trigger previous form.
-        */
-        let triggerPreviousForm: () => void;
-
-        return (
-            <>
-                { openLimitReachedModal &&
-                    (
-                        <TierLimitReachErrorModal
-                            actionLabel={ t(
-                                "console:develop.features.idp.notifications." +
-                            "tierLimitReachedError.emptyPlaceholder.action"
-                            ) }
-                            handleModalClose={ handleLimitReachedModalClose }
-                            header={ t(
-                                "console:develop.features.idp.notifications.tierLimitReachedError.heading"
-                            ) }
-                            description={ t(
-                                "console:develop.features.idp.notifications." +
-                            "tierLimitReachedError.emptyPlaceholder.subtitles"
-                            ) }
-                            message={ t(
-                                "console:develop.features.idp.notifications." +
-                            "tierLimitReachedError.emptyPlaceholder.title"
-                            ) }
-                            openModal={ openLimitReachedModal }
-                        />
-                    )
-                }
-                <ModalWithSidePanel
-                    open={ !openLimitReachedModal }
-                    className="wizard identity-provider-create-wizard"
-                    dimmer="blurring"
-                    onClose={ handleWizardClose }
-                    closeOnDimmerClick={ false }
-                    closeOnEscape
-                    data-testid={ `${ testId }-modal` }
-                >
-                    <ModalWithSidePanel.MainPanel>
-                        <ModalWithSidePanel.Header
-                            className="wizard-header"
-                            data-testid={ `${ testId }-modal-header` }
-                        >
-                            <div className="display-flex">
-                                <GenericIcon
-                                    icon={ getIdPIcons().hypr }
-                                    size="mini"
-                                    transparent
-                                    spaced="right"
-                                    data-testid={ `${ testId }-image` }
-                                />
-                                <div className="ml-1">
-                                    { title }
-                                    { subTitle &&
-                                        (
-                                            <Heading as="h6">
-                                                { subTitle }
-                                                <DocumentationLink
-                                                    link={ getLink("develop.connections.newConnection.hypr.learnMore") }
-                                                >
-                                                    { t("common:learnMore") }
-                                                </DocumentationLink>
-                                            </Heading>
-                                        )
-                                    }
-                                </div>
-                            </div>
-                        </ModalWithSidePanel.Header>
-                        <ModalWithSidePanel.Content
-                            className="content-container"
-                            data-testid={ `${ testId }-modal-content` }
-                        >
-                            { alert && alertComponent }
-                            <HyprAuthenticationProviderCreateWizardContent
-                                onSubmit={ onSubmitWizard }
-                                triggerSubmission={ (submitFunctionCb: () => void) => {
-                                    submitForm = submitFunctionCb;
-                                } }
-                                triggerPrevious={ (previousFunctionCb: () => void) => {
-                                    triggerPreviousForm = previousFunctionCb;
-                                } }
-                                changePageNumber={ (step: number) => setWizStep(step) }
-                                setTotalPage={ (pageNumber: number) => setTotalStep(pageNumber) }
-                                template={ template }
-                            />
-                        </ModalWithSidePanel.Content>
-                        <ModalWithSidePanel.Actions data-testid={ `${ testId }-modal-actions` }>
-                            { resolveStepActions() }
-                        </ModalWithSidePanel.Actions>
-                    </ModalWithSidePanel.MainPanel>
-                    { renderHelpPanel() }
-                </ModalWithSidePanel>
-            </>
+                                {t("idp:develop.features.authenticationProvider.wizards.buttons.previous")}
+                            </LinkButton>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
         );
     };
+
+    /**
+     * Renders the help panel containing wizard help.
+     *
+     * @returns React Element
+     */
+    const renderHelpPanel = (): ReactElement => {
+        // Return null when `showHelpPanel` is false or `wizardHelp` is not defined in `selectedTemplate` object.
+        if (!template?.content?.wizardHelp || currentWizardStep === 0) {
+            return null;
+        }
+
+        const { wizardHelp: WizardHelp } = template?.content;
+
+        return (
+            <ModalWithSidePanel.SidePanel>
+                <ModalWithSidePanel.Header className="wizard-header help-panel-header muted">
+                    <div className="help-panel-header-text">
+                        {t("idp:develop.features.authenticationProvider" + ".templates.microsoft.wizardHelp.heading")}
+                    </div>
+                </ModalWithSidePanel.Header>
+                <ModalWithSidePanel.Content>
+                    <Suspense fallback={<ContentLoader />}>
+                        <WizardHelp />
+                    </Suspense>
+                </ModalWithSidePanel.Content>
+            </ModalWithSidePanel.SidePanel>
+        );
+    };
+
+    /**
+     * Closure to submit form.
+     */
+    let submitForm: () => void;
+
+    /**
+     * Closure to trigger previous form.
+     */
+    let triggerPreviousForm: () => void;
+
+    return (
+        <>
+            {openLimitReachedModal && (
+                <TierLimitReachErrorModal
+                    actionLabel={t(
+                        "idp:develop.features.idp.notifications." + "tierLimitReachedError.emptyPlaceholder.action"
+                    )}
+                    handleModalClose={handleLimitReachedModalClose}
+                    header={t("idp:develop.features.idp.notifications.tierLimitReachedError.heading")}
+                    description={t(
+                        "idp:develop.features.idp.notifications." + "tierLimitReachedError.emptyPlaceholder.subtitles"
+                    )}
+                    message={t(
+                        "idp:develop.features.idp.notifications." + "tierLimitReachedError.emptyPlaceholder.title"
+                    )}
+                    openModal={openLimitReachedModal}
+                />
+            )}
+            <ModalWithSidePanel
+                open={!openLimitReachedModal}
+                className="wizard identity-provider-create-wizard"
+                dimmer="blurring"
+                onClose={handleWizardClose}
+                closeOnDimmerClick={false}
+                closeOnEscape
+                data-testid={`${testId}-modal`}
+            >
+                <ModalWithSidePanel.MainPanel>
+                    <ModalWithSidePanel.Header className="wizard-header" data-testid={`${testId}-modal-header`}>
+                        <div className="display-flex">
+                            <GenericIcon
+                                icon={getIdPIcons().hypr}
+                                size="mini"
+                                transparent
+                                spaced="right"
+                                data-testid={`${testId}-image`}
+                            />
+                            <div className="ml-1">
+                                {title}
+                                {subTitle && (
+                                    <Heading as="h6">
+                                        {subTitle}
+                                        <DocumentationLink
+                                            link={getLink("develop.connections.newConnection.hypr.learnMore")}
+                                        >
+                                            {t("idp:learnMore")}
+                                        </DocumentationLink>
+                                    </Heading>
+                                )}
+                            </div>
+                        </div>
+                    </ModalWithSidePanel.Header>
+                    <ModalWithSidePanel.Content className="content-container" data-testid={`${testId}-modal-content`}>
+                        {alert && alertComponent}
+                        <HyprAuthenticationProviderCreateWizardContent
+                            onSubmit={onSubmitWizard}
+                            triggerSubmission={(submitFunctionCb: () => void) => {
+                                submitForm = submitFunctionCb;
+                            }}
+                            triggerPrevious={(previousFunctionCb: () => void) => {
+                                triggerPreviousForm = previousFunctionCb;
+                            }}
+                            changePageNumber={(step: number) => setWizStep(step)}
+                            setTotalPage={(pageNumber: number) => setTotalStep(pageNumber)}
+                            template={template}
+                        />
+                    </ModalWithSidePanel.Content>
+                    <ModalWithSidePanel.Actions data-testid={`${testId}-modal-actions`}>
+                        {resolveStepActions()}
+                    </ModalWithSidePanel.Actions>
+                </ModalWithSidePanel.MainPanel>
+                {renderHelpPanel()}
+            </ModalWithSidePanel>
+        </>
+    );
+};
 
 /**
  * Default props for the HYPR Authentication Provider Create Wizard.

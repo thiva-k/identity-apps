@@ -26,141 +26,134 @@ import { identityProviderConfig } from "../../../../../../extensions/configs";
 /**
  * Prop types of the component.
  */
-type HyprIDPCreateWizardHelpPropsInterface = IdentifiableComponentInterface
+type HyprIDPCreateWizardHelpPropsInterface = IdentifiableComponentInterface;
 
 const HyprIDPCreateWizardHelp: FunctionComponent<HyprIDPCreateWizardHelpPropsInterface> = (
     props: HyprIDPCreateWizardHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        ["data-componentid"]: testId
-    } = props;
+    const { ["data-componentid"]: testId } = props;
 
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
 
-    const [ useNewConnectionsView, setUseNewConnectionsView ] = useState<boolean>(undefined);
+    const [useNewConnectionsView, setUseNewConnectionsView] = useState<boolean>(undefined);
 
     /**
      * Checks if the listing view defined in the config is the new connections view.
      */
     useEffect(() => {
-
         if (useNewConnectionsView !== undefined) {
             return;
         }
 
         setUseNewConnectionsView(identityProviderConfig.useNewConnectionsView);
-    }, [ identityProviderConfig ]);
+    }, [identityProviderConfig]);
 
     return (
-        <div data-testid={ testId }>
+        <div data-testid={testId}>
             <Message
                 type="info"
-                header={
-                    t("console:develop.features.authenticationProvider.templates.hypr.wizardHelp." +
-                        "preRequisites.heading")
-                }
+                header={t(
+                    "idp:develop.features.authenticationProvider.templates.hypr.wizardHelp." + "preRequisites.heading"
+                )}
                 content={
-                    (<>
+                    <>
                         <p>
                             <Trans
                                 i18nKey={
-                                    "console:develop.features.authenticationProvider.templates.hypr.wizardHelp." +
+                                    "idp:develop.features.authenticationProvider.templates.hypr.wizardHelp." +
                                     "preRequisites.rpDescription"
                                 }
                             >
-                                Before you begin, create a RP application in <DocumentationLink
-                                    link={ getLink("develop.connections.newConnection.hypr.help.developerConsole") }
+                                Before you begin, create a RP application in{" "}
+                                <DocumentationLink
+                                    link={getLink("develop.connections.newConnection.hypr.help.developerConsole")}
                                     showEmptyLinkText
-                                >HYPR control centre</DocumentationLink>, and obtain the application ID.
+                                >
+                                    HYPR control centre
+                                </DocumentationLink>
+                                , and obtain the application ID.
                             </Trans>
                         </p>
                         <p>
                             <Trans
                                 i18nKey={
-                                    "console:develop.features.authenticationProvider.templates.hypr.wizardHelp." +
+                                    "idp:develop.features.authenticationProvider.templates.hypr.wizardHelp." +
                                     "preRequisites.tokenDescription"
                                 }
                             >
-                                You also have to obtain an <DocumentationLink
-                                    link={ getLink("develop.connections.newConnection.hypr.help.token") }
+                                You also have to obtain an{" "}
+                                <DocumentationLink
+                                    link={getLink("develop.connections.newConnection.hypr.help.token")}
                                     showEmptyLinkText
-                                >API Token</DocumentationLink> for the application you have created.
+                                >
+                                    API Token
+                                </DocumentationLink>{" "}
+                                for the application you have created.
                             </Trans>
                         </p>
-                    </>)
+                    </>
                 }
             />
 
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.hypr" +
-                        ".wizardHelp.name.heading")
-                }
+                {t("idp:develop.features.authenticationProvider.templates.hypr" + ".wizardHelp.name.heading")}
             </Heading>
             <p>
-                {
-                    useNewConnectionsView
-                        ? t("console:develop.features.authenticationProvider.templates.hypr." +
-                            "wizardHelp.name.connectionDescription")
-                        : t("console:develop.features.authenticationProvider.templates.hypr." +
-                            "wizardHelp.name.idpDescription")
-                }
+                {useNewConnectionsView
+                    ? t(
+                          "idp:develop.features.authenticationProvider.templates.hypr." +
+                              "wizardHelp.name.connectionDescription"
+                      )
+                    : t(
+                          "idp:develop.features.authenticationProvider.templates.hypr." +
+                              "wizardHelp.name.idpDescription"
+                      )}
             </p>
 
-            <Divider/>
+            <Divider />
 
             <Heading as="h5">
-                { t("console:develop.features.authenticationProvider.templates.hypr.wizardHelp.appId.heading") }
+                {t("idp:develop.features.authenticationProvider.templates.hypr.wizardHelp.appId.heading")}
             </Heading>
             <p>
                 <Trans
                     i18nKey={
-                        "console:develop.features.authenticationProvider.templates.hypr" +
-                        ".wizardHelp.appId.description"
+                        "idp:develop.features.authenticationProvider.templates.hypr" + ".wizardHelp.appId.description"
                     }
                 >
                     Provide the <Code>Application ID</Code> of the application registerd in HYPR control center.
                 </Trans>
             </p>
 
-            <Divider/>
+            <Divider />
 
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.hypr" +
-                        ".wizardHelp.baseUrl.heading")
-                }
+                {t("idp:develop.features.authenticationProvider.templates.hypr" + ".wizardHelp.baseUrl.heading")}
             </Heading>
             <p>
                 <Trans
                     i18nKey={
-                        "console:develop.features.authenticationProvider.templates.hypr" +
-                        ".wizardHelp.baseUrl.description"
+                        "idp:develop.features.authenticationProvider.templates.hypr" + ".wizardHelp.baseUrl.description"
                     }
                 >
-                    Provide the <Code>base URL</Code> of your HYPR server deployment. 
+                    Provide the <Code>base URL</Code> of your HYPR server deployment.
                 </Trans>
             </p>
-            
-            <Divider/>
+
+            <Divider />
 
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.hypr" +
-                        ".wizardHelp.apiToken.heading")
-                }
+                {t("idp:develop.features.authenticationProvider.templates.hypr" + ".wizardHelp.apiToken.heading")}
             </Heading>
             <p>
                 <Trans
                     i18nKey={
-                        "console:develop.features.authenticationProvider.templates.hypr" +
+                        "idp:develop.features.authenticationProvider.templates.hypr" +
                         ".wizardHelp.apiToken.description"
                     }
                 >
-                    Provide the <Code>API Token</Code> obtained from HYPR. 
-                    This will be used to access HYPR&apos;s APIs.
+                    Provide the <Code>API Token</Code> obtained from HYPR. This will be used to access HYPR&apos;s APIs.
                 </Trans>
             </p>
         </div>

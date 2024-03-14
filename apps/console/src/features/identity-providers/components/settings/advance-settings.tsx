@@ -66,7 +66,6 @@ interface AdvanceSettingsPropsInterface extends TestableComponentInterface {
 export const AdvanceSettings: FunctionComponent<AdvanceSettingsPropsInterface> = (
     props: AdvanceSettingsPropsInterface
 ): ReactElement => {
-
     const {
         editingIDP,
         advancedConfigurations,
@@ -74,12 +73,12 @@ export const AdvanceSettings: FunctionComponent<AdvanceSettingsPropsInterface> =
         isReadOnly,
         isLoading,
         loader: Loader,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const dispatch = useDispatch();
 
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     const { t } = useTranslation();
 
@@ -93,16 +92,21 @@ export const AdvanceSettings: FunctionComponent<AdvanceSettingsPropsInterface> =
 
         updateIdentityProviderDetails({ id: editingIDP.id, ...values })
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications." +
-                        "updateIDP.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider.notifications." +
-                        "updateIDP.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider.notifications." +
+                                "updateIDP.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:develop.features.authenticationProvider.notifications." + "updateIDP.success.message"
+                        )
+                    })
+                );
                 onUpdate(editingIDP.id);
             })
-            .catch((error) => {
+            .catch(error => {
                 handleIDPUpdateError(error);
             })
             .finally(() => {
@@ -117,11 +121,11 @@ export const AdvanceSettings: FunctionComponent<AdvanceSettingsPropsInterface> =
     return (
         <EmphasizedSegment className="advanced-configuration-section">
             <AdvanceConfigurationsForm
-                config={ advancedConfigurations }
-                onSubmit={ handleAdvancedConfigFormSubmit }
-                data-testid={ testId }
-                isReadOnly={ isReadOnly }
-                isSubmitting={ isSubmitting }
+                config={advancedConfigurations}
+                onSubmit={handleAdvancedConfigFormSubmit}
+                data-testid={testId}
+                isReadOnly={isReadOnly}
+                isSubmitting={isSubmitting}
             />
         </EmphasizedSegment>
     );

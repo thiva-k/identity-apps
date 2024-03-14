@@ -160,7 +160,6 @@ const FORM_ID: string = "github-authenticator-form";
 export const GithubAuthenticatorForm: FunctionComponent<GithubAuthenticatorFormPropsInterface> = (
     props: GithubAuthenticatorFormPropsInterface
 ): ReactElement => {
-
     const {
         metadata,
         mode,
@@ -168,19 +167,18 @@ export const GithubAuthenticatorForm: FunctionComponent<GithubAuthenticatorFormP
         onSubmit,
         readOnly,
         isSubmitting,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ formFields, setFormFields ] = useState<GithubAuthenticatorFormFieldsInterface>(undefined);
-    const [ initialValues, setInitialValues ] = useState<GithubAuthenticatorFormInitialValuesInterface>(undefined);
+    const [formFields, setFormFields] = useState<GithubAuthenticatorFormFieldsInterface>(undefined);
+    const [initialValues, setInitialValues] = useState<GithubAuthenticatorFormInitialValuesInterface>(undefined);
 
     /**
      * Flattens and resolved form initial values and field metadata.
      */
     useEffect(() => {
-
         if (isEmpty(originalInitialValues?.properties)) {
             return;
         }
@@ -189,12 +187,13 @@ export const GithubAuthenticatorForm: FunctionComponent<GithubAuthenticatorFormP
         let resolvedInitialValues: GithubAuthenticatorFormInitialValuesInterface = null;
 
         originalInitialValues.properties.map((value: CommonAuthenticatorFormPropertyInterface) => {
-            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties
-                .find((meta) => meta.key === value.key);
+            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties.find(
+                meta => meta.key === value.key
+            );
 
             resolvedFormFields = {
                 ...resolvedFormFields,
-                [ value.key ]: {
+                [value.key]: {
                     meta,
                     value: value.value
                 }
@@ -202,13 +201,13 @@ export const GithubAuthenticatorForm: FunctionComponent<GithubAuthenticatorFormP
 
             resolvedInitialValues = {
                 ...resolvedInitialValues,
-                [ value.key ]: value.value
+                [value.key]: value.value
             };
         });
 
         setFormFields(resolvedFormFields);
         setInitialValues(resolvedInitialValues);
-    }, [ originalInitialValues ]);
+    }, [originalInitialValues]);
 
     /**
      * Prepare form values for submitting.
@@ -216,12 +215,12 @@ export const GithubAuthenticatorForm: FunctionComponent<GithubAuthenticatorFormP
      * @param values - Form values.
      * @returns Sanitized form values.
      */
-    const getUpdatedConfigurations = (values: GithubAuthenticatorFormInitialValuesInterface)
-        : CommonAuthenticatorFormInitialValuesInterface => {
-
+    const getUpdatedConfigurations = (
+        values: GithubAuthenticatorFormInitialValuesInterface
+    ): CommonAuthenticatorFormInitialValuesInterface => {
         const properties = [];
 
-        for (const [ key, value ] of Object.entries(values)) {
+        for (const [key, value] of Object.entries(values)) {
             if (key !== undefined) {
                 properties.push({
                     key: key,
@@ -243,25 +242,28 @@ export const GithubAuthenticatorForm: FunctionComponent<GithubAuthenticatorFormP
      * @returns Scope metadata.
      */
     const resolveScopeMetadata = (scope: string): ScopeMetaInterface => {
-
         if (scope === IdentityProviderManagementConstants.GITHUB_SCOPE_DICTIONARY.USER_READ) {
             return {
-                description: t("console:develop.features.authenticationProvider.forms" +
-                    ".authenticatorSettings.github.scopes.list.profile.description"),
+                description: t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.github.scopes.list.profile.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { IdentityProviderManagementConstants.GITHUB_SCOPE_DICTIONARY.USER_READ }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {IdentityProviderManagementConstants.GITHUB_SCOPE_DICTIONARY.USER_READ}
                     </Code>
                 ),
                 icon: "user outline"
             };
         } else if (scope === IdentityProviderManagementConstants.GITHUB_SCOPE_DICTIONARY.USER_EMAIL) {
             return {
-                description: t("console:develop.features.authenticationProvider.forms" +
-                    ".authenticatorSettings.github.scopes.list.email.description"),
+                description: t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.github.scopes.list.email.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { IdentityProviderManagementConstants.GITHUB_SCOPE_DICTIONARY.USER_EMAIL }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {IdentityProviderManagementConstants.GITHUB_SCOPE_DICTIONARY.USER_EMAIL}
                     </Code>
                 ),
                 icon: "envelope outline"
@@ -277,49 +279,45 @@ export const GithubAuthenticatorForm: FunctionComponent<GithubAuthenticatorFormP
 
     return (
         <Form
-            id={ FORM_ID }
-            uncontrolledForm={ false }
-            onSubmit={ (values) => onSubmit(getUpdatedConfigurations(values as any)) }
-            initialValues={ initialValues }
+            id={FORM_ID}
+            uncontrolledForm={false}
+            onSubmit={values => onSubmit(getUpdatedConfigurations(values as any))}
+            initialValues={initialValues}
         >
             <Field.Input
                 ariaLabel="GitHub authenticator client ID"
                 inputType="default"
                 name="ClientId"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".github.clientId.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".github.clientId.placeholder")
-                }
-                hint={ (
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" + ".github.clientId.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".github.clientId.placeholder"
+                )}
+                hint={
                     <Trans
                         i18nKey={
-                            "console:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
                             ".github.clientId.hint"
                         }
                     >
                         The <Code>Client ID</Code> you received from GitHub for your OAuth app.
                     </Trans>
-                ) }
-                required={ formFields?.ClientId?.meta?.isMandatory }
+                }
+                required={formFields?.ClientId?.meta?.isMandatory}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.ClientId?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.ClientId?.meta?.readOnly)
                 }
-                value={ formFields?.ClientId?.value }
-                maxLength={ formFields?.ClientId?.meta?.maxLength }
+                value={formFields?.ClientId?.value}
+                maxLength={formFields?.ClientId?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_ID_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-client-id` }
+                width={16}
+                data-testid={`${testId}-client-id`}
             />
             <Field.Input
                 ariaLabel="GitHub authenticator client secret"
@@ -327,157 +325,139 @@ export const GithubAuthenticatorForm: FunctionComponent<GithubAuthenticatorFormP
                 inputType="password"
                 type="password"
                 name="ClientSecret"
-                label={
-                    t("console:develop.features.authenticationProvider.forms" +
-                        ".authenticatorSettings.github.clientSecret.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms" +
-                        ".authenticatorSettings.github.clientSecret.placeholder")
-                }
-                hint={ (
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.github.clientSecret.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.github.clientSecret.placeholder"
+                )}
+                hint={
                     <Trans
                         i18nKey={
-                            "console:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
                             ".github.clientSecret.hint"
                         }
                     >
                         The <Code>Client secret</Code> you received from GitHub for your OAuth app.
                     </Trans>
-                ) }
-                required={ formFields?.ClientSecret?.meta?.isMandatory }
+                }
+                required={formFields?.ClientSecret?.meta?.isMandatory}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.ClientSecret?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.ClientSecret?.meta?.readOnly)
                 }
-                value={ formFields?.ClientSecret?.value }
-                maxLength={ formFields?.ClientSecret?.meta?.maxLength }
+                value={formFields?.ClientSecret?.value}
+                maxLength={formFields?.ClientSecret?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_SECRET_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-client-secret` }
+                width={16}
+                data-testid={`${testId}-client-secret`}
             />
             <Field.Input
                 ariaLabel="GitHub authenticator authorized redirect URL"
                 inputType="copy_input"
                 name="callbackUrl"
-                label={
-                    t("console:develop.features.authenticationProvider.forms" +
-                        ".authenticatorSettings.github.callbackUrl.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms" +
-                        ".authenticatorSettings.github.callbackUrl.placeholder")
-                }
-                hint={
-                    t("console:develop.features.authenticationProvider.forms" +
-                        ".authenticatorSettings.github.callbackUrl.hint")
-                }
-                required={ formFields?.callbackUrl?.meta?.isMandatory }
-                value={ formFields?.callbackUrl?.value }
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.github.callbackUrl.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.github.callbackUrl.placeholder"
+                )}
+                hint={t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.github.callbackUrl.hint"
+                )}
+                required={formFields?.callbackUrl?.meta?.isMandatory}
+                value={formFields?.callbackUrl?.value}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.callbackUrl?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.callbackUrl?.meta?.readOnly)
                 }
-                maxLength={ formFields?.callbackUrl?.meta?.maxLength }
+                maxLength={formFields?.callbackUrl?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CALLBACK_URL_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CALLBACK_URL_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-authorized-redirect-url` }
+                width={16}
+                data-testid={`${testId}-authorized-redirect-url`}
             />
-            {
-                formFields?.scope?.value
-                && formFields.scope.value.split
-                && formFields.scope.value.split(" ").length > 0
-                && (
-                    <FormSection
-                        heading={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.github.scopes.heading")
-                        }
-                    >
-                        <div className="authenticator-dynamic-properties">
-                            {
-                                formFields.scope.value
-                                    .split(" ")
-                                    .map((scope: string, index: number) => {
+            {formFields?.scope?.value && formFields.scope.value.split && formFields.scope.value.split(" ").length > 0 && (
+                <FormSection
+                    heading={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.github.scopes.heading"
+                    )}
+                >
+                    <div className="authenticator-dynamic-properties">
+                        {formFields.scope.value.split(" ").map((scope: string, index: number) => {
+                            const scopeMeta: ScopeMetaInterface = resolveScopeMetadata(scope);
 
-                                        const scopeMeta: ScopeMetaInterface = resolveScopeMetadata(scope);
-
-                                        return (
-                                            <div
-                                                key={ index }
-                                                className="authenticator-dynamic-property"
-                                                data-testid={ scope }
-                                            >
-                                                <div className="authenticator-dynamic-property-name-container">
-                                                    <GenericIcon
-                                                        square
-                                                        inline
-                                                        transparent
-                                                        icon={ <Icon name={ scopeMeta.icon }/> }
-                                                        size="micro"
-                                                        className="authenticator-dynamic-property-icon"
-                                                        spaced="right"
-                                                        verticalAlign="top"
-                                                    />
-                                                    <div data-testid={ `${ scope }-name` }>
-                                                        { scopeMeta.displayName }
-                                                    </div>
-                                                </div>
-                                                <div
-                                                    className="authenticator-dynamic-property-description"
-                                                    data-testid={ `${ scope }-description` }
-                                                >
-                                                    { scopeMeta.description }
-                                                </div>
-                                            </div>
-                                        );
-                                    })
+                            return (
+                                <div key={index} className="authenticator-dynamic-property" data-testid={scope}>
+                                    <div className="authenticator-dynamic-property-name-container">
+                                        <GenericIcon
+                                            square
+                                            inline
+                                            transparent
+                                            icon={<Icon name={scopeMeta.icon} />}
+                                            size="micro"
+                                            className="authenticator-dynamic-property-icon"
+                                            spaced="right"
+                                            verticalAlign="top"
+                                        />
+                                        <div data-testid={`${scope}-name`}>{scopeMeta.displayName}</div>
+                                    </div>
+                                    <div
+                                        className="authenticator-dynamic-property-description"
+                                        data-testid={`${scope}-description`}
+                                    >
+                                        {scopeMeta.description}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <Hint>
+                        <Trans
+                            i18nKey={
+                                "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.github.scopes.hint"
                             }
-                        </div>
-                        <Hint>
-                            <Trans
-                                i18nKey={
-                                    "console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.github.scopes.hint"
+                        >
+                            The scopes specifies the type of access provided for connected apps to access data from
+                            GitHub. Click{" "}
+                            <a
+                                href={
+                                    "https://docs.github.com/en/developers/apps/building-oauth" +
+                                    "-apps/scopes-for-oauth-apps"
                                 }
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
-                                The scopes specifies the type of access provided for connected apps
-                                to access data from GitHub. Click <a
-                                    href={
-                                        "https://docs.github.com/en/developers/apps/building-oauth" +
-                                        "-apps/scopes-for-oauth-apps"
-                                    }
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >here</a> to learn more.
-                            </Trans>
-                        </Hint>
-                    </FormSection>
-                )
-            }
+                                here
+                            </a>{" "}
+                            to learn more.
+                        </Trans>
+                    </Hint>
+                </FormSection>
+            )}
             <Field.Button
-                form={ FORM_ID }
+                form={FORM_ID}
                 size="small"
                 buttonType="primary_btn"
                 ariaLabel="GitHub authenticator update button"
                 name="update-button"
-                data-testid={ `${ testId }-submit-button` }
-                disabled={ isSubmitting }
-                loading={ isSubmitting }
-                label={ t("common:update") }
-                hidden={ readOnly }
+                data-testid={`${testId}-submit-button`}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                label={t("idp:update")}
+                hidden={readOnly}
             />
         </Form>
     );

@@ -70,14 +70,7 @@ const FORM_ID: string = "idp-certificates-list-form";
 export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
     props: PropsWithChildren<IdpCertificatesListProps>
 ): ReactElement => {
-
-    const {
-        [ "data-componentid" ]: testId,
-        currentlyEditingIdP,
-        refreshIdP,
-        isReadOnly,
-        isTrustedTokenIssuer
-    } = props;
+    const { ["data-componentid"]: testId, currentlyEditingIdP, refreshIdP, isReadOnly, isTrustedTokenIssuer } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
@@ -89,13 +82,14 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
      *
      * {@link https://www.typescriptlang.org/docs/handbook/2/objects.html#the-readonlyarray-type}
      */
-    const [ displayingCertificates, setDisplayingCertificates ] = useState<ReadonlyArray<DisplayCertificate>>();
-    const [ showCertificateModal, setShowCertificateModal ] = useState<boolean>(false);
-    const [ certificateDisplay, setCertificateDisplay ] = useState<DisplayCertificate>(null);
-    const [ showPEMCertificateDeleteConfirmationModal, setShowPEMCertificateDeleteConfirmationModal ] =
-        useState<boolean>(false);
-    const [ deletingCertificateIndex, setDeletingCertificateIndex ] = useState<number>(null);
-    const [ isLoading, setIsLoading ] = useState<boolean>(false);
+    const [displayingCertificates, setDisplayingCertificates] = useState<ReadonlyArray<DisplayCertificate>>();
+    const [showCertificateModal, setShowCertificateModal] = useState<boolean>(false);
+    const [certificateDisplay, setCertificateDisplay] = useState<DisplayCertificate>(null);
+    const [showPEMCertificateDeleteConfirmationModal, setShowPEMCertificateDeleteConfirmationModal] = useState<boolean>(
+        false
+    );
+    const [deletingCertificateIndex, setDeletingCertificateIndex] = useState<number>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     /**
      * When component initialize check the IdP model and set
@@ -111,7 +105,7 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
      */
     useEffect(() => {
         bindCertificatesToState();
-    }, [ currentlyEditingIdP?.certificate?.certificates ]);
+    }, [currentlyEditingIdP?.certificate?.certificates]);
 
     /**
      * Why call this in two places?
@@ -133,13 +127,13 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
                     certificatesList?.push(CertificateManagementConstants.DUMMY_DISPLAY_CERTIFICATE);
                 }
             });
-            setDisplayingCertificates([ ...certificatesList ]);
+            setDisplayingCertificates([...certificatesList]);
         }
     };
 
     /**
      * Handles the deletion of a certificate.
-     * 
+     *
      * @param certificateIndex - Index of the certificate to be deleted.
      */
     const handleDeletePEMCertificate = async (certificateIndex: number): Promise<void> => {
@@ -162,48 +156,63 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
      * @param certificateIndex - Cert index.
      */
     const deleteCertificate = async (certificateIndex?: number) => {
-
         setIsLoading(true);
 
         const index: number = certificateIndex ?? deletingCertificateIndex;
 
-        const PATCH_OBJECT: CertificatePatchRequestInterface[] = [ 
+        const PATCH_OBJECT: CertificatePatchRequestInterface[] = [
             {
-                "operation": "REMOVE",
-                "path": "/certificate/certificates/" + index,
-                "value": null
-            } 
+                operation: "REMOVE",
+                path: "/certificate/certificates/" + index,
+                value: null
+            }
         ];
 
         const doOnSuccess = () => {
-            dispatch(addAlert({
-                description: t("console:develop.features.authenticationProvider" +
-                    ".notifications.deleteCertificate.success.description"),
-                level: AlertLevels.SUCCESS,
-                message: t("console:develop.features.authenticationProvider" +
-                    ".notifications.deleteCertificate.success.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "idp:develop.features.authenticationProvider" +
+                            ".notifications.deleteCertificate.success.description"
+                    ),
+                    level: AlertLevels.SUCCESS,
+                    message: t(
+                        "idp:develop.features.authenticationProvider" +
+                            ".notifications.deleteCertificate.success.message"
+                    )
+                })
+            );
             refreshIdP(currentlyEditingIdP.id);
         };
 
         const ifTheresAnyError = (error: IdentityAppsApiException) => {
             if (error.response && error.response.data && error.response.data.description) {
-                dispatch(addAlert({
-                    description: error.response.data.description,
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider" +
-                        ".notifications.deleteCertificate.error.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: error.response.data.description,
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "idp:develop.features.authenticationProvider" +
+                                ".notifications.deleteCertificate.error.message"
+                        )
+                    })
+                );
 
                 return;
             }
-            dispatch(addAlert({
-                description: t("console:develop.features.authenticationProvider.notifications" +
-                    ".deleteCertificate.genericError.description"),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.authenticationProvider.notifications" +
-                    ".deleteCertificate.genericError.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "idp:develop.features.authenticationProvider.notifications" +
+                            ".deleteCertificate.genericError.description"
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "idp:develop.features.authenticationProvider.notifications" +
+                            ".deleteCertificate.genericError.message"
+                    )
+                })
+            );
         };
 
         await updateIDPCertificate(currentlyEditingIdP?.id, PATCH_OBJECT)
@@ -213,7 +222,6 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
                 setIsLoading(false);
                 showPEMCertificateDeleteConfirmationModal && setShowPEMCertificateDeleteConfirmationModal(false);
             });
-
     };
 
     const handleViewCertificate = (certificate: DisplayCertificate) => {
@@ -229,17 +237,15 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
      * @param issuer - Issuer.
      */
     const createValidityLabel = (validFrom: Date, validTill: Date, issuer: string): ReactElement => {
-
         let icon: SemanticICONS;
         let iconColor: SemanticCOLORS;
 
         const expiryDate: moment.Moment = moment(validTill);
 
-        const validity: CertificateValidity = CertificateManagementUtils
-            .determineCertificateValidityState({
-                from: validFrom,
-                to: validTill
-            });
+        const validity: CertificateValidity = CertificateManagementUtils.determineCertificateValidityState({
+            from: validFrom,
+            to: validTill
+        });
 
         switch (validity) {
             case CertificateValidity.VALID: {
@@ -262,17 +268,16 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
 
         return (
             <React.Fragment>
-                { issuer + CertificateManagementConstants.SPACE_CHARACTER }
+                {issuer + CertificateManagementConstants.SPACE_CHARACTER}
                 <Popup
-                    trigger={ <Icon name={ icon } color={ iconColor }/> }
-                    content={ "Expiry date: " + expiryDate.format("DD/MM/YYYY") }
+                    trigger={<Icon name={icon} color={iconColor} />}
+                    content={"Expiry date: " + expiryDate.format("DD/MM/YYYY")}
                     inverted
                     position="top left"
                     size="mini"
                 />
             </React.Fragment>
         );
-
     };
 
     /**
@@ -288,11 +293,9 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
                 Unable to visualize the certificate details&nbsp;
                 <Popup
                     trigger={
-                        (<Icon
-                            onClick={ () => handleViewCertificate(certificate) }
-                            name={ "info circle" }
-                            color={ "grey" }/>) }
-                    content={ "Click for more info" }
+                        <Icon onClick={() => handleViewCertificate(certificate)} name={"info circle"} color={"grey"} />
+                    }
+                    content={"Click for more info"}
                     inverted
                     position="top left"
                     size="mini"
@@ -308,10 +311,7 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
      * @param validTill - Validate till date.
      */
     const createDescription = (validFrom: Date, validTill: Date): string => {
-        return CertificateManagementUtils.getValidityPeriodInHumanReadableFormat(
-            validFrom,
-            validTill
-        );
+        return CertificateManagementUtils.getValidityPeriodInHumanReadableFormat(validFrom, validTill);
     };
 
     /**
@@ -323,7 +323,7 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
     const createCertificateActions = (certificate: DisplayCertificate, index: number) => {
         return [
             {
-                "data-componentid": `${ testId }-edit-cert-${ index }-button`,
+                "data-componentid": `${testId}-edit-cert-${index}-button`,
                 disabled: certificate?.infoUnavailable,
                 hidden: certificate?.infoUnavailable,
                 icon: "eye",
@@ -332,7 +332,7 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
                 type: "button"
             },
             {
-                "data-componentid": `${ testId }-delete-cert-${ index }-button`,
+                "data-componentid": `${testId}-delete-cert-${index}-button`,
                 icon: "trash alternate",
                 onClick: () => handleDeletePEMCertificate(index),
                 popupText: "Delete",
@@ -361,101 +361,94 @@ export const IdpCertificatesList: FC<IdpCertificatesListProps> = (
     };
 
     return (
-        <Form
-            id={ FORM_ID }
-            onSubmit={ CertificateManagementConstants.NO_OPERATIONS }
-            uncontrolledForm={ true }
-        >
+        <Form id={FORM_ID} onSubmit={CertificateManagementConstants.NO_OPERATIONS} uncontrolledForm={true}>
             <Grid>
                 <Grid.Row>
                     <Grid.Column>
                         <ResourceList
                             fill
-                            relaxed={ false }
+                            relaxed={false}
                             className="application-list"
-                            isLoading={ isLoading }
-                            loadingStateOptions={ {
+                            isLoading={isLoading}
+                            loadingStateOptions={{
                                 count: 2,
                                 imageType: "circular"
-                            } }
-                            readOnly={ isReadOnly }>
-                            {
-                                displayingCertificates?.map((certificate: DisplayCertificate, index: number) => (
-                                    <ResourceListItem
-                                        key={ index }
-                                        actionsColumnWidth={ 3 }
-                                        descriptionColumnWidth={ 9 }
-                                        actions={ createCertificateActions(certificate, index) }
-                                        actionsFloated="right"
-                                        avatar={ createCertificateResourceAvatar(certificate) }
-                                        itemHeader={
-                                            certificate?.infoUnavailable
-                                                ? createDummyValidityLabel(certificate)
-                                                : createValidityLabel(
-                                                    certificate.validFrom,
-                                                    certificate.validTill,
-                                                    CertificateManagementUtils.searchIssuerDNAlias(
-                                                        certificate?.issuerDN
-                                                    ))
-                                        }
-                                        itemDescription={
-                                            certificate?.infoUnavailable
-                                                ? null
-                                                : createDescription(certificate.validFrom, certificate.validTill)
-                                        }
-                                    />
-                                ))
-                            }
+                            }}
+                            readOnly={isReadOnly}
+                        >
+                            {displayingCertificates?.map((certificate: DisplayCertificate, index: number) => (
+                                <ResourceListItem
+                                    key={index}
+                                    actionsColumnWidth={3}
+                                    descriptionColumnWidth={9}
+                                    actions={createCertificateActions(certificate, index)}
+                                    actionsFloated="right"
+                                    avatar={createCertificateResourceAvatar(certificate)}
+                                    itemHeader={
+                                        certificate?.infoUnavailable
+                                            ? createDummyValidityLabel(certificate)
+                                            : createValidityLabel(
+                                                  certificate.validFrom,
+                                                  certificate.validTill,
+                                                  CertificateManagementUtils.searchIssuerDNAlias(certificate?.issuerDN)
+                                              )
+                                    }
+                                    itemDescription={
+                                        certificate?.infoUnavailable
+                                            ? null
+                                            : createDescription(certificate.validFrom, certificate.validTill)
+                                    }
+                                />
+                            ))}
                         </ResourceList>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
             <ShowCertificateModal
-                show={ showCertificateModal }
-                certificateToDisplay={ certificateDisplay }
-                onCloseClicked={ (): void => setShowCertificateModal(false) }
-            /> 
+                show={showCertificateModal}
+                certificateToDisplay={certificateDisplay}
+                onCloseClicked={(): void => setShowCertificateModal(false)}
+            />
             <ConfirmationModal
-                primaryActionLoading={ isLoading }
-                onClose={ (): void => setShowPEMCertificateDeleteConfirmationModal(false) }
+                primaryActionLoading={isLoading}
+                onClose={(): void => setShowPEMCertificateDeleteConfirmationModal(false)}
                 type="negative"
-                open={ showPEMCertificateDeleteConfirmationModal }
+                open={showPEMCertificateDeleteConfirmationModal}
                 assertionType="checkbox"
-                assertionHint={ t("console:develop.features.authenticationProvider."+
-                    "confirmations.deleteCertificate.assertionHint") }
-                primaryAction={ t("common:confirm") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={ (): void => setShowPEMCertificateDeleteConfirmationModal(false) }
-                onPrimaryActionClick={ (): Promise<void> => deleteCertificate() }
-                data-componentid={ `${ testId }-delete-certificate-confirmation` }
-                closeOnDimmerClick={ false }
+                assertionHint={t(
+                    "idp:develop.features.authenticationProvider." + "confirmations.deleteCertificate.assertionHint"
+                )}
+                primaryAction={t("idp:confirm")}
+                secondaryAction={t("idp:cancel")}
+                onSecondaryActionClick={(): void => setShowPEMCertificateDeleteConfirmationModal(false)}
+                onPrimaryActionClick={(): Promise<void> => deleteCertificate()}
+                data-componentid={`${testId}-delete-certificate-confirmation`}
+                closeOnDimmerClick={false}
             >
-                <ConfirmationModal.Header data-componentid={ `${ testId }-delete-certificate-confirmation-header` }>
-                    { t("console:develop.features.authenticationProvider.confirmations.deleteCertificate.header") }
+                <ConfirmationModal.Header data-componentid={`${testId}-delete-certificate-confirmation-header`}>
+                    {t("idp:develop.features.authenticationProvider.confirmations.deleteCertificate.header")}
                 </ConfirmationModal.Header>
                 <ConfirmationModal.Message
                     attached
                     negative
-                    data-componentid={ `${ testId }-delete-certificate-confirmation` }
+                    data-componentid={`${testId}-delete-certificate-confirmation`}
                 >
-                    { t("console:develop.features.authenticationProvider.confirmations.deleteCertificate.message") }
+                    {t("idp:develop.features.authenticationProvider.confirmations.deleteCertificate.message")}
                 </ConfirmationModal.Message>
-                <ConfirmationModal.Content data-componentid={ `${ testId }-delete-certificate-confirmation-content` }>
-                    <Trans 
-                        i18nKey= { 
-                            "console:develop.features.authenticationProvider.confirmations.deleteCertificate." + 
-                            "content"
+                <ConfirmationModal.Content data-componentid={`${testId}-delete-certificate-confirmation-content`}>
+                    <Trans
+                        i18nKey={
+                            "idp:develop.features.authenticationProvider.confirmations.deleteCertificate." + "content"
                         }
-                        values={ { productName: config.ui.productName } }
+                        values={{ productName: config.ui.productName }}
                     >
-                        If this certificate is deleted, productName will no longer be able to validate  
-                        tokens issued from this issuer.<b> Proceed with caution.</b>
+                        If this certificate is deleted, productName will no longer be able to validate tokens issued
+                        from this issuer.<b> Proceed with caution.</b>
                     </Trans>
                 </ConfirmationModal.Content>
             </ConfirmationModal>
         </Form>
     );
-
 };
 
 /**

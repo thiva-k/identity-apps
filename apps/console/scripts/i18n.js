@@ -8,34 +8,33 @@ const log = console.log;
 const OUTPUT_DIR_NAME = "bundle";
 const META_FILE_NAME = "meta.{hash}.json";
 const TRANSLATIONS_FOLDER_NAME = "translations";
-const featureFolders = [ "groups","connections", "organizations"]; // Add more feature folders as needed
+const featureFolders = ["groups", "connections", "organizations", "identity-providers"]; // Add more feature folders as needed
 const dist = path.join(__dirname, "..", "src", "features");
 const BASE_COMPILE_COMMAND = "pnpm compile:i18n:";
-const outputPath = path.join(__dirname, "..","src","features", "i18n");
+const outputPath = path.join(__dirname, "..", "src", "features", "i18n");
 
-// Delete existing js dist folders for each feature 
+// Delete existing js dist folders for each feature
 featureFolders.forEach(feature => {
     const featureFolderDist = path.join(dist, feature, "i18n", "dist");
     if (fs.existsSync(featureFolderDist)) {
         log(`\nDeleting existing "dist" folder for feature: ${feature}`);
         fs.removeSync(featureFolderDist);
-    }})
+    }
+});
 
 // Delete existing i18n folder
-if (fs.existsSync(path.join(__dirname, "..","src","features" ,"i18n"))) {
+if (fs.existsSync(path.join(__dirname, "..", "src", "features", "i18n"))) {
     log(`\nDeleting existing "i18n" folder`);
-    fs.removeSync(path.join(__dirname, "..","src","features", "i18n"));
+    fs.removeSync(path.join(__dirname, "..", "src", "features", "i18n"));
 }
 
 // Construct the full js compile command by concatenating the feature with the base command
 featureFolders.forEach(feature => {
-    
     const compileCommand = `${BASE_COMPILE_COMMAND}${feature}`;
 
     log(`\nCompiling i18n for feature: ${feature}`);
     execSync(compileCommand, { cwd: path.join(__dirname, "..") });
 });
-
 
 let metaFileContent = {};
 
@@ -68,7 +67,10 @@ featureFolders.forEach(feature => {
             createDirectory(subFolderPath, true);
 
             for (const [nsObjKey, nsObjValue] of Object.entries(objValue)) {
-                const hash = crypto.createHash("sha1").update(JSON.stringify(nsObjValue)).digest("hex");
+                const hash = crypto
+                    .createHash("sha1")
+                    .update(JSON.stringify(nsObjValue))
+                    .digest("hex");
                 const fileName = `${nsObjKey}.${hash.substr(0, 8)}.json`;
                 const filePath = path.join(subFolderPath, fileName);
 
@@ -76,24 +78,36 @@ featureFolders.forEach(feature => {
 
                 resourcePaths = {
                     ...resourcePaths,
-                    [nsObjKey]: path.join(value.meta.code, objKey, fileName).split(path.sep).join(path.posix.sep)
+                    [nsObjKey]: path
+                        .join(value.meta.code, objKey, fileName)
+                        .split(path.sep)
+                        .join(path.posix.sep)
                 };
             }
         }
 
         metaFileContent[value.meta.code] = metaFileContent[value.meta.code] || { paths: {}, namespaces: [] };
         metaFileContent[value.meta.code].paths = { ...metaFileContent[value.meta.code].paths, ...resourcePaths };
-        metaFileContent[value.meta.code].namespaces = [...new Set([...metaFileContent[value.meta.code].namespaces, ...featureFolders])];
+        metaFileContent[value.meta.code].namespaces = [
+            ...new Set([...metaFileContent[value.meta.code].namespaces, ...featureFolders])
+        ];
         metaFileContent[value.meta.code].code = value.meta.code;
         metaFileContent[value.meta.code].flag = value.meta.flag;
         metaFileContent[value.meta.code].name = value.meta.name;
     }
 });
 
-const hash = crypto.createHash("sha1").update(JSON.stringify(metaFileContent)).digest("hex");
+const hash = crypto
+    .createHash("sha1")
+    .update(JSON.stringify(metaFileContent))
+    .digest("hex");
 
-createFile(path.join(outputPath, META_FILE_NAME.replace("{hash}", hash.substr(0, 8))),
-    JSON.stringify(metaFileContent, undefined, 4), null, true);
+createFile(
+    path.join(outputPath, META_FILE_NAME.replace("{hash}", hash.substr(0, 8))),
+    JSON.stringify(metaFileContent, undefined, 4),
+    null,
+    true
+);
 
 log("\nCreated the locale meta file.");
 log("\nSuccessfully generated the locale bundle.");

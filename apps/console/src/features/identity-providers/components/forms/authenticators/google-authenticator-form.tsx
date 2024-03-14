@@ -102,8 +102,8 @@ interface GoogleAuthenticatorFormInitialValuesInterface {
      */
     ClientId: string;
     /**
-    * Google Authenticator Google One Tap field value.
-    */
+     * Google Authenticator Google One Tap field value.
+     */
     IsGoogleOneTapEnabled: boolean;
 }
 
@@ -130,7 +130,7 @@ interface GoogleAuthenticatorFormFieldsInterface {
     /**
      * Google Authenticator Google One Tap field value.
      */
-     IsGoogleOneTapEnabled: CommonAuthenticatorFormFieldInterface;
+    IsGoogleOneTapEnabled: CommonAuthenticatorFormFieldInterface;
 }
 
 /**
@@ -148,7 +148,7 @@ interface ScopeMetaInterface {
     /**
      * Scope icon.
      */
-    icon: SemanticICONS
+    icon: SemanticICONS;
 }
 
 const FORM_ID: string = "google-authenticator-form";
@@ -162,7 +162,6 @@ const FORM_ID: string = "google-authenticator-form";
 export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormPropsInterface> = (
     props: GoogleAuthenticatorFormPropsInterface
 ): ReactElement => {
-
     const {
         metadata,
         mode,
@@ -170,24 +169,24 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
         onSubmit,
         readOnly,
         isSubmitting,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ formFields, setFormFields ] = useState<GoogleAuthenticatorFormFieldsInterface>(undefined);
-    const [ initialValues, setInitialValues ] = useState<GoogleAuthenticatorFormInitialValuesInterface>(undefined);
+    const [formFields, setFormFields] = useState<GoogleAuthenticatorFormFieldsInterface>(undefined);
+    const [initialValues, setInitialValues] = useState<GoogleAuthenticatorFormInitialValuesInterface>(undefined);
     /**
-    * Importing all UI configurations.
-    */
-    const googleOneTapEnabledTenants: string[] = useSelector((state: AppState) =>
-        state?.config?.ui?.googleOneTapEnabledTenants);
+     * Importing all UI configurations.
+     */
+    const googleOneTapEnabledTenants: string[] = useSelector(
+        (state: AppState) => state?.config?.ui?.googleOneTapEnabledTenants
+    );
 
     /**
      * Flattens and resolved form initial values and field metadata.
      */
     useEffect(() => {
-
         if (isEmpty(originalInitialValues?.properties)) {
             return;
         }
@@ -196,13 +195,14 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
         let resolvedInitialValues: GoogleAuthenticatorFormInitialValuesInterface = null;
 
         originalInitialValues.properties.map((value: CommonAuthenticatorFormPropertyInterface) => {
-            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties
-                .find((meta) => meta.key === value.key);
+            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties.find(
+                meta => meta.key === value.key
+            );
 
             /**
-            * Parsing string  to boolean only for Google One Tap value
-            */
-            let localValue : any;
+             * Parsing string  to boolean only for Google One Tap value
+             */
+            let localValue: any;
 
             if (value.key === IdentityProviderManagementConstants.GOOGLE_ONE_TAP_ENABLED) {
                 if (value.value === "true") {
@@ -216,7 +216,7 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
 
             resolvedFormFields = {
                 ...resolvedFormFields,
-                [ value.key ]: {
+                [value.key]: {
                     meta,
                     value: localValue
                 }
@@ -224,13 +224,13 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
 
             resolvedInitialValues = {
                 ...resolvedInitialValues,
-                [ value.key ]: localValue
+                [value.key]: localValue
             };
         });
 
         setFormFields(resolvedFormFields);
         setInitialValues(resolvedInitialValues);
-    }, [ originalInitialValues ]);
+    }, [originalInitialValues]);
 
     /**
      * Checking ability to enable Google One Tap.
@@ -256,12 +256,12 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
      *
      * @returns Sanitized form values.
      */
-    const getUpdatedConfigurations = (values: GoogleAuthenticatorFormInitialValuesInterface)
-        : CommonAuthenticatorFormInitialValuesInterface => {
-
+    const getUpdatedConfigurations = (
+        values: GoogleAuthenticatorFormInitialValuesInterface
+    ): CommonAuthenticatorFormInitialValuesInterface => {
         const properties = [];
 
-        for (const [ key, value ] of Object.entries(values)) {
+        for (const [key, value] of Object.entries(values)) {
             if (key !== undefined) {
                 properties.push({
                     key: key,
@@ -284,14 +284,15 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
      * @returns resolved Scope Metadata
      */
     const resolveScopeMetadata = (scope: string): ScopeMetaInterface => {
-
         if (scope === IdentityProviderManagementConstants.GOOGLE_SCOPE_DICTIONARY.EMAIL) {
             return {
-                description: t("console:develop.features.authenticationProvider.forms" +
-                    ".authenticatorSettings.google.scopes.list.email.description"),
+                description: t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.google.scopes.list.email.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { IdentityProviderManagementConstants.GOOGLE_SCOPE_DICTIONARY.EMAIL }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {IdentityProviderManagementConstants.GOOGLE_SCOPE_DICTIONARY.EMAIL}
                     </Code>
                 ),
                 icon: "envelope outline"
@@ -300,11 +301,13 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
 
         if (scope === IdentityProviderManagementConstants.GOOGLE_SCOPE_DICTIONARY.OPENID) {
             return {
-                description: t("console:develop.features.authenticationProvider.forms" +
-                    ".authenticatorSettings.google.scopes.list.openid.description"),
+                description: t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.google.scopes.list.openid.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { IdentityProviderManagementConstants.GOOGLE_SCOPE_DICTIONARY.OPENID }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {IdentityProviderManagementConstants.GOOGLE_SCOPE_DICTIONARY.OPENID}
                     </Code>
                 ),
                 icon: "openid"
@@ -313,11 +316,13 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
 
         if (scope === IdentityProviderManagementConstants.GOOGLE_SCOPE_DICTIONARY.PROFILE) {
             return {
-                description: t("console:develop.features.authenticationProvider.forms" +
-                    ".authenticatorSettings.google.scopes.list.profile.description"),
+                description: t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.google.scopes.list.profile.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { IdentityProviderManagementConstants.GOOGLE_SCOPE_DICTIONARY.PROFILE }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {IdentityProviderManagementConstants.GOOGLE_SCOPE_DICTIONARY.PROFILE}
                     </Code>
                 ),
                 icon: "user outline"
@@ -342,12 +347,14 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
      * @returns list of scopes
      */
     const extractScopes = (rawScopes: string): string[] => {
-
         let scopes: string[] = [];
 
         try {
-            scopes = rawScopes.trim().split("scope=")[1].split(" ");
-        } catch(e) {
+            scopes = rawScopes
+                .trim()
+                .split("scope=")[1]
+                .split(" ");
+        } catch (e) {
             // Silent any issues occurred when trying to scroll.
             // Add debug logs here one a logger is added.
             // Tracked here https://github.com/wso2/product-is/issues/11650.
@@ -358,50 +365,48 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
 
     return (
         <Form
-            id={ FORM_ID }
-            uncontrolledForm={ false }
-            onSubmit={ (values) => onSubmit(getUpdatedConfigurations(values as any)) }
-            initialValues={ initialValues }
+            id={FORM_ID}
+            uncontrolledForm={false}
+            onSubmit={values => onSubmit(getUpdatedConfigurations(values as any))}
+            initialValues={initialValues}
         >
             <Field.Input
                 ariaLabel="Google authenticator client ID"
                 inputType="default"
                 name="ClientId"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.clientId.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.clientId.placeholder")
-                }
-                hint={ (
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" + ".google.clientId.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.clientId.placeholder"
+                )}
+                hint={
                     <Trans
                         i18nKey={
-                            "console:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
                             ".google.clientId.hint"
                         }
                     >
                         The <Code>Client ID</Code> you received from Google for your OAuth app.
                     </Trans>
-                ) }
-                required={ formFields?.ClientId?.meta?.isMandatory }
+                }
+                required={formFields?.ClientId?.meta?.isMandatory}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.ClientId?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.ClientId?.meta?.readOnly)
                 }
-                value={ formFields?.ClientId?.value }
-                maxLength={ IdentityProviderManagementConstants
-                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MAX_LENGTH as number }
+                value={formFields?.ClientId?.value}
+                maxLength={
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_ID_MAX_LENGTH as number
+                }
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_ID_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-client-id` }
+                width={16}
+                data-testid={`${testId}-client-id`}
             />
             <Field.Input
                 ariaLabel="Google authenticator client secret"
@@ -409,101 +414,94 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
                 inputType="password"
                 type="password"
                 name="ClientSecret"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.clientSecret.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.clientSecret.placeholder")
-                }
-                hint={ (
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.clientSecret.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.clientSecret.placeholder"
+                )}
+                hint={
                     <Trans
                         i18nKey={
-                            "console:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
                             ".google.clientSecret.hint"
                         }
                     >
                         The <Code>App secret</Code> value of the Google application.
                     </Trans>
-                ) }
-                required={ formFields?.ClientSecret?.meta?.isMandatory }
+                }
+                required={formFields?.ClientSecret?.meta?.isMandatory}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.ClientSecret?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.ClientSecret?.meta?.readOnly)
                 }
-                value={ formFields?.ClientSecret?.value }
-                maxLength={ formFields?.ClientSecret?.meta?.maxLength }
+                value={formFields?.ClientSecret?.value}
+                maxLength={formFields?.ClientSecret?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_SECRET_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-client-secret` }
+                width={16}
+                data-testid={`${testId}-client-secret`}
             />
             <Field.Input
                 ariaLabel="Google authenticator authorized redirect URL"
                 inputType="copy_input"
                 name="callbackUrl"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.callbackUrl.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.callbackUrl.placeholder")
-                }
-                hint={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.callbackUrl.hint")
-                }
-                required={ formFields?.callbackUrl?.meta?.isMandatory }
-                value={ formFields?.callbackUrl?.value }
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.callbackUrl.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.callbackUrl.placeholder"
+                )}
+                hint={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.callbackUrl.hint"
+                )}
+                required={formFields?.callbackUrl?.meta?.isMandatory}
+                value={formFields?.callbackUrl?.value}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.callbackUrl?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.callbackUrl?.meta?.readOnly)
                 }
-                maxLength={ formFields?.callbackUrl?.meta?.maxLength }
+                maxLength={formFields?.callbackUrl?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CALLBACK_URL_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CALLBACK_URL_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-authorized-redirect-url` }
+                width={16}
+                data-testid={`${testId}-authorized-redirect-url`}
             />
             <Field.Input
-                ariaLabel={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.AdditionalQueryParameters.ariaLabel")
-                }
+                ariaLabel={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.AdditionalQueryParameters.ariaLabel"
+                )}
                 inputType="default"
                 name="AdditionalQueryParameters"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.AdditionalQueryParameters.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.AdditionalQueryParameters.placeholder")
-                }
-                hint={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".google.AdditionalQueryParameters.hint")
-                }
-                required={ formFields?.AdditionalQueryParameters?.meta?.isMandatory }
-                value={ formFields?.AdditionalQueryParameters?.value }
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.AdditionalQueryParameters.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.AdditionalQueryParameters.placeholder"
+                )}
+                hint={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".google.AdditionalQueryParameters.hint"
+                )}
+                required={formFields?.AdditionalQueryParameters?.meta?.isMandatory}
+                value={formFields?.AdditionalQueryParameters?.value}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.AdditionalQueryParameters?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE
+                        ? false
+                        : formFields?.AdditionalQueryParameters?.meta?.readOnly)
                 }
                 maxLength={
                     IdentityProviderManagementConstants.GOOGLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
@@ -513,113 +511,104 @@ export const GoogleAuthenticatorForm: FunctionComponent<GoogleAuthenticatorFormP
                     IdentityProviderManagementConstants.GOOGLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
                         .ADDITIONAL_QUERY_PARAMS_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-additional-query-parameters` }
+                width={16}
+                data-testid={`${testId}-additional-query-parameters`}
             />
-            { isEnableGoogleOneTap()
-                ? (
-                    <Field.Checkbox
-                        ariaLabel="Enable Google One Tap as a sign in option"
-                        name={ IdentityProviderManagementConstants.GOOGLE_ONE_TAP_ENABLED }
-                        required={ false }
-                        toggle
-                        label={
-                            t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                               ".google.enableGoogleOneTap.label")
-                        }
-                        placeholder={
-                            t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                               ".google.enableGoogleOneTap.placeholder")
-                        }
-                        hint={
-                            t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                               ".google.enableGoogleOneTap.hint")
-                        }
-                        readOnly={ readOnly }
-                        data-testid={ `${ testId }-google-one-tap` }
-                    />
-                ) : null
-            }
-            {
-                (formFields?.AdditionalQueryParameters?.value
-                    && !isEmpty(extractScopes(formFields.AdditionalQueryParameters.value))) && (
+            {isEnableGoogleOneTap() ? (
+                <Field.Checkbox
+                    ariaLabel="Enable Google One Tap as a sign in option"
+                    name={IdentityProviderManagementConstants.GOOGLE_ONE_TAP_ENABLED}
+                    required={false}
+                    toggle
+                    label={t(
+                        "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            ".google.enableGoogleOneTap.label"
+                    )}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            ".google.enableGoogleOneTap.placeholder"
+                    )}
+                    hint={t(
+                        "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            ".google.enableGoogleOneTap.hint"
+                    )}
+                    readOnly={readOnly}
+                    data-testid={`${testId}-google-one-tap`}
+                />
+            ) : null}
+            {formFields?.AdditionalQueryParameters?.value &&
+                !isEmpty(extractScopes(formFields.AdditionalQueryParameters.value)) && (
                     <FormSection
-                        heading={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.google.scopes.heading")
-                        }
+                        heading={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.google.scopes.heading"
+                        )}
                     >
                         <div className="authenticator-dynamic-properties">
-                            {
-                                extractScopes(formFields.AdditionalQueryParameters.value)
-                                    .map((scope: string, index: number) => {
+                            {extractScopes(formFields.AdditionalQueryParameters.value).map(
+                                (scope: string, index: number) => {
+                                    const scopeMeta: ScopeMetaInterface = resolveScopeMetadata(scope);
 
-                                        const scopeMeta: ScopeMetaInterface = resolveScopeMetadata(scope);
-
-                                        return (
-                                            <div
-                                                key={ index }
-                                                className="authenticator-dynamic-property"
-                                                data-testid={ scope }
-                                            >
-                                                <div className="authenticator-dynamic-property-name-container">
-                                                    <GenericIcon
-                                                        square
-                                                        inline
-                                                        transparent
-                                                        icon={ <Icon name={ scopeMeta.icon }/> }
-                                                        size="micro"
-                                                        className="scope-icon"
-                                                        spaced="right"
-                                                        verticalAlign="top"
-                                                    />
-                                                    <div data-testid={ `${ scope }-name` }>
-                                                        { scopeMeta.displayName }
-                                                    </div>
-                                                </div>
-                                                <div
-                                                    className="authenticator-dynamic-property-description"
-                                                    data-testid={ `${ scope }-description` }
-                                                >
-                                                    { scopeMeta.description }
-                                                </div>
+                                    return (
+                                        <div key={index} className="authenticator-dynamic-property" data-testid={scope}>
+                                            <div className="authenticator-dynamic-property-name-container">
+                                                <GenericIcon
+                                                    square
+                                                    inline
+                                                    transparent
+                                                    icon={<Icon name={scopeMeta.icon} />}
+                                                    size="micro"
+                                                    className="scope-icon"
+                                                    spaced="right"
+                                                    verticalAlign="top"
+                                                />
+                                                <div data-testid={`${scope}-name`}>{scopeMeta.displayName}</div>
                                             </div>
-                                        );
-                                    })
-                            }
+                                            <div
+                                                className="authenticator-dynamic-property-description"
+                                                data-testid={`${scope}-description`}
+                                            >
+                                                {scopeMeta.description}
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                            )}
                         </div>
                         <Hint compact>
                             <Trans
                                 i18nKey={
-                                    "console:develop.features.authenticationProvider.forms" +
+                                    "idp:develop.features.authenticationProvider.forms" +
                                     ".authenticatorSettings.google.scopes.hint"
                                 }
                             >
-                                Scopes provide a way for connected apps to access data from Google.
-                                Click <a
+                                Scopes provide a way for connected apps to access data from Google. Click{" "}
+                                <a
                                     href={
                                         "https://developers.google.com/identity/protocols/oauth2/" +
                                         "openid-connect#scope-param"
                                     }
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                >here</a> to learn more.
+                                >
+                                    here
+                                </a>{" "}
+                                to learn more.
                             </Trans>
                         </Hint>
                     </FormSection>
-                )
-            }
+                )}
             <Field.Button
-                form={ FORM_ID }
+                form={FORM_ID}
                 size="small"
                 buttonType="primary_btn"
                 ariaLabel="Google authenticator update button"
                 name="update-button"
-                data-testid={ `${ testId }-submit-button` }
-                disabled={ isSubmitting }
-                loading={ isSubmitting }
-                label={ t("common:update") }
-                hidden={ readOnly }
+                data-testid={`${testId}-submit-button`}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                label={t("idp:update")}
+                hidden={readOnly}
             />
         </Form>
     );
@@ -632,4 +621,3 @@ GoogleAuthenticatorForm.defaultProps = {
     "data-testid": "google-authenticator-form",
     enableSubmitButton: true
 };
-

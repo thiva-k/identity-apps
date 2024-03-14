@@ -148,32 +148,30 @@ const FORM_ID: string = "email-otp-authenticator-form";
 export const EmailOTPAuthenticatorForm: FunctionComponent<EmailOTPAuthenticatorFormPropsInterface> = (
     props: EmailOTPAuthenticatorFormPropsInterface
 ): ReactElement => {
-
     const {
         metadata,
         initialValues: originalInitialValues,
         onSubmit,
         readOnly,
         isSubmitting,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
     const { isSubOrganization } = useGetCurrentOrganizationType();
 
     // This can be used when `meta` support is there.
-    const [ , setFormFields ] = useState<EmailOTPAuthenticatorFormFieldsInterface>(undefined);
-    const [ initialValues, setInitialValues ] = useState<EmailOTPAuthenticatorFormInitialValuesInterface>(undefined);
-    const [ isReadOnly ] = useState<boolean>(isSubOrganization() || readOnly);
+    const [, setFormFields] = useState<EmailOTPAuthenticatorFormFieldsInterface>(undefined);
+    const [initialValues, setInitialValues] = useState<EmailOTPAuthenticatorFormInitialValuesInterface>(undefined);
+    const [isReadOnly] = useState<boolean>(isSubOrganization() || readOnly);
 
     // SMS OTP length unit is set to digits or characters according to the state of this variable
-    const [ isOTPAlphanumeric, setIsOTPAlphanumeric ] = useState<boolean>();
+    const [isOTPAlphanumeric, setIsOTPAlphanumeric] = useState<boolean>();
 
     /**
      * Flattens and resolved form initial values and field metadata.
      */
     useEffect(() => {
-
         if (isEmpty(originalInitialValues?.properties)) {
             return;
         }
@@ -182,14 +180,17 @@ export const EmailOTPAuthenticatorForm: FunctionComponent<EmailOTPAuthenticatorF
         let resolvedInitialValues: EmailOTPAuthenticatorFormInitialValuesInterface = null;
 
         originalInitialValues.properties.map((value: CommonAuthenticatorFormPropertyInterface) => {
-            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties
-                .find((meta: CommonAuthenticatorFormFieldMetaInterface) => meta.key === value.key);
+            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties.find(
+                (meta: CommonAuthenticatorFormFieldMetaInterface) => meta.key === value.key
+            );
 
             const moderatedName: string = value.name.replace(/\./g, "_");
 
             // Converting expiry time from seconds to minutes
-            if (moderatedName === IdentityProviderManagementConstants
-                .AUTHENTICATOR_INIT_VALUES_EMAIL_OTP_EXPIRY_TIME_KEY) {
+            if (
+                moderatedName ===
+                IdentityProviderManagementConstants.AUTHENTICATOR_INIT_VALUES_EMAIL_OTP_EXPIRY_TIME_KEY
+            ) {
                 const expiryTimeInMinutes: number = Math.round(parseInt(value.value, 10) / 60);
 
                 resolvedInitialValues = {
@@ -208,17 +209,14 @@ export const EmailOTPAuthenticatorForm: FunctionComponent<EmailOTPAuthenticatorF
                     ...resolvedFormFields,
                     [moderatedName]: {
                         meta,
-                        value: ( value.value === "true" || value.value === "false" )
-                            ? JSON.parse(value.value)
-                            : value.value
+                        value: value.value === "true" || value.value === "false" ? JSON.parse(value.value) : value.value
                     }
                 };
 
                 resolvedInitialValues = {
                     ...resolvedInitialValues,
-                    [moderatedName]: ( value.value === "true" || value.value === "false" )
-                        ? JSON.parse(value.value)
-                        : value.value
+                    [moderatedName]:
+                        value.value === "true" || value.value === "false" ? JSON.parse(value.value) : value.value
                 };
             }
         });
@@ -226,7 +224,7 @@ export const EmailOTPAuthenticatorForm: FunctionComponent<EmailOTPAuthenticatorF
         setIsOTPAlphanumeric(resolvedInitialValues.EmailOTP_UseAlphanumericChars);
         setFormFields(resolvedFormFields);
         setInitialValues(resolvedInitialValues);
-    }, [ originalInitialValues ]);
+    }, [originalInitialValues]);
 
     /**
      * Prepare form values for submitting.
@@ -234,14 +232,13 @@ export const EmailOTPAuthenticatorForm: FunctionComponent<EmailOTPAuthenticatorF
      * @param values - Form values.
      * @returns Sanitized form values.
      */
-    const getUpdatedConfigurations = (values: EmailOTPAuthenticatorFormInitialValuesInterface)
-        : CommonAuthenticatorFormInitialValuesInterface => {
-
+    const getUpdatedConfigurations = (
+        values: EmailOTPAuthenticatorFormInitialValuesInterface
+    ): CommonAuthenticatorFormInitialValuesInterface => {
         const properties: CommonPluggableComponentPropertyInterface[] = [];
 
-        for (const [ name, value ] of Object.entries(values)) {
+        for (const [name, value] of Object.entries(values)) {
             if (name !== undefined) {
-
                 const moderatedName: string = name.replace(/_/g, ".");
 
                 if (name === IdentityProviderManagementConstants.AUTHENTICATOR_INIT_VALUES_EMAIL_OTP_EXPIRY_TIME_KEY) {
@@ -274,9 +271,9 @@ export const EmailOTPAuthenticatorForm: FunctionComponent<EmailOTPAuthenticatorF
      * @param values - Form Values.
      * @returns Form validation.
      */
-    const validateForm = (values: EmailOTPAuthenticatorFormInitialValuesInterface):
-        EmailOTPAuthenticatorFormErrorValidationsInterface => {
-
+    const validateForm = (
+        values: EmailOTPAuthenticatorFormInitialValuesInterface
+    ): EmailOTPAuthenticatorFormErrorValidationsInterface => {
         const errors: EmailOTPAuthenticatorFormErrorValidationsInterface = {
             EmailOTP_ExpiryTime: undefined,
             EmailOTP_OTPLength: undefined,
@@ -285,39 +282,58 @@ export const EmailOTPAuthenticatorForm: FunctionComponent<EmailOTPAuthenticatorF
 
         if (!values.EmailOTP_ExpiryTime) {
             // Check for required error.
-            errors.EmailOTP_ExpiryTime = t("console:develop.features.authenticationProvider.forms" +
-                ".authenticatorSettings.emailOTP.expiryTime.validations.required");
-        } else if (!FormValidation.isInteger(values.EmailOTP_ExpiryTime as unknown as number)) {
+            errors.EmailOTP_ExpiryTime = t(
+                "idp:develop.features.authenticationProvider.forms" +
+                    ".authenticatorSettings.emailOTP.expiryTime.validations.required"
+            );
+        } else if (!FormValidation.isInteger((values.EmailOTP_ExpiryTime as unknown) as number)) {
             // Check for invalid input.
-            errors.EmailOTP_ExpiryTime = t("console:develop.features.authenticationProvider.forms" +
-                ".authenticatorSettings.emailOTP.expiryTime.validations.invalid");
-        } else if (( values.EmailOTP_ExpiryTime < IdentityProviderManagementConstants
-            .EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_VALUE )
-            || ( values.EmailOTP_ExpiryTime > IdentityProviderManagementConstants
-                .EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_VALUE )) {
+            errors.EmailOTP_ExpiryTime = t(
+                "idp:develop.features.authenticationProvider.forms" +
+                    ".authenticatorSettings.emailOTP.expiryTime.validations.invalid"
+            );
+        } else if (
+            values.EmailOTP_ExpiryTime <
+                IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                    .EXPIRY_TIME_MIN_VALUE ||
+            values.EmailOTP_ExpiryTime >
+                IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                    .EXPIRY_TIME_MAX_VALUE
+        ) {
             // Check for invalid range.
-            errors.EmailOTP_ExpiryTime = t("console:develop.features.authenticationProvider.forms" +
-                ".authenticatorSettings.emailOTP.expiryTime.validations.range");
+            errors.EmailOTP_ExpiryTime = t(
+                "idp:develop.features.authenticationProvider.forms" +
+                    ".authenticatorSettings.emailOTP.expiryTime.validations.range"
+            );
         }
 
         if (!values.EmailOTP_OTPLength) {
             // Check for required error.
-            errors.EmailOTP_OTPLength = t("console:develop.features.authenticationProvider.forms" +
-                ".authenticatorSettings.emailOTP.tokenLength.validations.required");
-        } else if (!FormValidation.isInteger(values.EmailOTP_OTPLength as unknown as number)) {
+            errors.EmailOTP_OTPLength = t(
+                "idp:develop.features.authenticationProvider.forms" +
+                    ".authenticatorSettings.emailOTP.tokenLength.validations.required"
+            );
+        } else if (!FormValidation.isInteger((values.EmailOTP_OTPLength as unknown) as number)) {
             // Check for invalid input.
-            errors.EmailOTP_OTPLength = t("console:develop.features.authenticationProvider.forms" +
-                ".authenticatorSettings.emailOTP.tokenLength.validations.invalid");
-        } else if ((parseInt(values.EmailOTP_OTPLength, 10) < IdentityProviderManagementConstants
-            .EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.OTP_LENGTH_MIN_VALUE)
-            || (parseInt(values.EmailOTP_OTPLength, 10) > IdentityProviderManagementConstants
-                .EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.OTP_LENGTH_MAX_VALUE)) {
+            errors.EmailOTP_OTPLength = t(
+                "idp:develop.features.authenticationProvider.forms" +
+                    ".authenticatorSettings.emailOTP.tokenLength.validations.invalid"
+            );
+        } else if (
+            parseInt(values.EmailOTP_OTPLength, 10) <
+                IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                    .OTP_LENGTH_MIN_VALUE ||
+            parseInt(values.EmailOTP_OTPLength, 10) >
+                IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                    .OTP_LENGTH_MAX_VALUE
+        ) {
             // Check for invalid range.
             errors.EmailOTP_OTPLength = t(
-                "console:develop.features.authenticationProvider.forms" +
-                `.authenticatorSettings.emailOTP.tokenLength.validations.range.${
-                    isOTPAlphanumeric ? "characters" : "digits"
-                }`);
+                "idp:develop.features.authenticationProvider.forms" +
+                    `.authenticatorSettings.emailOTP.tokenLength.validations.range.${
+                        isOTPAlphanumeric ? "characters" : "digits"
+                    }`
+            );
         }
 
         return errors;
@@ -325,141 +341,143 @@ export const EmailOTPAuthenticatorForm: FunctionComponent<EmailOTPAuthenticatorF
 
     return (
         <Form
-            id={ FORM_ID }
-            uncontrolledForm={ false }
-            onSubmit={ (values: EmailOTPAuthenticatorFormInitialValuesInterface) => {
+            id={FORM_ID}
+            uncontrolledForm={false}
+            onSubmit={(values: EmailOTPAuthenticatorFormInitialValuesInterface) => {
                 onSubmit(getUpdatedConfigurations(values as EmailOTPAuthenticatorFormInitialValuesInterface));
-            } }
-            initialValues={ initialValues }
-            validate={ validateForm }
+            }}
+            initialValues={initialValues}
+            validate={validateForm}
         >
             <Field.Input
                 ariaLabel="Email OTP expiry time"
                 inputType="number"
                 name="EmailOTP_ExpiryTime"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".emailOTP.expiryTime.label")
-                }
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".emailOTP.expiryTime.label"
+                )}
                 labelPosition="right"
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".emailOTP.expiryTime.placeholder")
-                }
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".emailOTP.expiryTime.placeholder"
+                )}
                 hint={
-                    (<Trans
+                    <Trans
                         i18nKey={
-                            "console:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
                             ".emailOTP.expiryTime.hint"
                         }
                     >
                         Please pick a value between <Code>1 minute</Code> & <Code>1440 minutes (1 day)</Code>.
-                    </Trans>)
+                    </Trans>
                 }
-                required={ true }
-                readOnly={ isReadOnly }
+                required={true}
+                readOnly={isReadOnly}
                 min={
-                    IdentityProviderManagementConstants
-                        .EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_VALUE
+                    IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .EXPIRY_TIME_MIN_VALUE
                 }
                 maxLength={
-                    IdentityProviderManagementConstants
-                        .EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MAX_LENGTH
+                    IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .EXPIRY_TIME_MAX_LENGTH
                 }
                 minLength={
-                    IdentityProviderManagementConstants
-                        .EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.EXPIRY_TIME_MIN_LENGTH
+                    IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .EXPIRY_TIME_MIN_LENGTH
                 }
-                width={ 12 }
-                data-testid={ `${ testId }-email-otp-expiry-time` }
+                width={12}
+                data-testid={`${testId}-email-otp-expiry-time`}
             >
                 <input />
                 <Label>
-                    {
-                        t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                            ".emailOTP.expiryTime.unit")
-                    }
+                    {t(
+                        "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            ".emailOTP.expiryTime.unit"
+                    )}
                 </Label>
             </Field.Input>
             <Field.Checkbox
                 ariaLabel="Use alphanumeric characters for OTP"
                 name="EmailOTP_UseAlphanumericChars"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".emailOTP.useAlphanumericChars.label")
-                }
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".emailOTP.useAlphanumericChars.label"
+                )}
                 hint={
-                    (<Trans
+                    <Trans
                         i18nKey={
-                            "console:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
                             ".emailOTP.useAlphanumericChars.hint"
                         }
                     >
-                        Please check this checkbox to enable alphanumeric characters. Otherwise numeric{ " " }
-                        characters will be used.
-                    </Trans>)
+                        Please check this checkbox to enable alphanumeric characters. Otherwise numeric characters will
+                        be used.
+                    </Trans>
                 }
-                readOnly={ isReadOnly }
-                width={ 12 }
-                data-testid={ `${ testId }-otp-regex-use-numeric` }
-                listen={ (e:boolean) => {setIsOTPAlphanumeric(e);} }
+                readOnly={isReadOnly}
+                width={12}
+                data-testid={`${testId}-otp-regex-use-numeric`}
+                listen={(e: boolean) => {
+                    setIsOTPAlphanumeric(e);
+                }}
             />
             <Field.Input
                 ariaLabel="Email OTP length"
                 inputType="number"
                 name="EmailOTP_OTPLength"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".emailOTP.tokenLength.label")
-                }
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".emailOTP.tokenLength.label"
+                )}
                 labelPosition="right"
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".emailOTP.tokenLength.placeholder")
-                }
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".emailOTP.tokenLength.placeholder"
+                )}
                 hint={
-                    (<Trans
+                    <Trans
                         i18nKey={
-                            "console:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
                             ".emailOTP.tokenLength.hint"
                         }
                     >
                         The number of allowed characters in the OTP. Please pick a value between
                         <Code>4-10</Code>.
-                    </Trans>)
+                    </Trans>
                 }
-                required={ true }
-                readOnly={ isReadOnly }
+                required={true}
+                readOnly={isReadOnly}
                 maxLength={
-                    IdentityProviderManagementConstants
-                        .EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.OTP_LENGTH_MAX_LENGTH
+                    IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .OTP_LENGTH_MAX_LENGTH
                 }
                 minLength={
-                    IdentityProviderManagementConstants
-                        .EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.OTP_LENGTH_MIN_LENGTH
+                    IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .OTP_LENGTH_MIN_LENGTH
                 }
-                width={ 12 }
-                data-testid={ `${ testId }-email-otp-token-length` }
+                width={12}
+                data-testid={`${testId}-email-otp-token-length`}
             >
                 <input />
                 <Label>
-                    {
-                        t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                            `.emailOTP.tokenLength.unit.${isOTPAlphanumeric? "characters" : "digits"}`)
-                    }
+                    {t(
+                        "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            `.emailOTP.tokenLength.unit.${isOTPAlphanumeric ? "characters" : "digits"}`
+                    )}
                 </Label>
             </Field.Input>
             <Field.Button
-                form={ FORM_ID }
+                form={FORM_ID}
                 size="small"
                 buttonType="primary_btn"
                 ariaLabel="Email OTP authenticator update button"
                 name="update-button"
-                data-testid={ `${ testId }-submit-button` }
-                disabled={ isSubmitting }
-                loading={ isSubmitting }
-                label={ t("common:update") }
-                hidden={ isReadOnly }
+                data-testid={`${testId}-submit-button`}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                label={t("idp:update")}
+                hidden={isReadOnly}
             />
         </Form>
     );

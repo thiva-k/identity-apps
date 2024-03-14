@@ -28,10 +28,7 @@ import { useDispatch } from "react-redux";
 import { Dispatch } from "redux";
 import { Grid, SemanticShorthandItem, TabPaneProps } from "semantic-ui-react";
 import { AuthenticatorFormFactory } from "./forms/factories";
-import {
-    AuthenticatorExtensionsConfigInterface,
-    identityProviderConfig
-} from "../../../extensions";
+import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "../../../extensions";
 import { updateMultiFactorAuthenticatorDetails } from "../api";
 import { IdentityProviderManagementConstants } from "../constants";
 import { AuthenticatorInterface, AuthenticatorSettingsFormModes, MultiFactorAuthenticatorInterface } from "../models";
@@ -40,7 +37,6 @@ import { AuthenticatorInterface, AuthenticatorSettingsFormModes, MultiFactorAuth
  * Proptypes for the Multi-factor Authenticator edit component.
  */
 interface EditMultiFactorAuthenticatorPropsInterface extends TestableComponentInterface, LoadableComponentInterface {
-
     /**
      * Editing Multi-factor Authenticator.
      */
@@ -77,47 +73,38 @@ interface EditMultiFactorAuthenticatorPropsInterface extends TestableComponentIn
 export const EditMultiFactorAuthenticator: FunctionComponent<EditMultiFactorAuthenticatorPropsInterface> = (
     props: EditMultiFactorAuthenticatorPropsInterface
 ): ReactElement => {
-
-    const {
-        authenticator,
-        isLoading,
-        defaultActiveIndex,
-        onUpdate,
-        type,
-        isReadOnly,
-        [ "data-testid" ]: testId
-    } = props;
+    const { authenticator, isLoading, defaultActiveIndex, onUpdate, type, isReadOnly, ["data-testid"]: testId } = props;
 
     const dispatch: Dispatch = useDispatch();
 
     const { t } = useTranslation();
 
-    const [ tabPaneExtensions, setTabPaneExtensions ] = useState<ResourceTabPaneInterface[]>(undefined);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [tabPaneExtensions, setTabPaneExtensions] = useState<ResourceTabPaneInterface[]>(undefined);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
     /**
      * Check for tab extensions.
      */
     useEffect(() => {
-
         if (tabPaneExtensions || !authenticator) {
             return;
         }
 
-        const authenticatorConfig: AuthenticatorExtensionsConfigInterface = get(identityProviderConfig.authenticators,
-            authenticator.id);
+        const authenticatorConfig: AuthenticatorExtensionsConfigInterface = get(
+            identityProviderConfig.authenticators,
+            authenticator.id
+        );
 
         if (!authenticatorConfig?.content?.quickStart) {
             return;
         }
 
-        const extensions: ResourceTabPaneInterface[] = identityProviderConfig
-            .editIdentityProvider.getTabExtensions({
-                content: authenticatorConfig.content.quickStart
-            });
+        const extensions: ResourceTabPaneInterface[] = identityProviderConfig.editIdentityProvider.getTabExtensions({
+            content: authenticatorConfig.content.quickStart
+        });
 
         setTabPaneExtensions(extensions);
-    }, [ authenticator, tabPaneExtensions ]);
+    }, [authenticator, tabPaneExtensions]);
 
     /**
      * Handles authenticator configurations submit action.
@@ -130,53 +117,81 @@ export const EditMultiFactorAuthenticator: FunctionComponent<EditMultiFactorAuth
 
         updateMultiFactorAuthenticatorDetails(authenticator.id, values)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider" +
-                        ".notifications." + i18nKeyForMFAAuthenticator + ".success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider.notifications." +
-                        i18nKeyForMFAAuthenticator + ".success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider" +
+                                ".notifications." +
+                                i18nKeyForMFAAuthenticator +
+                                ".success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:develop.features.authenticationProvider.notifications." +
+                                i18nKeyForMFAAuthenticator +
+                                ".success.message"
+                        )
+                    })
+                );
 
                 onUpdate(authenticator.id);
             })
             .catch((error: IdentityAppsApiException) => {
                 if (error.response && error.response.data && error.response.data.description) {
-                    dispatch(addAlert({
-                        description: t("console:develop.features.authenticationProvider" +
-                            ".notifications." + i18nKeyForMFAAuthenticator + ".error.description",
-                        { description: error.response.data.description }),
-                        level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider" +
-                            ".notifications." + i18nKeyForMFAAuthenticator + ".error.message")
-                    }));
+                    dispatch(
+                        addAlert({
+                            description: t(
+                                "idp:develop.features.authenticationProvider" +
+                                    ".notifications." +
+                                    i18nKeyForMFAAuthenticator +
+                                    ".error.description",
+                                { description: error.response.data.description }
+                            ),
+                            level: AlertLevels.ERROR,
+                            message: t(
+                                "idp:develop.features.authenticationProvider" +
+                                    ".notifications." +
+                                    i18nKeyForMFAAuthenticator +
+                                    ".error.message"
+                            )
+                        })
+                    );
 
                     return;
                 }
 
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider.notifications." +
-                        i18nKeyForMFAAuthenticator + ".genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider.notifications." +
-                        i18nKeyForMFAAuthenticator + ".genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider.notifications." +
+                                i18nKeyForMFAAuthenticator +
+                                ".genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "idp:develop.features.authenticationProvider.notifications." +
+                                i18nKeyForMFAAuthenticator +
+                                ".genericError.message"
+                        )
+                    })
+                );
             })
             .finally(() => {
                 setIsSubmitting(false);
             });
     };
 
-    const getI18nKeyForMultiFactorAuthenticator =
-        (authenticator: MultiFactorAuthenticatorInterface | AuthenticatorInterface) => {
-            if (authenticator.id === IdentityProviderManagementConstants.SMS_OTP_AUTHENTICATOR_ID) {
-                return "updateSMSOTPAuthenticator";
-            } else if (authenticator.id === IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_ID) {
-                return "updateEmailOTPAuthenticator";
-            } else {
-                return "updateGenericAuthenticator";
-            }
-        };
+    const getI18nKeyForMultiFactorAuthenticator = (
+        authenticator: MultiFactorAuthenticatorInterface | AuthenticatorInterface
+    ) => {
+        if (authenticator.id === IdentityProviderManagementConstants.SMS_OTP_AUTHENTICATOR_ID) {
+            return "updateSMSOTPAuthenticator";
+        } else if (authenticator.id === IdentityProviderManagementConstants.EMAIL_OTP_AUTHENTICATOR_ID) {
+            return "updateEmailOTPAuthenticator";
+        } else {
+            return "updateGenericAuthenticator";
+        }
+    };
 
     const displayExternalResourcesButton = () => {
         if (authenticator.id === IdentityProviderManagementConstants.SMS_OTP_AUTHENTICATOR_ID) {
@@ -192,37 +207,32 @@ export const EditMultiFactorAuthenticator: FunctionComponent<EditMultiFactorAuth
      */
     const AuthenticatorSettingsTabPane = (): ReactElement => (
         <ResourceTab.Pane controlledSegmentation>
-            {
-                !isLoading
-                    ? (
-                        <div className="authentication-section">
-                            <Grid>
-                                <Grid.Row>
-                                    <Grid.Column width={ 16 }>
-                                        <EmphasizedSegment padded="very">
-                                            <AuthenticatorFormFactory
-                                                mode={ AuthenticatorSettingsFormModes.EDIT }
-                                                metadata={ null }
-                                                showCustomProperties={ false }
-                                                initialValues={ authenticator }
-                                                onSubmit={ handleAuthenticatorConfigFormSubmit }
-                                                type={ type }
-                                                data-testid={ `${ testId }-${ authenticator.name }-content` }
-                                                isReadOnly={ isReadOnly }
-                                                isSubmitting={ isSubmitting }
-                                            />
-                                        </EmphasizedSegment>
-                                        {
-                                            displayExternalResourcesButton() &&
-                                            authenticatorConfig.externalResourceButton
-                                        }
-                                    </Grid.Column>
-                                </Grid.Row>
-                            </Grid>
-                        </div>
-                    )
-                    : <ContentLoader />
-            }
+            {!isLoading ? (
+                <div className="authentication-section">
+                    <Grid>
+                        <Grid.Row>
+                            <Grid.Column width={16}>
+                                <EmphasizedSegment padded="very">
+                                    <AuthenticatorFormFactory
+                                        mode={AuthenticatorSettingsFormModes.EDIT}
+                                        metadata={null}
+                                        showCustomProperties={false}
+                                        initialValues={authenticator}
+                                        onSubmit={handleAuthenticatorConfigFormSubmit}
+                                        type={type}
+                                        data-testid={`${testId}-${authenticator.name}-content`}
+                                        isReadOnly={isReadOnly}
+                                        isSubmitting={isSubmitting}
+                                    />
+                                </EmphasizedSegment>
+                                {displayExternalResourcesButton() && authenticatorConfig.externalResourceButton}
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </div>
+            ) : (
+                <ContentLoader />
+            )}
         </ResourceTab.Pane>
     );
 
@@ -230,12 +240,11 @@ export const EditMultiFactorAuthenticator: FunctionComponent<EditMultiFactorAuth
      * Get Tab panes.
      * @returns Tab panes as an array
      */
-    const getPanes = (): ({
+    const getPanes = (): {
         pane?: SemanticShorthandItem<TabPaneProps>;
         menuItem?: any;
         render?: () => React.ReactNode;
-    })[] => {
-
+    }[] => {
         const panes: {
             pane?: SemanticShorthandItem<TabPaneProps>;
             menuItem?: any;
@@ -254,7 +263,7 @@ export const EditMultiFactorAuthenticator: FunctionComponent<EditMultiFactorAuth
             ].includes(authenticator.id)
         ) {
             panes.push({
-                menuItem: t("console:develop.features.authenticationProvider.edit.common.settings.tabName"),
+                menuItem: t("idp:develop.features.authenticationProvider.edit.common.settings.tabName"),
                 render: AuthenticatorSettingsTabPane
             });
         }
@@ -269,28 +278,25 @@ export const EditMultiFactorAuthenticator: FunctionComponent<EditMultiFactorAuth
      * @returns Active index as a number
      */
     const resolveDefaultActiveIndex = (activeIndex: number): number => {
-
-        if (![
-            IdentityProviderManagementConstants.TOTP_AUTHENTICATOR_ID,
-            IdentityProviderManagementConstants.MAGIC_LINK_AUTHENTICATOR_ID
-        ].includes(authenticator.id)) {
+        if (
+            ![
+                IdentityProviderManagementConstants.TOTP_AUTHENTICATOR_ID,
+                IdentityProviderManagementConstants.MAGIC_LINK_AUTHENTICATOR_ID
+            ].includes(authenticator.id)
+        ) {
             return activeIndex;
         }
 
         return 0;
     };
 
-    return (
-        authenticator
-            ? (
-                <ResourceTab
-                    data-testid={ `${ testId }-resource-tabs` }
-                    panes={ getPanes() }
-                    defaultActiveIndex={ resolveDefaultActiveIndex(defaultActiveIndex) }
-                />
-            )
-            : null
-    );
+    return authenticator ? (
+        <ResourceTab
+            data-testid={`${testId}-resource-tabs`}
+            panes={getPanes()}
+            defaultActiveIndex={resolveDefaultActiveIndex(defaultActiveIndex)}
+        />
+    ) : null;
 };
 
 /**

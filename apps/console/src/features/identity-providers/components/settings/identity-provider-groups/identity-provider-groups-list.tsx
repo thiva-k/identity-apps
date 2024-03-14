@@ -35,14 +35,13 @@ import {
     TableColumnInterface
 } from "@wso2is/react-components";
 import isEmpty from "lodash-es/isEmpty";
-import React, 
-{ 
+import React, {
     ChangeEvent,
-    FunctionComponent, 
-    ReactElement, 
-    ReactNode, 
-    SyntheticEvent, 
-    useEffect, 
+    FunctionComponent,
+    ReactElement,
+    ReactNode,
+    SyntheticEvent,
+    useEffect,
     useState
 } from "react";
 import { useTranslation } from "react-i18next";
@@ -57,8 +56,9 @@ import { IdentityProviderGroupInterface } from "../../../models";
 /**
  * Proptypes for the identity provider groups component.
  */
-interface IdentityProviderGroupsPropsInterface extends SBACInterface<FeatureConfigInterface>,
-    IdentifiableComponentInterface {
+interface IdentityProviderGroupsPropsInterface
+    extends SBACInterface<FeatureConfigInterface>,
+        IdentifiableComponentInterface {
     /**
      * Scopes allowed for the user.
      */
@@ -79,31 +79,30 @@ interface IdentityProviderGroupsPropsInterface extends SBACInterface<FeatureConf
 
 /**
  * Identity provider groups list component.
- * 
+ *
  * @param props - Props related to identity provider groups list component.
  */
-export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroupsPropsInterface> = ( 
+export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroupsPropsInterface> = (
     props: IdentityProviderGroupsPropsInterface
 ): ReactElement => {
-
     const {
         allowedScopes,
         featureConfig,
         readOnly,
         idpId,
         isGroupListLoading,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
     const dispatch: Dispatch = useDispatch();
 
-    const [ showWizard, setShowWizard ] = useState<boolean>(false);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
-    const [ isOpenDeleteConfirmationModal, setIsOpenDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ groupsList, setGroupsList ] = useState<IdentityProviderGroupInterface[]>([]);
-    const [ deleteGroup, setDeleteGroup ] = useState<IdentityProviderGroupInterface>(undefined);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
+    const [showWizard, setShowWizard] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+    const [isOpenDeleteConfirmationModal, setIsOpenDeleteConfirmationModal] = useState<boolean>(false);
+    const [groupsList, setGroupsList] = useState<IdentityProviderGroupInterface[]>([]);
+    const [deleteGroup, setDeleteGroup] = useState<IdentityProviderGroupInterface>(undefined);
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
     const {
         data: originalIdentityProviderGroups,
@@ -113,19 +112,21 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
     } = useIdentityProviderGroups(idpId);
 
     useEffect(() => {
-        if (originalIdentityProviderGroups instanceof IdentityAppsApiException
-                || identityProviderGroupsFetchRequestError) {
+        if (
+            originalIdentityProviderGroups instanceof IdentityAppsApiException ||
+            identityProviderGroupsFetchRequestError
+        ) {
             handleRetrieveError();
-            
+
             return;
         }
-        
+
         if (!originalIdentityProviderGroups) {
             return;
         }
-        
+
         setGroupsList(originalIdentityProviderGroups);
-    }, [ originalIdentityProviderGroups ]);
+    }, [originalIdentityProviderGroups]);
 
     useEffect(() => {
         if (searchQuery) {
@@ -133,7 +134,8 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
             const filteredGroups: IdentityProviderGroupInterface[] = originalIdentityProviderGroups?.filter(
                 (group: IdentityProviderGroupInterface) => {
                     return group.name.toLowerCase().includes(searchQuery.toLowerCase());
-                });
+                }
+            );
 
             setGroupsList(filteredGroups);
 
@@ -141,7 +143,7 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
         }
 
         setGroupsList(originalIdentityProviderGroups);
-    }, [ searchQuery ]);
+    }, [searchQuery]);
 
     /**
      * Displays the error banner when unable to fetch identity provider groups.
@@ -149,11 +151,14 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
     const handleRetrieveError = (): void => {
         dispatch(
             addAlert({
-                description: t("extensions:console.identityProviderGroups.groupsList.notifications.fetchGroups." +
-                    "genericError.description"),
+                description: t(
+                    "idp:console.identityProviderGroups.groupsList.notifications.fetchGroups." +
+                        "genericError.description"
+                ),
                 level: AlertLevels.ERROR,
-                message: t("extensions:console.identityProviderGroups.groupsList.notifications.fetchGroups." +
-                    "genericError.message")
+                message: t(
+                    "idp:console.identityProviderGroups.groupsList.notifications.fetchGroups." + "genericError.message"
+                )
             })
         );
     };
@@ -162,31 +167,43 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
      * Handles the delete group action.
      */
     const handleDeleteGroup = (): Promise<any> => {
-        const newIdpGroupList: IdentityProviderGroupInterface[] = [ 
+        const newIdpGroupList: IdentityProviderGroupInterface[] = [
             ...groupsList.filter((group: IdentityProviderGroupInterface) => group.id !== deleteGroup.id)
         ];
 
         return updateIdentityProviderGroup(idpId, newIdpGroupList)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("extensions:console.identityProviderGroups.groupsList.notifications.deleteGroup." +
-                        "success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("extensions:console.identityProviderGroups.groupsList.notifications.deleteGroup." +
-                        "success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:console.identityProviderGroups.groupsList.notifications.deleteGroup." +
+                                "success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:console.identityProviderGroups.groupsList.notifications.deleteGroup." +
+                                "success.message"
+                        )
+                    })
+                );
                 mutateIdentityProviderGroupsFetchRequest();
 
                 return Promise.resolve();
             })
             .catch(() => {
-                dispatch(addAlert({
-                    description: t("extensions:console.identityProviderGroups.groupsList.notifications.deleteGroup." +
-                        "genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: t("extensions:console.identityProviderGroups.groupsList.notifications.deleteGroup." +
-                        "genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:console.identityProviderGroups.groupsList.notifications.deleteGroup." +
+                                "genericError.description"
+                        ),
+                        level: AlertLevels.ERROR,
+                        message: t(
+                            "idp:console.identityProviderGroups.groupsList.notifications.deleteGroup." +
+                                "genericError.message"
+                        )
+                    })
+                );
 
                 return Promise.reject();
             });
@@ -200,23 +217,24 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
         if (searchQuery && groupsList?.length === 0) {
             return (
                 <EmptyPlaceholder
-                    data-testid={ `${ componentId }-search-empty-placeholder` }
-                    action={ (
+                    data-testid={`${componentId}-search-empty-placeholder`}
+                    action={
                         <LinkButton
-                            data-testid={ `${ componentId }-search-empty-placeholder-clear-button` }
-                            onClick={ () => setSearchQuery("") }
+                            data-testid={`${componentId}-search-empty-placeholder-clear-button`}
+                            onClick={() => setSearchQuery("")}
                         >
-                            { t("console:manage.features.roles.list.emptyPlaceholders.search.action") }
+                            {t("idp:manage.features.roles.list.emptyPlaceholders.search.action")}
                         </LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:manage.features.roles.list.emptyPlaceholders.search.title") }
-                    subtitle={ [
-                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.0",
-                            { searchQuery: searchQuery }),
-                        t("console:manage.features.roles.list.emptyPlaceholders.search.subtitles.1")
-                    ] }
+                    title={t("idp:manage.features.roles.list.emptyPlaceholders.search.title")}
+                    subtitle={[
+                        t("idp:manage.features.roles.list.emptyPlaceholders.search.subtitles.0", {
+                            searchQuery: searchQuery
+                        }),
+                        t("idp:manage.features.roles.list.emptyPlaceholders.search.subtitles.1")
+                    ]}
                 />
             );
         }
@@ -224,45 +242,40 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
         if (groupsList?.length === 0) {
             return (
                 <>
-                    <Show
-                        when={ AccessControlConstants.GROUP_WRITE }
-                    >          
+                    <Show when={AccessControlConstants.GROUP_WRITE}>
                         <EmptyPlaceholder
-                            data-testid={ `${ componentId }-empty-list-empty-placeholder` }
-                            action={ (
+                            data-testid={`${componentId}-empty-list-empty-placeholder`}
+                            action={
                                 <PrimaryButton
-                                    data-testid={ `${ componentId }-empty-list-empty-placeholder-add-button` }
-                                    onClick={ () => setShowWizard(true) }
+                                    data-testid={`${componentId}-empty-list-empty-placeholder-add-button`}
+                                    onClick={() => setShowWizard(true)}
                                 >
-                                    <Icon name="add"/>
-                                    { t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.action",
-                                        { type: "Group" }) }
+                                    <Icon name="add" />
+                                    {t("idp:manage.features.roles.list.emptyPlaceholders.emptyRoleList.action", {
+                                        type: "Group"
+                                    })}
                                 </PrimaryButton>
-                            ) }
-                            image={ getEmptyPlaceholderIllustrations().newList }
-                            imageSize="tiny"
-                            title={ t("extensions:console.applicationRoles.connectorGroups.placeholder.title") }
-                            subtitle={
-                                [
-                                    t("extensions:console.applicationRoles.connectorGroups.placeholder.subTitle.0"),
-                                    t("extensions:console.applicationRoles.connectorGroups.placeholder.subTitle.1")
-                                ]
                             }
+                            image={getEmptyPlaceholderIllustrations().newList}
+                            imageSize="tiny"
+                            title={t("idp:console.applicationRoles.connectorGroups.placeholder.title")}
+                            subtitle={[
+                                t("idp:console.applicationRoles.connectorGroups.placeholder.subTitle.0"),
+                                t("idp:console.applicationRoles.connectorGroups.placeholder.subTitle.1")
+                            ]}
                         />
                     </Show>
-                    <Show
-                        when={ [] }
-                        notWhen={ AccessControlConstants.GROUP_WRITE }
-                    >    
+                    <Show when={[]} notWhen={AccessControlConstants.GROUP_WRITE}>
                         <EmptyPlaceholder
-                            data-testid={ `${ componentId }-empty-list-empty-placeholder` }
-                            image={ getEmptyPlaceholderIllustrations().newList }
+                            data-testid={`${componentId}-empty-list-empty-placeholder`}
+                            image={getEmptyPlaceholderIllustrations().newList}
                             imageSize="tiny"
-                            title={ t("extensions:console.identityProviderGroups.groupsList.noGroupsAvailable") }
-                            subtitle={ [
-                                t("console:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0",
-                                    { type: "groups" })
-                            ] }
+                            title={t("idp:console.identityProviderGroups.groupsList.noGroupsAvailable")}
+                            subtitle={[
+                                t("idp:manage.features.roles.list.emptyPlaceholders.emptyRoleList.subtitles.0", {
+                                    type: "groups"
+                                })
+                            ]}
                         />
                     </Show>
                 </>
@@ -270,7 +283,7 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
         }
 
         return null;
-    }; 
+    };
 
     /**
      * Resolves data table actions.
@@ -278,21 +291,26 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
      * @returns - The table actions.
      */
     const resolveTableActions = (): TableActionsInterface[] => {
-
-        const actions: TableActionsInterface[] = [ {
-            hidden: (): boolean => {
-                return !hasRequiredScopes(
-                    featureConfig?.identityProviders,
-                    featureConfig?.identityProviders?.scopes?.update, allowedScopes) || readOnly;
-            },
-            icon: (): SemanticICONS => "trash alternate",
-            onClick: (e: SyntheticEvent, group: IdentityProviderGroupInterface): void => {
-                setDeleteGroup(group);
-                setIsOpenDeleteConfirmationModal(true);
-            },
-            popupText: (): string => I18n.instance.t("common:delete"),
-            renderer: "semantic-icon"
-        } ];
+        const actions: TableActionsInterface[] = [
+            {
+                hidden: (): boolean => {
+                    return (
+                        !hasRequiredScopes(
+                            featureConfig?.identityProviders,
+                            featureConfig?.identityProviders?.scopes?.update,
+                            allowedScopes
+                        ) || readOnly
+                    );
+                },
+                icon: (): SemanticICONS => "trash alternate",
+                onClick: (e: SyntheticEvent, group: IdentityProviderGroupInterface): void => {
+                    setDeleteGroup(group);
+                    setIsOpenDeleteConfirmationModal(true);
+                },
+                popupText: (): string => I18n.instance.t("idp:delete"),
+                renderer: "semantic-icon"
+            }
+        ];
 
         return actions;
     };
@@ -310,27 +328,20 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
                 id: "name",
                 key: "name",
                 render: (group: IdentityProviderGroupInterface): ReactNode => (
-                    <Header
-                        image
-                        as="h6"
-                        className="header-with-icon"
-                        data-testid={ `${ componentId }-item-heading` }
-                    >
+                    <Header image as="h6" className="header-with-icon" data-testid={`${componentId}-item-heading`}>
                         <AppAvatar
-                            image={ (
+                            image={
                                 <AnimatedAvatar
-                                    name={ group.name }
+                                    name={group.name}
                                     size="mini"
-                                    data-testid={ `${ componentId }-item-image-inner` }
+                                    data-testid={`${componentId}-item-image-inner`}
                                 />
-                            ) }
+                            }
                             size="mini"
                             spaced="right"
-                            data-testid={ `${ componentId }-item-image` }
+                            data-testid={`${componentId}-item-image`}
                         />
-                        <Header.Content>
-                            { group.name }
-                        </Header.Content>
+                        <Header.Content>{group.name}</Header.Content>
                     </Header>
                 ),
                 title: null
@@ -349,111 +360,108 @@ export const IdentityProviderGroupsList: FunctionComponent<IdentityProviderGroup
     return (
         <>
             <ListLayout
-                showTopActionPanel={ !isGroupListLoading && !isIdentityProviderGroupsFetchRequestLoading
-                    && (!isEmpty(searchQuery) || groupsList?.length !== 0) }
-                listItemLimit={ UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT }
-                showPagination={ false }
-                onPageChange={ () => null }
-                totalPages={ Math.ceil(groupsList?.length / UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT) }
-                data-componentId={ `${ componentId }-list-layout` }
-                leftActionPanel={ (
+                showTopActionPanel={
+                    !isGroupListLoading &&
+                    !isIdentityProviderGroupsFetchRequestLoading &&
+                    (!isEmpty(searchQuery) || groupsList?.length !== 0)
+                }
+                listItemLimit={UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT}
+                showPagination={false}
+                onPageChange={() => null}
+                totalPages={Math.ceil(groupsList?.length / UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT)}
+                data-componentId={`${componentId}-list-layout`}
+                leftActionPanel={
                     <div className="advanced-search-wrapper aligned-left fill-default p-1 pl-3 pr-3">
                         <Input
                             className="with-add-on mt-3"
-                            data-componentId={ `${ componentId }-list-search-input` }
+                            data-componentId={`${componentId}-list-search-input`}
                             icon="search"
                             iconPosition="left"
-                            onChange={ (e: ChangeEvent<HTMLInputElement>)  => setSearchQuery(e.target.value) }
-                            placeholder={ t("extensions:console.identityProviderGroups.groupsList.searchByName") }
-                            value={ searchQuery }
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                            placeholder={t("idp:console.identityProviderGroups.groupsList.searchByName")}
+                            value={searchQuery}
                             floated="right"
                             size="small"
                             transparent
                         />
                         {
-                            (<Show when={ AccessControlConstants.GROUP_WRITE }>
+                            <Show when={AccessControlConstants.GROUP_WRITE}>
                                 <PrimaryButton
                                     data-testid="user-mgt-roles-list-update-button"
                                     size="medium"
-                                    icon={ <Icon name="add" /> }
+                                    icon={<Icon name="add" />}
                                     floated="right"
-                                    onClick={ () => setShowWizard(true) }
+                                    onClick={() => setShowWizard(true)}
                                 >
                                     <Icon name="add" />
-                                    { t("extensions:console.identityProviderGroups.groupsList.newGroup") }
+                                    {t("idp:console.identityProviderGroups.groupsList.newGroup")}
                                 </PrimaryButton>
-                            </Show>)
+                            </Show>
                         }
                     </div>
-                ) }
+                }
             >
                 <DataTable<IdentityProviderGroupInterface[]>
                     className="idp-groups-table"
-                    isLoading={ isGroupListLoading || isIdentityProviderGroupsFetchRequestLoading }
-                    loadingStateOptions={ {
+                    isLoading={isGroupListLoading || isIdentityProviderGroupsFetchRequestLoading}
+                    loadingStateOptions={{
                         count: 1,
                         imageType: "square"
-                    } }
-                    actions={ resolveTableActions() }
-                    columns={ resolveTableColumns() }
-                    data={ groupsList }
-                    onRowClick={ () => null }
-                    placeholders={ showPlaceholders() }
-                    transparent={ null }
-                    showHeader={ false }
-                    data-testid={ componentId }
+                    }}
+                    actions={resolveTableActions()}
+                    columns={resolveTableColumns()}
+                    data={groupsList}
+                    onRowClick={() => null}
+                    placeholders={showPlaceholders()}
+                    transparent={null}
+                    showHeader={false}
+                    data-testid={componentId}
                 />
             </ListLayout>
             <ConfirmationModal
-                primaryActionLoading={ isSubmitting }
-                data-componentid={ `${ componentId }-delete-confirmation-modal` }
-                onClose={ (): void => setIsOpenDeleteConfirmationModal(false) }
+                primaryActionLoading={isSubmitting}
+                data-componentid={`${componentId}-delete-confirmation-modal`}
+                onClose={(): void => setIsOpenDeleteConfirmationModal(false)}
                 type="negative"
-                open={ isOpenDeleteConfirmationModal }
-                assertionHint={ t("extensions:develop.emailProviders.confirmationModal" +
-                    ".assertionHint") }
+                open={isOpenDeleteConfirmationModal}
+                assertionHint={t("idp:develop.emailProviders.confirmationModal" + ".assertionHint")}
                 assertionType="checkbox"
-                primaryAction={ t("common:confirm") }
-                secondaryAction={ t("common:cancel") }
-                onSecondaryActionClick={ (): void => setIsOpenDeleteConfirmationModal(false) }
-                onPrimaryActionClick={ (): void => {
+                primaryAction={t("idp:confirm")}
+                secondaryAction={t("idp:cancel")}
+                onSecondaryActionClick={(): void => setIsOpenDeleteConfirmationModal(false)}
+                onPrimaryActionClick={(): void => {
                     setIsSubmitting(true);
                     handleDeleteGroup().finally(() => {
                         setIsSubmitting(false);
                         setIsOpenDeleteConfirmationModal(false);
                     });
-                } }
-                closeOnDimmerClick={ false }
+                }}
+                closeOnDimmerClick={false}
             >
-                <ConfirmationModal.Header
-                    data-componentid={ `${ componentId }-delete-confirmation-modal-header` }
-                >
-                    { t("extensions:develop.emailProviders.confirmationModal.header") }
+                <ConfirmationModal.Header data-componentid={`${componentId}-delete-confirmation-modal-header`}>
+                    {t("idp:develop.emailProviders.confirmationModal.header")}
                 </ConfirmationModal.Header>
                 <ConfirmationModal.Message
-                    data-componentid={ 
-                        `${ componentId }-delete-confirmation-modal-message`
-                    }
+                    data-componentid={`${componentId}-delete-confirmation-modal-message`}
                     attached
                     negative
                 >
-                    { t("extensions:console.identityProviderGroups.groupsList.confirmation.deleteGroup.message") }
+                    {t("idp:console.identityProviderGroups.groupsList.confirmation.deleteGroup.message")}
                 </ConfirmationModal.Message>
                 <ConfirmationModal.Content>
-                    { t("extensions:console.identityProviderGroups.groupsList.confirmation.deleteGroup.content", 
-                        { groupName: deleteGroup?.name }) }
+                    {t("idp:console.identityProviderGroups.groupsList.confirmation.deleteGroup.content", {
+                        groupName: deleteGroup?.name
+                    })}
                 </ConfirmationModal.Content>
             </ConfirmationModal>
-            {
-                showWizard && (
-                    <CreateIdPGroupWizard
-                        idpId={ idpId }
-                        groupsList={ groupsList }
-                        closeWizard={ () => setShowWizard(false) }
-                        updateList={ () => mutateIdentityProviderGroupsFetchRequest() }
-                    />
-                )
-            }
+            {showWizard && (
+                <CreateIdPGroupWizard
+                    idpId={idpId}
+                    groupsList={groupsList}
+                    closeWizard={() => setShowWizard(false)}
+                    updateList={() => mutateIdentityProviderGroupsFetchRequest()}
+                />
+            )}
         </>
     );
 };

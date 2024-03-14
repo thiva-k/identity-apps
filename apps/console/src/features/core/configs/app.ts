@@ -60,7 +60,7 @@ export class Config {
      * the class.
      *
      */
-    private constructor() { }
+    private constructor() {}
 
     /**
      * This method adds organization path to the server host if an organization is selected.
@@ -71,21 +71,24 @@ export class Config {
      */
     public static resolveServerHost(enforceOrgPath?: boolean, skipAuthzRuntimePath?: boolean): string {
         if (isLegacyAuthzRuntime()) {
-            if ((OrganizationUtils.isSuperOrganization(store.getState().organization.organization)
-                || store.getState().organization.isFirstLevelOrganization) && !enforceOrgPath) {
-                return window[ "AppUtils" ]?.getConfig()?.serverOriginWithTenant;
+            if (
+                (OrganizationUtils.isSuperOrganization(store.getState().organization.organization) ||
+                    store.getState().organization.isFirstLevelOrganization) &&
+                !enforceOrgPath
+            ) {
+                return window["AppUtils"]?.getConfig()?.serverOriginWithTenant;
             } else {
-                return `${
-                    window[ "AppUtils" ]?.getConfig()?.serverOrigin }/o/${ store.getState().organization.organization.id
+                return `${window["AppUtils"]?.getConfig()?.serverOrigin}/o/${
+                    store.getState().organization.organization.id
                 }`;
             }
         }
 
         if (skipAuthzRuntimePath) {
-            return window[ "AppUtils" ]?.getConfig()?.serverOriginWithTenant?.replace("/o", "");
+            return window["AppUtils"]?.getConfig()?.serverOriginWithTenant?.replace("/o", "");
         }
 
-        return window[ "AppUtils" ]?.getConfig()?.serverOriginWithTenant;
+        return window["AppUtils"]?.getConfig()?.serverOriginWithTenant;
     }
 
     /**
@@ -96,12 +99,15 @@ export class Config {
      * @returns Server host.
      */
     public static resolveServerHostforFG(enforceOrgPath?: boolean): string {
-        if ((OrganizationUtils.isSuperOrganization(store.getState().organization.organization)
-            || store.getState().organization.isFirstLevelOrganization) && !enforceOrgPath) {
-            return window[ "AppUtils" ]?.getConfig()?.serverOriginWithTenant;
+        if (
+            (OrganizationUtils.isSuperOrganization(store.getState().organization.organization) ||
+                store.getState().organization.isFirstLevelOrganization) &&
+            !enforceOrgPath
+        ) {
+            return window["AppUtils"]?.getConfig()?.serverOriginWithTenant;
         } else {
-            return `${
-                window[ "AppUtils" ]?.getConfig()?.serverOrigin }/t/${ store.getState().organization.organization.id
+            return `${window["AppUtils"]?.getConfig()?.serverOrigin}/t/${
+                store.getState().organization.organization.id
             }`;
         }
     }
@@ -113,48 +119,53 @@ export class Config {
      */
     public static getDeploymentConfig(): DeploymentConfigInterface {
         return {
-            accountApp: window[ "AppUtils" ]?.getConfig()?.accountApp,
-            adminApp: window[ "AppUtils" ]?.getConfig()?.adminApp,
-            allowMultipleAppProtocols: window[ "AppUtils" ]?.getConfig()?.allowMultipleAppProtocols,
-            appBaseName: window[ "AppUtils" ]?.getConfig()?.appBaseWithTenant,
-            appBaseNameWithoutTenant: window[ "AppUtils" ]?.getConfig()?.appBase,
-            appHomePath: window[ "AppUtils" ]?.getConfig()?.routes?.home,
-            appLoginPath: window[ "AppUtils" ]?.getConfig()?.routes?.login,
-            appLogoutPath: window[ "AppUtils" ]?.getConfig()?.routes?.logout,
-            clientHost: window[ "AppUtils" ]?.getConfig()?.clientOriginWithTenant,
-            clientID: window[ "AppUtils" ]?.getConfig()?.clientID,
-            clientOrigin: window[ "AppUtils" ]?.getConfig()?.clientOrigin,
-            customServerHost: window[ "AppUtils" ]?.getConfig()?.customServerHost,
-            developerApp: window[ "AppUtils" ]?.getConfig()?.developerApp,
-            docSiteURL: window[ "AppUtils" ]?.getConfig()?.docSiteUrl,
+            accountApp: window["AppUtils"]?.getConfig()?.accountApp,
+            adminApp: window["AppUtils"]?.getConfig()?.adminApp,
+            allowMultipleAppProtocols: window["AppUtils"]?.getConfig()?.allowMultipleAppProtocols,
+            appBaseName: window["AppUtils"]?.getConfig()?.appBaseWithTenant,
+            appBaseNameWithoutTenant: window["AppUtils"]?.getConfig()?.appBase,
+            appHomePath: window["AppUtils"]?.getConfig()?.routes?.home,
+            appLoginPath: window["AppUtils"]?.getConfig()?.routes?.login,
+            appLogoutPath: window["AppUtils"]?.getConfig()?.routes?.logout,
+            clientHost: window["AppUtils"]?.getConfig()?.clientOriginWithTenant,
+            clientID: window["AppUtils"]?.getConfig()?.clientID,
+            clientOrigin: window["AppUtils"]?.getConfig()?.clientOrigin,
+            customServerHost: window["AppUtils"]?.getConfig()?.customServerHost,
+            developerApp: window["AppUtils"]?.getConfig()?.developerApp,
+            docSiteURL: window["AppUtils"]?.getConfig()?.docSiteUrl,
             documentation: {
-                baseURL: window[ "AppUtils" ]?.getConfig()?.documentation?.baseURL
-                    ?? DocumentationConstants.GITHUB_API_BASE_URL,
-                contentBaseURL: window[ "AppUtils" ]?.getConfig()?.documentation?.contentBaseURL
-                    ?? DocumentationConstants.DEFAULT_CONTENT_BASE_URL,
+                baseURL:
+                    window["AppUtils"]?.getConfig()?.documentation?.baseURL ??
+                    DocumentationConstants.GITHUB_API_BASE_URL,
+                contentBaseURL:
+                    window["AppUtils"]?.getConfig()?.documentation?.contentBaseURL ??
+                    DocumentationConstants.DEFAULT_CONTENT_BASE_URL,
                 githubOptions: {
-                    branch: window[ "AppUtils" ]?.getConfig()?.documentation?.githubOptions?.branch
-                        ?? DocumentationConstants.DEFAULT_BRANCH
+                    branch:
+                        window["AppUtils"]?.getConfig()?.documentation?.githubOptions?.branch ??
+                        DocumentationConstants.DEFAULT_BRANCH
                 },
-                imagePrefixURL: window[ "AppUtils" ]?.getConfig()?.documentation?.imagePrefixURL
-                    ?? DocumentationConstants.DEFAULT_IMAGE_PREFIX_URL,
-                provider: window[ "AppUtils" ]?.getConfig()?.documentation?.provider
-                    ?? DocumentationProviders.GITHUB,
-                structureFileType: window[ "AppUtils" ]?.getConfig()?.documentation?.structureFileType
-                    ?? DocumentationStructureFileTypes.YAML,
-                structureFileURL: window[ "AppUtils" ]?.getConfig()?.documentation?.structureFileURL
-                    ?? DocumentationConstants.DEFAULT_STRUCTURE_FILE_URL
+                imagePrefixURL:
+                    window["AppUtils"]?.getConfig()?.documentation?.imagePrefixURL ??
+                    DocumentationConstants.DEFAULT_IMAGE_PREFIX_URL,
+                provider: window["AppUtils"]?.getConfig()?.documentation?.provider ?? DocumentationProviders.GITHUB,
+                structureFileType:
+                    window["AppUtils"]?.getConfig()?.documentation?.structureFileType ??
+                    DocumentationStructureFileTypes.YAML,
+                structureFileURL:
+                    window["AppUtils"]?.getConfig()?.documentation?.structureFileURL ??
+                    DocumentationConstants.DEFAULT_STRUCTURE_FILE_URL
             },
-            extensions: window[ "AppUtils" ]?.getConfig()?.extensions,
-            idpConfigs: window[ "AppUtils" ]?.getConfig()?.idpConfigs,
-            loginCallbackUrl: window[ "AppUtils" ]?.getConfig()?.loginCallbackURL,
+            extensions: window["AppUtils"]?.getConfig()?.extensions,
+            idpConfigs: window["AppUtils"]?.getConfig()?.idpConfigs,
+            loginCallbackUrl: window["AppUtils"]?.getConfig()?.loginCallbackURL,
             organizationPrefix: window["AppUtils"]?.getConfig()?.organizationPrefix,
-            serverHost: window[ "AppUtils" ]?.getConfig()?.serverOriginWithTenant,
-            serverOrigin: window[ "AppUtils" ]?.getConfig()?.serverOrigin,
-            superTenant: window[ "AppUtils" ]?.getConfig()?.superTenant,
-            tenant: window[ "AppUtils" ]?.getConfig()?.tenant,
-            tenantPath: window[ "AppUtils" ]?.getConfig()?.tenantPath,
-            tenantPrefix: window[ "AppUtils" ]?.getConfig()?.tenantPrefix
+            serverHost: window["AppUtils"]?.getConfig()?.serverOriginWithTenant,
+            serverOrigin: window["AppUtils"]?.getConfig()?.serverOrigin,
+            superTenant: window["AppUtils"]?.getConfig()?.superTenant,
+            tenant: window["AppUtils"]?.getConfig()?.tenant,
+            tenantPath: window["AppUtils"]?.getConfig()?.tenantPath,
+            tenantPrefix: window["AppUtils"]?.getConfig()?.tenantPrefix
         };
     }
 
@@ -173,19 +184,20 @@ export class Config {
     public static generateModuleInitOptions(metaFile: MetaI18N): I18nModuleInitOptions {
         return {
             backend: {
-                loadPath: (language: string[], namespace: string[]) => generateBackendPaths(
-                    language,
-                    namespace,
-                    window[ "AppUtils" ]?.getConfig()?.appBase,
-                    Config.getI18nConfig() ?? {
-                        langAutoDetectEnabled: I18nConstants.LANG_AUTO_DETECT_ENABLED,
-                        namespaceDirectories: I18nConstants.BUNDLE_NAMESPACE_DIRECTORIES,
-                        overrideOptions: I18nConstants.INIT_OPTIONS_OVERRIDE,
-                        resourcePath: "/resources/i18n",
-                        xhrBackendPluginEnabled: I18nConstants.XHR_BACKEND_PLUGIN_ENABLED
-                    },
-                    metaFile
-                )
+                loadPath: (language: string[], namespace: string[]) =>
+                    generateBackendPaths(
+                        language,
+                        namespace,
+                        window["AppUtils"]?.getConfig()?.appBase,
+                        Config.getI18nConfig() ?? {
+                            langAutoDetectEnabled: I18nConstants.LANG_AUTO_DETECT_ENABLED,
+                            namespaceDirectories: I18nConstants.BUNDLE_NAMESPACE_DIRECTORIES,
+                            overrideOptions: I18nConstants.INIT_OPTIONS_OVERRIDE,
+                            resourcePath: "/resources/i18n",
+                            xhrBackendPluginEnabled: I18nConstants.XHR_BACKEND_PLUGIN_ENABLED
+                        },
+                        metaFile
+                    )
             },
             load: "currentOnly", // lookup only current lang key(en-US). Prevents 404 from `en`.
             ns: [
@@ -194,9 +206,9 @@ export class Config {
                 I18nConstants.EXTENSIONS_NAMESPACE,
                 "connections",
                 "groups",
-                "organizations"
-            ],
-            preload: [ "si-LK", "fr-FR" ]
+                "organizations",
+                "idp"
+            ]
         };
     }
 
@@ -209,8 +221,9 @@ export class Config {
     public static getI18nConfig(metaFile?: MetaI18N): I18nModuleOptionsInterface {
         return {
             initOptions: this.generateModuleInitOptions(metaFile),
-            langAutoDetectEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.i18nConfigs?.langAutoDetectEnabled
-                ?? I18nConstants.LANG_AUTO_DETECT_ENABLED,
+            langAutoDetectEnabled:
+                window["AppUtils"]?.getConfig()?.ui?.i18nConfigs?.langAutoDetectEnabled ??
+                I18nConstants.LANG_AUTO_DETECT_ENABLED,
             namespaceDirectories: I18nConstants.BUNDLE_NAMESPACE_DIRECTORIES,
             overrideOptions: I18nConstants.INIT_OPTIONS_OVERRIDE,
             resourcePath: "/resources/i18n",
@@ -251,11 +264,11 @@ export class Config {
             ...getFeatureGateResourceEndpoints(this.resolveServerHostforFG(false)),
             ...getInsightsResourceEndpoints(this.getDeploymentConfig()?.serverHost),
             ...getConsoleSettingsResourceEndpoints(this.getDeploymentConfig()?.serverHost),
-            CORSOrigins: `${ this.getDeploymentConfig()?.serverHost }/api/server/v1/cors/origins`,
+            CORSOrigins: `${this.getDeploymentConfig()?.serverHost}/api/server/v1/cors/origins`,
             // TODO: Remove this endpoint and use ID token to get the details
-            me: `${ this.getDeploymentConfig()?.serverHost }/scim2/Me`,
-            saml2Meta: `${ this.resolveServerHost(false, true) }/identity/metadata/saml2`,
-            wellKnown: `${ this.resolveServerHost(false, true) }/oauth2/token/.well-known/openid-configuration`
+            me: `${this.getDeploymentConfig()?.serverHost}/scim2/Me`,
+            saml2Meta: `${this.resolveServerHost(false, true)}/identity/metadata/saml2`,
+            wellKnown: `${this.resolveServerHost(false, true)}/oauth2/token/.well-known/openid-configuration`
         };
     }
 
@@ -266,64 +279,64 @@ export class Config {
      */
     public static getUIConfig(): UIConfigInterface {
         return {
-            administratorRoleDisplayName: window[ "AppUtils" ]?.getConfig()?.ui?.administratorRoleDisplayName ??
+            administratorRoleDisplayName:
+                window["AppUtils"]?.getConfig()?.ui?.administratorRoleDisplayName ??
                 UIConstants.ADMINISTRATOR_ROLE_DISPLAY_NAME,
-            announcements: window[ "AppUtils" ]?.getConfig()?.ui?.announcements,
-            appCopyright: window[ "AppUtils" ]?.getConfig()?.ui?.appCopyright
-                .replace("${copyright}", "\u00A9")
+            announcements: window["AppUtils"]?.getConfig()?.ui?.announcements,
+            appCopyright: window["AppUtils"]
+                ?.getConfig()
+                ?.ui?.appCopyright.replace("${copyright}", "\u00A9")
                 .replace("${year}", new Date().getFullYear()),
-            appName: window[ "AppUtils" ]?.getConfig()?.ui?.appName,
-            appTitle: window[ "AppUtils" ]?.getConfig()?.ui?.appTitle,
-            applicationTemplateLoadingStrategy:
-                window[ "AppUtils" ]?.getConfig()?.ui?.applicationTemplateLoadingStrategy,
-            connectionResourcesUrl: window[ "AppUtils" ]?.getConfig()?.ui?.connectionResourcesUrl,
-            cookiePolicyUrl: window[ "AppUtils" ]?.getConfig()?.ui?.cookiePolicyUrl,
+            appName: window["AppUtils"]?.getConfig()?.ui?.appName,
+            appTitle: window["AppUtils"]?.getConfig()?.ui?.appTitle,
+            applicationTemplateLoadingStrategy: window["AppUtils"]?.getConfig()?.ui?.applicationTemplateLoadingStrategy,
+            connectionResourcesUrl: window["AppUtils"]?.getConfig()?.ui?.connectionResourcesUrl,
+            cookiePolicyUrl: window["AppUtils"]?.getConfig()?.ui?.cookiePolicyUrl,
             emailTemplates: {
-                defaultLogoUrl: window[ "AppUtils" ]?.getConfig()?.ui?.emailTemplates?.defaultLogoUrl,
-                defaultWhiteLogoUrl: window[ "AppUtils" ]?.getConfig()?.ui?.emailTemplates?.defaultWhiteLogoUrl
+                defaultLogoUrl: window["AppUtils"]?.getConfig()?.ui?.emailTemplates?.defaultLogoUrl,
+                defaultWhiteLogoUrl: window["AppUtils"]?.getConfig()?.ui?.emailTemplates?.defaultWhiteLogoUrl
             },
-            enableCustomEmailTemplates: window[ "AppUtils" ]?.getConfig()?.ui?.enableCustomEmailTemplates,
-            enableEmailDomain: window[ "AppUtils" ]?.getConfig()?.ui?.enableEmailDomain ?? false,
-            enableIdentityClaims: window[ "AppUtils" ]?.getConfig()?.ui?.enableIdentityClaims ?? true,
-            features: window[ "AppUtils" ]?.getConfig()?.ui?.features,
+            enableCustomEmailTemplates: window["AppUtils"]?.getConfig()?.ui?.enableCustomEmailTemplates,
+            enableEmailDomain: window["AppUtils"]?.getConfig()?.ui?.enableEmailDomain ?? false,
+            enableIdentityClaims: window["AppUtils"]?.getConfig()?.ui?.enableIdentityClaims ?? true,
+            features: window["AppUtils"]?.getConfig()?.ui?.features,
             googleOneTapEnabledTenants: window["AppUtils"]?.getConfig()?.ui?.googleOneTapEnabledTenants,
             governanceConnectors: window["AppUtils"]?.getConfig()?.ui?.governanceConnectors,
-            gravatarConfig: window[ "AppUtils" ]?.getConfig()?.ui?.gravatarConfig,
-            hiddenAuthenticators: window[ "AppUtils" ]?.getConfig()?.ui?.hiddenAuthenticators,
-            hiddenConnectionTemplates: window[ "AppUtils" ]?.getConfig()?.ui?.hiddenConnectionTemplates,
-            hiddenUserStores: window[ "AppUtils" ]?.getConfig()?.ui?.hiddenUserStores,
-            i18nConfigs: window[ "AppUtils" ]?.getConfig()?.ui?.i18nConfigs,
-            identityProviderTemplateLoadingStrategy:
-                window[ "AppUtils" ]?.getConfig()?.ui?.identityProviderTemplateLoadingStrategy,
-            identityProviderTemplates: window[ "AppUtils" ]?.getConfig()?.ui?.identityProviderTemplates,
-            isClientSecretHashEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isClientSecretHashEnabled,
-            isCookieConsentBannerEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isCookieConsentBannerEnabled,
-            isCustomClaimMappingEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isCustomClaimMappingEnabled,
-            isCustomClaimMappingMergeEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isCustomClaimMappingMergeEnabled,
-            isDefaultDialectEditingEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isDefaultDialectEditingEnabled,
-            isDialectAddingEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isDialectAddingEnabled,
-            isFeatureGateEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isFeatureGateEnabled,
-            isGroupAndRoleSeparationEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isGroupAndRoleSeparationEnabled,
-            isHeaderAvatarLabelAllowed: window[ "AppUtils" ]?.getConfig()?.ui?.isHeaderAvatarLabelAllowed,
-            isLeftNavigationCategorized: window[ "AppUtils" ]?.getConfig()?.ui?.isLeftNavigationCategorized,
-            isMarketingConsentBannerEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isMarketingConsentBannerEnabled,
+            gravatarConfig: window["AppUtils"]?.getConfig()?.ui?.gravatarConfig,
+            hiddenAuthenticators: window["AppUtils"]?.getConfig()?.ui?.hiddenAuthenticators,
+            hiddenConnectionTemplates: window["AppUtils"]?.getConfig()?.ui?.hiddenConnectionTemplates,
+            hiddenUserStores: window["AppUtils"]?.getConfig()?.ui?.hiddenUserStores,
+            i18nConfigs: window["AppUtils"]?.getConfig()?.ui?.i18nConfigs,
+            identityProviderTemplateLoadingStrategy: window["AppUtils"]?.getConfig()?.ui
+                ?.identityProviderTemplateLoadingStrategy,
+            identityProviderTemplates: window["AppUtils"]?.getConfig()?.ui?.identityProviderTemplates,
+            isClientSecretHashEnabled: window["AppUtils"]?.getConfig()?.ui?.isClientSecretHashEnabled,
+            isCookieConsentBannerEnabled: window["AppUtils"]?.getConfig()?.ui?.isCookieConsentBannerEnabled,
+            isCustomClaimMappingEnabled: window["AppUtils"]?.getConfig()?.ui?.isCustomClaimMappingEnabled,
+            isCustomClaimMappingMergeEnabled: window["AppUtils"]?.getConfig()?.ui?.isCustomClaimMappingMergeEnabled,
+            isDefaultDialectEditingEnabled: window["AppUtils"]?.getConfig()?.ui?.isDefaultDialectEditingEnabled,
+            isDialectAddingEnabled: window["AppUtils"]?.getConfig()?.ui?.isDialectAddingEnabled,
+            isFeatureGateEnabled: window["AppUtils"]?.getConfig()?.ui?.isFeatureGateEnabled,
+            isGroupAndRoleSeparationEnabled: window["AppUtils"]?.getConfig()?.ui?.isGroupAndRoleSeparationEnabled,
+            isHeaderAvatarLabelAllowed: window["AppUtils"]?.getConfig()?.ui?.isHeaderAvatarLabelAllowed,
+            isLeftNavigationCategorized: window["AppUtils"]?.getConfig()?.ui?.isLeftNavigationCategorized,
+            isMarketingConsentBannerEnabled: window["AppUtils"]?.getConfig()?.ui?.isMarketingConsentBannerEnabled,
             isPasswordInputValidationEnabled: window["AppUtils"]?.getConfig()?.ui?.isPasswordInputValidationEnabled,
-            isRequestPathAuthenticationEnabled:
-                window[ "AppUtils" ]?.getConfig()?.ui?.isRequestPathAuthenticationEnabled,
-            isSAASDeployment: window[ "AppUtils" ]?.getConfig()?.ui?.isSAASDeployment,
-            isSignatureValidationCertificateAliasEnabled:
-                window[ "AppUtils" ]?.getConfig()?.ui?.isSignatureValidationCertificateAliasEnabled,
-            isXacmlConnectorEnabled: window[ "AppUtils" ]?.getConfig()?.ui?.isXacmlConnectorEnabled,
-            legacyMode: window[ "AppUtils" ]?.getConfig()?.ui?.legacyMode,
-            listAllAttributeDialects: window[ "AppUtils" ]?.getConfig()?.ui?.listAllAttributeDialects,
-            privacyPolicyConfigs: window[ "AppUtils" ]?.getConfig()?.ui?.privacyPolicyConfigs,
-            productName: window[ "AppUtils" ]?.getConfig()?.ui?.productName,
-            productVersionConfig: window[ "AppUtils" ]?.getConfig()?.ui?.productVersionConfig,
-            selfAppIdentifier: window[ "AppUtils" ]?.getConfig()?.ui?.selfAppIdentifier,
-            showAppSwitchButton: window[ "AppUtils" ]?.getConfig()?.ui?.showAppSwitchButton,
-            systemAppsIdentifiers: window[ "AppUtils" ]?.getConfig()?.ui?.systemAppsIdentifiers,
-            theme: window[ "AppUtils" ]?.getConfig()?.ui?.theme,
-            useRoleClaimAsGroupClaim: window[ "AppUtils" ]?.getConfig()?.ui?.useRoleClaimAsGroupClaim
+            isRequestPathAuthenticationEnabled: window["AppUtils"]?.getConfig()?.ui?.isRequestPathAuthenticationEnabled,
+            isSAASDeployment: window["AppUtils"]?.getConfig()?.ui?.isSAASDeployment,
+            isSignatureValidationCertificateAliasEnabled: window["AppUtils"]?.getConfig()?.ui
+                ?.isSignatureValidationCertificateAliasEnabled,
+            isXacmlConnectorEnabled: window["AppUtils"]?.getConfig()?.ui?.isXacmlConnectorEnabled,
+            legacyMode: window["AppUtils"]?.getConfig()?.ui?.legacyMode,
+            listAllAttributeDialects: window["AppUtils"]?.getConfig()?.ui?.listAllAttributeDialects,
+            privacyPolicyConfigs: window["AppUtils"]?.getConfig()?.ui?.privacyPolicyConfigs,
+            productName: window["AppUtils"]?.getConfig()?.ui?.productName,
+            productVersionConfig: window["AppUtils"]?.getConfig()?.ui?.productVersionConfig,
+            selfAppIdentifier: window["AppUtils"]?.getConfig()?.ui?.selfAppIdentifier,
+            showAppSwitchButton: window["AppUtils"]?.getConfig()?.ui?.showAppSwitchButton,
+            systemAppsIdentifiers: window["AppUtils"]?.getConfig()?.ui?.systemAppsIdentifiers,
+            theme: window["AppUtils"]?.getConfig()?.ui?.theme,
+            useRoleClaimAsGroupClaim: window["AppUtils"]?.getConfig()?.ui?.useRoleClaimAsGroupClaim
         };
     }
 }

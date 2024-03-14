@@ -33,7 +33,6 @@ import { handleGetIDPListCallError } from "../../utils";
  * Proptypes for the Apple Authentication Provider create wizard content.
  */
 interface AppleAuthenticationProviderCreateWizardContentPropsInterface extends IdentifiableComponentInterface {
-
     /**
      * Trigger form submit.
      * @param submitFunctionCb - Callback.
@@ -73,12 +72,9 @@ const FORM_ID: string = "apple-authenticator-wizard-form";
  * @param props - Props injected to the component.
  * @returns Functional component.
  */
-export const AppleAuthenticationProviderCreateWizardContent: FunctionComponent<
-    AppleAuthenticationProviderCreateWizardContentPropsInterface
-> = (
+export const AppleAuthenticationProviderCreateWizardContent: FunctionComponent<AppleAuthenticationProviderCreateWizardContentPropsInterface> = (
     props: AppleAuthenticationProviderCreateWizardContentPropsInterface
 ): ReactElement => {
-
     const {
         triggerSubmission,
         triggerPrevious,
@@ -86,19 +82,18 @@ export const AppleAuthenticationProviderCreateWizardContent: FunctionComponent<
         template,
         setTotalPage,
         onSubmit,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ idpList, setIdPList ] = useState<IdentityProviderListResponseInterface>({});
-    const [ isIdPListRequestLoading, setIdPListRequestLoading ] = useState<boolean>(undefined);
+    const [idpList, setIdPList] = useState<IdentityProviderListResponseInterface>({});
+    const [isIdPListRequestLoading, setIdPListRequestLoading] = useState<boolean>(undefined);
 
     /**
      * Loads the identity provider authenticators on initial component load.
      */
     useEffect(() => {
-
         getIDPlist();
     }, []);
 
@@ -106,7 +101,6 @@ export const AppleAuthenticationProviderCreateWizardContent: FunctionComponent<
      * Get Idp List.
      */
     const getIDPlist = (): void => {
-
         setIdPListRequestLoading(true);
 
         getIdentityProviderList(null, null, null)
@@ -128,7 +122,6 @@ export const AppleAuthenticationProviderCreateWizardContent: FunctionComponent<
      * @returns error msg if name is already taken.
      */
     const idpNameValidation = (value: string): string => {
-
         let nameExist: boolean = false;
 
         if (idpList?.count > 0) {
@@ -139,8 +132,9 @@ export const AppleAuthenticationProviderCreateWizardContent: FunctionComponent<
             });
         }
         if (nameExist) {
-            return t("console:develop.features.authenticationProvider.forms.generalDetails.name." +
-                "validations.duplicate");
+            return t(
+                "idp:develop.features.authenticationProvider.forms.generalDetails.name." + "validations.duplicate"
+            );
         }
     };
 
@@ -150,9 +144,9 @@ export const AppleAuthenticationProviderCreateWizardContent: FunctionComponent<
      * @param values - Form Values.
      * @returns Form validation.
      */
-    const validateForm = (values: AppleAuthenticationProviderCreateWizardFormValuesInterface):
-        AppleAuthenticationProviderCreateWizardFormErrorValidationsInterface => {
-
+    const validateForm = (
+        values: AppleAuthenticationProviderCreateWizardFormValuesInterface
+    ): AppleAuthenticationProviderCreateWizardFormErrorValidationsInterface => {
         const errors: AppleAuthenticationProviderCreateWizardFormErrorValidationsInterface = {
             clientId: undefined,
             keyId: undefined,
@@ -162,186 +156,178 @@ export const AppleAuthenticationProviderCreateWizardContent: FunctionComponent<
         };
 
         if (!values.name) {
-            errors.name = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.name = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
         if (!values.clientId) {
-            errors.clientId = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.clientId = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
         if (!values.teamId) {
-            errors.teamId = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.teamId = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
         if (!values.keyId) {
-            errors.keyId = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.keyId = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
         if (!values.privateKey) {
-            errors.privateKey = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.privateKey = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
 
         return errors;
     };
 
     return (
-        (isIdPListRequestLoading !== undefined && isIdPListRequestLoading === false) && (
+        isIdPListRequestLoading !== undefined &&
+        isIdPListRequestLoading === false && (
             <Wizard
-                id={ FORM_ID }
-                initialValues={ { name: template?.idp?.name } }
-                onSubmit={
-                    (values: AppleAuthenticationProviderCreateWizardFormValuesInterface) => onSubmit(values)
-                }
-                triggerSubmit={ (submitFunction: () => void) => triggerSubmission(submitFunction) }
-                triggerPrevious={ (previousFunction: () => void) => triggerPrevious(previousFunction) }
-                changePage={ (step: number) => changePageNumber(step) }
-                setTotalPage={ (step: number) => setTotalPage(step) }
-                data-testid={ componentId }
+                id={FORM_ID}
+                initialValues={{ name: template?.idp?.name }}
+                onSubmit={(values: AppleAuthenticationProviderCreateWizardFormValuesInterface) => onSubmit(values)}
+                triggerSubmit={(submitFunction: () => void) => triggerSubmission(submitFunction)}
+                triggerPrevious={(previousFunction: () => void) => triggerPrevious(previousFunction)}
+                changePage={(step: number) => changePageNumber(step)}
+                setTotalPage={(step: number) => setTotalPage(step)}
+                data-testid={componentId}
             >
-                <WizardPage validate={ validateForm }>
+                <WizardPage validate={validateForm}>
                     <Field.Input
                         ariaLabel="Apple IDP Name"
                         inputType="name"
                         name="name"
-                        label={ t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.name.label") }
-                        placeholder={ t("console:develop.features.authenticationProvider.forms." +
-                            "generalDetails.name.placeholder") }
-                        required={ true }
-                        validation={ (value: string) => idpNameValidation(value) }
+                        label={t("idp:develop.features.authenticationProvider.forms." + "generalDetails.name.label")}
+                        placeholder={t(
+                            "idp:develop.features.authenticationProvider.forms." + "generalDetails.name.placeholder"
+                        )}
+                        required={true}
+                        validation={(value: string) => idpNameValidation(value)}
                         maxLength={
-                            IdentityProviderManagementConstants
-                                .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MAX_LENGTH as number
+                            IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                                .IDP_NAME_MAX_LENGTH as number
                         }
                         minLength={
-                            IdentityProviderManagementConstants
-                                .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MIN_LENGTH as number
+                            IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                                .IDP_NAME_MIN_LENGTH as number
                         }
-                        data-testid={ `${ componentId }-idp-name` }
-                        width={ 13 }
+                        data-testid={`${componentId}-idp-name`}
+                        width={13}
                     />
                     <Field.Input
                         ariaLabel="Apple Client ID"
                         inputType="client_id"
                         name="clientId"
-                        label={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.clientId.label")
-                        }
-                        placeholder={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.clientId.placeholder")
-                        }
-                        required={ true }
-                        message={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.clientId.validations.required")
-                        }
+                        label={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.clientId.label"
+                        )}
+                        placeholder={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.clientId.placeholder"
+                        )}
+                        required={true}
+                        message={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.clientId.validations.required"
+                        )}
                         type="text"
-                        autoComplete={ "" + Math.random() }
+                        autoComplete={"" + Math.random()}
                         maxLength={
-                            IdentityProviderManagementConstants
-                                .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MAX_LENGTH as number
+                            IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                                .CLIENT_ID_MAX_LENGTH as number
                         }
                         minLength={
-                            IdentityProviderManagementConstants
-                                .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
+                            IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                                .CLIENT_ID_MIN_LENGTH as number
                         }
-                        data-testid={ `${ componentId }-idp-client-id` }
-                        width={ 13 }
+                        data-testid={`${componentId}-idp-client-id`}
+                        width={13}
                     />
                     <Field.Input
                         ariaLabel="Apple Team ID"
                         inputType="name"
                         name="teamId"
-                        label={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.teamId.label")
-                        }
-                        placeholder={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.teamId.placeholder")
-                        }
-                        required={ true }
-                        message={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.teamId.validations.required")
-                        }
+                        label={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.teamId.label"
+                        )}
+                        placeholder={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.teamId.placeholder"
+                        )}
+                        required={true}
+                        message={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.teamId.validations.required"
+                        )}
                         type="text"
-                        autoComplete={ "" + Math.random() }
+                        autoComplete={"" + Math.random()}
                         maxLength={
-                            IdentityProviderManagementConstants
-                                .APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.TEAM_ID_MAX_LENGTH as number
+                            IdentityProviderManagementConstants.APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                                .TEAM_ID_MAX_LENGTH as number
                         }
                         minLength={
-                            IdentityProviderManagementConstants
-                                .APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.TEAM_ID_MIN_LENGTH as number
+                            IdentityProviderManagementConstants.APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                                .TEAM_ID_MIN_LENGTH as number
                         }
-                        data-testid={ `${ componentId }-idp-team-id` }
-                        width={ 13 }
+                        data-testid={`${componentId}-idp-team-id`}
+                        width={13}
                     />
                     <Field.Input
                         ariaLabel="Apple Key ID"
                         inputType="name"
                         name="keyId"
-                        label={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.keyId.label")
-                        }
-                        placeholder={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.keyId.placeholder")
-                        }
-                        required={ true }
-                        message={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.keyId.validations.required")
-                        }
+                        label={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.keyId.label"
+                        )}
+                        placeholder={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.keyId.placeholder"
+                        )}
+                        required={true}
+                        message={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.keyId.validations.required"
+                        )}
                         type="text"
-                        autoComplete={ "" + Math.random() }
+                        autoComplete={"" + Math.random()}
                         maxLength={
-                            IdentityProviderManagementConstants
-                                .APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.KEY_ID_MAX_LENGTH as number
+                            IdentityProviderManagementConstants.APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                                .KEY_ID_MAX_LENGTH as number
                         }
                         minLength={
-                            IdentityProviderManagementConstants
-                                .APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.KEY_ID_MIN_LENGTH as number
+                            IdentityProviderManagementConstants.APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                                .KEY_ID_MIN_LENGTH as number
                         }
-                        data-testid={ `${ componentId }-idp-key-id` }
-                        width={ 13 }
+                        data-testid={`${componentId}-idp-key-id`}
+                        width={13}
                     />
                     <Field.Input
                         ariaLabel="Apple Private Key"
                         inputType="password"
                         name="privateKey"
-                        label={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.privateKey.label")
-                        }
-                        placeholder={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.privateKey.placeholder")
-                        }
-                        required={ true }
-                        message={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.apple.privateKey.validations.required")
-                        }
+                        label={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.privateKey.label"
+                        )}
+                        placeholder={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.privateKey.placeholder"
+                        )}
+                        required={true}
+                        message={t(
+                            "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.apple.privateKey.validations.required"
+                        )}
                         type="password"
-                        autoComplete={ "" + Math.random() }
+                        autoComplete={"" + Math.random()}
                         maxLength={
-                            IdentityProviderManagementConstants
-                                .APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            IdentityProviderManagementConstants.APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
                                 .PRIVATE_KEY_MAX_LENGTH as number
                         }
                         minLength={
-                            IdentityProviderManagementConstants
-                                .APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            IdentityProviderManagementConstants.APPLE_AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
                                 .PRIVATE_KEY_MIN_LENGTH as number
                         }
-                        data-testid={ `${ componentId }-idp-private-key` }
-                        width={ 13 }
+                        data-testid={`${componentId}-idp-private-key`}
+                        width={13}
                     />
                 </WizardPage>
             </Wizard>

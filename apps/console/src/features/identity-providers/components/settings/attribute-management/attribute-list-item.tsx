@@ -42,19 +42,11 @@ interface AttributeListItemPropInterface extends TestableComponentInterface {
 export const AttributeListItem: FunctionComponent<AttributeListItemPropInterface> = (
     props: AttributeListItemPropInterface
 ): ReactElement => {
-
-    const {
-        attribute,
-        updateMapping,
-        mapping,
-        placeholder,
-        isReadOnly,
-        [ "data-testid" ]: testId
-    } = props;
+    const { attribute, updateMapping, mapping, placeholder, isReadOnly, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const handleClaimMapping = (e) => {
+    const handleClaimMapping = e => {
         const mappingValue = e.target.value;
         updateMapping({
             claim: attribute,
@@ -63,30 +55,27 @@ export const AttributeListItem: FunctionComponent<AttributeListItemPropInterface
     };
 
     return (
-        <Table.Row data-testid={ testId }>
-            <Table.Cell>
-                { attribute?.displayName }
-            </Table.Cell>
+        <Table.Row data-testid={testId}>
+            <Table.Cell>{attribute?.displayName}</Table.Cell>
             {
                 <>
-                    <Table.Cell error={ isEmpty(mapping) }>
+                    <Table.Cell error={isEmpty(mapping)}>
                         <Input
-                            placeholder={ placeholder }
-                            value={ isEmpty(mapping) ? "" : mapping }
-                            onChange={ handleClaimMapping }
+                            placeholder={placeholder}
+                            value={isEmpty(mapping) ? "" : mapping}
+                            onChange={handleClaimMapping}
                             required
-                            data-testid={ `${ testId }-input` }
-                            readOnly={ isReadOnly }
+                            data-testid={`${testId}-input`}
+                            readOnly={isReadOnly}
                         />
-                        { isEmpty(mapping) &&
-                        (
-                            <Label
-                                basic color="red"
-                                pointing="left">
-                                { t("console:develop.features.authenticationProvider.forms.attributeSettings." +
-                                    "attributeListItem.validation.empty") }
+                        {isEmpty(mapping) && (
+                            <Label basic color="red" pointing="left">
+                                {t(
+                                    "idp:develop.features.authenticationProvider.forms.attributeSettings." +
+                                        "attributeListItem.validation.empty"
+                                )}
                             </Label>
-                        ) }
+                        )}
                     </Table.Cell>
                 </>
             }

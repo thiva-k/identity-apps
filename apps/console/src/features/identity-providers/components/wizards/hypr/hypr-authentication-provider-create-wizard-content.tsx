@@ -21,9 +21,7 @@ import { Field, Wizard, WizardPage } from "@wso2is/form";
 import { AxiosError } from "axios";
 import React, { FunctionComponent, ReactElement, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-    HyprAuthenticationProviderCreateWizardFormValuesInterface
-} from "./hypr-authentication-provider-create-wizard";
+import { HyprAuthenticationProviderCreateWizardFormValuesInterface } from "./hypr-authentication-provider-create-wizard";
 import { getIdentityProviderList } from "../../../api";
 import { IdentityProviderManagementConstants } from "../../../constants";
 import { IdentityProviderListResponseInterface, IdentityProviderTemplateInterface } from "../../../models";
@@ -72,12 +70,9 @@ const FORM_ID: string = "hypr-authenticator-wizard-form";
  * @param props - Props injected to the component.
  * @returns Functional component.
  */
-export const HyprAuthenticationProviderCreateWizardContent: FunctionComponent<
-    HyprAuthenticationProviderCreateWizardContentPropsInterface
-> = (
+export const HyprAuthenticationProviderCreateWizardContent: FunctionComponent<HyprAuthenticationProviderCreateWizardContentPropsInterface> = (
     props: HyprAuthenticationProviderCreateWizardContentPropsInterface
 ): ReactElement => {
-
     const {
         triggerSubmission,
         triggerPrevious,
@@ -85,19 +80,18 @@ export const HyprAuthenticationProviderCreateWizardContent: FunctionComponent<
         template,
         setTotalPage,
         onSubmit,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ idpList, setIdPList ] = useState<IdentityProviderListResponseInterface>({});
-    const [ isIdPListRequestLoading, setIdPListRequestLoading ] = useState<boolean>(undefined);
+    const [idpList, setIdPList] = useState<IdentityProviderListResponseInterface>({});
+    const [isIdPListRequestLoading, setIdPListRequestLoading] = useState<boolean>(undefined);
 
     /**
      * Loads the identity provider authenticators on initial component load.
      */
     useEffect(() => {
-
         getIDPlist();
     }, []);
 
@@ -105,7 +99,6 @@ export const HyprAuthenticationProviderCreateWizardContent: FunctionComponent<
      * Get Idp List.
      */
     const getIDPlist = (): void => {
-
         setIdPListRequestLoading(true);
 
         getIdentityProviderList(null, null, null)
@@ -127,7 +120,6 @@ export const HyprAuthenticationProviderCreateWizardContent: FunctionComponent<
      * @returns error msg if name is already taken.
      */
     const idpNameValidation = (value: string): string => {
-
         let nameExist: boolean = false;
 
         if (idpList?.count > 0) {
@@ -138,9 +130,9 @@ export const HyprAuthenticationProviderCreateWizardContent: FunctionComponent<
             });
         }
         if (nameExist) {
-            return t("console:develop.features." +
-                "authenticationProvider.forms.generalDetails.name." +
-                "validations.duplicate");
+            return t(
+                "idp:develop.features." + "authenticationProvider.forms.generalDetails.name." + "validations.duplicate"
+            );
         }
     };
 
@@ -150,9 +142,9 @@ export const HyprAuthenticationProviderCreateWizardContent: FunctionComponent<
      * @param values - Form Values.
      * @returns Form validation.
      */
-    const validateForm = (values: HyprAuthenticationProviderCreateWizardFormValuesInterface):
-        HyprAuthenticationProviderCreateWizardFormValuesInterface => {
-
+    const validateForm = (
+        values: HyprAuthenticationProviderCreateWizardFormValuesInterface
+    ): HyprAuthenticationProviderCreateWizardFormValuesInterface => {
         const errors: HyprAuthenticationProviderCreateWizardFormValuesInterface = {
             apiToken: undefined,
             appId: undefined,
@@ -161,161 +153,146 @@ export const HyprAuthenticationProviderCreateWizardContent: FunctionComponent<
         };
 
         if (!values.name) {
-            errors.name = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.name = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
         if (!values.appId) {
-            errors.appId = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.appId = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
         if (!values.apiToken) {
-            errors.apiToken = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.apiToken = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
         if (!values.baseUrl) {
-            errors.baseUrl = t("console:develop.features.authenticationProvider.forms.common" +
-                ".requiredErrorMessage");
+            errors.baseUrl = t("idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage");
         }
 
         return errors;
     };
 
-    return (
-        (isIdPListRequestLoading !== undefined && isIdPListRequestLoading === false)
-            ? (
-                <Wizard
-                    id={ FORM_ID }
-                    initialValues={ { name: template?.idp?.name } }
-                    onSubmit={
-                        (values: HyprAuthenticationProviderCreateWizardFormValuesInterface) => onSubmit(values)
+    return isIdPListRequestLoading !== undefined && isIdPListRequestLoading === false ? (
+        <Wizard
+            id={FORM_ID}
+            initialValues={{ name: template?.idp?.name }}
+            onSubmit={(values: HyprAuthenticationProviderCreateWizardFormValuesInterface) => onSubmit(values)}
+            triggerSubmit={(submitFunction: () => void) => triggerSubmission(submitFunction)}
+            triggerPrevious={(previousFunction: () => void) => triggerPrevious(previousFunction)}
+            changePage={(step: number) => changePageNumber(step)}
+            setTotalPage={(step: number) => setTotalPage(step)}
+            data-testid={componentId}
+        >
+            <WizardPage validate={validateForm}>
+                <Field.Input
+                    ariaLabel="HYPR IDP Name"
+                    inputType="name"
+                    name="name"
+                    label={t("idp:develop.features.authenticationProvider.forms." + "generalDetails.name.label")}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms." + "generalDetails.name.placeholder"
+                    )}
+                    required={true}
+                    validation={(value: any) => idpNameValidation(value)}
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_NAME_MAX_LENGTH as number
                     }
-                    triggerSubmit={ (submitFunction: () => void) => triggerSubmission(submitFunction) }
-                    triggerPrevious={ (previousFunction: () => void) => triggerPrevious(previousFunction) }
-                    changePage={ (step: number) => changePageNumber(step) }
-                    setTotalPage={ (step: number) => setTotalPage(step) }
-                    data-testid={ componentId }
-                >
-                    <WizardPage validate={ validateForm }>
-                        <Field.Input
-                            ariaLabel="HYPR IDP Name"
-                            inputType="name"
-                            name="name"
-                            label={
-                                t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.name.label")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.name.placeholder")
-                            }
-                            required={ true }
-                            validation={ (value: any) => idpNameValidation(value) }
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MIN_LENGTH as number
-                            }
-                            data-testid={ `${ componentId }-idp-name` }
-                            width={ 13 }
-                        />
-                        <Field.Input
-                            ariaLabel="HYPR App ID"
-                            inputType="client_id"
-                            name="appId"
-                            label={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.hypr.appId.label")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.hypr.appId.placeholder")
-                            }
-                            required={ true }
-                            message={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.hypr.appId.validations.required")
-                            }
-                            type="text"
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
-                            }
-                            data-testid={ `${ componentId }-idp-app-id` }
-                            width={ 13 }
-                        />
-                        <Field.Input
-                            ariaLabel="HYPR Base URL"
-                            inputType="url"
-                            name="baseUrl"
-                            label={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.hypr.baseUrl.label")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.hypr.baseUrl.placeholder")
-                            }
-                            required={ true }
-                            message={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.hypr.baseUrl.validations.required")
-                            }
-                            type="text"
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MIN_LENGTH as number
-                            }
-                            data-testid={ `${ componentId }-idp-base-url` }
-                            width={ 13 }
-                        />
-                        <Field.Input
-                            ariaLabel="HYPR API Token"
-                            inputType="password"
-                            className="addon-field-wrapper"
-                            name="apiToken"
-                            label={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.hypr.apiToken.label")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.hypr.apiToken.placeholder")
-                            }
-                            required={ true }
-                            message={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.hypr.apiToken.validations.required")
-                            }
-                            type="password"
-                            hidePassword={ t("common:hide") }
-                            showPassword={ t("common:show") }
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MIN_LENGTH as number
-                            }
-                            data-testid={ `${ componentId }-idp-api-token` }
-                            width={ 13 }
-                        />
-                    </WizardPage>
-                </Wizard>
-            )
-            : null
-    );
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_NAME_MIN_LENGTH as number
+                    }
+                    data-testid={`${componentId}-idp-name`}
+                    width={13}
+                />
+                <Field.Input
+                    ariaLabel="HYPR App ID"
+                    inputType="client_id"
+                    name="appId"
+                    label={t(
+                        "idp:develop.features.authenticationProvider.forms" + ".authenticatorSettings.hypr.appId.label"
+                    )}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.hypr.appId.placeholder"
+                    )}
+                    required={true}
+                    message={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.hypr.appId.validations.required"
+                    )}
+                    type="text"
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_ID_MAX_LENGTH as number
+                    }
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_ID_MIN_LENGTH as number
+                    }
+                    data-testid={`${componentId}-idp-app-id`}
+                    width={13}
+                />
+                <Field.Input
+                    ariaLabel="HYPR Base URL"
+                    inputType="url"
+                    name="baseUrl"
+                    label={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.hypr.baseUrl.label"
+                    )}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.hypr.baseUrl.placeholder"
+                    )}
+                    required={true}
+                    message={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.hypr.baseUrl.validations.required"
+                    )}
+                    type="text"
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_SECRET_MAX_LENGTH as number
+                    }
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_SECRET_MIN_LENGTH as number
+                    }
+                    data-testid={`${componentId}-idp-base-url`}
+                    width={13}
+                />
+                <Field.Input
+                    ariaLabel="HYPR API Token"
+                    inputType="password"
+                    className="addon-field-wrapper"
+                    name="apiToken"
+                    label={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.hypr.apiToken.label"
+                    )}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.hypr.apiToken.placeholder"
+                    )}
+                    required={true}
+                    message={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.hypr.apiToken.validations.required"
+                    )}
+                    type="password"
+                    hidePassword={t("idp:hide")}
+                    showPassword={t("idp:show")}
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_SECRET_MAX_LENGTH as number
+                    }
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_SECRET_MIN_LENGTH as number
+                    }
+                    data-testid={`${componentId}-idp-api-token`}
+                    width={13}
+                />
+            </WizardPage>
+        </Wizard>
+    ) : null;
 };
 
 /**

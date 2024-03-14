@@ -147,7 +147,7 @@ interface ScopeMetaInterface {
     /**
      * Scope icon.
      */
-    icon: SemanticICONS
+    icon: SemanticICONS;
 }
 
 const FORM_ID: string = "microsoft-authenticator-form";
@@ -161,7 +161,6 @@ const FORM_ID: string = "microsoft-authenticator-form";
 export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticatorFormPropsInterface> = (
     props: MicrosoftAuthenticatorFormPropsInterface
 ): ReactElement => {
-
     const {
         metadata,
         mode,
@@ -169,19 +168,18 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
         onSubmit,
         readOnly,
         isSubmitting,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
-    const [ formFields, setFormFields ] = useState<MicrosoftAuthenticatorFormFieldsInterface>(undefined);
-    const [ initialValues, setInitialValues ] = useState<MicrosoftAuthenticatorFormInitialValuesInterface>(undefined);
+    const [formFields, setFormFields] = useState<MicrosoftAuthenticatorFormFieldsInterface>(undefined);
+    const [initialValues, setInitialValues] = useState<MicrosoftAuthenticatorFormInitialValuesInterface>(undefined);
 
     /**
      * Flattens and resolved form initial values and field metadata.
      */
     useEffect(() => {
-
         if (isEmpty(originalInitialValues?.properties)) {
             return;
         }
@@ -190,12 +188,13 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
         let resolvedInitialValues: MicrosoftAuthenticatorFormInitialValuesInterface = null;
 
         originalInitialValues.properties.map((value: CommonAuthenticatorFormPropertyInterface) => {
-            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties
-                .find((meta: CommonPluggableComponentMetaPropertyInterface) => meta.key === value.key);
+            const meta: CommonAuthenticatorFormFieldMetaInterface = metadata?.properties.find(
+                (meta: CommonPluggableComponentMetaPropertyInterface) => meta.key === value.key
+            );
 
             resolvedFormFields = {
                 ...resolvedFormFields,
-                [ value.key ]: {
+                [value.key]: {
                     meta,
                     value: value.value
                 }
@@ -203,13 +202,13 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
 
             resolvedInitialValues = {
                 ...resolvedInitialValues,
-                [ value.key ]: value.value
+                [value.key]: value.value
             };
         });
 
         setFormFields(resolvedFormFields);
         setInitialValues(resolvedInitialValues);
-    }, [ originalInitialValues ]);
+    }, [originalInitialValues]);
 
     /**
      * Prepare form values for submitting.
@@ -218,12 +217,12 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
      *
      * @returns Sanitized form values.
      */
-    const getUpdatedConfigurations = (values: MicrosoftAuthenticatorFormInitialValuesInterface)
-        : CommonAuthenticatorFormInitialValuesInterface => {
-
+    const getUpdatedConfigurations = (
+        values: MicrosoftAuthenticatorFormInitialValuesInterface
+    ): CommonAuthenticatorFormInitialValuesInterface => {
         const properties: any[] = [];
 
-        for (const [ key, value ] of Object.entries(values)) {
+        for (const [key, value] of Object.entries(values)) {
             if (key !== undefined) {
                 properties.push({
                     key: key,
@@ -246,14 +245,15 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
      * @returns resolved Scope Metadata
      */
     const resolveScopeMetadata = (scope: string): ScopeMetaInterface => {
-
         if (scope === IdentityProviderManagementConstants.MICROSOFT_SCOPE_DICTIONARY.EMAIL) {
             return {
-                description: t("console:develop.features.authenticationProvider.forms" +
-                    ".authenticatorSettings.microsoft.scopes.list.email.description"),
+                description: t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.microsoft.scopes.list.email.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { IdentityProviderManagementConstants.MICROSOFT_SCOPE_DICTIONARY.EMAIL }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {IdentityProviderManagementConstants.MICROSOFT_SCOPE_DICTIONARY.EMAIL}
                     </Code>
                 ),
                 icon: "envelope outline"
@@ -262,11 +262,13 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
 
         if (scope === IdentityProviderManagementConstants.MICROSOFT_SCOPE_DICTIONARY.OPENID) {
             return {
-                description: t("console:develop.features.authenticationProvider.forms" +
-                    ".authenticatorSettings.microsoft.scopes.list.openid.description"),
+                description: t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.microsoft.scopes.list.openid.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { IdentityProviderManagementConstants.MICROSOFT_SCOPE_DICTIONARY.OPENID }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {IdentityProviderManagementConstants.MICROSOFT_SCOPE_DICTIONARY.OPENID}
                     </Code>
                 ),
                 icon: "openid"
@@ -275,11 +277,13 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
 
         if (scope === IdentityProviderManagementConstants.MICROSOFT_SCOPE_DICTIONARY.PROFILE) {
             return {
-                description: t("console:develop.features.authenticationProvider.forms" +
-                    ".authenticatorSettings.microsoft.scopes.list.profile.description"),
+                description: t(
+                    "idp:develop.features.authenticationProvider.forms" +
+                        ".authenticatorSettings.microsoft.scopes.list.profile.description"
+                ),
                 displayName: (
-                    <Code compact withBackground={ false } fontSize="inherit" fontColor="inherit">
-                        { IdentityProviderManagementConstants.MICROSOFT_SCOPE_DICTIONARY.PROFILE }
+                    <Code compact withBackground={false} fontSize="inherit" fontColor="inherit">
+                        {IdentityProviderManagementConstants.MICROSOFT_SCOPE_DICTIONARY.PROFILE}
                     </Code>
                 ),
                 icon: "user outline"
@@ -304,12 +308,11 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
      * @returns list of scopes
      */
     const extractScopes = (rawScopes: string): string[] => {
-
         let scopes: string[] = [];
 
         try {
             scopes = rawScopes.trim().split(" ");
-        } catch(e) {
+        } catch (e) {
             // Silent any issues occurred when trying to scroll.
             // Add debug logs here one a logger is added.
             // Tracked here https://github.comz/wso2/product-is/issues/11650.
@@ -320,50 +323,49 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
 
     return (
         <Form
-            id={ FORM_ID }
-            uncontrolledForm={ false }
-            onSubmit={ (values: Record<string, any>) => onSubmit(getUpdatedConfigurations(values as any)) }
-            initialValues={ initialValues }
+            id={FORM_ID}
+            uncontrolledForm={false}
+            onSubmit={(values: Record<string, any>) => onSubmit(getUpdatedConfigurations(values as any))}
+            initialValues={initialValues}
         >
             <Field.Input
                 ariaLabel="Microsoft authenticator client ID"
                 inputType="default"
                 name="ClientId"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.clientId.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.clientId.placeholder")
-                }
-                hint={ (
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.clientId.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.clientId.placeholder"
+                )}
+                hint={
                     <Trans
                         i18nKey={
-                            "console:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
                             ".microsoft.clientId.hint"
                         }
                     >
                         The <Code>Client ID</Code> you received from Microsoft for your OAuth app.
                     </Trans>
-                ) }
-                required={ formFields?.ClientId?.meta?.isMandatory }
+                }
+                required={formFields?.ClientId?.meta?.isMandatory}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.ClientId?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.ClientId?.meta?.readOnly)
                 }
-                value={ formFields?.ClientId?.value }
-                maxLength={ IdentityProviderManagementConstants
-                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MAX_LENGTH as number }
+                value={formFields?.ClientId?.value}
+                maxLength={
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_ID_MAX_LENGTH as number
+                }
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_ID_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-client-id` }
+                width={16}
+                data-testid={`${testId}-client-id`}
             />
             <Field.Input
                 ariaLabel="Microsoft authenticator client secret"
@@ -371,226 +373,206 @@ export const MicrosoftAuthenticatorForm: FunctionComponent<MicrosoftAuthenticato
                 inputType="password"
                 type="password"
                 name="ClientSecret"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.clientSecret.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.clientSecret.placeholder")
-                }
-                hint={ (
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.clientSecret.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.clientSecret.placeholder"
+                )}
+                hint={
                     <Trans
                         i18nKey={
-                            "console:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                            "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
                             ".microsoft.clientSecret.hint"
                         }
                     >
                         The <Code>App secret</Code> value of the Microsoft application.
                     </Trans>
-                ) }
-                required={ formFields?.ClientSecret?.meta?.isMandatory }
+                }
+                required={formFields?.ClientSecret?.meta?.isMandatory}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.ClientSecret?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.ClientSecret?.meta?.readOnly)
                 }
-                value={ formFields?.ClientSecret?.value }
-                maxLength={ formFields?.ClientSecret?.meta?.maxLength }
+                value={formFields?.ClientSecret?.value}
+                maxLength={formFields?.ClientSecret?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_SECRET_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-client-secret` }
+                width={16}
+                data-testid={`${testId}-client-secret`}
             />
             <Field.Input
                 ariaLabel="Microsoft authenticator authorized redirect URL"
                 inputType="copy_input"
                 name="callbackUrl"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.callbackUrl.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.callbackUrl.placeholder")
-                }
-                hint={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.callbackUrl.hint")
-                }
-                required={ formFields?.callbackUrl?.meta?.isMandatory }
-                value={ formFields?.callbackUrl?.value }
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.callbackUrl.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.callbackUrl.placeholder"
+                )}
+                hint={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.callbackUrl.hint"
+                )}
+                required={formFields?.callbackUrl?.meta?.isMandatory}
+                value={formFields?.callbackUrl?.value}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.callbackUrl?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.callbackUrl?.meta?.readOnly)
                 }
-                maxLength={ formFields?.callbackUrl?.meta?.maxLength }
+                maxLength={formFields?.callbackUrl?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CALLBACK_URL_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CALLBACK_URL_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-authorized-redirect-url` }
+                width={16}
+                data-testid={`${testId}-authorized-redirect-url`}
             />
             <Field.Scopes
-                ariaLabel={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.scopes.ariaLabel")
-                }
+                ariaLabel={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.scopes.ariaLabel"
+                )}
                 inputType="default"
-                name={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.scopes.heading")
-                }
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.scopes.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.scopes.placeholder")
-                }
+                name={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.scopes.heading"
+                )}
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.scopes.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.scopes.placeholder"
+                )}
                 hint="The types of access provided for the connected apps to access data from Microsoft."
-                required={ formFields?.Scopes?.meta?.isMandatory }
-                value={ formFields?.Scopes?.value }
+                required={formFields?.Scopes?.meta?.isMandatory}
+                value={formFields?.Scopes?.value}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.Scopes?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE ? false : formFields?.Scopes?.meta?.readOnly)
                 }
-                maxLength={ formFields?.ClientId?.meta?.maxLength }
+                maxLength={formFields?.ClientId?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_ID_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-additional-query-parameters` }
+                width={16}
+                data-testid={`${testId}-additional-query-parameters`}
             />
             <Field.QueryParams
-                ariaLabel={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.commonAuthQueryParams.ariaLabel")
-                }
+                ariaLabel={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.commonAuthQueryParams.ariaLabel"
+                )}
                 inputType="default"
                 name="commonAuthQueryParams"
-                label={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.commonAuthQueryParams.label")
-                }
-                placeholder={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.commonAuthQueryParams.placeholder")
-                }
-                hint={
-                    t("console:develop.features.authenticationProvider.forms.authenticatorSettings" +
-                        ".microsoft.commonAuthQueryParams.hint")
-                }
-                required={ formFields?.commonAuthQueryParams?.meta?.isMandatory }
-                value={ formFields?.commonAuthQueryParams?.value }
+                label={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.commonAuthQueryParams.label"
+                )}
+                placeholder={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.commonAuthQueryParams.placeholder"
+                )}
+                hint={t(
+                    "idp:develop.features.authenticationProvider.forms.authenticatorSettings" +
+                        ".microsoft.commonAuthQueryParams.hint"
+                )}
+                required={formFields?.commonAuthQueryParams?.meta?.isMandatory}
+                value={formFields?.commonAuthQueryParams?.value}
                 readOnly={
-                    readOnly || (
-                        mode === AuthenticatorSettingsFormModes.CREATE
-                            ? false
-                            : formFields?.commonAuthQueryParams?.meta?.readOnly
-                    )
+                    readOnly ||
+                    (mode === AuthenticatorSettingsFormModes.CREATE
+                        ? false
+                        : formFields?.commonAuthQueryParams?.meta?.readOnly)
                 }
-                maxLength={ formFields?.ClientId?.meta?.maxLength }
+                maxLength={formFields?.ClientId?.meta?.maxLength}
                 minLength={
-                    IdentityProviderManagementConstants
-                        .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
+                    IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                        .CLIENT_ID_MIN_LENGTH as number
                 }
-                width={ 16 }
-                data-testid={ `${ testId }-additional-query-parameters` }
+                width={16}
+                data-testid={`${testId}-additional-query-parameters`}
             />
-            {
-                (formFields?.Scopes?.value
-                    && !isEmpty(extractScopes(formFields.Scopes.value))) && (
-                    <FormSection
-                        heading={
-                            t("console:develop.features.authenticationProvider.forms" +
-                                ".authenticatorSettings.microsoft.scopes.heading")
-                        }
-                    >
-                        <div className="authenticator-dynamic-properties">
-                            {
-                                extractScopes(formFields.Scopes.value)
-                                    .map((scope: string, index: number) => {
+            {formFields?.Scopes?.value && !isEmpty(extractScopes(formFields.Scopes.value)) && (
+                <FormSection
+                    heading={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.microsoft.scopes.heading"
+                    )}
+                >
+                    <div className="authenticator-dynamic-properties">
+                        {extractScopes(formFields.Scopes.value).map((scope: string, index: number) => {
+                            const scopeMeta: ScopeMetaInterface = resolveScopeMetadata(scope);
 
-                                        const scopeMeta: ScopeMetaInterface = resolveScopeMetadata(scope);
-
-                                        return (
-                                            <div
-                                                key={ index }
-                                                className="authenticator-dynamic-property"
-                                                data-testid={ scope }
-                                            >
-                                                <div className="authenticator-dynamic-property-name-container">
-                                                    <GenericIcon
-                                                        square
-                                                        inline
-                                                        transparent
-                                                        icon={ <Icon name={ scopeMeta.icon }/> }
-                                                        size="micro"
-                                                        className="scope-icon"
-                                                        spaced="right"
-                                                        verticalAlign="top"
-                                                    />
-                                                    <div data-testid={ `${ scope }-name` }>
-                                                        { scopeMeta.displayName }
-                                                    </div>
-                                                </div>
-                                                <div
-                                                    className="authenticator-dynamic-property-description"
-                                                    data-testid={ `${ scope }-description` }
-                                                >
-                                                    { scopeMeta.description }
-                                                </div>
-                                            </div>
-                                        );
-                                    })
+                            return (
+                                <div key={index} className="authenticator-dynamic-property" data-testid={scope}>
+                                    <div className="authenticator-dynamic-property-name-container">
+                                        <GenericIcon
+                                            square
+                                            inline
+                                            transparent
+                                            icon={<Icon name={scopeMeta.icon} />}
+                                            size="micro"
+                                            className="scope-icon"
+                                            spaced="right"
+                                            verticalAlign="top"
+                                        />
+                                        <div data-testid={`${scope}-name`}>{scopeMeta.displayName}</div>
+                                    </div>
+                                    <div
+                                        className="authenticator-dynamic-property-description"
+                                        data-testid={`${scope}-description`}
+                                    >
+                                        {scopeMeta.description}
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    <Hint compact>
+                        <Trans
+                            i18nKey={
+                                "idp:develop.features.authenticationProvider.forms" +
+                                ".authenticatorSettings.microsoft.scopes.hint"
                             }
-                        </div>
-                        <Hint compact>
-                            <Trans
-                                i18nKey={
-                                    "console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.microsoft.scopes.hint"
+                        >
+                            Scopes provide a way for connected apps to access data from Microsoft. Click{" "}
+                            <a
+                                href={
+                                    "https://learn.microsoft.com/en-us/azure/active-directory/" +
+                                    "develop/v2-permissions-and-consent"
                                 }
+                                target="_blank"
+                                rel="noopener noreferrer"
                             >
-                                Scopes provide a way for connected apps to access data from Microsoft.
-                                Click <a
-                                    href={
-                                        "https://learn.microsoft.com/en-us/azure/active-directory/"+
-                                        "develop/v2-permissions-and-consent"
-                                    }
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >here</a> to learn more.
-                            </Trans>
-                        </Hint>
-                    </FormSection>
-                )
-            }
+                                here
+                            </a>{" "}
+                            to learn more.
+                        </Trans>
+                    </Hint>
+                </FormSection>
+            )}
             <Field.Button
-                form={ FORM_ID }
+                form={FORM_ID}
                 size="small"
                 buttonType="primary_btn"
                 ariaLabel="Microsoft authenticator update button"
                 name="update-button"
-                data-testid={ `${ testId }-submit-button` }
-                disabled={ isSubmitting }
-                loading={ isSubmitting }
-                label={ t("common:update") }
-                hidden={ readOnly }
+                data-testid={`${testId}-submit-button`}
+                disabled={isSubmitting}
+                loading={isSubmitting}
+                label={t("idp:update")}
+                hidden={readOnly}
             />
         </Form>
     );

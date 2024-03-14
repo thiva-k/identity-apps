@@ -43,13 +43,7 @@ export interface ShowCertificateModalProps extends IdentifiableComponentInterfac
 export const ShowCertificateModal: FC<ShowCertificateModalProps> = (
     props: PropsWithChildren<ShowCertificateModalProps>
 ): ReactElement => {
-
-    const {
-        [ "data-componentid" ]: testId,
-        certificateToDisplay,
-        show,
-        onCloseClicked
-    } = props;
+    const { ["data-componentid"]: testId, certificateToDisplay, show, onCloseClicked } = props;
 
     const { t } = useTranslation();
 
@@ -66,17 +60,17 @@ export const ShowCertificateModal: FC<ShowCertificateModalProps> = (
      * Content to render if we cannot read the certificate content.
      */
     const CannotReadCertificate = (
-        <Segment className="certificate" data-testid={ testId }>
+        <Segment className="certificate" data-testid={testId}>
             <p className="certificate-field">
-                We were unable to read this certificate. Currently we only
-                support displaying public key information in certificate types of {
-                CertificateManagementConstants.SUPPORTED_KEY_ALGORITHMS.map((algo, index) => (
-                    <span key={ `${ algo }+${ index }` }>
-                        <Code>{ algo }</Code>&nbsp;
+                We were unable to read this certificate. Currently we only support displaying public key information in
+                certificate types of{" "}
+                {CertificateManagementConstants.SUPPORTED_KEY_ALGORITHMS.map((algo, index) => (
+                    <span key={`${algo}+${index}`}>
+                        <Code>{algo}</Code>&nbsp;
                     </span>
-                ))
-            } key algorithms. Support for <strong>Elliptic Curve Cryptography</strong>&nbsp;
-                key algorithms will be enabled soon.
+                ))}{" "}
+                key algorithms. Support for <strong>Elliptic Curve Cryptography</strong>&nbsp; key algorithms will be
+                enabled soon.
             </p>
         </Segment>
     );
@@ -86,47 +80,36 @@ export const ShowCertificateModal: FC<ShowCertificateModalProps> = (
             className="certificate-display"
             dimmer="blurring"
             size="tiny"
-            open={ show }
-            onClose={ () => onCloseClicked(certificateToDisplay) }
-            data-testid={ `${ testId }-view-certificate-modal` }
+            open={show}
+            onClose={() => onCloseClicked(certificateToDisplay)}
+            data-testid={`${testId}-view-certificate-modal`}
         >
             <Modal.Header>
                 <div className="certificate-ribbon">
-                    <GenericIcon
-                        inline
-                        transparent
-                        size="auto"
-                        icon={ getCertificateIllustrations().ribbon }/>
-                    <div className="certificate-alias">
-                        View Certificate - { getCertificateAlias() }
-                    </div>
-                    <br/>
-                    <div className="certificate-serial">
-                        Serial Number: { certificateToDisplay?.serialNumber }
-                    </div>
+                    <GenericIcon inline transparent size="auto" icon={getCertificateIllustrations().ribbon} />
+                    <div className="certificate-alias">View Certificate - {getCertificateAlias()}</div>
+                    <br />
+                    <div className="certificate-serial">Serial Number: {certificateToDisplay?.serialNumber}</div>
                 </div>
             </Modal.Header>
             <Modal.Content className="certificate-content">
-                {
-                    certificateToDisplay?.infoUnavailable
-                        ? CannotReadCertificate
-                        : (
-                            <CertificateDisplay
-                                certificate={ certificateToDisplay }
-                                labels={ {
-                                    issuerDN: t("console:manage.features.certificates.keystore.summary.issuerDN"),
-                                    subjectDN: t("console:manage.features.certificates.keystore.summary.subjectDN"),
-                                    validFrom: t("console:manage.features.certificates.keystore.summary.validFrom"),
-                                    validTill: t("console:manage.features.certificates.keystore.summary.validTill"),
-                                    version: t("console:manage.features.certificates.keystore.summary.version")
-                                } }
-                            />
-                        )
-                }
+                {certificateToDisplay?.infoUnavailable ? (
+                    CannotReadCertificate
+                ) : (
+                    <CertificateDisplay
+                        certificate={certificateToDisplay}
+                        labels={{
+                            issuerDN: t("idp:manage.features.certificates.keystore.summary.issuerDN"),
+                            subjectDN: t("idp:manage.features.certificates.keystore.summary.subjectDN"),
+                            validFrom: t("idp:manage.features.certificates.keystore.summary.validFrom"),
+                            validTill: t("idp:manage.features.certificates.keystore.summary.validTill"),
+                            version: t("idp:manage.features.certificates.keystore.summary.version")
+                        }}
+                    />
+                )}
             </Modal.Content>
         </Modal>
     );
-
 };
 
 const EMPTY_STRING = "";

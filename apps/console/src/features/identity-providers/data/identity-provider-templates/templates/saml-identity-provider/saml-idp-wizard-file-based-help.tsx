@@ -17,14 +17,7 @@
  */
 
 import { TestableComponentInterface } from "@wso2is/core/models";
-import {
-    Code,
-    CopyInputField,
-    DocumentationLink,
-    Heading,
-    Message,
-    useDocumentation
-} from "@wso2is/react-components";
+import { Code, CopyInputField, DocumentationLink, Heading, Message, useDocumentation } from "@wso2is/react-components";
 import React, { FunctionComponent, ReactElement } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
@@ -42,8 +35,7 @@ type Props = TestableComponentInterface;
  * @param props - Props injected to the component.
  */
 const SAMLIdPWizardFileBasedHelp: FunctionComponent<Props> = (props: Props): ReactElement => {
-
-    const { [ "data-testid" ]: testId } = props;
+    const { ["data-testid"]: testId } = props;
 
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
 
@@ -51,15 +43,15 @@ const SAMLIdPWizardFileBasedHelp: FunctionComponent<Props> = (props: Props): Rea
     const { getLink } = useDocumentation();
 
     return (
-        <div data-testid={ testId }>
+        <div data-testid={testId}>
             <Message
                 size="tiny"
                 type="info"
                 content={
-                    (<>
+                    <>
                         <Trans
                             i18nKey={
-                                "console:develop.features.authenticationProvider.templates.enterprise.saml." +
+                                "idp:develop.features.authenticationProvider.templates.enterprise.saml." +
                                 "preRequisites.configureRedirectURL"
                             }
                         >
@@ -67,46 +59,45 @@ const SAMLIdPWizardFileBasedHelp: FunctionComponent<Props> = (props: Props): Rea
                         </Trans>
                         <CopyInputField
                             className="copy-input-dark spaced"
-                            value={ config?.deployment?.customServerHost + "/commonauth" }
+                            value={config?.deployment?.customServerHost + "/commonauth"}
                         />
                         <Icon name="info circle" />
-                        {
-                            t("console:develop.features.authenticationProvider.templates.enterprise.saml." +
-                                "preRequisites.hint", {
-                                productName: config.ui.productName
-                            })
-                        }
-                        { getLink("develop.connections.newConnection.enterprise.saml.learnMore") === undefined
-                            ? null
-                            : <Divider hidden/>
-                        }
-                        <DocumentationLink
-                            link={ getLink("develop.connections.newConnection.enterprise.saml.learnMore") }
-                        >
+                        {t(
+                            "idp:develop.features.authenticationProvider.templates.enterprise.saml." +
+                                "preRequisites.hint",
                             {
-                                t("console:develop.features.authenticationProvider.templates.enterprise.saml." +
-                                    "preRequisites.configureIdp")
+                                productName: config.ui.productName
                             }
+                        )}
+                        {getLink("develop.connections.newConnection.enterprise.saml.learnMore") === undefined ? null : (
+                            <Divider hidden />
+                        )}
+                        <DocumentationLink
+                            link={getLink("develop.connections.newConnection.enterprise.saml.learnMore")}
+                        >
+                            {t(
+                                "idp:develop.features.authenticationProvider.templates.enterprise.saml." +
+                                    "preRequisites.configureIdp"
+                            )}
                         </DocumentationLink>
-                    </>)
+                    </>
                 }
             />
             <Heading as="h5">Service provider entity ID</Heading>
             <p>
-                This value will be used as the <Code>&lt;saml2:Issuer&gt;</Code> in the SAML requests initiated from
-                { " " }{ config.ui.productName } to external Identity Provider (IdP). You need to provide a unique value
-                as the service provider entity ID.
+                This value will be used as the <Code>&lt;saml2:Issuer&gt;</Code> in the SAML requests initiated from{" "}
+                {config.ui.productName} to external Identity Provider (IdP). You need to provide a unique value as the
+                service provider entity ID.
             </p>
-            <Divider/>
+            <Divider />
             <Heading as="h5">Metadata file</Heading>
             <p>
-                { config.ui.productName } allows you to upload SAML configuration data using a
-                metadata <Code>XML</Code> file that contains all the required configurations to exchange authentication
-                information between entities in a standard way.
+                {config.ui.productName} allows you to upload SAML configuration data using a metadata <Code>XML</Code>{" "}
+                file that contains all the required configurations to exchange authentication information between
+                entities in a standard way.
             </p>
         </div>
     );
-
 };
 
 SAMLIdPWizardFileBasedHelp.defaultProps = {

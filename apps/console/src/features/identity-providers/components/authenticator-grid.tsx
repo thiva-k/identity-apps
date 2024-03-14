@@ -30,14 +30,7 @@ import {
 import { AxiosError } from "axios";
 import get from "lodash-es/get";
 import isEmpty from "lodash-es/isEmpty";
-import React, {
-    Fragment,
-    FunctionComponent,
-    MouseEvent,
-    ReactElement,
-    SyntheticEvent,
-    useState
-} from "react";
+import React, { Fragment, FunctionComponent, MouseEvent, ReactElement, SyntheticEvent, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
@@ -70,7 +63,6 @@ import { IdentityProviderManagementUtils } from "../utils";
  * Proptypes for the Authenticators Grid component.
  */
 interface AuthenticatorGridPropsInterface extends LoadableComponentInterface, TestableComponentInterface {
-
     /**
      * Is list filtering in progress.
      */
@@ -129,7 +121,6 @@ interface AuthenticatorGridPropsInterface extends LoadableComponentInterface, Te
 export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterface> = (
     props: AuthenticatorGridPropsInterface
 ): ReactElement => {
-
     const {
         authenticators,
         isFiltering,
@@ -140,22 +131,21 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
         onSearchQueryClear,
         searchQuery,
         onUpdate,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingIDP, setDeletingIDP ] = useState<StrictIdentityProviderInterface>(undefined);
-    const [ isDeletionloading, setIsDeletionLoading ] = useState(false);
-    const [ connectedApps, setConnectedApps ] = useState<string[]>(undefined);
-    const [
-        showDeleteErrorDueToConnectedAppsModal,
-        setShowDeleteErrorDueToConnectedAppsModal
-    ] = useState<boolean>(false);
-    const [ isAppsLoading, setIsAppsLoading ] = useState<boolean>(true);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingIDP, setDeletingIDP] = useState<StrictIdentityProviderInterface>(undefined);
+    const [isDeletionloading, setIsDeletionLoading] = useState(false);
+    const [connectedApps, setConnectedApps] = useState<string[]>(undefined);
+    const [showDeleteErrorDueToConnectedAppsModal, setShowDeleteErrorDueToConnectedAppsModal] = useState<boolean>(
+        false
+    );
+    const [isAppsLoading, setIsAppsLoading] = useState<boolean>(true);
 
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const allowedScopes: string = useSelector((state: AppState) => state?.auth?.allowedScopes);
@@ -168,8 +158,11 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
      * @param id - Authenticator ID.
      */
     const handleAuthenticatorEdit = (id: string): void => {
-
-        history.push(AppConstants.getPaths().get("IDP_EDIT").replace(":id", id));
+        history.push(
+            AppConstants.getPaths()
+                .get("IDP_EDIT")
+                .replace(":id", id)
+        );
     };
 
     /**
@@ -178,14 +171,15 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
      * @param idpId - Identity provider id.
      */
     const handleAuthenticatorDeleteInitiation = (idpId: string): void => {
-
         setIsAppsLoading(true);
 
         getIDPConnectedApps(idpId)
             .then(async (response: ConnectedAppsInterface) => {
                 if (response.count === 0) {
-                    setDeletingIDP(authenticators.find(
-                        (idp: IdentityProviderInterface | AuthenticatorInterface) => idp.id === idpId)
+                    setDeletingIDP(
+                        authenticators.find(
+                            (idp: IdentityProviderInterface | AuthenticatorInterface) => idp.id === idpId
+                        )
                     );
                     setShowDeleteConfirmationModal(true);
                 } else {
@@ -196,16 +190,21 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
                     });
 
                     const results: ApplicationBasicInterface[] = await Promise.all(
-                        appRequests.map((response: Promise<any>) => response
-                        //TODO: Refactor to access description & message from error?.response?.data.
-                            .catch((error: AxiosError & { description: string; message: string }) => {
-                                dispatch(addAlert({
-                                    description: error?.description
-                                        || "Error occurred while trying to retrieve connected applications.",
-                                    level: AlertLevels.ERROR,
-                                    message: error?.message || "Error Occurred."
-                                }));
-                            }))
+                        appRequests.map((response: Promise<any>) =>
+                            response
+                                //TODO: Refactor to access description & message from error?.response?.data.
+                                .catch((error: AxiosError & { description: string; message: string }) => {
+                                    dispatch(
+                                        addAlert({
+                                            description:
+                                                error?.description ||
+                                                "Error occurred while trying to retrieve connected applications.",
+                                            level: AlertLevels.ERROR,
+                                            message: error?.message || "Error Occurred."
+                                        })
+                                    );
+                                })
+                        )
                     );
 
                     const appNames: string[] = [];
@@ -218,12 +217,14 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
                 }
             })
             .catch((error: AxiosError & { description: string; message: string }) => {
-                dispatch(addAlert({
-                    description: error?.description
-                        || t("console:develop.features.idp.connectedApps.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message || t("console:develop.features.idp.connectedApps.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description || t("idp:develop.features.idp.connectedApps.genericError.description"),
+                        level: AlertLevels.ERROR,
+                        message: error?.message || t("idp:develop.features.idp.connectedApps.genericError.message")
+                    })
+                );
             })
             .finally(() => {
                 setIsAppsLoading(false);
@@ -237,19 +238,24 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
      * @param id - Authenticator ID.
      */
     const handleAuthenticatorDelete = (id: string): void => {
-
         setIsDeletionLoading(true);
 
         deleteIdentityProvider(id)
             .then(() => {
                 onUpdate();
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider." +
-                        "notifications.deleteConnection.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider.notifications." +
-                        "deleteConnection.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider." +
+                                "notifications.deleteConnection.success.description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:develop.features.authenticationProvider.notifications." +
+                                "deleteConnection.success.message"
+                        )
+                    })
+                );
             })
             .catch((error: AxiosError) => {
                 handleIDPDeleteError(error);
@@ -268,7 +274,6 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
      * @returns React element.
      */
     const showPlaceholders = (): ReactElement => {
-
         if (isLoading) {
             return null;
         }
@@ -277,21 +282,24 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
         if (searchQuery || isFiltering) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>Clear search query</LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    action={<LinkButton onClick={onSearchQueryClear}>Clear search query</LinkButton>}
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:develop.features.authenticationProvider.placeHolders." +
-                        "emptyIDPSearchResults.title") }
-                    subtitle={ [
-                        t("console:develop.features.authenticationProvider.placeHolders." +
-                            "emptyIDPSearchResults.subtitles.0",
-                        { searchQuery: searchQuery }),
-                        t("console:develop.features.authenticationProvider.placeHolders." +
-                            "emptyIDPSearchResults.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder` }
+                    title={t(
+                        "idp:develop.features.authenticationProvider.placeHolders." + "emptyIDPSearchResults.title"
+                    )}
+                    subtitle={[
+                        t(
+                            "idp:develop.features.authenticationProvider.placeHolders." +
+                                "emptyIDPSearchResults.subtitles.0",
+                            { searchQuery: searchQuery }
+                        ),
+                        t(
+                            "idp:develop.features.authenticationProvider.placeHolders." +
+                                "emptyIDPSearchResults.subtitles.1"
+                        )
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder`}
                 />
             );
         }
@@ -300,20 +308,18 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
             return (
                 <EmptyPlaceholder
                     className="list-placeholder"
-                    action={ onEmptyListPlaceholderActionClick && (
-                        <PrimaryButton
-                            onClick={ onEmptyListPlaceholderActionClick }
-                        >
-                            <Icon name="add"/>
-                            { t("console:develop.features.authenticationProvider.buttons.addIDP") }
-                        </PrimaryButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    action={
+                        onEmptyListPlaceholderActionClick && (
+                            <PrimaryButton onClick={onEmptyListPlaceholderActionClick}>
+                                <Icon name="add" />
+                                {t("idp:develop.features.authenticationProvider.buttons.addIDP")}
+                            </PrimaryButton>
+                        )
+                    }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    subtitle={ [
-                        t("console:develop.features.authenticationProvider.placeHolders.emptyIDPList.subtitles.0")
-                    ] }
-                    data-testid={ `${ testId }-empty-placeholder` }
+                    subtitle={[t("idp:develop.features.authenticationProvider.placeHolders.emptyIDPList.subtitles.0")]}
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             );
         }
@@ -327,9 +333,10 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
      * @param e - Click event.
      * @param authenticator - Clicked authenticator.
      */
-    const handleGridItemOnClick = (e: SyntheticEvent, authenticator: IdentityProviderInterface
-        | AuthenticatorInterface): void => {
-
+    const handleGridItemOnClick = (
+        e: SyntheticEvent,
+        authenticator: IdentityProviderInterface | AuthenticatorInterface
+    ): void => {
         handleAuthenticatorEdit(authenticator.id);
         onItemClick && onItemClick(e, authenticator);
     };
@@ -337,183 +344,181 @@ export const AuthenticatorGrid: FunctionComponent<AuthenticatorGridPropsInterfac
     return (
         <Fragment>
             <ResourceGrid
-                isLoading={ isLoading }
-                isPaginating={ false }
-                isEmpty={
-                    (!authenticators
-                    || !Array.isArray(authenticators)
-                    || authenticators.length <= 0)
-                }
-                emptyPlaceholder={ showPlaceholders() }
+                isLoading={isLoading}
+                isPaginating={false}
+                isEmpty={!authenticators || !Array.isArray(authenticators) || authenticators.length <= 0}
+                emptyPlaceholder={showPlaceholders()}
             >
-                {
-                    authenticators?.map((authenticator: IdentityProviderInterface
-                        | AuthenticatorInterface, index: number) => {
+                {authenticators?.map(
+                    (authenticator: IdentityProviderInterface | AuthenticatorInterface, index: number) => {
+                        const authenticatorConfig: AuthenticatorExtensionsConfigInterface = get(
+                            identityProviderConfig.authenticators,
+                            authenticator.id
+                        );
 
-                        const authenticatorConfig: AuthenticatorExtensionsConfigInterface = get(identityProviderConfig
-                            .authenticators, authenticator.id);
+                        const isIdP: boolean = IdentityProviderManagementUtils.isConnectorIdentityProvider(
+                            authenticator
+                        );
 
-                        const isIdP: boolean = IdentityProviderManagementUtils
-                            .isConnectorIdentityProvider(authenticator);
-
-                        const isIdPDeletable: boolean = IdentityProviderManagementUtils
-                            .isConnectorIdentityProvider(authenticator) ||
+                        const isIdPDeletable: boolean =
+                            IdentityProviderManagementUtils.isConnectorIdentityProvider(authenticator) ||
                             authenticator.type === "FEDERATED";
 
                         return (
-                            <Fragment key={ index }>
+                            <Fragment key={index}>
                                 <ResourceGrid.Card
-                                    editButtonLabel={ t("common:setup") }
-                                    onEdit={ (e: MouseEvent<HTMLButtonElement>) => {
+                                    editButtonLabel={t("idp:setup")}
+                                    onEdit={(e: MouseEvent<HTMLButtonElement>) => {
                                         eventPublisher.compute(() => {
-                                            eventPublisher.publish("connections-click-template-setup", { type:
-                                                isIdP
+                                            eventPublisher.publish("connections-click-template-setup", {
+                                                type: isIdP
                                                     ? AuthenticatorMeta.getAuthenticatorTemplateName(
-                                                        (authenticator as IdentityProviderInterface)
-                                                            .federatedAuthenticators?.defaultAuthenticatorId)
+                                                          (authenticator as IdentityProviderInterface)
+                                                              .federatedAuthenticators?.defaultAuthenticatorId
+                                                      )
                                                         ? AuthenticatorMeta.getAuthenticatorTemplateName(
-                                                            (authenticator as IdentityProviderInterface)
-                                                                .federatedAuthenticators?.defaultAuthenticatorId)
+                                                              (authenticator as IdentityProviderInterface)
+                                                                  .federatedAuthenticators?.defaultAuthenticatorId
+                                                          )
                                                         : "other"
                                                     : AuthenticatorMeta.getAuthenticatorTemplateName(authenticator.id)
-                                                        ? AuthenticatorMeta.
-                                                            getAuthenticatorTemplateName(authenticator.id)
-                                                        : ""
+                                                    ? AuthenticatorMeta.getAuthenticatorTemplateName(authenticator.id)
+                                                    : ""
                                             });
                                         });
                                         handleGridItemOnClick(e, authenticator);
-                                    } }
-                                    onDelete={ hasRequiredScopes(featureConfig?.identityProviders,
-                                        featureConfig?.identityProviders?.scopes?.delete, allowedScopes)
-                                        ? () => handleAuthenticatorDeleteInitiation(authenticator.id)
-                                        : null
+                                    }}
+                                    onDelete={
+                                        hasRequiredScopes(
+                                            featureConfig?.identityProviders,
+                                            featureConfig?.identityProviders?.scopes?.delete,
+                                            allowedScopes
+                                        )
+                                            ? () => handleAuthenticatorDeleteInitiation(authenticator.id)
+                                            : null
                                     }
-                                    showActions={ true }
-                                    showResourceEdit={ true }
+                                    showActions={true}
+                                    showResourceEdit={true}
                                     showResourceDelete={
-                                        isIdPDeletable && !IdentityProviderManagementConstants.DELETING_FORBIDDEN_IDPS
-                                            .includes(authenticator.name)
+                                        isIdPDeletable &&
+                                        !IdentityProviderManagementConstants.DELETING_FORBIDDEN_IDPS.includes(
+                                            authenticator.name
+                                        )
                                     }
-                                    isResourceComingSoon={ authenticatorConfig?.isComingSoon }
-                                    comingSoonRibbonLabel={ t("common:comingSoon") }
+                                    isResourceComingSoon={authenticatorConfig?.isComingSoon}
+                                    comingSoonRibbonLabel={t("idp:comingSoon")}
                                     resourceName={
                                         isIdP
                                             ? authenticator.name
-                                            : (authenticator as AuthenticatorInterface).displayName
-                                                    || (authenticator as AuthenticatorInterface).name
+                                            : (authenticator as AuthenticatorInterface).displayName ||
+                                              (authenticator as AuthenticatorInterface).name
                                     }
-                                    resourceCategory={
-                                        AuthenticatorMeta.getAuthenticatorCategory(
-                                            isIdP
-                                                ? (authenticator as IdentityProviderInterface)
-                                                    .federatedAuthenticators?.defaultAuthenticatorId
-                                                : authenticator.id
-                                        )
-                                    }
+                                    resourceCategory={AuthenticatorMeta.getAuthenticatorCategory(
+                                        isIdP
+                                            ? (authenticator as IdentityProviderInterface).federatedAuthenticators
+                                                  ?.defaultAuthenticatorId
+                                            : authenticator.id
+                                    )}
                                     resourceDescription={
                                         !isEmpty(authenticator.description)
                                             ? authenticator.description
                                             : !isIdP
-                                                ? AuthenticatorMeta.getAuthenticatorDescription(authenticator.id)
-                                                : ""
+                                            ? AuthenticatorMeta.getAuthenticatorDescription(authenticator.id)
+                                            : ""
                                     }
-                                    resourceDocumentationLink = { null }
+                                    resourceDocumentationLink={null}
                                     resourceImage={
                                         authenticator.image ?? AuthenticatorMeta.getAuthenticatorIcon(authenticator.id)
                                     }
                                     tags={
                                         isIdP
                                             ? IdentityProviderManagementUtils.resolveIDPTags(
-                                                (authenticator as IdentityProviderInterface).federatedAuthenticators)
+                                                  (authenticator as IdentityProviderInterface).federatedAuthenticators
+                                              )
                                             : (authenticator as AuthenticatorInterface).tags
                                     }
-                                    data-testid={ `${ testId }-${ authenticator.name }` }
-                                    showResourceAction={ false }
-                                    showSetupGuideButton={ false }
+                                    data-testid={`${testId}-${authenticator.name}`}
+                                    showResourceAction={false}
+                                    showSetupGuideButton={false}
                                 />
                             </Fragment>
                         );
-                    })
-                }
+                    }
+                )}
             </ResourceGrid>
-            {
-                deletingIDP && (
-                    <ConfirmationModal
-                        primaryActionLoading ={ isDeletionloading }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertion={ deletingIDP?.name }
-                        assertionHint={ t("console:develop.features.authenticationProvider."+
-                        "confirmations.deleteIDP.assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                        onPrimaryActionClick={
-                            (): void => handleAuthenticatorDelete(deletingIDP.id)
-                        }
-                        data-testid={ `${ testId }-delete-confirmation-modal` }
-                        closeOnDimmerClick={ false }
+            {deletingIDP && (
+                <ConfirmationModal
+                    primaryActionLoading={isDeletionloading}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertion={deletingIDP?.name}
+                    assertionHint={t(
+                        "idp:develop.features.authenticationProvider." + "confirmations.deleteIDP.assertionHint"
+                    )}
+                    assertionType="checkbox"
+                    primaryAction={t("idp:confirm")}
+                    secondaryAction={t("idp:cancel")}
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => handleAuthenticatorDelete(deletingIDP.id)}
+                    data-testid={`${testId}-delete-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                        {t("idp:develop.features.authenticationProvider.confirmations.deleteIDP.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        attached
+                        negative
+                        data-testid={`${testId}-delete-confirmation-modal-message`}
                     >
-                        <ConfirmationModal.Header data-testid={ `${ testId }-delete-confirmation-modal-header` }>
-                            { t("console:develop.features.authenticationProvider.confirmations.deleteIDP.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${ testId }-delete-confirmation-modal-message` }
-                        >
-                            { t("console:develop.features.authenticationProvider.confirmations.deleteIDP.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-testid={ `${ testId }-delete-confirmation-modal-content` }>
-                            { t("console:develop.features.authenticationProvider.confirmations.deleteIDP.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
-            {
-                showDeleteErrorDueToConnectedAppsModal && (
-                    <ConfirmationModal
-                        onClose={ (): void => setShowDeleteErrorDueToConnectedAppsModal(false) }
-                        type="negative"
-                        open={ showDeleteErrorDueToConnectedAppsModal }
-                        secondaryAction={ t("common:close") }
-                        onSecondaryActionClick={ (): void => setShowDeleteErrorDueToConnectedAppsModal(false) }
-                        data-testid={ `${ testId }-delete-idp-confirmation` }
-                        closeOnDimmerClick={ false }
-                    >
-                        <ConfirmationModal.Header data-testid={ `${ testId }-delete-idp-confirmation` }>
-                            { t("console:develop.features.authenticationProvider.confirmations." +
-                                "deleteIDPWithConnectedApps.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${ testId }-delete-idp-confirmation` }>
-                            { t("console:develop.features.authenticationProvider." +
-                            "confirmations.deleteIDPWithConnectedApps.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-testid={ `${ testId }-delete-idp-confirmation` }>
-                            { t("console:develop.features.authenticationProvider.confirmations." +
-                                "deleteIDPWithConnectedApps.content") }
-                            <Divider hidden />
-                            <List ordered className="ml-6">
-                                {
-                                    isAppsLoading ? (
-                                        <ContentLoader/>
-                                    ) :
-                                        connectedApps?.map((app: string, index: number) => {
-                                            return (
-                                                <List.Item key={ index }>{ app }</List.Item>
-                                            );
-                                        })
-                                }
-                            </List>
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+                        {t("idp:develop.features.authenticationProvider.confirmations.deleteIDP.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                        {t("idp:develop.features.authenticationProvider.confirmations.deleteIDP.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
+            {showDeleteErrorDueToConnectedAppsModal && (
+                <ConfirmationModal
+                    onClose={(): void => setShowDeleteErrorDueToConnectedAppsModal(false)}
+                    type="negative"
+                    open={showDeleteErrorDueToConnectedAppsModal}
+                    secondaryAction={t("idp:close")}
+                    onSecondaryActionClick={(): void => setShowDeleteErrorDueToConnectedAppsModal(false)}
+                    data-testid={`${testId}-delete-idp-confirmation`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-delete-idp-confirmation`}>
+                        {t(
+                            "idp:develop.features.authenticationProvider.confirmations." +
+                                "deleteIDPWithConnectedApps.header"
+                        )}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message attached negative data-testid={`${testId}-delete-idp-confirmation`}>
+                        {t(
+                            "idp:develop.features.authenticationProvider." +
+                                "confirmations.deleteIDPWithConnectedApps.message"
+                        )}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-delete-idp-confirmation`}>
+                        {t(
+                            "idp:develop.features.authenticationProvider.confirmations." +
+                                "deleteIDPWithConnectedApps.content"
+                        )}
+                        <Divider hidden />
+                        <List ordered className="ml-6">
+                            {isAppsLoading ? (
+                                <ContentLoader />
+                            ) : (
+                                connectedApps?.map((app: string, index: number) => {
+                                    return <List.Item key={index}>{app}</List.Item>;
+                                })
+                            )}
+                        </List>
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </Fragment>
     );
 };

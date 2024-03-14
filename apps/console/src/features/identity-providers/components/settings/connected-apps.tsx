@@ -19,61 +19,41 @@ import { IdentityAppsError } from "@wso2is/core/errors";
 import { isFeatureEnabled } from "@wso2is/core/helpers";
 import { AlertLevels, IdentifiableComponentInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { 
-    AnimatedAvatar, 
-    AppAvatar,  
-    DataTable, 
+import {
+    AnimatedAvatar,
+    AppAvatar,
+    DataTable,
     EmphasizedSegment,
-    EmptyPlaceholder, 
+    EmptyPlaceholder,
     Heading,
-    TableActionsInterface, 
-    TableColumnInterface 
+    TableActionsInterface,
+    TableColumnInterface
 } from "@wso2is/react-components";
-import React, 
-{ 
-    FunctionComponent,
-    ReactElement, 
-    ReactNode, 
-    SyntheticEvent, 
-    useEffect, 
-    useState 
-} from "react";
+import React, { FunctionComponent, ReactElement, ReactNode, SyntheticEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import {  
-    Divider,
-    Header, 
-    Icon, 
-    Input, 
-    Label, 
-    SemanticICONS
-} from "semantic-ui-react";
+import { Divider, Header, Icon, Input, Label, SemanticICONS } from "semantic-ui-react";
 import { applicationListConfig } from "../../../../extensions/configs/application-list";
 import { getApplicationDetails } from "../../../applications/api";
 import { ApplicationManagementConstants } from "../../../applications/constants";
-import { 
-    ApplicationAccessTypes, 
-    ApplicationBasicInterface, 
-    ApplicationListItemInterface, 
-    ApplicationTemplateListItemInterface 
+import {
+    ApplicationAccessTypes,
+    ApplicationBasicInterface,
+    ApplicationListItemInterface,
+    ApplicationTemplateListItemInterface
 } from "../../../applications/models";
 import { ApplicationTemplateManagementUtils } from "../../../applications/utils/application-template-management-utils";
-import {  
+import {
     AppConstants,
-    AppState, 
-    FeatureConfigInterface,   
-    UIConstants, 
-    getEmptyPlaceholderIllustrations, 
+    AppState,
+    FeatureConfigInterface,
+    UIConstants,
+    getEmptyPlaceholderIllustrations,
     history
 } from "../../../core";
 import { getIDPConnectedApps } from "../../api";
-import { 
-    ConnectedAppInterface,
-    ConnectedAppsInterface, 
-    IdentityProviderInterface 
-} from "../../models";
-
+import { ConnectedAppInterface, ConnectedAppsInterface, IdentityProviderInterface } from "../../models";
 
 /**
  * Proptypes for the advance settings component.
@@ -84,8 +64,8 @@ interface ConnectedAppsPropsInterface extends IdentifiableComponentInterface {
      */
     editingIDP: IdentityProviderInterface;
     /**
-    * Show sign on methods condition
-    */
+     * Show sign on methods condition
+     */
     isSetStrongerAuth?: boolean;
     /**
      * On list item select callback.
@@ -103,7 +83,7 @@ interface ConnectedAppsPropsInterface extends IdentifiableComponentInterface {
      * Default list item limit.
      */
     defaultListItemLimit?: number;
-     /**
+    /**
      * Is the connected apps info request loading.
      */
     isLoading?: boolean;
@@ -130,7 +110,6 @@ interface ConnectedAppsPropsInterface extends IdentifiableComponentInterface {
 export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
     props: ConnectedAppsPropsInterface
 ): ReactElement => {
-
     const {
         editingIDP,
         isSetStrongerAuth,
@@ -141,25 +120,24 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
         isRenderedOnPortal,
         isLoading,
         loader: Loader,
-        [ "data-componentid" ]: componentId
+        ["data-componentid"]: componentId
     } = props;
-    
+
     const dispatch: Dispatch = useDispatch();
 
-    const [ connectedApps, setConnectedApps ] = useState<ConnectedAppInterface[]>();
-    const [ filterSelectedApps, setFilterSelectedApps ] = useState<ConnectedAppInterface[]>([]);
-    const [ connectedAppsCount, setconnectedAppsCount ] = useState<number>(0);
-    const [ isAppsLoading, setIsAppsLoading ] = useState<boolean>(true);
-    const [ searchQuery, setSearchQuery ] = useState<string>("");
+    const [connectedApps, setConnectedApps] = useState<ConnectedAppInterface[]>();
+    const [filterSelectedApps, setFilterSelectedApps] = useState<ConnectedAppInterface[]>([]);
+    const [connectedAppsCount, setconnectedAppsCount] = useState<number>(0);
+    const [isAppsLoading, setIsAppsLoading] = useState<boolean>(true);
+    const [searchQuery, setSearchQuery] = useState<string>("");
     const featureConfig: FeatureConfigInterface = useSelector((state: AppState) => state.config.ui.features);
     const applicationTemplates: ApplicationTemplateListItemInterface[] = useSelector(
-        (state: AppState) => state.application.templates);
+        (state: AppState) => state.application.templates
+    );
     const groupedApplicationTemplates: ApplicationTemplateListItemInterface[] = useSelector(
-        (state: AppState) => state?.application?.groupedTemplates);
-    const [
-        isApplicationTemplateRequestLoading,
-        setApplicationTemplateRequestLoadingStatus
-    ] = useState<boolean>(false);
+        (state: AppState) => state?.application?.groupedTemplates
+    );
+    const [isApplicationTemplateRequestLoading, setApplicationTemplateRequestLoadingStatus] = useState<boolean>(false);
 
     const { t } = useTranslation();
 
@@ -168,23 +146,28 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
         getIDPConnectedApps(editingIDP.id)
             .then(async (response: ConnectedAppsInterface) => {
                 setconnectedAppsCount(response.count);
-                
+
                 if (response.count > 0) {
-                    
                     const appRequests: Promise<any>[] = response.connectedApps.map((app: ConnectedAppInterface) => {
                         return getApplicationDetails(app.appId);
                     });
 
                     const results: ApplicationBasicInterface[] = await Promise.all(
-                        appRequests.map((response: Promise<any>) => response.catch((error: IdentityAppsError) => {
-                            dispatch(addAlert({
-                                description: error?.description
-                                    || t("console:develop.features.idp.connectedApps.genericError.description"),
-                                level: AlertLevels.ERROR,
-                                message: error?.message 
-                                    || t("console:develop.features.idp.connectedApps.genericError.message")
-                            }));
-                        }))
+                        appRequests.map((response: Promise<any>) =>
+                            response.catch((error: IdentityAppsError) => {
+                                dispatch(
+                                    addAlert({
+                                        description:
+                                            error?.description ||
+                                            t("idp:develop.features.idp.connectedApps.genericError.description"),
+                                        level: AlertLevels.ERROR,
+                                        message:
+                                            error?.message ||
+                                            t("idp:develop.features.idp.connectedApps.genericError.message")
+                                    })
+                                );
+                            })
+                        )
                     );
 
                     setConnectedApps(results);
@@ -192,12 +175,14 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
                 }
             })
             .catch((error: IdentityAppsError) => {
-                dispatch(addAlert({
-                    description: error?.description
-                        || t("console:develop.features.idp.connectedApps.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message || t("console:develop.features.idp.connectedApps.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description || t("idp:develop.features.idp.connectedApps.genericError.description"),
+                        level: AlertLevels.ERROR,
+                        message: error?.message || t("idp:develop.features.idp.connectedApps.genericError.message")
+                    })
+                );
             })
             .finally(() => {
                 setIsAppsLoading(false);
@@ -211,24 +196,30 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
         if (applicationTemplates !== undefined) {
             return;
         }
-    
+
         setApplicationTemplateRequestLoadingStatus(true);
-    
+
         ApplicationTemplateManagementUtils.getApplicationTemplates()
             .catch((error: IdentityAppsError) => {
-                dispatch(addAlert({
-                    description: error?.description
-                    || t("console:develop.features.applications.notifications.fetchTemplates.genericError.description"),
-                    level: AlertLevels.ERROR,
-                    message: error?.message 
-                    || t("console:develop.features.applications.notifications.fetchTemplates.genericError.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description ||
+                            t(
+                                "idp:develop.features.applications.notifications.fetchTemplates.genericError.description"
+                            ),
+                        level: AlertLevels.ERROR,
+                        message:
+                            error?.message ||
+                            t("idp:develop.features.applications.notifications.fetchTemplates.genericError.message")
+                    })
+                );
             })
             .finally(() => {
                 setApplicationTemplateRequestLoadingStatus(false);
             });
-    }, [ applicationTemplates, groupedApplicationTemplates ]);
- 
+    }, [applicationTemplates, groupedApplicationTemplates]);
+
     /**
      * Resolves data table columns.
      *
@@ -242,7 +233,6 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
                 id: "name",
                 key: "name",
                 render: (app: ApplicationListItemInterface): ReactNode => {
-
                     /**
                      * Note: the templateId for Standard-Based Applications in applicationTemplates is
                      * 'custom-application'(only 1 template is available).
@@ -260,29 +250,31 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
 
                     // Checking whether the templateId from backend, is for a custom application.
                     if (customApplicationIds.has(app.templateId)) {
-                        templateDisplayName = applicationTemplates
-                            && applicationTemplates instanceof Array
-                            && applicationTemplates.length > 0
-                            && applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
+                        templateDisplayName =
+                            applicationTemplates &&
+                            applicationTemplates instanceof Array &&
+                            applicationTemplates.length > 0 &&
+                            applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
                                 return template.id === ApplicationManagementConstants.CUSTOM_APPLICATION;
                             }).name;
                     } else {
-                        const relevantApplicationTemplate: ApplicationTemplateListItemInterface | undefined = 
-                            applicationTemplates
-                            && applicationTemplates instanceof Array
-                            && applicationTemplates.length > 0
-                            && applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
+                        const relevantApplicationTemplate: ApplicationTemplateListItemInterface | undefined =
+                            applicationTemplates &&
+                            applicationTemplates instanceof Array &&
+                            applicationTemplates.length > 0 &&
+                            applicationTemplates.find((template: ApplicationTemplateListItemInterface) => {
                                 return template.id === app.templateId;
                             });
 
                         if (relevantApplicationTemplate?.templateGroup) {
                             const templateGroupId: string = relevantApplicationTemplate.templateGroup;
 
-                            templateDisplayName = groupedApplicationTemplates
-                                && groupedApplicationTemplates instanceof Array
-                                && groupedApplicationTemplates.length > 0
-                                && groupedApplicationTemplates.find((group: ApplicationTemplateListItemInterface) => {
-                                    return (group.id === templateGroupId || group.templateGroup === templateGroupId);
+                            templateDisplayName =
+                                groupedApplicationTemplates &&
+                                groupedApplicationTemplates instanceof Array &&
+                                groupedApplicationTemplates.length > 0 &&
+                                groupedApplicationTemplates.find((group: ApplicationTemplateListItemInterface) => {
+                                    return group.id === templateGroupId || group.templateGroup === templateGroupId;
                                 }).name;
                         }
                     }
@@ -292,53 +284,49 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
                             image
                             as="h6"
                             className="header-with-icon"
-                            data-componentid={ `${ componentId }-item-heading` }
+                            data-componentid={`${componentId}-item-heading`}
                         >
-                            {
-                                app.image
-                                    ? (
-                                        <AppAvatar
+                            {app.image ? (
+                                <AppAvatar
+                                    size="mini"
+                                    name={app.name}
+                                    image={app.image}
+                                    spaced="right"
+                                    data-componentid={`${componentId}-item-image`}
+                                />
+                            ) : (
+                                <AppAvatar
+                                    image={
+                                        <AnimatedAvatar
+                                            name={app.name}
                                             size="mini"
-                                            name={ app.name }
-                                            image={ app.image }
-                                            spaced="right"
-                                            data-componentid={ `${ componentId }-item-image` }
+                                            data-componentid={`${componentId}-item-image-inner`}
                                         />
-                                    )
-                                    : (
-                                        <AppAvatar
-                                            image={ (
-                                                <AnimatedAvatar
-                                                    name={ app.name }
-                                                    size="mini"
-                                                    data-componentid={ `${ componentId }-item-image-inner` }
-                                                />
-                                            ) }
-                                            size="mini"
-                                            spaced="right"
-                                            data-componentid={ `${ componentId }-item-image` }
-                                        />
-                                    )
-                            }
+                                    }
+                                    size="mini"
+                                    spaced="right"
+                                    data-componentid={`${componentId}-item-image`}
+                                />
+                            )}
                             <Header.Content>
-                                { app.name }
-                                {
-                                    app.advancedConfigurations?.fragment && (
-                                        <Label size="mini">
-                                            { t("console:develop.features.applications.list.labels.fragment") }
-                                        </Label>
-                                    )
-                                }
+                                {app.name}
+                                {app.advancedConfigurations?.fragment && (
+                                    <Label size="mini">
+                                        {t("idp:develop.features.applications.list.labels.fragment")}
+                                    </Label>
+                                )}
                                 <div>
-                                    { templateDisplayName && (
-                                        <Label className="no-margin-left" size="tiny">{ templateDisplayName }</Label>
-                                    ) }
+                                    {templateDisplayName && (
+                                        <Label className="no-margin-left" size="tiny">
+                                            {templateDisplayName}
+                                        </Label>
+                                    )}
                                 </div>
                             </Header.Content>
                         </Header>
                     );
                 },
-                title: t("console:develop.features.applications.list.columns.name")
+                title: t("idp:develop.features.applications.list.columns.name")
             },
             {
                 allowToggleVisibility: false,
@@ -346,11 +334,10 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
                 id: "actions",
                 key: "actions",
                 textAlign: "right",
-                title: t("console:develop.features.applications.list.columns.actions")
+                title: t("idp:develop.features.applications.list.columns.actions")
             }
         ];
     };
-
 
     /**
      * Redirects to the applications edit page when the edit button is clicked.
@@ -361,22 +348,27 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
     const handleApplicationEdit = (appId: string, access: ApplicationAccessTypes, tabName: string): void => {
         if (isSetStrongerAuth) {
             history.push({
-                pathname: AppConstants.getPaths().get("APPLICATION_SIGN_IN_METHOD_EDIT")
-                    .replace(":id", appId).replace(":tabName", tabName),
-                
-                search: `?${ ApplicationManagementConstants.APP_STATE_STRONG_AUTH_PARAM_KEY }=
-                ${ ApplicationManagementConstants.APP_STATE_STRONG_AUTH_PARAM_VALUE }`,
-                
+                pathname: AppConstants.getPaths()
+                    .get("APPLICATION_SIGN_IN_METHOD_EDIT")
+                    .replace(":id", appId)
+                    .replace(":tabName", tabName),
+
+                search: `?${ApplicationManagementConstants.APP_STATE_STRONG_AUTH_PARAM_KEY}=
+                ${ApplicationManagementConstants.APP_STATE_STRONG_AUTH_PARAM_VALUE}`,
+
                 state: { id: editingIDP.id, name: editingIDP.name }
             });
         } else {
             history.push({
-                pathname: AppConstants.getPaths().get("APPLICATION_SIGN_IN_METHOD_EDIT")
-                    .replace(":id", appId).replace(":tabName", tabName),
-                
-                search: access === ApplicationAccessTypes.READ
-                    ? `?${ ApplicationManagementConstants.APP_READ_ONLY_STATE_URL_SEARCH_PARAM_KEY }=true`
-                    : "",
+                pathname: AppConstants.getPaths()
+                    .get("APPLICATION_SIGN_IN_METHOD_EDIT")
+                    .replace(":id", appId)
+                    .replace(":tabName", tabName),
+
+                search:
+                    access === ApplicationAccessTypes.READ
+                        ? `?${ApplicationManagementConstants.APP_READ_ONLY_STATE_URL_SEARCH_PARAM_KEY}=true`
+                        : "",
 
                 state: { id: editingIDP.id, name: editingIDP.name }
             });
@@ -393,14 +385,14 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
         if (filterSelectedApps.length === 0 && connectedAppsCount !== 0) {
             return (
                 <EmptyPlaceholder
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:develop.placeholders.emptySearchResult.title") }
-                    subtitle={ [
-                        t("console:develop.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
-                        t("console:develop.placeholders.emptySearchResult.subtitles.1")
-                    ] }
-                    data-componentid={ `${ componentId }-empty-search-placeholder` }
+                    title={t("idp:develop.placeholders.emptySearchResult.title")}
+                    subtitle={[
+                        t("idp:develop.placeholders.emptySearchResult.subtitles.0", { query: searchQuery }),
+                        t("idp:develop.placeholders.emptySearchResult.subtitles.1")
+                    ]}
+                    data-componentid={`${componentId}-empty-search-placeholder`}
                 />
             );
         }
@@ -408,14 +400,13 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
         if (connectedAppsCount === 0) {
             return (
                 <EmptyPlaceholder
-                    className={ !isRenderedOnPortal ? "list-placeholder mr-0" : "" }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    className={!isRenderedOnPortal ? "list-placeholder mr-0" : ""}
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    subtitle={ [
-                        t("console:develop.features.idp.connectedApps.placeholders.emptyList", 
-                            { idpName: editingIDP.name })
-                    ] }
-                    data-componentid={ `${ componentId }-empty-placeholder` }
+                    subtitle={[
+                        t("idp:develop.features.idp.connectedApps.placeholders.emptyList", { idpName: editingIDP.name })
+                    ]}
+                    data-componentid={`${componentId}-empty-placeholder`}
                 />
             );
         }
@@ -435,17 +426,23 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
 
         return [
             {
-                "data-componentid": `${ componentId }-item-edit-button`,
-                hidden: (): boolean => !isFeatureEnabled(featureConfig?.applications,
-                    ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT")),
-                icon: (): SemanticICONS => { 
+                "data-componentid": `${componentId}-item-edit-button`,
+                hidden: (): boolean =>
+                    !isFeatureEnabled(
+                        featureConfig?.applications,
+                        ApplicationManagementConstants.FEATURE_DICTIONARY.get("APPLICATION_EDIT")
+                    ),
+                icon: (): SemanticICONS => {
                     return "caret right";
                 },
                 onClick: (e: SyntheticEvent, app: ApplicationListItemInterface): void =>
-                    handleApplicationEdit(app.id, app.access, "#tab=" +
-                        ApplicationManagementConstants.SIGN_IN_METHOD_TAB_URL_FRAG),
+                    handleApplicationEdit(
+                        app.id,
+                        app.access,
+                        "#tab=" + ApplicationManagementConstants.SIGN_IN_METHOD_TAB_URL_FRAG
+                    ),
                 popupText: (): string => {
-                    return t("console:develop.features.idp.connectedApps.action");
+                    return t("idp:develop.features.idp.connectedApps.action");
                 },
                 renderer: "semantic-icon"
             }
@@ -459,7 +456,7 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
      */
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const changeValue: string = event.target.value.trim();
-        
+
         setSearchQuery(changeValue);
 
         if (changeValue.length > 0) {
@@ -475,10 +472,11 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
      * @param changevalue-search query.
      */
     const searchFilter = (changeValue: string) => {
-        const appNameFilter: ConnectedAppInterface[] = connectedApps.filter((item: ConnectedAppInterface) => 
-            item.name.toLowerCase().indexOf(changeValue.toLowerCase()) !== -1); 
-        
-        setFilterSelectedApps(appNameFilter); 
+        const appNameFilter: ConnectedAppInterface[] = connectedApps.filter(
+            (item: ConnectedAppInterface) => item.name.toLowerCase().indexOf(changeValue.toLowerCase()) !== -1
+        );
+
+        setFilterSelectedApps(appNameFilter);
     };
 
     if (isAppsLoading) {
@@ -487,41 +485,45 @@ export const ConnectedApps: FunctionComponent<ConnectedAppsPropsInterface> = (
 
     return (
         <EmphasizedSegment padded="very">
-            <Heading as="h4">{ t("console:develop.features.idp.connectedApps.header", 
-                { idpName: editingIDP.name }) }</Heading>
+            <Heading as="h4">
+                {t("idp:develop.features.idp.connectedApps.header", { idpName: editingIDP.name })}
+            </Heading>
             <Divider hidden />
-            { connectedApps && (
-                <Input 
-                    icon={ <Icon name="search" /> }
+            {connectedApps && (
+                <Input
+                    icon={<Icon name="search" />}
                     iconPosition="left"
-                    onChange={ handleChange }
-                    placeholder = { t("console:develop.features.idp.connectedApps.placeholders.search") }
+                    onChange={handleChange}
+                    placeholder={t("idp:develop.features.idp.connectedApps.placeholders.search")}
                     floated="left"
                     size="small"
-                    style={ { width: "250px" } }
-                    data-componentid={ `${ componentId }-searched` }
+                    style={{ width: "250px" }}
+                    data-componentid={`${componentId}-searched`}
                 />
-            ) }
+            )}
             <DataTable<ConnectedAppInterface>
                 className="connected-applications-table"
-                isLoading={ isLoading || isApplicationTemplateRequestLoading }
-                loadingStateOptions={ {
+                isLoading={isLoading || isApplicationTemplateRequestLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={ !isSetStrongerAuth && resolveTableActions() }
-                columns={ resolveTableColumns() }
-                data={ filterSelectedApps }
-                onRowClick={ (e: SyntheticEvent, app: ApplicationListItemInterface): void => {
-                    handleApplicationEdit(app.id, app.access, "#tab=" +
-                        ApplicationManagementConstants.SIGN_IN_METHOD_TAB_URL_FRAG);
+                }}
+                actions={!isSetStrongerAuth && resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={filterSelectedApps}
+                onRowClick={(e: SyntheticEvent, app: ApplicationListItemInterface): void => {
+                    handleApplicationEdit(
+                        app.id,
+                        app.access,
+                        "#tab=" + ApplicationManagementConstants.SIGN_IN_METHOD_TAB_URL_FRAG
+                    );
                     onListItemClick && onListItemClick(e, app);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ applicationListConfig.enableTableHeaders }
-                transparent={ !(isLoading || isApplicationTemplateRequestLoading) && (showPlaceholders() !== null) }
-                data-componentid={ `${ componentId }-data-table` }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={applicationListConfig.enableTableHeaders}
+                transparent={!(isLoading || isApplicationTemplateRequestLoading) && showPlaceholders() !== null}
+                data-componentid={`${componentId}-data-table`}
             />
         </EmphasizedSegment>
     );
@@ -535,4 +537,3 @@ ConnectedApps.defaultProps = {
     selection: true,
     showListItemActions: true
 };
-

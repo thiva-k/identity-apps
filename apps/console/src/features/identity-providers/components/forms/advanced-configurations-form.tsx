@@ -56,14 +56,7 @@ interface AdvanceConfigurationsFormPropsInterface extends IdentityProviderAdvanc
 export const AdvanceConfigurationsForm: FunctionComponent<AdvanceConfigurationsFormPropsInterface> = (
     props: AdvanceConfigurationsFormPropsInterface
 ): ReactElement => {
-
-    const {
-        config,
-        onSubmit,
-        isReadOnly,
-        isSubmitting,
-        [ "data-testid" ]: testId
-    } = props;
+    const { config, onSubmit, isReadOnly, isSubmitting, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
@@ -82,93 +75,101 @@ export const AdvanceConfigurationsForm: FunctionComponent<AdvanceConfigurationsF
     };
 
     return (
-        <Forms onSubmit={ (values) => onSubmit(updateConfiguration(values)) }>
+        <Forms onSubmit={values => onSubmit(updateConfiguration(values))}>
             <Grid>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={8}>
                         <Field
                             name="federationHub"
                             label=""
-                            required={ false }
-                            requiredErrorMessage={ t("console:develop.features.authenticationProvider.forms.common." +
-                                "requiredErrorMessage") }
-                            value={ config?.isFederationHub ? ["federationHub"] : [] }
+                            required={false}
+                            requiredErrorMessage={t(
+                                "idp:develop.features.authenticationProvider.forms.common." + "requiredErrorMessage"
+                            )}
+                            value={config?.isFederationHub ? ["federationHub"] : []}
                             type="checkbox"
-                            children={ [
+                            children={[
                                 {
-                                    label: t("console:develop.features.authenticationProvider.forms.advancedConfigs." +
-                                        "federationHub.label"),
+                                    label: t(
+                                        "idp:develop.features.authenticationProvider.forms.advancedConfigs." +
+                                            "federationHub.label"
+                                    ),
                                     value: "federationHub"
                                 }
-                            ] }
+                            ]}
                             toggle
-                            data-testid={ `${ testId }-federation-hub` }
-                            readOnly={ isReadOnly }
+                            data-testid={`${testId}-federation-hub`}
+                            readOnly={isReadOnly}
                         />
                         <Hint>
-                            { t("console:develop.features.authenticationProvider.forms." +
-                                "advancedConfigs.federationHub.hint") }
+                            {t(
+                                "idp:develop.features.authenticationProvider.forms." +
+                                    "advancedConfigs.federationHub.hint"
+                            )}
                         </Hint>
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={8}>
                         <Field
                             name="homeRealmIdentifier"
-                            label={ t("console:develop.features.authenticationProvider.forms.advancedConfigs." +
-                                "homeRealmIdentifier.label") }
-                            required={ false }
+                            label={t(
+                                "idp:develop.features.authenticationProvider.forms.advancedConfigs." +
+                                    "homeRealmIdentifier.label"
+                            )}
+                            required={false}
                             requiredErrorMessage=""
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".advancedConfigs.homeRealmIdentifier.placeholder")
-                            }
+                            placeholder={t(
+                                "idp:develop.features.authenticationProvider.forms" +
+                                    ".advancedConfigs.homeRealmIdentifier.placeholder"
+                            )}
                             type="text"
-                            value={ config.homeRealmIdentifier }
-                            data-testid={ `${ testId }-home-realm-identifier` }
-                            readOnly={ isReadOnly }
+                            value={config.homeRealmIdentifier}
+                            data-testid={`${testId}-home-realm-identifier`}
+                            readOnly={isReadOnly}
                         />
                         <Hint>
-                            { t("console:develop.features.authenticationProvider" +
-                                ".forms.advancedConfigs.homeRealmIdentifier.hint") }
+                            {t(
+                                "idp:develop.features.authenticationProvider" +
+                                    ".forms.advancedConfigs.homeRealmIdentifier.hint"
+                            )}
                         </Hint>
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={8}>
                         <Field
                             name="alias"
-                            label={ t("console:develop.features.authenticationProvider" +
-                                ".forms.advancedConfigs.alias.label") }
-                            required={ false }
+                            label={t(
+                                "idp:develop.features.authenticationProvider" + ".forms.advancedConfigs.alias.label"
+                            )}
+                            required={false}
                             requiredErrorMessage=""
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".advancedConfigs.alias.placeholder")
-                            }
+                            placeholder={t(
+                                "idp:develop.features.authenticationProvider.forms" +
+                                    ".advancedConfigs.alias.placeholder"
+                            )}
                             type="text"
-                            value={ config.alias }
-                            data-testid={ `${ testId }-alias` }
-                            readOnly={ isReadOnly }
+                            value={config.alias}
+                            data-testid={`${testId}-alias`}
+                            readOnly={isReadOnly}
                         />
-                        <Hint>
-                            { t("console:develop.features.authenticationProvider.forms.advancedConfigs.alias.hint") }
-                        </Hint>
+                        <Hint>{t("idp:develop.features.authenticationProvider.forms.advancedConfigs.alias.hint")}</Hint>
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 8 }>
-                        <Show when={ AccessControlConstants.IDP_EDIT }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={8}>
+                        <Show when={AccessControlConstants.IDP_EDIT}>
                             <Button
                                 primary
                                 type="submit"
                                 size="small"
                                 className="form-button"
-                                loading={ isSubmitting }
-                                disabled={ isSubmitting }
-                                data-testid={ `${ testId }-update-button` }
+                                loading={isSubmitting}
+                                disabled={isSubmitting}
+                                data-testid={`${testId}-update-button`}
                             >
-                                { t("common:update") }
+                                {t("idp:update")}
                             </Button>
                         </Show>
                     </Grid.Column>

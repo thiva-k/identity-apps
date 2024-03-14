@@ -42,7 +42,7 @@ export interface AttributeMappingAddItemProps {
     onSubmit: (mapping: IdentityProviderCommonClaimMappingInterface) => void;
 }
 
-const toBits = (bool: boolean): number => bool ? 1 : 0;
+const toBits = (bool: boolean): number => (bool ? 1 : 0);
 
 const FORM_ID: string = "idp-attributes-mapping-list-item-form";
 
@@ -70,38 +70,31 @@ const FORM_ID: string = "idp-attributes-mapping-list-item-form";
 export const AttributeMappingAddItem: FunctionComponent<AttributeMappingAddItemProps> = (
     props: AttributeMappingAddItemProps
 ): ReactElement => {
-
-    const {
-        onSubmit,
-        availableAttributeList,
-        alreadyMappedAttributesList
-    } = props;
+    const { onSubmit, availableAttributeList, alreadyMappedAttributesList } = props;
 
     const { t } = useTranslation();
 
-    const [ copyOfAttrs, setCopyOfAttrs ] = useState<Array<IdentityProviderClaimInterface>>([]);
-    const [ mappedInputValue, setMappedInputValue ] = useState<string>();
-    const [ selectedLocalAttributeInputValue, setSelectedLocalAttributeInputValue ] = useState<string>();
-    const [ mappingHasError, setMappingHasError ] = useState<boolean>();
+    const [copyOfAttrs, setCopyOfAttrs] = useState<Array<IdentityProviderClaimInterface>>([]);
+    const [mappedInputValue, setMappedInputValue] = useState<string>();
+    const [selectedLocalAttributeInputValue, setSelectedLocalAttributeInputValue] = useState<string>();
+    const [mappingHasError, setMappingHasError] = useState<boolean>();
 
     useEffect(() => {
         if (availableAttributeList) {
-            const copy: IdentityProviderClaimInterface[] = [ ...availableAttributeList ];
-          
+            const copy: IdentityProviderClaimInterface[] = [...availableAttributeList];
+
             setCopyOfAttrs(copy);
         }
-    }, [ availableAttributeList ]);
+    }, [availableAttributeList]);
 
     const getListOfAvailableAttributes = () => {
         return copyOfAttrs.map((claim: IdentityProviderClaimInterface, index: number) => ({
             content: (
-                <Header as="h6" key={ `attribute-option-${ index }` }>
+                <Header as="h6" key={`attribute-option-${index}`}>
                     <Header.Content>
-                        { claim?.displayName }
+                        {claim?.displayName}
                         <Header.Subheader>
-                            <code className="inline-code compact transparent">
-                                { claim.uri }
-                            </code>
+                            <code className="inline-code compact transparent">{claim.uri}</code>
                         </Header.Subheader>
                     </Header.Content>
                 </Header>
@@ -122,14 +115,12 @@ export const AttributeMappingAddItem: FunctionComponent<AttributeMappingAddItemP
         // IdentityProviderCommonClaimMappingInterface
         // with the mapping value.
 
-        const mappedAttributes: IdentityProviderClaimInterface[] = [ ...copyOfAttrs ];
+        const mappedAttributes: IdentityProviderClaimInterface[] = [...copyOfAttrs];
 
         const newMapping: IdentityProviderCommonClaimMappingInterface = {
-            claim: mappedAttributes.find(
-                (claim: IdentityProviderClaimInterface) => claim.id === values.localClaimId
-            ),
+            claim: mappedAttributes.find((claim: IdentityProviderClaimInterface) => claim.id === values.localClaimId),
             mappedValue: values.mappedValue
-        } as IdentityProviderCommonClaimMappingInterface;    
+        } as IdentityProviderCommonClaimMappingInterface;
 
         onSubmit(newMapping);
 
@@ -140,33 +131,29 @@ export const AttributeMappingAddItem: FunctionComponent<AttributeMappingAddItemP
         form.resetFieldState("localClaimId");
         setMappedInputValue("");
         setSelectedLocalAttributeInputValue("");
-        
     };
 
     return (
-        <Form
-            id={ FORM_ID }
-            onSubmit={ onFormSub }
-            uncontrolledForm={ true }
-        >
+        <Form id={FORM_ID} onSubmit={onFormSub} uncontrolledForm={true}>
             <Grid>
-                <Grid.Row columns={ 2 } key={ 1 }>
-                    <Grid.Column width={ 8 } key={ 1 }>
+                <Grid.Row columns={2} key={1}>
+                    <Grid.Column width={8} key={1}>
                         <Field.Input
                             required
                             name="mappedValue"
                             inputType="identifier"
-                            maxLength={ 120 }
-                            minLength={ 1 }
-                            label={ t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                                    "externalAttributeInput.label")
-                            }
-                            placeholder={
-                                t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                                    "externalAttributeInput.placeHolder")
-                            }
+                            maxLength={120}
+                            minLength={1}
+                            label={t(
+                                "idp:develop.features.idp.forms.attributeSettings.attributeMapping." +
+                                    "externalAttributeInput.label"
+                            )}
+                            placeholder={t(
+                                "idp:develop.features.idp.forms.attributeSettings.attributeMapping." +
+                                    "externalAttributeInput.placeHolder"
+                            )}
                             ariaLabel="External IdP Attribute Mapping Value"
-                            validation={ (value: string) => {
+                            validation={(value: string) => {
                                 if (!value || !value.trim()) {
                                     setMappingHasError(true);
 
@@ -183,8 +170,10 @@ export const AttributeMappingAddItem: FunctionComponent<AttributeMappingAddItemP
                                  *
                                  * @see {@link https://datatracker.ietf.org/doc/html/rfc8409#section-4.1}
                                  */
-                                if (toBits(!FormValidation.url(value)) &
-                                    toBits(!FormValidation.isValidResourceName(value))) {
+                                if (
+                                    toBits(!FormValidation.url(value)) &
+                                    toBits(!FormValidation.isValidResourceName(value))
+                                ) {
                                     setMappingHasError(true);
 
                                     return FieldConstants.INVALID_RESOURCE_ERROR;
@@ -205,58 +194,59 @@ export const AttributeMappingAddItem: FunctionComponent<AttributeMappingAddItemP
                                     // editing mode...
                                     setMappingHasError(true);
 
-                                    return t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                                        "externalAttributeInput.existingErrorMessage");
+                                    return t(
+                                        "idp:develop.features.idp.forms.attributeSettings.attributeMapping." +
+                                            "externalAttributeInput.existingErrorMessage"
+                                    );
                                 }
                                 // If there's no errors.
                                 setMappingHasError(false);
 
                                 return undefined;
-                            } }
-                            listen={ (value: string) => setMappedInputValue(value) }
-                            width={ 16 }/>
+                            }}
+                            listen={(value: string) => setMappedInputValue(value)}
+                            width={16}
+                        />
                     </Grid.Column>
-                    <Grid.Column width={ 8 } key={ 2 }>
+                    <Grid.Column width={8} key={2}>
                         <Field.Dropdown
                             required
                             search
                             clearable
-                            width={ 16 }
-                            options={ getListOfAvailableAttributes() }
-                            label={ t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                                "attributeDropdown.label")
-                            }
+                            width={16}
+                            options={getListOfAvailableAttributes()}
+                            label={t(
+                                "idp:develop.features.idp.forms.attributeSettings.attributeMapping." +
+                                    "attributeDropdown.label"
+                            )}
                             ariaLabel="Local Claim Attribute"
                             name="localClaimId"
-                            placeholder={
-                                t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                                "attributeDropdown.placeHolder")
-                            }
-                            listen={ (value: string) => setSelectedLocalAttributeInputValue(value) }
-                            noResultsMessage={
-                                t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                                "attributeDropdown.noResultsMessage")
-                            }
+                            placeholder={t(
+                                "idp:develop.features.idp.forms.attributeSettings.attributeMapping." +
+                                    "attributeDropdown.placeHolder"
+                            )}
+                            listen={(value: string) => setSelectedLocalAttributeInputValue(value)}
+                            noResultsMessage={t(
+                                "idp:develop.features.idp.forms.attributeSettings.attributeMapping." +
+                                    "attributeDropdown.noResultsMessage"
+                            )}
                         />
                     </Grid.Column>
                 </Grid.Row>
-                <Grid.Row columns={ 1 } key={ 2 }>
-                    <Grid.Column width={ 16 } textAlign="right">
+                <Grid.Row columns={1} key={2}>
+                    <Grid.Column width={16} textAlign="right">
                         <Field.Button
-                            form={ FORM_ID }
-                            disabled={
-                                mappingHasError ||
-                                !mappedInputValue ||
-                                !selectedLocalAttributeInputValue
-                            }
+                            form={FORM_ID}
+                            disabled={mappingHasError || !mappedInputValue || !selectedLocalAttributeInputValue}
                             buttonType="primary_btn"
                             type="submit"
                             name="submit-button"
-                            label={
-                                t("console:develop.features.idp.forms.attributeSettings.attributeMapping." +
-                                    "addAttributeButtonLabel")
-                            }
-                            ariaLabel="Attribute Selection Form Submit Button"/>
+                            label={t(
+                                "idp:develop.features.idp.forms.attributeSettings.attributeMapping." +
+                                    "addAttributeButtonLabel"
+                            )}
+                            ariaLabel="Attribute Selection Form Submit Button"
+                        />
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

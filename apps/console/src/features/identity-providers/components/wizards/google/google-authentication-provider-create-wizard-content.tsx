@@ -90,12 +90,9 @@ const FORM_ID: string = "google-authenticator-wizard-form";
  * @param props - Props injected to the component.
  * @returns Functional component.
  */
-export const GoogleAuthenticationProviderCreateWizardContent: FunctionComponent<
-    GitHubAuthenticationProviderCreateWizardContentPropsInterface
-> = (
+export const GoogleAuthenticationProviderCreateWizardContent: FunctionComponent<GitHubAuthenticationProviderCreateWizardContentPropsInterface> = (
     props: GitHubAuthenticationProviderCreateWizardContentPropsInterface
 ): ReactElement => {
-
     const {
         triggerSubmission,
         triggerPrevious,
@@ -103,11 +100,11 @@ export const GoogleAuthenticationProviderCreateWizardContent: FunctionComponent<
         template,
         setTotalPage,
         onSubmit,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
-    const [ idpList, setIdPList ] = useState<IdentityProviderListResponseInterface>({});
-    const [ isIdPListRequestLoading, setIdPListRequestLoading ] = useState<boolean>(undefined);
+    const [idpList, setIdPList] = useState<IdentityProviderListResponseInterface>({});
+    const [isIdPListRequestLoading, setIdPListRequestLoading] = useState<boolean>(undefined);
 
     const { t } = useTranslation();
 
@@ -115,7 +112,6 @@ export const GoogleAuthenticationProviderCreateWizardContent: FunctionComponent<
      * Loads the identity provider authenticators on initial component load.
      */
     useEffect(() => {
-
         getIDPlist();
     }, []);
 
@@ -123,14 +119,13 @@ export const GoogleAuthenticationProviderCreateWizardContent: FunctionComponent<
      * Get Idp List.
      */
     const getIDPlist = (): void => {
-
         setIdPListRequestLoading(true);
 
         getIdentityProviderList(null, null, null)
-            .then((response) => {
+            .then(response => {
                 setIdPList(response);
             })
-            .catch((error) => {
+            .catch(error => {
                 handleGetIDPListCallError(error);
             })
             .finally(() => {
@@ -145,151 +140,136 @@ export const GoogleAuthenticationProviderCreateWizardContent: FunctionComponent<
      * @returns error msg if name is already taken.
      */
     const idpNameValidation = (value: string): string => {
-
         let nameExist = false;
 
         if (idpList?.count > 0) {
-            idpList?.identityProviders.map((idp) => {
+            idpList?.identityProviders.map(idp => {
                 if (idp?.name === value) {
                     nameExist = true;
                 }
             });
         }
         if (nameExist) {
-            return t("console:develop.features." +
-                "authenticationProvider.forms.generalDetails.name." +
-                "validations.duplicate");
+            return t(
+                "idp:develop.features." + "authenticationProvider.forms.generalDetails.name." + "validations.duplicate"
+            );
         }
     };
 
-    return (
-        (isIdPListRequestLoading !== undefined && isIdPListRequestLoading === false)
-            ? (
-                <Wizard
-                    id={ FORM_ID }
-                    initialValues={ { name: template?.idp?.name } }
-                    onSubmit={
-                        (values: GoogleAuthenticationProviderCreateWizardFormValuesInterface) => onSubmit(values)
+    return isIdPListRequestLoading !== undefined && isIdPListRequestLoading === false ? (
+        <Wizard
+            id={FORM_ID}
+            initialValues={{ name: template?.idp?.name }}
+            onSubmit={(values: GoogleAuthenticationProviderCreateWizardFormValuesInterface) => onSubmit(values)}
+            triggerSubmit={submitFunction => triggerSubmission(submitFunction)}
+            triggerPrevious={previousFunction => triggerPrevious(previousFunction)}
+            changePage={(step: number) => changePageNumber(step)}
+            setTotalPage={(step: number) => setTotalPage(step)}
+            data-testid={testId}
+        >
+            <WizardPage
+                validate={(values): any => {
+                    const errors: any = {};
+
+                    if (!values.name) {
+                        errors.name = t(
+                            "idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage"
+                        );
                     }
-                    triggerSubmit={ (submitFunction) => triggerSubmission(submitFunction) }
-                    triggerPrevious={ (previousFunction) => triggerPrevious(previousFunction) }
-                    changePage={ (step: number) => changePageNumber(step) }
-                    setTotalPage={ (step: number) => setTotalPage(step) }
-                    data-testid={ testId }
-                >
-                    <WizardPage
-                        validate={ (values): any => {
-                            const errors: any = {};
+                    if (!values.clientId) {
+                        errors.clientId = t(
+                            "idp:develop.features.authenticationProvider.forms.common" + ".requiredErrorMessage"
+                        );
+                    }
+                    if (!values.clientSecret) {
+                        errors.clientSecret = t(
+                            "idp:develop.features.authenticationProvider.forms" + ".common.requiredErrorMessage"
+                        );
+                    }
 
-                            if (!values.name) {
-                                errors.name = t("console:develop.features.authenticationProvider.forms.common" +
-                                    ".requiredErrorMessage");
-                            }
-                            if (!values.clientId) {
-                                errors.clientId = t("console:develop.features.authenticationProvider.forms.common" +
-                                    ".requiredErrorMessage");
-                            }
-                            if (!values.clientSecret) {
-                                errors.clientSecret = t("console:develop.features.authenticationProvider.forms" +
-                                    ".common.requiredErrorMessage");
-                            }
-
-                            return errors;
-                        } }
-                    >
-                        <Field.Input
-                            ariaLabel="Google IDP Name"
-                            inputType="name"
-                            name="name"
-                            label={
-                                t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.name.label")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms." +
-                                    "generalDetails.name.placeholder")
-                            }
-                            required={ true }
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.IDP_NAME_MIN_LENGTH as number
-                            }
-                            validation={ (value: string) => idpNameValidation(value) }
-                            data-testid={ `${ testId }-idp-name` }
-                            width={ 13 }
-                        />
-                        <Field.Input
-                            ariaLabel="Google Client ID"
-                            inputType="client_id"
-                            name="clientId"
-                            label={
-                                t("console:develop.features.authenticationProvider.templates.google" +
-                                    ".wizardHelp.clientId.heading")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.google.clientId.placeholder")
-                            }
-                            required={ true }
-                            message={
-                                t("console:develop.features.authenticationProvider." +
-                                    "forms.common.requiredErrorMessage")
-                            }
-                            type="text"
-                            autoComplete={ "" + Math.random() }
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_ID_MIN_LENGTH as number
-                            }
-                            data-testid={ `${ testId }-idp-client-id` }
-                            width={ 13 }
-                        />
-                        <Field.Input
-                            ariaLabel="Google Client Secret"
-                            inputType="password"
-                            className="addon-field-wrapper"
-                            name="clientSecret"
-                            label={
-                                t("console:develop.features.authenticationProvider.templates.google" +
-                                    ".wizardHelp.clientSecret.heading")
-                            }
-                            placeholder={
-                                t("console:develop.features.authenticationProvider.forms" +
-                                    ".authenticatorSettings.google.clientSecret.placeholder")
-                            }
-                            required={ true }
-                            message={
-                                t("console:develop.features.authenticationProvider." +
-                                    "forms.common.requiredErrorMessage")
-                            }
-                            type="password"
-                            hidePassword={ t("common:hide") }
-                            showPassword={ t("common:show") }
-                            autoComplete={ "" + Math.random() }
-                            maxLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MAX_LENGTH as number
-                            }
-                            minLength={
-                                IdentityProviderManagementConstants
-                                    .AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS.CLIENT_SECRET_MIN_LENGTH as number
-                            }
-                            data-testid={ `${ testId }-idp-client-secret` }
-                            width={ 13 }
-                        />
-                    </WizardPage>
-                </Wizard>
-            )
-            : null
-    );
+                    return errors;
+                }}
+            >
+                <Field.Input
+                    ariaLabel="Google IDP Name"
+                    inputType="name"
+                    name="name"
+                    label={t("idp:develop.features.authenticationProvider.forms." + "generalDetails.name.label")}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms." + "generalDetails.name.placeholder"
+                    )}
+                    required={true}
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_NAME_MAX_LENGTH as number
+                    }
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .IDP_NAME_MIN_LENGTH as number
+                    }
+                    validation={(value: string) => idpNameValidation(value)}
+                    data-testid={`${testId}-idp-name`}
+                    width={13}
+                />
+                <Field.Input
+                    ariaLabel="Google Client ID"
+                    inputType="client_id"
+                    name="clientId"
+                    label={t(
+                        "idp:develop.features.authenticationProvider.templates.google" + ".wizardHelp.clientId.heading"
+                    )}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.google.clientId.placeholder"
+                    )}
+                    required={true}
+                    message={t("idp:develop.features.authenticationProvider." + "forms.common.requiredErrorMessage")}
+                    type="text"
+                    autoComplete={"" + Math.random()}
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_ID_MAX_LENGTH as number
+                    }
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_ID_MIN_LENGTH as number
+                    }
+                    data-testid={`${testId}-idp-client-id`}
+                    width={13}
+                />
+                <Field.Input
+                    ariaLabel="Google Client Secret"
+                    inputType="password"
+                    className="addon-field-wrapper"
+                    name="clientSecret"
+                    label={t(
+                        "idp:develop.features.authenticationProvider.templates.google" +
+                            ".wizardHelp.clientSecret.heading"
+                    )}
+                    placeholder={t(
+                        "idp:develop.features.authenticationProvider.forms" +
+                            ".authenticatorSettings.google.clientSecret.placeholder"
+                    )}
+                    required={true}
+                    message={t("idp:develop.features.authenticationProvider." + "forms.common.requiredErrorMessage")}
+                    type="password"
+                    hidePassword={t("idp:hide")}
+                    showPassword={t("idp:show")}
+                    autoComplete={"" + Math.random()}
+                    maxLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_SECRET_MAX_LENGTH as number
+                    }
+                    minLength={
+                        IdentityProviderManagementConstants.AUTHENTICATOR_SETTINGS_FORM_FIELD_CONSTRAINTS
+                            .CLIENT_SECRET_MIN_LENGTH as number
+                    }
+                    data-testid={`${testId}-idp-client-secret`}
+                    width={13}
+                />
+            </WizardPage>
+        </Wizard>
+    ) : null;
 };
 
 /**

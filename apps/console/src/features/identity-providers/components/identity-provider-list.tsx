@@ -114,7 +114,6 @@ interface IdentityProviderListPropsInterface extends LoadableComponentInterface,
 export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsInterface> = (
     props: IdentityProviderListPropsInterface
 ): ReactElement => {
-
     const {
         advancedSearch,
         defaultListItemLimit,
@@ -127,18 +126,19 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
         searchQuery,
         selection,
         showListItemActions,
-        [ "data-testid" ]: testId
+        ["data-testid"]: testId
     } = props;
 
     const dispatch = useDispatch();
 
-    const [ showDeleteConfirmationModal, setShowDeleteConfirmationModal ] = useState<boolean>(false);
-    const [ deletingIDP, setDeletingIDP ] = useState<StrictIdentityProviderInterface>(undefined);
-    const [ connectedApps, setConnectedApps ] = useState<string[]>(undefined);
-    const [ showDeleteErrorDueToConnectedAppsModal, setShowDeleteErrorDueToConnectedAppsModal ] =
-        useState<boolean>(false);
-    const [ loading, setLoading ] = useState(false);
-    const [ isAppsLoading, setIsAppsLoading ] = useState(true);
+    const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] = useState<boolean>(false);
+    const [deletingIDP, setDeletingIDP] = useState<StrictIdentityProviderInterface>(undefined);
+    const [connectedApps, setConnectedApps] = useState<string[]>(undefined);
+    const [showDeleteErrorDueToConnectedAppsModal, setShowDeleteErrorDueToConnectedAppsModal] = useState<boolean>(
+        false
+    );
+    const [loading, setLoading] = useState(false);
+    const [isAppsLoading, setIsAppsLoading] = useState(true);
 
     const { t } = useTranslation();
 
@@ -151,7 +151,11 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
      * @param idpId - Identity provider id.
      */
     const handleIdentityProviderEdit = (idpId: string): void => {
-        history.push(AppConstants.getPaths().get("IDP_EDIT").replace(":id", idpId));
+        history.push(
+            AppConstants.getPaths()
+                .get("IDP_EDIT")
+                .replace(":id", idpId)
+        );
     };
 
     /**
@@ -160,7 +164,6 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
      * @param idpId - Identity provider id.
      */
     const handleIdentityProviderDeleteAction = (idpId: string): void => {
-
         setIsAppsLoading(true);
         getIDPConnectedApps(idpId)
             .then(async (response: ConnectedAppsInterface) => {
@@ -174,31 +177,38 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
                     });
 
                     const results: ApplicationBasicInterface[] = await Promise.all(
-                        appRequests.map(response => response.catch(error => {
-                            dispatch(addAlert({
-                                description: error?.description
-                                    || "Error occurred while trying to retrieve connected applications.",
-                                level: AlertLevels.ERROR,
-                                message: error?.message || "Error Occurred."
-                            }));
-                        }))
+                        appRequests.map(response =>
+                            response.catch(error => {
+                                dispatch(
+                                    addAlert({
+                                        description:
+                                            error?.description ||
+                                            "Error occurred while trying to retrieve connected applications.",
+                                        level: AlertLevels.ERROR,
+                                        message: error?.message || "Error Occurred."
+                                    })
+                                );
+                            })
+                        )
                     );
 
                     const appNames: string[] = [];
 
-                    results.forEach((app) => {
+                    results.forEach(app => {
                         appNames.push(app.name);
                     });
                     setConnectedApps(appNames);
                 }
             })
-            .catch((error) => {
-                dispatch(addAlert({
-                    description: error?.description
-                        || "Error occurred while trying to retrieve connected applications.",
-                    level: AlertLevels.ERROR,
-                    message: error?.message || "Error Occurred."
-                }));
+            .catch(error => {
+                dispatch(
+                    addAlert({
+                        description:
+                            error?.description || "Error occurred while trying to retrieve connected applications.",
+                        level: AlertLevels.ERROR,
+                        message: error?.message || "Error Occurred."
+                    })
+                );
             })
             .finally(() => {
                 setIsAppsLoading(false);
@@ -211,17 +221,18 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
      * @param idpId - Identity provider id.
      */
     const handleIdentityProviderDelete = (idpId: string): void => {
-
         setLoading(true);
         deleteIdentityProvider(idpId)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.idp.notifications.deleteIDP.success.description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.idp.notifications.deleteIDP.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t("idp:develop.features.idp.notifications.deleteIDP.success.description"),
+                        level: AlertLevels.SUCCESS,
+                        message: t("idp:develop.features.idp.notifications.deleteIDP.success.message")
+                    })
+                );
             })
-            .catch((error) => {
+            .catch(error => {
                 handleIDPDeleteError(error);
             })
             .finally(() => {
@@ -242,18 +253,17 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
         if (searchQuery) {
             return (
                 <EmptyPlaceholder
-                    action={ (
-                        <LinkButton onClick={ onSearchQueryClear }>Clear search query</LinkButton>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().emptySearch }
+                    action={<LinkButton onClick={onSearchQueryClear}>Clear search query</LinkButton>}
+                    image={getEmptyPlaceholderIllustrations().emptySearch}
                     imageSize="tiny"
-                    title={ t("console:develop.features.idp.placeHolders.emptyIDPSearchResults.title") }
-                    subtitle={ [
-                        t("console:develop.features.idp.placeHolders.emptyIDPSearchResults.subtitles.0",
-                            { searchQuery: searchQuery }),
-                        t("console:develop.features.idp.placeHolders.emptyIDPSearchResults.subtitles.1")
-                    ] }
-                    data-testid={ `${ testId }-empty-search-placeholder` }
+                    title={t("idp:develop.features.idp.placeHolders.emptyIDPSearchResults.title")}
+                    subtitle={[
+                        t("idp:develop.features.idp.placeHolders.emptyIDPSearchResults.subtitles.0", {
+                            searchQuery: searchQuery
+                        }),
+                        t("idp:develop.features.idp.placeHolders.emptyIDPSearchResults.subtitles.1")
+                    ]}
+                    data-testid={`${testId}-empty-search-placeholder`}
                 />
             );
         }
@@ -262,22 +272,20 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
             return (
                 <EmptyPlaceholder
                     className="list-placeholder"
-                    action={ onEmptyListPlaceholderActionClick && (
-                        <Show when={ AccessControlConstants.IDP_WRITE }>
-                            <PrimaryButton
-                                onClick={ onEmptyListPlaceholderActionClick }
-                            >
-                                <Icon name="add"/>
-                                { t("console:develop.features.idp.buttons.addIDP") }
-                            </PrimaryButton>
-                        </Show>
-                    ) }
-                    image={ getEmptyPlaceholderIllustrations().newList }
+                    action={
+                        onEmptyListPlaceholderActionClick && (
+                            <Show when={AccessControlConstants.IDP_WRITE}>
+                                <PrimaryButton onClick={onEmptyListPlaceholderActionClick}>
+                                    <Icon name="add" />
+                                    {t("idp:develop.features.idp.buttons.addIDP")}
+                                </PrimaryButton>
+                            </Show>
+                        )
+                    }
+                    image={getEmptyPlaceholderIllustrations().newList}
                     imageSize="tiny"
-                    subtitle={ [
-                        t("console:develop.features.idp.placeHolders.emptyIDPList.subtitles.0")
-                    ] }
-                    data-testid={ `${ testId }-empty-placeholder` }
+                    subtitle={[t("idp:develop.features.idp.placeHolders.emptyIDPList.subtitles.0")]}
+                    data-testid={`${testId}-empty-placeholder`}
                 />
             );
         }
@@ -298,61 +306,49 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
                 id: "name",
                 key: "name",
                 render: (idp: IdentityProviderInterface): ReactNode => {
-                    const isOrgIdp: boolean = (idp.federatedAuthenticators.defaultAuthenticatorId ===
-                        IdentityProviderManagementConstants.ORGANIZATION_ENTERPRISE_AUTHENTICATOR_ID);
+                    const isOrgIdp: boolean =
+                        idp.federatedAuthenticators.defaultAuthenticatorId ===
+                        IdentityProviderManagementConstants.ORGANIZATION_ENTERPRISE_AUTHENTICATOR_ID;
 
                     return (
-                        <Header
-                            image
-                            as="h6"
-                            className="header-with-icon"
-                            data-testid={ `${testId}-item-heading` }
-                        >
-                            {
-                                idp.image
-                                    ? (
-                                        <AppAvatar
+                        <Header image as="h6" className="header-with-icon" data-testid={`${testId}-item-heading`}>
+                            {idp.image ? (
+                                <AppAvatar
+                                    size="mini"
+                                    name={idp.name}
+                                    image={idp.image}
+                                    spaced="right"
+                                    data-testid={`${testId}-item-image`}
+                                />
+                            ) : (
+                                <AppAvatar
+                                    image={
+                                        <AnimatedAvatar
+                                            name={idp.name}
                                             size="mini"
-                                            name={ idp.name }
-                                            image={ idp.image }
-                                            spaced="right"
-                                            data-testid={ `${testId}-item-image` }
+                                            data-testid={`${testId}-item-image-inner`}
                                         />
-                                    )
-                                    : (
-                                        <AppAvatar
-                                            image={ (
-                                                <AnimatedAvatar
-                                                    name={ idp.name }
-                                                    size="mini"
-                                                    data-testid={ `${testId}-item-image-inner` }
-                                                />
-                                            ) }
-                                            size="mini"
-                                            spaced="right"
-                                            data-testid={ `${testId}-item-image` }
-                                        />
-                                    )
-                            }
+                                    }
+                                    size="mini"
+                                    spaced="right"
+                                    data-testid={`${testId}-item-image`}
+                                />
+                            )}
                             <Header.Content>
-                                { idp.name }
-                                {
-                                    isOrgIdp && (
-                                        <Label
-                                            size="mini"
-                                            color="teal">
-                                            Organization IDP
-                                        </Label>
-                                    )
-                                }
-                                <Header.Subheader data-testid={ `${testId}-item-sub-heading` }>
-                                    { idp.description }
+                                {idp.name}
+                                {isOrgIdp && (
+                                    <Label size="mini" color="teal">
+                                        Organization IDP
+                                    </Label>
+                                )}
+                                <Header.Subheader data-testid={`${testId}-item-sub-heading`}>
+                                    {idp.description}
                                 </Header.Subheader>
                             </Header.Content>
                         </Header>
                     );
                 },
-                title: t("console:develop.features.idp.list.name")
+                title: t("idp:develop.features.idp.list.name")
             },
             {
                 allowToggleVisibility: false,
@@ -360,7 +356,7 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
                 id: "actions",
                 key: "actions",
                 textAlign: "right",
-                title: t("console:develop.features.idp.list.actions")
+                title: t("idp:develop.features.idp.list.actions")
             }
         ];
     };
@@ -377,32 +373,41 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
 
         return [
             {
-                "data-testid": `${ testId }-item-edit-button`,
+                "data-testid": `${testId}-item-edit-button`,
                 hidden: (): boolean => false,
                 icon: (): SemanticICONS =>
-                    hasRequiredScopes(featureConfig?.identityProviders,
-                        featureConfig?.identityProviders?.scopes?.update, allowedScopes)
+                    hasRequiredScopes(
+                        featureConfig?.identityProviders,
+                        featureConfig?.identityProviders?.scopes?.update,
+                        allowedScopes
+                    )
                         ? "pencil alternate"
                         : "eye",
                 onClick: (e: SyntheticEvent, idp: IdentityProviderInterface): void =>
                     handleIdentityProviderEdit(idp.id),
                 popupText: (): string =>
-                    hasRequiredScopes(featureConfig?.identityProviders,
-                        featureConfig?.identityProviders?.scopes?.update, allowedScopes)
-                        ? t("common:edit")
-                        : t("common:view"),
+                    hasRequiredScopes(
+                        featureConfig?.identityProviders,
+                        featureConfig?.identityProviders?.scopes?.update,
+                        allowedScopes
+                    )
+                        ? t("idp:edit")
+                        : t("idp:view"),
                 renderer: "semantic-icon"
             },
             {
-                "data-testid": `${ testId }-item-delete-button`,
+                "data-testid": `${testId}-item-delete-button`,
                 hidden: (idp: IdentityProviderInterface): boolean =>
-                    IdentityProviderManagementConstants.DELETING_FORBIDDEN_IDPS.includes(idp.name)
-                    || !hasRequiredScopes(featureConfig?.identityProviders,
-                        featureConfig?.identityProviders?.scopes?.delete, allowedScopes),
+                    IdentityProviderManagementConstants.DELETING_FORBIDDEN_IDPS.includes(idp.name) ||
+                    !hasRequiredScopes(
+                        featureConfig?.identityProviders,
+                        featureConfig?.identityProviders?.scopes?.delete,
+                        allowedScopes
+                    ),
                 icon: (): SemanticICONS => "trash alternate",
                 onClick: (e: SyntheticEvent, idp: IdentityProviderInterface): void =>
                     handleIdentityProviderDeleteAction(idp.id),
-                popupText: (): string => t("common:delete"),
+                popupText: (): string => t("idp:delete"),
                 renderer: "semantic-icon"
             }
         ];
@@ -412,99 +417,89 @@ export const IdentityProviderList: FunctionComponent<IdentityProviderListPropsIn
         <>
             <DataTable<IdentityProviderInterface>
                 className="identity-providers-table"
-                externalSearch={ advancedSearch }
-                isLoading={ isLoading }
-                loadingStateOptions={ {
+                externalSearch={advancedSearch}
+                isLoading={isLoading}
+                loadingStateOptions={{
                     count: defaultListItemLimit ?? UIConstants.DEFAULT_RESOURCE_LIST_ITEM_LIMIT,
                     imageType: "square"
-                } }
-                actions={ resolveTableActions()  }
-                columns={ resolveTableColumns() }
-                data={ list?.identityProviders?.filter((idp: IdentityProviderInterface) => idp.name !== "LOCAL") }
-                onRowClick={ (e: SyntheticEvent, idp: IdentityProviderInterface): void => {
+                }}
+                actions={resolveTableActions()}
+                columns={resolveTableColumns()}
+                data={list?.identityProviders?.filter((idp: IdentityProviderInterface) => idp.name !== "LOCAL")}
+                onRowClick={(e: SyntheticEvent, idp: IdentityProviderInterface): void => {
                     handleIdentityProviderEdit(idp.id);
                     onListItemClick && onListItemClick(e, idp);
-                } }
-                placeholders={ showPlaceholders() }
-                selectable={ selection }
-                showHeader={ false }
-                transparent={ !isLoading && (showPlaceholders() !== null) }
-                data-testid={ testId }
+                }}
+                placeholders={showPlaceholders()}
+                selectable={selection}
+                showHeader={false}
+                transparent={!isLoading && showPlaceholders() !== null}
+                data-testid={testId}
             />
-            {
-                deletingIDP && (
-                    <ConfirmationModal
-                        primaryActionLoading={ loading }
-                        onClose={ (): void => setShowDeleteConfirmationModal(false) }
-                        type="negative"
-                        open={ showDeleteConfirmationModal }
-                        assertion={ deletingIDP?.name }
-                        assertionHint={ t("console:develop.features.authenticationProvider."+
-                        "confirmations.deleteIDP.assertionHint") }
-                        assertionType="checkbox"
-                        primaryAction={ t("common:confirm") }
-                        secondaryAction={ t("common:cancel") }
-                        onSecondaryActionClick={ (): void => setShowDeleteConfirmationModal(false) }
-                        onPrimaryActionClick={ (): void => handleIdentityProviderDelete(deletingIDP.id) }
-                        data-testid={ `${ testId }-delete-confirmation-modal` }
-                        closeOnDimmerClick={ false }
+            {deletingIDP && (
+                <ConfirmationModal
+                    primaryActionLoading={loading}
+                    onClose={(): void => setShowDeleteConfirmationModal(false)}
+                    type="negative"
+                    open={showDeleteConfirmationModal}
+                    assertion={deletingIDP?.name}
+                    assertionHint={t(
+                        "idp:develop.features.authenticationProvider." + "confirmations.deleteIDP.assertionHint"
+                    )}
+                    assertionType="checkbox"
+                    primaryAction={t("idp:confirm")}
+                    secondaryAction={t("idp:cancel")}
+                    onSecondaryActionClick={(): void => setShowDeleteConfirmationModal(false)}
+                    onPrimaryActionClick={(): void => handleIdentityProviderDelete(deletingIDP.id)}
+                    data-testid={`${testId}-delete-confirmation-modal`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-delete-confirmation-modal-header`}>
+                        {t("idp:develop.features.idp.confirmations.deleteIDP.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message
+                        attached
+                        negative
+                        data-testid={`${testId}-delete-confirmation-modal-message`}
                     >
-                        <ConfirmationModal.Header data-testid={ `${ testId }-delete-confirmation-modal-header` }>
-                            { t("console:develop.features.idp.confirmations.deleteIDP.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${ testId }-delete-confirmation-modal-message` }
-                        >
-                            { t("console:develop.features.idp.confirmations.deleteIDP.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-testid={ `${ testId }-delete-confirmation-modal-content` }>
-                            { t("console:develop.features.idp.confirmations.deleteIDP.content") }
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
-            {
-                showDeleteErrorDueToConnectedAppsModal && (
-                    <ConfirmationModal
-                        onClose={ (): void => setShowDeleteErrorDueToConnectedAppsModal(false) }
-                        type="negative"
-                        open={ showDeleteErrorDueToConnectedAppsModal }
-                        secondaryAction={ t("common:close") }
-                        onSecondaryActionClick={ (): void => setShowDeleteErrorDueToConnectedAppsModal(false) }
-                        data-testid={ `${ testId }-delete-idp-confirmation` }
-                        closeOnDimmerClick={ false }
-                    >
-                        <ConfirmationModal.Header data-testid={ `${ testId }-delete-idp-confirmation` }>
-                            { t("console:develop.features.idp.confirmations.deleteIDPWithConnectedApps.header") }
-                        </ConfirmationModal.Header>
-                        <ConfirmationModal.Message
-                            attached
-                            negative
-                            data-testid={ `${ testId }-delete-idp-confirmation` }
-                        >
-                            { t("console:develop.features.idp.confirmations.deleteIDPWithConnectedApps.message") }
-                        </ConfirmationModal.Message>
-                        <ConfirmationModal.Content data-testid={ `${ testId }-delete-idp-confirmation` }>
-                            { t("console:develop.features.idp.confirmations.deleteIDPWithConnectedApps.content") }
-                            <Divider hidden />
-                            <List ordered className="ml-6">
-                                {
-                                    isAppsLoading ? (
-                                        <ContentLoader/>
-                                    ) :
-                                        connectedApps?.map((app, index) => {
-                                            return (
-                                                <List.Item key={ index }>{ app }</List.Item>
-                                            );
-                                        })
-                                }
-                            </List>
-                        </ConfirmationModal.Content>
-                    </ConfirmationModal>
-                )
-            }
+                        {t("idp:develop.features.idp.confirmations.deleteIDP.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-delete-confirmation-modal-content`}>
+                        {t("idp:develop.features.idp.confirmations.deleteIDP.content")}
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
+            {showDeleteErrorDueToConnectedAppsModal && (
+                <ConfirmationModal
+                    onClose={(): void => setShowDeleteErrorDueToConnectedAppsModal(false)}
+                    type="negative"
+                    open={showDeleteErrorDueToConnectedAppsModal}
+                    secondaryAction={t("idp:close")}
+                    onSecondaryActionClick={(): void => setShowDeleteErrorDueToConnectedAppsModal(false)}
+                    data-testid={`${testId}-delete-idp-confirmation`}
+                    closeOnDimmerClick={false}
+                >
+                    <ConfirmationModal.Header data-testid={`${testId}-delete-idp-confirmation`}>
+                        {t("idp:develop.features.idp.confirmations.deleteIDPWithConnectedApps.header")}
+                    </ConfirmationModal.Header>
+                    <ConfirmationModal.Message attached negative data-testid={`${testId}-delete-idp-confirmation`}>
+                        {t("idp:develop.features.idp.confirmations.deleteIDPWithConnectedApps.message")}
+                    </ConfirmationModal.Message>
+                    <ConfirmationModal.Content data-testid={`${testId}-delete-idp-confirmation`}>
+                        {t("idp:develop.features.idp.confirmations.deleteIDPWithConnectedApps.content")}
+                        <Divider hidden />
+                        <List ordered className="ml-6">
+                            {isAppsLoading ? (
+                                <ContentLoader />
+                            ) : (
+                                connectedApps?.map((app, index) => {
+                                    return <List.Item key={index}>{app}</List.Item>;
+                                })
+                            )}
+                        </List>
+                    </ConfirmationModal.Content>
+                </ConfirmationModal>
+            )}
         </>
     );
 };

@@ -38,32 +38,24 @@ interface OutboundProvisioningConnectorsPropsInterface extends TestableComponent
 export const OutboundProvisioningConnectors: FunctionComponent<OutboundProvisioningConnectorsPropsInterface> = (
     props: OutboundProvisioningConnectorsPropsInterface
 ): ReactElement => {
-
-    const {
-        initialSelection,
-        onSubmit,
-        triggerSubmit,
-        [ "data-testid" ]: testId
-    } = props;
+    const { initialSelection, onSubmit, triggerSubmit, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
-    const [
-        selectedConnector,
-        setSelectedConnector
-    ] = useState<OutboundProvisioningConnectorListItemInterface>(undefined);
+    const [selectedConnector, setSelectedConnector] = useState<OutboundProvisioningConnectorListItemInterface>(
+        undefined
+    );
 
     /**
      * Select the connector instance based on the initial selection.
      */
     useEffect(() => {
-
         if (!(OutboundConnectors && Array.isArray(OutboundConnectors) && OutboundConnectors.length > 0)) {
             return;
         }
 
-        setSelectedConnector(OutboundConnectors.find((connector) => initialSelection === connector.connectorId));
-    }, [ initialSelection ]);
+        setSelectedConnector(OutboundConnectors.find(connector => initialSelection === connector.connectorId));
+    }, [initialSelection]);
 
     /**
      * Handles inbound protocol selection.
@@ -76,49 +68,51 @@ export const OutboundProvisioningConnectors: FunctionComponent<OutboundProvision
 
     return (
         <Forms
-            onSubmit={ (): void => {
+            onSubmit={(): void => {
                 onSubmit({
                     connectorId: selectedConnector?.connectorId
                 });
-            } }
-            submitState={ triggerSubmit }
+            }}
+            submitState={triggerSubmit}
         >
             <Grid>
-                <Grid.Row columns={ 1 }>
-                    <Grid.Column mobile={ 16 } tablet={ 16 } computer={ 16 }>
+                <Grid.Row columns={1}>
+                    <Grid.Column mobile={16} tablet={16} computer={16}>
                         <Heading as="h4">
-                            { t("console:develop.features.authenticationProvider.wizards." +
-                                "addProvisioningConnector.steps." +
-                                "connectorSelection.defaultSetup.title") }
+                            {t(
+                                "idp:develop.features.authenticationProvider.wizards." +
+                                    "addProvisioningConnector.steps." +
+                                    "connectorSelection.defaultSetup.title"
+                            )}
                             <Heading subHeading as="h6">
-                                { t("console:develop.features.authenticationProvider." +
-                                    "wizards.addProvisioningConnector.steps." +
-                                    "connectorSelection.defaultSetup.subTitle") }
+                                {t(
+                                    "idp:develop.features.authenticationProvider." +
+                                        "wizards.addProvisioningConnector.steps." +
+                                        "connectorSelection.defaultSetup.subTitle"
+                                )}
                             </Heading>
                         </Heading>
-                            {
-                                OutboundConnectors && OutboundConnectors.length > 0 ? (
-                                    OutboundConnectors.map((connector, index: number) => {
-                                        return (
-                                            <SelectionCard
-                                                inline
-                                                key={ index }
-                                                header={ connector.displayName }
-                                                image={ connector.icon }
-                                                onClick={ (): void => handleConnectorSelection(connector) }
-                                                selected={
-                                                    selectedConnector
-                                                        ? selectedConnector.connectorId === connector.connectorId
-                                                        : index === 0
-                                                }
-                                                size="small"
-                                                data-testid={ `${ testId }-connector-${ index }` }
-                                            />
-                                        );
-                                    })
-                                ) : null
-                            }
-                        </Grid.Column>
+                        {OutboundConnectors && OutboundConnectors.length > 0
+                            ? OutboundConnectors.map((connector, index: number) => {
+                                  return (
+                                      <SelectionCard
+                                          inline
+                                          key={index}
+                                          header={connector.displayName}
+                                          image={connector.icon}
+                                          onClick={(): void => handleConnectorSelection(connector)}
+                                          selected={
+                                              selectedConnector
+                                                  ? selectedConnector.connectorId === connector.connectorId
+                                                  : index === 0
+                                          }
+                                          size="small"
+                                          data-testid={`${testId}-connector-${index}`}
+                                      />
+                                  );
+                              })
+                            : null}
+                    </Grid.Column>
                 </Grid.Row>
             </Grid>
         </Forms>

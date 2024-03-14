@@ -28,7 +28,7 @@ import { AppState, ConfigReducerStateInterface } from "../../../../../core";
 /**
  * Prop types of the component.
  */
-type MicrosoftIDPCreateWizardHelpPropsInterface = TestableComponentInterface
+type MicrosoftIDPCreateWizardHelpPropsInterface = TestableComponentInterface;
 
 /**
  * Help content for the custom IDP template creation wizard.
@@ -39,60 +39,57 @@ type MicrosoftIDPCreateWizardHelpPropsInterface = TestableComponentInterface
 const MicrosoftIDPCreateWizardHelp: FunctionComponent<MicrosoftIDPCreateWizardHelpPropsInterface> = (
     props: MicrosoftIDPCreateWizardHelpPropsInterface
 ): ReactElement => {
-
-    const {
-        [ "data-testid" ]: testId
-    } = props;
+    const { ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
     const { getLink } = useDocumentation();
 
     const config: ConfigReducerStateInterface = useSelector((state: AppState) => state.config);
 
-    const [ useNewConnectionsView, setUseNewConnectionsView ] = useState<boolean>(undefined);
+    const [useNewConnectionsView, setUseNewConnectionsView] = useState<boolean>(undefined);
 
     /**
      * Checks if the listing view defined in the config is the new connections view.
      */
     useEffect(() => {
-
         if (useNewConnectionsView !== undefined) {
             return;
         }
 
         setUseNewConnectionsView(identityProviderConfig.useNewConnectionsView);
-    }, [ identityProviderConfig ]);
+    }, [identityProviderConfig]);
 
     return (
-        <div data-testid={ testId }>
+        <div data-testid={testId}>
             <Message
                 type="info"
-                header={
-                    t("console:develop.features.authenticationProvider.templates.microsoft.wizardHelp." +
-                        "preRequisites.heading")
-                }
+                header={t(
+                    "idp:develop.features.authenticationProvider.templates.microsoft.wizardHelp." +
+                        "preRequisites.heading"
+                )}
                 content={
-                    (<>
+                    <>
                         <p>
                             <Trans
                                 i18nKey={
-                                    "console:develop.features.authenticationProvider.templates.microsoft.wizardHelp." +
+                                    "idp:develop.features.authenticationProvider.templates.microsoft.wizardHelp." +
                                     "preRequisites.getCredentials"
                                 }
                             >
-                                Before you begin, create an <strong>OAuth credential</strong> on the <DocumentationLink
-                                    link={
-                                        getLink("develop.connections.newConnection.microsoft.help.developerConsole")
-                                    }
+                                Before you begin, create an <strong>OAuth credential</strong> on the{" "}
+                                <DocumentationLink
+                                    link={getLink("develop.connections.newConnection.microsoft.help.developerConsole")}
                                     showEmptyLinkText
-                                >on Microsoft</DocumentationLink>, and obtain a <strong>Client ID & secret</strong>.
+                                >
+                                    on Microsoft
+                                </DocumentationLink>
+                                , and obtain a <strong>Client ID & secret</strong>.
                             </Trans>
                         </p>
                         <p>
-
                             <Trans
                                 i18nKey={
-                                    "console:develop.features.authenticationProvider.templates.microsoft.wizardHelp" +
+                                    "idp:develop.features.authenticationProvider.templates.microsoft.wizardHelp" +
                                     ".preRequisites.configureRedirectURL"
                                 }
                             >
@@ -101,48 +98,47 @@ const MicrosoftIDPCreateWizardHelp: FunctionComponent<MicrosoftIDPCreateWizardHe
 
                             <CopyInputField
                                 className="copy-input-dark spaced"
-                                value={ config?.deployment?.customServerHost + "/commonauth" }
+                                value={config?.deployment?.customServerHost + "/commonauth"}
                             />
 
                             <DocumentationLink
-                                link={ getLink("develop.connections.newConnection.microsoft.help.configureOAuth") }
+                                link={getLink("develop.connections.newConnection.microsoft.help.configureOAuth")}
                                 showEmptyLinkText
                             >
-                                {
-                                    t("console:develop.features.authenticationProvider.templates.microsoft.wizardHelp" +
-                                        ".preRequisites.configureOAuthApps")
-                                }
+                                {t(
+                                    "idp:develop.features.authenticationProvider.templates.microsoft.wizardHelp" +
+                                        ".preRequisites.configureOAuthApps"
+                                )}
                             </DocumentationLink>
                         </p>
-                    </>)
+                    </>
                 }
             />
 
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.microsoft" +
-                        ".wizardHelp.name.heading")
-                }
+                {t("idp:develop.features.authenticationProvider.templates.microsoft" + ".wizardHelp.name.heading")}
             </Heading>
             <p>
-                {
-                    useNewConnectionsView
-                        ? t("console:develop.features.authenticationProvider.templates.microsoft." +
-                            "wizardHelp.name.connectionDescription")
-                        : t("console:develop.features.authenticationProvider.templates.microsoft." +
-                            "wizardHelp.name.idpDescription")
-                }
+                {useNewConnectionsView
+                    ? t(
+                          "idp:develop.features.authenticationProvider.templates.microsoft." +
+                              "wizardHelp.name.connectionDescription"
+                      )
+                    : t(
+                          "idp:develop.features.authenticationProvider.templates.microsoft." +
+                              "wizardHelp.name.idpDescription"
+                      )}
             </p>
 
-            <Divider/>
+            <Divider />
 
             <Heading as="h5">
-                { t("console:develop.features.authenticationProvider.templates.microsoft.wizardHelp.clientId.heading") }
+                {t("idp:develop.features.authenticationProvider.templates.microsoft.wizardHelp.clientId.heading")}
             </Heading>
             <p>
                 <Trans
                     i18nKey={
-                        "console:develop.features.authenticationProvider.templates.microsoft" +
+                        "idp:develop.features.authenticationProvider.templates.microsoft" +
                         ".wizardHelp.clientId.description"
                     }
                 >
@@ -150,18 +146,18 @@ const MicrosoftIDPCreateWizardHelp: FunctionComponent<MicrosoftIDPCreateWizardHe
                 </Trans>
             </p>
 
-            <Divider/>
+            <Divider />
 
             <Heading as="h5">
-                {
-                    t("console:develop.features.authenticationProvider.templates.microsoft" +
-                        ".wizardHelp.clientSecret.heading")
-                }
+                {t(
+                    "idp:develop.features.authenticationProvider.templates.microsoft" +
+                        ".wizardHelp.clientSecret.heading"
+                )}
             </Heading>
             <p>
                 <Trans
                     i18nKey={
-                        "console:develop.features.authenticationProvider.templates.microsoft" +
+                        "idp:develop.features.authenticationProvider.templates.microsoft" +
                         ".wizardHelp.clientSecret.description"
                     }
                 >

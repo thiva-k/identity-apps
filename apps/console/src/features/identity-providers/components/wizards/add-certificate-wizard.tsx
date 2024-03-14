@@ -47,29 +47,23 @@ interface AddIDPCertificateWizardPropsInterface extends TestableComponentInterfa
  * @returns Add Idp certificate wizard component.
  */
 export const AddIDPCertificateWizard: FunctionComponent<AddIDPCertificateWizardPropsInterface> = (
-    props: AddIDPCertificateWizardPropsInterface): ReactElement => {
-
-    const {
-        idp,
-        closeWizard,
-        currentStep,
-        onUpdate,
-        [ "data-testid" ]: testId
-    } = props;
+    props: AddIDPCertificateWizardPropsInterface
+): ReactElement => {
+    const { idp, closeWizard, currentStep, onUpdate, ["data-testid"]: testId } = props;
 
     const { t } = useTranslation();
 
     const dispatch: Dispatch = useDispatch();
 
-    const [ finishSubmit, setFinishSubmit ] = useTrigger();
-    const [ triggerUpload, setTriggerUpload ] = useTrigger();
+    const [finishSubmit, setFinishSubmit] = useTrigger();
+    const [triggerUpload, setTriggerUpload] = useTrigger();
 
     //TODO: Check the usage of this state and remove if not needed.
-    const [ partiallyCompletedStep ] = useState<number>(undefined);
-    const [ currentWizardStep, setCurrentWizardStep ] = useState<number>(currentStep);
-    const [ isSubmitting, setIsSubmitting ] = useState<boolean>(false);
+    const [partiallyCompletedStep] = useState<number>(undefined);
+    const [currentWizardStep, setCurrentWizardStep] = useState<number>(currentStep);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const [ alert, setAlert, alertComponent ] = useWizardAlert();
+    const [alert, setAlert, alertComponent] = useWizardAlert();
 
     /**
      * Sets the current wizard step to the previous on every `partiallyCompletedStep`
@@ -81,7 +75,7 @@ export const AddIDPCertificateWizard: FunctionComponent<AddIDPCertificateWizardP
         }
 
         setCurrentWizardStep(currentWizardStep - 1);
-    }, [ partiallyCompletedStep ]);
+    }, [partiallyCompletedStep]);
 
     const navigateToNext = () => {
         switch (currentWizardStep) {
@@ -93,14 +87,21 @@ export const AddIDPCertificateWizard: FunctionComponent<AddIDPCertificateWizardP
 
     const addCertificate = (values: any) => {
         if (idp?.certificate?.certificates?.includes(values["certificate"])) {
-            dispatch(addAlert({
-                description: t("console:develop.features.authenticationProvider." +
-                    "notifications.duplicateCertificateUpload.error" +
-                    ".description", { idp: idp.name }),
-                level: AlertLevels.ERROR,
-                message: t("console:develop.features.authenticationProvider." +
-                    "notifications.duplicateCertificateUpload.error.message")
-            }));
+            dispatch(
+                addAlert({
+                    description: t(
+                        "idp:develop.features.authenticationProvider." +
+                            "notifications.duplicateCertificateUpload.error" +
+                            ".description",
+                        { idp: idp.name }
+                    ),
+                    level: AlertLevels.ERROR,
+                    message: t(
+                        "idp:develop.features.authenticationProvider." +
+                            "notifications.duplicateCertificateUpload.error.message"
+                    )
+                })
+            );
             closeWizard();
 
             return;
@@ -112,22 +113,22 @@ export const AddIDPCertificateWizard: FunctionComponent<AddIDPCertificateWizardP
         if (idp?.certificate?.jwksUri) {
             data = [
                 {
-                    "operation": "ADD",
-                    "path": "/certificate/certificates/" + certificateIndex,
-                    "value": values["certificate"]
+                    operation: "ADD",
+                    path: "/certificate/certificates/" + certificateIndex,
+                    value: values["certificate"]
                 },
                 {
-                    "operation": "REPLACE",
-                    "path": "/certificate/jwksUri",
-                    "value": null
+                    operation: "REPLACE",
+                    path: "/certificate/jwksUri",
+                    value: null
                 }
             ];
         } else {
             data = [
                 {
-                    "operation": "ADD",
-                    "path": "/certificate/certificates/" + certificateIndex,
-                    "value": values["certificate"]
+                    operation: "ADD",
+                    path: "/certificate/certificates/" + certificateIndex,
+                    value: values["certificate"]
                 }
             ];
         }
@@ -136,14 +137,20 @@ export const AddIDPCertificateWizard: FunctionComponent<AddIDPCertificateWizardP
 
         updateIDPCertificate(idp.id, data)
             .then(() => {
-                dispatch(addAlert({
-                    description: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateIDPCertificate.success" +
-                        ".description"),
-                    level: AlertLevels.SUCCESS,
-                    message: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateIDPCertificate.success.message")
-                }));
+                dispatch(
+                    addAlert({
+                        description: t(
+                            "idp:develop.features.authenticationProvider." +
+                                "notifications.updateIDPCertificate.success" +
+                                ".description"
+                        ),
+                        level: AlertLevels.SUCCESS,
+                        message: t(
+                            "idp:develop.features.authenticationProvider." +
+                                "notifications.updateIDPCertificate.success.message"
+                        )
+                    })
+                );
                 closeWizard();
                 onUpdate(idp.id);
             })
@@ -152,20 +159,26 @@ export const AddIDPCertificateWizard: FunctionComponent<AddIDPCertificateWizardP
                     setAlert({
                         description: error.response.data.description,
                         level: AlertLevels.ERROR,
-                        message: t("console:develop.features.authenticationProvider." +
-                            "notifications.updateIDPCertificate.error.message")
+                        message: t(
+                            "idp:develop.features.authenticationProvider." +
+                                "notifications.updateIDPCertificate.error.message"
+                        )
                     });
 
                     return;
                 }
 
                 setAlert({
-                    description: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateIDPCertificate.genericError" +
-                        ".description"),
+                    description: t(
+                        "idp:develop.features.authenticationProvider." +
+                            "notifications.updateIDPCertificate.genericError" +
+                            ".description"
+                    ),
                     level: AlertLevels.ERROR,
-                    message: t("console:develop.features.authenticationProvider." +
-                        "notifications.updateIDPCertificate.genericError.message")
+                    message: t(
+                        "idp:develop.features.authenticationProvider." +
+                            "notifications.updateIDPCertificate.genericError.message"
+                    )
                 });
             })
             .finally(() => {
@@ -191,84 +204,75 @@ export const AddIDPCertificateWizard: FunctionComponent<AddIDPCertificateWizardP
         {
             content: (
                 <AddIDPCertificateFormComponent
-                    triggerCertificateUpload={ triggerUpload }
-                    triggerSubmit={ finishSubmit }
-                    onSubmit={ handleWizardFormFinish }
+                    triggerCertificateUpload={triggerUpload}
+                    triggerSubmit={finishSubmit}
+                    onSubmit={handleWizardFormFinish}
                 />
             ),
             icon: getAddIDPCertificateWizardStepIcons().general,
-            title: t("console:manage.features.certificates.keystore.wizard.steps.upload")
+            title: t("idp:manage.features.certificates.keystore.wizard.steps.upload")
         }
     ];
 
     return (
         <Modal
-            open={ true }
+            open={true}
             className="wizard application-create-wizard"
             dimmer="blurring"
             size="small"
-            onClose={ closeWizard }
-            data-testid={ testId }
-            closeOnDimmerClick={ false }
+            onClose={closeWizard}
+            data-testid={testId}
+            closeOnDimmerClick={false}
             closeOnEscape
         >
             <Modal.Header className="wizard-header">
-                { t("console:develop.features.authenticationProvider.modals.addCertificate.title",
-                    { idpName: idp.name }) }
+                {t("idp:develop.features.authenticationProvider.modals.addCertificate.title", {
+                    idpName: idp.name
+                })}
                 <Heading as="h6">
-                    { t("console:develop.features.authenticationProvider.modals.addCertificate.subTitle") }
+                    {t("idp:develop.features.authenticationProvider.modals.addCertificate.subTitle")}
                 </Heading>
             </Modal.Header>
             <Modal.Content className="steps-container">
-                <Steps.Group
-                    current={ currentWizardStep }
-                    data-testid={ `${ testId }-steps` }
-                >
-                    { STEPS.map((
-                        step: {
-                            content: JSX.Element;
-                            icon: any;
-                            title: string;
-                        }, 
-                        index: number
-                    ) => (
+                <Steps.Group current={currentWizardStep} data-testid={`${testId}-steps`}>
+                    {STEPS.map((step: { content: JSX.Element; icon: any; title: string }, index: number) => (
                         <Steps.Step
-                            key={ index }
-                            icon={ step.icon }
-                            title={ step.title }
-                            data-testid={ `${ testId }-step-${ index }` }
+                            key={index}
+                            icon={step.icon}
+                            title={step.title}
+                            data-testid={`${testId}-step-${index}`}
                         />
-                    )) }
+                    ))}
                 </Steps.Group>
             </Modal.Content>
             <Modal.Content className="content-container" scrolling>
-                { alert && alertComponent }
-                { STEPS[ currentWizardStep ].content }
+                {alert && alertComponent}
+                {STEPS[currentWizardStep].content}
             </Modal.Content>
             <Modal.Actions>
                 <Grid>
-                    <Grid.Row column={ 1 }>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
+                    <Grid.Row column={1}>
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
                             <LinkButton
                                 floated="left"
-                                onClick={ () => closeWizard() }
-                                data-testid={ `${ testId }-cancel-button` }
+                                onClick={() => closeWizard()}
+                                data-testid={`${testId}-cancel-button`}
                             >
-                                { t("common:cancel") }
+                                {t("idp:cancel")}
                             </LinkButton>
                         </Grid.Column>
-                        <Grid.Column mobile={ 8 } tablet={ 8 } computer={ 8 }>
-                            { currentWizardStep === STEPS.length - 1 && (
+                        <Grid.Column mobile={8} tablet={8} computer={8}>
+                            {currentWizardStep === STEPS.length - 1 && (
                                 <PrimaryButton
                                     floated="right"
-                                    onClick={ navigateToNext }
-                                    loading={ isSubmitting }
-                                    disabled={ isSubmitting }
-                                    data-testid={ `${ testId }-finish-button` }
+                                    onClick={navigateToNext}
+                                    loading={isSubmitting}
+                                    disabled={isSubmitting}
+                                    data-testid={`${testId}-finish-button`}
                                 >
-                                    { t("common:finish") }
+                                    {t("idp:finish")}
                                 </PrimaryButton>
-                            ) }
+                            )}
                         </Grid.Column>
                     </Grid.Row>
                 </Grid>
