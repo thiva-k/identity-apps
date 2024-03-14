@@ -1,5 +1,46 @@
 # @wso2is/console
 
+## 2.13.8
+
+### Patch Changes
+
+- [#5733](https://github.com/wso2/identity-apps/pull/5733) [`484d02a775`](https://github.com/wso2/identity-apps/commit/484d02a7758a1419025c5fa7f6b6c0066d25c315) Thanks [@Yasasr1](https://github.com/Yasasr1)! - Fix SMS OTP checkbox enabling in My Account settings page
+
+## 2.13.7
+
+### Patch Changes
+
+- [#5734](https://github.com/wso2/identity-apps/pull/5734) [`3d380c138f`](https://github.com/wso2/identity-apps/commit/3d380c138fda23f87e3b6f0d72cdb89053d5bc52) Thanks [@pavinduLakshan](https://github.com/pavinduLakshan)! - Fix incorrect logic in hiding subject type input when it's disabled via deployment config
+
+## 2.13.6
+
+### Patch Changes
+
+- [#5732](https://github.com/wso2/identity-apps/pull/5732) [`83a5a735a0`](https://github.com/wso2/identity-apps/commit/83a5a735a0f6d1e46d9e5cba51c07ad66c1ab45c) Thanks [@dasuni-30](https://github.com/dasuni-30)! - Add navigation to progressive enrolment in the passkey alert
+
+- Updated dependencies [[`83a5a735a0`](https://github.com/wso2/identity-apps/commit/83a5a735a0f6d1e46d9e5cba51c07ad66c1ab45c)]:
+  - @wso2is/i18n@2.1.2
+
+## 2.13.5
+
+### Patch Changes
+
+- [#5722](https://github.com/wso2/identity-apps/pull/5722) [`7db97ada32`](https://github.com/wso2/identity-apps/commit/7db97ada32857e3b4bbef6a5cbe17e4ac1085af1) Thanks [@pavinduLakshan](https://github.com/pavinduLakshan)! - Update SMS OTP activation section UI
+
+## 2.13.4
+
+### Patch Changes
+
+- [#5725](https://github.com/wso2/identity-apps/pull/5725) [`adb6c24caa`](https://github.com/wso2/identity-apps/commit/adb6c24caa4b95d265808170d566f1e399cbcb4d) Thanks [@thiva-k](https://github.com/thiva-k)! - Remove Si and Fr from extensions/i18n
+
+* [#5727](https://github.com/wso2/identity-apps/pull/5727) [`4198698608`](https://github.com/wso2/identity-apps/commit/4198698608be248277eaf32f8db8287a616908f9) Thanks [@dasuni-30](https://github.com/dasuni-30)! - Display warning notifications when Identifier First is added as the only 1FA
+
+- [#5674](https://github.com/wso2/identity-apps/pull/5674) [`193566482e`](https://github.com/wso2/identity-apps/commit/193566482eb74fdfa5a793ce046c3974a0a18caa) Thanks [@JayaShakthi97](https://github.com/JayaShakthi97)! - Remove unwanted assets from theme
+
+- Updated dependencies [[`adb6c24caa`](https://github.com/wso2/identity-apps/commit/adb6c24caa4b95d265808170d566f1e399cbcb4d), [`193566482e`](https://github.com/wso2/identity-apps/commit/193566482eb74fdfa5a793ce046c3974a0a18caa)]:
+  - @wso2is/i18n@2.1.1
+  - @wso2is/theme@2.0.68
+
 ## 2.13.3
 
 ### Patch Changes
