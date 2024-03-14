@@ -16,14 +16,11 @@
  * under the License.
  */
 
-import { I18nModuleConstants } from "../../constants";
 import { LocaleMeta } from "../../models";
 
 export const meta: LocaleMeta = {
     code: "en-US",
     flag: "us",
     name: "English (United States)",
-    namespaces: [
-        "groups"
-    ]
+    namespaces: ["idp"]
 };

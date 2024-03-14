@@ -89,7 +89,7 @@ featureFolders.forEach(feature => {
         metaFileContent[value.meta.code] = metaFileContent[value.meta.code] || { paths: {}, namespaces: [] };
         metaFileContent[value.meta.code].paths = { ...metaFileContent[value.meta.code].paths, ...resourcePaths };
         metaFileContent[value.meta.code].namespaces = [
-            ...new Set([...metaFileContent[value.meta.code].namespaces, ...featureFolders])
+            ...new Set([...metaFileContent[value.meta.code].namespaces, ...value.meta.namespaces])
         ];
         metaFileContent[value.meta.code].code = value.meta.code;
         metaFileContent[value.meta.code].flag = value.meta.flag;
