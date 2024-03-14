@@ -20,6 +20,7 @@
         "compile:i18n:features": "node scripts/i18n.js",
         "compile:i18n:feature": "sh -c 'pnpm tsc -p src/features/${0}/i18n'",
         "clean:i18n:dist": "rimraf src/extensions/i18n/dist",
+        "clean:i18n:feature:dist": "sh -c 'rimraf src/features/${0}/i18n/dist'",
         "copy:themes:src": "node scripts/copy-themes-to-source.js",
         "copy:branding:i18n:defaults": "node scripts/populate-branding-i18n-defaults.js",
         "lint": "pnpm run lint:all",

@@ -99,6 +99,7 @@ featureFolders.forEach(feature => {
         ];
         metaFileContent[value.meta.code].paths = { ...metaFileContent[value.meta.code].paths, ...resourcePaths };
     }
+    execSync(`pnpm clean:i18n:feature:dist ${feature}`);
 });
 
 const hash = crypto
