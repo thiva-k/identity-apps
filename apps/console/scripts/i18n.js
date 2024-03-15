@@ -5,7 +5,7 @@ const fs = require("fs-extra");
 
 const log = console.log;
 
-const OUTPUT_DIR_NAME = "bundle";
+
 const META_FILE_NAME = "meta.{hash}.json";
 const TRANSLATIONS_FOLDER_NAME = "translations";
 const featureFolders = ["groups", "connections", "organizations", "identity-providers"]; // Add more feature folders as needed

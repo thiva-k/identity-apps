@@ -431,8 +431,8 @@ const ConnectionsPage: FC<ConnectionsPropsInterface> = (props: ConnectionsPropsI
                         >
                             <Icon name="add" />
                             { identityProviderConfig.useNewConnectionsView
-                                ? t("console:develop.features.authenticationProvider.buttons.addIDP")
-                                : t("console:develop.features.idp.buttons.addIDP") }
+                                ? t("connections:develop.features.authenticationProvider.buttons.addIDP")
+                                : t("connections:develop.features.idp.buttons.addIDP") }
                         </PrimaryButton>
                     </Show>
                 )
@@ -440,7 +440,7 @@ const ConnectionsPage: FC<ConnectionsPropsInterface> = (props: ConnectionsPropsI
             title={
                 identityProviderConfig.useNewConnectionsView
                     ? t("connections:develop.pages.authenticationProvider.title")
-                    : t("console:develop.pages.idp.title")
+                    : t("connections:develop.pages.idp.title")
             }
             description={
                 (<>
@@ -485,19 +485,19 @@ const ConnectionsPage: FC<ConnectionsPropsInterface> = (props: ConnectionsPropsI
                                     }
                                 ] }
                                 filterAttributePlaceholder={ t(
-                                    "console:develop.features.authenticationProvider" +
+                                    "connections:develop.features.authenticationProvider" +
                                     ".advancedSearch.form.inputs.filterAttribute.placeholder"
                                 ) }
                                 filterConditionsPlaceholder={ t(
-                                    "console:develop.features.authenticationProvider" +
+                                    "connections:develop.features.authenticationProvider" +
                                     ".advancedSearch.form.inputs.filterCondition.placeholder"
                                 ) }
                                 filterValuePlaceholder={ t(
-                                    "console:develop.features.authenticationProvider" +
+                                    "connections:develop.features.authenticationProvider" +
                                     ".advancedSearch.form.inputs.filterValue.placeholder"
                                 ) }
                                 placeholder={ t(
-                                    "console:develop.features.authenticationProvider" +
+                                    "connections:develop.features.authenticationProvider" +
                                     ".advancedSearch.placeholder"
                                 ) }
                                 defaultSearchAttribute="name"
