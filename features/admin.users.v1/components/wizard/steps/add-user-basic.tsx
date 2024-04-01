@@ -34,7 +34,7 @@ import { EventPublisher, SharedUserStoreUtils } from "../../../../admin.core.v1/
 import { useGetCurrentOrganizationType } from "../../../../admin-organizations-v1/hooks/use-get-organization-type";
 import {
     ServerConfigurationsConstants
-} from "../../../../admin-server-configurations-v1/constants/server-configurations-constants";
+} from "../../../../admin.server-configurations.v1/constants/server-configurations-constants";
 import { getAUserStore, useUserStore, useUserStores } from "../../../../admin.userstores.v1/api";
 import {
     USERSTORE_REGEX_PROPERTIES, UserStoreManagementConstants
