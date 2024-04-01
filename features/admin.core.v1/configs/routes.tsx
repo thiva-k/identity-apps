@@ -104,7 +104,7 @@ export const getAppViewRoutes = (): RouteInterface[] => {
                                 showOnSidePanel: false
                             },
                             {
-                                component: lazy(() => import("../../admin-wsfed-configuration-v1/pages/wsfed-configuration")),
+                                component: lazy(() => import("../../admin.wsfed.configuration.v1/pages/wsfed-configuration")),
                                 exact: true,
                                 id: "wsFedConfiguration",
                                 name: "wsFederationConfig:title",
@@ -1087,7 +1087,7 @@ export const getAppViewRoutes = (): RouteInterface[] => {
                     },
                     {
                         category: "extensions:manage.sidePanel.categories.userManagement",
-                        component: lazy(() => import("../../admin-workflow-approvals-v1/pages/approvals")),
+                        component: lazy(() => import("../../admin.workflow.approvals.v1/pages/approvals")),
                         exact: true,
                         icon: {
                             icon: <DocumentCheckIcon fill="black" className="icon" />
