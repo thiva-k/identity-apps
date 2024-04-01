@@ -55,8 +55,8 @@ import {
     List,
     PaginationProps
 } from "semantic-ui-react";
-import { applicationConfig } from "../../admin-extensions-v1";
-import isLegacyAuthzRuntime from "../../admin-authorization-v1/utils/get-legacy-authz-runtime";
+import { applicationConfig } from "../../admin.extensions.v1";
+import isLegacyAuthzRuntime from "../../admin.authorization.v1/utils/get-legacy-authz-runtime";
 import {
     AdvancedSearchWithBasicFilters,
     AppConstants,
@@ -67,7 +67,7 @@ import {
     UIConstants,
     getGeneralIcons,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { OrganizationType } from "../../admin-organizations-v1/constants";
 import { useGetCurrentOrganizationType } from "../../admin-organizations-v1/hooks/use-get-organization-type";
 import { useApplicationList, useMyAccountApplicationData, useMyAccountStatus } from "../api";

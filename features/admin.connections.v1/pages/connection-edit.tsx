@@ -49,16 +49,16 @@ import { Label } from "semantic-ui-react";
 import {
     AuthenticatorExtensionsConfigInterface,
     identityProviderConfig
-} from "../../admin-extensions-v1/configs";
+} from "../../admin.extensions.v1/configs";
 import {
     AppConstants,
     AppState,
     FeatureConfigInterface,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import {
     EditMultiFactorAuthenticator
-} from "../../admin-identity-providers-v1/components/edit-multi-factor-authenticator";
+} from "../../admin.identity-providers.v1/components/edit-multi-factor-authenticator";
 import {
     getLocalAuthenticator,
     getMultiFactorAuthenticatorDetails

@@ -34,7 +34,7 @@ import React, { FunctionComponent, MouseEvent, ReactElement, SyntheticEvent, use
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { DropdownItemProps, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
-import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "../../admin-extensions-v1/configs";
+import { AuthenticatorExtensionsConfigInterface, identityProviderConfig } from "../../admin.extensions.v1/configs";
 import {
     AdvancedSearchWithBasicFilters,
     AppConstants,
@@ -43,7 +43,7 @@ import {
     EventPublisher,
     UIConstants,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { OrganizationType } from "../../admin-organizations-v1/constants";
 import { useGetCurrentOrganizationType } from "../../admin-organizations-v1/hooks/use-get-organization-type";
 import { getAuthenticatorTags, getAuthenticators, getIdentityProviderList } from "../api";

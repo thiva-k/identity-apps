@@ -60,13 +60,13 @@ import { ApplicationManagementConstants } from "../../../../admin.applications.v
 import {
     getAllLocalClaims,
     updateAClaim
-} from "../../../../admin-claims-v1/api/claims";
-import { ClaimManagementConstants } from "../../../../admin-claims-v1/constants";
+} from "../../../../admin.claims.v1/api/claims";
+import { ClaimManagementConstants } from "../../../../admin.claims.v1/constants";
 import {
     AppConstants,
     AppState,
     history
-} from "../../../../admin-core-v1";
+} from "../../../../admin.core.v1";
 import {
     getConnectorDetails,
     updateGovernanceConnector

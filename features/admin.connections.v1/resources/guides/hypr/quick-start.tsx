@@ -32,13 +32,13 @@ import BuildLoginFlowStep02Illustration from "./assets/build-login-flow-02.png";
 import BuildLoginFlowStep03Illustration from "./assets/build-login-flow-03.png";
 import ConditionalAuthIllustration from "./assets/conditional-auth.png";
 import ApplicationSelectionModal
-    from "../../../../admin-extensions-v1/components/shared/application-selection-modal";
+    from "../../../../admin.extensions.v1/components/shared/application-selection-modal";
 import {
     ConnectionInterface,
     ConnectionTemplateInterface
-} from "../../../../admin-connections-v1/models/connection";
-import { FeatureConfigInterface } from "../../../../admin-core-v1/models";
-import { AppState } from "../../../../admin-core-v1/store";
+} from "../../../../admin.connections.v1/models/connection";
+import { FeatureConfigInterface } from "../../../../admin.core.v1/models";
+import { AppState } from "../../../../admin.core.v1/store";
 
 interface HyprAuthenticatorQuickStartPropsInterface extends IdentifiableComponentInterface {
     /**

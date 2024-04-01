@@ -20,7 +20,7 @@ import { ProfileSchemaInterface, TestableComponentInterface } from "@wso2is/core
 import { Field, Form, FormFieldMessage } from "@wso2is/form";
 import { ConfirmationModal, Text } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
-import { AppState } from "../../admin-core-v1";
+import { AppState } from "../../admin.core.v1";
 import { getUsernameConfiguration } from "../../admin-users-v1/utils/user-management-utils";
 import { useValidationConfigData } from "../../admin-validation-v1/api";
 import get from "lodash-es/get";
@@ -29,7 +29,7 @@ import React, { FunctionComponent, ReactElement, useEffect, useState } from "rea
 import { Trans, useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { Label } from "semantic-ui-react";
-import { serverConfigurationConfig } from "../../admin-extensions-v1/configs";
+import { serverConfigurationConfig } from "../../admin.extensions.v1/configs";
 import { GovernanceConnectorConstants } from "../constants/governance-connector-constants";
 import { ServerConfigurationsConstants } from "../constants/server-configurations-constants";
 import {

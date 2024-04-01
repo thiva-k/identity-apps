@@ -34,13 +34,13 @@ import { EditRoleFederatedGroupsAccordion } from "./edit-role-federated-groups-a
 import { EditRoleLocalGroupsAccordion } from "./edit-role-local-groups-accordion";
 import { useGetApplication } from "../../../admin.applications.v1/api/use-get-application";
 import { AuthenticationStepInterface, AuthenticatorInterface } from "../../../admin.applications.v1/models/application";
-import { AuthenticatorManagementConstants } from "../../../admin-connections-v1/constants/autheticator-constants";
+import { AuthenticatorManagementConstants } from "../../../admin.connections.v1/constants/autheticator-constants";
 import {
     PatchGroupAddOpInterface,
     PatchGroupRemoveOpInterface
-} from "../../../admin-groups-v1";
-import { useIdentityProviderList } from "../../../admin-identity-providers-v1/api/identity-provider";
-import { IdentityProviderInterface, StrictIdentityProviderInterface } from "../../../admin-identity-providers-v1/models";
+} from "../../../admin.groups.v1";
+import { useIdentityProviderList } from "../../../admin.identity-providers.v1/api/identity-provider";
+import { IdentityProviderInterface, StrictIdentityProviderInterface } from "../../../admin.identity-providers.v1/models";
 import { updateRoleDetails } from "../../api";
 import { RoleAudienceTypes, Schemas } from "../../constants";
 import { PatchRoleDataInterface, RoleEditSectionsInterface } from "../../models/roles";

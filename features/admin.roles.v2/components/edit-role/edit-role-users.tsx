@@ -48,10 +48,10 @@ import { Dispatch } from "redux";
 import { Icon } from "semantic-ui-react";
 import { AutoCompleteRenderOption } from "./edit-role-common/auto-complete-render-option";
 import { RenderChip } from "./edit-role-common/render-chip";
-import { RemoteUserStoreConstants } from "../../../admin-extensions-v1/components/user-stores/constants";
-import { updateResources } from "../../../admin-core-v1/api/bulk-operations";
-import { getEmptyPlaceholderIllustrations } from "../../../admin-core-v1/configs/ui";
-import { GroupsInterface } from "../../../admin-groups-v1/models/groups";
+import { RemoteUserStoreConstants } from "../../../admin.extensions.v1/components/user-stores/constants";
+import { updateResources } from "../../../admin.core.v1/api/bulk-operations";
+import { getEmptyPlaceholderIllustrations } from "../../../admin.core.v1/configs/ui";
+import { GroupsInterface } from "../../../admin.groups.v1/models/groups";
 import { useUsersList } from "../../../admin-users-v1/api";
 import {
     PatchBulkUserDataInterface,

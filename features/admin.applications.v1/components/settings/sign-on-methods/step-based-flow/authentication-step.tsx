@@ -24,17 +24,17 @@ import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } 
 import { useTranslation } from "react-i18next";
 import { Card, Checkbox, Form, Icon, Label, Radio } from "semantic-ui-react";
 import useAuthenticationFlow from "../../../../../admin.authentication-flow-builder.v1/hooks/use-authentication-flow";
-import { AuthenticatorManagementConstants } from "../../../../../admin-connections-v1";
-import { AuthenticatorCategories } from "../../../../../admin-connections-v1/models/authenticators";
-import { ConnectionsManagementUtils } from "../../../../../admin-connections-v1/utils/connection-utils";
-import { getGeneralIcons } from "../../../../../admin-core-v1";
+import { AuthenticatorManagementConstants } from "../../../../../admin.connections.v1";
+import { AuthenticatorCategories } from "../../../../../admin.connections.v1/models/authenticators";
+import { ConnectionsManagementUtils } from "../../../../../admin.connections.v1/utils/connection-utils";
+import { getGeneralIcons } from "../../../../../admin.core.v1";
 import {
     IdentityProviderManagementConstants
-} from "../../../../../admin-identity-providers-v1/constants/identity-provider-management-constants";
+} from "../../../../../admin.identity-providers.v1/constants/identity-provider-management-constants";
 import {
     FederatedAuthenticatorInterface,
     GenericAuthenticatorInterface
-} from "../../../../../admin-identity-providers-v1/models/identity-provider";
+} from "../../../../../admin.identity-providers.v1/models/identity-provider";
 import { AuthenticationStepInterface, AuthenticatorInterface } from "../../../../models";
 
 /**

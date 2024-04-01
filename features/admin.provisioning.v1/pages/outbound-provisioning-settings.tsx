@@ -34,16 +34,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { AccordionTitleProps, Divider, Icon, Segment } from "semantic-ui-react";
 import { OutboundProvisioningConfigurationInterface } from "../../admin.applications.v1/models/application";
-import { OutboundProvisioningConnectorInterface } from "../../admin-connections-v1/models/connection";
+import { OutboundProvisioningConnectorInterface } from "../../admin.connections.v1/models/connection";
 import {
     AppConstants,
     AppState,
     AuthenticatorAccordion,
     FeatureConfigInterface,
     history
-} from "../../admin-core-v1";
-import { useIdentityProviderList } from "../../admin-identity-providers-v1/api/identity-provider";
-import { IdentityProviderInterface } from "../../admin-identity-providers-v1/models/identity-provider";
+} from "../../admin.core.v1";
+import { useIdentityProviderList } from "../../admin.identity-providers.v1/api/identity-provider";
+import { IdentityProviderInterface } from "../../admin.identity-providers.v1/models/identity-provider";
 import { updateResidentApplicationOutboundProvisioningList } from "../api/outbound-provisioning";
 import {
     useGetResidentApplicationOutboundProvisioningConnectors

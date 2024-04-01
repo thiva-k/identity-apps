@@ -31,7 +31,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Dropdown, DropdownItemProps, DropdownProps, Icon, PaginationProps } from "semantic-ui-react";
-import { commonConfig } from "../../admin-extensions-v1/configs";
+import { commonConfig } from "../../admin.extensions.v1/configs";
 import {
     AdvancedSearchWithBasicFilters,
     AppState,
@@ -41,7 +41,7 @@ import {
     UserStoreProperty,
     getAUserStore,
     getEmptyPlaceholderIllustrations
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { RootOnlyComponent } from "../../admin-organizations-v1/components";
 import { useGetCurrentOrganizationType } from "../../admin-organizations-v1/hooks/use-get-organization-type";
 import { getUserStoreList } from "../../admin-userstores-v1/api";

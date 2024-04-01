@@ -31,7 +31,7 @@ import {
     SegmentedAccordionTitleActionInterface,
     useDocumentation
 } from "@wso2is/react-components";
-import { OIDCScopesClaimsListInterface } from "../../../../admin-oidc-scopes-v1";
+import { OIDCScopesClaimsListInterface } from "../../../../admin.oidc-scopes.v1";
 import { IdentifiableComponentInterface } from "@wso2is/core/src/models";
 import React, {
     ChangeEvent,
@@ -54,15 +54,15 @@ import {
     ExtendedExternalClaimInterface,
     SelectedDialectInterface
 } from "./attribute-settings";
-import { applicationConfig } from "../../../../admin-extensions-v1";
-import { ClaimManagementConstants } from "../../../../admin-claims-v1/constants";
+import { applicationConfig } from "../../../../admin.extensions.v1";
+import { ClaimManagementConstants } from "../../../../admin.claims.v1/constants";
 import {
     AppConstants,
     AppState,
     ConfigReducerStateInterface,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../../../admin-core-v1";
+} from "../../../../admin.core.v1";
 import {
     ClaimConfigurationInterface,
     ClaimMappingInterface,

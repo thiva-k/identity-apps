@@ -35,8 +35,8 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Divider, Grid, Header, Icon, Image, List, Placeholder } from "semantic-ui-react";
-import { attributeConfig } from "../../admin-extensions-v1";
-import { getDialects } from "../../admin-claims-v1/api";
+import { attributeConfig } from "../../admin.extensions.v1";
+import { getDialects } from "../../admin.claims.v1/api";
 import {
     AppConstants,
     AppState,
@@ -44,7 +44,7 @@ import {
     getSidePanelIcons,
     getTechnologyLogos,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { AddDialect } from "../components";
 import { ClaimManagementConstants } from "../constants";
 

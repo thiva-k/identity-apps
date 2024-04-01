@@ -62,7 +62,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Header, Icon, ItemHeader, SemanticICONS } from "semantic-ui-react";
 import { EditExternalClaim } from "./edit";
-import { attributeConfig } from "../../admin-extensions-v1";
+import { attributeConfig } from "../../admin.extensions.v1";
 import {
     AppConstants,
     AppState,
@@ -70,7 +70,7 @@ import {
     UIConstants,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { getProfileSchemas } from "../../admin-users-v1/api";
 import { getUserStores } from "../../admin-userstores-v1/api/user-stores";
 import { UserStoreListItem } from "../../admin-userstores-v1/models/user-stores";

@@ -37,7 +37,7 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
-import { identityProviderConfig } from "../../admin-extensions-v1/configs";
+import { identityProviderConfig } from "../../admin.extensions.v1/configs";
 import {
     AppConstants,
     AppState,
@@ -45,7 +45,7 @@ import {
     EventPublisher,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { AuthenticatorCreateWizardFactory } from "../components/wizards/authenticator-create-wizard-factory";
 import { getIdPIcons } from "../configs/ui";
 import { IdentityProviderManagementConstants, ORG_ENTERPRISE_IDP_ID } from "../constants";

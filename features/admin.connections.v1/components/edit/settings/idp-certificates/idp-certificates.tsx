@@ -34,7 +34,7 @@ import {
     SwitcherOptionProps
 } from "@wso2is/react-components";
 import { FormValidation } from "@wso2is/validation";
-import { IdentityProviderManagementConstants } from "../../../../../admin-identity-providers-v1/constants";
+import { IdentityProviderManagementConstants } from "../../../../../admin.identity-providers.v1/constants";
 import React, { FunctionComponent, ReactElement, ReactNode, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,8 +43,8 @@ import { Icon, Segment } from "semantic-ui-react";
 import { AddIdpCertificateModal } from "./add-idp-certificate-modal";
 import { EmptyCertificatesPlaceholder } from "./empty-certificates-placeholder";
 import { IdpCertificatesList } from "./idp-cetificates-list";
-import { commonConfig } from "../../../../../admin-extensions-v1/configs";
-import { AppState, ConfigReducerStateInterface } from "../../../../../admin-core-v1";
+import { commonConfig } from "../../../../../admin.extensions.v1/configs";
+import { AppState, ConfigReducerStateInterface } from "../../../../../admin.core.v1";
 import { updateIDPCertificate } from "../../../../api/connections";
 import { ConnectionManagementConstants } from "../../../../constants/connection-constants";
 import { CertificatePatchRequestInterface, ConnectionInterface } from "../../../../models/connection";

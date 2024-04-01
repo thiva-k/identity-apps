@@ -41,9 +41,9 @@ import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, Label, ListItemProps, SemanticICONS } from "semantic-ui-react";
-import { SCIMConfigs } from "../../admin-extensions-v1/configs/scim";
-import { userConfig } from "../../admin-extensions-v1/configs/user";
-import { userstoresConfig } from "../../admin-extensions-v1/configs/userstores";
+import { SCIMConfigs } from "../../admin.extensions.v1/configs/scim";
+import { userConfig } from "../../admin.extensions.v1/configs/user";
+import { userstoresConfig } from "../../admin.extensions.v1/configs/userstores";
 import {
     AppConstants,
     AppState,
@@ -51,7 +51,7 @@ import {
     UIConstants,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { useGetCurrentOrganizationType } from "../../admin-organizations-v1/hooks/use-get-organization-type";
 import { RealmConfigInterface } from "../../admin-server-configurations-v1";
 import { deleteUser } from "../api";

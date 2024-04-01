@@ -46,7 +46,7 @@ import AdaptiveAuthTemplateChangeConfirmationModal from "./adaptive-auth-templat
 import AdaptiveAuthTemplateInfoModal from "./adaptive-auth-template-info-modal";
 import BasicLoginFlowTemplateChangeConfirmationModal from "./basic-login-flow-template-change-confimation-modal";
 import PredefinedSocialFlowHandlerModalFactory from "./predefined-social-flow-handler-modal-factory";
-import { serverConfigurationConfig } from "../../../admin-extensions-v1/configs/server-configuration";
+import { serverConfigurationConfig } from "../../../admin.extensions.v1/configs/server-configuration";
 import {
     AdaptiveAuthTemplateCategoryInterface,
     AdaptiveAuthTemplateInterface,
@@ -55,9 +55,9 @@ import {
     AuthenticatorInterface
 } from "../../../admin.applications.v1/models/application";
 import { AdaptiveScriptUtils } from "../../../admin.applications.v1/utils/adaptive-script-utils";
-import { ConnectionManagementConstants } from "../../../admin-connections-v1/constants/connection-constants";
-import { getAuthenticatorIcons } from "../../../admin-identity-providers-v1/configs/ui";
-import { GenericAuthenticatorInterface } from "../../../admin-identity-providers-v1/models";
+import { ConnectionManagementConstants } from "../../../admin.connections.v1/constants/connection-constants";
+import { getAuthenticatorIcons } from "../../../admin.identity-providers.v1/configs/ui";
+import { GenericAuthenticatorInterface } from "../../../admin.identity-providers.v1/models";
 import {
     getConnectorDetails,
     updateGovernanceConnector

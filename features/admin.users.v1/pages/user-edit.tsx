@@ -43,8 +43,8 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Icon, Label } from "semantic-ui-react";
-import { SCIMConfigs } from "../../admin-extensions-v1/configs/scim";
-import { getProfileInformation } from "../../admin-authentication-v1/store";
+import { SCIMConfigs } from "../../admin.extensions.v1/configs/scim";
+import { getProfileInformation } from "../../admin.authentication.v1/store";
 import {
     AppConstants,
     AppState,
@@ -53,8 +53,8 @@ import {
     getEmptyPlaceholderIllustrations,
     getSidePanelIcons,
     history
-} from "../../admin-core-v1";
-import { getIdPIcons } from "../../admin-identity-providers-v1/configs/ui";
+} from "../../admin.core.v1";
+import { getIdPIcons } from "../../admin.identity-providers.v1/configs/ui";
 import { useGovernanceConnectors } from "../../admin-server-configurations-v1/api";
 import { ServerConfigurationsConstants } from "../../admin-server-configurations-v1/constants";
 import { ConnectorPropertyInterface, GovernanceConnectorInterface } from "../../admin-server-configurations-v1/models";

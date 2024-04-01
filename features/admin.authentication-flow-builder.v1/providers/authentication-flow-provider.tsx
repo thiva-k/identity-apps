@@ -19,7 +19,7 @@
 import useUIConfig from "@wso2is/common/src/hooks/use-ui-configs";
 import { AlertLevels, FeatureAccessConfigInterface } from "@wso2is/core/models";
 import { addAlert } from "@wso2is/core/store";
-import { applicationConfig } from "../../admin-extensions-v1";
+import { applicationConfig } from "../../admin.extensions.v1";
 import cloneDeep from "lodash-es/cloneDeep";
 import isEmpty from "lodash-es/isEmpty";
 import isEqual from "lodash-es/isEqual";
@@ -27,7 +27,7 @@ import React, { PropsWithChildren, ReactElement, useCallback, useEffect, useMemo
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
-import { identityProviderConfig } from "../../admin-extensions-v1/configs/identity-provider";
+import { identityProviderConfig } from "../../admin.extensions.v1/configs/identity-provider";
 import { useGetAdaptiveAuthTemplates } from "../../admin.applications.v1/api";
 import { ApplicationManagementConstants } from "../../admin.applications.v1/constants/application-management";
 import {
@@ -39,19 +39,19 @@ import {
 } from "../../admin.applications.v1/models/application";
 import { AdaptiveScriptUtils } from "../../admin.applications.v1/utils/adaptive-script-utils";
 import { SignInMethodUtils } from "../../admin.applications.v1/utils/sign-in-method-utils";
-import { AuthenticatorManagementConstants } from "../../admin-connections-v1/constants/autheticator-constants";
-import { AuthenticatorMeta } from "../../admin-connections-v1/meta/authenticator-meta";
-import { ConnectionInterface } from "../../admin-connections-v1/models/connection";
-import { ConnectionsManagementUtils } from "../../admin-connections-v1/utils/connection-utils";
-import { AppState } from "../../admin-core-v1/store";
+import { AuthenticatorManagementConstants } from "../../admin.connections.v1/constants/autheticator-constants";
+import { AuthenticatorMeta } from "../../admin.connections.v1/meta/authenticator-meta";
+import { ConnectionInterface } from "../../admin.connections.v1/models/connection";
+import { ConnectionsManagementUtils } from "../../admin.connections.v1/utils/connection-utils";
+import { AppState } from "../../admin.core.v1/store";
 import {
     IdentityProviderManagementConstants
-} from "../../admin-identity-providers-v1/constants/identity-provider-management-constants";
+} from "../../admin.identity-providers.v1/constants/identity-provider-management-constants";
 import {
     FederatedAuthenticatorInterface,
     GenericAuthenticatorInterface,
     SupportedAuthenticators
-} from "../../admin-identity-providers-v1/models/identity-provider";
+} from "../../admin.identity-providers.v1/models/identity-provider";
 import { OrganizationType } from "../../admin-organizations-v1/constants";
 import { LEGACY_EDITOR_FEATURE_ID, VISUAL_EDITOR_FEATURE_ID } from "../constants/editor-constants";
 import AuthenticationFlowContext from "../context/authentication-flow-context";

@@ -20,8 +20,8 @@ import { UserGroupIcon } from "@oxygen-ui/react-icons";
 import { LegacyModeInterface, RouteInterface } from "@wso2is/core/models";
 import React, { lazy } from "react";
 import { CommonConfig } from "./models";
-import { getSidePanelIcons } from "../../admin-core-v1/configs/ui";
-import { AppConstants } from "../../admin-core-v1/constants";
+import { getSidePanelIcons } from "../../admin.core.v1/configs/ui";
+import { AppConstants } from "../../admin.core.v1/constants";
 
 const legacyMode: LegacyModeInterface = window["AppUtils"]?.getConfig()?.ui?.legacyMode;
 
@@ -193,7 +193,7 @@ export const commonConfig: CommonConfig = {
             children: [
                 {
                     component: lazy(() =>
-                        import("../../admin-groups-v1/pages/group-edit")
+                        import("../../admin.groups.v1/pages/group-edit")
                     ),
                     exact: true,
                     icon: {
@@ -206,7 +206,7 @@ export const commonConfig: CommonConfig = {
                     showOnSidePanel: false
                 }
             ],
-            component: lazy(() => import("../../admin-groups-v1/pages/groups")),
+            component: lazy(() => import("../../admin.groups.v1/pages/groups")),
             exact: true,
             icon: {
                 icon: <UserGroupIcon className="icon" fill="black" />

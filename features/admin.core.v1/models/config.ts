@@ -28,14 +28,14 @@ import {
     ApplicationTemplateLoadingStrategies,
     ApplicationsResourceEndpointsInterface
 } from "../../admin.applications.v1/models";
-import { BrandingPreferenceResourceEndpointsInterface } from "../../admin-branding-v1/models/endpoints";
-import { CertificatesResourceEndpointsInterface } from "../../admin-certificates-v1";
-import { ClaimResourceEndpointsInterface } from "../../admin-claims-v1/models/endpoints";
-import { ConsoleSettingsResourceEndpointsInterface } from "../../admin-console-settings-v1/models/endpoints";
-import { GroupsResourceEndpointsInterface } from "../../admin-groups-v1";
-import { IDPResourceEndpointsInterface } from "../../admin-identity-providers-v1/models/endpoints";
-import { IdentityProviderTemplateLoadingStrategies } from "../../admin-identity-providers-v1/models/identity-provider";
-import { ScopesResourceEndpointsInterface } from "../../admin-oidc-scopes-v1";
+import { BrandingPreferenceResourceEndpointsInterface } from "../../admin.branding.v1/models/endpoints";
+import { CertificatesResourceEndpointsInterface } from "../../admin.certificates.v1";
+import { ClaimResourceEndpointsInterface } from "../../admin.claims.v1/models/endpoints";
+import { ConsoleSettingsResourceEndpointsInterface } from "../../admin.console-settings.v1/models/endpoints";
+import { GroupsResourceEndpointsInterface } from "../../admin.groups.v1";
+import { IDPResourceEndpointsInterface } from "../../admin.identity-providers.v1/models/endpoints";
+import { IdentityProviderTemplateLoadingStrategies } from "../../admin.identity-providers.v1/models/identity-provider";
+import { ScopesResourceEndpointsInterface } from "../../admin.oidc-scopes.v1";
 import { OrganizationResourceEndpointsInterface } from "../../admin-organizations-v1/models";
 import { JWTAuthenticationServiceEndpointsInterface } from "../../admin-private-key-jwt-v1/models";
 import { RolesResourceEndpointsInterface } from "../../admin-roles-v2/models/endpoints";

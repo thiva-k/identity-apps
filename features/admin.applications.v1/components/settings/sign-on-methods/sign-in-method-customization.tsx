@@ -42,7 +42,7 @@ import { ScriptBasedFlow } from "./script-based-flow";
 import { StepBasedFlow } from "./step-based-flow";
 import DefaultFlowConfigurationSequenceTemplate from "./templates/default-sequence.json";
 import useAuthenticationFlow from "../../../../admin.authentication-flow-builder.v1/hooks/use-authentication-flow";
-import { AuthenticatorManagementConstants } from "../../../../admin-connections-v1";
+import { AuthenticatorManagementConstants } from "../../../../admin.connections.v1";
 import {
     AppConstants,
     AppState,
@@ -50,12 +50,12 @@ import {
     EventPublisher,
     FeatureConfigInterface,
     history
-} from "../../../../admin-core-v1";
-import { getMultiFactorAuthenticatorDetails } from "../../../../admin-identity-providers-v1/api";
+} from "../../../../admin.core.v1";
+import { getMultiFactorAuthenticatorDetails } from "../../../../admin.identity-providers.v1/api";
 import {
     IdentityProviderManagementConstants
-} from "../../../../admin-identity-providers-v1/constants/identity-provider-management-constants";
-import { GenericAuthenticatorInterface } from "../../../../admin-identity-providers-v1/models/identity-provider";
+} from "../../../../admin.identity-providers.v1/constants/identity-provider-management-constants";
+import { GenericAuthenticatorInterface } from "../../../../admin.identity-providers.v1/models/identity-provider";
 import { OrganizationType } from "../../../../admin-organizations-v1/constants";
 import {
     ConnectorPropertyInterface,

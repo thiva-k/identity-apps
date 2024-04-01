@@ -43,8 +43,8 @@ import {
     ExtendedExternalClaimInterface,
     SelectedDialectInterface
 } from "./attribute-settings";
-import { applicationConfig } from "../../../../admin-extensions-v1";
-import { ClaimManagementConstants } from "../../../../admin-claims-v1/constants";
+import { applicationConfig } from "../../../../admin.extensions.v1";
+import { ClaimManagementConstants } from "../../../../admin.claims.v1/constants";
 import {
     AppConstants,
     AppState,
@@ -52,7 +52,7 @@ import {
     EventPublisher,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../../../admin-core-v1";
+} from "../../../../admin.core.v1";
 import {
     ClaimConfigurationInterface,
     ClaimMappingInterface,

@@ -44,7 +44,7 @@ import {
     SignOnMethods
 } from "./settings";
 import { Info } from "./settings/info";
-import { applicationConfig } from "../../admin-extensions-v1";
+import { applicationConfig } from "../../admin.extensions.v1";
 import {
     AppState,
     CORSOriginsListInterface,
@@ -52,7 +52,7 @@ import {
     FeatureConfigInterface,
     getCORSOrigins,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { OrganizationType } from "../../admin-organizations-v1/constants";
 import { useGetCurrentOrganizationType } from "../../admin-organizations-v1/hooks/use-get-organization-type";
 import { getInboundProtocolConfig } from "../api";

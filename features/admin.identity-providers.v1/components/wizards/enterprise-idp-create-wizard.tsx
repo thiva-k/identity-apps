@@ -63,14 +63,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { AnyAction } from "redux";
 import { ThunkDispatch } from "redux-thunk";
 import { Card, Dimmer, Divider, Grid, Icon } from "semantic-ui-react";
-import { commonConfig, identityProviderConfig } from "../../../admin-extensions-v1";
+import { commonConfig, identityProviderConfig } from "../../../admin.extensions.v1";
 import {
     AppState,
     ConfigReducerStateInterface,
     EventPublisher,
     ModalWithSidePanel,
     getCertificateIllustrations
-} from "../../../admin-core-v1";
+} from "../../../admin.core.v1";
 import { createIdentityProvider, getIdentityProviderList } from "../../api";
 import { getIdPIcons, getIdentityProviderWizardStepIcons } from "../../configs/ui";
 import { IdentityProviderManagementConstants } from "../../constants";

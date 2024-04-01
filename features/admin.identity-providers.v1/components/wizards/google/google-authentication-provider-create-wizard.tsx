@@ -41,14 +41,14 @@ import {
     GoogleAuthenticationProviderCreateWizardContent,
     GoogleAuthenticationProviderCreateWizardFormValuesInterface
 } from "./google-authentication-provider-create-wizard-content";
-import { identityProviderConfig } from "../../../../admin-extensions-v1/configs";
+import { identityProviderConfig } from "../../../../admin.extensions.v1/configs";
 import {
     AppState,
     ConfigReducerStateInterface,
     EventPublisher,
     ModalWithSidePanel
-} from "../../../../admin-core-v1";
-import { TierLimitReachErrorModal } from "../../../../admin-core-v1/components/tier-limit-reach-error-modal";
+} from "../../../../admin.core.v1";
+import { TierLimitReachErrorModal } from "../../../../admin.core.v1/components/tier-limit-reach-error-modal";
 import {
     createIdentityProvider,
     getFederatedAuthenticatorMetadata

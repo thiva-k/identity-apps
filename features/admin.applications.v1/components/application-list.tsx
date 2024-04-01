@@ -45,9 +45,9 @@ import { Trans, useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { Header, Icon, Label, SemanticICONS } from "semantic-ui-react";
-import { applicationConfig } from "../../admin-extensions-v1";
-import { applicationListConfig } from "../../admin-extensions-v1/configs/application-list";
-import { ConsoleSettingsModes } from "../../admin-console-settings-v1/models/ui";
+import { applicationConfig } from "../../admin.extensions.v1";
+import { applicationListConfig } from "../../admin.extensions.v1/configs/application-list";
+import { ConsoleSettingsModes } from "../../admin.console-settings.v1/models/ui";
 import {
     AppConstants,
     AppState,
@@ -56,7 +56,7 @@ import {
     UIConfigInterface,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { OrganizationType } from "../../admin-organizations-v1/constants";
 import { useGetCurrentOrganizationType } from "../../admin-organizations-v1/hooks/use-get-organization-type";
 import { deleteApplication } from "../api";

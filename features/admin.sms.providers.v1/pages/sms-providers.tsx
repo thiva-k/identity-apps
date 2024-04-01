@@ -31,7 +31,7 @@ import {
     PageLayout,
     useDocumentation
 } from "@wso2is/react-components";
-import smsProviderConfig from "../../admin-extensions-v1/configs/sms-provider";
+import smsProviderConfig from "../../admin.extensions.v1/configs/sms-provider";
 import React, { FunctionComponent, ReactElement, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -41,13 +41,13 @@ import CustomSMSProvider from "./custom-sms-provider";
 import TwilioSMSProvider from "./twilio-sms-provider";
 import VonageSMSProvider from "./vonage-sms-provider";
 import { AccessControlConstants } from "../../admin.access-control.v1/constants/access-control";
-import { AuthenticatorManagementConstants } from "../../admin-connections-v1/constants/autheticator-constants";
+import { AuthenticatorManagementConstants } from "../../admin.connections.v1/constants/autheticator-constants";
 import {
     AppConstants,
     AppState,
     FeatureConfigInterface
-} from "../../admin-core-v1";
-import { history } from "../../admin-core-v1/helpers";
+} from "../../admin.core.v1";
+import { history } from "../../admin.core.v1/helpers";
 import { createSMSProvider, deleteSMSProviders, updateSMSProvider, useSMSProviders } from "../api";
 import { providerCards } from "../configs/provider-cards";
 import { SMSProviderConstants } from "../constants";
