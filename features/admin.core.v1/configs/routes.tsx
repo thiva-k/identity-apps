@@ -474,7 +474,7 @@ export const getAppViewRoutes = (): RouteInterface[] => {
                         children: [
                             {
                                 component: lazy(() =>
-                                    import("../../admin-organizations-v1/pages/organization-edit")
+                                    import("../../admin.organizations.v1/pages/organization-edit")
                                 ),
                                 exact: true,
                                 icon: {
@@ -487,7 +487,7 @@ export const getAppViewRoutes = (): RouteInterface[] => {
                                 showOnSidePanel: false
                             }
                         ],
-                        component: lazy(() => import("../../admin-organizations-v1/pages/organizations")),
+                        component: lazy(() => import("../../admin.organizations.v1/pages/organizations")),
                         exact: true,
                         icon: {
                             icon: <BuildingIcon />
@@ -504,7 +504,7 @@ export const getAppViewRoutes = (): RouteInterface[] => {
                             {
                                 component: lazy(() => {
                                     // eslint-disable-next-line max-len
-                                    return import("../../admin-organization-discovery-v1/pages/assign-organization-discovery-domains-page");
+                                    return import("../../admin.organization-discovery.v1/pages/assign-organization-discovery-domains-page");
                                 }),
                                 exact: true,
                                 icon: {
@@ -519,7 +519,7 @@ export const getAppViewRoutes = (): RouteInterface[] => {
                             {
                                 component: lazy(() => {
                                     // eslint-disable-next-line max-len
-                                    return import("../../admin-organization-discovery-v1/pages/edit-organization-discovery-domains-page");
+                                    return import("../../admin.organization-discovery.v1/pages/edit-organization-discovery-domains-page");
                                 }),
                                 exact: true,
                                 icon: {
@@ -533,7 +533,7 @@ export const getAppViewRoutes = (): RouteInterface[] => {
                             }
                         ],
                         component: lazy(() => {
-                            return import("../../admin-organization-discovery-v1/pages/organization-discovery-domains-page");
+                            return import("../../admin.organization-discovery.v1/pages/organization-discovery-domains-page");
                         }),
                         exact: true,
                         icon: {
@@ -964,7 +964,7 @@ export const getAppViewRoutes = (): RouteInterface[] => {
                     },
                     {
                         category: "extensions:develop.sidePanel.categories.monitor",
-                        component: lazy(() => import("../../admin-org-insights-v1/pages/org-insights")),
+                        component: lazy(() => import("../../admin.org-insights.v1/pages/org-insights")),
                         exact: true,
                         featureGateIds: [ FeatureGateConstants.SAAS_FEATURES_IDENTIFIER ],
                         featureStatus: "BETA",
