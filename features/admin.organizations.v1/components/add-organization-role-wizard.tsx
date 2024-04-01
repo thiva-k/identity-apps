@@ -27,11 +27,11 @@ import { OrganizationRoleBasics } from "./add-organization-role/organization-rol
 import { CreateOrganizationRoleSummary } from "./add-organization-role/organization-role-sumary";
 import { OrganizationPermissionList } from "./edit-organization-role/organization-role-permission";
 import { CreateGroupMemberInterface, GroupsInterface, getGroupList } from "../../admin.groups.v1";
-import { AssignGroupsUsers } from "../../admin-roles-v2/components/wizard/assign-groups-users";
-import { getRolesWizardStepIcons } from "../../admin-roles-v2/configs/ui";
-import { TreeNode } from "../../admin-roles-v2/models/permission";
-import { CreateRoleInterface, CreateRoleMemberInterface } from "../../admin-roles-v2/models/roles";
-import { UserBasicInterface } from "../../admin-users-v1/models/user";
+import { AssignGroupsUsers } from "../../admin.roles.v2/components/wizard/assign-groups-users";
+import { getRolesWizardStepIcons } from "../../admin.roles.v2/configs/ui";
+import { TreeNode } from "../../admin.roles.v2/models/permission";
+import { CreateRoleInterface, CreateRoleMemberInterface } from "../../admin.roles.v2/models/roles";
+import { UserBasicInterface } from "../../admin.users.v1/models/user";
 
 /**
  * Interface which captures create role props.

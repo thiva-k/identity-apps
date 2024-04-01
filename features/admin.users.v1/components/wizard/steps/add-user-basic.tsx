@@ -34,13 +34,13 @@ import { EventPublisher, SharedUserStoreUtils } from "../../../../admin.core.v1/
 import { useGetCurrentOrganizationType } from "../../../../admin-organizations-v1/hooks/use-get-organization-type";
 import {
     ServerConfigurationsConstants
-} from "../../../../admin-server-configurations-v1/constants/server-configurations-constants";
-import { getAUserStore, useUserStore, useUserStores } from "../../../../admin-userstores-v1/api";
+} from "../../../../admin.server-configurations.v1/constants/server-configurations-constants";
+import { getAUserStore, useUserStore, useUserStores } from "../../../../admin.userstores.v1/api";
 import {
     USERSTORE_REGEX_PROPERTIES, UserStoreManagementConstants
-} from "../../../../admin-userstores-v1/constants/user-store-constants";
-import { UserStoreListItem, UserStorePostData, UserStoreProperty } from "../../../../admin-userstores-v1/models";
-import { ValidationDataInterface, ValidationFormInterface } from "../../../../admin-validation-v1/models";
+} from "../../../../admin.userstores.v1/constants/user-store-constants";
+import { UserStoreListItem, UserStorePostData, UserStoreProperty } from "../../../../admin.userstores.v1/models";
+import { ValidationDataInterface, ValidationFormInterface } from "../../../../admin.validation.v1/models";
 import { getUsersList } from "../../../api/users";
 import {
     AskPasswordOptionTypes,
