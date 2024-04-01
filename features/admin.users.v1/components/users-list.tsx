@@ -51,7 +51,7 @@ import {
     UIConstants,
     getEmptyPlaceholderIllustrations,
     history
-} from "../../admin-core-v1";
+} from "../../admin.core.v1";
 import { useGetCurrentOrganizationType } from "../../admin-organizations-v1/hooks/use-get-organization-type";
 import { RealmConfigInterface } from "../../admin-server-configurations-v1";
 import { deleteUser } from "../api";

@@ -43,7 +43,7 @@ import { AddUserWizardSummary } from "./user-wizard-summary";
 import { userstoresConfig } from "../../../admin-extensions-v1/configs";
 import { administratorConfig } from "../../../admin-extensions-v1/configs/administrator";
 import { SCIMConfigs } from "../../../admin-extensions-v1/configs/scim";
-import { AppState } from "../../../admin-core-v1/store";
+import { AppState } from "../../../admin.core.v1/store";
 import { GroupsInterface } from "../../../admin-groups-v1";
 import { updateGroupDetails, useGroupList } from "../../../admin-groups-v1/api";
 import { useValidationConfigData } from "../../../admin-validation-v1/api";
