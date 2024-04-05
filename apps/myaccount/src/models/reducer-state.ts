@@ -16,7 +16,6 @@
  * under the License.
  */
 
-import { OrganizationType } from "@wso2is/common";
 import { CommonConfigReducerStateInterface } from "@wso2is/core/models";
 import { I18nModuleOptionsInterface } from "@wso2is/i18n";
 import {
@@ -25,6 +24,7 @@ import {
     ServiceResourceEndpointsInterface,
     UIConfigInterface
 } from "./app-config";
+import { OrganizationType } from "../constants";
 
 /**
  * Dev portal config reducer state interface.

@@ -16,12 +16,12 @@
  * under the License.
  */
 
-import { OrganizationType } from "@wso2is/common";
 import {
     OrganizationActionTypes,
     SetOrganizationTypeInterface,
     SetUserOrganizationIdInterface
 } from "./types/organization";
+import { OrganizationType } from "../../constants";
 
 /**
  * This action sets the user organization id in the redux store.

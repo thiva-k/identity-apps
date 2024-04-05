@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { OrganizationType } from "@wso2is/common";
+import { OrganizationType } from "../../constants";
 import { OrganizationReducerStateInterface } from "../../models";
 import { OrganizationAction, OrganizationActionTypes } from "../actions/types/organization";
 

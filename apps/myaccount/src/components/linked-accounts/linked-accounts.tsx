@@ -16,7 +16,6 @@
  * under the License.
  */
 
-import { OrganizationType } from "@wso2is/common";
 import { TestableComponentInterface } from "@wso2is/core/models";
 import { AxiosError } from "axios";
 import isEmpty from "lodash-es/isEmpty";
@@ -32,6 +31,7 @@ import {
     removeLinkedAccount
 } from "../../api";
 import { getSettingsSectionIcons } from "../../configs";
+import { OrganizationType } from "../../constants";
 import { CommonConstants, UIConstants } from "../../constants";
 import {
     AlertInterface,

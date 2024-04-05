@@ -15,24 +15,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { OrganizationType } from "../../../constants";
-
-export enum OrganizationActionTypes {
-    SET_ORGANIZATION_TYPE = "SET_ORGANIZATION_TYPE",
-    SET_USER_ORGANIZATION_ID = "SET_USER_ORGANIZATION_ID"
+export enum OrganizationType {
+    SUBORGANIZATION = "SUBORGANIZATION",
+    TENANT = "TENANT",
+    FIRST_LEVEL_ORGANIZATION = "FIRST_LEVEL_ORGANIZATION",
+    SUPER_ORGANIZATION= "SUPER_ORGANIZATION"
 }
-
-export interface SetOrganizationTypeInterface {
-    payload: OrganizationType;
-    type: OrganizationActionTypes.SET_ORGANIZATION_TYPE;
-}
-
-export interface SetUserOrganizationIdInterface {
-    payload: string;
-    type: OrganizationActionTypes.SET_USER_ORGANIZATION_ID;
-}
-
-export type OrganizationAction =
-    | SetOrganizationTypeInterface
-    | SetUserOrganizationIdInterface;
