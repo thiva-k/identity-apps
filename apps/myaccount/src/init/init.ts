@@ -24,8 +24,6 @@ if (!window["AppUtils"] || !window["AppUtils"]?.getConfig()) {
     AppUtils.init({
         consoleAppOrigin: process.env.NODE_ENV === "production" ? undefined : "https://localhost:9001",
         contextPath: contextPathGlobal,
-        isAdaptiveAuthenticationAvailable: isAdaptiveAuthenticationAvailable,
-        isOrganizationManagementEnabled: isOrganizationManagementEnabled,
         serverOrigin: serverOriginGlobal,
         superTenant: superTenantGlobal,
         tenantPrefix: tenantPrefixGlobal

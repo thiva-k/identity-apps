@@ -229,14 +229,6 @@ module.exports = (config: WebpackOptionsNormalized, context: NxWebpackContextInt
                 cookieproInitialScriptTypeCheck: "<% String initialScriptType = (Boolean.TRUE.toString()).equals(is_cookiepro_enabled) ? \"text/plain\" : \"text/javascript\"; %>",
                 cookieproInitialScriptTypeVar: "<%= initialScriptType %>",
                 filename: ABSOLUTE_PATHS.homeTemplateInDistribution,
-                getAdaptiveAuthenticationAvailability: !isDeployedOnExternalTomcatServer
-                    ? "<%@ page import=\"static org.wso2.carbon.identity.application." +
-                "authentication.framework.util.FrameworkUtils.isAdaptiveAuthenticationAvailable\"%>"
-                    : "",
-                getOrganizationManagementAvailability: !isDeployedOnExternalTomcatServer
-                    ? "<%@ page import=\"static org.wso2.carbon.identity.application." +
-                    "authentication.framework.util.FrameworkUtils.isOrganizationManagementEnabled\"%>"
-                    : "",
                 hash: true,
                 importStringUtils: "<%@ page import=\"org.apache.commons.lang.StringUtils\" %>",
                 importSuperTenantConstant: !isDeployedOnExternalTomcatServer
@@ -251,12 +243,6 @@ module.exports = (config: WebpackOptionsNormalized, context: NxWebpackContextInt
                     ? "<%@ page import=\"" +
                     "static org.wso2.carbon.identity.core.util.IdentityUtil.getServerURL\" %>"
                     : "",
-                isAdaptiveAuthenticationAvailable: !isDeployedOnExternalTomcatServer
-                    ? "<%= isAdaptiveAuthenticationAvailable() %>"
-                    : "false",
-                isOrganizationManagementEnabled: !isDeployedOnExternalTomcatServer
-                    ? "<%= isOrganizationManagementEnabled() %>"
-                    : "false",
                 minify: false,
                 publicPath: baseHref,
                 serverUrl: !isDeployedOnExternalTomcatServer
@@ -287,14 +273,6 @@ module.exports = (config: WebpackOptionsNormalized, context: NxWebpackContextInt
                 contentType: "<%@ page language=\"java\" contentType=\"text/html; charset=UTF-8\" " +
                     "pageEncoding=\"UTF-8\" %>",
                 filename: ABSOLUTE_PATHS.indexTemplateInDistribution,
-                getAdaptiveAuthenticationAvailability: !isDeployedOnExternalTomcatServer
-                    ? "<%@ page import=\"static org.wso2.carbon.identity.application." +
-                "authentication.framework.util.FrameworkUtils.isAdaptiveAuthenticationAvailable\"%>"
-                    : "",
-                getOrganizationManagementAvailability: !isDeployedOnExternalTomcatServer
-                    ? "<%@ page import=\"static org.wso2.carbon.identity.application." +
-                    "authentication.framework.util.FrameworkUtils.isOrganizationManagementEnabled\"%>"
-                    : "",
                 hash: true,
                 importOwaspEncode: "<%@ page import=\"org.owasp.encoder.Encode\" %>",
                 importSuperTenantConstant: !isDeployedOnExternalTomcatServer
@@ -310,12 +288,6 @@ module.exports = (config: WebpackOptionsNormalized, context: NxWebpackContextInt
                     "static org.wso2.carbon.identity.core.util.IdentityUtil.getServerURL\" %>"
                     : "",
                 inject: false,
-                isAdaptiveAuthenticationAvailable: !isDeployedOnExternalTomcatServer
-                    ? "<%= isAdaptiveAuthenticationAvailable() %>"
-                    : "false",
-                isOrganizationManagementEnabled: !isDeployedOnExternalTomcatServer
-                    ? "<%= isOrganizationManagementEnabled() %>"
-                    : "false",
                 minify: false,
                 publicPath: baseHref,
                 requestForwardSnippet : "if(request.getParameter(\"code\") != null && "+
