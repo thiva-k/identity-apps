@@ -12,6 +12,8 @@
         "react-components",
         "component-library"
     ],
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
     "scripts": {
         "start:storybook": "pnpm nx run react-components:storybook",
         "build:storybook": "pnpm nx run react-components:storybook-build",
