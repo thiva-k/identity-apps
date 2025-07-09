@@ -18,7 +18,6 @@
 
 import { AuthProvider } from "@asgardeo/auth-react";
 import { loader } from "@monaco-editor/react";
-import { ThemeProvider } from "@oxygen-ui/react/theme";
 import { AuthenticateUtils } from "@wso2is/admin.authentication.v1";
 import { PreLoader } from "@wso2is/admin.core.v1/components/pre-loader";
 import { Config } from "@wso2is/admin.core.v1/configs/app";
@@ -33,7 +32,6 @@ import * as ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
 import { ProtectedApp } from "./protected-app";
-import Theme from "./theme";
 
 // Set the runtime config in the context.
 ContextUtils.setRuntimeConfig(Config.getDeploymentConfig());
@@ -100,23 +98,21 @@ const RootWithConfig = (): ReactElement => {
             } }
         >
             <AppSettingsProvider>
-                <ThemeProvider theme={ Theme } defaultMode="light" modeStorageKey="console-oxygen-mode">
-                    <Provider store={ store }>
-                        <BrowserRouter>
-                            <AuthProvider
-                                config={ AuthenticateUtils.getInitializeConfig() }
-                                fallback={ <PreLoader /> }
-                                getAuthParams={ AuthenticateUtils.getAuthParams }
-                            >
-                                <AppConfigProvider>
-                                    <OrganizationsProvider>
-                                        <ProtectedApp />
-                                    </OrganizationsProvider>
-                                </AppConfigProvider>
-                            </AuthProvider>
-                        </BrowserRouter>
-                    </Provider>
-                </ThemeProvider>
+                <Provider store={ store }>
+                    <BrowserRouter>
+                        <AuthProvider
+                            config={ AuthenticateUtils.getInitializeConfig() }
+                            fallback={ <PreLoader /> }
+                            getAuthParams={ AuthenticateUtils.getAuthParams }
+                        >
+                            <AppConfigProvider>
+                                <OrganizationsProvider>
+                                    <ProtectedApp />
+                                </OrganizationsProvider>
+                            </AppConfigProvider>
+                        </AuthProvider>
+                    </BrowserRouter>
+                </Provider>
             </AppSettingsProvider>
         </GlobalVariablesProvider>
     );

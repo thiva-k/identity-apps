@@ -62,7 +62,7 @@ import has from "lodash-es/has";
 import isEmpty from "lodash-es/isEmpty";
 import set from "lodash-es/set";
 import * as moment from "moment";
-import React, { FunctionComponent, ReactElement, Suspense, useEffect, useState } from "react";
+import React, { FunctionComponent, ReactElement, Suspense, useContext, useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import { Trans } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
@@ -74,6 +74,9 @@ import "moment/locale/fr";
 import { getBaseRoutes } from "./configs/routes";
 import DecoratedApp from "./decorated-app";
 import "./app.scss";
+import { useColorScheme } from "@mui/material";
+import { Mode } from "@mui/system/cssVars/useCurrentColorScheme";
+import { ThemeProviderContext } from "@wso2is/common.branding.v1/contexts/theme-provider-context";
 
 /**
  * Main App component.
@@ -110,6 +113,17 @@ export const App: FunctionComponent<Record<string, never>> = (): ReactElement =>
         data: allFeatures,
         error: featureGateAPIException
     } = useGetAllFeatures();
+    
+    const { themePreference } = useContext(ThemeProviderContext);
+
+    const { setMode } = useColorScheme();
+
+    useEffect(() => {
+        const mode: Mode = themePreference?.preference?.theme?.activeTheme.toLowerCase() as Mode
+            ?? "light" as Mode;
+
+        setMode(mode);
+    }, [ themePreference ]);
 
     /**
      * Set the deployment configs in redux state.

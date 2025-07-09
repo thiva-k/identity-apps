@@ -131,6 +131,7 @@ const BrandingCore: FunctionComponent<BrandingCoreInterface> = (
         error: brandingPreferenceErrors
     } = useGetBrandingPreferenceResolve(
         resolvedName,
+        true,
         resolvedType
     );
 

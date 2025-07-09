@@ -133,6 +133,7 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
         error: brandingPreferenceFetchRequestError
     } = useGetBrandingPreferenceResolve(
         resolvedName,
+        true,
         resolvedType
     );
 

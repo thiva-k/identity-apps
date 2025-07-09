@@ -35,6 +35,7 @@ import {
  * Hook to get the branding preference via Branding Preferences API.
  *
  * @param name - Resource Name.
+ * @param shouldFetch - Should fetch the data.
  * @param type - Resource Type.
  * @param locale - Resource Locale.
  * @returns `RequestResultInterface<Data, Error>`
@@ -42,6 +43,7 @@ import {
 const useGetBrandingPreferenceResolve = <Data = BrandingPreferenceAPIResponseInterface,
     Error = RequestErrorInterface>(
         name: string,
+        shouldFetch: boolean = true,
         type: BrandingPreferenceTypes = BrandingPreferenceTypes.ORG,
         locale: string = I18nConstants.DEFAULT_FALLBACK_LANGUAGE
     ): RequestResultInterface<Data, Error> => {
@@ -68,7 +70,9 @@ const useGetBrandingPreferenceResolve = <Data = BrandingPreferenceAPIResponseInt
         error,
         isValidating,
         mutate
-    } = useRequest<Data, Error>(requestConfig);
+    } = useRequest<Data, Error>(shouldFetch ? requestConfig : null);
+
+    console.log("branding preference:",  data);
 
     return {
         data,
