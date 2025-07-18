@@ -70,14 +70,14 @@ interface AdvanceFormPropsInterface extends IdentifiableComponentInterface {
 /**
  * Form initial values interface.
  */
-export type AdvanceFormValuesInterface = Pick<BrandingPreferenceInterface, "urls">;
+export type AdvanceFormValuesInterface = Pick<BrandingPreferenceInterface, "urls" | "configs">;
 
 const FORM_ID: string = "branding-advanced-form";
 
 /**
  * Branding Preference Advance Form.
  *
- * @param props - Props injected to the component.
+ * @param props - Props injected to the component.  
  * @returns Functional component.
  */
 export const AdvanceForm: FunctionComponent<AdvanceFormPropsInterface> = forwardRef((
@@ -331,6 +331,12 @@ export const AdvanceForm: FunctionComponent<AdvanceFormPropsInterface> = forward
                 width={ 16 }
                 data-testid={ `${ componentId }-self-signup-url` }
                 validation={ validateTemplatableURLs }
+            />
+            <Field.Checkbox
+                name="configs.isConsoleBrandingEnabled"
+                label="Enable Console Branding"
+                hint={ t("extensions:develop.branding.forms.advance.configs.fields.isConsoleBrandingEnabled.hint",
+                    { defaultValue: "Enable this option to apply branding to the Console application." }) }
             />
         </Form>
     );

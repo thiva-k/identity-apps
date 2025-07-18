@@ -29,6 +29,7 @@ import ConsoleAdministrators from "./console-administrators/console-administrato
 import ConsoleLoginFlow from "./console-login-flow/console-login-flow";
 import ConsoleProtocol from "./console-protocol/console-protocol";
 import ConsoleRolesList from "./console-roles/console-roles-list";
+import ConsoleGeneral from "./console-general/console-general";
 import { ConsoleSettingsModes, ConsoleSettingsTabIDs } from "../models/ui";
 import "./console-settings-tabs.scss";
 
@@ -108,6 +109,17 @@ const ConsoleSettingsTabs: FunctionComponent<ConsoleSettingsTabsInterface> = (
     const consoleTabs: ConsoleSettingsTabInterface[] = useMemo(
         () =>
             [
+                {
+                    className: "general",
+                    "data-componentid": `${componentId}-tab-general`,
+                    "data-tabid": ConsoleSettingsModes.GENERAL,
+                    id: ConsoleSettingsModes.GENERAL,
+                    label: "General",
+                    pane: <ConsoleGeneral />,
+                    value: ConsoleSettingsTabIDs.ADMINISTRATORS
+
+
+                },
                 {
                     className: "administrators-list",
                     "data-componentid": `${componentId}-tab-administrators`,

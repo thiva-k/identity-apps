@@ -64,6 +64,8 @@ import {
 import BrandingPreferenceMigrationClient from "../utils/branding-preference-migration-client";
 import { BrandingPreferenceUtils } from "../utils/branding-preference-utils";
 import processCustomTextTemplateLiterals from "../utils/process-custom-text-template-literals";
+import { ApplicationManagementConstants } from "../../admin.applications.v1/constants/application-management";
+import { useGetApplication } from "../../admin.applications.v1/api/use-get-application";
 
 /**
  * Props interface for the Branding preference provider.
@@ -120,6 +122,9 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
     const [ selectedApplication, setSelectedApplication ] = useState<string>(null);
     const [ brandingMode, setBrandingMode ] = useState<BrandingModes>(BrandingModes.ORGANIZATION);
     const [ isCustomLayoutEditorEnabled, setIsCustomLayoutEditorEnabled ] = useState<boolean>(false);
+
+    // Fetch selected application details if an application is selected
+    const { data: selectedAppDetails } = useGetApplication(selectedApplication, !!selectedApplication);
 
     const resolvedName: string = (brandingMode === BrandingModes.APPLICATION && selectedApplication)
         ? selectedApplication : tenantDomain;
@@ -553,6 +558,13 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
                         if (brandingMode === BrandingModes.ORGANIZATION) {
                             meta.push(PreviewScreenType.MY_ACCOUNT);
                             meta.push(PreviewScreenType.EMAIL_TEMPLATE);
+                        }
+                        // Use application name for Console check
+                        if (
+                            brandingMode === BrandingModes.APPLICATION &&
+                            selectedAppDetails?.name === ApplicationManagementConstants.CONSOLE_APP_NAME
+                        ) {
+                            meta.push(PreviewScreenType.CONSOLE);
                         }
                     }
 

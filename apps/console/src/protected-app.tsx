@@ -359,6 +359,7 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
      * Extracts theme preference data using a custom hook.
      */
     const tenantDomain: string = useSelector((state: AppState) => state.auth.tenantDomain);
+    console.log("tenantDomain", tenantDomain)
     const { data: themePreference } = useGetBrandingPreferenceResolve(
         tenantDomain,
         state.isAuthenticated && !!tenantDomain
@@ -372,7 +373,11 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
     return (
 
     <ThemeProvider
-        themePreference={ themePreference }
+        themePreference={
+            themePreference?.preference?.configs?.isConsoleBrandingEnabled
+                ? themePreference
+                : undefined
+        }
         defaultMode={ "light" }
         modeStorageKey={ "myaccount-oxygen-mode" }
         appTitle={ appTitle }

@@ -352,8 +352,7 @@ const BrandingPageLayout: FunctionComponent<BrandingPageLayoutInterface> = (
                                                 }
                                                 filterOptions={ (options: ApplicationListItemInterface[]) =>
                                                     options.filter((application: ApplicationListItemInterface) =>
-                                                        !ApplicationManagementConstants.SYSTEM_APPS.includes(
-                                                            application?.name) &&
+                                        
                                                         !ApplicationManagementConstants.DEFAULT_APPS.includes(
                                                             application?.name) &&
                                                         !(application?.templateId === ApplicationManagementConstants.

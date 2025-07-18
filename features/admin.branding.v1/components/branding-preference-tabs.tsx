@@ -326,6 +326,9 @@ export const BrandingPreferenceTabs: FunctionComponent<BrandingPreferenceTabsInt
                             recoveryPortalURL: brandingPreference.urls?.recoveryPortalURL,
                             selfSignUpURL: brandingPreference.urls?.selfSignUpURL,
                             termsOfUseURL: brandingPreference.urls?.termsOfUseURL
+                        },
+                        configs: {
+                            ...brandingPreference.configs,
                         }
                     } }
                     isLoading={ isLoading }

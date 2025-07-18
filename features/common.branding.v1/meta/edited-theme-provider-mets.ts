@@ -402,6 +402,8 @@ export class ThemePreferenceMeta {
 
     .ui.header {
         font-family: var(--asg-primary-font-family);
+        color: var(--asg-colors-text-primary);
+
     }
 
     /* Inputs */
@@ -509,14 +511,19 @@ export class ThemePreferenceMeta {
     /* ------  Font Colors ------ */
 
     .ui.table {
-        background: var(--asg-colors-background-surface-main); /* or another dark variable */
+    background: var(--asg-colors-background-surface-main); /* or another dark variable */
+    color: var(--asg-colors-text-primary);
+    }
+    
+    .ui.table th, .ui.table td {
+        background: var(--asg-colors-background-surface-main); /* for table cells */
         color: var(--asg-colors-text-primary);
     }
-
-    /* My Account session table */
-    .ui.table.session-table {
-        color: var(--asg-colors-text-secondary);
-    }
+    
+    .ui.table thead {
+    background: var(--asg-colors-background-surface-main);
+    color: var(--asg-colors-text-primary) ;
+}
 
     .ui.header .sub.header {
         color: var(--asg-colors-text-secondary);
@@ -557,10 +564,6 @@ export class ThemePreferenceMeta {
 
     .ui.list .list>.item .header, .ui.list>.item .header {
         color: var(--asg-colors-text-primary);
-    }
-
-    .ui.header {
-        color: var(--asg-heading-text-color);
     }
 
     /* Primary Text */
@@ -869,7 +872,7 @@ export class ThemePreferenceMeta {
 
     .advanced-search-wrapper.fill-white .ui.input.advanced-search.with-add-on input {
         color: var(--asg-input-field-base-text-color);
-        background: var(--asg-colors-background-surface-main);
+        background: var(--asg-input-field-base-background-color);
         border-radius: var(--asg-input-field-base-border-radius);
     }
 
@@ -1017,22 +1020,9 @@ export class ThemePreferenceMeta {
         color: var(--asg-colors-primary-main);
     }
 
-    .layout.list-layout .top-action-panel .ui.grid {
-        background: var(--asg-colors-background-surface-main) !important;
-    }
-
     /*-----------------------------
               My Account
     ------------------------------*/
-
-    .advanced-search-wrapper .ui.input.advanced-search.with-add-on input {
-        background: var(--asg-colors-background-surface-main) !important;
-        color: var(--asg-input-field-base-text-color) !important;
-    }
-
-    .layout.list-layout .top-action-panel .ui.grid {
-        background: var(--asg-colors-background-surface-main) !important;
-    }
 
     .recovery-options-muted-header {
         background: var(--asg-colors-background-surface-dark);
@@ -1046,11 +1036,6 @@ export class ThemePreferenceMeta {
     }
 
     /* ------  My Account Header ------ */
-
-    .ui.horizontal.segments {
-        background: var(--asg-colors-background-surface-main) !important; 
-        color: var(--asg-colors-text-primary) !important;
-    };
 
     .ui.menu.app-header {
         background: var(--asg-colors-background-surface-inverted);
@@ -1112,37 +1097,130 @@ export class ThemePreferenceMeta {
     .ui.card.application-card.recent .application-image.default {
         background: var(--asg-colors-background-surface-light);
     }
-
-    .ui.items>.item.application-list-item {
-        border-color: var(--asg-colors-outlined-default);
-    }
     
-
-    .ui.header {
-        color: var(--asg-colors-text-primary);
-    }
-
-    .text-typography.muted {
-        color: var(--asg-colors-text-primary) ;
-    }
-
-   .ui.card .card-rich-navigation-button {
+    /* Segment and Card Variants */
+    .ui.segment.bordered,
+    .ui.segment.emphasized,
+    .ui.segment.raised,
+    .ui.segment.stacked,
+    .ui.card.basic-card,
+    .ui.cards > .card {
+        background: var(--asg-colors-background-surface-main) !important;
         color: var(--asg-colors-text-primary) !important;
-        fill: var(--asg-colors-text-primary) !important;
+        border-color: var(--asg-colors-outlined-default) !important;
     }
 
-    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-item,
-    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-label,
-    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-item-divider,
-    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-icon {
-        color: var(--asg-colors-text-primary) !important;
-    }
-
-    .ui.segment.emphasized{
+    /* List Items */
+    .ui.list .item {
         background: var(--asg-colors-background-surface-main) !important;
         color: var(--asg-colors-text-primary) !important;
     }
 
+    /* Empty Placeholder */
+    .empty-placeholder {
+        background: var(--asg-colors-background-surface-main) !important;
+        color: var(--asg-colors-text-secondary) !important;
+    }
+
+    /* Table Row States */
+    .ui.table tr.active,
+    .ui.table tr.selected,
+    .ui.table tbody tr:hover {
+        background: var(--asg-colors-background-surface-dark) !important;
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    /* Table Variants */
+    .ui.celled.table,
+    .ui.striped.table {
+        background: var(--asg-colors-background-surface-main) !important;
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    /* Button States */
+    .ui.button.disabled,
+    .ui.button.loading,
+    .ui.button.positive,
+    .ui.button.negative {
+        /* Set appropriate background and text colors */
+    }
+
+    /* Labels */
+    .ui.label,
+    .ui.ribbon.label,
+    .ui.corner.label {
+        background: var(--asg-colors-background-surface-main) !important;
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .ui.input > input,
+    .ui.form input,
+    .ui.input input
+    .ui.input {
+        background: var(--asg-input-field-base-background-color) !important;
+        color: var(--asg-colors-text-primary) !important;
+    }
+    
+    .ui.table thead,
+    .ui.table thead tr,
+    .ui.table thead th {
+        background: var(--asg-colors-background-surface-main) !important;
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .ui.toggle.checkbox .box:before,
+    .ui.toggle.checkbox label:before {
+        background: var(--asg-input-field-base-background-color) !important;
+        border-color: var(--asg-input-field-base-border-color) !important;
+    }
+    .ui.toggle.checkbox input:checked~.box:before,
+    .ui.toggle.checkbox input:checked~label:before {
+        background: var(--asg-colors-primary-main) !important;
+    }
+    /* Layout List Layout and Top Action Panel Overrides */
+    .layout.list-layout {
+        color: var(--asg-colors-text-primary) !important;
+    }
+    .layout.list-layout .top-action-panel {
+        color: var(--asg-colors-text-primary) !important;
+    }
+    .layout.list-layout .top-action-panel .actions {
+        color: var(--asg-colors-text-primary) !important;
+    }
+    .layout.list-layout .top-action-panel .actions .ui.dropdown:not(.active) {
+        color: var(--asg-input-field-base-text-color) !important;
+    }
+    .layout.list-layout .top-action-panel .actions.right-aligned {
+        color: var(--asg-colors-text-primary) !important;
+    }
+    .layout.list-layout .top-action-panel .ui.grid {
+        background: var(--asg-colors-background-surface-main) !important;
+    }
+    .layout.list-layout .top-action-panel .actions .ui.dropdown {
+        background: var(--asg-input-field-base-background-color) !important;
+    }
+
+    .ui.items>.item.application-list-item {
+        border-color: var(--asg-colors-outlined-default);
+    }
+    .account-status-filter-dropdown,
+    .account-status-filter-dropdown .MuiBox-root,
+    .account-status-filter-dropdown .oxygen-box,
+    .account-status-filter-dropdown .MuiInputBase-root,
+    .account-status-filter-dropdown .MuiSelect-root,
+    .account-status-filter-dropdown .MuiOutlinedInput-root {
+        background: var(--asg-input-field-base-background-color) !important;
+        color: var(--asg-input-field-base-text-color) !important;
+        border-color: var(--asg-input-field-base-border-color) !important;
+    }
+
+    /* Force all sidebar SVG paths to use the theme color, even if fill is hardcoded */
+    .theme-icon svg path,
+    .theme-icon-transparent svg path,
+    .oxygen-list-item .theme-icon svg path, {
+        fill: var(--asg-colors-text-primary) !important;
+    }
+    /* Make sidebar SVG icons white */
     .theme-icon svg,
     .theme-icon svg [fill="black"],
     .theme-icon-transparent svg,
@@ -1156,106 +1234,77 @@ export class ThemePreferenceMeta {
         color: var(--asg-colors-text-primary) !important;
     }
 
-    .oxygen-collapsible-navbar-item .oxygen-list-sub-item-button {
-        color: var(--asg-colors-text-secondary);
+    .oxygen-list-item-text,
+    .oxygen-list-subitem,
+    .oxygen-list-item .MuiListItemText-root,
+    .oxygen-list-item .MuiListItemText-primary {
+        color: var(--asg-colors-text-primary) !important;
     }
 
+
+    .oxygen-navbar-list .oxygen-navbar-list-logo,
+    .oxygen-navbar-list .oxygen-navbar-list-heading,
+    .oxygen-navbar-list .oxygen-navbar-list-subheading,
+    .oxygen-navbar-list .oxygen-navbar-list-title,
+    .oxygen-navbar-list .oxygen-navbar-list-title * {
+        color: var(--asg-colors-text-primary) !important;
+        fill: var(--asg-colors-text-primary) !important;
+    }
+
+    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-item,
+    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-label {
+        color: var(--asg-colors-text-primary) !important;
+    }
+    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-item-divider,
+    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-icon {
+        color: var(--asg-colors-text-primary) !important;
+        fill: var(--asg-colors-text-primary) !important;
+    }
+    .ui.horizontal.segments {
+        background: var(--asg-colors-background-surface-main) !important;
+        color: var(--asg-colors-text-primary) !important;
+    }
+    .text-typography.muted {
+        color: var(--asg-colors-text-primary) !important;
+    }
     .ui.card .card-rich-navigation-button {
         color: var(--asg-colors-text-primary) !important;
         fill: var(--asg-colors-text-primary) !important;
     }
-    
+    .ui.card.info-card .card-description,
     .ui.card.info-card .card-subheader {
         color: var(--asg-colors-text-secondary) !important;
     }
-    .ui.card.info-card .card-header-section .card-header,
-    .ui.card.info-card .card-description {
+    .ui.card.info-card .card-header-section .card-header {
         color: var(--asg-colors-text-primary) !important;
     }
 
-    .ui.basic.label {
-        background: var(--asg-colors-background-surface-main);
-        color: var(--asg-colors-text-primary);
-    }
-
-    .ui.horizontal.segments {
-        background: var(--asg-colors-background-surface-main) !important; 
-        color: var(--asg-colors-text-primary) !important;
-    }
-
-
-    .layout.list-layout .top-action-panel .ui.grid {
+    /* Pagination bar and item overrides for dark theme */
+    .ui.pagination.menu,
+    .ui.menu.pagination {
         background: var(--asg-colors-background-surface-main) !important;
-    }
-    
-
-    .account-status-filter-dropdown,
-    .account-status-filter-dropdown .MuiBox-root,
-    .account-status-filter-dropdown .oxygen-box,
-    .account-status-filter-dropdown .MuiInputBase-root,
-    .account-status-filter-dropdown .MuiSelect-root,
-    .account-status-filter-dropdown .MuiOutlinedInput-root {
-        background: var(--asg-colors-background-body-main) !important;
         color: var(--asg-colors-text-primary) !important;
-        border-radius: var(--asg-input-field-base-border-radius);
+        border-color: var(--asg-colors-outlined-default) !important;
     }
-
-    .layout.list-layout .top-action-panel .actions .ui.dropdown {
-        background: var(--asg-colors-background-body-main) !important;
+    .ui.pagination.menu .item,
+    .ui.menu.pagination .item {
+        background: var(--asg-colors-background-surface-main) !important;
         color: var(--asg-colors-text-primary) !important;
-        border-radius: var(--asg-input-field-base-border-radius);
+        border-color: var(--asg-colors-outlined-default) !important;
     }
-
-    .ui.table th, .ui.table td {
-        background: var(--asg-colors-background-surface-main); /* for table cells */
-        color: var(--asg-colors-text-primary);
+    .ui.pagination.menu .active.item,
+    .ui.menu.pagination .active.item {
+        background: var(--asg-colors-primary-main) !important;
+        color: var(--asg-primary-button-base-text-color) !important;
+        border-color: var(--asg-colors-primary-main) !important;
     }
-    
-    .ui.table thead th {
-        background: var(--asg-colors-background-body-main);
-        color: var(--asg-colors-text-primary) ;
-    }
-
-    .ai-banner {
-        background-color: var(--asg-colors-background-surface-main) !important;
-    }
-
-    .ui.modal.wizard .steps-container {
-        background: var(--asg-colors-background-body-main) !important;
-    }
-
-    .ui.card .application-tile.white-bg {
-        background-color: var(--asg-colors-background-surface-main) !important;
-    }
-
-    .ui.segment.danger-zone .sub-header {
-        color: var(--asg-colors-text-primary) !important; 
-    }
-
-    .ui.menu .item.disabled{
+    .ui.pagination.menu .disabled.item,
+    .ui.menu.pagination .disabled.item {
+        background: var(--asg-colors-background-surface-main) !important;
         color: var(--asg-colors-text-secondary) !important;
+        opacity: 0.5;
     }
 
-    .pagination-bar .page-limit-label{
-        color: var(--asg-colors-text-primary) !important;
-    }
-
-    .ui.modal.modal-with-side-panel .panels .modal-header.muted {
-        background: var(--asg-colors-background-surface-dark) !important;
-    }
-    
-    .dynamic-form .oxygen-text-field .MuiInputLabel-root {
-        color: var(--asg-colors-text-primary) !important;   
-    }
-
-    .branding-preference-custom-text .branding-preference-custom-text-static-header {
-        background: var(--asg-colors-background-surface-main) !important;
-    }
-
-}
-
-}
-    
     `;
     }
 }

@@ -35,7 +35,9 @@ export enum ConsoleSettingsModes {
     /**
      * Login flow tab mode.
      */
-    LOGIN_FLOW = "login-flow"
+    LOGIN_FLOW = "login-flow",
+
+    GENERAL = "general"
 }
 
 /**
