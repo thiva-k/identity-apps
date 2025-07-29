@@ -24,6 +24,7 @@ import FeatureFlagLabel from "@wso2is/admin.feature-gate.v1/components/feature-f
 import FeatureFlagConstants from "@wso2is/admin.feature-gate.v1/constants/feature-flag-constants";
 import { PaletteIcon } from "@oxygen-ui/react-icons";
 import Link from "@oxygen-ui/react/Link";
+import Switch from "@oxygen-ui/react/Switch";
 import { Heading, Hint } from "@wso2is/react-components";
 
 interface ConsoleGeneralProps {
@@ -52,17 +53,17 @@ const ConsoleGeneral: FunctionComponent<ConsoleGeneralProps> = (
                     { t("applications:forms.generalDetails.sections.branding.title") }
                 </Heading>
                 <div style={{ marginBottom: "1rem" }}>
-                    <label style={{ display: "flex", alignItems: "center", gap: "0.75rem", fontWeight: 500 }}>
-                        <input
-                            type="checkbox"
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", fontWeight: 500 }}>
+                        <Switch
                             checked={ isBrandingEnabled }
                             onChange={ (e) => setIsBrandingEnabled(e.target.checked) }
-                            style={{ accentColor: "#ff7300", width: "18px", height: "18px" }}
-                            data-componentid={ `${testId}-enable-console-branding-toggle` }
+                            color="primary"
+                            
                         />
                         { "Enable Console Branding" }
-                    </label>
+                    </div>
                 </div>
+
                 { isBrandingEnabled && (
                     <>
                         <Link

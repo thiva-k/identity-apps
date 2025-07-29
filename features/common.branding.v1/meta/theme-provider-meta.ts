@@ -1123,7 +1123,7 @@ export class ThemePreferenceMeta {
     }
 
     .text-typography.muted {
-        color: var(--asg-colors-text-primary) ;
+        color: var(--asg-colors-text-secondary) ;
     }
 
    .ui.card .card-rich-navigation-button {

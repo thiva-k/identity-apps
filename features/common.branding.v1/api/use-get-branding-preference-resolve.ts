@@ -65,6 +65,8 @@ const useGetBrandingPreferenceResolve = <Data = BrandingPreferenceAPIResponseInt
             : `${store.getState().config.endpoints.brandingPreference}/resolve`
     };
 
+    console.log("organization type:", organizationType);
+    console.log("store config endpoints", store.getState().config.endpoints.brandingPreferenceSubOrg);
     const {
         data,
         error,

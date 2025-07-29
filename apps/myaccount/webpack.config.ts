@@ -213,6 +213,26 @@ module.exports = (config: WebpackOptionsNormalized, context: NxWebpackContextInt
         }
     }
 
+    // Configure ForkTsCheckerWebpackPlugin with memory limit to prevent OOM errors
+    const forkTsCheckerPluginIndex: number = config.plugins.findIndex((plugin: WebpackPluginInstance) => {
+        return plugin.constructor.name === "ForkTsCheckerWebpackPlugin";
+    });
+
+    if (forkTsCheckerPluginIndex !== -1) {
+        const forkTsCheckerPlugin = config.plugins[forkTsCheckerPluginIndex];
+        // Add memory limit configuration to prevent OOM errors
+        if (forkTsCheckerPlugin && typeof forkTsCheckerPlugin === 'object' && 'options' in forkTsCheckerPlugin) {
+            (forkTsCheckerPlugin as any).options = {
+                ...(forkTsCheckerPlugin as any).options,
+                memoryLimit: 8192, // 8GB memory limit
+                typescript: {
+                    ...(forkTsCheckerPlugin as any).options?.typescript,
+                    memoryLimit: 8192
+                }
+            };
+        }
+    }
+
     // Remove `IndexHtmlWebpackPlugin` plugin added by NX and add `HtmlWebpackPlugin` instead.
     const indexHtmlWebpackPluginIndex: number = config.plugins.findIndex((plugin: webpack.WebpackPluginInstance) => {
         return plugin.constructor.name === "IndexHtmlWebpackPlugin";
