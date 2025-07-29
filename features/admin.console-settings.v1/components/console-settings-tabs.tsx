@@ -29,6 +29,7 @@ import ConsoleAdministrators from "./console-administrators/console-administrato
 import ConsoleLoginFlow from "./console-login-flow/console-login-flow";
 import ConsoleProtocol from "./console-protocol/console-protocol";
 import ConsoleRolesList from "./console-roles/console-roles-list";
+import ConsoleSharedAccess from "./console-shared-access/console-shared-access";
 import ConsoleGeneral from "./console-general/console-general";
 import { ConsoleSettingsModes, ConsoleSettingsTabIDs } from "../models/ui";
 import "./console-settings-tabs.scss";
@@ -89,6 +90,8 @@ const ConsoleSettingsTabs: FunctionComponent<ConsoleSettingsTabsInterface> = (
         !consoleSettingsFeatureConfig?.disabledFeatures?.includes(
             "consoleSettings.firstLevelOrgloginFlowConfiguration"
         );
+    const isSharedAccessDisabled: boolean =
+        consoleSettingsFeatureConfig?.disabledFeatures?.includes("consoleSettings.sharedAccess");
 
     const isLoginFlowEnabled: boolean = useMemo(() => {
         if (isSuperOrganization()) {
@@ -156,6 +159,16 @@ const ConsoleSettingsTabs: FunctionComponent<ConsoleSettingsTabsInterface> = (
                     label: t("consoleSettings:protocol.tabLabel"),
                     pane: <ConsoleProtocol />,
                     value: ConsoleSettingsTabIDs.PROTOCOL
+                },
+                !isSubOrganization() && !isSharedAccessDisabled && {
+                    className: "console-shared-access",
+                    "data-componentid": `${componentId}-tab-shared-access`,
+                    "data-tabid": ConsoleSettingsModes.SHARED_ACCESS,
+                    hidden: false,
+                    id: ConsoleSettingsModes.SHARED_ACCESS,
+                    label: t("consoleSettings:sharedAccess.tabLabel"),
+                    pane: <ConsoleSharedAccess />,
+                    value: ConsoleSettingsTabIDs.SHARED_ACCESS
                 }
             ]
                 .filter((tab: ConsoleSettingsTabInterface) => tab && !tab?.hidden)

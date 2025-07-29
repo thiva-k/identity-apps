@@ -36,6 +36,10 @@ export enum ConsoleSettingsModes {
      * Login flow tab mode.
      */
     LOGIN_FLOW = "login-flow",
+    /**
+     * Shared access tab mode.
+     */
+    SHARED_ACCESS = "shared-access",
 
     GENERAL = "general"
 }
@@ -59,5 +63,9 @@ export enum ConsoleSettingsTabIDs {
     /**
      * Login flow tab ID.
      */
-    LOGIN_FLOW = 3
+    LOGIN_FLOW = 3,
+    /**
+     * Shared access tab ID.
+     */
+    SHARED_ACCESS = 4
 }
