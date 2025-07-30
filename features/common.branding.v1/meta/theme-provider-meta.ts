@@ -509,6 +509,7 @@ export class ThemePreferenceMeta {
     /* ------  Font Colors ------ */
 
     .ui.table {
+        background: var(--asg-colors-background-surface-main);
         color: var(--asg-colors-text-primary);
     }
 
@@ -856,6 +857,12 @@ export class ThemePreferenceMeta {
 
     .ui.input>input {
         color: var(--asg-input-field-base-text-color);
+        background-color: var(--asg-colors-background-surface-dark) !important;
+    }
+
+    .ui.input>input:focus {
+        color: var(--asg-input-field-base-text-color) !important;
+        background-color: var(--asg-colors-background-surface-dark) !important;
     }
 
     .advanced-search-wrapper .ui.input.advanced-search {
@@ -868,7 +875,7 @@ export class ThemePreferenceMeta {
 
     .advanced-search-wrapper.fill-white .ui.input.advanced-search.with-add-on input {
         color: var(--asg-input-field-base-text-color);
-        background: var(--asg-input-field-base-background-color);
+        background: var(--asg-colors-background-surface-main);
         border-radius: var(--asg-input-field-base-border-radius);
     }
 
@@ -1096,6 +1103,210 @@ export class ThemePreferenceMeta {
 
     .ui.items>.item.application-list-item {
         border-color: var(--asg-colors-outlined-default);
-    }`;
+    }
+    .ui.header {
+        color: var(--asg-colors-text-primary);
+    }
+
+    .text-typography.muted {
+        color: var(--asg-colors-text-secondary) ;
+    }
+
+   .ui.card .card-rich-navigation-button {
+        color: var(--asg-colors-text-primary) !important;
+        fill: var(--asg-colors-text-primary) !important;
+    }
+
+    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-item,
+    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-label,
+    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-item-divider,
+    .organization-breadcrumb-wrapper .organization-breadcrumb .organization-breadcrumb-icon {
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .ui.segment.emphasized{
+        background: var(--asg-colors-background-surface-main) !important;
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .theme-icon svg,
+    .theme-icon svg [fill="black"],
+    .theme-icon-transparent svg,
+    .oxygen-list-item .theme-icon svg,
+    .oxygen-list-item .theme-icon-transparent svg
+    .theme-icon svg path,
+    .theme-icon-transparent svg path {
+        fill: var(--asg-colors-text-primary) !important;
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .oxygen-collapsible-navbar-item .oxygen-list-sub-item-button {
+        color: var(--asg-colors-text-secondary);
+    }
+
+    .ui.card .card-rich-navigation-button {
+        color: var(--asg-colors-text-primary) !important;
+        fill: var(--asg-colors-text-primary) !important;
+    }
+    
+    .ui.card.info-card .card-subheader {
+        color: var(--asg-colors-text-secondary) !important;
+    }
+    .ui.card.info-card .card-header-section .card-header,
+    .ui.card.info-card .card-description {
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .ui.basic.label {
+        background: var(--asg-colors-background-surface-main);
+        color: var(--asg-colors-text-primary);
+    }
+
+    .ui.horizontal.segments {
+        background: var(--asg-colors-background-surface-main) !important; 
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .layout.list-layout .top-action-panel .ui.grid {
+        background: var(--asg-colors-background-surface-main) !important;
+    }
+    
+
+    .account-status-filter-dropdown,
+    .account-status-filter-dropdown .MuiBox-root,
+    .account-status-filter-dropdown .oxygen-box,
+    .account-status-filter-dropdown .MuiInputBase-root,
+    .account-status-filter-dropdown .MuiSelect-root,
+    .account-status-filter-dropdown .MuiOutlinedInput-root {
+        background: var(--asg-colors-background-body-main) !important;
+        color: var(--asg-colors-text-primary) !important;
+        border-radius: var(--asg-input-field-base-border-radius);
+    }
+
+    .layout.list-layout .top-action-panel .actions .ui.dropdown {
+        background: var(--asg-colors-background-body-main) !important;
+        color: var(--asg-colors-text-primary) !important;
+        border-radius: var(--asg-input-field-base-border-radius);
+    }
+
+    .ui.table th, .ui.table td {
+        background: var(--asg-colors-background-surface-main); /* for table cells */
+        color: var(--asg-colors-text-primary);
+    }
+    
+    .ui.table thead th {
+        background: var(--asg-colors-background-body-main);
+        background-color: var(--asg-colors-background-body-main);
+        color: var(--asg-colors-text-primary) ;
+    }
+
+    .ai-banner {
+        background-color: var(--asg-colors-background-surface-main) !important;
+    }
+
+    .ui.modal.wizard .steps-container {
+        background: var(--asg-colors-background-body-main) !important;
+    }
+
+    .ui.card .application-tile.white-bg {
+        background-color: var(--asg-colors-background-surface-main) !important;
+    }
+
+    .ui.segment.danger-zone .sub-header {
+        color: var(--asg-colors-text-primary) !important; 
+    }
+
+    .ui.menu .item.disabled{
+        color: var(--asg-colors-text-secondary) !important;
+    }
+
+    .pagination-bar .page-limit-label{
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .ui.modal.modal-with-side-panel .panels .modal-header.muted {
+        background: var(--asg-colors-background-surface-dark) !important;
+    }
+    
+    .dynamic-form .oxygen-text-field .MuiInputLabel-root {
+        color: var(--asg-colors-text-primary) !important;   
+    }
+
+    .branding-preference-custom-text .branding-preference-custom-text-static-header {
+        background: var(--asg-colors-background-surface-main) !important;
+    }
+
+    .ui.table.data-table .data-table-row{
+        background: var(--asg-colors-background-surface-main) !important;       
+    }
+    
+    .ui.input{
+        background: var(--asg-colors-background-surface-main) !important;
+        color: var(--asg-colors-text-primary) !important;
+        background-color: var(--asg-colors-background-surface-main) !important;
+    }
+
+    .ui.toggle.checkbox label{
+        color: var(--asg-colors-text-primary) !important;
+    }
+    
+    .ui.toggle.checkbox input:checked~label{
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .form-wrapper .box-container{
+        background: var(--asg-colors-background-surface-dark) !important;
+    }
+
+    .alert-nutral{
+        background: var(--asg-colors-background-surface-dark) !important;
+    }
+
+    .user-attribute-list .clear-all-button-container {
+        background: var(--asg-colors-background-surface-dark) !important;
+    }
+
+    .page-header-wrapper .back-button:hover {
+        color: white !important;
+    }
+
+    .ui.dropdown .menu>.item{
+        color: var(--asg-colors-text-primary) !important;
+    }
+
+    .advanced-search-wrapper .ui.input.advanced-search.with-add-on input {
+        background: var(--asg-colors-background-surface-main) !important;
+        color: var(--asg-input-field-base-text-color) !important;
+    }
+
+    .layout.list-layout .top-action-panel .ui.grid {
+        background: var(--asg-colors-background-surface-main) !important;
+    }
+
+    .ui.horizontal.segments {
+        background: var(--asg-colors-background-surface-main) !important; 
+        color: var(--asg-colors-text-primary) !important;
+    };
+ 
+ 
+
+
+
+    
+
+
+
+    
+    
+
+
+
+    
+
+}
+
+}
+    
+    `;
     }
 }

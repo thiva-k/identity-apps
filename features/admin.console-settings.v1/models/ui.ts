@@ -21,6 +21,10 @@
  */
 export enum ConsoleSettingsModes {
     /**
+     * General tab mode.
+     */
+    GENERAL = "general",
+    /**
      * Administrators tab mode.
      */
     ADMINISTRATORS = "administrators",
@@ -47,23 +51,27 @@ export enum ConsoleSettingsModes {
  */
 export enum ConsoleSettingsTabIDs {
     /**
+     * General tab ID.
+     */
+    GENERAL = 0,
+    /**
      * Administrators tab ID.
      */
-    ADMINISTRATORS = 0,
+    ADMINISTRATORS = 1,
     /**
      * Roles tab ID.
      */
-    ROLES = 1,
+    ROLES = 2,
     /**
      * Protocol tab ID.
      */
-    PROTOCOL = 2,
+    PROTOCOL = 3,
     /**
      * Login flow tab ID.
      */
-    LOGIN_FLOW = 3,
+    LOGIN_FLOW = 4,
     /**
      * Shared access tab ID.
      */
-    SHARED_ACCESS = 4
+    SHARED_ACCESS = 5
 }

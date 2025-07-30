@@ -546,7 +546,8 @@ export const EditApplication: FunctionComponent<EditApplicationPropsInterface> =
                 featureConfig={ featureConfig }
                 template={ template }
                 isBrandingSectionHidden={ brandingDisabledFeatures.includes(BrandingPreferencesConstants.
-                    APP_WISE_BRANDING_FEATURE_TAG) || !hasBrandingViewPermissions }
+                    APP_WISE_BRANDING_FEATURE_TAG) || !hasBrandingViewPermissions || 
+                    ApplicationManagementConstants.SYSTEM_APPS.includes(application?.name) }
                 readOnly={ readOnly || applicationConfig.editApplication.getTabPanelReadOnlyStatus(
                     "APPLICATION_EDIT_GENERAL_SETTINGS", application) }
                 data-componentid={ `${ componentId }-general-settings` }

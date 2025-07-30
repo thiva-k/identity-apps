@@ -66,17 +66,20 @@ import has from "lodash-es/has";
 import isEmpty from "lodash-es/isEmpty";
 import set from "lodash-es/set";
 import * as moment from "moment";
-import React, { ReactElement, Suspense, useEffect, useMemo, useState } from "react";
+import React, { ReactElement, Suspense, useEffect, useMemo, useState, useContext } from "react";
 import { Helmet } from "react-helmet";
 import { Trans } from "react-i18next";
 import { useDispatch, useSelector } from "react-redux";
 import { StaticContext } from "react-router";
 import { Redirect, Route, RouteComponentProps, Router, Switch } from "react-router-dom";
 import { Dispatch } from "redux";
+import { useColorScheme } from "@mui/material";
+import { Mode } from "@mui/system/cssVars/useCurrentColorScheme";
 import "moment/locale/si";
 import "moment/locale/fr";
 import { getBaseRoutes } from "./configs/routes";
 import DecoratedApp from "./decorated-app";
+import { ThemeProviderContext } from "@wso2is/common.branding.v1/contexts/theme-provider-context";
 import "./app.scss";
 
 const Base = ({
@@ -182,6 +185,15 @@ export const App = ({
         data: allFeatures,
         error: featureGateAPIException
     } = useGetAllFeatures();
+
+    // Dynamic mode setting based on branding preference
+    const { setMode } = useColorScheme();
+    const { themePreference } = useContext(ThemeProviderContext);
+
+    useEffect(() => {
+        const mode: Mode = themePreference?.preference?.theme?.activeTheme?.toLowerCase() as Mode || "light" as Mode;
+        setMode(mode);
+    }, [themePreference, setMode]);
 
     /**
      * Set the deployment configs in redux state.

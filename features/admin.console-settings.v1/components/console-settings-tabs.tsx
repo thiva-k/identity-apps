@@ -26,6 +26,7 @@ import React, { FunctionComponent, ReactElement, SyntheticEvent, useEffect, useM
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import ConsoleAdministrators from "./console-administrators/console-administrators";
+import ConsoleGeneral from "./console-general/console-general";
 import ConsoleLoginFlow from "./console-login-flow/console-login-flow";
 import ConsoleProtocol from "./console-protocol/console-protocol";
 import ConsoleRolesList from "./console-roles/console-roles-list";
@@ -111,6 +112,15 @@ const ConsoleSettingsTabs: FunctionComponent<ConsoleSettingsTabsInterface> = (
     const consoleTabs: ConsoleSettingsTabInterface[] = useMemo(
         () =>
             [
+                {
+                    className: "general",
+                    "data-componentid": `${componentId}-tab-general`,
+                    "data-tabid": ConsoleSettingsModes.GENERAL,
+                    id: ConsoleSettingsModes.GENERAL,
+                    label: "General",
+                    pane: <ConsoleGeneral />,
+                    value: ConsoleSettingsTabIDs.GENERAL
+                },
                 {
                     className: "administrators-list",
                     "data-componentid": `${componentId}-tab-administrators`,

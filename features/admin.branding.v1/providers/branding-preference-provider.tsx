@@ -133,6 +133,7 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
         error: brandingPreferenceFetchRequestError
     } = useGetBrandingPreferenceResolve(
         resolvedName,
+        true,
         resolvedType
     );
 
@@ -552,6 +553,7 @@ const BrandingPreferenceProvider: FunctionComponent<BrandingPreferenceProviderPr
                         if (brandingMode === BrandingModes.ORGANIZATION) {
                             meta.push(PreviewScreenType.MY_ACCOUNT);
                             meta.push(PreviewScreenType.EMAIL_TEMPLATE);
+                            meta.push(PreviewScreenType.CONSOLE);
                         }
                     }
 

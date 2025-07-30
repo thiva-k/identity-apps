@@ -50,6 +50,7 @@ import { Placeholder } from "semantic-ui-react";
 import { EmailTemplateScreenSkeleton } from "./email-template-screen-skeleton";
 import { LoginScreenSkeleton } from "./login-screen-skeleton";
 import { MyAccountScreenSkeleton } from "./my-account-screen-skeleton";
+import { ConsoleScreenSkeleton } from "./console-skeleton";
 import { ReactComponent as CustomLayoutSuccessImg } from
     "../../../themes/wso2is/assets/images/branding/custom-layout-success.svg";
 import { ReactComponent as CustomLayoutWarningImg } from
@@ -322,6 +323,15 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
                     content={ previewScreenSkeletonContent }
                     brandingPreference={ brandingPreference }
                     data-componentid="branding-preference-preview-email-template-skeleton"
+                />
+            );
+        }
+
+        if (screenType === PreviewScreenType.CONSOLE) {
+            return (
+                <ConsoleScreenSkeleton
+                    brandingPreference={brandingPreference}
+                    data-componentid="branding-preference-preview-console-skeleton"
                 />
             );
         }

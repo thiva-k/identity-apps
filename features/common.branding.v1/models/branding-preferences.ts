@@ -571,6 +571,10 @@ export interface BrandingPreferenceConfigInterface {
      * Should remove default branding.
      */
     removeDefaultBranding?: boolean;
+    /**
+     *  Check if console should be branded
+     */
+    isConsoleBrandingEnabled?: boolean;
 }
 
 /**
@@ -598,6 +602,7 @@ export enum FontConfigurationStrategies {
 export enum PreviewScreenType {
     COMMON = "common",
     LOGIN = "login",
+    CONSOLE = "console",
     MY_ACCOUNT = "myaccount",
     EMAIL_LINK_EXPIRY = "email-link-expiry",
     EMAIL_TEMPLATE = "email-template",

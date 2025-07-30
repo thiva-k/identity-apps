@@ -77,6 +77,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { Dispatch } from "redux";
 import { getAppViewRoutes } from "./configs/routes";
 import useRoutes from "./hooks/use-routes";
+import useGetBrandingPreferenceResolve from "@wso2is/common.branding.v1/api/use-get-branding-preference-resolve";
+import { ThemeProvider } from "@wso2is/common.branding.v1/providers/theme-provider";
 
 const App: LazyExoticComponent<FunctionComponent<AppComponentProps>> = lazy(() => import("./app"));
 
@@ -357,7 +359,34 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
         filterRoutes(() => setRoutesFiltered(true), isUserTenantless, isFirstLevelOrg);
     }, [ filterRoutes, state.isAuthenticated, isFirstLevelOrg, isUserTenantless ]);
 
+    /**
+     * Extracts theme preference data using a custom hook.
+     */
+    const tenantDomain: string = useSelector((state: AppState) => state.auth.tenantDomain);
+    const { data: themePreference } = useGetBrandingPreferenceResolve(
+        tenantDomain,
+        state.isAuthenticated && !!tenantDomain
+    );
+
+    /**
+     * Retrieves the application title from the Redux store.
+     */
+    const appTitle: string = useSelector((state: AppState) => state?.config?.ui?.appTitle);
+
+    // Get the default mode from the theme preference if available
+    const defaultMode: "light" | "dark" = (themePreference?.preference?.theme?.activeTheme?.toLowerCase() as "light" | "dark") || "light";
+
     return (
+        <ThemeProvider
+            themePreference={
+                themePreference?.preference?.configs?.isConsoleBrandingEnabled
+                    ? themePreference
+                    : undefined
+            }
+            defaultMode={ defaultMode }
+            modeStorageKey={ "myaccount-oxygen-mode" }
+            appTitle={ appTitle }
+        >
         <SecureApp
             fallback={ <PreLoader /> }
             overrideSignIn={ async () => {
@@ -389,5 +418,6 @@ export const ProtectedApp: FunctionComponent<AppPropsInterface> = (): ReactEleme
                 </SubscriptionProvider>
             </I18nextProvider>
         </SecureApp>
+        </ThemeProvider>
     );
 };
