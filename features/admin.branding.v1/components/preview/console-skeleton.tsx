@@ -1,43 +1,86 @@
-import React, { FunctionComponent, ReactElement } from "react";
-import { BrandingPreferenceInterface } from "@wso2is/common.branding.v1/models";
+/**
+ * Copyright (c) 2023-2024, WSO2 LLC. (https://www.wso2.com).
+ *
+ * WSO2 LLC. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
-interface ConsoleScreenSkeletonProps {
+import { AppState } from "@wso2is/admin.core.v1/store";
+import { BrandingPreferenceInterface } from "@wso2is/common.branding.v1/models";
+import { IdentifiableComponentInterface } from "@wso2is/core/models";
+import parse from "html-react-parser";
+import Mustache from "mustache";
+import React, { FunctionComponent, ReactElement, useMemo } from "react";
+import { useSelector } from "react-redux";
+import useBrandingPreference from "../../hooks/use-branding-preference";
+import { BrandingPreferenceMeta } from "../../meta/branding-preference-meta";
+
+/**
+ * Prop-types for the console screen skeleton component.
+ */
+interface ConsoleScreenSkeletonInterface extends IdentifiableComponentInterface {
+    content: string;
+    /**
+     * Branding preferences object.
+     */
     brandingPreference: BrandingPreferenceInterface;
-    "data-componentid"?: string;
 }
 
-export const ConsoleScreenSkeleton: FunctionComponent<ConsoleScreenSkeletonProps> = ({
-    brandingPreference,
-    "data-componentid": componentId = "branding-preference-preview-console-skeleton"
-}): ReactElement => {
-    // Render a simple mockup of the Console app using brandingPreference
-    // You can make this as detailed as you want, using brandingPreference.theme, .layout, etc.
+/**
+ * Console skeleton.
+ *
+ * @param props - Props injected to the component.
+ * @returns Console skeleton as a react component.
+ */
+export const ConsoleScreenSkeleton: FunctionComponent<ConsoleScreenSkeletonInterface> = (
+    props: ConsoleScreenSkeletonInterface
+): ReactElement => {
+    const { brandingPreference, content, ["data-componentid"]: componentId } = props;
+
+    const systemTheme: string = useSelector((state: AppState) => state.config?.ui?.theme?.name);
+
+    const consoleLogoImage = useMemo(() => {
+        return brandingPreference.theme[brandingPreference.theme.activeTheme].images?.logo?.imgURL ??
+            BrandingPreferenceMeta.getBrandingPreferenceInternalFallbacks(systemTheme).theme[
+                brandingPreference.theme.activeTheme
+            ].images?.logo?.imgURL;
+    }, [brandingPreference, systemTheme]);
+
+    const consoleLogoTitle = useMemo(() => {
+        return brandingPreference.theme[brandingPreference.theme.activeTheme].images?.logo?.title ?? "Console";
+    }, [brandingPreference]);
+
+    const welcomeMessage = useMemo(() => {
+        return "Welcome to Console";
+    }, []);
+
     return (
-        <div className="console-preview-skeleton" data-componentid={componentId}>
-            <header style={{
-                background: brandingPreference.theme[brandingPreference.theme.activeTheme].colors.primary.main,
-                color: brandingPreference.theme[brandingPreference.theme.activeTheme].colors.text.primary,
-                padding: "1rem"
-            }}>
-                <img
-                    src={brandingPreference.theme[brandingPreference.theme.activeTheme].images.logo.imgURL}
-                    alt="Console Logo"
-                    style={{ height: 40, marginRight: 16 }}
-                />
-                <span style={{ fontWeight: "bold", fontSize: 24 }}>Console</span>
-            </header>
-            <main style={{ padding: "2rem" }}>
-                <h2>Welcome to the Console Preview</h2>
-                <p>This is a preview of how the Console application will look with your current branding settings.</p>
-            </main>
-            <footer style={{
-
-                color: brandingPreference.theme[brandingPreference.theme.activeTheme].colors.text.secondary,
-                padding: "1rem",
-                textAlign: "center"
-            }}>
-
-            </footer>
+        <div className="console-screen-skeleton" data-testid={componentId} style={{ pointerEvents: "none" }}>
+            {parse(
+                Mustache.render(content, {
+                    logoImage: consoleLogoImage,
+                    logoTitle: consoleLogoTitle,
+                    welcomeMessage: welcomeMessage
+                })
+            )}
         </div>
     );
+};
+
+/**
+ * Default props for the component.
+ */
+ConsoleScreenSkeleton.defaultProps = {
+    "data-componentid": "console-screen-skeleton"
 }; 

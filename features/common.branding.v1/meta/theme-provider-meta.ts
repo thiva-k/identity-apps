@@ -716,16 +716,26 @@ export class ThemePreferenceMeta {
     /* Input */
     .ui.form input:not([type]), .ui.form input[type=date], .ui.form input[type=datetime-local], .ui.form input[type=email], .ui.form input[type=file], .ui.form input[type=number], .ui.form input[type=password], .ui.form input[type=search], .ui.form input[type=tel], .ui.form input[type=text], .ui.form input[type=time], .ui.form input[type=url],
     .ui.form .field.error input:not([type]), .ui.form .field.error input[type=date], .ui.form .field.error input[type=datetime-local], .ui.form .field.error input[type=email], .ui.form .field.error input[type=file], .ui.form .field.error input[type=number], .ui.form .field.error input[type=password], .ui.form .field.error input[type=search], .ui.form .field.error input[type=tel], .ui.form .field.error input[type=text], .ui.form .field.error input[type=time], .ui.form .field.error input[type=url], .ui.form .field.error select, .ui.form .field.error textarea, .ui.form .fields.error .field input:not([type]), .ui.form .fields.error .field input[type=date], .ui.form .fields.error .field input[type=datetime-local], .ui.form .fields.error .field input[type=email], .ui.form .fields.error .field input[type=file], .ui.form .fields.error .field input[type=number], .ui.form .fields.error .field input[type=password], .ui.form .fields.error .field input[type=search], .ui.form .fields.error .field input[type=tel], .ui.form .fields.error .field input[type=text], .ui.form .fields.error .field input[type=time], .ui.form .fields.error .field input[type=url], .ui.form .fields.error .field select, .ui.form .fields.error .field textarea,
-    .ui.form .field.error input:not([type]):focus, .ui.form .field.error input[type=date]:focus, .ui.form .field.error input[type=datetime-local]:focus, .ui.form .field.error input[type=email]:focus, .ui.form .field.error input[type=file]:focus, .ui.form .field.error input[type=number]:focus, .ui.form .field.error input[type=password]:focus, .ui.form .field.error input[type=search]:focus, .ui.form .field.error input[type=tel]:focus, .ui.form .field.error input[type=text]:focus, .ui.form .field.error input[type=time]:focus, .ui.form .field.error input[type=url]:focus, .ui.form .field.error select:focus, .ui.form .field.error textarea:focus,
-    .ui.form input:not([type]):focus, .ui.form input[type=date]:focus, .ui.form input[type=datetime-local]:focus, .ui.form input[type=email]:focus, .ui.form input[type=file]:focus, .ui.form input[type=number]:focus, .ui.form input[type=password]:focus, .ui.form input[type=search]:focus, .ui.form input[type=tel]:focus, .ui.form input[type=text]:focus, .ui.form input[type=time]:focus, .ui.form input[type=url]:focus,
-    .ui.input.addon-wrapper,
     .ui.input.addon-wrapper:focus-within,
     .ui.selection.dropdown,
-    .ui.selection.dropdown:hover {
-        color: var(--asg-input-field-base-text-color);
-        background: var(--asg-input-field-base-background-color);
+    .ui.selection.dropdown:hover,
+    .ui.form textarea  {
+        color: var(--asg-input-field-base-text-color) !important;
+        background: var(--asg-colors-background-surface-main) !important; 
         border-color: var(--asg-input-field-base-border-color);
-        border-radius: var(--asg-input-field-base-border-radius);
+        border-radius: var(--asg-input-field-base-border-radius) !important;
+    }
+
+    /* Input Focus State - Primary Color Border */
+    .ui.form input:not([type]):focus, .ui.form input[type=date]:focus, .ui.form input[type=datetime-local]:focus, .ui.form input[type=email]:focus, .ui.form input[type=file]:focus, .ui.form input[type=number]:focus, .ui.form input[type=password]:focus, .ui.form input[type=search]:focus, .ui.form input[type=tel]:focus, .ui.form input[type=text]:focus, .ui.form input[type=time]:focus, .ui.form input[type=url]:focus,
+    .ui.input.addon-wrapper:focus-within,
+    .ui.selection.dropdown:focus,
+    .ui.form textarea:focus {
+        border-color: var(--asg-colors-primary-main) !important;
+    }
+
+    .ui.list.dynamic-field .item{
+       border-color: var(--asg-input-field-base-border-color);     
     }
 
     /* Autofilled */
@@ -778,7 +788,7 @@ export class ThemePreferenceMeta {
 
     /* Dropdowns */
     .ui.selection.active.dropdown .menu {
-        background: var(--asg-input-field-base-border-color);
+        background: var(--asg-colors-background-surface-main);
     }
 
     .ui.selection.dropdown .menu>.item {
@@ -857,7 +867,9 @@ export class ThemePreferenceMeta {
 
     .ui.input>input {
         color: var(--asg-input-field-base-text-color);
-        background-color: var(--asg-colors-background-surface-dark) !important;
+        background-color: var(--asg-colors-background-surface-main) !important;
+        border-color: var(--asg-input-field-base-border-color);
+
     }
 
     .ui.input>input:focus {
@@ -894,13 +906,9 @@ export class ThemePreferenceMeta {
 
     /* Labeled Inputs */
     .ui.labeled.input>.label {
-        background: var(--asg-input-field-base-background-color);
+        background: var(--asg-colors-outlined-default);
         color: var(--asg-colors-text-secondary);
         border: 1px solid var(--asg-input-field-base-border-color);
-    }
-
-    .ui[class*="right labeled"].input>input:focus {
-        border-color: var(--asg-input-field-base-border-color) !important;;
     }
 
     /* Error Labels */
@@ -1283,10 +1291,25 @@ export class ThemePreferenceMeta {
         background: var(--asg-colors-background-surface-main) !important;
     }
 
+    .ui.card>.content>.header, .ui.cards>.card>.content>.header{
+        color: var(--asg-colors-text-primary) !important;
+    }
+    
+    .ui.card>.content>.description, .ui.cards>.card>.content>.description{
+        color: var(--asg-colors-text-secondary) !important;
+    }
+
+    .ui[class*="right labeled"].input>input {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        border-right-color: transparent !important;
+    }
+
     .ui.horizontal.segments {
         background: var(--asg-colors-background-surface-main) !important; 
         color: var(--asg-colors-text-primary) !important;
     };
+
  
  
 

@@ -330,6 +330,7 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
         if (screenType === PreviewScreenType.CONSOLE) {
             return (
                 <ConsoleScreenSkeleton
+                    content={ previewScreenSkeletonContent }
                     brandingPreference={brandingPreference}
                     data-componentid="branding-preference-preview-console-skeleton"
                 />
@@ -347,6 +348,12 @@ export const BrandingPreferencePreview: FunctionComponent<BrandingPreferencePrev
         if (!loginScreenCategory.includes(screenType)) {
             if (screenType === PreviewScreenType.EMAIL_TEMPLATE) {
                 return previewScreenSkeletonStyles;
+            }
+
+            if (screenType === PreviewScreenType.CONSOLE) {
+                return `${
+                    BrandingPreferenceMeta.getThemeSkeleton(brandingPreference.theme)
+                }\n${previewScreenSkeletonStyles}}`;
             }
 
             return `${
